@@ -1,0 +1,232 @@
+﻿//############################################################################
+//      Theolizerライブラリのコア部
+/*
+    Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
+
+    商用ライセンス
+        有効なTheolizer商用ライセンスを保持している人は、
+        田原良則(Theoride Technology)と締結している商用ライセンス契約の
+        使用条件に従って、このファイルを取り扱うことができます。
+
+    General Public License Version 3(以下GPLv3)
+        Free Software Foundationが公表するGPLv3の使用条件に従って、
+        あなたはこのファイルを取り扱うことができます。
+        GPLv3の内容を https://www.gnu.org/licenses/gpl.txt にて確認して下さい。
+        GPLv3のコピーをLICENSE.TXTファイルにおいてます。
+*/
+//############################################################################
+
+#define THEOLIZER_INTERNAL_EXCLUDE_VERSION_H
+
+//############################################################################
+//      インクルード
+//############################################################################
+
+#include "avoid-trouble.h"
+
+#include <algorithm>
+#include <limits>       // for numeric_limits
+
+#include "internal.h"
+#include "core.h"
+
+//############################################################################
+//      Begin
+//############################################################################
+
+namespace theolizer
+{
+namespace internal
+{
+
+//############################################################################
+//      エラー報告サービス群
+//############################################################################
+
+// ***************************************************************************
+//      エラー・チェック用サーピス群
+// ***************************************************************************
+
+void checkDataShort(bool iIsPass, std::string const& iLoc)
+{
+    THEOLIZER_INTERNAL_ASSERT(iIsPass,
+        theolizer::print("%1%:Data are insufficient.", iLoc));
+}
+
+void checkExtraData(bool iIsPass, std::string const& iLoc)
+{
+    THEOLIZER_INTERNAL_ASSERT(iIsPass,
+        theolizer::print("%1%:There are too many data.", iLoc));
+}
+
+//############################################################################
+//      保存先指定
+//############################################################################
+
+// ***************************************************************************
+//      内部処理用アイテム群
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      ビット列処理クラス
+//----------------------------------------------------------------------------
+
+//      ---<<< 必要なら記録領域追加 >>>---
+
+void BitString::expandList(unsigned iIndex)
+{
+    // unsignedが不足していたら領域を追加する
+    unsigned aNewCount = iIndex+1;
+    if (mDataCount < aNewCount)
+    {
+        std::unique_ptr<unsigned[]> aNewList(new unsigned[aNewCount]);
+        std::copy(&mBitList[0], &mBitList[mDataCount], &aNewList[0]);
+        std::fill(&aNewList[mDataCount], &aNewList[aNewCount], 0);
+        swap(mBitList, aNewList);
+        mDataCount=aNewCount;
+    }
+}
+
+//      ---<<< 指定bit追加 >>>---
+
+void BitString::add(unsigned iBitNo)
+{
+    // unsignedが不足していたら領域を追加する
+    expandList(iBitNo/kUnsignedSize);
+
+    // 該当ビットを立てる
+    unsigned aIndex = iBitNo/kUnsignedSize;
+    unsigned aUnsignedNo = iBitNo - aIndex*kUnsignedSize;
+    mBitList[aIndex] |= (1u << aUnsignedNo);
+}
+
+//      ---<<< 指定unsigned追加 >>>---
+
+void BitString::add(unsigned iIndex, unsigned iData)
+{
+    // unsignedが不足していたら領域を追加する
+    expandList(iIndex);
+
+    mBitList[iIndex] |= iData;
+}
+
+//      ---<<< 指定bit判定 >>>---
+
+bool BitString::isOne(unsigned iBitNo) const
+{
+    THEOLIZER_INTERNAL_ASSERT(iBitNo < mDataCount*kUnsignedSize,
+        theolizer::print("iBitNo(%1%) is too large in BitString::isOne().", iBitNo));
+
+    unsigned aIndex = iBitNo/kUnsignedSize;
+    unsigned aUnsignedNo = iBitNo - aIndex*kUnsignedSize;
+    return !!(mBitList[aIndex] & (1u << aUnsignedNo));
+}
+
+//      ---<<< 文字列化 >>>---
+
+std::string BitString::to_string(unsigned iStart, unsigned iEnd) const
+{
+    if (iEnd == kUnsignedMax)
+    {
+        iEnd=mDataCount*kUnsignedSize;
+    }
+    std::string ret;
+    for (unsigned aBitNo=iStart; aBitNo < iEnd; ++aBitNo)
+    {
+        if (isOne(aBitNo))
+        {
+            ret.push_back('1');
+        }
+        else
+        {
+            ret.push_back('0');
+        }
+    }
+    return ret;
+}
+
+//############################################################################
+//      型管理
+//############################################################################
+
+// ***************************************************************************
+//      不正値
+// ***************************************************************************
+
+const std::size_t kInvalidSize = std::numeric_limits<std::size_t>::max();
+
+// ***************************************************************************
+//      型情報取得中継
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      基底クラスのアクセス
+//----------------------------------------------------------------------------
+
+thread_local BaseTypeFunctions* xTypeFunctions=nullptr;
+
+BaseTypeFunctions* getTypeFunctions()
+{
+    return xTypeFunctions;
+}
+
+void setTypeFunctions(BaseTypeFunctions* iTypeFunctions)
+{
+    xTypeFunctions=iTypeFunctions;
+}
+
+// ***************************************************************************
+//      グローバル・バージョン番号管理
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      キー登録
+//----------------------------------------------------------------------------
+
+void addGlobalVersionKey
+(
+    GlobalVersionKey const& iKey,
+    std::vector<GlobalVersionKey>& oKeyList
+)
+{
+    auto found = lower_bound(oKeyList.begin(),
+                             oKeyList.end(),
+                             iKey,
+                             [](GlobalVersionKey const& iLhs, GlobalVersionKey const& iRhs)
+                             {
+                                return iLhs.mTypeIndex < iRhs.mTypeIndex;
+                             });
+    THEOLIZER_INTERNAL_ASSERT((found == oKeyList.end())
+                 || (found->mTypeIndex != iKey.mTypeIndex), "Multipule adding class");
+    oKeyList.insert(found, iKey);
+}
+
+//----------------------------------------------------------------------------
+//      キー検索
+//          見つからなかった時、false返却
+//----------------------------------------------------------------------------
+
+bool findGlobalVersionKey
+(
+    std::vector<GlobalVersionKey> const& iKeyList,
+    std::type_index iTypeIndex,
+    std::size_t& oListIndex
+)
+{
+    auto found = lower_bound(iKeyList.begin(),
+                             iKeyList.end(),
+                             iTypeIndex,
+                             [](GlobalVersionKey const& iLhs, std::type_index iRhs)
+                             {
+                                return iLhs.mTypeIndex < iRhs;
+                             });
+
+    if ((found == iKeyList.end()) || (found->mTypeIndex != iTypeIndex))
+return false;
+
+    oListIndex=found->mListIndex;
+    return true;
+}
+
+}   // namespace internal
+}   // namespace theolizer
