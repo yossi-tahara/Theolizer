@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.12"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Theolizer: 仕様</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+  $(document).ready(initResizable);
+</script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">Theolizer
+   &#160;<span id="projectnumber">Version.0.3.0</span>
+   </div>
+   <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 構築: Doxygen 1.8.12 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'検索');
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','検索');
+  $(document).ready(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('_specification.html','');});
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">仕様 </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><h1><a class="anchor" id="Basic"></a>
+1.基本仕様</h1>
+<hr/>
+<h2><a class="anchor" id="Basic11"></a>
+1-1.シリアライズ可能な型</h2>
+<p><b>① プリミティブ型</b><br />
+ 基本的な型をプリミティブ型と呼んでいます。下記がプリミティブ型です。</p><ul>
+<li>C++のint型等の組込み型全て</li>
+<li>std::string, std::wstring, std::u16string, std::u32string</li>
+</ul>
+<p><b>② enum型</b><br />
+ 通常のenum型、および、scorped enum型の両方に対応しています。</p>
+<p><b>③ class、struct</b><br />
+ class、および、structは同じ扱いです。</p>
+<p><b>④ C++静的配列</b><br />
+ ①～④のC++静的配列に対応しています。（多次元配列も対応しています。）</p>
+<p><b>⑤ ポインタ型</b><br />
+ ①～④へのポインタです。 デシリライズ時、アドレスのみ回復します。</p>
+<p><b>⑥ オーナー・ポインタ型</b><br />
+ ①～④へのポインタで、ポイント先メモリ領域の管理（獲得／開放）のために使われているポインタです。<br />
+ シリアライズ時にポインタが指していた先のメモリ領域も、デシリアライズ時に回復します。<br />
+ ⑤とは異なることをTheolizerへ通知するため、ソース上で指定します。これを<b>オーナー指定</b>と呼びます。下記マクロで指定します。<br />
+</p><ul>
+<li>THEOLIZER_ANNOTATE(FS:...&lt;...&gt;Owner)</li>
+<li>THEOLIZER_PROCESS_OWNER</li>
+</ul>
+<p><b>● シリアライズできないもの</b><br />
+ 下記はシリアライズに対応していません。</p><ul>
+<li><b>union</b><br />
+ 内容の判定が困難なため対応を断念しました。</li>
+<li><b>C言語文字列</b><br />
+ C言語の文字列型(NULL終端の<code>char*</code>)はデシリアライズ処理のメモリ獲得方法を決定できないため、サポートしていません。<br />
+ <code>char*</code>型は1文字へのポインタとして処理します。</li>
+<li><b>多重ポインタ</b><br />
+ ポインタへのポインタ等の多重ポインタは非対応です。<b>オーナー指定</b>が複雑になるため断念しました。</li>
+<li><b>参照</b><br />
+ 参照は単純に別名として取り扱います。C++の仕様上アドレスを回復することができないためです。</li>
+</ul>
+<h2><a class="anchor" id="Basic12"></a>
+1-2.シリアライズ可能な型についての補足事項</h2>
+<h3><a class="anchor" id="Basic121"></a>
+1-2-1.クラスについて</h3>
+<p>クラスは下記の３種類の形式に対応しています。</p><ul>
+<li><b>非侵入型完全自動</b><br />
+ クラス定義側でシリアライズすることを指定しないまま、シリアライズ処理するクラスです。バージョン番号は1固定です。</li>
+<li><b>侵入型半自動</b><br />
+ クラス定義内部でシリアライズすることを指定したクラスです。下記マクロで指定します。<br />
+<ul>
+<li>THEOLIZER_INTRUSIVE</li>
+<li>THEOLIZER_INTRUSIVE_ORDER</li>
+</ul>
+</li>
+<li><b>非侵入型手動</b><br />
+ クラス定義の外側でシリアライズすることを指定したクラスです。標準ライブラリのコンテナ型に対応するために設けた仕組みです。<br />
+ 現時点ではユーザ殿へは開放していません。将来的には開放する予定です。</li>
+</ul>
+<p>非侵入型完全自動と侵入型半自動は、自動的にメンバ変数を枚挙して、シリアライズします。そして、デシリアライズする際にシリアライズされたデータとメンバ変数の対応を取る必要があります。この対応方法として2つ用意しました。<br />
+</p>
+<ol type="1">
+<li><b>変数名で対応</b><br />
+ メンバ変数名が一致するものを回復します。メンバ変数の記述順序変更や、メンバ変数の並びの途中への追加／削除を行っても旧シリアライズ・データからクラス・インスタンスを回復できます。</li>
+<li><b>順序で対応</b><br />
+ メンバ変数の記述順に従って回復します。メンバ変数名をシリアライズ・データ内に記録しないのでデータ・サイズを減らせますが、メンバ変数の記述順序を変更できません。また、メンバ変数の追加／削除はメンバ変数の並びの最後のみ可能です。</li>
+</ol>
+<h3><a class="anchor" id="Basic122"></a>
+1-2-2. enum型について&lt;/a&gt;</h3>
+<p>enum型は下記の２種類の形式に対応しています。</p><ul>
+<li><b>非侵入型完全自動</b><br />
+ enum定義側で何も指定しないまま、シリアライズ処理するenum型です。バージョン番号は1固定です。<br />
+ 指定できるオプションはありません。（シンボル名保存固定です。）</li>
+<li><b>非侵入型半自動</b><br />
+ enum型定義の外側でシリアライズすることを指定します。バージョン番号指定できます。更に下記オプションを指定できます。<ul>
+<li>保存内容指定（シンボル名保存 or シンボル値保存）</li>
+<li>シンボル毎に旧シンボル名、旧シンボル値（シンボル名やシンボル値を変更した時に用います）</li>
+</ul>
+</li>
+</ul>
+<h2><a class="anchor" id="Basic13"></a>
+1-3.保存先指定</h2>
+<p>クラスのメンバ変数に保存先を指定し、１つのクラスのメンバ変数を異なるファイルに保存したり、別途通信回線で送信したりできます。</p>
+<p>事前にメンバ変数１つ毎に保存先を複数指定しておきます。<br />
+ そして、シリアライザ・オブジェクトのコンストラクト時も保存先を指定します。<br />
+ シリアライザに指定された保存先がメンバ変数に指定された保存先と一致した場合、そのメンバ変数は保存されます。なお、回復（デシリアライズ）は以下の通りです。</p><ul>
+<li>名前対応時は保存先が一致しなくても回復します。</li>
+<li>順序対応時は保存先が一致するもののみ回復します。</li>
+</ul>
+<p>上記名前対応時の仕組みにより、あるメンバ変数の保存先を異なるファイルへ変更した時でも（適切な順序でファイルから回復すれば）、当該メンバ変数を回復できます。</p>
+<h2><a class="anchor" id="Basic14"></a>
+1-4.現在対応しているフォーマット、STLなどについて</h2>
+<p>現在提供しているシリアライザは以下の通りです。</p><ul>
+<li><b>JsonOSerializer, JsonISerializer</b><br />
+ Jsonフォーマットで保存します。<br />
+ std::stringにはUTF-8で記録して下さい。便利のために<code><a class="el" href="classtheolizer_1_1u8string.html">theolizer::u8string</a></code>を提供しています。<br />
+ std::wstring, std::u16string, std::u32stringについても適切なUTF-xxコードにて記録して下さい。UTF-8へ変換して保存します。</li>
+<li><b>BinaryOSerializer, BinaryISerializer</b><br />
+ 独自のバイナリフォーマットで保存します。文字列の文字コード変換は行わいません。そのまま保存／回復します。</li>
+</ul>
+<p>標準コンテナ（STL）は枚挙できないものを除き対応予定です。現在は下記に対応しています。</p><ul>
+<li><b>std::vector</b> (デフォルト・アロケータのみ)</li>
+<li><b>std::list</b> （デフォルト・アロケータのみ）</li>
+</ul>
+<p>現在、下記のスマート・ポインタに対応しています。</p><ul>
+<li><b>std::unique_ptr</b> （デフォルト・デリータのみ）</li>
+</ul>
+<h2><a class="anchor" id="Basic15"></a>
+1-5.その他</h2>
+<h3><a class="anchor" id="Basic151"></a>
+1-5-1.自動生成コードの生成場所</h3>
+<p>コンパイルしているファイル名に".theolizer.hpp"を加えた名前のファイルへ自動生成します。<br />
+ これをシリアライズ対象クラス定義とシリライズ処理（シリアライザのコンストラクト）の間で::includeして下さい。</p>
+<p>また、下記マクロにシリアライザのインスタンスを渡すため、これらのマクロを使用する前にシリアライザをコンストラクトしておく必要が有ります。</p>
+<ul>
+<li>THEOLIZER_PROCESS</li>
+<li>THEOLIZER_PROCESS_TRACK</li>
+<li>THEOLIZER_PROCESS_OWNER</li>
+</ul>
+<h3><a class="anchor" id="Basic152"></a>
+1-5-2.シリアライズ処理を行っていないコンパイル単位について</h3>
+<p>ソース・ファイルの先頭に下記を記述することでドライバが解析処理をスキップしますので、コンパイル時間を短縮できます。 </p><pre class="fragment">#define THEOLIZER_NO_ANALYZE
+</pre><h3><a class="anchor" id="Basic153"></a>
+1-5-3.エラー報告について</h3>
+<p>デフォルトでは、エラーを検出したら、theolizer::ErrorInfo例外を投ます。シリアライザのコンストラクト時に、例外を投げないよう指定した場合、theolizer::ErrorInfo例外を投げません。<br />
+ ただし、全ての例外を投げないわけではありません。下記については必要であればユーザ側にて投げないよう設定下さい。</p><ul>
+<li>iostreamが投げる例外</li>
+<li>非侵入型手動のシリアライズ／デシリアライズ関数からのtheolizer::ErrorInfo以外の例外</li>
+</ul>
+<p>最後に発生したエラーは、theolizer::ErrorReporter::getError()で受け取ります。</p>
+<p>また、シリアライザはエラーが発生すると以降の処理要求は全て何もしません。頻繁にエラー・チェックしなくても実害がでないようにするためです。<br />
+ 更に、例外禁止の時、エラー処理漏れを防ぐため、エラー状態のままシリアライザ・オブジェクトをデストラクトするとエラーを受け取っていないものとしてabort()します。<br />
+ abort()しないために<code>シリアライザのインスタンス.resetError();</code>でエラー状態をリセットして下さい。</p>
+<h3><a class="anchor" id="Basic154"></a>
+1-5-4.スレッド安全性</h3>
+<p>シリアライザのインスタンスはスレッド安全性を保証しません。<br />
+ 同じシリアライザのインスタンスに対してTHEOLIZER_PROCESS等のマクロを呼び出す際の順序は、保存時と回復時で一致させておく必要が有るため、マルチ・スレッドから呼び出ししはいけないためです。</p>
+<p>異なるシリアライザのインスタンス間ではスレッド安全性を保証しています。</p>
+<h3><a class="anchor" id="Basic155"></a>
+1-5-5.処理系間でのデータ交換について</h3>
+<p>例えばint型のサイズが異なる処理系間でint型データを確実に交換できるようにする機能はありません。<br />
+ これは原理的に不可能です。<br />
+ マルチプラットフォーム対応が必要な場合は、データ交換するプリミティブ型変数にはint32_t等のサイズが確定している型を用いて下さい。</p>
+<h2><a class="anchor" id="Basic16"></a>
+1-6.制約事項</h2>
+<h3><a class="anchor" id="Basic161"></a>
+1-6-1.デフォルト・コンストラクタが必要</h3>
+<p>原則として、シリアライズするクラスにはデフォルト・コンストラクタが必要です。<br />
+ ただし、下記２つは例外です。<br />
+</p><ul>
+<li>THEOLIZER_PROCESS*マクロを用いてトップ・レベルだけから保存／回復するクラス</li>
+<li>非侵入型手動クラス</li>
+</ul>
+<h3><a class="anchor" id="Basic162"></a>
+1-6-2.クラスのstatic変数について</h3>
+<p>これは自動シリアライズの対象としていません。</p>
+<h3><a class="anchor" id="Basic163"></a>
+1-6-3.仮想基底クラス</h3>
+<p>現在、仮想基底クラスは非対応です。<br />
+ オブジェクト追跡することで対応できる可能性はありますので、有用性が高い場合に対応を検討します。</p>
+<p><br />
+ </p>
+<h1><a class="anchor" id="Tracking"></a>
+2.オブジェクト追跡</h1>
+<hr/>
+<h2><a class="anchor" id="Basic21"></a>
+2-1.オブジェクト追跡する領域について&lt;br&gt;</h2>
+<p>下記についてオブジェクト追跡を行いますので、これらへのポインタはアドレス解決できます。</p>
+<ul>
+<li>ポインタ型からポイントされたクラス型の全てのインスタンス</li>
+<li>被ポインタ(THEOLIZER_ANNOTATE(FS:...&lt;...&gt;Pointee))指定されたメンバ変数</li>
+<li>被ポインタ(THEOLIZER_PROCESS_POINTEE)として保存指定された変数</li>
+</ul>
+<p>被ポインタ指定はプリミティブ型をオブジェクト追跡する場合に用いることを想定しています。<br />
+ ポイントされたプリミティブ型全てのインスタンスを追跡するとオブジェクト追跡が重くなりすぎると予想されるため、指定されたインスタンスに対してのみオブジェクト追跡します。</p>
+<h2><a class="anchor" id="Basic22"></a>
+2-2.ポインタ型のアドレス回復について</h2>
+<p>ポイント先が同じ<b>オブジェクト追跡単位</b>内に記録されていることが必要です。<br />
+ <b>オブジェクト追跡単位</b>とは、下記の期間です。</p><ul>
+<li>コンストラクト～clearTracking()</li>
+<li>clearTracking()～clearTracking()</li>
+</ul>
+<h2><a class="anchor" id="Basic23"></a>
+2-3.ポリモーフィズム対応</h2>
+<p>基底クラスのオーナー・ポインタ型に対して、派生クラス・インスタンスの回復が可能です。<br />
+ ポリモーフィズム対象の派生クラスをTHEOLIZER_REGISTER_CLASS()マクロで指定して下さい。<br />
+ なお、現在のところクラス・テンプレートはポリモーフィズム非対応です。<br />
+</p>
+<p><br />
+ </p>
+<h1><a class="anchor" id="Modifying"></a>
+3.バージョン変更</h1>
+<hr/>
+<h2><a class="anchor" id="Basic31"></a>
+3-1.クラス定義とenum定義の変更</h2>
+<p>クラス定義とenum定義の変更については、<a class="el" href="_specification.html#Basic121">1-2-1.クラスについて</a> と<a class="el" href="_specification.html#Basic122">1-2-2. enum型について</a> を参照下さい。</p>
+<h2><a class="anchor" id="Basic32"></a>
+3-2.バージョン番号管理について</h2>
+<p>クラスとenum型について、バージョン番号を1から1つづ上げていくことができます。<br />
+ クラスは、1つ上げる毎に保存／回復時の初期化処理(initialize関数)、バージョン・ダウン処理(downVersion)、バージョン・アップ処理(upVersion)を記述できます。<br />
+ enum型は、古いシンボル名やシンボル値を別のシンボルへ割り当てたい時にバージョンを上げることで対応できます。</p>
+<h2><a class="anchor" id="Basic33"></a>
+3-3.クラス・メンバ変数のキープ・ステップ</h2>
+<p>クラスに含まれるクラス型のメンバ変数A、および、基底クラスBについて、down/upVersion関数でA, Bのメンバにアクセスしたいケースがあります。<br />
+ そのA, Bについてdown/upVersionを記述した時のクラス定義最新版(当該バージョン番号におけるメンバ定義の最新版)を、下記の場合に使えます。<br />
+</p>
+<ul>
+<li>自動型(非侵入型完全自動、侵入型半自動)が直接（ポインタ経由でなく）定義されている場合<br />
+</li>
+</ul>
+<p>この条件を満たしたメンバと基底クラスについては、それを含むクラスと「足並みを揃えて(Keep-step)」バージョン・ダウン／アップ処理されます。</p>
+<p>なお、ポインタの指す領域については足並みを揃える処理を行わないので、アクセスできる内容はバージョン番号が最も新しい最新版となります。また、ポイント先のデータが既に回復されていることを保証するのはプログラマの責任です。保存した順序で回復されますので、アクセスする場合は先に保存して下さい。</p>
+<h2><a class="anchor" id="Basic34"></a>
+3-4.保存先指定等の要因で一部のメンバが回復されていない時</h2>
+<p>追加されたメンバがある場合、もしくは、保存先指定でクラス分割されている場合、旧バージョン・データから回復した時、ファイルに記録されていないメンバについては回復されません。従って、upVersion処理にて回復されていないメンバが存在する可能性があります。<br />
+ そこで、up/downVersion関数を記述する場合は、追加した変数をup/downVersion関数内で使用しないこと、できるだけクラス分割しないことお勧めします。</p>
+<p>クラス分割とup/downVersion処理の両方が必要な場合は下記をお薦めします。</p>
+<ul>
+<li>同じ保存先へ保存したデータを使うようにして下さい<br />
+ 下記の時、<br />
+</li>
+<li>メンバ変数a0, a1 : 保存先A<br />
+</li>
+<li>メンバ変数b0, b1 : 保存先B<br />
+ メンバ変数a0, a1の値は、メンバ変数a0, a1の値だけを用いて修正し、メンバ変数b0, b1の値は、メンバ変数b0, b1の値だけを用いて修正すると安全です。<br />
+ 例えばメンバ変数a0の値を修正するためにメンバ変数b0の値を使うと、保存A→保存先Bの順序で回復した場合、回復されていないメンバ変数b0を使って回復済のメンバ変数a0を修正することになります。</li>
+</ul>
+<h2><a class="anchor" id="Basic35"></a>
+3-5.旧バージョン処理時、メンバが回復されなかった時に発生する問題点対応</h2>
+<p>downVersion後upVersionで元に戻らないような修正を行うことは多いと思います。(例えは、downVersion関数を記述せずupVersion関数のみを記述すると該当します。)<br />
+ 何も手当しない場合、シリアライズ・データを回復する時、回復対象でないメンバがup/downVersion関数処理の結果、不適切に変化してしまいます。保存時は当然全てのデータは回復されないため更に深刻です。<br />
+</p>
+<p>これを避けるため、Theolizerは、downVersion時にバックアップし回復されなかったメンバについてupVersion時にリストアしています。（旧バージョン保存時は全てのデータが回復されないため、全てのデータをリストアします。）<br />
+ その回復されたかどうかを示すフラグとして、変数名にTheolizerSucceedを追加した名前のbool型変数を用意しています。回復されたメンバはtrueとなり、旧バージョンの値を新バージョン側へ引き継ぎます。</p>
+<h2><a class="anchor" id="Basic36"></a>
+3-6.up/downVersion関数でポインタの先を変更してはいけません</h2>
+<p>ポインタが指す先はクラス外のデータですので3-5のバックアップ／リストア対象ではありません。<br />
+ 従って、もし、downVersion後upVersion処理で元の値に戻らないような修正を行と、旧バージョンを保存した際にポインタが指す先が変化してしまいます。 </p>
+</div></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="index.html">--目次--</a></li>
+    <li class="footer">構築:
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.12 </li>
+  </ul>
+</div>
+</body>
+</html>
