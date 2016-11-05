@@ -12,7 +12,7 @@
 また、Theolizerをインストールした時、インストール先のdocフォルダにもあります。
 
 ### -- プリビルド版 --
-Windows用のプリビルド版を用意しています。<br>
+Windowsとubuntu用のプリビルド版を用意しています。<br>
 当リポジトリの[relases](https://github.com/yossi-tahara/Theolizer/releases)からダウンロードして下さい。
 
 <br>
