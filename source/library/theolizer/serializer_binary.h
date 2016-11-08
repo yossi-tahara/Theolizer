@@ -336,7 +336,7 @@ protected:
         unsigned iGlobalVersionNo,
         unsigned iLastGlobalVersionNo,
         CheckMode iCheckMode,
-        bool mNoThrowException
+        bool iNoThrowException
     );
 
 //----------------------------------------------------------------------------
@@ -484,7 +484,7 @@ protected:
         GlobalVersionNoTableBase const*const iGlobalVersionNoTable,
         unsigned iLastGlobalVersionNo,
         std::ostream* iOStream,
-        bool mNoThrowException
+        bool iNoThrowException
     );
 
 //----------------------------------------------------------------------------
@@ -674,7 +674,7 @@ public:
         std::ostream& iOStream,
         unsigned iGlobalVersionNo=kLastGlobalVersionNo,
         CheckMode iCheckMode=CheckMode::NoTypeCheck,
-        bool mNoThrowException=false
+        bool iNoThrowException=false
     ) : BinaryMidOSerializer
         (
             iOStream,
@@ -683,7 +683,7 @@ public:
             iGlobalVersionNo,
             kLastGlobalVersionNo,
             iCheckMode,
-            mNoThrowException
+            iNoThrowException
         )
     { }
 
@@ -695,7 +695,7 @@ public:
     (
         std::ostream& iOStream,
         CheckMode iCheckMode,
-        bool mNoThrowException=false
+        bool iNoThrowException=false
     ) : BinaryMidOSerializer
         (
             iOStream,
@@ -704,7 +704,7 @@ public:
             kLastGlobalVersionNo,
             kLastGlobalVersionNo,
             iCheckMode,
-            mNoThrowException
+            iNoThrowException
         )
     { }
 };
@@ -751,7 +751,7 @@ public:
     BinaryISerializer
     (
         std::istream& iIStream,
-        bool mNoThrowException=false
+        bool iNoThrowException=false
     ) : BinaryMidISerializer
         (
             iIStream,
@@ -759,7 +759,7 @@ public:
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
             nullptr,
-            mNoThrowException
+            iNoThrowException
         )
     { }
 
@@ -775,7 +775,7 @@ public:
     (
         std::istream& iIStream,
         std::ostream& iOStream,
-        bool mNoThrowException=false
+        bool iNoThrowException=false
     ) : BinaryMidISerializer
         (
             iIStream,
@@ -783,7 +783,7 @@ public:
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
             &iOStream,
-            mNoThrowException
+            iNoThrowException
         )
     { }
 #endif // THEOLIZER_INTERNAL_DOXYGEN

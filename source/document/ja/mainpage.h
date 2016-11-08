@@ -90,12 +90,12 @@ C++をベターCとしてお使いの方にも使って頂けるよう設計し�
 
 ---
 
-マルチ・プラットフォームとC++11規格コンパイラに対応できるよう設計しています。<br>
-現時点でテストできている環境はWindowsとubuntuです。
+マルチ・プラットフォームでC++11規格コンパイラに対応できるよう設計しています。<br>
+現時点でテストできている環境は下記の通りです。
 
 |OS|C++コンパイラ|
 |--------|--------|
-|Windows 10 Professional 64bit|[Visual Studio C++ 2015 Community update 3](https://www.microsoft.com/ja-jp/dev)<br>[MinGW 5.4.0 32bit posix dwarf](https://sourceforge.net/projects/mingw-w64/)<br>[MinGW 5.4.0 64bit posix seh](https://sourceforge.net/projects/mingw-w64/)|
+|Windows 10 Professional 64bit|[Visual Studio C++ 2015](https://www.visualstudio.com/ja/downloads/) Community update 3<br>[MinGW 5.4.0 32bit posix dwarf](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/5.4.0/threads-posix/dwarf/i686-5.4.0-release-posix-dwarf-rt_v5-rev0.7z/download)<br>[MinGW 5.4.0 64bit posix seh](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/5.4.0/threads-posix/seh/x86_64-5.4.0-release-posix-seh-rt_v5-rev0.7z/download)|
 |ubuntu 16.04 LTS 64bit|gcc 5.4.0(Ubuntu 5.4.0-6ubuntu1~16.04.2)|
 
 将来的にOS X El Capitan + apple-llvmに対応する準備を進めています。

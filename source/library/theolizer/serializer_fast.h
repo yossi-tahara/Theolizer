@@ -107,7 +107,7 @@ public:
         Destinations const& iDestinations,
         GlobalVersionNoTableBase const*const iGlobalVersionNoTable,
         unsigned iLastGlobalVersionNo,
-        bool mNoThrowException
+        bool iNoThrowException
     );
 
 //----------------------------------------------------------------------------
@@ -217,7 +217,7 @@ public:
         Destinations const& iDestinations,
         GlobalVersionNoTableBase const*const iGlobalVersionNoTable,
         unsigned iLastGlobalVersionNo,
-        bool mNoThrowException
+        bool iNoThrowException
     );
 
 //----------------------------------------------------------------------------
@@ -368,14 +368,14 @@ public:
 /*!
     @todo   T.B.D.
 */
-    FastOSerializer(std::ostream& iOStream, bool mNoThrowException=false) :
+    FastOSerializer(std::ostream& iOStream, bool iNoThrowException=false) :
         FastMidOSerializer
         (
             iOStream,
             kDestinations,
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
-            mNoThrowException
+            iNoThrowException
         )
     { }
 };
@@ -425,14 +425,14 @@ public:
 /*!
     @todo   T.B.D.
 */
-    FastISerializer(std::istream& iIStream, bool mNoThrowException=false) :
+    FastISerializer(std::istream& iIStream, bool iNoThrowException=false) :
         FastMidISerializer
         (
             iIStream,
             kDestinations,
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
-            mNoThrowException
+            iNoThrowException
         )
     { }
 };

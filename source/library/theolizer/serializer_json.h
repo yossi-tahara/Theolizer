@@ -241,7 +241,7 @@ public:
         unsigned iLastGlobalVersionNo,
         CheckMode iCheckMode,
         bool iNoPrettyPrint,
-        bool mNoThrowException
+        bool iNoThrowException
     );
 
 /*!
@@ -393,7 +393,7 @@ public:
         GlobalVersionNoTableBase const*const iGlobalVersionNoTable,
         unsigned iLastGlobalVersionNo,
         std::ostream* iOStream,
-        bool mNoThrowException
+        bool iNoThrowException
     );
 
 /*!
@@ -604,7 +604,7 @@ public:
         unsigned iGlobalVersionNo=kLastGlobalVersionNo,
         CheckMode iCheckMode=CheckMode::NoTypeCheck,
         bool iNoPrettyPrint=false,
-        bool mNoThrowException=false
+        bool iNoThrowException=false
     ) : JsonMidOSerializer
         (
             iOStream,
@@ -614,7 +614,7 @@ public:
             kLastGlobalVersionNo,
             iCheckMode,
             iNoPrettyPrint,
-            mNoThrowException
+            iNoThrowException
         )
     { }
 
@@ -627,7 +627,7 @@ public:
         std::ostream& iOStream,
         CheckMode iCheckMode,
         bool iNoPrettyPrint=false,
-        bool mNoThrowException=false
+        bool iNoThrowException=false
     ) : JsonMidOSerializer
         (
             iOStream,
@@ -637,7 +637,7 @@ public:
             kLastGlobalVersionNo,
             iCheckMode,
             iNoPrettyPrint,
-            mNoThrowException
+            iNoThrowException
         )
     { }
 };
@@ -683,7 +683,7 @@ public:
     JsonISerializer
     (
         std::istream& iIStream,
-        bool mNoThrowException=false
+        bool iNoThrowException=false
     ) : JsonMidISerializer
         (
             iIStream,
@@ -691,7 +691,7 @@ public:
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
             nullptr,
-            mNoThrowException
+            iNoThrowException
         )
     { }
 
@@ -707,7 +707,7 @@ public:
     (
         std::istream& iIStream,
         std::ostream& iOStream,
-        bool mNoThrowException=false
+        bool iNoThrowException=false
     ) : JsonMidISerializer
         (
             iIStream,
@@ -715,7 +715,7 @@ public:
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
             &iOStream,
-            mNoThrowException
+            iNoThrowException
         )
     { }
 #endif // THEOLIZER_INTERNAL_DOXYGEN
