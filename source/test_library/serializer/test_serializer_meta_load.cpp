@@ -26,7 +26,6 @@
 #include <fstream>
 using namespace std;
 
-#define THEOLIZER_TEST_MAIN
 #include <theolizer/test_tool.h>
 #include <theolizer/serializer_json.h>
 using theolizer::u8string;
@@ -35,7 +34,7 @@ using theolizer::u8string;
 //      テストのメイン関数
 //############################################################################
 
-int TestMain(int argc, char** argv)
+int main(int argc, char** argv)
 {
 //  theolizer::DisplayPass aDisplayPass;
 
@@ -49,7 +48,7 @@ int TestMain(int argc, char** argv)
         theolizer::JsonISerializer<>   js(aStream, aClassH);
     }
 
-    return theolizer::kExitSuccess;
+    return 0;
 }
 
 //############################################################################

@@ -35,7 +35,6 @@
 #include <iostream>
 using namespace std;
 
-#define THEOLIZER_TEST_MAIN
 #include <theolizer/rbfor.h>
 #include <theolizer/test_tool.h>
 
@@ -307,7 +306,7 @@ void testInt(tContainer&& iContainer, bool iIsConst=false)
 //      テストのメイン関数
 // ***************************************************************************
 
-int TestMain(int argc, char** argv)
+int main(int argc, char** argv)
 {
 //  theolizer::DisplayPass aDisplayPass;
 
@@ -494,5 +493,5 @@ int TestMain(int argc, char** argv)
         testInt(aIntConst, true);
     }
 
-    return theolizer::kExitSuccess;
+    return 0;
 }

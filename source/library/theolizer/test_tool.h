@@ -4,8 +4,6 @@
 
         Theolizerのテスト用。\n
           - 各種テスト用マクロを提供する。\n
-          - THEOLIZER_TEST_MAINマクロを定義して#includeするとmain()関数を提供する。\n
-            これはboost::execution_monitorを経由してTestMain()呼び出す。\n
 
 @file   test_tool.h
 @author Yoshinori Tahara(Theoride Technology)
@@ -63,15 +61,6 @@ namespace theolizer
 namespace internal
 {
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
-
-// ***************************************************************************
-//      テスト・プロセスの戻り値
-// ***************************************************************************
-
-const int kExitSuccess   = EXIT_SUCCESS;    // Pass
-const int kExitFailure   = EXIT_FAILURE;    // Fail
-const int kExitFatal     = 200;             // Fail(skip following test)
-const int kExitException = 201;             // Uncatched exception
 
 // ***************************************************************************
 //      環境変数操作(テスト用)
@@ -141,6 +130,9 @@ public:
 //----------------------------------------------------------------------------
 
 // ファクトリ
+/*!
+    @todo   T.B.D.
+*/
 template <typename tReleaser>
 internal::ScopeExit<tReleaser> makeScopeExit(tReleaser &&iReleaser) noexcept
 {
@@ -201,6 +193,10 @@ struct THEOLIZER_INTERNAL_DLL DisplayPass : public internal::AutoRestore<bool>
     @todo   T.B.D.
 */
     explicit DisplayPass();
+
+/*!
+    @todo   T.B.D.
+*/
     static bool on();
 };
 
@@ -267,6 +263,9 @@ public:
 //      ファイル／フォルダの有無チェック
 // ***************************************************************************
 
+/*!
+    @todo   T.B.D.
+*/
 THEOLIZER_INTERNAL_DLL bool isExist(u8string const& iFilePath);
 
 // ***************************************************************************
@@ -275,6 +274,9 @@ THEOLIZER_INTERNAL_DLL bool isExist(u8string const& iFilePath);
 //          iFilePathがフォルダの場合何もしない。
 // ***************************************************************************
 
+/*!
+    @todo   T.B.D.
+*/
 THEOLIZER_INTERNAL_DLL void removeFile(u8string const& iFilePath);
 
 // ***************************************************************************
@@ -289,6 +291,9 @@ THEOLIZER_INTERNAL_DLL void removeFile(u8string const& iFilePath);
 //          MSVC 2015とMinGW 4.9.2は、サロゲートペアに非対応なので注意。
 // ***************************************************************************
 
+/*!
+    @todo   T.B.D.
+*/
 THEOLIZER_INTERNAL_DLL
 std::vector<std::string> getFileList(std::string const& iDirPath, std::string const& iRegex="");
 
@@ -297,6 +302,9 @@ std::vector<std::string> getFileList(std::string const& iDirPath, std::string co
 //          ownerの書き込み許可をセット／クリアする
 // ***************************************************************************
 
+/*!
+    @todo   T.B.D.
+*/
 THEOLIZER_INTERNAL_DLL void setWritePermission(const u8string& iPath, bool iIsEnable);
 
 // ***************************************************************************
@@ -626,25 +634,7 @@ namespace internal
 //      End
 //############################################################################
 
-// ***************************************************************************
-//      main()関数
-// ***************************************************************************
-
-namespace internal
-{
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
-THEOLIZER_INTERNAL_DLL int callTestMain(int (*iTestMain)(int, char**), int iArgc, char** iArgv);
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
-} // namespace internal
-} // namespace theolizer
-
-#if defined(THEOLIZER_TEST_MAIN)
-extern "C" int TestMain(int argc, char* argv[]);    // prototype for user's TestMain()
-int main(int argc, char* argv[])
-{
-    return theolizer::internal::callTestMain(&TestMain, argc, argv);
-}
-#endif
+}   // namespace theolizer
 
 // ***************************************************************************
 //          DLL用の警告禁止解除

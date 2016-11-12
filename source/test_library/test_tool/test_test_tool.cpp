@@ -30,7 +30,6 @@
 #include <locale>
 using namespace std;
 
-#define THEOLIZER_TEST_MAIN
 #include <theolizer/test_tool.h>
 
 //############################################################################
@@ -72,7 +71,7 @@ void judgeAndReplase(ostream& iOut, bool iFailIsPass, string iResult, bool iAnd=
 //      テストのメイン関数
 //############################################################################
 
-int TestMain(int argc, char** argv)
+int main(int argc, char** argv)
 {
 //  theolizer::DisplayPass aDisplayPass;
 
@@ -644,5 +643,5 @@ int TestMain(int argc, char** argv)
         ++aTestCounter;
     }
 
-    return theolizer::kExitSuccess;
+    return 0;
 }

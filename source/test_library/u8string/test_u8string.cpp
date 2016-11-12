@@ -31,14 +31,13 @@
 #include <sstream>
 using namespace std;
 
-#define THEOLIZER_TEST_MAIN
 #include <theolizer/test_tool.h>
 
 // ***************************************************************************
 //      テストのメイン関数
 // ***************************************************************************
 
-int TestMain(int argc, char** argv)
+int main(int argc, char** argv)
 {
 //  theolizer::DisplayPass aDisplayPass;
 
@@ -840,5 +839,5 @@ cout << "rdstate()=" << ss.rdstate() << "\n";
 #endif
     }
 
-    return theolizer::kExitSuccess;
+    return 0;
 }

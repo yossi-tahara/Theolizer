@@ -30,7 +30,6 @@
 #include <chrono>
 using namespace std;
 
-#define THEOLIZER_TEST_MAIN
 #include <theolizer/test_tool.h>
 #include <theolizer/report.h>
 using theolizer::u8string;
@@ -39,7 +38,7 @@ using theolizer::u8string;
 //      テストのメイン関数
 // ***************************************************************************
 
-int TestMain(int argc, char** argv)
+int main(int argc, char** argv)
 {
 //  theolizer::DisplayPass aDisplayPass;
 
@@ -57,5 +56,5 @@ int TestMain(int argc, char** argv)
         THEOLIZER_EQUAL(THEOLIZER_INTERNAL_WARNING(u8"Error Message"), false);
     }
 
-    return theolizer::kExitSuccess;
+    return 0;
 }

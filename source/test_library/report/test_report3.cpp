@@ -22,7 +22,6 @@
 //      通常のインクルード
 // ***************************************************************************
 
-#define THEOLIZER_TEST_MAIN
 #include <theolizer/test_tool.h>
 #include <theolizer/report.h>
 using theolizer::u8string;
@@ -42,7 +41,7 @@ THEOLIZER_ERRORLOG_FILE("ErrorLogFile%1%.log");
 
 void dummy();
 
-int TestMain(int argc, char** argv)
+int main(int argc, char** argv)
 {
 //  theolizer::DisplayPass aDisplayPass;
 
@@ -59,5 +58,5 @@ int TestMain(int argc, char** argv)
 
     std::cout << "error: Test is fail, if this message is printed.\n";
 
-    return theolizer::kExitSuccess;
+    return 0;
 }

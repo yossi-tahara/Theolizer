@@ -27,7 +27,6 @@
 #include <typeindex>
 using namespace std;
 
-#define THEOLIZER_TEST_MAIN
 #include <theolizer/test_tool.h>
 
 #include "test_serializer_base.h"
@@ -57,7 +56,7 @@ void TestEof(const theolizer::CheckMode iCheckMode);
 //      メイン
 // ***************************************************************************
 
-int TestMain(int argc, char** argv)
+int main(int argc, char** argv)
 {
 //  theolizer::DisplayPass aDisplayPass;
 
@@ -432,5 +431,5 @@ int TestMain(int argc, char** argv)
     theolizer::removeFile("ErrorLogFile0.log");
     theolizer::removeFile("ErrorLogFile1.log");
 
-    return theolizer::kExitSuccess;
+    return 0;
 }

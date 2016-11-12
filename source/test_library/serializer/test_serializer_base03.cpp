@@ -29,7 +29,6 @@
 #include <typeindex>
 using namespace std;
 
-#define THEOLIZER_TEST_MAIN
 #include <theolizer/test_tool.h>
 #include <theolizer/serializer_json.h>
 using theolizer::u8string;
@@ -91,7 +90,7 @@ void TestPoly(tSerializer &iSerializer)
 //          ・参照
 //############################################################################
 
-int TestMain(int argc, char** argv)
+int main(int argc, char** argv)
 {
 //  theolizer::DisplayPass aDisplayPass;
 
@@ -198,5 +197,5 @@ int TestMain(int argc, char** argv)
     }
 #endif
 
-    return theolizer::kExitSuccess;
+    return 0;
 }

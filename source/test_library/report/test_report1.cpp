@@ -36,7 +36,6 @@
 #include <tuple>
 using namespace std;
 
-#define THEOLIZER_TEST_MAIN
 #include <theolizer/test_tool.h>
 #include <theolizer/report.h>
 
@@ -69,7 +68,7 @@ theolizer::u8string execute(theolizer::u8string const& iCommand)
 
 THEOLIZER_ERRORLOG_FILE("ErrorLog%1%.log");
 
-int TestMain(int argc, char** argv)
+int main(int argc, char** argv)
 {
 //  theolizer::DisplayPass aDisplayPass;
 
@@ -532,5 +531,5 @@ int TestMain(int argc, char** argv)
     timeEndPeriod(1);
 #endif
 
-    return theolizer::kExitSuccess;
+    return 0;
 }
