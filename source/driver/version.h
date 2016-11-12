@@ -29,4 +29,4 @@
 
 char const kTheolizerVersion[]    ="0.3.1-Temp.";
 char const kTheolizerSourcesHash[]="0f01ccc634ea0b7b75d1ed9cd6622dae";
-char const kTheolizerLibraryHash[]="a6dde553833f3c28d60c51ade0aa276d";
+char const kTheolizerLibraryHash[]="baccaa26ff95799a945f4e1357228bdb";

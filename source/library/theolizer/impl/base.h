@@ -94,6 +94,73 @@ namespace internal
 #define THEOLIZER_INTERNAL_EXPAND(P)  P
 
 // ***************************************************************************
+//      マクロFOR
+//          1個から8個までループ可能
+//          THEOLIZER_INTERNAL_FOR(MACRO, ...)
+//              ...部に1個から8個の要素を書くことで、下記が要素数分展開される
+//              MACRO(要素)
+// ***************************************************************************
+
+#define THEOLIZER_INTERNAL_FOR(S,...)                                       \
+    static_assert(                                                          \
+        (!theolizer::internal::isEmpty(THEOLIZER_INTERNAL_STRINGIZE(__VA_ARGS__)))\
+     && (theolizer::internal::countComma(THEOLIZER_INTERNAL_STRINGIZE(__VA_ARGS__))<8),\
+        "Bad number of elements(1..8) in THEOLIZER_INTERNAL_FOR.");         \
+    THEOLIZER_INTERNAL_FOR_I(THEOLIZER_INTERNAL_FORR(__VA_ARGS__),S,__VA_ARGS__)
+
+//      ---<<< 内部処理用 >>>---
+
+#define THEOLIZER_INTERNAL_FORX1(S,P,...) S(P)
+#define THEOLIZER_INTERNAL_FORX2(S,P,...) S(P);\
+    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORX1(S,__VA_ARGS__))
+#define THEOLIZER_INTERNAL_FORX3(S,P,...) S(P);\
+    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORX2(S,__VA_ARGS__))
+#define THEOLIZER_INTERNAL_FORX4(S,P,...) S(P);\
+    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORX3(S,__VA_ARGS__))
+#define THEOLIZER_INTERNAL_FORX5(S,P,...) S(P);\
+    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORX4(S,__VA_ARGS__))
+#define THEOLIZER_INTERNAL_FORX6(S,P,...) S(P);\
+    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORX5(S,__VA_ARGS__))
+#define THEOLIZER_INTERNAL_FORX7(S,P,...) S(P);\
+    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORX6(S,__VA_ARGS__))
+#define THEOLIZER_INTERNAL_FORX8(S,P,...) S(P);\
+    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORX7(S,__VA_ARGS__))
+
+#define THEOLIZER_INTERNAL_FORN(_1, _2, _3, _4, _5, _6, _7, _8, N, ...) N
+#define THEOLIZER_INTERNAL_FORR_I(...)\
+    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORN(__VA_ARGS__))
+#define THEOLIZER_INTERNAL_FORR(...)\
+    THEOLIZER_INTERNAL_FORR_I(__VA_ARGS__, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+#define THEOLIZER_INTERNAL_FOR_I(N,S,...)                                   \
+    THEOLIZER_INTERNAL_EXPAND                                               \
+    (                                                                       \
+        THEOLIZER_INTERNAL_CAT(THEOLIZER_INTERNAL_FORX,N)(S,__VA_ARGS__)    \
+    )
+
+//----------------------------------------------------------------------------
+//      文字列処理constexpr関数
+//----------------------------------------------------------------------------
+
+//      ---<<< 文字列が空かどうか判定する >>>---
+
+constexpr bool isEmpty(char const* p)
+{
+    return (*p == 0);
+}
+
+//      ---<<< 文字列内の','の数を返却する >>>---
+
+constexpr unsigned countComma(char const* p)
+{
+    return  (*p == 0)?              // if
+                0
+            :(*p == ',')?           // else if
+                countComma(p+1)+1
+            :                       // else
+                countComma(p+1);
+}
+
+// ***************************************************************************
 //      静的にファイル名抽出
 // ***************************************************************************
 

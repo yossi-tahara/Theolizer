@@ -48,16 +48,20 @@ void judgeAndReplase(ostream& iOut, bool iFailIsPass, string iResult, bool iAnd=
 {
     bool aIsPass=true;
     size_t  aPos = iResult.find(THEOLIZER_INTERNAL_FAIL);
-    if (aPos != string::npos) {
+    if (aPos != string::npos)
+    {
         // <<<FAIL>>文字列有り
         theolizer::internal::gFailCount--;
         aIsPass = iFailIsPass & iAnd;
         iResult.replace(aPos, string(THEOLIZER_INTERNAL_FAIL).length(), "(((FAIL)))");
-    } else {
+    }
+    else
+    {
         // <<<FAIL>>文字列無し
         aIsPass = !iFailIsPass & iAnd;
     }
-    if (!aIsPass || theolizer::gDoDisplayPass) {
+    if (!aIsPass || theolizer::DisplayPass::on())
+    {
         theolizer::internal::gFailCount++;
         iOut << "\n" << ((aIsPass)?THEOLIZER_INTERNAL_PASS:THEOLIZER_INTERNAL_FAIL)
              << iResult;
@@ -70,7 +74,7 @@ void judgeAndReplase(ostream& iOut, bool iFailIsPass, string iResult, bool iAnd=
 
 int TestMain(int argc, char** argv)
 {
-//  theolizer::AutoRestoreBool aBoolRestore(theolizer::gDoDisplayPass);
+//  theolizer::DisplayPass aDisplayPass;
 
 //  cout << "PATH=" << theolizer::getenv("PATH") << "\n";
 //  cout << "THEOLIZER_LOCALE_DIR=" << theolizer::getenv("THEOLIZER_LOCALE_DIR") << "\n";
@@ -95,87 +99,85 @@ int TestMain(int argc, char** argv)
     {
         string aResult;
 
-        theolizer::putenv("THEOLIZER_TEST=Environment_Test");
-        aResult = theolizer::getenv("THEOLIZER_TEST");
+        theolizer::internal::putenv("THEOLIZER_TEST=Environment_Test");
+        aResult = theolizer::internal::getenv("THEOLIZER_TEST");
         ++aTestCounter;
         THEOLIZER_EQUAL(aResult, "Environment_Test");
 
-        theolizer::putenv("THEOLIZER_TEST=");
-        aResult = theolizer::getenv("THEOLIZER_TEST");
+        theolizer::internal::putenv("THEOLIZER_TEST=");
+        aResult = theolizer::internal::getenv("THEOLIZER_TEST");
         ++aTestCounter;
         THEOLIZER_EQUAL(aResult, "");
     }
 
 // ***************************************************************************
-//      gDoDisplayPass(AutoRestoreBool含む)とマクロのテスト
+//      DisplayPassとマクロのテスト
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
 //      各チェック・マクロのテスト準備
 //----------------------------------------------------------------------------
 
-    ostream& out = theolizer::getOStream();
+    ostream& out = theolizer::internal::getOStream();
     stringstream    ss;
 
 //----------------------------------------------------------------------------
-//      gDoDisplayPassとAutoRestoreBool
+//      DisplayPass
 //----------------------------------------------------------------------------
 
+//      ---<<< DisplayPass::on()がtrue時のテスト >>>---
+
     {
-        theolizer::AutoRestoreBool aBoolRestore(theolizer::gDoDisplayPass);
+        // DisplayPass::on()をtureへ
+        theolizer::DisplayPass aDisplayPass;
 
-//      ---<<< gDoDisplayPassがtrue時のテスト >>>---
-
-        // AutoRestoreBoolの戻りで回復することをチェック
+        // DisplayPassのデストラクトで回復することをチェック
         {
-            theolizer::AutoRestoreBool aBoolRestore(theolizer::gDoDisplayPass);
+            theolizer::DisplayPass aDisplayPass;
 
-            // {}の中でtheolizer::gDoDisplayPassがtrueであることをチェック
+            // {}の中でtheolizer::DisplayPass::on()がtrueであることをチェック
             ++aTestCounter;
-            THEOLIZER_CHECK(theolizer::gDoDisplayPass,
-                theolizer::gDoDisplayPass);
+            THEOLIZER_CHECK(theolizer::DisplayPass::on(), theolizer::DisplayPass::on());
         }
-        // {}を抜けると、theolizer::gDoDisplayPassが{}直前に戻ることをチェック
+        // {}を抜けると、theolizer::DisplayPass::on()が{}直前(true)に戻ることをチェック
         ++aTestCounter;
-        THEOLIZER_CHECK(theolizer::gDoDisplayPass,
-            theolizer::gDoDisplayPass);
+        THEOLIZER_EQUAL(theolizer::DisplayPass::on(), true);
 
-        // gDoDisplayPass
-        theolizer::setOStream(ss);                          // テスタのテスト
+        theolizer::internal::setOStream(ss);                // テスタのテスト
         ss.str("");                                         // Clear ss
         ++aTestCounter;
         THEOLIZER_CHECK(true, true);                        // <<<PASS>>が出力されること
                                                             // を以下でチェックする
 
-        theolizer::setOStream(out);                         // テスト実施
+        theolizer::internal::setOStream(out);               // テスト実施
         ++aTestCounter;
         THEOLIZER_CHECK((ss.str().find(THEOLIZER_INTERNAL_PASS) != string::npos), ss.str());
+    }
 
-//      ---<<< gDoDisplayPassがfalse時のテスト >>>---
+//      ---<<< DisplayPass::on()がfalse時のテスト >>>---
 
-        theolizer::gDoDisplayPass = false;
-        theolizer::setOStream(out);                          // テスト実施
+    {
+        theolizer::internal::setOStream(out);               // テスト実施
 
-        // AutoRestoreBoolの戻りで回復することをチェック
+        // DisplayPassのデストラクトで回復することをチェック
         {
-            theolizer::AutoRestoreBool aBoolRestore(theolizer::gDoDisplayPass);
+            theolizer::DisplayPass aDisplayPass;
 
-            // {}の中でgDoDisplayPassがtrueであることをチェック
+            // {}の中でDisplayPass::on()がtrueであることをチェック
             ++aTestCounter;
-            THEOLIZER_EQUAL(theolizer::gDoDisplayPass, true);
+            THEOLIZER_EQUAL(theolizer::DisplayPass::on(), true);
         }
-        // {}を抜けると、gDoDisplayPassが{}直前に戻ることをチェック
+        // {}を抜けると、DisplayPass::on()が{}直前(false)に戻ることをチェック
         ++aTestCounter;
-        THEOLIZER_EQUAL(theolizer::gDoDisplayPass, false);
+        THEOLIZER_EQUAL(theolizer::DisplayPass::on(), false);
 
-        // gDoDisplayPass
-        theolizer::setOStream(ss);                          // テスタのテスト
+        theolizer::internal::setOStream(ss);                // テスタのテスト
         ss.str("");                                         // Clear ss
         ++aTestCounter;
         THEOLIZER_EQUAL(true, true);                        // 何も出力されないこと
                                                             // を以下でチェックする
 
-        theolizer::setOStream(out);                         // テスト実施
+        theolizer::internal::setOStream(out);               // テスト実施
         ++aTestCounter;
         THEOLIZER_EQUAL(ss.str().length(), 0);
     }
@@ -184,7 +186,7 @@ int TestMain(int argc, char** argv)
 //      THEOLIZER_EQUAL()
 //----------------------------------------------------------------------------
 
-    theolizer::setOStream(ss);                      // テスタのテスト
+    theolizer::internal::setOStream(ss);                    // テスタのテスト
     {
 //      ---<<< string >>>---
 
@@ -217,6 +219,31 @@ int TestMain(int argc, char** argv)
         ++aTestCounter;
         THEOLIZER_EQUAL(result_int, 456);
         judgeAndReplase(out, true, ss.str());
+
+//      ---<<< 3つ以上の要素表示 >>>---
+
+        int     result_int1 = 789;
+
+        // Fail
+        ss.str("");                                 // Clear ss
+        ++aTestCounter;
+        THEOLIZER_EQUAL(result_int, 456, result_int1);  int line=__LINE__;
+        judgeAndReplase(out, true, ss.str());
+
+        std::string test=ss.str();
+        ss.str("");
+        ss  << "\n<<<FAIL>>>\n"
+            << "test_test_tool.cpp(" << line << ")\n"
+            << "result_int : " << result_int << "\n"
+            << "456 : 456\n"
+            << "result_int1 : " << result_int1 << "\n";
+        std::string expected=ss.str();
+
+        // Pass
+        ss.str("");
+        ++aTestCounter;
+        THEOLIZER_EQUAL(test, expected);
+        judgeAndReplase(out, false, ss.str());
     }
 
 //----------------------------------------------------------------------------
@@ -465,7 +492,7 @@ int TestMain(int argc, char** argv)
 //      テストの後始末
 //----------------------------------------------------------------------------
 
-    theolizer::setOStream(out);
+    theolizer::internal::setOStream(out);
 
 // ***************************************************************************
 //      ファイル操作のテスト

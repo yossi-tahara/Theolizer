@@ -309,7 +309,7 @@ void testInt(tContainer&& iContainer, bool iIsConst=false)
 
 int TestMain(int argc, char** argv)
 {
-//  theolizer::AutoRestoreBool aBoolRestore(theolizer::gDoDisplayPass);
+//  theolizer::DisplayPass aDisplayPass;
 
 //----------------------------------------------------------------------------
 //      バージョン管理機能のテスト

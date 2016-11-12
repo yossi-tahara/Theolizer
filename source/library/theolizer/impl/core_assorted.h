@@ -65,45 +65,8 @@
 
 #define THEOLIZER_PROVIDED_BY(dVendor)
 
-// ***************************************************************************
-//      型管理用
-// ***************************************************************************
-
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
-
-//      ---<<<< 非侵入型/enum型プライマリー・テンプレート >>>---
-
-template<class tClassType>
-struct TheolizerNonIntrusive {};
-
-//      ---<<<< 手動型基底クラス用プライマリー・テンプレート >>>---
-
-template<class tClassType>
-class TheolizerBase {};
-
-//      ---<<<< トップ・レベル登録時のバージョン伝達エラー回避用 >>>---
-//      コーディング規約上、tで始まる名前はテンプレート引数だが、
-//      下記理由により例外とする。
-//          手動型のTheolizerUserDefine内でシリアライズ／デシリアライズ
-//          指示する際、THEOLIZER_PROCESS()等のマクロを用いる。
-//          この手動型のシリアライズ／デシリアライズ指定された型を
-//          当該手動型クラスのメンバ型として登録するために、テンプレート・
-//          パラメータtTheolizerVersionをTHEOLIZER_PROCESS()等のマクロで用いる。
-//          それ以外の場所で、THEOLIZER_PROCESS()等のマクロが使われた時に、
-//          tTheolizerVersionが未定義エラーにならないようここで定義する。
-
-struct tTheolizerVersion
-{
-    template<class tTypeFunc>
-    static void addElement(tTypeFunc iTypeFunc)
-    {
-    }
-};
-
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
-
 //############################################################################
-//      theolizer名前空間
+//      theolizer名前空間定義
 //############################################################################
 
 namespace theolizer{namespace destination{ }}
@@ -111,23 +74,6 @@ namespace theolizerD = theolizer::destination;
 
 namespace theolizer
 {
-
-// ***************************************************************************
-//      型チェックのモード指定
-//          InMemoryは、回復時のチェックを一切行わない。
-//          また、ポインタの先がシリアライズされてなかったら、元のアドレスを
-//          回復する。(つまり、管理外ポインタはシャロー・コピーになる。)
-//          負荷が最も低く、変更されていないクラス同士でのみ保存／回復可能。
-// ***************************************************************************
-
-enum class CheckMode
-{
-    InMemory,                   // メモリ内動作のみ、かつ、型チェック無し
-    NoTypeCheck,                // 型チェック無し
-    TypeCheck,                  // 型名による型チェック(テキスト型用)
-    TypeCheckByIndex,           // TypeIndexによる型チェック(バイナリ型用)
-    MetaMode                    // メタ・データ・モード(型定義情報を保存／回復)
-};
 
 //############################################################################
 //      ユーティリティ
@@ -350,73 +296,6 @@ THEOLIZER_INTERNAL_DLL void checkExtraData(bool iIsPass, std::string const& iLoc
 // ***************************************************************************
 //      内部処理用アイテム群
 // ***************************************************************************
-
-//----------------------------------------------------------------------------
-//      マクロFOR
-//          1個から8個までループ可能
-//          THEOLIZER_INTERNAL_FOR(MACRO, ...)
-//              ...部に1個から8個の要素を書くことで、下記が要素数分展開される
-//              MACRO(要素)
-//----------------------------------------------------------------------------
-
-#define THEOLIZER_INTERNAL_FOR(S,...)                                       \
-    static_assert(                                                          \
-        (!theolizer::internal::isEmpty(THEOLIZER_INTERNAL_STRINGIZE(__VA_ARGS__)))\
-     && (theolizer::internal::countComma(THEOLIZER_INTERNAL_STRINGIZE(__VA_ARGS__))<8),\
-        "Bad number of elements(1..8) in THEOLIZER_INTERNAL_FOR.");         \
-    THEOLIZER_INTERNAL_FOR_I(THEOLIZER_INTERNAL_FORR(__VA_ARGS__),S,__VA_ARGS__)
-
-//      ---<<< 内部処理用 >>>---
-
-#define THEOLIZER_INTERNAL_FORX1(S,P,...) S(P)
-#define THEOLIZER_INTERNAL_FORX2(S,P,...) S(P);\
-    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORX1(S,__VA_ARGS__))
-#define THEOLIZER_INTERNAL_FORX3(S,P,...) S(P);\
-    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORX2(S,__VA_ARGS__))
-#define THEOLIZER_INTERNAL_FORX4(S,P,...) S(P);\
-    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORX3(S,__VA_ARGS__))
-#define THEOLIZER_INTERNAL_FORX5(S,P,...) S(P);\
-    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORX4(S,__VA_ARGS__))
-#define THEOLIZER_INTERNAL_FORX6(S,P,...) S(P);\
-    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORX5(S,__VA_ARGS__))
-#define THEOLIZER_INTERNAL_FORX7(S,P,...) S(P);\
-    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORX6(S,__VA_ARGS__))
-#define THEOLIZER_INTERNAL_FORX8(S,P,...) S(P);\
-    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORX7(S,__VA_ARGS__))
-
-#define THEOLIZER_INTERNAL_FORN(_1, _2, _3, _4, _5, _6, _7, _8, N, ...) N
-#define THEOLIZER_INTERNAL_FORR_I(...)\
-    THEOLIZER_INTERNAL_EXPAND(THEOLIZER_INTERNAL_FORN(__VA_ARGS__))
-#define THEOLIZER_INTERNAL_FORR(...)\
-    THEOLIZER_INTERNAL_FORR_I(__VA_ARGS__, 8, 7, 6, 5, 4, 3, 2, 1, 0)
-#define THEOLIZER_INTERNAL_FOR_I(N,S,...)                                   \
-    THEOLIZER_INTERNAL_EXPAND                                               \
-    (                                                                       \
-        THEOLIZER_INTERNAL_CAT(THEOLIZER_INTERNAL_FORX,N)(S,__VA_ARGS__)    \
-    )
-
-//----------------------------------------------------------------------------
-//      文字列処理constexpr関数
-//----------------------------------------------------------------------------
-
-//      ---<<< 文字列が空かどうか判定する >>>---
-
-constexpr bool isEmpty(char const* p)
-{
-    return (*p == 0);
-}
-
-//      ---<<< 文字列内の','の数を返却する >>>---
-
-constexpr unsigned countComma(char const* p)
-{
-    return  (*p == 0)?              // if
-                0
-            :(*p == ',')?           // else if
-                countComma(p+1)+1
-            :                       // else
-                countComma(p+1);
-}
 
 //----------------------------------------------------------------------------
 //      ビット列処理クラス
@@ -827,9 +706,79 @@ namespace internal
 //############################################################################
 
 // ***************************************************************************
+//      型管理用プライマリ・テンプレート定義
+// ***************************************************************************
+
+}   // namespace theolizer
+}   // namespace internal
+
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+
+//      ---<<<< 非侵入型/enum型プライマリー・テンプレート >>>---
+
+template<class tClassType>
+struct TheolizerNonIntrusive {};
+
+//      ---<<<< 手動型基底クラス用プライマリー・テンプレート >>>---
+
+template<class tClassType>
+class TheolizerBase {};
+
+//      ---<<<< トップ・レベル登録時のバージョン伝達エラー回避用 >>>---
+//      コーディング規約上、tで始まる名前はテンプレート引数だが、
+//      下記理由により例外とする。
+//          手動型のTheolizerUserDefine内でシリアライズ／デシリアライズ
+//          指示する際、THEOLIZER_PROCESS()等のマクロを用いる。
+//          この手動型のシリアライズ／デシリアライズ指定された型を
+//          当該手動型クラスのメンバ型として登録するために、テンプレート・
+//          パラメータtTheolizerVersionをTHEOLIZER_PROCESS()等のマクロで用いる。
+//          それ以外の場所で、THEOLIZER_PROCESS()等のマクロが使われた時に、
+//          tTheolizerVersionが未定義エラーにならないようここで定義する。
+
+struct tTheolizerVersion
+{
+    template<class tTypeFunc>
+    static void addElement(tTypeFunc iTypeFunc)
+    {
+    }
+};
+
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
+
+// ***************************************************************************
+//      型チェックのモード指定
+//          InMemoryは、回復時のチェックを一切行わない。
+//          また、ポインタの先がシリアライズされてなかったら、元のアドレスを
+//          回復する。(つまり、管理外ポインタはシャロー・コピーになる。)
+//          負荷が最も低く、変更されていないクラス同士でのみ保存／回復可能。
+// ***************************************************************************
+
+namespace theolizer
+{
+
+/*!
+    @todo   T.B.D.
+*/
+enum class CheckMode
+{
+    InMemory,                   // メモリ内動作のみ、かつ、型チェック無し
+    NoTypeCheck,                // 型チェック無し
+    TypeCheck,                  // 型名による型チェック(テキスト型用)
+    TypeCheckByIndex,           // TypeIndexによる型チェック(バイナリ型用)
+    MetaMode                    // メタ・データ・モード(型定義情報を保存／回復)
+};
+
+/*!
+    @todo   T.B.D.
+*/
+std::ostream& operator<<(std::ostream& iOStream, CheckMode iCheckMode);
+
+// ***************************************************************************
 //      不正値
 // ***************************************************************************
 
+namespace internal
+{
 THEOLIZER_INTERNAL_DLL extern const std::size_t kInvalidSize;
 
 //----------------------------------------------------------------------------

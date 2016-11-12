@@ -59,7 +59,7 @@ void TestEof(const theolizer::CheckMode iCheckMode);
 
 int TestMain(int argc, char** argv)
 {
-//  theolizer::AutoRestoreBool aBoolRestore(theolizer::gDoDisplayPass);
+//  theolizer::DisplayPass aDisplayPass;
 
 // ***************************************************************************
 //      メタ・シリアライズ

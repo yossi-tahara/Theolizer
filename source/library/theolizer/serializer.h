@@ -207,6 +207,9 @@ namespace theolizer
 //              最後の新規シンボルを指定する。
 // ***************************************************************************
 
+/*!
+    @todo   T.B.D.
+*/
 #define THEOLIZER_DESTINATIONS(dPrevSymbol, ...)                            \
     namespace theolizer{                                                    \
     namespace internal{namespace{namespace bits{                            \
@@ -229,6 +232,9 @@ namespace theolizer
 //----------------------------------------------------------------------------
 
 #ifdef THEOLIZER_WRITE_CODE
+/*!
+    @todo   T.B.D.
+*/
 #define THEOLIZER_DEFINE_GLOBAL_VERSION_TABLE(dName, dLastGlobalVersionNo)  \
     namespace theolizer{namespace internal{namespace global_table{          \
     class dName final : public internal::GlobalVersionNoTable<dLastGlobalVersionNo>\

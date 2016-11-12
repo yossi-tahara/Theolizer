@@ -229,4 +229,41 @@ return false;
 }
 
 }   // namespace internal
+
+// ***************************************************************************
+//      型チェックのモード指定
+// ***************************************************************************
+
+std::ostream& operator<<(std::ostream& iOStream, CheckMode iCheckMode)
+{
+    switch(iCheckMode)
+    {
+    case CheckMode::InMemory:
+        iOStream << "InMemory";
+        break;
+
+    case CheckMode::NoTypeCheck:
+        iOStream << "NoTypeCheck";
+        break;
+
+    case CheckMode::TypeCheck:
+        iOStream << "TypeCheck";
+        break;
+
+    case CheckMode::TypeCheckByIndex:
+        iOStream << "TypeCheckByIndex";
+        break;
+
+    case CheckMode::MetaMode:
+        iOStream << "MetaMode";
+        break;
+
+    default:
+        THEOLIZER_INTERNAL_ABORT("Unknown CheckMode in operator<<(CheckMode)");
+        break;
+    }
+
+    return iOStream;
+}
+
 }   // namespace theolizer

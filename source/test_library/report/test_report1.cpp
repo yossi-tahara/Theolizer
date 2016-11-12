@@ -71,7 +71,7 @@ THEOLIZER_ERRORLOG_FILE("ErrorLog%1%.log");
 
 int TestMain(int argc, char** argv)
 {
-//  theolizer::AutoRestoreBool aBoolRestore(theolizer::gDoDisplayPass);
+//  theolizer::DisplayPass aDisplayPass;
 
 //----------------------------------------------------------------------------
 //      getLineHeaderのテスト(テストに使用するので最初にテストする)

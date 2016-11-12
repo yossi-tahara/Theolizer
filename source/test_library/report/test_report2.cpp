@@ -41,7 +41,7 @@ using theolizer::u8string;
 
 int TestMain(int argc, char** argv)
 {
-//  theolizer::AutoRestoreBool aBoolRestore(theolizer::gDoDisplayPass);
+//  theolizer::DisplayPass aDisplayPass;
 
 //----------------------------------------------------------------------------
 //      WorkingLogクラス・エラー・ログの異常系テスト

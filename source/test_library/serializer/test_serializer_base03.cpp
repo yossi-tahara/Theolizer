@@ -93,7 +93,7 @@ void TestPoly(tSerializer &iSerializer)
 
 int TestMain(int argc, char** argv)
 {
-//  theolizer::AutoRestoreBool aBoolRestore(theolizer::gDoDisplayPass);
+//  theolizer::DisplayPass aDisplayPass;
 
 //  TestGlobalVersions aTestGlobalVersions;
 

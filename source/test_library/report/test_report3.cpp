@@ -44,7 +44,7 @@ void dummy();
 
 int TestMain(int argc, char** argv)
 {
-//  theolizer::AutoRestoreBool aBoolRestore(theolizer::gDoDisplayPass);
+//  theolizer::DisplayPass aDisplayPass;
 
 //----------------------------------------------------------------------------
 //      リンクできていることの確認用

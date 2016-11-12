@@ -58,7 +58,7 @@ void TestOSerializerNormal
     tArgs... iArgs
 )
 {
-//  theolizer::AutoRestoreBool aBoolRestore(theolizer::gDoDisplayPass);
+//  theolizer::DisplayPass aDisplayPass;
 
 std::cout << "TestOSerializerNormal(" << iFileName << ", "
           << THEOLIZER_INTERNAL_TYPE_NAME(tOSerializer) << ")\n";
@@ -522,7 +522,7 @@ return;
 
 void TestNormalMain()
 {
-//  theolizer::AutoRestoreBool aBoolRestore(theolizer::gDoDisplayPass);
+//  theolizer::DisplayPass aDisplayPass;
 
     TestNormal<theolizer::FastOSerializer<>,  theolizer::FastISerializer<> >("test_fast", true);
     TestNormal<theolizer::JsonOSerializer<>,  theolizer::JsonISerializer<> >("test_json");

@@ -1,10 +1,16 @@
 ﻿//############################################################################
-//      テスト用ツール群
-//          Theolizerのテスト用。
-//          ユーザも使用可能だが、Theolizerのテストに無用な機能は追加しない方針。
-//              main()関数提供
-//              boost::execution_monitorを経由してTestMain()呼び出し
-//              各種テスト用マクロ
+/*!
+@brief  テスト用ツール群
+
+        Theolizerのテスト用。\n
+          - 各種テスト用マクロを提供する。\n
+          - THEOLIZER_TEST_MAINマクロを定義して#includeするとmain()関数を提供する。\n
+            これはboost::execution_monitorを経由してTestMain()呼び出す。\n
+
+@file   test_tool.h
+@author Yoshinori Tahara(Theoride Technology)
+@date   2016/11/12
+*/
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
 
@@ -54,6 +60,19 @@ namespace theolizer
 //      ユーティリティ
 //############################################################################
 
+namespace internal
+{
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+
+// ***************************************************************************
+//      テスト・プロセスの戻り値
+// ***************************************************************************
+
+const int kExitSuccess   = EXIT_SUCCESS;    // Pass
+const int kExitFailure   = EXIT_FAILURE;    // Fail
+const int kExitFatal     = 200;             // Fail(skip following test)
+const int kExitException = 201;             // Uncatched exception
+
 // ***************************************************************************
 //      環境変数操作(テスト用)
 // ***************************************************************************
@@ -75,15 +94,6 @@ THEOLIZER_INTERNAL_DLL std::ostream& getOStream();
 THEOLIZER_INTERNAL_DLL void throwAbort();
 
 // ***************************************************************************
-//      テスト・プロセスの戻り値
-// ***************************************************************************
-
-const int kExitSuccess   = EXIT_SUCCESS;    // Pass
-const int kExitFailure   = EXIT_FAILURE;    // Fail
-const int kExitFatal     = 200;             // Fail(skip following test)
-const int kExitException = 201;             // Uncatched exception
-
-// ***************************************************************************
 //      開放時、関数呼び出し
 //          ほぼN4189のscope_exitの名前を変えただけ。
 // ***************************************************************************
@@ -91,10 +101,6 @@ const int kExitException = 201;             // Uncatched exception
 //----------------------------------------------------------------------------
 //      ヘルパー・クラス
 //----------------------------------------------------------------------------
-
-namespace internal
-{
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 template<typename tReleaser>
 class ScopeExit
@@ -185,19 +191,46 @@ public:
 //      本体
 //----------------------------------------------------------------------------
 
-THEOLIZER_INTERNAL_DLL extern bool gDoDisplayPass;
-
 // 自動回復
 /*!
     @todo   T.B.D.
 */
-struct AutoRestoreBool : public internal::AutoRestore<bool>
+struct THEOLIZER_INTERNAL_DLL DisplayPass : public internal::AutoRestore<bool>
 {
 /*!
     @todo   T.B.D.
 */
-    explicit AutoRestoreBool(bool& iFlag) : AutoRestore(iFlag, true) { }
+    explicit DisplayPass();
+    static bool on();
 };
+
+// ***************************************************************************
+//      テスト結果集計用
+//
+/*!
+    @todo   T.B.D.
+*/
+// ***************************************************************************
+
+/*!
+    @todo   T.B.D.
+*/
+THEOLIZER_INTERNAL_DLL void initResult();
+
+/*!
+    @todo   T.B.D.
+*/
+THEOLIZER_INTERNAL_DLL void incrementTotalCount();
+
+/*!
+    @todo   T.B.D.
+*/
+THEOLIZER_INTERNAL_DLL void incrementFailCount();
+
+/*!
+    @todo   T.B.D.
+*/
+THEOLIZER_INTERNAL_DLL bool printResult();
 
 //############################################################################
 //      ファイル操作
@@ -343,32 +376,38 @@ public :
 //      テスト用マクロ
 //############################################################################
 
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+
 #define THEOLIZER_INTERNAL_PASS  "<<<PASS>>>"
 #define THEOLIZER_INTERNAL_FAIL  "<<<FAIL>>>"
 
 namespace internal
 {
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
     THEOLIZER_INTERNAL_DLL extern unsigned     gTotal;
     THEOLIZER_INTERNAL_DLL extern unsigned     gFailCount;
     THEOLIZER_INTERNAL_DLL void lockMutex();
     THEOLIZER_INTERNAL_DLL void unlockMutex();
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
-}
+}   // namespace internal
+
+#endif //THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
 //      内部処理用マクロ
 // ***************************************************************************
 
-#define THEOLIZER_INTERNAL_U8(dString)   u8##dString
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+
+#define THEOLIZER_INTERNAL_U8(dString)          u8##dString
+#define THEOLZIER_INTERNAL_FIRST(dFirst, ...)   dFirst
 
 //      ---<<< 判定と表示用マクロ >>>---
 
 #define THEOLIZER_INTERNAL_RESULT(dResult)                                  \
-    do {                                                                    \
-        if (!aIsPass || theolizer::gDoDisplayPass)                          \
+    do                                                                      \
+    {                                                                       \
+        if (!aIsPass || theolizer::DisplayPass::on())                       \
         {                                                                   \
-            std::ostream& os=theolizer::getOStream();                       \
+            std::ostream& os=theolizer::internal::getOStream();             \
             std::streamsize precision=os.precision();                       \
             os.precision(std::numeric_limits<long double>::digits10);       \
             os << THEOLIZER_INTERNAL_U8(#dResult) " : " << dResult << "\n"; \
@@ -377,16 +416,20 @@ namespace internal
     }                                                                       \
     while(0)
 
+#define THEOLIZER_INTERNAL_RESULT_FOR(...)                                  \
+    THEOLIZER_INTERNAL_FOR(THEOLIZER_INTERNAL_RESULT, __VA_ARGS__)
+
 //      --- ここでgTestMutexをロックする ---
 
 #define THEOLIZER_INTERNAL_JUDGE_ONLY(dAbort, dJudge)                       \
-    do {                                                                    \
+    do                                                                      \
+    {                                                                       \
         if (!(dJudge))                                                      \
         {                                                                   \
             theolizer::internal::lockMutex();                               \
             theolizer::internal::gFailCount++;                              \
             aIsPass=false;                                                  \
-            theolizer::getOStream() << "\n" THEOLIZER_INTERNAL_FAIL         \
+            theolizer::internal::getOStream() << "\n" THEOLIZER_INTERNAL_FAIL\
                 << ((dAbort)?"(skiped following tests)":"") << "\n";        \
         }                                                                   \
         else                                                                \
@@ -398,22 +441,25 @@ namespace internal
     while(0)
 
 #define THEOLIZER_INTERNAL_JUDGE(dAbort, dJudge, dExpression)               \
-    do {                                                                    \
+    do                                                                      \
+    {                                                                       \
         THEOLIZER_INTERNAL_JUDGE_ONLY(dAbort, dJudge);                      \
         if (!aIsPass)                                                       \
         {                                                                   \
-            theolizer::getOStream()                                         \
+            theolizer::internal::getOStream()                               \
                 << THEOLIZER_INTERNAL_FILE << "("  << __LINE__ << ")\n"     \
                 << "Expression : " << u8##dExpression << "\n";              \
         }                                                                   \
-        else if (theolizer::gDoDisplayPass)                                 \
+        else if (theolizer::DisplayPass::on())                              \
         {                                                                   \
-            theolizer::getOStream() << "\n" THEOLIZER_INTERNAL_PASS "\n"    \
+            theolizer::internal::getOStream() << "\n" THEOLIZER_INTERNAL_PASS "\n"\
                 << THEOLIZER_INTERNAL_FILE << "("  << __LINE__ << ")\n"     \
                 << "Expression : " << u8##dExpression << "\n";              \
         }                                                                   \
     }                                                                       \
     while(0)
+
+#endif //THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
 //      結果判定マクロ群
@@ -427,51 +473,64 @@ namespace internal
 //      ---<<< 等しいことをチェックする(Fail時、処理継続) >>>---
 //          最も良く使うので専用で用意する
 
-#define THEOLIZER_EQUAL(dLhs, dRhs)                                         \
+/*! @def    THEOLIZER_EQUAL
+    @todo   T.B.D.
+*/
+#define THEOLIZER_EQUAL(dLhs, ...)                                          \
     do                                                                      \
     {                                                                       \
         bool    aIsPass=true;                                               \
-        THEOLIZER_INTERNAL_JUDGE_ONLY(false, ((dLhs)==(dRhs)));             \
+        THEOLIZER_INTERNAL_JUDGE_ONLY(false,                                \
+            ((dLhs)==THEOLZIER_INTERNAL_FIRST(__VA_ARGS__)));               \
         if (!aIsPass) {                                                     \
-            theolizer::getOStream()                                         \
+            theolizer::internal::getOStream()                               \
                 << THEOLIZER_INTERNAL_FILE << "("  << __LINE__ << ")\n";    \
-        } else if (theolizer::gDoDisplayPass) {                             \
-            theolizer::getOStream() << "\n" THEOLIZER_INTERNAL_PASS "\n"    \
+        } else if (theolizer::DisplayPass::on()) {                          \
+            theolizer::internal::getOStream() << "\n" THEOLIZER_INTERNAL_PASS "\n"\
                 << THEOLIZER_INTERNAL_FILE << "("  << __LINE__ << ")\n";    \
         }                                                                   \
         THEOLIZER_INTERNAL_RESULT(dLhs);                                    \
-        THEOLIZER_INTERNAL_RESULT(dRhs);                                    \
+        THEOLIZER_INTERNAL_RESULT_FOR(__VA_ARGS__);                         \
         theolizer::internal::unlockMutex();                                 \
     }                                                                       \
     while(0)
 
 //      ---<<< 結果をチェックする(Fail時、処理継続) >>>---
 
-#define THEOLIZER_CHECK(dJudge, dResult)                                    \
+/*! @def    THEOLIZER_CHECK
+    @todo   T.B.D.
+*/
+#define THEOLIZER_CHECK(dJudge, ...)                                        \
     do                                                                      \
     {                                                                       \
         bool    aIsPass=true;                                               \
         THEOLIZER_INTERNAL_JUDGE(false, dJudge, #dJudge);                   \
-        THEOLIZER_INTERNAL_RESULT(dResult);                                 \
+        THEOLIZER_INTERNAL_RESULT_FOR(__VA_ARGS__);                         \
         theolizer::internal::unlockMutex();                                 \
     }                                                                       \
     while(0)
 
 //      ---<<< 結果をチェックする(Fail時、処理中断) >>>---
 
-#define THEOLIZER_REQUIRE(dJudge, dResult)                                  \
+/*! @def    THEOLIZER_REQUIRE
+    @todo   T.B.D.
+*/
+#define THEOLIZER_REQUIRE(dJudge, ...)                                      \
     do                                                                      \
     {                                                                       \
         bool    aIsPass=true;                                               \
         THEOLIZER_INTERNAL_JUDGE(true, dJudge, #dJudge);                    \
-        THEOLIZER_INTERNAL_RESULT(dResult);                                 \
+        THEOLIZER_INTERNAL_RESULT_FOR(__VA_ARGS__);                         \
         theolizer::internal::unlockMutex();                                 \
-        if (!aIsPass) theolizer::throwAbort();                              \
+        if (!aIsPass) theolizer::internal::throwAbort();                    \
     }                                                                       \
     while(0)
 
 //      ---<<< 例外が発生することをチェックする(Fail時、処理継続) >>>---
 
+/*! @def    THEOLIZER_CHECK_EXCEPTION
+    @todo   T.B.D.
+*/
 #define THEOLIZER_CHECK_EXCEPTION(dStatements, dException)                  \
     do                                                                      \
     {                                                                       \
@@ -492,6 +551,9 @@ namespace internal
 
 //      ---<<< 例外が発生することをチェックする(Fail時、処理中断) >>>---
 
+/*! @def    THEOLIZER_REQUIRE_EXCEPTION
+    @todo   T.B.D.
+*/
 #define THEOLIZER_REQUIRE_EXCEPTION(dStatements, dException)                \
     do                                                                      \
     {                                                                       \
@@ -507,12 +569,15 @@ namespace internal
             THEOLIZER_INTERNAL_JUDGE(false, true, "exception(" #dException ")");\
         }                                                                   \
         theolizer::internal::unlockMutex();                                 \
-        if (!aIsPass) theolizer::throwAbort();                              \
+        if (!aIsPass) theolizer::internal::throwAbort();                    \
     }                                                                       \
     while(0)
 
 //      ---<<< 例外が発生することと結果をチェックする(Fail時、処理継続) >>>---
 
+/*! @def    THEOLIZER_CHECK_EXCEPTION2
+    @todo   T.B.D.
+*/
 #define THEOLIZER_CHECK_EXCEPTION2(dStatement, dException, dJudge, dResult) \
     do                                                                      \
     {                                                                       \
@@ -534,6 +599,9 @@ namespace internal
 
 //      ---<<< 例外が発生することと結果をチェックする(Fail時、処理中断) >>>---
 
+/*! @def    THEOLIZER_REQUIRE_EXCEPTION2
+    @todo   T.B.D.
+*/
 #define THEOLIZER_REQUIRE_EXCEPTION2(dStatement, dException, dJudge, dResult)\
     do                                                                      \
     {                                                                       \
@@ -550,7 +618,7 @@ namespace internal
             THEOLIZER_INTERNAL_RESULT(dResult);                             \
         }                                                                   \
         theolizer::internal::unlockMutex();                                 \
-        if (!aIsPass) theolizer::throwAbort();                              \
+        if (!aIsPass) theolizer::internal::throwAbort();                    \
     }                                                                       \
     while(0)
 
@@ -562,15 +630,19 @@ namespace internal
 //      main()関数
 // ***************************************************************************
 
+namespace internal
+{
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
 THEOLIZER_INTERNAL_DLL int callTestMain(int (*iTestMain)(int, char**), int iArgc, char** iArgv);
-
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
+} // namespace internal
 } // namespace theolizer
 
 #if defined(THEOLIZER_TEST_MAIN)
 extern "C" int TestMain(int argc, char* argv[]);    // prototype for user's TestMain()
 int main(int argc, char* argv[])
 {
-    return theolizer::callTestMain(&TestMain, argc, argv);
+    return theolizer::internal::callTestMain(&TestMain, argc, argv);
 }
 #endif
 

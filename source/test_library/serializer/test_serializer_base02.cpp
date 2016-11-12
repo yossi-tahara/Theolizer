@@ -51,7 +51,7 @@ THEOLIZER_ERRORLOG_FILE("ErrorLogFile%1%.log");
 
 int TestMain(int argc, char** argv)
 {
-//  theolizer::AutoRestoreBool aBoolRestore(theolizer::gDoDisplayPass);
+//  theolizer::DisplayPass aDisplayPass;
 
 // ***************************************************************************
 //      エラー検出

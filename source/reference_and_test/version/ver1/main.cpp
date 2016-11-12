@@ -1,9 +1,7 @@
 ﻿//############################################################################
-//      Theolizer解説用サンプル・プログラム
+//      Theolizer仕様／テスト・プログラム
 //
-//          簡単な家計簿用データ構造定義
-//              データの保存と回復のサンプルなので、
-//              ユーザ・インタフェースは実装しない
+//          メイン
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
 
@@ -27,61 +25,313 @@
 // 標準ライブラリ
 #include <iostream>
 #include <fstream>
+#include <sstream>
+#include <limits>
 
-// 構造体定義
-#include "main.h"
-
-// Theolizerライブラリ（各種シリアライズ指示する時は構造体定義前に#include)
+// theolizerライブラリ
+#include <theolizer/serializer_fast.h>
+#include <theolizer/serializer_binary.h>
 #include <theolizer/serializer_json.h>
 
-// Theolizer自動生成先
+// プロジェクト・ヘッダ
+#include "common.h"
+
+// 自動生成ソース
 #include "main.cpp.theolizer.hpp"
 
+//############################################################################
+//      テスト基本部
+//############################################################################
+
 // ***************************************************************************
+//      各種テスト関数の宣言
+// ***************************************************************************
+
+template<class tSerializer>
+void saveTopLevel(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadTopLevel(tSerializer& iSerializer);
+
+// ***************************************************************************
+//      各テスト呼び出し
+// ***************************************************************************
+
+template<class tSerializer>
+void saveBasic(tSerializer& iSerializer)
+{
+    saveTopLevel(iSerializer);
+}
+
+template<class tSerializer>
+void loadBasic(tSerializer& iSerializer)
+{
+    loadTopLevel(iSerializer);
+}
+
+//############################################################################
+//      派生Serializerテスト
+//############################################################################
+
+// ***************************************************************************
+//      CheckModeを振って呼ばれ、テスト基本部を呼ぶ
+// ***************************************************************************
+
+void VariationCheckMode
+(
+    bool                    iLoadOnly,
+    unsigned                iGlobalVersionNo,
+    theolizer::CheckMode    iCheckMode
+)
+{
+    std::cout << "VariationCheckMode("
+              << iLoadOnly << ", "
+              << iGlobalVersionNo << ", "
+              << iCheckMode << "); ----------" << std::endl;
+
+//----------------------------------------------------------------------------
+//      JsonSerializer
+//----------------------------------------------------------------------------
+
+    // デフォルト処理
+    if (iGlobalVersionNo == 0)
+    {
+        std::string filename="json-default.json";
+        std::cout << "    JsonSerializer(" << filename << ")\n";
+
+        // 保存処理
+        if (!iLoadOnly)
+        {
+            std::ofstream   aStream(filename);
+            theolizer::JsonOSerializer<> jos(aStream);
+            saveBasic(jos);
+        }
+
+        // 回復処理
+        {
+            std::ifstream   aStream(filename);
+            theolizer::JsonISerializer<> jis(aStream);
+            loadBasic(jis);
+        }
+    }
+
+    // パラメータ指定
+    else
+    {
+        std::stringstream ss;
+        std::string filename;
+
+//      ---<<< PretyPrint >>>---
+
+        ss << "json-pp-ver" << iGlobalVersionNo << "-"<< iCheckMode << ".json";
+        filename=ss.str();
+        std::cout << "    JsonSerializer(" << filename << ")\n";
+
+        // 保存処理
+        if (!iLoadOnly)
+        {
+            std::ofstream   aStream(filename);
+            theolizer::JsonOSerializer<> jos(aStream, iGlobalVersionNo, iCheckMode);
+            saveBasic(jos);
+        }
+
+        // 回復処理
+        {
+            std::ifstream   aStream(filename);
+            theolizer::JsonISerializer<> jis(aStream);
+            loadBasic(jis);
+        }
+
+//      ---<<< 非PretyPrint >>>---
+
+        ss.str("");
+        ss << "json-np-ver" << iGlobalVersionNo << "-"<< iCheckMode << ".json";
+        filename=ss.str();
+        std::cout << "    JsonSerializer(" << filename << ")\n";
+
+        // 保存処理
+        if (!iLoadOnly)
+        {
+            std::ofstream   aStream(filename);
+            theolizer::JsonOSerializer<> jos(aStream, iGlobalVersionNo, iCheckMode, true);
+            saveBasic(jos);
+        }
+
+        // 回復処理
+        {
+            std::ifstream   aStream(filename);
+            theolizer::JsonISerializer<> jis(aStream);
+            loadBasic(jis);
+        }
+    }
+
+//----------------------------------------------------------------------------
+//      BinarySerializer
+//----------------------------------------------------------------------------
+
+    // デフォルト処理
+    if (iGlobalVersionNo == 0)
+    {
+        std::string filename="binary-default.bin";
+        std::cout << "    BinarySerializer(" << filename << ")\n";
+
+        // 保存処理
+        if (!iLoadOnly)
+        {
+            std::ofstream   aStream(filename);
+            theolizer::BinaryOSerializer<> bos(aStream);
+            saveBasic(bos);
+        }
+
+        // 回復処理
+        {
+            std::ifstream   aStream(filename);
+            theolizer::BinaryISerializer<> bis(aStream);
+            loadBasic(bis);
+        }
+    }
+
+    // パラメータ指定
+    else
+    {
+        std::stringstream ss;
+        std::string filename;
+        ss << "binary-ver" << iGlobalVersionNo << "-"<< iCheckMode << ".bin";
+        filename=ss.str();
+        std::cout << "    BinaryOSerializer(" << filename << ")\n";
+
+        // 保存処理
+        if (!iLoadOnly)
+        {
+            std::ofstream   aStream(filename);
+            theolizer::BinaryOSerializer<> bos(aStream, iGlobalVersionNo, iCheckMode);
+            saveBasic(bos);
+        }
+
+        // 回復処理
+        {
+            std::ifstream   aStream(filename);
+            theolizer::BinaryISerializer<> bis(aStream);
+            loadBasic(bis);
+        }
+    }
+
+//----------------------------------------------------------------------------
+//      FastSerializer
+//----------------------------------------------------------------------------
+
+    // デフォルト処理
+    if (iGlobalVersionNo == 0)
+    {
+        std::string filename="fast-default.bin";
+        std::cout << "    FastSerializer(" << filename << ")\n";
+
+        // 保存処理
+        if (!iLoadOnly)
+        {
+            std::ofstream   aStream(filename);
+            theolizer::FastOSerializer<> fos(aStream);
+            saveBasic(fos);
+        }
+
+        // 回復処理
+        {
+            std::ifstream   aStream(filename);
+            theolizer::FastISerializer<> fis(aStream);
+            loadBasic(fis);
+        }
+    }
+
+    std::cout << "\n";
+}
+
+// ***************************************************************************
+//      GlobalVersionNoを振って呼ばれ、CheckModeを振る
+//          iGlobalVersionNo==0の時は、デフォルト・パラメータで呼び出す。
+// ***************************************************************************
+
+void VariationGlobalVersionNo
+(
+    bool        iLoadOnly,
+    unsigned    iGlobalVersionNo
+)
+{
+    if (iGlobalVersionNo == 0)
+    {
+        VariationCheckMode(iLoadOnly, iGlobalVersionNo, theolizer::CheckMode::NoTypeCheck);
+    }
+    else
+    {
+        VariationCheckMode(iLoadOnly, iGlobalVersionNo, theolizer::CheckMode::NoTypeCheck);
+        VariationCheckMode(iLoadOnly, iGlobalVersionNo, theolizer::CheckMode::TypeCheck);
+        VariationCheckMode(iLoadOnly, iGlobalVersionNo, theolizer::CheckMode::TypeCheckByIndex);
+    }
+}
+
+//############################################################################
 //      メイン
-// ***************************************************************************
+//############################################################################
 
 int main(int argc, char* argv[])
 {
-//----------------------------------------------------------------------------
-//      保存
-//----------------------------------------------------------------------------
+    theolizer::initResult();
 
-    // 保存するデータの設定
-    Trade  aTradeSave;
-    aTradeSave.mDate.mYear  = 2015;
-    aTradeSave.mDate.mMonth = 1;
-    aTradeSave.mDate.mDay   = 1;
-    aTradeSave.mItem        = u8"お米10Kg";
-    aTradeSave.mAmount      = 4600;
+// ***************************************************************************
+//      バラメータ解析
+// ***************************************************************************
 
-    // 保存処理
+    unsigned    aGlobalVersionNo=0;
+
+    try
     {
-        std::ofstream   aStream("test.log");
-        theolizer::JsonOSerializer<>  js(aStream);
-        THEOLIZER_PROCESS(js, aTradeSave);
+        if (1 < argc)
+        {
+            unsigned long no=std::stoul(argv[1]);
+            if (std::numeric_limits<unsigned>::max() < no)
+    throw std::invalid_argument("GlobalVersionNo is too big.");
+        }
+    }
+    catch(std::invalid_argument& e)
+    {
+        std::cerr << e.what() << "\n";
+
+        theolizer::incrementFailCount();
+        theolizer::printResult();
+return 1;
     }
 
-//----------------------------------------------------------------------------
-//      回復
-//----------------------------------------------------------------------------
+    std::cout << theolizer::print("aGlobalVersionNo:%d\n", aGlobalVersionNo);
 
-    // 回復先の領域
-    Trade  aTradeLoad;
+// ***************************************************************************
+//      GlobalVersionNoとCheckModeを振って処理を呼び出す
+// ***************************************************************************
 
-    // 回復処理
+    try
     {
-        std::ifstream   aStream("test.log");
-        theolizer::JsonISerializer<>  js(aStream);
-        THEOLIZER_PROCESS(js, aTradeLoad);
+        if (aGlobalVersionNo)
+        {
+            VariationGlobalVersionNo(true, aGlobalVersionNo);
+        }
+        else
+        {
+            for (unsigned aVersionNo=0; aVersionNo <= 1; ++aVersionNo)
+            {
+                VariationGlobalVersionNo(false, aVersionNo);
+            }
+        }
+    }
+    catch(theolizer::ErrorInfo& e)
+    {
+        std::cerr << e.getString() << "\n";
+
+        theolizer::incrementFailCount();
+        theolizer::printResult();
+return 2;
     }
 
-    // 結果表示
-    std::cout << theolizer::print("%04d/%02d/%02d %s %u\n",
-        aTradeLoad.mDate.mYear,
-        aTradeLoad.mDate.mMonth+0,
-        aTradeLoad.mDate.mDay+0,
-        aTradeLoad.mItem, aTradeLoad.mAmount);
+    // Failが0でないならエラー終了
+    if (!theolizer::printResult())
+return 3;
 
     return 0;
 }

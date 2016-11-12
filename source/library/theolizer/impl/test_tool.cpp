@@ -57,32 +57,6 @@ namespace theolizer
 {
 
 //############################################################################
-//      ユーティリティ
-//############################################################################
-
-// ***************************************************************************
-//      環境変数獲得
-// ***************************************************************************
-
-std::string getenv(std::string const& iEnv)
-{
-    char *p = ::getenv(iEnv.c_str());
-    if (p == nullptr)
-return "";
-
-    return p;
-}
-
-int putenv(char const* iPutEnv)
-{
-#if defined(_MSC_VER)
-    return ::_putenv(iPutEnv);
-#else
-    return ::putenv(const_cast<char*>(iPutEnv));
-#endif
-}
-
-//############################################################################
 //      ファイル操作
 //############################################################################
 
@@ -203,23 +177,40 @@ void setWritePermission(const u8string& iPath, bool iIsEnable)
 }
 
 //############################################################################
-//      main()関数関連処理
+//      ユーティリティ
 //############################################################################
 
 // ***************************************************************************
-//      PASS結果出力の有無
+//      環境変数獲得
 // ***************************************************************************
 
-bool    gDoDisplayPass = false;
+namespace internal
+{
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+
+std::string getenv(std::string const& iEnv)
+{
+    char *p = ::getenv(iEnv.c_str());
+    if (p == nullptr)
+return "";
+
+    return p;
+}
+
+int putenv(char const* iPutEnv)
+{
+#if defined(_MSC_VER)
+    return ::_putenv(iPutEnv);
+#else
+    return ::putenv(const_cast<char*>(iPutEnv));
+#endif
+}
 
 // ***************************************************************************
 //      結果出力先
 // ***************************************************************************
 
-namespace
-{
 std::ostream*   gOStream = &std::cout;
-}   // namepsace
 
 void setOStream(std::ostream& iOStream)
 {
@@ -231,40 +222,12 @@ std::ostream& getOStream()
 }
 
 // ***************************************************************************
-//      test_main()呼び出しヘルパー
-// ***************************************************************************
-
-namespace
-{
-
-struct TestMainCaller
-{
-    TestMainCaller(int (*iTestMain)(int, char**), int iArgc, char** iArgv) :
-                    mTestMain(iTestMain),
-                    mArgc(iArgc),
-                    mArgv(iArgv)
-    { }
-
-    int operator()() { return (*mTestMain)(mArgc, mArgv); }
-
-private:
-    int     (*mTestMain)(int, char**);
-    int     mArgc;
-    char**  mArgv;
-};
-
-} // namespace
-
-// ***************************************************************************
 //      テスト中断用例外を投げる
 //          任意の例外はboost::excution_monitorでunkown type例外になってしまう。
 //          そこで、boost::execution_exception例外を投げ、判別できるようにする。
 // ***************************************************************************
 
-namespace
-{
 const boost::unit_test::const_string TheolizerTestAborted = "TheolizerTestAborted";
-}   // namespace
 
 void throwAbort()
 {
@@ -277,25 +240,99 @@ void throwAbort()
 //      エラー・カウンタと出力整理用Mutex
 // ***************************************************************************
 
-namespace
+std::mutex  gTestMutex;
+
+unsigned    gTotal;
+unsigned    gFailCount;
+
+void lockMutex()
 {
-    std::mutex  gTestMutex;
+    gTestMutex.lock();
 }
+void unlockMutex()
+{
+    gTestMutex.unlock();
+}
+
+// ***************************************************************************
+//      PASS結果出力の有無
+// ***************************************************************************
+
+bool    gDoDisplayPass = false;
+
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
+}   // namespace internal
+
+// ***************************************************************************
+//      PASS表示処理
+// ***************************************************************************
+
+DisplayPass::DisplayPass() : internal::AutoRestore<bool>(internal::gDoDisplayPass, true)
+{
+}
+
+bool DisplayPass::on()
+{
+    return internal::gDoDisplayPass;
+}
+
+// ***************************************************************************
+//      PASS/FAIL数処理
+// ***************************************************************************
+
+void initResult()
+{
+    internal::gTotal=0;
+    internal::gFailCount=0;
+}
+
+void incrementTotalCount()
+{
+    ++internal::gFailCount;
+}
+
+void incrementFailCount()
+{
+    ++internal::gFailCount;
+}
+
+bool printResult()
+{
+    *internal::gOStream
+        << "\n------------- End Test ----------\n"
+        << "    Total = " << internal::gTotal << "\n"
+        << "    Pass  = " << internal::gTotal - internal::gFailCount << "\n"
+        << "    Fail  = " << internal::gFailCount << "\n";
+
+    return (internal::gFailCount == 0);
+}
+
+//############################################################################
+//      main()関数関連処理
+//############################################################################
 
 namespace internal
 {
-    unsigned    gTotal;
-    unsigned    gFailCount;
 
-    void lockMutex()
-    {
-        gTestMutex.lock();
-    }
-    void unlockMutex()
-    {
-        gTestMutex.unlock();
-    }
-}
+// ***************************************************************************
+//      test_main()呼び出しヘルパー
+// ***************************************************************************
+
+struct TestMainCaller
+{
+    TestMainCaller(int (*iTestMain)(int, char**), int iArgc, char** iArgv) :
+        mTestMain(iTestMain),
+        mArgc(iArgc),
+        mArgv(iArgv)
+    { }
+
+    int operator()() { return (*mTestMain)(mArgc, mArgv); }
+
+private:
+    int     (*mTestMain)(int, char**);
+    int     mArgc;
+    char**  mArgv;
+};
 
 // ***************************************************************************
 //      boost::execution_monitor経由のTestMain()呼び出し
@@ -315,9 +352,7 @@ int callTestMain(int (*iTestMain)(int, char**), int iArgc, char** iArgv)
 
     try
     {
-        internal::gTotal=0;
-        internal::gFailCount=0;
-
+        initResult();
         result = ::boost::execution_monitor().execute(
                                     TestMainCaller(iTestMain, iArgc, iArgv));
     }
@@ -330,18 +365,20 @@ int callTestMain(int (*iTestMain)(int, char**), int iArgc, char** iArgv)
         } else {
             std::stringstream ss;
             ss << exex.what();  // const_stringは直接char*やstd::stringへ変換できない。
-            *gOStream << "\n**** uncatched exception."
-                      << "\n**** code(" << exex.code() << ") : "
-                      <<  ss.str();
+            *internal::gOStream
+                << "\n**** uncatched exception."
+                << "\n**** code(" << exex.code() << ") : "
+                <<  ss.str();
             result = kExitException;
         }
     }
     catch(boost::system_error const& ex)
     {
-        *gOStream << "\n**** failed to initialize execution monitor."
-                  << "\n**** expression at fault: " << ex.p_failed_exp 
-                  << "\n**** error(" << ex.p_errno << "): "
-                  << std::strerror( ex.p_errno ) << std::endl;
+        *internal::gOStream
+            << "\n**** failed to initialize execution monitor."
+            << "\n**** expression at fault: " << ex.p_failed_exp 
+            << "\n**** error(" << ex.p_errno << "): "
+            << std::strerror( ex.p_errno ) << std::endl;
         result = kExitException;
     }
 #else
@@ -349,25 +386,24 @@ int callTestMain(int (*iTestMain)(int, char**), int iArgc, char** iArgv)
     {
         internal::gTotal++;
         internal::gFailCount++;
-        *gOStream << e;
+        *internal::gOStream << e;
         result = kExitException;
     }
     catch(std::exception& e)
     {
         internal::gTotal++;
         internal::gFailCount++;
-        *gOStream << "\n**** std::exception : " << e.what() << std::endl;
+        *internal::gOStream << "\n**** std::exception : " << e.what() << std::endl;
         result = kExitException;
     }
 #endif
 
-    *gOStream << "\n------------- End Test ----------\n"
-        << "    Total = " << internal::gTotal << "\n"
-        << "    Pass  = " << internal::gTotal - internal::gFailCount << "\n"
-        << "    Fail  = " << internal::gFailCount << "\n";
+    printResult();
 
     return result;
 }
+
+} // namespace internal
 
 //############################################################################
 //      End
