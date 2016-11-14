@@ -30,7 +30,7 @@
   #pragma warning(disable:4141 4146 4180 4244 4258 4267 4291 4345 4351 4355 4456 4457 4458 4459 4503 4624 4722 4800 4996)
 #endif
 
-#include <theolizer/impl/avoid-trouble.h>
+#include <theolizer/internal/avoid-trouble.h>
 
 THEOLIZER_INTERNAL_DISABLE_WARNING()
 #if defined(__GNUC__)
@@ -117,7 +117,7 @@ THEOLIZER_INTERNAL_DISABLE_WARNING()
 //      theolizer
 //----------------------------------------------------------------------------
 
-#include <theolizer/impl/base.h>
+#include <theolizer/internal/base.h>
 
 //----------------------------------------------------------------------------
 //      頻繁に使う名称を短縮する

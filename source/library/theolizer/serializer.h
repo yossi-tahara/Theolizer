@@ -22,7 +22,7 @@
 #if !defined(THEOLIZER_INTERNAL_SERIALIZER_H)
 #define THEOLIZER_INTERNAL_SERIALIZER_H
 
-#include "impl/core.h"
+#include "internal/core.h"
 
 //############################################################################
 //      Begin
@@ -277,7 +277,7 @@ namespace theolizer
 //      FastSerialzier
 //----------------------------------------------------------------------------
 
-#include "serializer_fast.h"
+#include "internal/serializer_fast.h"
 
 //----------------------------------------------------------------------------
 //      各種データ型のコピー

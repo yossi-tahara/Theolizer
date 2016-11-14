@@ -25,7 +25,7 @@
 #if !defined(THEOLIZER_INTERNAL_SERIALIZER_FAST_H)
 #define THEOLIZER_INTERNAL_SERIALIZER_FAST_H
 
-#include "impl/core.h"
+#include "core.h"
 
 //############################################################################
 //      Begin
@@ -137,7 +137,7 @@ private:
 //      ---<<< プリミティブ保存 >>>---
 
     #define THEOLIZER_INTERNAL_DEF_SAVE
-    #include "impl/primitive.inc"
+    #include "primitive.inc"
 
 //      ---<<< Element前処理 >>>---
 
@@ -254,7 +254,7 @@ private:
 //      ---<<< プリミティブ回復 >>>---
 
     #define THEOLIZER_INTERNAL_DEF_LOAD
-    #include "impl/primitive.inc"
+    #include "primitive.inc"
 
 //      ---<<< Element前処理 >>>---
 

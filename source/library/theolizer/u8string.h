@@ -46,7 +46,7 @@ Visual Studio 2015以降ならば、u8"任意文字列"の書式にてUTF-8文�
 #if !defined(THEOLIZER_INTERNAL_U8STRING_H)
 #define THEOLIZER_INTERNAL_U8STRING_H
 
-#include "impl/external.h"          // インクルード漏れチェックのため
+#include "internal/external.h"          // インクルード漏れチェックのため
 
 #include <string>
 #include <iostream>

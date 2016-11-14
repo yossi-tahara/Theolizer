@@ -62,7 +62,7 @@ struct BaseClass
     THEOLIZER_INTERNAL_ELEMENT_N(mInt,mInt,etmDefault,\
         (theolizerD::All),\
         (int))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -96,7 +96,7 @@ THEOLIZER_REGISTER_CLASS((DerivedClass));
     THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmDefault,\
         (theolizerD::All),\
         (unsigned int))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -130,7 +130,7 @@ THEOLIZER_REGISTER_CLASS((Derived2Class));
     THEOLIZER_INTERNAL_ELEMENT_N(mLong,mLong,etmDefault,\
         (theolizerD::All),\
         (long))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 //############################################################################
@@ -171,7 +171,7 @@ struct NamespaceClass
     THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmDefault,\
         (theolizerD::All),\
         (unsigned int))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 }   // namespace user
@@ -232,7 +232,7 @@ struct ReferenceClass
     THEOLIZER_INTERNAL_ELEMENT_N(mIntArray,mIntArray,etmDefault,\
         (theolizerD::All),\
         (int (&)[2]))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 #endif

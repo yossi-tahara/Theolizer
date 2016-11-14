@@ -696,7 +696,7 @@ ASTANALYZE_OUTPUT("    aNowValue=", aNowValue, " aIsFirst=", aIsFirst);
         }
         mLastVersion << "\n";
         mLastVersion << "#define THEOLIZER_GENERATED_DEFAULT_VALUE " << aDefaultValue << "\n";
-        mLastVersion << "#include <theolizer/impl/version_enum.inc>\n";
+        mLastVersion << "#include <theolizer/internal/version_enum.inc>\n";
         mLastVersion << "#undef  THEOLIZER_GENERATED_VERSION_NO";
         // 新規生成時は、#endifを定義する
         if (aSourceStatus == eNew)
@@ -800,7 +800,7 @@ ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsSt
             break;
                 }
             }
-            mPrevVersion << "#include <theolizer/impl/version_enum.inc>\n"
+            mPrevVersion << "#include <theolizer/internal/version_enum.inc>\n"
                          << "#undef  THEOLIZER_GENERATED_VERSION_NO";
 
 ASTANALYZE_OUTPUT("-------- mPrevVersion\n", mPrevVersion.str());
@@ -1380,13 +1380,13 @@ ASTANALYZE_OUTPUT("    mObjectTracking=", mObjectTracking);
             if (!aIsFirst) {
                 mLastVersion << "\n";
             }
-            mLastVersion << "#include <theolizer/impl/version_auto.inc>\n";
+            mLastVersion << "#include <theolizer/internal/version_auto.inc>\n";
         }
 
         // 手動型の時
         else
         {
-            mLastVersion << "#include <theolizer/impl/version_manual.inc>\n";
+            mLastVersion << "#include <theolizer/internal/version_manual.inc>\n";
         }
         mLastVersion << "#undef  THEOLIZER_GENERATED_VERSION_NO";
 
@@ -1697,9 +1697,9 @@ ASTANALYZE_OUTPUT("    Previouse(2) : ", temp.first.substr(pos3));
                 mPrevVersion << "\n";
             }
             if (!iSerializeInfo.mIsManual) {
-                mPrevVersion << "#include <theolizer/impl/version_auto.inc>\n";
+                mPrevVersion << "#include <theolizer/internal/version_auto.inc>\n";
             } else {
-                mPrevVersion << "#include <theolizer/impl/version_manual.inc>\n";
+                mPrevVersion << "#include <theolizer/internal/version_manual.inc>\n";
             }
             mPrevVersion << "#undef  THEOLIZER_GENERATED_VERSION_NO";
 

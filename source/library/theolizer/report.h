@@ -29,7 +29,7 @@
 #define THEOLIZER_INTERNAL_REPORT_H
 
 #include "u8string.h"   // インクルード漏れチェックのため最初にインクルード
-#include "impl/base.h"
+#include "internal/base.h"
 
 //############################################################################
 //      Begin
@@ -122,7 +122,7 @@ public:
     #define THEOLIZER_INTERNAL_DEF_WCHAR(dType, dSymbol)
     #define THEOLIZER_INTERNAL_DEF_CHAR16(dType, dSymbol)
     #define THEOLIZER_INTERNAL_DEF_CHAR32(dType, dSymbol)
-    #include "impl/primitive.inc"
+    #include "internal/primitive.inc"
 
     // theolizer::u8stringで取出す
     u8string str();

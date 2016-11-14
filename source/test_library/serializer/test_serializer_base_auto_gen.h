@@ -45,7 +45,7 @@
     THEOLIZER_GENERATED_ELEMENT((u8"one",u8"ONE"),(1,21),11)\
     THEOLIZER_GENERATED_ELEMENT((u8"two",u8"TWO"),(2,22),12)
 #define THEOLIZER_GENERATED_DEFAULT_VALUE 0
-#include <theolizer/impl/version_enum.inc>
+#include <theolizer/internal/version_enum.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 //      ---<<< Version.1 >>>---
@@ -59,7 +59,7 @@
     THEOLIZER_GENERATED_ELEMENT((u8"B"),(11),11)\
     THEOLIZER_GENERATED_ELEMENT((u8"C"),(12),12)
 #define THEOLIZER_GENERATED_DEFAULT_VALUE 10
-#include <theolizer/impl/version_enum.inc>
+#include <theolizer/internal/version_enum.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -84,7 +84,7 @@
     THEOLIZER_GENERATED_ELEMENT((u8"ONE"),(1),1)\
     THEOLIZER_GENERATED_ELEMENT((u8"TWO"),(2),2)
 #define THEOLIZER_GENERATED_DEFAULT_VALUE 0
-#include <theolizer/impl/version_enum.inc>
+#include <theolizer/internal/version_enum.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 //############################################################################
@@ -118,7 +118,7 @@
     THEOLIZER_INTERNAL_ELEMENT_N(mString,mString,etmDefault,\
         (theolizerD::User),\
         (std::string))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 //      ---<<< Version.1 >>>---
@@ -140,7 +140,7 @@
     THEOLIZER_INTERNAL_ELEMENT_N_DEL(mChar,,etmDefault,\
         (theolizerD::All),\
         (char))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -172,7 +172,7 @@
     THEOLIZER_INTERNAL_ELEMENT_N(mULongLong,mULongLong,etmDefault,\
         (theolizerD::User,theolizerD::Document),\
         (unsigned long long))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -207,7 +207,7 @@
     THEOLIZER_INTERNAL_ELEMENT_KN(mEnum,mEnum,etmDefault,\
         (theolizerD::All),\
         (EnumTest),2)
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 //      ---<<< Version.3 >>>---
@@ -235,7 +235,7 @@
     THEOLIZER_INTERNAL_ELEMENT_KN(mEnum,mEnum,etmDefault,\
         (theolizerD::All),\
         (EnumTest),2)
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 //      ---<<< Version.2 >>>---
@@ -260,7 +260,7 @@
     THEOLIZER_INTERNAL_ELEMENT_KN(mEnum,mEnum,etmDefault,\
         (theolizerD::All),\
         (EnumTest),2)
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 //      ---<<< Version.1 >>>---
@@ -284,7 +284,7 @@
     THEOLIZER_INTERNAL_ELEMENT_KN(mEnum,mEnum,etmDefault,\
         (theolizerD::All),\
         (EnumTest),1)
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -311,7 +311,7 @@
     THEOLIZER_INTERNAL_ELEMENT_N(mShort,mShort,etmDefault,\
         (theolizerD::All),\
         (short))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -340,7 +340,7 @@
     THEOLIZER_INTERNAL_ELEMENT_N(mType1,mType1,etmDefault,\
         (theolizerD::All),\
         (tType1))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 //############################################################################
@@ -381,7 +381,7 @@
     THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmDefault,\
         (theolizerD::All),\
         (unsigned int))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -421,7 +421,7 @@ namespace change_order{namespace dummy{
     THEOLIZER_INTERNAL_ELEMENT_KI(mIntrusiveBase2,mIntrusiveBase2,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase2),1)
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 }   // namespace dummy
@@ -452,7 +452,7 @@ namespace change_order{namespace dummy{
     THEOLIZER_INTERNAL_ELEMENT_KI(mIntrusiveBase2,mIntrusiveBase2,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase2),1)
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 //############################################################################
@@ -480,7 +480,7 @@ namespace change_order{namespace dummy{
     THEOLIZER_INTERNAL_ELEMENT_N(mInt,mInt,etmPointee,\
         (theolizerD::All),\
         (int))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -503,7 +503,7 @@ namespace change_order{namespace dummy{
     THEOLIZER_INTERNAL_ELEMENT_N(mShort,mShort,etmDefault,\
         (theolizerD::All),\
         (short))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -532,7 +532,7 @@ namespace change_order{namespace dummy{
     THEOLIZER_INTERNAL_ELEMENT_KN(mFullAutoTemplate,mFullAutoTemplate,etmDefault,\
         (theolizerD::All),\
         (FullAutoTemplate<int, short>),1)
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 //############################################################################
@@ -589,7 +589,7 @@ namespace change_order{namespace dummy{
         (theolizerD::All),\
         (string))
 #endif
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -627,7 +627,7 @@ namespace change_order{namespace dummy{
     THEOLIZER_INTERNAL_ELEMENT_KN(mFullAutoTemplateArray,mFullAutoTemplateArray,etmDefault,\
         (theolizerD::All),\
         (FullAutoTemplate<int[2], short (*)[3]>),1)
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -681,7 +681,7 @@ namespace change_order{namespace dummy{
         (theolizerD::All),\
         (string*))
 #endif
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 //############################################################################
@@ -728,7 +728,7 @@ namespace change_order{namespace dummy{
 #else
 #define THEOLIZER_GENERATED_ELEMENT_LIST()
 #endif
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 //      ---<<< Version.1 >>>---
@@ -760,7 +760,7 @@ namespace change_order{namespace dummy{
 #else
 #define THEOLIZER_GENERATED_ELEMENT_LIST()
 #endif
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -792,7 +792,7 @@ namespace change_order{namespace dummy{
 #else
 #define THEOLIZER_GENERATED_ELEMENT_LIST()
 #endif
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -810,7 +810,7 @@ namespace change_order{namespace dummy{
 
 #define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
 #define THEOLIZER_GENERATED_CLASS_NAME() THEOLIZER_INTERNAL_CLASS_NAME((u8"NonIntrusiveBase"))
-#include <theolizer/impl/version_manual.inc>
+#include <theolizer/internal/version_manual.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -831,7 +831,7 @@ namespace change_order{namespace dummy{
     THEOLIZER_INTERNAL_CLASS_NAME((u8"NonIntrusiveDrived"))
 #define THEOLIZER_GENERATED_BASE_LIST()\
     THEOLIZER_INTERNAL_BASE_N(public,etmDefault,0,(NonIntrusiveBase))
-#include <theolizer/impl/version_manual.inc>
+#include <theolizer/internal/version_manual.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 // ***************************************************************************
@@ -856,7 +856,7 @@ namespace change_order{namespace dummy{
     THEOLIZER_INTERNAL_ELEMENT_N(mShort,mShort,etmDefault,\
         (theolizerD::All),\
         (short))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 #endif

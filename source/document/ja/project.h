@@ -130,7 +130,7 @@ TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソ�
 |ルート|CMake補助|THEOLIZERConfig.cmake|
 ||ドライバ・インストール|replace.bat|
 ||ドライバ・アンインストール|restore.bat|
-|bin|ドライバ・インストール補助|impl.bat|
+|bin|ドライバ・インストール補助|internal.bat|
 |doc/ja|詳細ドキュメント|index.html, html/\*.\*|
 |lib|StaticWithBoost(Release)テスト用ライブラリ|TheolizerTestStaticWithBoost.lib|
 ||Static(Release)テスト用ライブラリ|TheolizerTestStatic.lib|

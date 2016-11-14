@@ -2887,7 +2887,7 @@ void MetaDeserializerBase::generateEnum()
     }
     mOStream << "\n"
         "#define THEOLIZER_GENERATED_DEFAULT_VALUE " << aDefault << "\n"
-        "#include <theolizer/impl/version_enum.inc>\n"
+        "#include <theolizer/internal/version_enum.inc>\n"
         "#undef  THEOLIZER_GENERATED_VERSION_NO\n";
 
     if (mVersionNo == 1)
@@ -3273,7 +3273,7 @@ void MetaDeserializerBase::generateClass
         }
     }
     mOStream << "\n"
-        "#include <theolizer/impl/version_auto.inc>\n"
+        "#include <theolizer/internal/version_auto.inc>\n"
         "#undef  THEOLIZER_GENERATED_VERSION_NO\n\n";
 
     if (iVersionNo == 1)

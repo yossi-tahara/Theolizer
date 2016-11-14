@@ -373,7 +373,7 @@ private:
 //      ---<<< プリミティブ保存 >>>---
 
     #define THEOLIZER_INTERNAL_DEF_SAVE
-    #include "impl/primitive.inc"
+    #include "internal/primitive.inc"
 
 //      ---<<< バイト列保存 >>>---
 
@@ -438,7 +438,7 @@ private:
     {                                                                       \
         return PrimitiveName<BinaryMidOSerializer, dType>::getPrimitiveName(iSerializerVersionNo);\
     }
-#include "impl/primitive.inc"
+#include "internal/primitive.inc"
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 // ***************************************************************************
@@ -522,7 +522,7 @@ private:
 //      ---<<< プリミティブ回復 >>>---
 
     #define THEOLIZER_INTERNAL_DEF_LOAD
-    #include "impl/primitive.inc"
+    #include "internal/primitive.inc"
 
 //      ---<<< バイト列回復 >>>---
 
@@ -614,7 +614,7 @@ private:
     {                                                                       \
         return PrimitiveName<BinaryMidISerializer, dType>::getPrimitiveName(iSerializerVersionNo);\
     }
-#include "impl/primitive.inc"
+#include "internal/primitive.inc"
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal

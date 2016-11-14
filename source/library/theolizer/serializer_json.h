@@ -1,5 +1,11 @@
 ﻿//############################################################################
 //      Jsonシリアライザ
+/*!
+    @file serializer_json.h
+    @brief  ドキュメント・ファイル－概要
+    @author Yoshinori Tahara
+    @date   2015/08/01  Created
+*/
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
 
@@ -279,7 +285,7 @@ private:
 //      ---<<< プリミティブ保存 >>>---
 
     #define THEOLIZER_INTERNAL_DEF_SAVE
-    #include "impl/primitive.inc"
+    #include "internal/primitive.inc"
 
 //      ---<<< Element前処理 >>>---
 
@@ -345,7 +351,7 @@ private:
     {                                                                       \
         return PrimitiveName<JsonMidOSerializer, dType>::getPrimitiveName(iSerializerVersionNo);\
     }
-#include "impl/primitive.inc"
+#include "internal/primitive.inc"
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 // ***************************************************************************
@@ -438,7 +444,7 @@ private:
 //      ---<<< プリミティブ回復 >>>---
 
     #define THEOLIZER_INTERNAL_DEF_LOAD
-    #include "impl/primitive.inc"
+    #include "internal/primitive.inc"
 
 //      ---<<< Element前処理 >>>---
 //          戻り値：
@@ -544,7 +550,7 @@ private:
     {                                                                       \
         return PrimitiveName<JsonMidISerializer, dType>::getPrimitiveName(iSerializerVersionNo);\
     }
-#include "impl/primitive.inc"
+#include "internal/primitive.inc"
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal

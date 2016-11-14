@@ -27,7 +27,6 @@
 
 #include <theolizer/serializer_json.h>
 #include <theolizer/serializer_binary.h>
-#include <theolizer/serializer_fast.h>
 using theolizer::u8string;
 
 using namespace std;

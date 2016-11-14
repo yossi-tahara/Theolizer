@@ -155,7 +155,7 @@ if(${BUILD_SHARED_LIBS})
 
     if (NOT ${IS_MSVC})
         if(WIN32)
-            set(SCRIPT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/theolizer/impl/version_script.def)
+            set(SCRIPT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/theolizer/internal/version_script.def)
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--version-script,${SCRIPT_FILE}")
         else()
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
@@ -171,7 +171,7 @@ add_dependencies(${TheolizerLib} remove_crlf)
 add_dependencies(${TheolizerLib} checkBuildSystem)
 
 # version.h生成
-version_at_build(${TheolizerLib} "${CMAKE_CURRENT_SOURCE_DIR}/theolizer/impl" "${VERSION_SOURCE}")
+version_at_build(${TheolizerLib} "${CMAKE_CURRENT_SOURCE_DIR}/theolizer/internal" "${VERSION_SOURCE}")
 
 # boostをTheolizerLibにパッケージする場合(MSVC)
 if (${IS_MSVC} AND ${STATIC_WITH_BOOST})

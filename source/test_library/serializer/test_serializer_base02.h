@@ -88,7 +88,7 @@ public:
     THEOLIZER_INTERNAL_ELEMENT_N(mULongLong,mULongLong,etmDefault,\
         (theolizerD::All),\
         (unsigned short))
-#include <theolizer/impl/version_auto.inc>
+#include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 namespace theolizer{namespace internal{

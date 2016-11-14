@@ -1,5 +1,5 @@
 ﻿//############################################################################
-//      Binaryシリアライザ
+//      Jsonシリアライザ
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
 
@@ -27,8 +27,7 @@
 #include <limits>
 
 #include "internal.h"
-#include "../serializer_binary.h"
-#include "core_serializer.h"
+#include "../serializer_json.h"
 
 //############################################################################
 //      Begin
@@ -47,14 +46,14 @@ namespace internal
 //      シリアライザ名
 // ***************************************************************************
 
-char const* const   BinaryMidOSerializer::kSerializerName=
-        "theolizer::internal::BinaryMidOSerializer";
+char const* const   JsonMidOSerializer::kSerializerName=
+        "theolizer::internal::JsonMidOSerializer";
 
 // ***************************************************************************
 //      コンストラクタ
 // ***************************************************************************
 
-BinaryMidOSerializer::BinaryMidOSerializer
+JsonMidOSerializer::JsonMidOSerializer
 (
     std::ostream& iOStream,
     Destinations const& iDestinations,
@@ -62,6 +61,7 @@ BinaryMidOSerializer::BinaryMidOSerializer
     unsigned iGlobalVersionNo,
     unsigned iLastGlobalVersionNo,
     CheckMode iCheckMode,
+    bool iNoPrettyPrint,
     bool mNoThrowException
 ) : BaseSerializer
     (
@@ -74,13 +74,16 @@ BinaryMidOSerializer::BinaryMidOSerializer
         nullptr,
         mNoThrowException
     ),
-    mOStream(iOStream)
+    mOStream(iOStream),
+    mNoPrettyPrint(iNoPrettyPrint),
+    mWriteComma(false),
+    mCharIsMultiByte(false)
 {
     // エラー情報登録準備
     theolizer::internal::ApiBoundary aApiBoundary(&mAdditionalInfo);
 
     // 型情報取得中継クラス登録
-    TypeFunctions<BinaryMidOSerializer> aTypeFunctions;
+    TypeFunctions<JsonMidOSerializer>   aTypeFunctions;
 
     if (getNoThrowException())
     {
@@ -98,6 +101,10 @@ BinaryMidOSerializer::BinaryMidOSerializer
         // 通常ヘッダ保存
         writeHeader();
     }
+
+    mOStream << "\n";
+
+    mWriteComma=false;
 }
 
 // ***************************************************************************
@@ -108,14 +115,14 @@ BinaryMidOSerializer::BinaryMidOSerializer
 //      ヘッダ保存
 //----------------------------------------------------------------------------
 
-void BinaryMidOSerializer::writeHeader()
+void JsonMidOSerializer::writeHeader()
 {
     AutoRestoreSave aAutoRestoreSave(*this, emName);
 
     // シリアライザ名出力
     writePreElement();
     saveElementName(emName, "SerialzierName");
-    saveControl(kBinarySerializerName);
+    saveControl(kJsonSerializerName);
 
     // グローバル・バージョン番号出力
     writePreElement();
@@ -136,151 +143,73 @@ void BinaryMidOSerializer::writeHeader()
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
-//      サイズ変換用型定義
-//----------------------------------------------------------------------------
-
-namespace
-{
-
-    template<unsigned tSize>
-    struct SizeType { };
-    template<>
-    struct SizeType<1>
-    {
-        typedef uint8_t     type;
-    };
-    template<>
-    struct SizeType<2>
-    {
-        typedef uint16_t    type;
-    };
-    template<>
-    struct SizeType<4>
-    {
-        typedef uint32_t    type;
-    };
-    template<>
-    struct SizeType<8>
-    {
-        typedef uint64_t    type;
-    };
-
-    template<typename tType>
-    union Numerical2Unsigned
-    {
-        tType                                   mNumerical;
-        typename SizeType<sizeof(tType)>::type  mUnsigned;
-    };
-
-}   // namespace
-
-//----------------------------------------------------------------------------
-//      コントロール整数保存
-//          値に応じて適切なサイズのPrimitiveで保存する
-//----------------------------------------------------------------------------
-
-//      ---<<< 符号付き >>>---
-
-void BinaryMidOSerializer::saveSigned(long long iControl)
-{
-    if (iControl < 0)
-    {
-        saveUnsigned(static_cast<unsigned long long>(-iControl), BinaryTag::TagCode::MinusValue);
-    }
-    else
-    {
-        saveUnsigned(iControl);
-    }
-}
-
-//      ---<<< 符号無し >>>---
-
-void BinaryMidOSerializer::saveUnsigned(unsigned long long iControl, BinaryTag::TagCode iTagCode)
-{
-    unsigned aSize=0;
-    if (iControl <= std::numeric_limits<uint8_t>::max())
-    {
-        aSize=1;
-    }
-    else if (iControl <= std::numeric_limits<uint16_t>::max())
-    {
-        aSize=2;
-    }
-    else if (iControl <= std::numeric_limits<uint32_t>::max())
-    {
-        aSize=4;
-    }
-    else
-    {
-        aSize=8;
-    }
-    writeByte(BinaryTag(iTagCode, aSize));
-    for (int i=aSize-1; 0 <= i ; --i) {
-        writeByte(static_cast<uint8_t>(iControl >> (8*i)));
-    }
-}
-
-//----------------------------------------------------------------------------
 //      プリミティブ処理
 //----------------------------------------------------------------------------
 
 //      ---<<< 整数型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSimbol)                   \
-    void BinaryMidOSerializer::savePrimitive(dType const& iPrimitive)       \
+#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSimbol)                     \
+    void JsonMidOSerializer::savePrimitive(dType const& iPrimitive)         \
     {                                                                       \
         if (std::numeric_limits<dType>::is_signed) {                        \
-            saveSigned(iPrimitive);                                         \
+            mOStream << static_cast<long long>(iPrimitive);                 \
         } else {                                                            \
-            saveUnsigned(iPrimitive);                                       \
+            mOStream << static_cast<unsigned long long>(iPrimitive);        \
+        }                                                                   \
+        if (!mOStream.good()) {                                             \
+            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                    \
         }                                                                   \
     }
 
 //      ---<<< 浮動小数点型 >>>---
 
-// 実マクロ
 #define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSimbol)               \
-    void BinaryMidOSerializer::savePrimitive(dType const& iPrimitive)       \
+    void JsonMidOSerializer::savePrimitive(dType const& iPrimitive)         \
     {                                                                       \
-        Numerical2Unsigned<dType>   data;                                   \
-        data.mNumerical=iPrimitive;                                         \
-        savePrimitive(data.mUnsigned);                                      \
-    }
-
-// long doubleはdoubleへ変換する
-#define THEOLIZER_INTERNAL_DEF_LONG_DOUBLE(dType, dSimbol)                  \
-    void BinaryMidOSerializer::savePrimitive(dType const& iPrimitive)       \
-    {                                                                       \
-        Numerical2Unsigned<double>  data;                                   \
-        data.mNumerical=iPrimitive;                                         \
-        savePrimitive(data.mUnsigned);                                      \
+        std::streamsize precision=mOStream.precision();                     \
+        mOStream.precision(std::numeric_limits<dType>::digits10);           \
+        mOStream << iPrimitive;                                             \
+        mOStream.precision(precision);                                      \
+        if (!mOStream.good()) {                                             \
+            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                    \
+        }                                                                   \
     }
 
 //      ---<<< 文字列型 >>>---
 
 #define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType, dSimbol)                \
-    void BinaryMidOSerializer::savePrimitive(dType const& iPrimitive)       \
+    void JsonMidOSerializer::savePrimitive(dType const& iPrimitive)         \
     {                                                                       \
-        saveByteString(iPrimitive);                                         \
+        if (mCharIsMultiByte)                                               \
+        {                                                                   \
+            u8string temp(iPrimitive, MultiByte());                         \
+            encodeJsonString(std::move(temp.str()));                        \
+        }                                                                   \
+        else                                                                \
+        {                                                                   \
+            encodeJsonString(iPrimitive);                                   \
+        }                                                                   \
     }
 
 #define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType, dSimbol)                  \
-    void BinaryMidOSerializer::savePrimitive(dType const& iPrimitive)       \
+    void JsonMidOSerializer::savePrimitive(dType const& iPrimitive)         \
     {                                                                       \
-        unsigned aDataSize=sizeof(dType::value_type);                       \
-        std::size_t size=iPrimitive.size()*aDataSize;                       \
-        saveUnsigned(size, BinaryTag::TagCode::ByteString);                 \
-        for (auto data : iPrimitive)                                        \
-        {                                                                   \
-            for (int i=aDataSize-1; 0 <= i ; --i) {                         \
-                writeByte(static_cast<uint8_t>(data >> (8*i)));             \
-            }                                                               \
-        }                                                                   \
+        u8string temp(iPrimitive);                                          \
+        encodeJsonString(temp.str());                                       \
     }
 
 //      ---<<< 実体定義 >>>---
 
 #include "primitive.inc"
+
+//----------------------------------------------------------------------------
+//      Element前処理
+//----------------------------------------------------------------------------
+
+void JsonMidOSerializer::writePreElement()
+{
+    writeCommaIndent(mWriteComma);
+}
 
 // ***************************************************************************
 //      ユーティリティ
@@ -292,18 +221,20 @@ void BinaryMidOSerializer::saveUnsigned(unsigned long long iControl, BinaryTag::
 
 //      ---<<< 開始処理 >>>---
 
-void BinaryMidOSerializer::saveClassStart(bool iIsTop)
+void JsonMidOSerializer::saveClassStart(bool iIsTop)
 {
+    mWriteComma=false;
     if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
     {
+        if (!mCancelPrettyPrint) mIndent++;
         switch (mElementsMapping)
         {
         case emName:
-            writeByte(BinaryTag::ClassStartName);
+            mOStream << "{";
             break;
 
         case emOrder:
-            writeByte(BinaryTag::ClassStartOrder);
+            mOStream << "[";
             break;
         }
     }
@@ -311,38 +242,70 @@ void BinaryMidOSerializer::saveClassStart(bool iIsTop)
 
 //      ---<<< 終了処理 >>>---
 
-void BinaryMidOSerializer::saveClassEnd(bool iIsTop)
+void JsonMidOSerializer::saveClassEnd(bool iIsTop)
 {
+    mWriteComma=false;
+    writeCommaIndent();
     if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
     {
-        writeByte(BinaryTag::ClassEnd);
+        switch (mElementsMapping)
+        {
+        case emName:
+            mOStream << "}";
+            break;
+
+        case emOrder:
+            mOStream << "]";
+            break;
+        }
     }
+    if ((iIsTop) && (!mIndent))
+        mOStream << "\n";
 }
 
 //----------------------------------------------------------------------------
-//      Byte列保存
+//      整形処理
 //----------------------------------------------------------------------------
 
-void BinaryMidOSerializer::saveByteString(std::string const& iString)
+void JsonMidOSerializer::writeCommaIndent(bool iWriteComma)
 {
-    std::size_t size=iString.size();
-    saveUnsigned(size, BinaryTag::TagCode::ByteString);
-    mOStream.write(iString.data(), size);
-    if (!mOStream.good()) {
-        THEOLIZER_INTERNAL_IO_ERROR(u8"Write Error(size=%1%).", size);
+    if (iWriteComma) {
+        mOStream << ",";
     }
+
+    if (!mNoPrettyPrint && !mCancelPrettyPrint)
+    {
+        mOStream << "\n";
+        for (int i=0; i < mIndent; ++i)
+            mOStream << "    ";
+    }
+
+    mWriteComma=true;
 }
 
 //----------------------------------------------------------------------------
-//      1バイト書き込み
+//      JSON文字列へエンコードして保存
 //----------------------------------------------------------------------------
 
-void BinaryMidOSerializer::writeByte(uint8_t iByte)
+void JsonMidOSerializer::encodeJsonString(std::string const& iString)
 {
-    mOStream.write(reinterpret_cast<char const*>(&iByte), 1);
-    if (!mOStream.good()) {
-        THEOLIZER_INTERNAL_IO_ERROR(u8"Write Error(byte=0x%02x).", iByte);
+    mOStream << "\"";
+    for (auto ch : iString)
+    {
+        switch(ch)
+        {
+        case '\"':      mOStream << "\\\"";     break;
+        case '\\':      mOStream << "\\\\";     break;
+        case '/':       mOStream << "\\/";      break;
+        case '\x08':    mOStream << "\\b";      break;
+        case '\x0C':    mOStream << "\\f";      break;
+        case '\n':      mOStream << "\\n";      break;
+        case '\r':      mOStream << "\\r";      break;
+        case '\t':      mOStream << "\\t";      break;
+        default:        mOStream << ch;         break;
+        }
     }
+    mOStream << "\"";
 }
 
 //############################################################################
@@ -353,14 +316,14 @@ void BinaryMidOSerializer::writeByte(uint8_t iByte)
 //      シリアライザ名
 // ***************************************************************************
 
-char const* const   BinaryMidISerializer::kSerializerName=
-        "theolizer::internal::BinaryMidISerializer";
+char const* const   JsonMidISerializer::kSerializerName=
+        "theolizer::internal::JsonMidISerializer";
 
 // ***************************************************************************
 //      コンストラクタ
 // ***************************************************************************
 
-BinaryMidISerializer::BinaryMidISerializer
+JsonMidISerializer::JsonMidISerializer
 (
     std::istream& iIStream,
     Destinations const& iDestinations,
@@ -380,13 +343,15 @@ BinaryMidISerializer::BinaryMidISerializer
         mNoThrowException
     ),
     mIStream(iIStream),
+    mReadComma(false),
+    mCharIsMultiByte(false),
     mTerminated(false)
 {
     // エラー情報登録準備
     theolizer::internal::ApiBoundary aApiBoundary(&mAdditionalInfo, true);
 
     // 型情報取得中継クラス登録
-    TypeFunctions<BinaryMidISerializer> aTypeFunctions;
+    TypeFunctions<JsonMidISerializer>   aTypeFunctions;
 
     // ヘッダ処理
     if (getNoThrowException())
@@ -415,9 +380,8 @@ BinaryMidISerializer::BinaryMidISerializer
 //      ヘッダ情報回復
 //----------------------------------------------------------------------------
 
-void BinaryMidISerializer::readHeader()
+void JsonMidISerializer::readHeader()
 {
-    mBinaryTag = readByte();
     AutoRestoreLoad aAutoRestoreLoad(*this, emName);
 
 //      ---<<< 名前に従って回復 >>>---
@@ -435,10 +399,10 @@ void BinaryMidISerializer::readHeader()
             aExistSerializerName=true;
             std::string aSerialzierName;
             loadControl(aSerialzierName);
-            if (aSerialzierName != kBinarySerializerName)
+            if (aSerialzierName != kJsonSerializerName)
             {
                 THEOLIZER_INTERNAL_DATA_ERROR
-                    ("BinaryMidISerializer : シリアライザ名(%1%)が異なります。", aSerialzierName);
+                    ("JsonMidISerializer : シリアライザ名(%1%)が異なります。", aSerialzierName);
             }
         }
         else if (aInfoName == "GlobalVersionNo")
@@ -474,18 +438,18 @@ void BinaryMidISerializer::readHeader()
 
     if (!aExistSerializerName)
     {
-        THEOLIZER_INTERNAL_DATA_ERROR(u8"BinaryMidISerializer : No Serializer name.");
+        THEOLIZER_INTERNAL_DATA_ERROR(u8"JsonMidISerializer : No Serializer name.");
     }
 
     if (!aExistGlobalVersionNo)
     {
         THEOLIZER_INTERNAL_DATA_ERROR
-            ("BinaryMidISerializer : No global version number.");
+            ("JsonMidISerializer : No global version number.");
     }
 
     if (!aExistTypeInfo)
     {
-        THEOLIZER_INTERNAL_DATA_ERROR(u8"BinaryMidISerializer : No types infomation.");
+        THEOLIZER_INTERNAL_DATA_ERROR(u8"JsonMidISerializer : No types infomation.");
     }
 }
 
@@ -493,7 +457,7 @@ void BinaryMidISerializer::readHeader()
 //      TypeIndex一致判定
 //----------------------------------------------------------------------------
 
-bool BinaryMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
+bool JsonMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
                                           size_t iProgramTypeIndex)
 {
     return BaseSerializer::isMatchTypeIndex(iSerializedTypeIndex, iProgramTypeIndex);
@@ -504,66 +468,21 @@ bool BinaryMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
-//      コントロール整数回復
-//          mBinatyTag値に応じて適切なサイズのPrimitiveで保存する
-//----------------------------------------------------------------------------
-
-//      ---<<< 符号付き >>>---
-
-long long BinaryMidISerializer::loadSigned()
-{
-    if (mBinaryTag.isMinusValue())
-    {
-        return -static_cast<long long>(
-            loadUnsigned
-            (
-                BinaryTag(BinaryTag::TagCode::Primitive, mBinaryTag.getSize())
-            )
-        );
-    }
-    else if (mBinaryTag.isPrimitive())
-    {
-        return loadUnsigned();
-    }
-    else
-    {
-        THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
-    }
-    return 0;
-}
-
-//      ---<<< 符号無し >>>---
-
-unsigned long long BinaryMidISerializer::loadUnsigned(BinaryTag::TagCode iTagCode)
-{
-    if (((iTagCode == BinaryTag::TagCode::Primitive)  && (!mBinaryTag.isPrimitive()))
-     || ((iTagCode == BinaryTag::TagCode::ByteString) && (!mBinaryTag.isByteString())))
-    {
-        THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
-    }
-
-    unsigned long long ret=0;
-    unsigned size=mBinaryTag.getSize();
-    for (unsigned i=0; i < size; ++i)
-    {
-        ret <<= 8;
-        ret |= readByte();
-    }
-    return ret;
-}
-
-//----------------------------------------------------------------------------
 //      プリミティブ処理
 //----------------------------------------------------------------------------
 
 //      ---<<< bool型 >>>---
 
 #define THEOLIZER_INTERNAL_DEF_BOOL(dType, dSimbol)                         \
-    void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
+    void JsonMidISerializer::loadPrimitive(bool& oPrimitive)                \
     {                                                                       \
-        long long data=loadSigned();                                        \
-        long long min = std::numeric_limits<dType>::min();                  \
-        long long max = std::numeric_limits<dType>::max();                  \
+        long long data(0);                                                  \
+        mIStream >> data;                                                   \
+        if (!mIStream.good()) {                                             \
+            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                    \
+        }                                                                   \
+        long long min = std::numeric_limits<bool>::min();                   \
+        long long max = std::numeric_limits<bool>::max();                   \
         if ((data < min) || (max < data)) {                                 \
             THEOLIZER_INTERNAL_DATA_ERROR(u8"Data overflow.");              \
         }                                                                   \
@@ -573,11 +492,15 @@ unsigned long long BinaryMidISerializer::loadUnsigned(BinaryTag::TagCode iTagCod
 //      ---<<< 整数型 >>>---
 
 #define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSimbol)                     \
-    void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
+    void JsonMidISerializer::loadPrimitive(dType& oPrimitive)               \
     {                                                                       \
         if (std::numeric_limits<dType>::is_signed)                          \
         {                                                                   \
-            long long data=loadSigned();                                    \
+            long long data(0);                                              \
+            mIStream >> data;                                               \
+            if (!mIStream.good()) {                                         \
+            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                    \
+            }                                                               \
             long long min = std::numeric_limits<dType>::min();              \
             long long max = std::numeric_limits<dType>::max();              \
             if ((data < min) || (max < data)) {                             \
@@ -587,7 +510,11 @@ unsigned long long BinaryMidISerializer::loadUnsigned(BinaryTag::TagCode iTagCod
         }                                                                   \
         else                                                                \
         {                                                                   \
-            unsigned long long data=loadUnsigned();                         \
+            unsigned long long data(0);                                     \
+            mIStream >> data;                                               \
+            if (!mIStream.good()) {                                         \
+                THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                \
+            }                                                               \
             unsigned long long max = std::numeric_limits<dType>::max();     \
             if (max < data) {                                               \
             THEOLIZER_INTERNAL_DATA_ERROR(u8"Data overflow.");              \
@@ -599,64 +526,39 @@ unsigned long long BinaryMidISerializer::loadUnsigned(BinaryTag::TagCode iTagCod
 //      ---<<< 浮動小数点型 >>>---
 
 #define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSimbol)               \
-    void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
+    void JsonMidISerializer::loadPrimitive(dType& oPrimitive)               \
     {                                                                       \
-        if (!mBinaryTag.isPrimitive()) {                                    \
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");               \
+        long double data(0);                                                \
+        mIStream >> data;                                                   \
+        if (!mIStream.good()) {                                             \
+            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                    \
         }                                                                   \
-        if (mBinaryTag.getSize() != sizeof(dType)) {                        \
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Size Error(size=%1%).", mBinaryTag.getSize());\
-        }                                                                   \
-        Numerical2Unsigned<dType> data;                                     \
-        loadPrimitive(data.mUnsigned);                                      \
-        oPrimitive = data.mNumerical;                                       \
+        oPrimitive = static_cast<dType>(data);                              \
     }
-
-// long doubleはdoubleへ変換する
-#define THEOLIZER_INTERNAL_DEF_LONG_DOUBLE(dType, dSimbol)                  \
-    void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
-    {                                                                       \
-        if (!mBinaryTag.isPrimitive()) {                                    \
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");               \
-        }                                                                   \
-        if (mBinaryTag.getSize() != sizeof(double)) {                       \
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Size Error(size=%1%).", mBinaryTag.getSize());\
-        }                                                                   \
-        Numerical2Unsigned<double>  data;                                   \
-        loadPrimitive(data.mUnsigned);                                      \
-        oPrimitive = data.mNumerical;                                       \
-    }
-
 
 //      ---<<< 文字列型 >>>---
 
 #define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType, dSimbol)                \
-    void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
+    void JsonMidISerializer::loadPrimitive(dType& oPrimitive)               \
     {                                                                       \
-        loadByteString(oPrimitive);                                         \
+        if (mCharIsMultiByte)                                               \
+        {                                                                   \
+            u8string temp;                                                  \
+            decodeJsonString(temp.str());                                   \
+            oPrimitive=std::move(temp.getMultiByte());                      \
+        }                                                                   \
+        else                                                                \
+        {                                                                   \
+            decodeJsonString(oPrimitive);                                   \
+        }                                                                   \
     }
 
 #define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType, dSimbol)                  \
-    void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
+    void JsonMidISerializer::loadPrimitive(dType& oPrimitive)               \
     {                                                                       \
-        if (!mBinaryTag.isByteString()) {                                   \
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");               \
-        }                                                                   \
-        unsigned aDataSize=sizeof(dType::value_type);                       \
-        unsigned long long size=loadUnsigned(BinaryTag::TagCode::ByteString);\
-        oPrimitive.resize(static_cast<std::size_t>(size/aDataSize));        \
-        if (size)                                                           \
-        {                                                                   \
-            for (auto& data : oPrimitive)                                   \
-            {                                                               \
-                data=0;                                                     \
-                for (unsigned i=0; i < aDataSize; ++i)                      \
-                {                                                           \
-                    data <<= 8;                                             \
-                    data |= readByte();                                     \
-                }                                                           \
-            }                                                               \
-        }                                                                   \
+        u8string temp;                                                      \
+        decodeJsonString(temp.str());                                       \
+        oPrimitive=temp;                                                    \
     }
 
 //      ---<<< 実体定義 >>>---
@@ -667,9 +569,10 @@ unsigned long long BinaryMidISerializer::loadUnsigned(BinaryTag::TagCode iTagCod
 //      Element前処理
 //----------------------------------------------------------------------------
 
-ReadStat BinaryMidISerializer::readPreElement()
+ReadStat JsonMidISerializer::readPreElement()
 {
-    bool aContinue=readNext();
+    bool aContinue=readComma(mReadComma);
+    mReadComma=true;
 
     return (aContinue && !ErrorReporter::getError())?Continue:Terminated;
 }
@@ -678,16 +581,14 @@ ReadStat BinaryMidISerializer::readPreElement()
 //      Element名取出し
 //----------------------------------------------------------------------------
 
-std::string BinaryMidISerializer::loadElementName(ElementsMapping iElementsMapping)
+std::string JsonMidISerializer::loadElementName(ElementsMapping iElementsMapping)
 {
     std::string aElementName;
     if (iElementsMapping == emName)
     {
-        loadByteString(aElementName);
-
-        // 次の準備
-        mBinaryTag = readByte();
-        if (mBinaryTag.isClassEnd()) {
+        decodeJsonString(aElementName);
+        char in = find_not_of(" \t\n");
+        if (in != ':') {
             THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
         }
     }
@@ -699,34 +600,35 @@ std::string BinaryMidISerializer::loadElementName(ElementsMapping iElementsMappi
 //      要素破棄処理
 // ***************************************************************************
 
-void BinaryMidISerializer::disposeElement()
+void JsonMidISerializer::disposeElement()
 {
-    switch(mBinaryTag.getKind())
-    {
-    case BinaryTag::Primitive:
-        {
-            unsigned long long temp;
-            loadControl(temp);
-        }
-        break;
+    char in = find_not_of(" \t\n");
 
-    case BinaryTag::ByteString:
+    // 次の処理に備えて、最後の文字を戻しておく
+    mIStream.unget();
+
+    switch(in)
+    {
+    case '\"':
         {
             std::string temp;
-            loadControl(temp);
+            decodeJsonString(temp);
         }
         break;
 
-    case BinaryTag::ClassStartName:
+    case '{':
         disposeClass(emName);
         break;
 
-    case BinaryTag::ClassStartOrder:
+    case '[':
         disposeClass(emOrder);
         break;
 
     default:
-        THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+        {
+            long double temp;
+            mIStream >> temp;
+        }
         break;
     }
 }
@@ -741,111 +643,154 @@ void BinaryMidISerializer::disposeElement()
 
 //      ---<<< 開始処理 >>>---
 
-void BinaryMidISerializer::loadClassStart(bool iIsTop)
+void JsonMidISerializer::loadClassStart(bool iIsTop)
 {
-    if (iIsTop)
+    mReadComma=false;
+    if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
     {
-        if (CheckMode::TypeCheck <= mCheckMode)
+        char in = find_not_of(" \t\n");
+        switch (mElementsMapping)
         {
-            mBinaryTag = readByte();
-        }
-        else
-        {
-            mBinaryTag = BinaryTag::TagCode::ClassStartOrder;
-        }
-    }
+        case emName:
+            if (in != '{') {
+                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+            }
+            break;
 
-    switch (mElementsMapping)
-    {
-    case emName:
-        if (!mBinaryTag.isClassStartName())
-        {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+        case emOrder:
+            if (in != '[') {
+                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+            }
+            break;
         }
-        break;
-
-    case emOrder:
-        if (!mBinaryTag.isClassStartOrder())
-        {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
-        }
-        break;
     }
 //  mTerminated=false;  // 呼び出される前は必ずfalseなので設定不要
 }
 
 //      ---<<< 終了処理 >>>---
 
-void BinaryMidISerializer::loadClassEnd(bool iIsTop)
+void JsonMidISerializer::loadClassEnd(bool iIsTop)
 {
-    // まだ終了処理されてないなら、終了処理する
-    if (!mTerminated)
+    if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
     {
-        while (1)
+        // まだ終了処理されてないなら、終了処理する
+        if (!mTerminated)
         {
-            if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
+            while (readPreElement())
             {
-                mBinaryTag = readByte();
-                if (mBinaryTag.isClassEnd())
-        break;
-            }
-            else
-            {
-        break;
-            }
+                // エラーが発生していたら、抜ける
+                if (ErrorReporter::getError())
+            break;
 
-            // エラーが発生していたら、抜ける
-            if (ErrorReporter::getError())
-        break;
-
-            disposeElement();
+                disposeElement();
+            }
         }
     }
-
     mTerminated=false;
+    mReadComma=true;
 }
 
 //----------------------------------------------------------------------------
-//      次のバイト獲得
+//      ,まで読み飛ばし
 //----------------------------------------------------------------------------
 
-bool BinaryMidISerializer::readNext()
+bool JsonMidISerializer::readComma(bool iReadComma)
 {
-    mBinaryTag = readByte();
-    if (mBinaryTag.isClassEnd())
+    char in = find_not_of(" \t\n");
+    if (in == ',')
     {
-        mTerminated=true;
-return false;
+        if (iReadComma)
+        {
+return true;
+        }
+        else
+        {
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+        }
     }
+
+    // 終端マークなら、false返却
+    if (checkTerminal(in))
+return false;
+
+    // 読みだした文字は要素の先頭なので、戻しておく
+    mIStream.unget();
 
     return true;
 }
 
 //----------------------------------------------------------------------------
-//      Byte列回復
+//      終了マーク確認
 //----------------------------------------------------------------------------
 
-void BinaryMidISerializer::loadByteString(std::string& iString)
+bool JsonMidISerializer::checkTerminal(char iIn)
 {
-    if (!mBinaryTag.isByteString()) {
+    switch (mElementsMapping)
+    {
+    case emName:
+        if (iIn != '}')
+return false;
+        break;
+
+    case emOrder:
+        if (iIn != ']')
+return false;
+        break;
+    }
+    mTerminated=true;
+
+    return true;
+}
+
+//----------------------------------------------------------------------------
+//      JSON文字列を回復しつつ、デコード
+//----------------------------------------------------------------------------
+
+void JsonMidISerializer::decodeJsonString(std::string& iString)
+{
+//      ---<<< "までスキップ >>>---
+
+    char in = find_not_of(" \t\n");
+    if (in != '\"') {
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
     }
 
-    std::size_t size=static_cast<std::size_t>(loadUnsigned(BinaryTag::TagCode::ByteString));
-    iString.resize(size);
-    if (size) {
-        mIStream.read(&(*iString.begin()), size);
-    }
-    if (!mIStream.good()) {
-        THEOLIZER_INTERNAL_IO_ERROR(u8"Read Error.");
+//      ---<<< "の直前までを追加する >>>---
+
+    iString.clear();
+    while(1) {
+        char in=getChar();
+
+        // Escape文字
+        if (in == '\\') {
+            in=getChar();
+            switch (in)
+            {
+            case '\"':              break;
+            case '\\':              break;
+            case '/':               break;
+            case 'b':   in='\x08';  break;
+            case 'f':   in='\x0C';  break;
+            case 'n':   in='\n';    break;
+            case 'r':   in='\r';    break;
+            case 't':   in='\t';    break;
+            default:
+                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+                break;
+            }
+        // "(終了文字)
+        } else if (in == '\"') {
+    break;
+        }
+        iString += in;
     }
 }
 
 //----------------------------------------------------------------------------
-//      1バイト読み出し
+//      1文字読み出し
 //----------------------------------------------------------------------------
 
-uint8_t BinaryMidISerializer::readByte()
+char JsonMidISerializer::getChar()
 {
     char    in;
     mIStream.get(in);
@@ -857,7 +802,28 @@ uint8_t BinaryMidISerializer::readByte()
         }
     }
 
-    return static_cast<uint8_t>(in);
+    return in;
+}
+
+//----------------------------------------------------------------------------
+//      指定以外の文字まで読み飛ばし
+//----------------------------------------------------------------------------
+
+char JsonMidISerializer::find_not_of(std::string const& iSkipChars)
+{
+    char    in;
+    while(1) {
+        in=getChar();
+        // エラーが発生していたら、終了する
+        if (ErrorReporter::getError())
+return 0;
+
+        std::string::size_type pos = iSkipChars.find(in);
+        if (pos == std::string::npos)
+    break;
+    }
+
+    return in;
 }
 
 // ***************************************************************************
@@ -865,11 +831,11 @@ uint8_t BinaryMidISerializer::readByte()
 //          変換できなかったものはそのまま返却する
 // ***************************************************************************
 
-char const* getCppNameBinary(std::string const& iPrimitiveName, unsigned iSerializerVersionNo)
+char const* getCppNameJson(std::string const& iPrimitiveName, unsigned iSerializerVersionNo)
 {
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                  \
+#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                    \
     if (iPrimitiveName ==                                                   \
-        PrimitiveName<BinaryMidOSerializer, dType>::getPrimitiveName(iSerializerVersionNo))\
+        PrimitiveName<JsonMidOSerializer, dType>::getPrimitiveName(iSerializerVersionNo))\
 return #dType;
 #include "primitive.inc"
 

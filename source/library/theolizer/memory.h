@@ -104,7 +104,7 @@ struct TheolizerNonIntrusive<std::unique_ptr<T>>::
 #define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
 #define THEOLIZER_GENERATED_CLASS_NAME()\
     THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"std::unique_ptr",T))
-#include <theolizer/impl/version_manual.inc>
+#include <theolizer/internal/version_manual.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 #endif//THEOLIZER_WRITE_CODE // ###### std::unique_ptr<T> ######
