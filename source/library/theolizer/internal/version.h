@@ -28,5 +28,5 @@
 //############################################################################
 
 char const kTheolizerVersion[]    ="0.4.0-Temp.";
-char const kTheolizerSourcesHash[]="a16b3a21ff6647dd4e3ae9d58eab74f8";
+char const kTheolizerSourcesHash[]="ecfdcdab4c24a47973559b1222fe7a8f";
 char const kTheolizerLibraryHash[]="e7b4db05be730a7bb697df5338e3a435";

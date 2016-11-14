@@ -65,8 +65,8 @@ endforeach()
 
 #       ---<<< make version.h at config >>>---
 
-# TheolizerLibのソース
-set(VERSION_SOURCE "${THEOLIZER_DRIVER_LIST};${THEOLIZER_LIB_LIST}")
+# ドライバのソースとライブラリのソース
+set(VERSION_SOURCE "${THEOLIZER_DRIVER_LIST};${VERSION_SOURCE}")
 # 関連するCMakeLists.txtも含める
 set(VERSION_SOURCE "${VERSION_SOURCE};${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 

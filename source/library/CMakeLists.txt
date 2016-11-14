@@ -44,12 +44,12 @@ endforeach()
 
 #       ---<<< install header files >>>---
 
-file(GLOB_RECURSE LIBRARY_SOURCES *.h *.inc)
+file(GLOB_RECURSE LIBRARY_HEADERS *.h *.inc)
 file(GLOB_RECURSE REMOVE_LIST avoid-trouble.h internal.h version.h)
-list(REMOVE_ITEM LIBRARY_SOURCES ${REMOVE_LIST})
-list(SORT LIBRARY_SOURCES)
+list(REMOVE_ITEM LIBRARY_HEADERS ${REMOVE_LIST})
+list(SORT LIBRARY_HEADERS)
 message(STATUS "Source of library's header")
-foreach(SOURCE IN LISTS LIBRARY_SOURCES)
+foreach(SOURCE IN LISTS LIBRARY_HEADERS)
     message(STATUS "${SOURCE}")
 endforeach()
 
@@ -63,7 +63,7 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/theolizer
 )
 
 # 親へ返却する
-set(LIBRARY_SOURCES "${LIBRARY_SOURCES}" PARENT_SCOPE)
+set(LIBRARY_HEADERS "${LIBRARY_HEADERS}" PARENT_SCOPE)
 
 #       ---<<< make version.h at config >>>---
 
@@ -72,6 +72,11 @@ set(VERSION_SOURCE "${THEOLIZER_LIB_LIST}")
 # 関連するCMakeLists.txtも含める
 set(VERSION_SOURCE "${VERSION_SOURCE};${CMAKE_SOURCE_DIR}/CMakeLists.txt")
 set(VERSION_SOURCE "${VERSION_SOURCE};${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
+set(VERSION_SOURCE "${VERSION_SOURCE}" PARENT_SCOPE)
+message(STATUS "Source of library's for hash")
+foreach(SOURCE IN LISTS VERSION_SOURCE)
+    message(STATUS "${SOURCE}")
+endforeach()
 
 #       ---<<< tool >>>---
 

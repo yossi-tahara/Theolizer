@@ -196,7 +196,7 @@ function(version_at_build TARGET_NAME VERSION_DIR SOURCES)
     #message(STATUS "SOURCES=${SOURCES}")
     add_custom_target(VersionOf${TARGET_NAME}
         COMMAND $<TARGET_FILE:remove_crlf> source.hash  -- ${SOURCES}
-        COMMAND $<TARGET_FILE:remove_crlf> library.hash -- ${LIBRARY_SOURCES}
+        COMMAND $<TARGET_FILE:remove_crlf> library.hash -- ${LIBRARY_HEADERS}
         COMMAND ${CMAKE_COMMAND}
             -D VERSION_STRING=\"${PROJECT_VERSION}${TEMPORARY_VERSION}\"
             -D SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"
@@ -336,8 +336,8 @@ endif()
 
 #       ---<<< Theolizer Library >>>---
 
-# ライブラリのソース
-set(THEOLIZER_LIB_LIST "")
+# ライブラリのハッシュ計算用ソース
+set(VERSION_SOURCE "")
 
 include_directories("${CMAKE_SOURCE_DIR}/library")
 add_subdirectory(library)
