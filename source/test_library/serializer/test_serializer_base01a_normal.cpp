@@ -270,6 +270,8 @@ std::cout << "TestISerializerNormal(" << iFileName << ", "
     THEOLIZER_PROCESS(aSerializer, aDouble);
     THEOLIZER_EQUAL(aDouble, 1.23456789012345);
 
+try
+{
     long double aLongDouble;
     THEOLIZER_PROCESS(aSerializer, aLongDouble);
 
@@ -283,15 +285,22 @@ std::cout << "TestISerializerNormal(" << iFileName << ", "
         double temp=aLongDouble;
         THEOLIZER_EQUAL(temp, 1.23456789012345);
     }
+}
+catch(theolizer::ErrorInfo& e)
+{
+    std::cout << e.getMessage() << std::endl;
+exit(1);
+}
+
 
 //      ---<<< enum型 >>>---
 
     EnumTest aEnum=EnumTest::zero;
     THEOLIZER_PROCESS(aSerializer, aEnum);
-    THEOLIZER_EQUAL(static_cast<long>(aEnum), static_cast<long>(EnumTest::one));
+    THEOLIZER_EQUAL(aEnum, EnumTest::one);
 
     THEOLIZER_PROCESS(aSerializer, aEnum);
-    THEOLIZER_EQUAL(static_cast<long>(aEnum), static_cast<long>(EnumTest::zero));
+    THEOLIZER_EQUAL(aEnum, EnumTest::zero);
 
 //      ---<<< 非侵入型 >>>---
 
@@ -350,7 +359,7 @@ std::cout << "TestISerializerNormal(" << iFileName << ", "
     THEOLIZER_EQUAL(aIntrusiveDerived.mIntrusiveBase.mShort, 602);
     THEOLIZER_EQUAL(aIntrusiveDerived.mIntrusiveBase.mString, u8"603)テスト");
 
-    THEOLIZER_EQUAL(static_cast<long>(aIntrusiveDerived.mEnum), static_cast<long>(EnumTest::two));
+    THEOLIZER_EQUAL(aIntrusiveDerived.mEnum, EnumTest::two);
 
 //      ---<<< 完全自動（ノーマル） >>>---
 

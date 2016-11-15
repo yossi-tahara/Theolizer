@@ -267,8 +267,8 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
                     aArrayClass.mEnumArrayInc[i][j][k]=static_cast<EnumTest>(k%3);
                     THEOLIZER_EQUAL
                     (
-                        static_cast<long>(aArrayClass.mEnumArrayInc[i][j][k]),
-                        static_cast<long>(k%3)
+                        aArrayClass.mEnumArrayInc[i][j][k],
+                        static_cast<EnumTest>(k%3)
                     );
                 }
             }
@@ -278,8 +278,8 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
             aArrayClass.mEnumArrayDec[i]=static_cast<EnumTest>(i%3);
             THEOLIZER_EQUAL
             (
-                static_cast<long>(aArrayClass.mEnumArrayDec[i]),
-                static_cast<long>(i%3)
+                aArrayClass.mEnumArrayDec[i],
+                static_cast<EnumTest>(i%3)
             );
         }
     }
@@ -359,16 +359,16 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
                     {
                         THEOLIZER_EQUAL
                         (
-                            static_cast<long>(aArrayClass.mEnumArrayInc[i][j][k]),
-                            static_cast<long>(k%3)
+                            aArrayClass.mEnumArrayInc[i][j][k],
+                            static_cast<EnumTest>(k%3)
                         );
                     }
                     else
                     {
                         THEOLIZER_EQUAL
                         (
-                            static_cast<long>(aArrayClass.mEnumArrayInc[i][j][k]),
-                            static_cast<long>(1)
+                            aArrayClass.mEnumArrayInc[i][j][k],
+                            static_cast<EnumTest>(1)
                         );
                     }
                 }
@@ -379,8 +379,8 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
             aArrayClass.mEnumArrayDec[i]=static_cast<EnumTest>(i%3);
             THEOLIZER_EQUAL
             (
-                static_cast<long>(aArrayClass.mEnumArrayDec[i]),
-                static_cast<long>(i%3)
+                aArrayClass.mEnumArrayDec[i],
+                static_cast<EnumTest>(i%3)
             );
         }
     }

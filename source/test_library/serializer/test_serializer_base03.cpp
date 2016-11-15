@@ -94,73 +94,74 @@ int main(int argc, char** argv)
 {
 //  theolizer::DisplayPass aDisplayPass;
 
-//  TestGlobalVersions aTestGlobalVersions;
+    try
+    {
 
 //----------------------------------------------------------------------------
 //      型チェック無し
 //----------------------------------------------------------------------------
 
-    {
-        std::ofstream   aStream("test_poly_no_check.log");
-        theolizer::JsonOSerializer<>   js(aStream);
-        TestPoly(js);
-    }
-    {
-        std::ifstream   aStream("test_poly_no_check.log");
-        theolizer::JsonISerializer<>   js(aStream);
-        TestPoly(js);
-    }
+        {
+            std::ofstream   aStream("test_poly_no_check.log");
+            theolizer::JsonOSerializer<>   js(aStream);
+            TestPoly(js);
+        }
+        {
+            std::ifstream   aStream("test_poly_no_check.log");
+            theolizer::JsonISerializer<>   js(aStream);
+            TestPoly(js);
+        }
 
 //----------------------------------------------------------------------------
 //      型名で型チェック
 //----------------------------------------------------------------------------
 
-    {
-        std::ofstream   aStream("test_poly_check.log");
-        theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheck);
-        TestPoly(js);
-    }
-    {
-        std::ifstream   aStream("test_poly_check.log");
-        theolizer::JsonISerializer<>   js(aStream);
-        TestPoly(js);
-    }
+        {
+            std::ofstream   aStream("test_poly_check.log");
+            theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheck);
+            TestPoly(js);
+        }
+        {
+            std::ifstream   aStream("test_poly_check.log");
+            theolizer::JsonISerializer<>   js(aStream);
+            TestPoly(js);
+        }
 
 //----------------------------------------------------------------------------
 //      TypeIndexで型チェック
 //----------------------------------------------------------------------------
 
-    {
-        std::ofstream   aStream("test_poly_check_index.log");
-        theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheckByIndex);
-        TestPoly(js);
-    }
-    {
-        std::ifstream   aStream("test_poly_check_index.log");
-        theolizer::JsonISerializer<>   js(aStream);
-        TestPoly(js);
-    }
+        {
+            std::ofstream   aStream("test_poly_check_index.log");
+            theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheckByIndex);
+            TestPoly(js);
+        }
+        {
+            std::ifstream   aStream("test_poly_check_index.log");
+            theolizer::JsonISerializer<>   js(aStream);
+            TestPoly(js);
+        }
 
 //----------------------------------------------------------------------------
 //      namespaceテスト
 //----------------------------------------------------------------------------
 
 #if defined(NAMESPACE_TEST)
-    {
-        std::ofstream   aStream("test_namespace.log");
-        theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheckByIndex);
+        {
+            std::ofstream   aStream("test_namespace.log");
+            theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheckByIndex);
 
-        user::NamespaceClass aBaseClass;
-        aBaseClass.mUInt=123;
-        THEOLIZER_PROCESS(js, aBaseClass);
-    }
-    {
-        std::ifstream   aStream("test_namespace.log");
-        theolizer::JsonISerializer<>   js(aStream);
-        user::NamespaceClass aBaseClass;
-        THEOLIZER_PROCESS(js, aBaseClass);
-        THEOLIZER_EQUAL(aBaseClass.mUInt, 123);
-    }
+            user::NamespaceClass aBaseClass;
+            aBaseClass.mUInt=123;
+            THEOLIZER_PROCESS(js, aBaseClass);
+        }
+        {
+            std::ifstream   aStream("test_namespace.log");
+            theolizer::JsonISerializer<>   js(aStream);
+            user::NamespaceClass aBaseClass;
+            THEOLIZER_PROCESS(js, aBaseClass);
+            THEOLIZER_EQUAL(aBaseClass.mUInt, 123);
+        }
 #endif
 
 //----------------------------------------------------------------------------
@@ -168,34 +169,39 @@ int main(int argc, char** argv)
 //----------------------------------------------------------------------------
 
 #ifdef REFERENCE_TEST
-    {
-        std::ofstream   aStream("test_reference.log");
-        theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheck);
+        {
+            std::ofstream   aStream("test_reference.log");
+            theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheck);
 
-        unsigned    aUInt=1;
-        BaseClass   aBaseClass(2);
-        int         aIntArray[2]={3, 4};
+            unsigned    aUInt=1;
+            BaseClass   aBaseClass(2);
+            int         aIntArray[2]={3, 4};
 
-        ReferenceClass aReferenceClass(aUInt, aBaseClass, aIntArray);
-        THEOLIZER_PROCESS(js, aReferenceClass);
-    }
+            ReferenceClass aReferenceClass(aUInt, aBaseClass, aIntArray);
+            THEOLIZER_PROCESS(js, aReferenceClass);
+        }
 
-    {
-        std::ifstream   aStream("test_reference.log");
-        theolizer::JsonISerializer<>   js(aStream);
+        {
+            std::ifstream   aStream("test_reference.log");
+            theolizer::JsonISerializer<>   js(aStream);
 
-        unsigned    aUInt=0;
-        BaseClass   aBaseClass(0);
-        int         aIntArray[2]={0, 0};
+            unsigned    aUInt=0;
+            BaseClass   aBaseClass(0);
+            int         aIntArray[2]={0, 0};
 
-        ReferenceClass aReferenceClass(aUInt, aBaseClass, aIntArray);
-        THEOLIZER_PROCESS(js, aReferenceClass);
-        THEOLIZER_EQUAL(aUInt, 1);
-        THEOLIZER_EQUAL(aBaseClass.mInt, 2);
-        THEOLIZER_EQUAL(aIntArray[0], 3);
-        THEOLIZER_EQUAL(aIntArray[1], 4);
-    }
+            ReferenceClass aReferenceClass(aUInt, aBaseClass, aIntArray);
+            THEOLIZER_PROCESS(js, aReferenceClass);
+            THEOLIZER_EQUAL(aUInt, 1);
+            THEOLIZER_EQUAL(aBaseClass.mInt, 2);
+            THEOLIZER_EQUAL(aIntArray[0], 3);
+            THEOLIZER_EQUAL(aIntArray[1], 4);
+        }
 #endif
+    }
+    catch(theolizer::ErrorInfo& e)
+    {
+        std::cout << e.getMessage() << std::endl;
+    }
 
     return 0;
 }

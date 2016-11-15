@@ -59,22 +59,25 @@ public:
 
         None            = 0x00,         // 未設定
         Primitive       = 0x10,         // プリミティブ
-            Primitive1      = 0x11,     // 1バイトのプリミティブ
-            Primitive2      = 0x12,     // 2バイトのプリミティブ
-            Primitive4      = 0x13,     // 4バイトのプリミティブ
-            Primitive8      = 0x14,     // 8バイトのプリミティブ
+            Primitive1      = 0x11,     //  1バイトのプリミティブ
+            Primitive2      = 0x12,     //  2バイトのプリミティブ
+            Primitive4      = 0x13,     //  4バイトのプリミティブ
+            Primitive8      = 0x14,     //  8バイトのプリミティブ
+            Primitive16     = 0x15,     // 16バイトのプリミティブ
 
         MinusValue      = 0x20,         // 負の整数の絶対値
-            MinusValue1     = 0x21,     // 1バイトの負の整数の絶対値
-            MinusValue2     = 0x22,     // 2バイトの負の整数の絶対値
-            MinusValue4     = 0x23,     // 4バイトの負の整数の絶対値
-            MinusValue8     = 0x24,     // 8バイトの負の整数の絶対値
+            MinusValue1     = 0x21,     //  1バイトの負の整数の絶対値
+            MinusValue2     = 0x22,     //  2バイトの負の整数の絶対値
+            MinusValue4     = 0x23,     //  4バイトの負の整数の絶対値
+            MinusValue8     = 0x24,     //  8バイトの負の整数の絶対値
+            MinusValue16    = 0x25,     // 16バイトの負の整数の絶対値
 
         ByteString      = 0x30,         // バイト列
-            ByteString1     = 0x31,     // バイト列(長さフィールド=1バイト)
-            ByteString2     = 0x32,     // バイト列(長さフィールド=2バイト)
-            ByteString3     = 0x33,     // バイト列(長さフィールド=4バイト)
-            ByteString4     = 0x34,     // バイト列(長さフィールド=8バイト)
+            ByteString1     = 0x31,     // バイト列(長さフィールド= 1バイト)
+            ByteString2     = 0x32,     // バイト列(長さフィールド= 2バイト)
+            ByteString4     = 0x33,     // バイト列(長さフィールド= 4バイト)
+            ByteString8     = 0x34,     // バイト列(長さフィールド= 8バイト)
+            ByteString16    = 0x35,     // バイト列(長さフィールド=16バイト)
 
         ClassEnd        = 0x40,         // クラス終了マーク
         ClassStartName  = 0x50,         // クラス開始マーク(名前対応)
@@ -88,11 +91,12 @@ private:
     {
         switch(iSize)
         {
-        case 0: return static_cast<TagCode>(iTagKind | 0);
-        case 1: return static_cast<TagCode>(iTagKind | 1);
-        case 2: return static_cast<TagCode>(iTagKind | 2);
-        case 4: return static_cast<TagCode>(iTagKind | 3);
-        case 8: return static_cast<TagCode>(iTagKind | 4);
+        case  0: return static_cast<TagCode>(iTagKind | 0);
+        case  1: return static_cast<TagCode>(iTagKind | 1);
+        case  2: return static_cast<TagCode>(iTagKind | 2);
+        case  4: return static_cast<TagCode>(iTagKind | 3);
+        case  8: return static_cast<TagCode>(iTagKind | 4);
+        case 16: return static_cast<TagCode>(iTagKind | 5);
         }
         THEOLIZER_INTERNAL_ABORT(u8"Illegal size in BinaryTag::getByteSize().");
     }
@@ -107,7 +111,7 @@ public:
     BinaryTag(uint8_t iByte) : mTagCode(static_cast<TagCode>(iByte)) { }
     operator TagCode() const {return mTagCode;}
     operator uint8_t() const {return mTagCode;}
-    uint8_t get()      const {return mTagCode;}
+    unsigned get()     const {return mTagCode;}
     BinaryTag& operator=(uint8_t iByte)
     {
         mTagCode=static_cast<TagCode>(iByte);
@@ -140,6 +144,7 @@ public:
         case 2: return 2;
         case 3: return 4;
         case 4: return 8;
+        case 5: return 16;
         }
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Illegal BinaryTag size(TagCode=0x%02x).", get());
 
@@ -264,7 +269,7 @@ THEOLIZER_INTERNAL_INTEGRAL(0, 64,  "uint64");
 
 THEOLIZER_INTERNAL_FLOAT(24,   128, "float32");
 THEOLIZER_INTERNAL_FLOAT(53,  1024, "float64");
-THEOLIZER_INTERNAL_FLOAT(64, 16384, "float64");   // float64形式で保存する
+THEOLIZER_INTERNAL_FLOAT(64, 16384, "float80");
 
 THEOLIZER_INTERNAL_STRING(1,        "String");
 THEOLIZER_INTERNAL_STRING(2,        "U16string");
@@ -371,6 +376,9 @@ private:
     void saveControl(std::string const& iControl)   {saveByteString(iControl);}
 
 //      ---<<< プリミティブ保存 >>>---
+
+    template<typename tType>
+    void saveFloat(tType iFloat);
 
     #define THEOLIZER_INTERNAL_DEF_SAVE
     #include "internal/primitive.inc"
@@ -520,6 +528,9 @@ private:
     void loadControl(std::string& iControl)        {loadByteString(iControl);}
 
 //      ---<<< プリミティブ回復 >>>---
+
+    template<typename tType>
+    void loadFloat(tType& oFloat);
 
     #define THEOLIZER_INTERNAL_DEF_LOAD
     #include "internal/primitive.inc"

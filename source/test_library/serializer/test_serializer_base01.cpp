@@ -60,41 +60,44 @@ int main(int argc, char** argv)
 {
 //  theolizer::DisplayPass aDisplayPass;
 
+    try
+    {
+
 // ***************************************************************************
 //      メタ・シリアライズ
 // ***************************************************************************
 
-    {
-        std::ofstream   aStream("test_meta_data.log");
-        theolizer::JsonOSerializer<>   aSerializer(aStream, theolizer::CheckMode::MetaMode);
-    }
+        {
+            std::ofstream   aStream("test_meta_data.log");
+            theolizer::JsonOSerializer<>   aSerializer(aStream, theolizer::CheckMode::MetaMode);
+        }
 
 // ***************************************************************************
 //      基本的テスト
 // ***************************************************************************
 
-    TestNormalMain();
-    TestNormalMain2();
-    TestTrackingMain();
+        TestNormalMain();
+        TestNormalMain2();
+        TestTrackingMain();
 
 // ***************************************************************************
 //      文字列テスト
 // ***************************************************************************
 
-    TestString("test_string.log");
+        TestString("test_string.log");
 
 // ***************************************************************************
 //      保存先指定テスト(直接指定)
 // ***************************************************************************
 
-    TestDestinationDirectSave("test_destination_Machine.log");
-    TestDestinationDirectLoad("test_destination_Machine.log");
+        TestDestinationDirectSave("test_destination_Machine.log");
+        TestDestinationDirectLoad("test_destination_Machine.log");
 
 // ***************************************************************************
 //      保存先指定テスト(パラメータ指定)
 // ***************************************************************************
 
-    TestDestinationParameter<theolizerD::User>("test_destination_User.log");
+        TestDestinationParameter<theolizerD::User>("test_destination_User.log");
 
 // ***************************************************************************
 //      fastシリアライザの特別テスト
@@ -106,61 +109,61 @@ int main(int argc, char** argv)
 
 //      ---<<< シリアライズ >>>---
 
-    Tracking   aTracking;
-    {
-        std::ofstream   aStream("test_fast_cant_track.log", std::ios::binary);
-        theolizer::FastOSerializer<>    aSerializer(aStream);
+        Tracking   aTracking;
+        {
+            std::ofstream   aStream("test_fast_cant_track.log", std::ios::binary);
+            theolizer::FastOSerializer<>    aSerializer(aStream);
 
-        Pointers    aPointers;
-        aPointers.mUInt             =&aTracking.mUInt;
-        aPointers.mEnum             =&aTracking.mEnum;
-        aPointers.mUInt             =&aTracking.mUInt;
-        aPointers.mIncluded2        =&aTracking.mIncluded2;
-        aPointers.mString           =&aTracking.mString;
-        THEOLIZER_PROCESS(aSerializer, aPointers);
+            Pointers    aPointers;
+            aPointers.mUInt             =&aTracking.mUInt;
+            aPointers.mEnum             =&aTracking.mEnum;
+            aPointers.mUInt             =&aTracking.mUInt;
+            aPointers.mIncluded2        =&aTracking.mIncluded2;
+            aPointers.mString           =&aTracking.mString;
+            THEOLIZER_PROCESS(aSerializer, aPointers);
 
-        // ポインタ保存
-        aSerializer.clearTracking();
-    }
+            // ポインタ保存
+            aSerializer.clearTracking();
+        }
 
 //      ---<<< デシリアライズ >>>---
 
-    {
-        std::ifstream   aStream("test_fast_cant_track.log", std::ios::binary);
-        theolizer::FastISerializer<>    aSerializer(aStream);
-
-        Pointers    aPointers;
-        THEOLIZER_PROCESS(aSerializer, aPointers);
-
-        // ポインタ回復
-        aSerializer.clearTracking();
-
-        THEOLIZER_EQUAL(aPointers.mUInt,      &aTracking.mUInt);
-        THEOLIZER_EQUAL(aPointers.mEnum,      &aTracking.mEnum);
-        THEOLIZER_EQUAL(aPointers.mUInt,      &aTracking.mUInt);
-        THEOLIZER_EQUAL(aPointers.mIncluded2, &aTracking.mIncluded2);
-        THEOLIZER_EQUAL(aPointers.mString,    &aTracking.mString);
-    }
-
-// ---------------------------------------------------------------------------
-//      コピーツール
-// ---------------------------------------------------------------------------
-
-    {
-        IntrusiveBase   aDestination;
-
         {
-            IntrusiveBase   aSource;
-            aSource.setInt(101);
-            aSource.mShort=102;
-            aSource.mString=u8"103)テスト";
-            theolizer::copySerializable(aSource, aDestination);
+            std::ifstream   aStream("test_fast_cant_track.log", std::ios::binary);
+            theolizer::FastISerializer<>    aSerializer(aStream);
+
+            Pointers    aPointers;
+            THEOLIZER_PROCESS(aSerializer, aPointers);
+
+            // ポインタ回復
+            aSerializer.clearTracking();
+
+            THEOLIZER_EQUAL(aPointers.mUInt,      &aTracking.mUInt);
+            THEOLIZER_EQUAL(aPointers.mEnum,      &aTracking.mEnum);
+            THEOLIZER_EQUAL(aPointers.mUInt,      &aTracking.mUInt);
+            THEOLIZER_EQUAL(aPointers.mIncluded2, &aTracking.mIncluded2);
+            THEOLIZER_EQUAL(aPointers.mString,    &aTracking.mString);
         }
 
-        THEOLIZER_EQUAL(aDestination.getInt(), 101);
-        THEOLIZER_EQUAL(aDestination.mShort, 102);
-        THEOLIZER_EQUAL(aDestination.mString, u8"103)テスト");
-    }
+// ---------------------------------------------------------------------------
+//      コピーツールのテスト
+// ---------------------------------------------------------------------------
+
+        {
+            IntrusiveBase   aDestination;
+
+            {
+                IntrusiveBase   aSource;
+                aSource.setInt(101);
+                aSource.mShort=102;
+                aSource.mString=u8"103)テスト";
+                theolizer::copySerializable(aSource, aDestination);
+            }
+
+            THEOLIZER_EQUAL(aDestination.getInt(), 101);
+            THEOLIZER_EQUAL(aDestination.mShort, 102);
+            THEOLIZER_EQUAL(aDestination.mString, u8"103)テスト");
+        }
 
 // ***************************************************************************
 //      定義変更テスト
@@ -170,116 +173,116 @@ int main(int argc, char** argv)
 //      シリアライズ
 // ---------------------------------------------------------------------------
 
-    {
-        std::ofstream   aStream("test_change_same_version.log");
-        theolizer::JsonOSerializer<>   aSerializer(aStream);
+        {
+            std::ofstream   aStream("test_change_same_version.log");
+            theolizer::JsonOSerializer<>   aSerializer(aStream);
 
 //      ---<<< 定義変更テスト(EnumType) >>>---
 
-        THEOLIZER_PROCESS(aSerializer, another::EnumTest::TWO);
+            THEOLIZER_PROCESS(aSerializer, another::EnumTest::TWO);
 
 //      ---<<< 定義変更テスト(ClassType) >>>---
 
-        DerivedChange  aDerivedChange;
+            DerivedChange  aDerivedChange;
 
-        // IntrusiveBase
-        aDerivedChange.mShort  =1001;
-        aDerivedChange.setInt(1002);
-        aDerivedChange.mString =u8"1003)テスト";
-        // IntrusiveBase2
-        aDerivedChange.mLong       =1101;
-        aDerivedChange.mLongLong   =1102;
-        aDerivedChange.mULong      =1103;
-        aDerivedChange.mULongLong  =1104;
+            // IntrusiveBase
+            aDerivedChange.mShort  =1001;
+            aDerivedChange.setInt(1002);
+            aDerivedChange.mString =u8"1003)テスト";
+            // IntrusiveBase2
+            aDerivedChange.mLong       =1101;
+            aDerivedChange.mLongLong   =1102;
+            aDerivedChange.mULong      =1103;
+            aDerivedChange.mULongLong  =1104;
 
-        // DerivedChange
-        aDerivedChange.mUInt       =1201;
-        aDerivedChange.mUShort     =1202;
-        // DerivedChange.IntrusiveBase
-        aDerivedChange.mIntrusiveBase.mShort   =1301;
-        aDerivedChange.mIntrusiveBase.setInt(1302);
-        aDerivedChange.mIntrusiveBase.mString  =u8"1303)テスト";
-        // DerivedChange.IntrusiveBase2
-        aDerivedChange.mIntrusiveBase2.mLong       =1401;
-        aDerivedChange.mIntrusiveBase2.mLongLong   =1402;
-        aDerivedChange.mIntrusiveBase2.mULong      =1403;
-        aDerivedChange.mIntrusiveBase2.mULongLong  =1404;
+            // DerivedChange
+            aDerivedChange.mUInt       =1201;
+            aDerivedChange.mUShort     =1202;
+            // DerivedChange.IntrusiveBase
+            aDerivedChange.mIntrusiveBase.mShort   =1301;
+            aDerivedChange.mIntrusiveBase.setInt(1302);
+            aDerivedChange.mIntrusiveBase.mString  =u8"1303)テスト";
+            // DerivedChange.IntrusiveBase2
+            aDerivedChange.mIntrusiveBase2.mLong       =1401;
+            aDerivedChange.mIntrusiveBase2.mLongLong   =1402;
+            aDerivedChange.mIntrusiveBase2.mULong      =1403;
+            aDerivedChange.mIntrusiveBase2.mULongLong  =1404;
 
-        // 追加／順序変更テスト用
-        THEOLIZER_PROCESS(aSerializer, aDerivedChange);
+            // 追加／順序変更テスト用
+            THEOLIZER_PROCESS(aSerializer, aDerivedChange);
 
-        // 削除テスト用
-        THEOLIZER_PROCESS(aSerializer, aDerivedChange);
+            // 削除テスト用
+            THEOLIZER_PROCESS(aSerializer, aDerivedChange);
     }
 
 // ---------------------------------------------------------------------------
 //      デシリアライズ
 // ---------------------------------------------------------------------------
 
-    {
-        std::ifstream   aStream("test_change_same_version.log");
-        theolizer::JsonISerializer<>   aSerializer(aStream);
+        {
+            std::ifstream   aStream("test_change_same_version.log");
+            theolizer::JsonISerializer<>   aSerializer(aStream);
 
 //      ---<<< 定義変更テスト(EnumType) >>>---
 
-        EnumTest aEnum=EnumTest::zero;
-        THEOLIZER_PROCESS(aSerializer, aEnum);
-        THEOLIZER_EQUAL(static_cast<long>(aEnum), static_cast<long>(EnumTest::two));
+            EnumTest aEnum=EnumTest::zero;
+            THEOLIZER_PROCESS(aSerializer, aEnum);
+            THEOLIZER_EQUAL(aEnum, EnumTest::two);
 
 //      ---<<< 定義変更テスト(ClassTypeの追加／順序変更) >>>---
 
-        change_order::dummy::DerivedChange     aDerivedChgOrder;
-        aDerivedChgOrder.mUChar=1;
-        THEOLIZER_PROCESS(aSerializer, aDerivedChgOrder);
+            change_order::dummy::DerivedChange     aDerivedChgOrder;
+            aDerivedChgOrder.mUChar=1;
+            THEOLIZER_PROCESS(aSerializer, aDerivedChgOrder);
 
-        // IntrusiveBase
-        THEOLIZER_EQUAL(aDerivedChgOrder.mShort, 1001);
-        THEOLIZER_EQUAL(aDerivedChgOrder.getInt(), 1002);
-        THEOLIZER_EQUAL(aDerivedChgOrder.mString, u8"1003)テスト");
-        // IntrusiveBase2
-        THEOLIZER_EQUAL(aDerivedChgOrder.mLong, 1101);
-        THEOLIZER_EQUAL(aDerivedChgOrder.mLongLong, 1102);
-        THEOLIZER_EQUAL(aDerivedChgOrder.mULong, 1103);
-        THEOLIZER_EQUAL(aDerivedChgOrder.mULongLong, 1104);
+            // IntrusiveBase
+            THEOLIZER_EQUAL(aDerivedChgOrder.mShort, 1001);
+            THEOLIZER_EQUAL(aDerivedChgOrder.getInt(), 1002);
+            THEOLIZER_EQUAL(aDerivedChgOrder.mString, u8"1003)テスト");
+            // IntrusiveBase2
+            THEOLIZER_EQUAL(aDerivedChgOrder.mLong, 1101);
+            THEOLIZER_EQUAL(aDerivedChgOrder.mLongLong, 1102);
+            THEOLIZER_EQUAL(aDerivedChgOrder.mULong, 1103);
+            THEOLIZER_EQUAL(aDerivedChgOrder.mULongLong, 1104);
 
-        // DerivedChange
-        THEOLIZER_EQUAL(aDerivedChgOrder.mUInt, 1201);
-        THEOLIZER_EQUAL(aDerivedChgOrder.mUShort, 1202);
-        THEOLIZER_EQUAL(aDerivedChgOrder.mUChar, 1);
+            // DerivedChange
+            THEOLIZER_EQUAL(aDerivedChgOrder.mUInt, 1201);
+            THEOLIZER_EQUAL(aDerivedChgOrder.mUShort, 1202);
+            THEOLIZER_EQUAL(aDerivedChgOrder.mUChar, 1);
 
-        // DerivedChange.IntrusiveBase
-        THEOLIZER_EQUAL(aDerivedChgOrder.mIntrusiveBase.mShort, 1301);
-        THEOLIZER_EQUAL(aDerivedChgOrder.mIntrusiveBase.getInt(), 1302);
-        THEOLIZER_EQUAL(aDerivedChgOrder.mIntrusiveBase.mString, u8"1303)テスト");
-        // DerivedChange.IntrusiveBase2
-        THEOLIZER_EQUAL(aDerivedChgOrder.mIntrusiveBase2.mLong, 1401);
-        THEOLIZER_EQUAL(aDerivedChgOrder.mIntrusiveBase2.mLongLong, 1402);
-        THEOLIZER_EQUAL(aDerivedChgOrder.mIntrusiveBase2.mULong, 1403);
-        THEOLIZER_EQUAL(aDerivedChgOrder.mIntrusiveBase2.mULongLong, 1404);
+            // DerivedChange.IntrusiveBase
+            THEOLIZER_EQUAL(aDerivedChgOrder.mIntrusiveBase.mShort, 1301);
+            THEOLIZER_EQUAL(aDerivedChgOrder.mIntrusiveBase.getInt(), 1302);
+            THEOLIZER_EQUAL(aDerivedChgOrder.mIntrusiveBase.mString, u8"1303)テスト");
+            // DerivedChange.IntrusiveBase2
+            THEOLIZER_EQUAL(aDerivedChgOrder.mIntrusiveBase2.mLong, 1401);
+            THEOLIZER_EQUAL(aDerivedChgOrder.mIntrusiveBase2.mLongLong, 1402);
+            THEOLIZER_EQUAL(aDerivedChgOrder.mIntrusiveBase2.mULong, 1403);
+            THEOLIZER_EQUAL(aDerivedChgOrder.mIntrusiveBase2.mULongLong, 1404);
 
 //      ---<<< 定義変更テスト(ClassTypeの削除) >>>---
 
-        DerivedDelete        aDerivedDelete;
-        THEOLIZER_PROCESS(aSerializer, aDerivedDelete);
+            DerivedDelete        aDerivedDelete;
+            THEOLIZER_PROCESS(aSerializer, aDerivedDelete);
 
-        // IntrusiveBase
-        THEOLIZER_EQUAL(aDerivedDelete.mShort, 1001);
-        THEOLIZER_EQUAL(aDerivedDelete.getInt(), 1002);
-        THEOLIZER_EQUAL(aDerivedDelete.mString, u8"1003)テスト");
-        // DerivedChange
-        THEOLIZER_EQUAL(aDerivedDelete.mUInt, 1201);
-        // DerivedChange.IntrusiveBase2
-        THEOLIZER_EQUAL(aDerivedDelete.mIntrusiveBase2.mLong, 1401);
-        THEOLIZER_EQUAL(aDerivedDelete.mIntrusiveBase2.mLongLong, 1402);
-        THEOLIZER_EQUAL(aDerivedDelete.mIntrusiveBase2.mULong, 1403);
-        THEOLIZER_EQUAL(aDerivedDelete.mIntrusiveBase2.mULongLong, 1404);
-    }
+            // IntrusiveBase
+            THEOLIZER_EQUAL(aDerivedDelete.mShort, 1001);
+            THEOLIZER_EQUAL(aDerivedDelete.getInt(), 1002);
+            THEOLIZER_EQUAL(aDerivedDelete.mString, u8"1003)テスト");
+            // DerivedChange
+            THEOLIZER_EQUAL(aDerivedDelete.mUInt, 1201);
+            // DerivedChange.IntrusiveBase2
+            THEOLIZER_EQUAL(aDerivedDelete.mIntrusiveBase2.mLong, 1401);
+            THEOLIZER_EQUAL(aDerivedDelete.mIntrusiveBase2.mLongLong, 1402);
+            THEOLIZER_EQUAL(aDerivedDelete.mIntrusiveBase2.mULong, 1403);
+            THEOLIZER_EQUAL(aDerivedDelete.mIntrusiveBase2.mULongLong, 1404);
+        }
 
 // ***************************************************************************
 //      トップ・レベルの型チェック・エラー・テスト
 // ***************************************************************************
 
-    u8string aMessage(u8"Unmatch type.");
+        u8string aMessage(u8"Unmatch type.");
 
 // ---------------------------------------------------------------------------
 //      TypeCheck
@@ -287,44 +290,44 @@ int main(int argc, char** argv)
 
 //      ---<<< シリアライズ >>>---
 
-    {
-        std::ofstream   aStream("test_change_check0.log");
-        theolizer::JsonOSerializer<theolizerD::SpecialDocument>
-            aSerializer(aStream, theolizer::CheckMode::TypeCheck);
+        {
+            std::ofstream   aStream("test_change_check0.log");
+            theolizer::JsonOSerializer<theolizerD::SpecialDocument>
+                aSerializer(aStream, theolizer::CheckMode::TypeCheck);
 
-        int             aInt=101;
-        THEOLIZER_PROCESS(aSerializer, aInt);
-    }
+            int             aInt=101;
+            THEOLIZER_PROCESS(aSerializer, aInt);
+        }
 
 //      ---<<< デシリアライズ(例外有り) >>>---
 
-    {
-        std::ifstream   aStream("test_change_check0.log");
-        theolizer::JsonISerializer<>   aSerializer(aStream);
+        {
+            std::ifstream   aStream("test_change_check0.log");
+            theolizer::JsonISerializer<>   aSerializer(aStream);
 
-        unsigned int    aUInt;
-        THEOLIZER_CHECK_EXCEPTION(
-            THEOLIZER_PROCESS(aSerializer, aUInt); ,
-            theolizer::ErrorInfo);
-    }
+            unsigned int    aUInt;
+            THEOLIZER_CHECK_EXCEPTION(
+                THEOLIZER_PROCESS(aSerializer, aUInt); ,
+                theolizer::ErrorInfo);
+        }
 
 //      ---<<< デシリアライズ(例外無し) >>>---
 
-    {
-        std::ifstream   aStream("test_change_check0.log");
-        theolizer::JsonISerializer<>   aSerializer(aStream, true);
+        {
+            std::ifstream   aStream("test_change_check0.log");
+            theolizer::JsonISerializer<>   aSerializer(aStream, true);
 
-        unsigned int    aUInt;
-        THEOLIZER_PROCESS(aSerializer, aUInt); unsigned line=__LINE__;
-        u8string aAdditionalInfo=string("aUInt{test_serializer_base01.cpp(")
-                                +std::to_string(line)+")}";
-        auto aError=theolizer::ErrorReporter::getError();
-        THEOLIZER_CHECK(aError, aError.getErrorType());
-        THEOLIZER_EQUAL(aError.getMessage(), aMessage);
-        THEOLIZER_EQUAL(aError.getAdditionalInfo(), aAdditionalInfo);
-        THEOLIZER_EQUAL(string(aError.getFileName()), "core_serializer.cpp");
-        aSerializer.resetError();
-    }
+            unsigned int    aUInt;
+            THEOLIZER_PROCESS(aSerializer, aUInt); unsigned line=__LINE__;
+            u8string aAdditionalInfo=string("aUInt{test_serializer_base01.cpp(")
+                                    +std::to_string(line)+")}";
+            auto aError=theolizer::ErrorReporter::getError();
+            THEOLIZER_CHECK(aError, aError.getErrorType());
+            THEOLIZER_EQUAL(aError.getMessage(), aMessage);
+            THEOLIZER_EQUAL(aError.getAdditionalInfo(), aAdditionalInfo);
+            THEOLIZER_EQUAL(string(aError.getFileName()), "core_serializer.cpp");
+            aSerializer.resetError();
+        }
 
 // ---------------------------------------------------------------------------
 //      TypeCheckByIndex
@@ -332,44 +335,44 @@ int main(int argc, char** argv)
 
 //      ---<<< シリアライズ >>>---
 
-    {
-        std::ofstream   aStream("test_change_check_index0.log");
-        theolizer::JsonOSerializer<theolizerD::SpecialDocument>
-            aSerializer(aStream, theolizer::CheckMode::TypeCheckByIndex);
+        {
+            std::ofstream   aStream("test_change_check_index0.log");
+            theolizer::JsonOSerializer<theolizerD::SpecialDocument>
+                aSerializer(aStream, theolizer::CheckMode::TypeCheckByIndex);
 
-        int                  aInt=301;
-        THEOLIZER_PROCESS(aSerializer, aInt);
-    }
+            int                  aInt=301;
+            THEOLIZER_PROCESS(aSerializer, aInt);
+        }
 
 //      ---<<< デシリアライズ(例外有り) >>>---
 
-    {
-        std::ifstream   aStream("test_change_check_index0.log");
-        theolizer::JsonISerializer<>   aSerializer(aStream);
+        {
+            std::ifstream   aStream("test_change_check_index0.log");
+            theolizer::JsonISerializer<>   aSerializer(aStream);
 
-        unsigned int             aUInt;
-        THEOLIZER_CHECK_EXCEPTION(
-            THEOLIZER_PROCESS(aSerializer, aUInt); ,
-            theolizer::ErrorInfo);
-    }
+            unsigned int             aUInt;
+            THEOLIZER_CHECK_EXCEPTION(
+                THEOLIZER_PROCESS(aSerializer, aUInt); ,
+                theolizer::ErrorInfo);
+        }
 
 //      ---<<< デシリアライズ(例外無し) >>>---
 
-    {
-        std::ifstream   aStream("test_change_check_index0.log");
-        theolizer::JsonISerializer<>   aSerializer(aStream, true);
+        {
+            std::ifstream   aStream("test_change_check_index0.log");
+            theolizer::JsonISerializer<>   aSerializer(aStream, true);
 
-        unsigned int         aUInt;
-        THEOLIZER_PROCESS(aSerializer, aUInt); unsigned line=__LINE__;
-        u8string aAdditionalInfo=string("aUInt{test_serializer_base01.cpp(")
-                                +std::to_string(line)+")}";
-        auto aError=theolizer::ErrorReporter::getError();
-        THEOLIZER_CHECK(aError, aError.getErrorType());
-        THEOLIZER_EQUAL(aError.getMessage(), aMessage);
-        THEOLIZER_EQUAL(aError.getAdditionalInfo(), aAdditionalInfo);
-        THEOLIZER_EQUAL(string(aError.getFileName()), "core_serializer.cpp");
-        aSerializer.resetError();
-    }
+            unsigned int         aUInt;
+            THEOLIZER_PROCESS(aSerializer, aUInt); unsigned line=__LINE__;
+            u8string aAdditionalInfo=string("aUInt{test_serializer_base01.cpp(")
+                                    +std::to_string(line)+")}";
+            auto aError=theolizer::ErrorReporter::getError();
+            THEOLIZER_CHECK(aError, aError.getErrorType());
+            THEOLIZER_EQUAL(aError.getMessage(), aMessage);
+            THEOLIZER_EQUAL(aError.getAdditionalInfo(), aAdditionalInfo);
+            THEOLIZER_EQUAL(string(aError.getFileName()), "core_serializer.cpp");
+            aSerializer.resetError();
+        }
 
 // ***************************************************************************
 //      ヘッダの型チェック・エラー・テスト用シリアライズ
@@ -380,19 +383,18 @@ int main(int argc, char** argv)
 //      TypeCheck
 // ---------------------------------------------------------------------------
 
+        {
+            std::ofstream   aStream("test_change_check1.log");
+            theolizer::JsonOSerializer<theolizerD::Document>
+                aSerializer(aStream, theolizer::CheckMode::TypeCheck);
 
-    {
-        std::ofstream   aStream("test_change_check1.log");
-        theolizer::JsonOSerializer<theolizerD::Document>
-            aSerializer(aStream, theolizer::CheckMode::TypeCheck);
-
-        IntrusiveBase2  mIntrusiveBase2;
-        mIntrusiveBase2.mLong     =201;
-        mIntrusiveBase2.mLongLong =202;
-        mIntrusiveBase2.mULong    =203;
-        mIntrusiveBase2.mULongLong=204;
-        THEOLIZER_PROCESS(aSerializer, mIntrusiveBase2);
-    }
+            IntrusiveBase2  mIntrusiveBase2;
+            mIntrusiveBase2.mLong     =201;
+            mIntrusiveBase2.mLongLong =202;
+            mIntrusiveBase2.mULong    =203;
+            mIntrusiveBase2.mULongLong=204;
+            THEOLIZER_PROCESS(aSerializer, mIntrusiveBase2);
+        }
 
 // ---------------------------------------------------------------------------
 //      TypeCheckByIndex
@@ -400,18 +402,18 @@ int main(int argc, char** argv)
 
 //      ---<<< ヘッダ >>>---
 
-    {
-        std::ofstream   aStream("test_change_check_index1.log");
-        theolizer::JsonOSerializer<theolizerD::Document>
-            aSerializer(aStream, theolizer::CheckMode::TypeCheckByIndex);
+        {
+            std::ofstream   aStream("test_change_check_index1.log");
+            theolizer::JsonOSerializer<theolizerD::Document>
+                aSerializer(aStream, theolizer::CheckMode::TypeCheckByIndex);
 
-        IntrusiveBase2  mIntrusiveBase2;
-        mIntrusiveBase2.mLong     =301;
-        mIntrusiveBase2.mLongLong =302;
-        mIntrusiveBase2.mULong    =303;
-        mIntrusiveBase2.mULongLong=304;
-        THEOLIZER_PROCESS(aSerializer, mIntrusiveBase2);
-    }
+            IntrusiveBase2  mIntrusiveBase2;
+            mIntrusiveBase2.mLong     =301;
+            mIntrusiveBase2.mLongLong =302;
+            mIntrusiveBase2.mULong    =303;
+            mIntrusiveBase2.mULongLong=304;
+            THEOLIZER_PROCESS(aSerializer, mIntrusiveBase2);
+        }
 
 
 // ***************************************************************************
@@ -419,14 +421,20 @@ int main(int argc, char** argv)
 // ***************************************************************************
 
 #if 0
-    TestEof(theolizer::CheckMode::NoTypeCheck);
-    TestEof(theolizer::CheckMode::TypeCheck);
-    TestEof(theolizer::CheckMode::TypeCheckByIndex);
+        TestEof(theolizer::CheckMode::NoTypeCheck);
+        TestEof(theolizer::CheckMode::TypeCheck);
+        TestEof(theolizer::CheckMode::TypeCheckByIndex);
 #endif
 
-// ---------------------------------------------------------------------------
+    }
+    catch(theolizer::ErrorInfo& e)
+    {
+        std::cout << e.getMessage() << std::endl;
+    }
+
+// ***************************************************************************
 //      次のテストに備えてエラー・ログ削除
-// ---------------------------------------------------------------------------
+// ***************************************************************************
 
     theolizer::removeFile("ErrorLogFile0.log");
     theolizer::removeFile("ErrorLogFile1.log");

@@ -135,45 +135,6 @@ void BinaryMidOSerializer::writeHeader()
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
-//      サイズ変換用型定義
-//----------------------------------------------------------------------------
-
-namespace
-{
-
-    template<unsigned tSize>
-    struct SizeType { };
-    template<>
-    struct SizeType<1>
-    {
-        typedef uint8_t     type;
-    };
-    template<>
-    struct SizeType<2>
-    {
-        typedef uint16_t    type;
-    };
-    template<>
-    struct SizeType<4>
-    {
-        typedef uint32_t    type;
-    };
-    template<>
-    struct SizeType<8>
-    {
-        typedef uint64_t    type;
-    };
-
-    template<typename tType>
-    union Numerical2Unsigned
-    {
-        tType                                   mNumerical;
-        typename SizeType<sizeof(tType)>::type  mUnsigned;
-    };
-
-}   // namespace
-
-//----------------------------------------------------------------------------
 //      コントロール整数保存
 //          値に応じて適切なサイズのPrimitiveで保存する
 //----------------------------------------------------------------------------
@@ -214,10 +175,92 @@ void BinaryMidOSerializer::saveUnsigned(unsigned long long iControl, BinaryTag::
         aSize=8;
     }
     writeByte(BinaryTag(iTagCode, aSize));
-    for (int i=aSize-1; 0 <= i ; --i) {
+    for (int i=aSize-1; 0 <= i ; --i)
+    {
         writeByte(static_cast<uint8_t>(iControl >> (8*i)));
     }
 }
+
+//----------------------------------------------------------------------------
+//      浮動小数点数のエンディアン変換保存
+//----------------------------------------------------------------------------
+
+namespace
+{
+
+bool isLittleEndian()
+{
+  int t=1;
+  return (*reinterpret_cast<char*>(&t) == 1);
+}
+
+}   // namespace
+
+template<typename tType>
+void BinaryMidOSerializer::saveFloat(tType iFloat)
+{
+    unsigned aSize=0;
+    if (sizeof(tType) <= 1)
+    {
+        aSize=1;
+    }
+    else if (sizeof(tType) <= 2)
+    {
+        aSize=2;
+    }
+    else if (sizeof(tType) <= 4)
+    {
+        aSize=4;
+    }
+    else if (sizeof(tType) <= 8)
+    {
+        aSize=8;
+    }
+    else if (sizeof(tType) <= 16)
+    {
+        aSize=16;
+    }
+    else
+    {
+        THEOLIZER_INTERNAL_ABORT("saveFloat() : Size is too big.");
+    }
+    writeByte(BinaryTag(BinaryTag::Primitive, aSize));
+
+    unsigned size=sizeof(tType);
+    // float80なら特別処理
+    if ((std::numeric_limits<tType>::is_signed == 1)
+     && (std::numeric_limits<tType>::radix == 2)
+     && (std::numeric_limits<tType>::digits == 64)
+     && (std::numeric_limits<tType>::max_exponent == 16384))
+    {
+        size=10;
+    }
+
+    char const* begin=reinterpret_cast<char const*>(&iFloat);
+    char const* end  =begin + size;
+    if (isLittleEndian())
+    {
+        for (char const* p=end-1; begin <= p; --p)
+        {
+            writeByte(*p);
+        }
+    }
+    else
+    {
+        for (char const* p=begin; p < end; ++p)
+        {
+            writeByte(*p);
+        }
+    }
+    for (unsigned i=size; i < aSize; ++i)
+    {
+        writeByte(0);
+    }
+}
+
+template void BinaryMidOSerializer::saveFloat<float>(float iFloat);
+template void BinaryMidOSerializer::saveFloat<double>(double iFloat);
+template void BinaryMidOSerializer::saveFloat<long double>(long double iFloat);
 
 //----------------------------------------------------------------------------
 //      プリミティブ処理
@@ -225,12 +268,15 @@ void BinaryMidOSerializer::saveUnsigned(unsigned long long iControl, BinaryTag::
 
 //      ---<<< 整数型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSimbol)                   \
+#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSimbol)                     \
     void BinaryMidOSerializer::savePrimitive(dType const& iPrimitive)       \
     {                                                                       \
-        if (std::numeric_limits<dType>::is_signed) {                        \
+        if (std::numeric_limits<dType>::is_signed)                          \
+        {                                                                   \
             saveSigned(iPrimitive);                                         \
-        } else {                                                            \
+        }                                                                   \
+        else                                                                \
+        {                                                                   \
             saveUnsigned(iPrimitive);                                       \
         }                                                                   \
     }
@@ -241,18 +287,7 @@ void BinaryMidOSerializer::saveUnsigned(unsigned long long iControl, BinaryTag::
 #define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSimbol)               \
     void BinaryMidOSerializer::savePrimitive(dType const& iPrimitive)       \
     {                                                                       \
-        Numerical2Unsigned<dType>   data;                                   \
-        data.mNumerical=iPrimitive;                                         \
-        savePrimitive(data.mUnsigned);                                      \
-    }
-
-// long doubleはdoubleへ変換する
-#define THEOLIZER_INTERNAL_DEF_LONG_DOUBLE(dType, dSimbol)                  \
-    void BinaryMidOSerializer::savePrimitive(dType const& iPrimitive)       \
-    {                                                                       \
-        Numerical2Unsigned<double>  data;                                   \
-        data.mNumerical=iPrimitive;                                         \
-        savePrimitive(data.mUnsigned);                                      \
+        saveFloat(iPrimitive);                                              \
     }
 
 //      ---<<< 文字列型 >>>---
@@ -339,7 +374,8 @@ void BinaryMidOSerializer::saveByteString(std::string const& iString)
 void BinaryMidOSerializer::writeByte(uint8_t iByte)
 {
     mOStream.write(reinterpret_cast<char const*>(&iByte), 1);
-    if (!mOStream.good()) {
+    if (!mOStream.good())
+    {
         THEOLIZER_INTERNAL_IO_ERROR(u8"Write Error(byte=0x%02x).", iByte);
     }
 }
@@ -552,6 +588,63 @@ unsigned long long BinaryMidISerializer::loadUnsigned(BinaryTag::TagCode iTagCod
 }
 
 //----------------------------------------------------------------------------
+//      浮動小数点数のエンディアン変換回復
+//----------------------------------------------------------------------------
+
+template<typename tType>
+void BinaryMidISerializer::loadFloat(tType& oFloat)
+{
+    if (!mBinaryTag.isPrimitive())
+    {
+        THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+    }
+    unsigned aDataLen=mBinaryTag.getSize();
+    if (aDataLen > sizeof(tType))
+    {
+        THEOLIZER_INTERNAL_DATA_ERROR(u8"Size Error(aDataLen=%1%).", mBinaryTag.getSize());
+    }
+
+    // float80なら特別処理
+    unsigned size=aDataLen;
+    if ((std::numeric_limits<tType>::is_signed == 1)
+     && (std::numeric_limits<tType>::radix == 2)
+     && (std::numeric_limits<tType>::digits == 64)
+     && (std::numeric_limits<tType>::max_exponent == 16384))
+    {
+        size=10;
+    }
+
+    char* begin=reinterpret_cast<char*>(&oFloat);
+    char* end  =begin + size;
+    if (isLittleEndian())
+    {
+        for (char* p=end-1; begin <= p; --p)
+        {
+            *p=readByte();
+        }
+    }
+    else
+    {
+        for (char* p=begin; p < end; ++p)
+        {
+            *p=readByte();
+        }
+    }
+    for (char* p=end; p < (begin+sizeof(tType)); ++p)
+    {
+        *p=readByte();
+    }
+    for(unsigned i=sizeof(tType); i < aDataLen; ++i)
+    {
+        readByte();
+    }
+}
+
+template void BinaryMidISerializer::loadFloat<float>(float& oFloat);
+template void BinaryMidISerializer::loadFloat<double>(double& oFloat);
+template void BinaryMidISerializer::loadFloat<long double>(long double& oFloat);
+
+//----------------------------------------------------------------------------
 //      プリミティブ処理
 //----------------------------------------------------------------------------
 
@@ -600,32 +693,8 @@ unsigned long long BinaryMidISerializer::loadUnsigned(BinaryTag::TagCode iTagCod
 #define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSimbol)               \
     void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
     {                                                                       \
-        if (!mBinaryTag.isPrimitive()) {                                    \
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");               \
-        }                                                                   \
-        if (mBinaryTag.getSize() != sizeof(dType)) {                        \
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Size Error(size=%1%).", mBinaryTag.getSize());\
-        }                                                                   \
-        Numerical2Unsigned<dType> data;                                     \
-        loadPrimitive(data.mUnsigned);                                      \
-        oPrimitive = data.mNumerical;                                       \
+        loadFloat(oPrimitive);                                              \
     }
-
-// long doubleはdoubleへ変換する
-#define THEOLIZER_INTERNAL_DEF_LONG_DOUBLE(dType, dSimbol)                  \
-    void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
-    {                                                                       \
-        if (!mBinaryTag.isPrimitive()) {                                    \
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");               \
-        }                                                                   \
-        if (mBinaryTag.getSize() != sizeof(double)) {                       \
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Size Error(size=%1%).", mBinaryTag.getSize());\
-        }                                                                   \
-        Numerical2Unsigned<double>  data;                                   \
-        loadPrimitive(data.mUnsigned);                                      \
-        oPrimitive = data.mNumerical;                                       \
-    }
-
 
 //      ---<<< 文字列型 >>>---
 

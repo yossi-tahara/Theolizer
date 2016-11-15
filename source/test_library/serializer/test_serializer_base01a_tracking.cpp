@@ -233,7 +233,7 @@ std::cout << "TestISerializerTracking(" << iFileName << ", "
 
     EnumTest aEnum=EnumTest::zero;
     THEOLIZER_PROCESS_POINTEE(aSerializer, aEnum);
-    THEOLIZER_EQUAL(static_cast<long>(aEnum), static_cast<long>(EnumTest::one));
+    THEOLIZER_EQUAL(aEnum, EnumTest::one);
 
     wstring aWstring;
     THEOLIZER_PROCESS_POINTEE(aSerializer, aWstring);
@@ -248,7 +248,7 @@ std::cout << "TestISerializerTracking(" << iFileName << ", "
     Tracking   aTracking;
     THEOLIZER_PROCESS_POINTEE(aSerializer, aTracking);
     THEOLIZER_EQUAL(aTracking.mInt, 301);
-    THEOLIZER_EQUAL(static_cast<long>(aTracking.mEnum), static_cast<long>(EnumTest::two));
+    THEOLIZER_EQUAL(aTracking.mEnum, EnumTest::two);
     THEOLIZER_EQUAL(aTracking.mUInt, 302);
     THEOLIZER_EQUAL(aTracking.mIncluded2.mShort, 303);
     THEOLIZER_EQUAL(aTracking.mString, "304");
@@ -320,7 +320,7 @@ std::cout << "TestISerializerTracking(" << iFileName << ", "
 
     THEOLIZER_PROCESS_OWNER(aSerializer, aDynamic);
     THEOLIZER_EQUAL(*(aDynamic->mUInt), 400);
-    THEOLIZER_EQUAL(static_cast<long>(*aDynamic->mEnum), static_cast<long>(EnumTest::one));
+    THEOLIZER_EQUAL(*aDynamic->mEnum, EnumTest::one);
     THEOLIZER_EQUAL( (aDynamic->mIncluded1->mInt), 402);
     THEOLIZER_EQUAL(*(aDynamic->mString), "403");
 #ifndef NO_ARRAY
@@ -373,7 +373,7 @@ std::cout << "TestISerializerTracking(" << iFileName << ", "
 
     THEOLIZER_PROCESS_OWNER(aSerializer, aDynamic2);
     THEOLIZER_EQUAL(*(aDynamic2->mUInt), 500);
-    THEOLIZER_EQUAL(static_cast<long>(*(aDynamic2->mEnum)), static_cast<long>(EnumTest::two));
+    THEOLIZER_EQUAL(*(aDynamic2->mEnum), EnumTest::two);
     THEOLIZER_EQUAL( (aDynamic2->mIncluded1->mInt), 502);
     THEOLIZER_EQUAL(*(aDynamic2->mString), "503");
 #ifndef NO_ARRAY

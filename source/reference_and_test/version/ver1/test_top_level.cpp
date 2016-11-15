@@ -25,8 +25,7 @@
 // 標準ライブラリ
 #include <iostream>
 #include <fstream>
-#include <sstream>
-#include <limits>
+#include <string>
 
 // theolizerライブラリ
 #include <theolizer/serializer_binary.h>
@@ -50,7 +49,6 @@
 template<class tSerializer>
 void savePrimitiveAndEnum(tSerializer& iSerializer)
 {
-std::cout << "      savePrimitiveAndEnum()\n";
 
 //      ---<<< Primitive >>>---
 
@@ -95,6 +93,18 @@ std::cout << "      savePrimitiveAndEnum()\n";
     long double aLongDouble=1.23456789012345L;
     THEOLIZER_PROCESS(iSerializer, aLongDouble);
 
+    std::string aString=u8"ＵＴＦ－８";
+    THEOLIZER_PROCESS(iSerializer, aString);
+
+    std::wstring aWstring=L"ＵＴＦ－１６／３２";
+    THEOLIZER_PROCESS(iSerializer, aWstring);
+
+    std::u16string aU16string=u"ＵＴＦ－１６";
+    THEOLIZER_PROCESS(iSerializer, aU16string);
+
+    std::u32string aU32string=U"ＵＴＦ－３２";
+    THEOLIZER_PROCESS(iSerializer, aU32string);
+
 //      ---<<< enum型 >>>---
 
     THEOLIZER_PROCESS(iSerializer, EnumTest::ONE);
@@ -110,7 +120,6 @@ std::cout << "      savePrimitiveAndEnum()\n";
 template<class tSerializer>
 void loadPrimitiveAndEnum(tSerializer& iSerializer)
 {
-std::cout << "      loadPrimitiveAndEnum()\n";
 
 //      ---<<< Primitive >>>---
 
@@ -168,26 +177,32 @@ std::cout << "      loadPrimitiveAndEnum()\n";
 
     long double aLongDouble;
     THEOLIZER_PROCESS(iSerializer, aLongDouble);
+    THEOLIZER_EQUAL(aLongDouble, 1.23456789012345L);
 
-    // TheolizerはFastSerializer以外はlong doubleをdoubleで処理するので、doubleで比較する
-    if (tSerializer::kIsFastSerialzier)
-    {
-        THEOLIZER_EQUAL(aLongDouble, 1.23456789012345L);
-    }
-    else
-    {
-        double temp=aLongDouble;
-        THEOLIZER_EQUAL(temp, 1.23456789012345);
-    }
+    std::string aString;
+    THEOLIZER_PROCESS(iSerializer, aString);
+    THEOLIZER_EQUAL(aString, u8"ＵＴＦ－８");
+
+    std::wstring aWstring;
+    THEOLIZER_PROCESS(iSerializer, aWstring);
+    THEOLIZER_EQUAL(aWstring, L"ＵＴＦ－１６／３２");
+
+    std::u16string aU16string;
+    THEOLIZER_PROCESS(iSerializer, aU16string);
+    THEOLIZER_EQUAL(aU16string, u"ＵＴＦ－１６");
+
+    std::u32string aU32string;
+    THEOLIZER_PROCESS(iSerializer, aU32string);
+    THEOLIZER_EQUAL(aU32string, U"ＵＴＦ－３２");
 
 //      ---<<< enum型 >>>---
 
     EnumTest aEnumTest=EnumTest::ZERO;
     THEOLIZER_PROCESS(iSerializer, aEnumTest);
-    THEOLIZER_EQUAL(static_cast<long>(aEnumTest), static_cast<long>(EnumTest::ONE));
+    THEOLIZER_EQUAL(aEnumTest, EnumTest::ONE);
 
     THEOLIZER_PROCESS(iSerializer, aEnumTest);
-    THEOLIZER_EQUAL(static_cast<long>(aEnumTest), static_cast<long>(EnumTest::TWO));
+    THEOLIZER_EQUAL(aEnumTest, EnumTest::TWO);
 }
 
 //############################################################################
