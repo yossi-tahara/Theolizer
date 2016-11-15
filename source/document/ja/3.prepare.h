@@ -1,9 +1,10 @@
 //############################################################################
 /*!
-    @file prepare.h
-    @brief  ドキュメント・ファイル－Theolizerによる開発の準備
-    @author Yoshinori Tahara
-    @date   2016/11/01  Created
+    @brief      ドキュメント・ファイル－Theolizerによる開発の準備
+    @ingroup    Documents
+    @file       3.prepare.h
+    @author     Yoshinori Tahara
+    @date       2016/11/01 Created
 */
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/

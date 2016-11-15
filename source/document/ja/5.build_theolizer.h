@@ -1,9 +1,10 @@
 //############################################################################
 /*!
-    @file build_theolizer.h
-    @brief  ドキュメント・ファイル－Theolizerのビルド手順
-    @author Yoshinori Tahara
-    @date   2016/11/01  Created
+    @brief      ドキュメント・ファイル－Theolizerのビルド手順
+    @ingroup    Documents
+    @file       5.build_theolizer.h
+    @author     Yoshinori Tahara
+    @date       2016/11/01 Created
 */
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
@@ -183,7 +184,41 @@ llvm_buildフォルダの直下にコンパイラ毎にbuild用フォルダが�
 @ref HowToBuildLibrary122 と同じなので省略します。
 
 <br>
-@section Documents 3.ドキュメントについて補足
+@section VersionNo 3.バージョン番号の付け方
+バージョン番号は下記のように管理する予定です。
+
+`<Major>.<Minor>.<Detail>`<br>
+`<Major>.<Minor>.<Detail>-Prerease`<br>
+`<Major>.<Minor>.<Detail>-Temp`
+
+|項目|更新するタイミング|
+|----|------------------|
+|Major|仕様や実装を大幅に追加／変更する時|
+|Minor|仕様変更する時|
+|Detail|バグ・フィックス、自動テスト等の周辺機能、ドキュメントを修正した時|
+|-Prerease|暫定的な正規リリース前のバージョンに付加する<br>正規リリース後のPrereaseはバージョン番号を上げて行う|
+|-Temp|暫定的なバージョンに付加する(Deprecated)|
+
+GitHubには-Tempの有るものも登録しますが、同じバージョン番号のものが複数登録されることになります。<br>
+それを判別できるようにするため、TheolizerドライバとTheolizerライブラリのそれぞれがversion.hを持ち、これにソース・コードのMD5ハッシュ値（kTheolizerSourcesHash）を記録しています。<br>
+この値はそれぞれをビルドする際に自動的に更新されます。（linuxタイプの改行コードへ変換後、計算しています。）
+
+|項目|生成元ファイル群|
+|----|----------------|
+|Theolzierドライバ|ライブラリとドライバのソース、および、CMakeLists.txt|
+|Theolzierライブラリ|ライブラリのソースとCMakeLists.txt|
+
+バイナリーから下記方法でkTheolizerSourcesHashを得ることができます。
+
+|項目|方法|
+|----|----|
+|Theolzierドライバ|TheolizerDriver --theolizer-versionにて表示されるSourcesHash|
+|Theolzierライブラリ|theolizer::getVersionString()にて得ることができるSourcesHash|
+
+SourcesHash値と同じ値を持つversion.hがGitHubに登録されている時にはソース・コードを特定できます。
+
+<br>
+@section Documents 4.ドキュメントについて補足
 
 ---
 

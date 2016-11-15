@@ -24,7 +24,7 @@ set(TARGET_NAME version_)
 
 set(VERSION ver1)
 set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/main.cpp)
-set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_top_level.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_basic_process.cpp)
 
 message(STATUS "start of add_build_and_test(${TARGET_NAME}${VERSION})")
 add_build_and_test(${TARGET_NAME} ${VERSION} "" ${SOURCE_LIST})

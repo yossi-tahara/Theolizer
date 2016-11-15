@@ -1,5 +1,11 @@
 ﻿//############################################################################
-//      Theolizer紹介用サンプル・プログラム
+/*!
+    @brief      Theolizer紹介用サンプル・プログラム
+    @ingroup    Documents
+    @file       example.h
+    @author     Yoshinori Tahara
+    @date       2016/11/03 Created
+*/
 //############################################################################
 
 #if !defined(EXAMPLE_H)

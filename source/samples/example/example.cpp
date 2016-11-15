@@ -1,5 +1,11 @@
 ﻿//############################################################################
-//      Theolizer紹介用サンプル・プログラム
+/*!
+    @brief      Theolizer紹介用サンプル・プログラム
+    @ingroup    Documents
+    @file       example.cpp
+    @author     Yoshinori Tahara
+    @date       2016/11/03 Created
+*/
 //############################################################################
 
 // ***************************************************************************
@@ -30,7 +36,7 @@ int main(int argc, char* argv[])
 
         std::ofstream   aStream("example.json");    // 保存先のファイルをオープンする
         theolizer::JsonOSerializer<> js(aStream);   // シリアライザを用意する
-        THEOLIZER_PROCESS(js, aStructType);         // test.jsonファイルへ保存する
+        THEOLIZER_PROCESS(js, aStructType);         // example.jsonファイルへ保存する
     }
     catch(theolizer::ErrorInfo& e)
     {
@@ -47,7 +53,7 @@ return 1;
         StructType aStructType;                     // データ領域を獲得する
         std::ifstream   aStream("example.json");    // 回復元のファイルをオープンする
         theolizer::JsonISerializer<> js(aStream);   // シリアライザを用意する
-        THEOLIZER_PROCESS(js, aStructType);         // test.jsonファイルから回復する
+        THEOLIZER_PROCESS(js, aStructType);         // example.jsonファイルから回復する
 
         // 回復結果を表示する
         std::cout <<theolizer::print

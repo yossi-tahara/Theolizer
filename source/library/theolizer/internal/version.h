@@ -1,16 +1,19 @@
 ﻿//############################################################################
-//      バージョン番号を自動生成
-//          バージョン・アップ手順(タグ付けする)
-//              ①ルートCMakeLists.txtのproject(VERSION)を修正
-//              ②CMakeコンフィグ実行
-//              ③kTheolizerSourcesHashをCommitメッセージに入れて、Commitする。
-//              ④kTheolizerVersionでタグ付けする。
-//          バージョン・アップしないでCommitする時の手順(タグ付けしない)
-//              ①kTheolizerSourcesHashをCommitメッセージに入れて、Commitする。
-//
-//          kTheolizerSourcesHash : Theolizerドライバ or ライブラリ全体のハッシュ値
-//          kTheolizerLibraryHash : Theolizerライブラリ・ヘッダのハッシュ値
-//
+/*!
+@brief      バージョン番号を自動生成
+@details    バージョン・アップ手順(タグ付けする)
+                1. ルートCMakeLists.txtのproject(VERSION)を修正
+                2. CMakeコンフィグ実行
+                3. kTheolizerSourcesHashをCommitメッセージに入れて、Commitする。
+                4. kTheolizerVersionでタグ付けする。
+
+            バージョン・アップしないでCommitする時の手順(タグ付けしない)
+                1. kTheolizerSourcesHashをCommitメッセージに入れて、Commitする。
+@ingroup    TheolizerLib
+@file       version.h
+@author     Yoshinori Tahara(Theoride Technology)
+@date       2015/09/20 Created
+*/
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
 
@@ -26,7 +29,15 @@
         GPLv3のコピーをLICENSE.TXTファイルにおいてます。
 */
 //############################################################################
-
-char const kTheolizerVersion[]    ="0.4.0-Temp.";
-char const kTheolizerSourcesHash[]="5109c1690953ec533cfc5d03e8f83ecf";
-char const kTheolizerLibraryHash[]="1c03dd941cbf25fbec7d8c948f281d49";
+/*!
+    Theolizerバージョン文字列(ドライバ／ライブラリ共通)
+*/
+char const kTheolizerVersion[]    ="0.4.0";
+/*!
+    Theolizerソースのハッシュ値(ドライバ／ライブラリ別)
+*/
+char const kTheolizerSourcesHash[]="76eced4bf6997f40440c4e1dcc43033b";
+/*!
+    Theolizerライブラリ・ヘッダ・ファイルのハッシュ値
+*/
+char const kTheolizerLibraryHash[]="95c4690f088d03e068bbb28908bcd101";

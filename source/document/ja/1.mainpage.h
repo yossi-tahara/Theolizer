@@ -1,9 +1,10 @@
 //############################################################################
 /*!
-    @file mainpage.h
-    @brief  ドキュメント・ファイル－概要
-    @author Yoshinori Tahara
-    @date   2015/08/01  Created
+    @brief      ドキュメント・ファイル－概要
+    @ingroup    Documents
+    @file       1.mainpage.h
+    @author     Yoshinori Tahara
+    @date       2015/08/01 Created
 */
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
@@ -58,12 +59,26 @@
         @par
         @ref HowToBuildLibrary \n
         @ref HowToBuildDriver \n
+        @ref VersionNo \n
         @ref Documents \n
         @par ""
 
-    @subpage HowToProgram \n
+    @subpage UsageTotal \n
         @par
-        T.B.D.\n
+        @ref Naming \n
+        @ref TestProgram \n
+        @ref BasicUsage \n
+        @par ""
+
+    @subpage UsageIndividual \n
+        @par
+        @ref BasicProcess \n
+        @ref DefineProcessClass \n
+        @ref DefineProcessEnum \n
+        @ref ObjectTracking \n
+        @ref UsageSTL \n
+        @ref ChangingClass \n
+        @ref ChangingEnum \n
         @par ""
 
     @subpage ApiReference \n
@@ -72,6 +87,12 @@
         @ref u8string \n
         @ref Unicode \n
         @par ""
+*/
+
+/*!
+    @defgroup TheolizerDriver Sources of TheolizerDriver
+    @defgroup TheolizerLib Sources of TheolizerLib/Test
+    @defgroup Documents Sources of documents
 */
 
 /*!
@@ -84,6 +105,11 @@
 Theolizerは[C++11](https://ja.wikipedia.org/wiki/C%2B%2B11)で記述されたC++用のシリアライザです。<br>
 Theolizerを使うことで、クラスや構造体を「ファイルへ保存／回復」、「通信回線で送受信」するプログラムの開発が容易になります。  <br>
 C++をベターCとしてお使いの方にも使って頂けるよう設計しておりますのでお気軽にお試し下さい。
+
+__「シリアライズ」という用語について__<br>
+シリアライズ(Serialize)の逆はデシリアライズ(Deserialize)なのですが、この資料ではデシリアライズも含めて「シリアライズ」と呼んでいます。<br>
+シリアライザも同様にデシリアライザを含めて呼んでいます。<br>
+両方を含めた用語が欲しいため、このようにしました。ご了承下さい。
 
 <br>
 @section Platforms 2.対応環境

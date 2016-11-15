@@ -63,21 +63,21 @@ public:
             Primitive2      = 0x12,     //  2バイトのプリミティブ
             Primitive4      = 0x13,     //  4バイトのプリミティブ
             Primitive8      = 0x14,     //  8バイトのプリミティブ
-            Primitive16     = 0x15,     // 16バイトのプリミティブ
+            Primitive10     = 0x15,     // 10バイトのプリミティブ
 
         MinusValue      = 0x20,         // 負の整数の絶対値
             MinusValue1     = 0x21,     //  1バイトの負の整数の絶対値
             MinusValue2     = 0x22,     //  2バイトの負の整数の絶対値
             MinusValue4     = 0x23,     //  4バイトの負の整数の絶対値
             MinusValue8     = 0x24,     //  8バイトの負の整数の絶対値
-            MinusValue16    = 0x25,     // 16バイトの負の整数の絶対値
+            MinusValue10    = 0x25,     // 10バイトの負の整数の絶対値
 
         ByteString      = 0x30,         // バイト列
             ByteString1     = 0x31,     // バイト列(長さフィールド= 1バイト)
             ByteString2     = 0x32,     // バイト列(長さフィールド= 2バイト)
             ByteString4     = 0x33,     // バイト列(長さフィールド= 4バイト)
             ByteString8     = 0x34,     // バイト列(長さフィールド= 8バイト)
-            ByteString16    = 0x35,     // バイト列(長さフィールド=16バイト)
+            ByteString10    = 0x35,     // バイト列(長さフィールド=10バイト)
 
         ClassEnd        = 0x40,         // クラス終了マーク
         ClassStartName  = 0x50,         // クラス開始マーク(名前対応)
@@ -96,7 +96,7 @@ private:
         case  2: return static_cast<TagCode>(iTagKind | 2);
         case  4: return static_cast<TagCode>(iTagKind | 3);
         case  8: return static_cast<TagCode>(iTagKind | 4);
-        case 16: return static_cast<TagCode>(iTagKind | 5);
+        case 10: return static_cast<TagCode>(iTagKind | 5);
         }
         THEOLIZER_INTERNAL_ABORT(u8"Illegal size in BinaryTag::getByteSize().");
     }
@@ -144,7 +144,7 @@ public:
         case 2: return 2;
         case 3: return 4;
         case 4: return 8;
-        case 5: return 16;
+        case 5: return 10;
         }
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Illegal BinaryTag size(TagCode=0x%02x).", get());
 

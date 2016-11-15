@@ -25,7 +25,7 @@ message(STATUS "THEOLIZER_ROOT=${THEOLIZER_ROOT}")
 #-----------------------------------------------------------------------------
 
 project(Theolizer VERSION 0.4.0)
-set(TEMPORARY_VERSION "-Temp.")
+#set(TEMPORARY_VERSION "-Prerease.")
 
 message(STATUS "PROJECT_VERSION=${PROJECT_VERSION}${TEMPORARY_VERSION}")
 

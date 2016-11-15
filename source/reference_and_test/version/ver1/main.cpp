@@ -46,11 +46,15 @@
 //      各種テスト関数の宣言
 // ***************************************************************************
 
-template<class tSerializer>
-void saveTopLevel(tSerializer& iSerializer);
+// ---------------------------------------------------------------------------
+//      THEOLIZER_PROCESS()の基本的な使い方
+// ---------------------------------------------------------------------------
 
 template<class tSerializer>
-void loadTopLevel(tSerializer& iSerializer);
+void saveBasicProcess(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadBasicProcess(tSerializer& iSerializer);
 
 // ***************************************************************************
 //      各テスト呼び出し
@@ -59,13 +63,13 @@ void loadTopLevel(tSerializer& iSerializer);
 template<class tSerializer>
 void saveBasic(tSerializer& iSerializer)
 {
-    saveTopLevel(iSerializer);
+    saveBasicProcess(iSerializer);
 }
 
 template<class tSerializer>
 void loadBasic(tSerializer& iSerializer)
 {
-    loadTopLevel(iSerializer);
+    loadBasicProcess(iSerializer);
 }
 
 //############################################################################
@@ -76,14 +80,14 @@ void loadBasic(tSerializer& iSerializer)
 //      CheckModeを振って呼ばれ、テスト基本部を呼ぶ
 // ***************************************************************************
 
-void VariationCheckMode
+void varyCheckMode
 (
     bool                    iLoadOnly,
     unsigned                iGlobalVersionNo,
     theolizer::CheckMode    iCheckMode
 )
 {
-    std::cout << "VariationCheckMode("
+    std::cout << "varyCheckMode("
               << iLoadOnly << ", "
               << iGlobalVersionNo << ", "
               << iCheckMode << "); ----------" << std::endl;
@@ -177,14 +181,14 @@ void VariationCheckMode
         // 保存処理
         if (!iLoadOnly)
         {
-            std::ofstream   aStream(filename);
+            std::ofstream   aStream(filename, std::ios_base::binary);
             theolizer::BinaryOSerializer<> bos(aStream);
             saveBasic(bos);
         }
 
         // 回復処理
         {
-            std::ifstream   aStream(filename);
+            std::ifstream   aStream(filename, std::ios_base::binary);
             theolizer::BinaryISerializer<> bis(aStream);
             loadBasic(bis);
         }
@@ -202,14 +206,14 @@ void VariationCheckMode
         // 保存処理
         if (!iLoadOnly)
         {
-            std::ofstream   aStream(filename);
+            std::ofstream   aStream(filename, std::ios_base::binary);
             theolizer::BinaryOSerializer<> bos(aStream, iGlobalVersionNo, iCheckMode);
             saveBasic(bos);
         }
 
         // 回復処理
         {
-            std::ifstream   aStream(filename);
+            std::ifstream   aStream(filename, std::ios_base::binary);
             theolizer::BinaryISerializer<> bis(aStream);
             loadBasic(bis);
         }
@@ -228,14 +232,14 @@ void VariationCheckMode
         // 保存処理
         if (!iLoadOnly)
         {
-            std::ofstream   aStream(filename);
+            std::ofstream   aStream(filename, std::ios_base::binary);
             theolizer::FastOSerializer<> fos(aStream);
             saveBasic(fos);
         }
 
         // 回復処理
         {
-            std::ifstream   aStream(filename);
+            std::ifstream   aStream(filename, std::ios_base::binary);
             theolizer::FastISerializer<> fis(aStream);
             loadBasic(fis);
         }
@@ -249,7 +253,7 @@ void VariationCheckMode
 //          iGlobalVersionNo==0の時は、デフォルト・パラメータで呼び出す。
 // ***************************************************************************
 
-void VariationGlobalVersionNo
+void varyGlobalVersionNo
 (
     bool        iLoadOnly,
     unsigned    iGlobalVersionNo
@@ -257,13 +261,13 @@ void VariationGlobalVersionNo
 {
     if (iGlobalVersionNo == 0)
     {
-        VariationCheckMode(iLoadOnly, iGlobalVersionNo, theolizer::CheckMode::NoTypeCheck);
+        varyCheckMode(iLoadOnly, iGlobalVersionNo, theolizer::CheckMode::NoTypeCheck);
     }
     else
     {
-        VariationCheckMode(iLoadOnly, iGlobalVersionNo, theolizer::CheckMode::NoTypeCheck);
-        VariationCheckMode(iLoadOnly, iGlobalVersionNo, theolizer::CheckMode::TypeCheck);
-        VariationCheckMode(iLoadOnly, iGlobalVersionNo, theolizer::CheckMode::TypeCheckByIndex);
+        varyCheckMode(iLoadOnly, iGlobalVersionNo, theolizer::CheckMode::NoTypeCheck);
+        varyCheckMode(iLoadOnly, iGlobalVersionNo, theolizer::CheckMode::TypeCheck);
+        varyCheckMode(iLoadOnly, iGlobalVersionNo, theolizer::CheckMode::TypeCheckByIndex);
     }
 }
 
@@ -309,13 +313,13 @@ return 1;
     {
         if (aGlobalVersionNo)
         {
-            VariationGlobalVersionNo(true, aGlobalVersionNo);
+            varyGlobalVersionNo(true, aGlobalVersionNo);
         }
         else
         {
             for (unsigned aVersionNo=0; aVersionNo <= 1; ++aVersionNo)
             {
-                VariationGlobalVersionNo(false, aVersionNo);
+                varyGlobalVersionNo(false, aVersionNo);
             }
         }
     }

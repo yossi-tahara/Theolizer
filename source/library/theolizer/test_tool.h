@@ -1,13 +1,11 @@
 ﻿//############################################################################
 /*!
-@brief  テスト用ツール群
-
-        Theolizerのテスト用。\n
-          - 各種テスト用マクロを提供する。\n
-
-@file   test_tool.h
-@author Yoshinori Tahara(Theoride Technology)
-@date   2016/11/12
+@brief      テスト用ツール群
+@details    各種テスト用マクロとツールを提供する。
+@ingroup    TheolizerLib
+@file       test_tool.h
+@author     Yoshinori Tahara(Theoride Technology)
+@date       2015/08/08 Created
 */
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/

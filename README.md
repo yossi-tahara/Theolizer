@@ -193,7 +193,7 @@ int main(int argc, char* argv[])
 
         std::ofstream   aStream("example.json");    // 保存先のファイルをオープンする
         theolizer::JsonOSerializer<> js(aStream);   // シリアライザを用意する
-        THEOLIZER_PROCESS(js, aStructType);         // test.jsonファイルへ保存する
+        THEOLIZER_PROCESS(js, aStructType);         // example.jsonファイルへ保存する
     }
     catch(theolizer::ErrorInfo& e)
     {
@@ -210,7 +210,7 @@ return 1;
         StructType aStructType;                     // データ領域を獲得する
         std::ifstream   aStream("example.json");    // 回復元のファイルをオープンする
         theolizer::JsonISerializer<> js(aStream);   // シリアライザを用意する
-        THEOLIZER_PROCESS(js, aStructType);         // test.jsonファイルから回復する
+        THEOLIZER_PROCESS(js, aStructType);         // example.jsonファイルから回復する
 
         // 回復結果を表示する
         std::cout <<theolizer::print
@@ -247,7 +247,7 @@ STLコンテナ対応はまだ一部です。
 
 - テストついて<br>
 自動テストの実装を進めています。ライブラリは網羅的な自動テストをほぼ実装しています。
-ドライバの自動テストの実装が未着手です。オープンβ期間中に実装予定です。
+ドライバの自動テストの実装に着手したばかりです。オープンβ期間中に実装予定です。
 
 - ドキュメントついて<br>
 基本部分についてのみ記述が終わっています。「使い方詳細」、および、「APIリファレンス」について未着手です。オープンβ期間中に記述予定です。
@@ -256,6 +256,7 @@ STLコンテナ対応はまだ一部です。
 適切に作ることができれば機能テスト自身が詳細仕様の定義になると考えています。  
 そして、**この形式の詳細仕様はプログラムの仕様と一致することを保証できます。**  
 本当に詳細仕様（リファレンス）として有用なものを作成できるのか、まだ確信は持てていませんが、全力でこの方式を実現したいと思います。  
+Version.0.4.0にて[最初の実装](http://doc.theolizer.com/html/_basic_process.html)を行っています。
 
 <br>
 <h1 id="DefectReport">7.不具合報告を頂く時のお願い</h1>

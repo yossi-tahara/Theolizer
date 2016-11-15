@@ -1,9 +1,10 @@
 //############################################################################
 /*!
-    @file reference.h
-    @brief  ドキュメント・ファイル－プログラム開発方法詳細
-    @author Yoshinori Tahara
-    @date   2016/11/01  Created
+    @brief      ドキュメント・ファイル－プログラム開発方法詳細
+    @ingroup    Documents
+    @file       8.reference.h
+    @author     Yoshinori Tahara
+    @date       2016/11/01 Created
 */
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/

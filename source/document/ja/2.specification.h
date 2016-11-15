@@ -1,9 +1,10 @@
 //############################################################################
 /*!
-    @file specification.h
-    @brief  ドキュメント・ファイル－仕様
-    @author Yoshinori Tahara
-    @date   2016/11/01  Created
+    @brief      ドキュメント・ファイル－仕様
+    @ingroup    Documents
+    @file       2.specification.h
+    @author     Yoshinori Tahara
+    @date       2016/11/01 Created
 */
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
@@ -35,7 +36,7 @@ __① プリミティブ型__<br>
 - std::string, std::wstring, std::u16string, std::u32string
 
 __② enum型__<br>
-通常のenum型、および、scorped enum型の両方に対応しています。
+通常のenum型、および、scoped enum型の両方に対応しています。
 
 __③ class、struct__<br>
 class、および、structは同じ扱いです。
@@ -120,6 +121,11 @@ std::wstring, std::u16string, std::u32stringについても適切なUTF-xxコー
 
 - **BinaryOSerializer, BinaryISerializer**<br>
 独自のバイナリフォーマットで保存します。文字列の文字コード変換は行わいません。そのまま保存／回復します。
+
+- **FastOSerializer, FastISerializer**<br>
+メモリ内専用のデータ・コピー用の特殊なシリアライザです。これは、クラス・インスタンスのメモリ内コピーのために用意しました。メモリ内でのコピーですので最新版のみサポートしています。また、ポインタが指す先のオブジェクトを保存しなかった場合、そのポインタの値は元の値をそのままコピーします。（@ref Tracking 参照）<br>
+保存先を通常通り指定できますのでコピーするメンバとしないメンバを指定できます。更に、オーナー指定したポインタはデープ・コピーされ、そうでないポインタはシャロー・コピーされます。<br>
+このシリアライザはTheolizer内部でも使用しています。
 
 標準コンテナ（STL）は枚挙できないものを除き対応予定です。現在は下記に対応しています。
 - **std::vector**  (デフォルト・アロケータのみ)

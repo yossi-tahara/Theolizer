@@ -40,6 +40,11 @@ function(set_language ISO639)
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${ISO639}
         COMMENT "Creating documentation using Doxygen")
 
+    add_dependencies(${ISO639} VersionOf${TheolizerLib})
+    if(BUILD_DRIVER)
+        add_dependencies(${ISO639} VersionOfTheolizerDriver)
+    endif()
+
     install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${ISO639} DESTINATION ${DOC_DIR})
 
 endfunction()

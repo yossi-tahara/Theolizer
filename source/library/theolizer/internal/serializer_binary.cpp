@@ -216,28 +216,25 @@ void BinaryMidOSerializer::saveFloat(tType iFloat)
     {
         aSize=8;
     }
-    else if (sizeof(tType) <= 16)
+    // float80
+    else if ((std::numeric_limits<tType>::is_signed == 1)
+          && (std::numeric_limits<tType>::radix == 2)
+          && (std::numeric_limits<tType>::digits == 64)
+          && (std::numeric_limits<tType>::max_exponent == 16384))
     {
-        aSize=16;
+        aSize=10;
     }
     else
     {
-        THEOLIZER_INTERNAL_ABORT("saveFloat() : Size is too big.");
+        THEOLIZER_INTERNAL_ABORT
+        (
+            "saveFloat() : Unkown format(%s).", THEOLIZER_INTERNAL_TYPE_NAME(tType)
+        );
     }
     writeByte(BinaryTag(BinaryTag::Primitive, aSize));
 
-    unsigned size=sizeof(tType);
-    // float80なら特別処理
-    if ((std::numeric_limits<tType>::is_signed == 1)
-     && (std::numeric_limits<tType>::radix == 2)
-     && (std::numeric_limits<tType>::digits == 64)
-     && (std::numeric_limits<tType>::max_exponent == 16384))
-    {
-        size=10;
-    }
-
     char const* begin=reinterpret_cast<char const*>(&iFloat);
-    char const* end  =begin + size;
+    char const* end  =begin + aSize;
     if (isLittleEndian())
     {
         for (char const* p=end-1; begin <= p; --p)
@@ -251,10 +248,6 @@ void BinaryMidOSerializer::saveFloat(tType iFloat)
         {
             writeByte(*p);
         }
-    }
-    for (unsigned i=size; i < aSize; ++i)
-    {
-        writeByte(0);
     }
 }
 
@@ -599,23 +592,22 @@ void BinaryMidISerializer::loadFloat(tType& oFloat)
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
     }
     unsigned aDataLen=mBinaryTag.getSize();
-    if (aDataLen > sizeof(tType))
-    {
-        THEOLIZER_INTERNAL_DATA_ERROR(u8"Size Error(aDataLen=%1%).", mBinaryTag.getSize());
-    }
 
-    // float80なら特別処理
-    unsigned size=aDataLen;
+    // float80
     if ((std::numeric_limits<tType>::is_signed == 1)
      && (std::numeric_limits<tType>::radix == 2)
      && (std::numeric_limits<tType>::digits == 64)
      && (std::numeric_limits<tType>::max_exponent == 16384))
     {
-        size=10;
+        THEOLIZER_INTERNAL_ASSERT
+        (
+            aDataLen == 10,
+            "loadFloat() : Unkown format(%s).", THEOLIZER_INTERNAL_TYPE_NAME(tType)
+        );
     }
 
     char* begin=reinterpret_cast<char*>(&oFloat);
-    char* end  =begin + size;
+    char* end  =begin + aDataLen;
     if (isLittleEndian())
     {
         for (char* p=end-1; begin <= p; --p)
@@ -632,11 +624,7 @@ void BinaryMidISerializer::loadFloat(tType& oFloat)
     }
     for (char* p=end; p < (begin+sizeof(tType)); ++p)
     {
-        *p=readByte();
-    }
-    for(unsigned i=sizeof(tType); i < aDataLen; ++i)
-    {
-        readByte();
+        *p=0;
     }
 }
 

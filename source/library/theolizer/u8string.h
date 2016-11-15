@@ -1,7 +1,11 @@
 ﻿//############################################################################
 /*!
-    @file
-    @defgroup Unicode Unicode文字列補助機能
+    @brief      Unicode文字列用補助ツール群
+    @defgroup   Unicode Unicode Helper
+    @ingroup    TheolizerLib
+    @file       u8string.h
+    @author     Yoshinori Tahara
+    @date       2015/09/02 Created
 
     @todo T.B.D.
 */
