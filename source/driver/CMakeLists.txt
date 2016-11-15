@@ -140,11 +140,17 @@ endif()
 
 #       ---<<< define test parts >>>---
 
+# prepare
+add_test_sub_sudo(TheolizerDriverPrepare
+                  TheolizerDriver --theolizer-restore=${CMAKE_CXX_COMPILER})
+set_tests_properties(TheolizerDriverPrepare PROPERTIES LABELS TestXL)
+
 # install
 add_test_sub_sudo(TheolizerDriverInstall
                   TheolizerDriver --theolizer-replace=${CMAKE_CXX_COMPILER})
 set_tests_properties(TheolizerDriverInstall PROPERTIES PASS_REGULAR_EXPRESSION "Completed !")
 set_tests_properties(TheolizerDriverInstall PROPERTIES LABELS TestXL)
+set_tests_properties(TheolizerDriverInstall PROPERTIES DEPENDS TheolizerDriverPrepare)
 
 # reinstall
 add_test_sub_sudo(TheolizerDriverReInstall

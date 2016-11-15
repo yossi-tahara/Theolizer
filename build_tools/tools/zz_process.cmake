@@ -305,6 +305,14 @@ macro(last_test)
     file(READ ${CMAKE_SOURCE_DIR}/compiler.txt COMPILER)
 #   message(STATUS "COMPILER=${COMPILER}")
 
+    # Theolizerドライバーがリプレースされていたらリストアしておく
+    execute_process(
+        COMMAND ${SUDO} ${THEOLIZER_ROOT}/bin/TheolizerDriver --theolizer-restore=${COMPILER}
+        OUTPUT_VARIABLE OUTPUT_LOG
+        ERROR_VARIABLE  OUTPUT_LOG
+    )
+    set(TEMP_LOG2 "${TEMP_LOG2}${OUTPUT_LOG}")
+
     # Theolizerドライバーのリプレース
     execute_process(
         COMMAND ${SUDO} ${THEOLIZER_ROOT}/bin/TheolizerDriver --theolizer-replace=${COMPILER}
@@ -314,6 +322,7 @@ macro(last_test)
     )
     set(TEMP_LOG2 "${TEMP_LOG2}${OUTPUT_LOG}")
     if(NOT ${RETURN_CODE} EQUAL 0)
+        message(SEND_ERROR "${RETURN_CODE}")
 return()
     endif()
 
@@ -442,6 +451,14 @@ elseif("${PROC}" STREQUAL "full")
 
         if(${RETURN_CODE} EQUAL 0)
             relay("  Installing  ...")
+
+            # インストール先を一旦削除してからインストールする
+            if((BUILD_DRIVER) AND ("${PROC_ALL}" STREQUAL "full_all"))
+                execute_process(
+                    COMMAND ${CMAKE_COMMAND} -E remove_directory "${THEOLIZER_ROOT}"
+                )
+            endif()
+
             build(install Release .)
             set(TEMP_LOG "${TEMP_LOG}${OUTPUT_LOG}")
         endif()
