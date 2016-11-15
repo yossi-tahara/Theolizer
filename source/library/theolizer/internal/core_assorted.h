@@ -771,7 +771,7 @@ enum class CheckMode
 /*!
     @todo   T.B.D.
 */
-std::ostream& operator<<(std::ostream& iOStream, CheckMode iCheckMode);
+THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, CheckMode iCheckMode);
 
 // ***************************************************************************
 //      不正値
