@@ -217,6 +217,21 @@ struct THEOLIZER_INTERNAL_DLL DisplayPass : public internal::AutoRestore<bool>
 };
 
 // ***************************************************************************
+//      MinGW不具合対処
+//          関数テンプレートで浮動小数点を取り扱う時、最適化上の不具合がある模様
+//          処理に割り込んで最適化させないためのダミー関数
+/*!
+    @todo   T.B.D.
+*/
+// ***************************************************************************
+
+#if defined(__MINGW32__)
+    THEOLIZER_INTERNAL_DLL void cutOptimize();
+#else
+    inline void cutOptimize() { }
+#endif
+
+// ***************************************************************************
 //      テスト結果集計用
 //
 /*!
@@ -422,7 +437,7 @@ namespace internal
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 #define THEOLIZER_INTERNAL_U8(dString)          u8##dString
-#define THEOLZIER_INTERNAL_FIRST(dFirst, ...)   dFirst
+#define THEOLZIER_INTERNAL_FIRST(dFirst, ...)   (dFirst)
 
 //      ---<<< 判定と表示用マクロ >>>---
 

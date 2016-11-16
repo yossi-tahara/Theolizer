@@ -143,6 +143,31 @@ void JsonMidOSerializer::writeHeader()
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
+//      10進数変換して精度が劣化しない桁数
+//          https://ja.wikipedia.org/wiki/IEEE_754
+//          必要な桁数は、1 + ceiling(p×log102)
+//          ここで、pはその二進形式の仮数のビット数で、例えば binary32なら24ビットである。
+//----------------------------------------------------------------------------
+
+template<typename tType>
+struct Decimal
+{
+    static const int    kDigit=17;
+};
+
+template<>
+struct Decimal<float>
+{
+    static const int    kDigit=9;
+};
+
+template<>
+struct Decimal<long double>
+{
+    static const int    kDigit=21 ;
+};
+
+//----------------------------------------------------------------------------
 //      プリミティブ処理
 //----------------------------------------------------------------------------
 
@@ -167,7 +192,7 @@ void JsonMidOSerializer::writeHeader()
     void JsonMidOSerializer::savePrimitive(dType const& iPrimitive)         \
     {                                                                       \
         std::streamsize precision=mOStream.precision();                     \
-        mOStream.precision(std::numeric_limits<dType>::digits10);           \
+        mOStream.precision(Decimal<dType>::kDigit);                         \
         mOStream << iPrimitive;                                             \
         mOStream.precision(precision);                                      \
         if (!mOStream.good()) {                                             \
@@ -528,12 +553,10 @@ bool JsonMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
 #define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSimbol)               \
     void JsonMidISerializer::loadPrimitive(dType& oPrimitive)               \
     {                                                                       \
-        long double data(0);                                                \
-        mIStream >> data;                                                   \
+        mIStream >> oPrimitive;                                             \
         if (!mIStream.good()) {                                             \
             THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                    \
         }                                                                   \
-        oPrimitive = static_cast<dType>(data);                              \
     }
 
 //      ---<<< 文字列型 >>>---

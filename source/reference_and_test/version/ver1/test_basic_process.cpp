@@ -235,17 +235,17 @@ void saveBasicProcess(tSerializer& iSerializer)
     saveTestArray<float, 5>
     (
         iSerializer,
-        [](std::size_t i){return static_cast<float>(i)+0.1F;}
+        [](std::size_t i){return static_cast<float>(i+0.1);}
     );
     saveTestArray<double, 6>
     (
         iSerializer,
-        [](std::size_t i){return static_cast<double>(i)+0.2;}
+        [](std::size_t i){return i+0.2;}
     );
     saveTestArray<long double, 7>
     (
         iSerializer,
-        [](std::size_t i){return static_cast<long double>(i)+0.3L;}
+        [](std::size_t i){return static_cast<long double>(i+0.3);}
     );
 
     // 文字列型
@@ -546,17 +546,17 @@ void loadBasicProcess(tSerializer& iSerializer)
     loadTestArray<float, 5>
     (
         iSerializer,
-        [](std::size_t i){return static_cast<float>(i)+0.1F;}
+        [](std::size_t i){return static_cast<float>(i+0.1);}
     );
     loadTestArray<double, 6>
     (
         iSerializer,
-        [](std::size_t i){return static_cast<double>(i)+0.2;}
+        [](std::size_t i){return i+0.2;}
     );
     loadTestArray<long double, 7>
     (
         iSerializer,
-        [](std::size_t i){return static_cast<long double>(i)+0.3L;}
+        [](std::size_t i){return static_cast<long double>(i+0.3);}
     );
 
     // 文字列型

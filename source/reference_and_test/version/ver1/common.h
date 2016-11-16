@@ -82,6 +82,7 @@ void saveTestArray(tSerializer& iSerializer, tFunc iFunc)
     tType aArray1[N];
     for (std::size_t i=0; i < N; ++i)
     {
+        theolizer::cutOptimize();
         aArray1[i]=iFunc(i);
     }
     THEOLIZER_PROCESS(iSerializer, aArray1);
@@ -92,6 +93,7 @@ void saveTestArray(tSerializer& iSerializer, tFunc iFunc)
     {
         for (std::size_t i=0; i < N; ++i)
         {
+            theolizer::cutOptimize();
             aArray2[j][i]=iFunc(i+j);
         }
     }
@@ -105,7 +107,8 @@ void saveTestArray(tSerializer& iSerializer, tFunc iFunc)
         {
             for (std::size_t i=0; i < N; ++i)
             {
-                aArray3[k][j][i]=iFunc(i+j+k);
+                theolizer::cutOptimize();
+               aArray3[k][j][i]=iFunc(i+j+k);
             }
         }
     }
@@ -129,7 +132,9 @@ void loadTestArray(tSerializer& iSerializer, tFunc iFunc)
     THEOLIZER_PROCESS(iSerializer, aArray1);
     for (std::size_t i=0; i < N; ++i)
     {
-        THEOLIZER_EQUAL(aArray1[i], iFunc(i), i);
+        tType aTemp=iFunc(i);
+        theolizer::cutOptimize();
+        THEOLIZER_EQUAL(aArray1[i], aTemp, i);
     }
 
     // 2次元配列
@@ -139,7 +144,9 @@ void loadTestArray(tSerializer& iSerializer, tFunc iFunc)
     {
         for (std::size_t i=0; i < N; ++i)
         {
-            THEOLIZER_EQUAL(aArray2[j][i], iFunc(i+j), i, j);
+            tType aTemp=iFunc(i+j);
+            theolizer::cutOptimize();
+            THEOLIZER_EQUAL(aArray2[j][i], aTemp, i, j);
         }
     }
 
@@ -152,7 +159,9 @@ void loadTestArray(tSerializer& iSerializer, tFunc iFunc)
         {
             for (std::size_t i=0; i < N; ++i)
             {
-                THEOLIZER_EQUAL(aArray3[k][j][i], iFunc(i+j+k), i, j, k);
+                tType aTemp=iFunc(i+j+k);
+                theolizer::cutOptimize();
+                THEOLIZER_EQUAL(aArray3[k][j][i], aTemp, i, j, k);
             }
         }
     }

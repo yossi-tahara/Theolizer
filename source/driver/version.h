@@ -36,8 +36,8 @@ char const kTheolizerVersion[]    ="0.4.0";
 /*!
     Theolizerソースのハッシュ値(ドライバ／ライブラリ別)
 */
-char const kTheolizerSourcesHash[]="32e5e0e2a57840ab789a5e4a7ebdf8c0";
+char const kTheolizerSourcesHash[]="a94579a67eb02d5f11fccfc553be2a22";
 /*!
     Theolizerライブラリ・ヘッダ・ファイルのハッシュ値
 */
-char const kTheolizerLibraryHash[]="95c4690f088d03e068bbb28908bcd101";
+char const kTheolizerLibraryHash[]="2ec8acf75c4f2f365fb5a02e40e6b58c";
