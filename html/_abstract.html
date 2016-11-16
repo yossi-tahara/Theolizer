@@ -29,7 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.3.0</span>
+   &#160;<span id="projectnumber">Version.0.4.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -91,20 +91,24 @@ $(document).ready(function(){initNavTree('_abstract.html','');});
 <p>Theolizerは<a href="https://ja.wikipedia.org/wiki/C%2B%2B11">C++11</a>で記述されたC++用のシリアライザです。<br />
  Theolizerを使うことで、クラスや構造体を「ファイルへ保存／回復」、「通信回線で送受信」するプログラムの開発が容易になります。 <br />
  C++をベターCとしてお使いの方にも使って頂けるよう設計しておりますのでお気軽にお試し下さい。</p>
+<p><b>「シリアライズ」という用語について</b><br />
+ シリアライズ(Serialize)の逆はデシリアライズ(Deserialize)なのですが、この資料ではデシリアライズも含めて「シリアライズ」と呼んでいます。<br />
+ シリアライザも同様にデシリアライザを含めて呼んでいます。<br />
+ 両方を含めた用語が欲しいため、このようにしました。ご了承下さい。</p>
 <p><br />
  </p>
 <h1><a class="anchor" id="Platforms"></a>
 2.対応環境</h1>
 <hr/>
-<p>マルチ・プラットフォームとC++11規格コンパイラに対応できるよう設計しています。<br />
- 現時点でテストできている環境はWindowsとubuntuです。</p>
+<p>マルチ・プラットフォームでC++11規格コンパイラに対応できるよう設計しています。<br />
+ 現時点でテストできている環境は下記の通りです。</p>
 <table class="doxtable">
 <tr>
 <th>OS</th><th>C++コンパイラ  </th></tr>
 <tr>
-<td>Windows 10 Professional 64bit</td><td><a href="https://www.microsoft.com/ja-jp/dev">Visual Studio C++ 2015 Community update 3</a><br />
-<a href="https://sourceforge.net/projects/mingw-w64/">MinGW 5.4.0 32bit posix dwarf</a><br />
-<a href="https://sourceforge.net/projects/mingw-w64/">MinGW 5.4.0 64bit posix seh</a> </td></tr>
+<td>Windows 10 Professional 64bit</td><td><a href="https://www.visualstudio.com/ja/downloads/">Visual Studio C++ 2015</a> Community update 3<br />
+<a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/5.4.0/threads-posix/dwarf/i686-5.4.0-release-posix-dwarf-rt_v5-rev0.7z/download">MinGW 5.4.0 32bit posix dwarf</a><br />
+<a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/5.4.0/threads-posix/seh/x86_64-5.4.0-release-posix-seh-rt_v5-rev0.7z/download">MinGW 5.4.0 64bit posix seh</a> </td></tr>
 <tr>
 <td>ubuntu 16.04 LTS 64bit</td><td>gcc 5.4.0(Ubuntu 5.4.0-6ubuntu1~16.04.2) </td></tr>
 </table>

@@ -1,0 +1,277 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.12"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Theolizer: 使用方法（全体）</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+  $(document).ready(initResizable);
+</script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">Theolizer
+   &#160;<span id="projectnumber">Version.0.4.0</span>
+   </div>
+   <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 構築: Doxygen 1.8.12 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'検索');
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','検索');
+  $(document).ready(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('_usage_total.html','');});
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">使用方法（全体） </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p>ここでは、Theolizerの使い方を説明します。</p>
+<p>TheolizerはAPIの機能テストをできるだけ自動化してます。<br />
+ そして、APIの機能テストは詳細仕様を規定することでもあります。複雑なプログラムでは文書として読み取ることは困難ですが、単純なプログラムであれば、文書としての機能を果たせるのではないかと考えています。</p>
+<p>そこで、各機能についてそれをテストするための多数のテスト群の内、代表的なものを使って説明し、詳細テストの関連部分のソースも提示します。できるだけ読み取るのに苦労しない形式でプログラムを記述し、詳細仕様書として有用であることを目指します。</p>
+<p>まず、1～3節で全体的な説明を行い、4節以降で各機能について説明します。</p>
+<p><br />
+ </p>
+<h1><a class="anchor" id="Naming"></a>
+1.名前の付け方</h1>
+<p>TheolizerのAPIは名前空間に入れています。また、マクロは決まったプリフィクスを付けています。 少し意味を持たせていますので説明します。</p>
+<h2><a class="anchor" id="Namespace"></a>
+1-1.名前空間</h2>
+<p>ほぼ全てのシンボルを <b>theolizer</b> 名前空間へ入れています。<br />
+ 一部、入れると実装が難しいものについては、シンボルに <b>Theolizer</b> を含みます。<br />
+ これにより既存のコードと被ることはまずない筈です。</p>
+<p>次に、内部的に使用するシンボルは <b>internal</b> 名前空間へ入れています。<br />
+ これらのシンボルが付けられたクラスや関数等は、Theolizerのアップデート時、上位互換性を考慮しませんので使用しないようお願いします。</p>
+<h2><a class="anchor" id="MacroName"></a>
+1-2.マクロ名</h2>
+<p>全てのマクロは <b>THEOLIZER_</b> で始めています。<br />
+ これにより既存のコードと被ることはまずない筈です。</p>
+<p>次に、内部的に使用するマクロは、 <b>THEOLIZER_INTERNAL_</b> で始めています。<br />
+ また、Theolizerが自動生成するマクロを、 <b>THEOLIZER_GENERATED_</b> で始めています。<br />
+ これらのマクロは、Theolizerのアップデート時、上位互換性を考慮しませんので使用しないようお願いします。</p>
+<p><br />
+ </p>
+<h1><a class="anchor" id="TestProgram"></a>
+2.テスト・プログラムの構造</h1>
+<p>主な機能テスト・プログラムは、 <b>source/reference_and_test</b> 以下にテストの分類に応じてフォルダを分けて入れています。</p>
+<h2><a class="anchor" id="TestProgramStructure"></a>
+2-1.構造について</h2>
+<p>定義変更するということはプログラム自体が異なります。それをテストするため、変更したプログラム毎に異なるフォルダへテスト・プログラムを入れています。<br />
+ 保存先は、 <b>source/reference_and_test/version/ver*</b> です。 <b>ver*</b> はバージョン番号、及び、バージョン番号を変更せずにプログラム変更したもの用のフォルダ名です。<br />
+ 例えば、<b>ver1</b>はバージョン1用、<b>ver1a</b>はそれを少し変更したものを入れてます。</p>
+<p>これらのテスト・プログラムの構造は共通です。現在は下記のような構造になっています。（機能テストの追加に伴い、ファイルと関数を追加します。）</p>
+<table class="doxtable">
+<tr>
+<th>ファイル</th><th>関数</th><th>概要  </th></tr>
+<tr>
+<td>main.cpp </td><td>main()</td><td>パラメータ解析<br />
+GlobalVersionNoを振ってvaryGlobalVersionNo()呼び出し </td></tr>
+<tr>
+<td>↑</td><td>varyGlobalVersionNo()</td><td>CheckModeを振ってvaryCheckMode()呼び出し </td></tr>
+<tr>
+<td>↑</td><td>varyCheckMode()</td><td>必要なシリアライザのインスタンスを生成し、saveBasic(), loadBasic()呼び出し </td></tr>
+<tr>
+<td>↑</td><td>saveBasic()</td><td>自動テスト基本部の保存処理。個別テストを呼び出す </td></tr>
+<tr>
+<td>↑</td><td>loadBasic()</td><td>自動テスト基本部の回復処理。個別テストを呼び出す </td></tr>
+<tr>
+<td>test_basic_process.cpp </td><td></td><td>THEOLIZER_PROCESS()の網羅的な使用例（自動テスト） </td></tr>
+<tr>
+<td>↑</td><td>saveBasicProcess()</td><td>保存 </td></tr>
+<tr>
+<td>↑</td><td>loadBasicProcess()</td><td>回復 </td></tr>
+</table>
+<h2><a class="anchor" id="MacroForDescription"></a>
+2-2.説明で用いるマクロについて</h2>
+<p>テスト用のマクロはtest_tool.hで定義しています。<br />
+ その内、使い方の説明（兼 自動テスト）で用いるマクロについてここで簡単に説明します。</p>
+<h3>THEOLIZER_EQUAL(dLhs, dRhs, ...)</h3>
+<p>(dLhs == dRhs) ならばPASS、そうでないならFAILと判定します。<br />
+ PASSならば、テストの数とPASS数をインクリメントします。<br />
+ FAILならば、テストの数とFAIL数をインクリメントし、テストを失敗させます。<br />
+ また、dRhsとそれ以降のアイテム（1個以上7個まで）を標準出力へ出力します。</p>
+<p>下記はシリアライザを使って回復したint型のaIntの値が-103であることをチェックしています。</p>
+ <div class="fragment"></div><!-- fragment --></p>
+<p><br />
+ </p>
+<h1><a class="anchor" id="BasicUsage"></a>
+3.基本的な使い方</h1>
+<p>Theolizerをインストールした後、あなたのデータをTheolizerでシリアライズするために、あなたのプログラムを下記の順序を守るようにして下さい。</p>
+<ol type="1">
+<li>Theolizerヘッダをインクルード</li>
+<li>シリアライズするクラスとenum型の定義</li>
+<li>Theolizerの自動生成ファイルをインクルード</li>
+<li>シリアライズ処理</li>
+</ol>
+<h2><a class="anchor" id="TheolizerHeader"></a>
+3-1.Theolizerヘッダをインクルード</h2>
+<p>一部例外はありますが原則として、<b>シリアライズするクラスとenum型の定義</b> 前にTheolizerのヘッダをインクルードして下さい。<br />
+ 例外は <b>非侵入型</b>のクラスとenum型です。(<a class="el" href="_specification.html#Basic12">1-2.シリアライズ可能な型についての補足事項</a>) <br />
+ これらについては <b>Theolizerヘッダをインクルード</b> する前に定義しても問題ありません。</p>
+<p>現在、サポートしているシリアライザはJson形式、独自Binary形式、メモリ内専用のFast形式の3種類です。 それぞれ、下記ヘッダをインクールドして下さい。</p>
+<table class="doxtable">
+<tr>
+<th>形式</th><th>インクルードするヘッダ</th><th>注意事項  </th></tr>
+<tr>
+<td>Json形式</td><td>&lt;<a class="el" href="serializer__json_8h.html" title="ドキュメント・ファイル－概要 ">theolizer/serializer_json.h</a>&gt;</td><td>fstreamの時はテキスト・モードでオープンする </td></tr>
+<tr>
+<td>独自Binary形式</td><td>&lt;<a class="el" href="serializer__binary_8h_source.html">theolizer/serializer_binary.h</a>&gt;</td><td>fstreamの時は<b>バイナリ・モード(std::ios_base::binary)</b>でオープンする </td></tr>
+<tr>
+<td>メモリ内専用Fast形式</td><td>上記のどちから、もしくは、&lt;<a class="el" href="serializer_8h_source.html">theolizer/serializer.h</a>&gt;</td><td>fstreamの時は<b>バイナリ・モード(std::ios_base::binary)</b>でオープンする </td></tr>
+</table>
+<p><b>Theolizerヘッダのインクルード例：(source/samples/example/example.h）</b></p>
+ <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="serializer__json_8h.html">theolizer/serializer_json.h</a>&gt;</span></div></div><!-- fragment --></p>
+<p><b>特記事項：</b><br />
+ <a class="el" href="serializer_8h_source.html">theolizer/serializer.h</a>はシリアライザ用の基本ヘッダです。serializer_jsonとserializer_binaryからもインクルードされています。<br />
+ メモリ内専用Fast形式(FastSerializer)はTheolizerが内部的に使用しているため、serializerからインクルードされています。</p>
+<p><b>バイナリ形式における注意事項：</b><br />
+ バイナリ形式のシリアライザをfstreamで用いる時は、必ずバイナリ・モードでfstreamをオープンして下さい。<br />
+ ファイル・ストリームへ数値26(0x1A)が出力されるとこれはEOFコードのため、回復時にEOFエラーになります。<br />
+ また、Windowsの場合、数値10(0x0A)が出力されるとCR LFへ展開されてしまい、適切に回復できません。<br />
+ Theolizer側でエラーにしたいのですが、iostreamではそのオープン・モードを確認できないため、チェックが困難なのです。<br />
+</p>
+<p><b>独自Binary形式について：</b><br />
+ Big EndianとLittle Endianについては自動的に吸収しています。<br />
+</p>
+<p>浮動小数点型はIEEE754フォーマットを期待しています。また、バイト単位でEndian変換します。<br />
+ long doubleはbinary64と「radix==2、digits==64、max_exponent==16384」の80ビット拡張精度形式に対応しています。<br />
+ 浮動小数点型のエンコード／デコード処理は、source/library/theolizer/internal/serializer_binary.cppの下記関数テンプレートで行っています。</p><ul>
+<li>BinaryMidOSerializer::saveFloat()</li>
+<li>BinaryMidISerializer::loadFloat()</li>
+</ul>
+<h2><a class="anchor" id="DefineClassEnum"></a>
+3-2.シリアライズするクラスとenum型の定義</h2>
+<p><b>Theolizerの自動生成ファイルをインスクルード</b> する前に、<b>シリアライズするクラスとenum型の定義</b> を行います。この順序に例外はありません。<br />
+ 標準ライブラリを含む他のライブラリのヘッダについては、通常通りインクルードして下さい。</p>
+<p><b>クラスとenum型定義例：(source/samples/example/example.h）</b></p>
+<p><div class="fragment"><div class="line"><span class="keyword">enum</span> EnumType</div><div class="line">{</div><div class="line">    None,</div><div class="line">    EnumA,</div><div class="line">    EnumB,</div><div class="line">    EnumC</div><div class="line">};</div><div class="line"></div><div class="line"><span class="keyword">struct </span>StructType</div><div class="line">{</div><div class="line">    EnumType    mEnum;</div><div class="line">    <span class="keywordtype">int</span>         mInt;</div><div class="line">    std::string mString;</div><div class="line">    StructType() : mEnum(None), mInt(0), mString(<span class="stringliteral">&quot;&quot;</span>) { }</div><div class="line">};</div></div><!-- fragment --></p>
+<h2><a class="anchor" id="IncludeAutoGeneratedFile"></a>
+3-3.Theolizerの自動生成ファイルをインクルード</h2>
+<p><a class="el" href="_abstract.html#Mechanism">4.Theolizerの仕組み</a> で説明したようにTheolizerはシリアライズに必要なソース・コードを自動生成します。<br />
+ このファイルはコンパイル単位（通常は.cppファイル）毎に生成され、当該.cppファイルと同じフォルダへ自動的に生成されます。<br />
+ Theolizerは、バージョンを上げた時に古いクラス定義やenum型定義をここに残します。これにより古いシリアライズ・データを回復できます。<br />
+ そこで、このファイルをお使いのバージョン管理システム（gitやsvn等）へ登録することを強くお勧めします。</p>
+<p>自動生成するファイルのファイル名は、そのコンパイル単位のファイル名に".theolzier.hpp"を繋げたものです。<br />
+ 例えば、<b>example.cpp</b> の場合は、<b>example.cpp.theolizer.hpp</b> となります。</p>
+<p><b>例：(source/samples/example/example.cpp）</b></p>
+ <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;fstream&gt;</span></div><div class="line"><span class="preprocessor">#include &quot;example.h&quot;</span></div><div class="line"><span class="preprocessor">#include &quot;example.cpp.theolizer.hpp&quot;</span>                <span class="comment">// Theolizer自動生成先</span></div></div><!-- fragment --></p>
+<h2><a class="anchor" id="SerializingProcess"></a>
+3-4.シリアライズ処理</h2>
+<p>シリアライズは下記の３つで行います。</p><ul>
+<li>シリアライザ・インスタンスの生成</li>
+<li>シリアライズ処理要求（シリアライズするインスタンスを指定する）</li>
+<li>シリアライザ・インスタンスの破棄</li>
+</ul>
+<h3><a class="anchor" id="ConstructSerializer"></a>
+3-4-1.シリアライザ・インスタンスの生成</h3>
+<p>その際、シリアライズ先のデータ・ストリームを指定します。ファイル・ストリームや<a href="http://localhost/theolizer/tcp_ip_sample/">TCP/IPストリーム</a>を指定して下さい。<br />
+ 保存や送信時はstd::ostreamを、回復や受信時はstd::istreamを与えて下さい。</p>
+<ul>
+<li><b>保存（送信用）シリアライザ</b> <br />
+ theolizer::JsonOSerialzier<br />
+ theolizer::BinaryOSerialzier<br />
+ theolizer::FastOSerialzier<br />
+</li>
+<li><b>回復（受信用）シリアライザ（デシリアライザ）</b> <br />
+ theolizer::JsonISerialzier<br />
+ theolizer::BinaryISerialzier<br />
+ theolizer::FastISerialzier<br />
+</li>
+</ul>
+<h3><a class="anchor" id="Request"></a>
+3-4-2.シリアライズ処理要求</h3>
+<p>下記マクロでシリアライズします。保存用シリアライザを指定すると保存、回復用シリアライザを指定すると回復動作となります。<br />
+ これはいつくでも記述して良いです。</p>
+<p><b>THEOLIZER_PROCESS(dSerializer, dInstance)</b></p><ul>
+<li>dSerializer : シリアライザのインスタンスを指定します。<br />
+</li>
+<li>dInstance : 保存するインスタンスを指定します。<br />
+</li>
+</ul>
+<p>dInstanceを保存／回復します。<br />
+ ポインタ型を指定した場合は、アドレス回復のためにポイント先のオブジェクト追跡を行います。<br />
+</p>
+<p>他にTHEOLIZER_PROCESS_POINTEE()とTHEOLIZER_PROCESS_OWNER()がありますが、これらについては「<a class="el" href="_object_tracking.html">オブジェクト追跡について</a> 」で説明します。</p>
+<h3><a class="anchor" id="DestructSerializer"></a>
+3-4-3.シリアライザ・インスタンスの破棄</h3>
+<p>最後にシリアライザ・インスタンスを破棄することでシリアライズ処理を完了します。<br />
+ 生成時に例外発生を禁止していた場合に、エラー状態をリセットしないまま破棄すると、プロセスをアボートします。これはエラー状態の見逃しを回避するための仕様です。<br />
+ 例外発生を禁止している場合は、破棄する前には必ずエラー情報をチェクした上で、エラー状態をリセットして下さい。<br />
+ 具体的手順はT.B.D.にて説明します。</p>
+<p><b>ファイルへの保存例：(source/samples/example/example.cpp）</b></p>
+ <div class="fragment"><div class="line">    {</div><div class="line">        <span class="comment">// データを生成する</span></div><div class="line">        StructType aStructType;</div><div class="line">        aStructType.mEnum   = EnumB;</div><div class="line">        aStructType.mInt    = 1001;</div><div class="line">        aStructType.mString = u8<span class="stringliteral">&quot;ＵＴＦ－８　ｓｔｒｉｎｇ&quot;</span>;</div><div class="line"></div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;example.json&quot;</span>);    <span class="comment">// 保存先のファイルをオープンする</span></div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> js(aStream);   <span class="comment">// シリアライザを用意する</span></div><div class="line">        THEOLIZER_PROCESS(js, aStructType);         <span class="comment">// example.jsonファイルへ保存する</span></div><div class="line">    }</div></div><!-- fragment --></p>
+<p><b>ファイルからの回復例：(source/samples/example/example.cpp）</b></p>
+<p><div class="fragment"><div class="line">    {</div><div class="line">        StructType aStructType;                     <span class="comment">// データ領域を獲得する</span></div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;example.json&quot;</span>);    <span class="comment">// 回復元のファイルをオープンする</span></div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> js(aStream);   <span class="comment">// シリアライザを用意する</span></div><div class="line">        THEOLIZER_PROCESS(js, aStructType);         <span class="comment">// example.jsonファイルから回復する</span></div><div class="line"></div><div class="line">        <span class="comment">// 回復結果を表示する</span></div><div class="line">        std::cout &lt;&lt;theolizer::print</div><div class="line">                    (</div><div class="line">                        u8<span class="stringliteral">&quot;mEnum=%d mInt=%d mString=[%s]\n&quot;</span>,</div><div class="line">                        aStructType.mEnum,</div><div class="line">                        aStructType.mInt,</div><div class="line">                        aStructType.mString</div><div class="line">                    );</div><div class="line">    }</div></div><!-- fragment --> </p>
+</div></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="index.html">--目次--</a></li>
+    <li class="footer">構築:
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.12 </li>
+  </ul>
+</div>
+</body>
+</html>

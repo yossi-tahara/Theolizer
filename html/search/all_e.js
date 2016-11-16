@@ -1,6 +1,16 @@
 var searchData=
 [
-  ['reference_2eh',['reference.h',['../reference_8h.html',1,'']]],
-  ['registerstream',['registerStream',['../group___unicode.html#ga5b50c2df37efb2ba7c669355c5e0fd3f',1,'theolizer::registerStream(std::istream *iIStream)'],['../group___unicode.html#gad4a4d2ac76feba196ae50620d6f9c8de',1,'theolizer::registerStream(std::ostream *iOStream)'],['../group___unicode.html#ga8fec88e3cc3bcd4682ab9c6b957311f0',1,'theolizer::registerStream(std::iostream *iIOStream)']]],
-  ['reseterror',['resetError',['../classtheolizer_1_1internal_1_1_error_base.html#a9708e19b72d0370f441e65e38aa10d11',1,'theolizer::internal::ErrorBase']]]
+  ['getacp',['getACP',['../u8string_8h.html#aaff928d5b9f4d2b1be1206edc8119a2d',1,'theolizer']]],
+  ['getadditionalinfo',['getAdditionalInfo',['../classtheolizer_1_1_error_info.html#a066e67fa783a7a65d32b1bf39223a463',1,'theolizer::ErrorInfo']]],
+  ['geterror',['getError',['../classtheolizer_1_1_error_reporter.html#aeff4946c1f3ac1c9867b69aab63b4fe8',1,'theolizer::ErrorReporter::getError()'],['../classtheolizer_1_1internal_1_1_error_base.html#ae37a9338635ba88e7cd4232678ec0b23',1,'theolizer::internal::ErrorBase::getError()']]],
+  ['geterrorkind',['getErrorKind',['../classtheolizer_1_1_error_info.html#a8eccd26f5b2dab0572fa67bf90cf41cb',1,'theolizer::ErrorInfo']]],
+  ['geterrortype',['getErrorType',['../classtheolizer_1_1_error_info.html#afb0e092aba721f29bea0e1f7559d9f43',1,'theolizer::ErrorInfo']]],
+  ['getfilelist',['getFileList',['../test__tool_8h.html#adb2175efed45f231dbcee22704842e86',1,'theolizer']]],
+  ['getfilename',['getFileName',['../classtheolizer_1_1_error_info.html#a7482f12529aa4e8a78311e21a1f6c2df',1,'theolizer::ErrorInfo']]],
+  ['getlineheader',['getLineHeader',['../classtheolizer_1_1_working_log.html#a4a4ed5fedd2c312d1bc7bb3ae8d7b978',1,'theolizer::WorkingLog']]],
+  ['getlineno',['getLineNo',['../classtheolizer_1_1_error_info.html#a1c646444613a61bccf5370acaf744af7',1,'theolizer::ErrorInfo']]],
+  ['getlogstream',['getLogStream',['../classtheolizer_1_1_working_log.html#a7dddf94183013be2e1392548209b6a14',1,'theolizer::WorkingLog']]],
+  ['getmessage',['getMessage',['../classtheolizer_1_1_error_info.html#a23aad5c4f46ae4d6aa55d3320ef68a7f',1,'theolizer::ErrorInfo']]],
+  ['getstring',['getString',['../classtheolizer_1_1_error_info.html#ae6d35783fff94d91b1e62b461cfdca12',1,'theolizer::ErrorInfo']]],
+  ['getthreadid',['getThreadId',['../classtheolizer_1_1_thread_guard.html#aefbb0efd018bfefde67a61b5b27cfd41',1,'theolizer::ThreadGuard']]]
 ];

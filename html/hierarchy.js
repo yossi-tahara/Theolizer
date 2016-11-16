@@ -1,7 +1,7 @@
 var hierarchy =
 [
     [ "AutoRestore", null, [
-      [ "theolizer::AutoRestoreBool", "structtheolizer_1_1_auto_restore_bool.html", null ]
+      [ "theolizer::DisplayPass", "structtheolizer_1_1_display_pass.html", null ]
     ] ],
     [ "theolizer::BasicRange< tIterator >", "classtheolizer_1_1_basic_range.html", null ],
     [ "theolizer::internal::ErrorBase", "classtheolizer_1_1internal_1_1_error_base.html", [

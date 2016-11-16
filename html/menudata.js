@@ -8,7 +8,6 @@ var menudata={children:[
 {text:'クラス階層',url:'inherits.html'},
 {text:'クラスメンバ',url:'functions.html',children:[
 {text:'全て',url:'functions.html',children:[
-{text:'a',url:'functions.html#index_a'},
 {text:'b',url:'functions.html#index_b'},
 {text:'c',url:'functions.html#index_c'},
 {text:'d',url:'functions.html#index_d'},
@@ -27,7 +26,6 @@ var menudata={children:[
 {text:'t',url:'functions.html#index_t'},
 {text:'w',url:'functions.html#index_w'}]},
 {text:'関数',url:'functions_func.html',children:[
-{text:'a',url:'functions_func.html#index_a'},
 {text:'b',url:'functions_func.html#index_b'},
 {text:'c',url:'functions_func.html#index_c'},
 {text:'d',url:'functions_func.html#index_d'},
@@ -45,4 +43,9 @@ var menudata={children:[
 {text:'w',url:'functions_func.html#index_w'}]},
 {text:'変数',url:'functions_vars.html'}]}]},
 {text:'ファイル',url:'files.html',children:[
-{text:'ファイル一覧',url:'files.html'}]}]}
+{text:'ファイル一覧',url:'files.html'},
+{text:'ファイルメンバ',url:'globals.html',children:[
+{text:'全て',url:'globals.html'},
+{text:'関数',url:'globals_func.html'},
+{text:'変数',url:'globals_vars.html'},
+{text:'マクロ定義',url:'globals_defs.html'}]}]}]}

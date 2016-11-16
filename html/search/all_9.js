@@ -1,7 +1,13 @@
 var searchData=
 [
-  ['kcp_5facp',['kCP_ACP',['../u8string_8h.html#a4f11c1cc04093914d973d9753a55627b',1,'theolizer']]],
-  ['kcp_5futf8',['kCP_UTF8',['../u8string_8h.html#a8c1f72dc495c26a0775f7b3e84208007',1,'theolizer']]],
-  ['kisfastserialzier',['kIsFastSerialzier',['../classtheolizer_1_1internal_1_1_base_serializer.html#ac952541ee997db26a03d158007b46430',1,'theolizer::internal::BaseSerializer::kIsFastSerialzier()'],['../classtheolizer_1_1_fast_o_serializer.html#af7ce66ac246d45853a482ed4312dfa1e',1,'theolizer::FastOSerializer::kIsFastSerialzier()'],['../classtheolizer_1_1_fast_i_serializer.html#a50c9eb9e841a8d54baafc9dbfc0cc154',1,'theolizer::FastISerializer::kIsFastSerialzier()']]],
-  ['kissaver',['kIsSaver',['../classtheolizer_1_1internal_1_1_binary_mid_o_serializer.html#a5b6ba62b8c866224fadd2c887021787c',1,'theolizer::internal::BinaryMidOSerializer::kIsSaver()'],['../classtheolizer_1_1internal_1_1_binary_mid_i_serializer.html#ad7f92ad9baa66a5192574f8846d1f937',1,'theolizer::internal::BinaryMidISerializer::kIsSaver()'],['../classtheolizer_1_1internal_1_1_fast_mid_o_serializer.html#a62dcce34dbfe45ddb5ee0c2dd34330bd',1,'theolizer::internal::FastMidOSerializer::kIsSaver()'],['../classtheolizer_1_1internal_1_1_fast_mid_i_serializer.html#a2f6782ec244e327c577727d6b304da9f',1,'theolizer::internal::FastMidISerializer::kIsSaver()'],['../classtheolizer_1_1internal_1_1_json_mid_o_serializer.html#adb1bcfbf5dcb86471465f1ced281f40a',1,'theolizer::internal::JsonMidOSerializer::kIsSaver()'],['../classtheolizer_1_1internal_1_1_json_mid_i_serializer.html#a5e8978ce9f4cba1ea9517fa9b7365384',1,'theolizer::internal::JsonMidISerializer::kIsSaver()']]]
+  ['baseserializer',['BaseSerializer',['../classtheolizer_1_1internal_1_1_base_serializer.html',1,'theolizer::internal']]],
+  ['basicrange',['BasicRange',['../classtheolizer_1_1_basic_range.html',1,'theolizer']]],
+  ['basicrange',['BasicRange',['../classtheolizer_1_1_basic_range.html#aabb6bb0055a97a1338c1a0286cc1068c',1,'theolizer::BasicRange']]],
+  ['begin',['begin',['../classtheolizer_1_1_basic_range.html#a7d4d61d57b9b3a3ea801209c887908cf',1,'theolizer::BasicRange']]],
+  ['binaryiserializer',['BinaryISerializer',['../classtheolizer_1_1_binary_i_serializer.html#a06d109cddbadd6d9b2542eaedc1a5f3c',1,'theolizer::BinaryISerializer']]],
+  ['binaryiserializer',['BinaryISerializer',['../classtheolizer_1_1_binary_i_serializer.html',1,'theolizer']]],
+  ['binarymidiserializer',['BinaryMidISerializer',['../classtheolizer_1_1internal_1_1_binary_mid_i_serializer.html',1,'theolizer::internal']]],
+  ['binarymidoserializer',['BinaryMidOSerializer',['../classtheolizer_1_1internal_1_1_binary_mid_o_serializer.html',1,'theolizer::internal']]],
+  ['binaryoserializer',['BinaryOSerializer',['../classtheolizer_1_1_binary_o_serializer.html',1,'theolizer']]],
+  ['binaryoserializer',['BinaryOSerializer',['../classtheolizer_1_1_binary_o_serializer.html#ae71e52ea12cc23e344f655880ec446e7',1,'theolizer::BinaryOSerializer::BinaryOSerializer(std::ostream &amp;iOStream, unsigned iGlobalVersionNo=kLastGlobalVersionNo, CheckMode iCheckMode=CheckMode::NoTypeCheck, bool iNoThrowException=false)'],['../classtheolizer_1_1_binary_o_serializer.html#a5d883db832dda088714169b268bc09b5',1,'theolizer::BinaryOSerializer::BinaryOSerializer(std::ostream &amp;iOStream, CheckMode iCheckMode, bool iNoThrowException=false)']]]
 ];

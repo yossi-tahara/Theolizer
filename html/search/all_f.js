@@ -1,9 +1,10 @@
 var searchData=
 [
-  ['setacp',['setACP',['../u8string_8h.html#aa09517ed7cbf36ab3f9a551a616c81eb',1,'theolizer']]],
-  ['setadditionalinfo',['setAdditionalInfo',['../classtheolizer_1_1_error_info.html#a4887e21addd903dd7128b2b8517a0622',1,'theolizer::ErrorInfo']]],
-  ['setcharismultibyte',['setCharIsMultiByte',['../classtheolizer_1_1internal_1_1_json_mid_o_serializer.html#a45e39491c469bc0b071cee49a282535b',1,'theolizer::internal::JsonMidOSerializer::setCharIsMultiByte()'],['../classtheolizer_1_1internal_1_1_json_mid_i_serializer.html#ac90cff59d86b80147d0c95f015dacbf8',1,'theolizer::internal::JsonMidISerializer::setCharIsMultiByte()']]],
-  ['setmessage',['setMessage',['../classtheolizer_1_1_error_info.html#a23fba25703221b8e28a18eaf87b1e383',1,'theolizer::ErrorInfo']]],
-  ['setutctime',['setUTCTime',['../classtheolizer_1_1_working_log.html#a55c36c70e9d82c067d01a3c3d383686e',1,'theolizer::WorkingLog']]],
-  ['specification_2eh',['specification.h',['../specification_8h.html',1,'']]]
+  ['incrementfailcount',['incrementFailCount',['../test__tool_8h.html#a14d2adb80938d7b505f46dc748185bdd',1,'theolizer']]],
+  ['incrementtotalcount',['incrementTotalCount',['../test__tool_8h.html#ab0351218010f5c83be657d189ad8f0c3',1,'theolizer']]],
+  ['initresult',['initResult',['../test__tool_8h.html#a290ebcb767f872f31fdd0ad389660358',1,'theolizer']]],
+  ['isexist',['isExist',['../test__tool_8h.html#a76fa98fd253b8ae810a51d0d132b67f4',1,'theolizer']]],
+  ['isinputbyutf8',['isInputByUtf8',['../group___unicode.html#ga72f7057d93d7e2efbc2ff3d040a3c9ba',1,'theolizer']]],
+  ['isoutputbyutf8',['isOutputByUtf8',['../group___unicode.html#ga492ee5cefa5b012c617ce4d0e55b1c1d',1,'theolizer']]],
+  ['isterminated',['isTerminated',['../classtheolizer_1_1internal_1_1_binary_mid_i_serializer.html#aec7eba18d82fe9fee884c519c325d45b',1,'theolizer::internal::BinaryMidISerializer::isTerminated()'],['../classtheolizer_1_1internal_1_1_json_mid_i_serializer.html#a26a6392f6664ae1c4e8f4d0d21f2ca8c',1,'theolizer::internal::JsonMidISerializer::isTerminated()']]]
 ];

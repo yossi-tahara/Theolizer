@@ -29,7 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.3.0</span>
+   &#160;<span id="projectnumber">Version.0.4.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -96,7 +96,7 @@ $(document).ready(function(){initNavTree('_specification.html','');});
 <li>std::string, std::wstring, std::u16string, std::u32string</li>
 </ul>
 <p><b>② enum型</b><br />
- 通常のenum型、および、scorped enum型の両方に対応しています。</p>
+ 通常のenum型、および、scoped enum型の両方に対応しています。</p>
 <p><b>③ class、struct</b><br />
  class、および、structは同じ扱いです。</p>
 <p><b>④ C++静的配列</b><br />
@@ -150,7 +150,7 @@ $(document).ready(function(){initNavTree('_specification.html','');});
  メンバ変数の記述順に従って回復します。メンバ変数名をシリアライズ・データ内に記録しないのでデータ・サイズを減らせますが、メンバ変数の記述順序を変更できません。また、メンバ変数の追加／削除はメンバ変数の並びの最後のみ可能です。</li>
 </ol>
 <h3><a class="anchor" id="Basic122"></a>
-1-2-2. enum型について&lt;/a&gt;</h3>
+1-2-2. enum型について</h3>
 <p>enum型は下記の２種類の形式に対応しています。</p><ul>
 <li><b>非侵入型完全自動</b><br />
  enum定義側で何も指定しないまま、シリアライズ処理するenum型です。バージョン番号は1固定です。<br />
@@ -181,6 +181,10 @@ $(document).ready(function(){initNavTree('_specification.html','');});
  std::wstring, std::u16string, std::u32stringについても適切なUTF-xxコードにて記録して下さい。UTF-8へ変換して保存します。</li>
 <li><b>BinaryOSerializer, BinaryISerializer</b><br />
  独自のバイナリフォーマットで保存します。文字列の文字コード変換は行わいません。そのまま保存／回復します。</li>
+<li><b>FastOSerializer, FastISerializer</b><br />
+ メモリ内専用のデータ・コピー用の特殊なシリアライザです。これは、クラス・インスタンスのメモリ内コピーのために用意しました。メモリ内でのコピーですので最新版のみサポートしています。また、ポインタが指す先のオブジェクトを保存しなかった場合、そのポインタの値は元の値をそのままコピーします。（<a class="el" href="_specification.html#Tracking">2.オブジェクト追跡</a> 参照）<br />
+ 保存先を通常通り指定できますのでコピーするメンバとしないメンバを指定できます。更に、オーナー指定したポインタはデープ・コピーされ、そうでないポインタはシャロー・コピーされます。<br />
+ このシリアライザはTheolizer内部でも使用しています。</li>
 </ul>
 <p>標準コンテナ（STL）は枚挙できないものを除き対応予定です。現在は下記に対応しています。</p><ul>
 <li><b>std::vector</b> (デフォルト・アロケータのみ)</li>
@@ -248,7 +252,7 @@ $(document).ready(function(){initNavTree('_specification.html','');});
 2.オブジェクト追跡</h1>
 <hr/>
 <h2><a class="anchor" id="Basic21"></a>
-2-1.オブジェクト追跡する領域について&lt;br&gt;</h2>
+2-1.オブジェクト追跡する領域について</h2>
 <p>下記についてオブジェクト追跡を行いますので、これらへのポインタはアドレス解決できます。</p>
 <ul>
 <li>ポインタ型からポイントされたクラス型の全てのインスタンス</li>

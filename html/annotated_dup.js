@@ -11,10 +11,10 @@ var annotated_dup =
         [ "JsonMidISerializer", "classtheolizer_1_1internal_1_1_json_mid_i_serializer.html", "classtheolizer_1_1internal_1_1_json_mid_i_serializer" ],
         [ "JsonMidOSerializer", "classtheolizer_1_1internal_1_1_json_mid_o_serializer.html", "classtheolizer_1_1internal_1_1_json_mid_o_serializer" ]
       ] ],
-      [ "AutoRestoreBool", "structtheolizer_1_1_auto_restore_bool.html", "structtheolizer_1_1_auto_restore_bool" ],
       [ "BasicRange", "classtheolizer_1_1_basic_range.html", "classtheolizer_1_1_basic_range" ],
       [ "BinaryISerializer", "classtheolizer_1_1_binary_i_serializer.html", "classtheolizer_1_1_binary_i_serializer" ],
       [ "BinaryOSerializer", "classtheolizer_1_1_binary_o_serializer.html", "classtheolizer_1_1_binary_o_serializer" ],
+      [ "DisplayPass", "structtheolizer_1_1_display_pass.html", "structtheolizer_1_1_display_pass" ],
       [ "ErrorInfo", "classtheolizer_1_1_error_info.html", "classtheolizer_1_1_error_info" ],
       [ "ErrorReporter", "classtheolizer_1_1_error_reporter.html", "classtheolizer_1_1_error_reporter" ],
       [ "FastISerializer", "classtheolizer_1_1_fast_i_serializer.html", "classtheolizer_1_1_fast_i_serializer" ],

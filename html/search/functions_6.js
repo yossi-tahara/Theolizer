@@ -1,15 +1,10 @@
 var searchData=
 [
-  ['getacp',['getACP',['../u8string_8h.html#aaff928d5b9f4d2b1be1206edc8119a2d',1,'theolizer']]],
-  ['getadditionalinfo',['getAdditionalInfo',['../classtheolizer_1_1_error_info.html#a066e67fa783a7a65d32b1bf39223a463',1,'theolizer::ErrorInfo']]],
-  ['geterror',['getError',['../classtheolizer_1_1_error_reporter.html#aeff4946c1f3ac1c9867b69aab63b4fe8',1,'theolizer::ErrorReporter::getError()'],['../classtheolizer_1_1internal_1_1_error_base.html#ae37a9338635ba88e7cd4232678ec0b23',1,'theolizer::internal::ErrorBase::getError()']]],
-  ['geterrorkind',['getErrorKind',['../classtheolizer_1_1_error_info.html#a8eccd26f5b2dab0572fa67bf90cf41cb',1,'theolizer::ErrorInfo']]],
-  ['geterrortype',['getErrorType',['../classtheolizer_1_1_error_info.html#afb0e092aba721f29bea0e1f7559d9f43',1,'theolizer::ErrorInfo']]],
-  ['getfilename',['getFileName',['../classtheolizer_1_1_error_info.html#a7482f12529aa4e8a78311e21a1f6c2df',1,'theolizer::ErrorInfo']]],
-  ['getlineheader',['getLineHeader',['../classtheolizer_1_1_working_log.html#a4a4ed5fedd2c312d1bc7bb3ae8d7b978',1,'theolizer::WorkingLog']]],
-  ['getlineno',['getLineNo',['../classtheolizer_1_1_error_info.html#a1c646444613a61bccf5370acaf744af7',1,'theolizer::ErrorInfo']]],
-  ['getlogstream',['getLogStream',['../classtheolizer_1_1_working_log.html#a7dddf94183013be2e1392548209b6a14',1,'theolizer::WorkingLog']]],
-  ['getmessage',['getMessage',['../classtheolizer_1_1_error_info.html#a23aad5c4f46ae4d6aa55d3320ef68a7f',1,'theolizer::ErrorInfo']]],
-  ['getstring',['getString',['../classtheolizer_1_1_error_info.html#ae6d35783fff94d91b1e62b461cfdca12',1,'theolizer::ErrorInfo']]],
-  ['getthreadid',['getThreadId',['../classtheolizer_1_1_thread_guard.html#aefbb0efd018bfefde67a61b5b27cfd41',1,'theolizer::ThreadGuard']]]
+  ['incrementfailcount',['incrementFailCount',['../test__tool_8h.html#a14d2adb80938d7b505f46dc748185bdd',1,'theolizer']]],
+  ['incrementtotalcount',['incrementTotalCount',['../test__tool_8h.html#ab0351218010f5c83be657d189ad8f0c3',1,'theolizer']]],
+  ['initresult',['initResult',['../test__tool_8h.html#a290ebcb767f872f31fdd0ad389660358',1,'theolizer']]],
+  ['isexist',['isExist',['../test__tool_8h.html#a76fa98fd253b8ae810a51d0d132b67f4',1,'theolizer']]],
+  ['isinputbyutf8',['isInputByUtf8',['../group___unicode.html#ga72f7057d93d7e2efbc2ff3d040a3c9ba',1,'theolizer']]],
+  ['isoutputbyutf8',['isOutputByUtf8',['../group___unicode.html#ga492ee5cefa5b012c617ce4d0e55b1c1d',1,'theolizer']]],
+  ['isterminated',['isTerminated',['../classtheolizer_1_1internal_1_1_binary_mid_i_serializer.html#aec7eba18d82fe9fee884c519c325d45b',1,'theolizer::internal::BinaryMidISerializer::isTerminated()'],['../classtheolizer_1_1internal_1_1_json_mid_i_serializer.html#a26a6392f6664ae1c4e8f4d0d21f2ca8c',1,'theolizer::internal::JsonMidISerializer::isTerminated()']]]
 ];

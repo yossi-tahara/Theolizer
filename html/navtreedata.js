@@ -15,14 +15,21 @@ var NAVTREE =
       ] ]
     ] ],
     [ "ファイル", null, [
-      [ "ファイル一覧", "files.html", "files" ]
+      [ "ファイル一覧", "files.html", "files" ],
+      [ "ファイルメンバ", "globals.html", [
+        [ "全て", "globals.html", null ],
+        [ "関数", "globals_func.html", null ],
+        [ "変数", "globals_vars.html", null ],
+        [ "マクロ定義", "globals_defs.html", null ]
+      ] ]
     ] ]
   ] ]
 ];
 
 var NAVTREEINDEX =
 [
-".html"
+".html",
+"serializer__json_8h_source.html"
 ];
 
 var SYNCONMSG = 'クリックで同期表示が無効になります';
