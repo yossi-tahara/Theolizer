@@ -67,10 +67,9 @@ class FastMidISerializer;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
-//      保存用
-//          主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 /*!
-    @todo   T.B.D.
+@brief      保存用中間FastSerializer
+@details    主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 */
 // ***************************************************************************
 
@@ -94,13 +93,10 @@ private:
     static char const* const    kSerializerName;
 
 public:
-/*!
-    @todo   T.B.D.
-*/
+    //! 保存用なのでtrue
     static const bool       kIsSaver=true;
-/*!
-    @todo   T.B.D.
-*/
+
+protected:
     FastMidOSerializer
     (
         std::ostream& iOStream,
@@ -177,10 +173,9 @@ private:
 };
 
 // ***************************************************************************
-//      回復用
-//          主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 /*!
-    @todo   T.B.D.
+@brief      回復用中間FastSerializer
+@details    主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 */
 // ***************************************************************************
 
@@ -204,13 +199,10 @@ private:
     static char const* const    kSerializerName;
 
 public:
-/*!
-    @todo   T.B.D.
-*/
+    //! 回復用なのでfalse
     static const bool       kIsSaver=false;
-/*!
-    @todo   T.B.D.
-*/
+
+protected:
     FastMidISerializer
     (
         std::istream& iIStream,
@@ -330,13 +322,8 @@ struct SetDuringBackup
 }   // namespace internal
 
 // ***************************************************************************
-//      保存用(THEOLIZER_PROCESS/SAVEにて使用する)
-/*!
-    @todo   T.B.D.
-*/
+//!     保存用FastSerializer
 // ***************************************************************************
-
-//      ---<<< 通常用 >>>---
 
 template<Destination uDefault=theolizerD::All, Destination... uDestinations>
 class FastOSerializer : public internal::FastMidOSerializer
@@ -361,13 +348,10 @@ public:
     static const bool                       kHasDestination=true;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
-/*!
-    @todo   T.B.D.
-*/
+    //! Fastシリアライザなのでtrue
     static const bool                       kIsFastSerialzier=true;
-/*!
-    @todo   T.B.D.
-*/
+
+    //! コンストラクタ
     FastOSerializer(std::ostream& iOStream, bool iNoThrowException=false) :
         FastMidOSerializer
         (
@@ -387,13 +371,8 @@ internal::Destinations const FastOSerializer<uDefault, uDestinations...>::
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
-//      回復用(THEOLIZER_PROCESS/LOADにて使用する)
-/*!
-    @todo   T.B.D.
-*/
+//!     回復用FastSerializer
 // ***************************************************************************
-
-//      ---<<< 通常用 >>>---
 
 template<Destination uDefault=theolizerD::All, Destination... uDestinations>
 class FastISerializer : public internal::FastMidISerializer
@@ -418,13 +397,10 @@ public:
     static const bool                       kHasDestination=true;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
-/*!
-    @todo   T.B.D.
-*/
+    //! Fastシリアライザなのでtrue
     static const bool                       kIsFastSerialzier=true;
-/*!
-    @todo   T.B.D.
-*/
+
+    //! コンストラクタ
     FastISerializer(std::istream& iIStream, bool iNoThrowException=false) :
         FastMidISerializer
         (
@@ -541,10 +517,7 @@ public:
 }   // namespace internal
 
 // ***************************************************************************
-//      コピー
-/*!
-    @todo   T.B.D.
-*/
+//!     シアライズ対象メンバをコピーする
 // ***************************************************************************
 
 template<typename tType>

@@ -300,10 +300,9 @@ char const* getCppNameBinary(std::string const& iPrimitiveName, unsigned iSerial
 //############################################################################
 
 // ***************************************************************************
-//      保存用
-//          主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 /*!
-    @todo   T.B.D.
+@brief      保存用中間BinarySerializer
+@details    主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 */
 // ***************************************************************************
 
@@ -327,9 +326,7 @@ private:
     static char const* const    kSerializerName;
 
 public:
-/*!
-    @todo   T.B.D.
-*/
+    //! 保存用なのでtrue
     static const bool       kIsSaver=true;
 
 protected:
@@ -450,10 +447,9 @@ private:
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 // ***************************************************************************
-//      回復用
-//          主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 /*!
-    @todo   T.B.D.
+@brief      回復用中間BinarySerializer
+@details    主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 */
 // ***************************************************************************
 
@@ -479,9 +475,7 @@ private:
     static char const* const  kSerializerName;
 
 public:
-/*!
-    @todo   T.B.D.
-*/
+    //! 回復用なのでfalse
     static const bool       kIsSaver=false;
 
 protected:
@@ -556,9 +550,7 @@ private:
 //          trueを返却する。その後、falseへ戻る。
 
 public:
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo T.B.D.
     bool isTerminated() const {return mTerminated;}
 
 //----------------------------------------------------------------------------
@@ -642,13 +634,8 @@ private:
 //############################################################################
 
 // ***************************************************************************
-//      保存用(THEOLIZER_PROCESSにて使用する)
-/*!
-    @todo   T.B.D.
-*/
+//!     保存用BinarySerializer
 // ***************************************************************************
-
-//      ---<<< 通常用 >>>---
 
 template<Destination uDefault=theolizerD::All, Destination... uDestinations>
 class BinaryOSerializer : public internal::BinaryMidOSerializer
@@ -676,10 +663,7 @@ public:
     static const bool                       kHasDestination=true;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
-    // 全省略 or GlobalVersionNo -> CheckMode
-/*!
-    @todo   T.B.D.
-*/
+    //! 通常のコンストラクタ
     BinaryOSerializer
     (
         std::ostream& iOStream,
@@ -698,10 +682,7 @@ public:
         )
     { }
 
-    // GlobalVersionNo省略、CheckMode指定
-/*!
-    @todo   T.B.D.
-*/
+    //! GlobalVersionNo以外のオプションを指定するコンストラクタ
     BinaryOSerializer
     (
         std::ostream& iOStream,
@@ -727,13 +708,8 @@ internal::Destinations const BinaryOSerializer<uDefault, uDestinations...>::
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
-//      回復用(THEOLIZER_PROCESSにて使用する)
-/*!
-    @todo   T.B.D.
-*/
+//!     回復用BinarySerializer
 // ***************************************************************************
-
-//      ---<<< 通常用 >>>---
 
 template<Destination uDefault=theolizerD::All, Destination... uDestinations>
 class BinaryISerializer : public internal::BinaryMidISerializer
@@ -756,9 +732,7 @@ public:
     static const bool                       kHasDestination=true;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
-/*!
-    @todo   T.B.D.
-*/
+    //! 通常のコンストラクタ
     BinaryISerializer
     (
         std::istream& iIStream,

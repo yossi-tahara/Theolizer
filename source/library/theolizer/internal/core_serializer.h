@@ -441,11 +441,9 @@ struct DeserializeInfo
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 //############################################################################
 //      基底Serializer
-/*!
-    @todo   T.B.D.
-*/
 //############################################################################
 
+//! @todo T.B.D.
 class THEOLIZER_INTERNAL_DLL BaseSerializer : public ErrorBase
 {
 // ***************************************************************************
@@ -480,9 +478,7 @@ public:
     static const bool                       kHasDestination=false;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo T.B.D.
     static const bool                       kIsFastSerialzier=false;
 
 protected:
@@ -598,9 +594,7 @@ private:
     void clearTrackingImpl();
 
 public:
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo T.B.D.
     void clearTracking();
 
 // ***************************************************************************

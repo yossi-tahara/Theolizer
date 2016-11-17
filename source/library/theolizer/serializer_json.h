@@ -1,10 +1,10 @@
 ﻿//############################################################################
-//      Jsonシリアライザ
 /*!
-    @file serializer_json.h
-    @brief  ドキュメント・ファイル－概要
-    @author Yoshinori Tahara
-    @date   2015/08/01  Created
+    @brief      Jsonシリアライザ
+    @ingroup    TheolizerLib
+    @file       serializer_json.h
+    @author     Yoshinori Tahara
+    @date       2015/09/18 Created
 */
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
@@ -201,10 +201,9 @@ char const* getCppNameJson(std::string const& iPrimitiveName, unsigned iSerializ
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 // ***************************************************************************
-//      保存用
-//          主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 /*!
-    @todo   T.B.D.
+@brief      保存用中間JsonSerializer
+@details    主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 */
 // ***************************************************************************
 
@@ -231,13 +230,16 @@ private:
     static char const* const    kSerializerName;
 
 public:
-/*!
-    @todo   T.B.D.
-*/
+    //! 保存用なのでtrue
     static const bool       kIsSaver=true;
-/*!
-    @todo   T.B.D.
-*/
+
+    //! std::stringをマルチ・パイト文字コードとして処理することを指定する
+    void setCharIsMultiByte(bool iCharIsMultiByte)
+    {
+        mCharIsMultiByte=iCharIsMultiByte;
+    }
+
+protected:
     JsonMidOSerializer
     (
         std::ostream& iOStream,
@@ -249,14 +251,6 @@ public:
         bool iNoPrettyPrint,
         bool iNoThrowException
     );
-
-/*!
-    @todo   T.B.D.
-*/
-    void setCharIsMultiByte(bool iCharIsMultiByte)
-    {
-        mCharIsMultiByte=iCharIsMultiByte;
-    }
 
 //----------------------------------------------------------------------------
 //      型情報保存
@@ -355,10 +349,9 @@ private:
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 // ***************************************************************************
-//      回復用
-//          主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 /*!
-    @todo   T.B.D.
+@brief      回復用中間JsonSerializer
+@details    主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 */
 // ***************************************************************************
 
@@ -385,13 +378,16 @@ private:
     static char const* const    kSerializerName;
 
 public:
-/*!
-    @todo   T.B.D.
-*/
+    //! 回復用なのでfalse
     static const bool       kIsSaver=false;
-/*!
-    @todo   T.B.D.
-*/
+
+    //! std::stringをマルチ・パイト文字コードとして処理することを指定する
+    void setCharIsMultiByte(bool iCharIsMultiByte)
+    {
+        mCharIsMultiByte=iCharIsMultiByte;
+    }
+
+protected:
     JsonMidISerializer
     (
         std::istream& iIStream,
@@ -401,14 +397,6 @@ public:
         std::ostream* iOStream,
         bool iNoThrowException
     );
-
-/*!
-    @todo   T.B.D.
-*/
-    void setCharIsMultiByte(bool iCharIsMultiByte)
-    {
-        mCharIsMultiByte=iCharIsMultiByte;
-    }
 
 //----------------------------------------------------------------------------
 //      ヘッダ回復と型チェック
@@ -463,9 +451,7 @@ private:
 //          trueを返却する。その後、falseへ戻る。
 
 public:
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo T.B.D.
     bool isTerminated() const {return mTerminated;}
 
 //----------------------------------------------------------------------------
@@ -567,10 +553,7 @@ private:
 //############################################################################
 
 // ***************************************************************************
-//      保存用(THEOLIZER_PROCESSにて使用する)
-/*!
-    @todo   T.B.D.
-*/
+//!     保存用JsonSerializer
 // ***************************************************************************
 
 //      ---<<< 通常用 >>>---
@@ -600,10 +583,7 @@ public:
     static const bool                       kHasDestination=true;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
-    // 全省略 or GlobalVersionNo -> CheckMode
-/*!
-    @todo   T.B.D.
-*/
+    //! 通常のコンストラクタ
     JsonOSerializer
     (
         std::ostream& iOStream,
@@ -624,10 +604,7 @@ public:
         )
     { }
 
-    // GlobalVersionNo省略、CheckMode指定
-/*!
-    @todo   T.B.D.
-*/
+    //! GlobalVersionNo以外のオプションを指定するコンストラクタ
     JsonOSerializer
     (
         std::ostream& iOStream,
@@ -655,10 +632,7 @@ internal::Destinations const JsonOSerializer<uDefault, uDestinations...>::
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
-//      回復用(THEOLIZER_PROCESSにて使用する)
-/*!
-    @todo   T.B.D.
-*/
+//!     回復用JsonSerializer
 // ***************************************************************************
 
 //      ---<<< 通常用 >>>---
@@ -683,9 +657,7 @@ public:
     static const bool                       kHasDestination=true;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
-/*!
-    @todo   T.B.D.
-*/
+    //! コンストラクタ
     JsonISerializer
     (
         std::istream& iIStream,

@@ -32,12 +32,12 @@
 /*!
     Theolizerバージョン文字列(ドライバ／ライブラリ共通)
 */
-char const kTheolizerVersion[]    ="0.4.0";
+char const kTheolizerVersion[]    ="0.4.1-Prerelease.";
 /*!
     Theolizerソースのハッシュ値(ドライバ／ライブラリ別)
 */
-char const kTheolizerSourcesHash[]="a94579a67eb02d5f11fccfc553be2a22";
+char const kTheolizerSourcesHash[]="4aa10a588b819331b6a39e5afba35fb4";
 /*!
     Theolizerライブラリ・ヘッダ・ファイルのハッシュ値
 */
-char const kTheolizerLibraryHash[]="2ec8acf75c4f2f365fb5a02e40e6b58c";
+char const kTheolizerLibraryHash[]="97197bb96f6980c19c222542c8d89d54";

@@ -29,8 +29,8 @@
 ここでは、Theolizerの以下の各機能について説明します。
 
 @subpage BasicProcess \n
-@subpage DefineProcessClass \n
-@subpage DefineProcessEnum \n
+@subpage ClassVariation \n
+@subpage EnumVariation \n
 @subpage ObjectTracking \n
 @subpage UsageSTL \n
 @subpage ChangingClass \n
@@ -42,10 +42,13 @@
     @page BasicProcess THEOLIZER_PROCESS()の使用例
 
 ここでは、THEOLIZER_PROCESS()による保存／回復の網羅的な使用例（自動テスト）について説明します。<br>
-クラスは単純なものを使います。クラスの詳細な使い方は「@ref DefineProcessClass 」で説明します。<br>
+クラスは単純なものを使います。クラスの詳細な使い方は「@ref ClassVariation 」で説明します。<br>
 ここではポインタ型とオーナー・ポインタ型の説明と自動テストは行いません。これらについては「@ref ObjectTracking 」で行います。<br>
 
+<br>
+//############################################################################
 @section DefinitionEnumClass 1.クラスとenum型の定義
+//############################################################################
 
 <b>source/reference_and_test/version/ver1/test_basic_process.h</b> で、次のようなクラスとenum型を定義しています。
 
@@ -58,7 +61,7 @@ enum型は従来のenum型と、C++11で追加されたscoped enum型の２つ�
 
 クラス型はテストを容易にするため、非侵入型完全自動を用いています。<br>
 同様にメンバ変数をpublicにしたいのでstructを用いています。<br>
-（幾つか制約事項があります。「@ref DefineProcessClass 」にて説明します。）<br>
+（幾つか制約事項があります。「@ref ClassVariation 」にて説明します。）<br>
 また、自動テストの記述を簡単化するため、下記を定義しています。
   - 初期化用のコンストラクタ
   - 比較演算子(operator==)
@@ -67,7 +70,10 @@ enum型は従来のenum型と、C++11で追加されたscoped enum型の２つ�
 @skip struct ClassBasicTest
 @until };
 
+<br>
+//############################################################################
 @section TestBasicProcess 2.網羅的な使用例（自動テスト）の説明
+//############################################################################
 以下のアイテムを保存し、回復して保存した値と同じ値が回復できたことを、全てのシリアライザの全ての書式指定オプションに対して確認しています。（@ref TestProgram 参照）
 
   - C++言語がサポートする組み込み型全て<br>
@@ -90,7 +96,7 @@ enum型は従来のenum型と、C++11で追加されたscoped enum型の２つ�
 <br>
 
   - クラス型<br>
-    ここでは使い方を示すための1種類のみ。細かいテストは「@ref DefineProcessClass 」にて実施します。<br>
+    ここでは使い方を示すための1種類のみ。細かいテストは「@ref ClassVariation 」にて実施します。<br>
 <br>
 
   - 右辺値（リテラルや式）が保存でき、同じ型の変数へ回復できること<br>
@@ -121,15 +127,15 @@ enum型は従来のenum型と、C++11で追加されたscoped enum型の２つ�
 */
 
 /*!
-    @page DefineProcessClass クラスのオプション指定方法
-ここでは、クラス（classとstruct）のオプション指定方法について説明します。
+    @page ClassVariation クラスのバリエーション
+ここでは、クラス（classとstruct）をシリアライズする時の様々なバリエーションについて説明します。
 # T.B.D.
 
 */
 
 /*!
-    @page DefineProcessEnum enum型のオプション指定方法
-ここでは、enum型のオプション指定方法について説明します。
+    @page EnumVariation enum型のバリエーション
+ここでは、enum型をシリアライズする時の様々なバリエーションについて説明します。
 # T.B.D.
 */
 
@@ -152,5 +158,30 @@ enum型は従来のenum型と、C++11で追加されたscoped enum型の２つ�
 
 /*!
     @page ChangingEnum enum型の変更方法、および、バージョン・アップ方法
+# T.B.D.
+*/
+
+/*!
+    @page ErrorReport エラー処理方法
+
+    エラー状態の解除は、下記のように、resetError()で行って下さい。<br>
+
+@code
+{
+    std::ofstream   aStream("example.json");
+    theolizer::JsonOSerializer<> js(aStream, theolizer::CheckMode::NoTypeCheck, false, true);
+
+    THEOLIZER_PROCESS(js, ...);
+
+    // エラー・チェック(例外を禁止している場合に必要)
+    theolizer::ErrorInfo aErrorInfo=js.getError();
+    if (aErrorInfo)
+    {
+        std::cout << aErrorInfo.getMessage() << std::endl;
+        js.resetError();    // エラー状態を解除する
+    }
+}
+@endcode
+
 # T.B.D.
 */

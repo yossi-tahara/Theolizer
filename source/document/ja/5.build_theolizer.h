@@ -188,7 +188,7 @@ llvm_buildフォルダの直下にコンパイラ毎にbuild用フォルダが�
 バージョン番号は下記のように管理する予定です。
 
 `<Major>.<Minor>.<Detail>`<br>
-`<Major>.<Minor>.<Detail>-Prerease`<br>
+`<Major>.<Minor>.<Detail>-Prerelease`<br>
 `<Major>.<Minor>.<Detail>-Temp`
 
 |項目|更新するタイミング|
@@ -199,7 +199,7 @@ llvm_buildフォルダの直下にコンパイラ毎にbuild用フォルダが�
 |-Prerease|暫定的な正規リリース前のバージョンに付加する<br>正規リリース後のPrereaseはバージョン番号を上げて行う|
 |-Temp|暫定的なバージョンに付加する(Deprecated)|
 
-GitHubには-Tempの有るものも登録しますが、同じバージョン番号のものが複数登録されることになります。<br>
+GitHubには-Prerelease/-Tempの有るものも登録しますが、同じバージョン番号のものが複数登録されることになります。<br>
 それを判別できるようにするため、TheolizerドライバとTheolizerライブラリのそれぞれがversion.hを持ち、これにソース・コードのMD5ハッシュ値（kTheolizerSourcesHash）を記録しています。<br>
 この値はそれぞれをビルドする際に自動的に更新されます。（linuxタイプの改行コードへ変換後、計算しています。）
 
@@ -222,10 +222,17 @@ SourcesHash値と同じ値を持つversion.hがGitHubに登録されている時
 
 ---
 
+ドキュメントの生成に[Doxygen](http://www.stack.nl/~dimitri/doxygen/)と[Graphviz](http://www.graphviz.org/)を用いています。
+現在使っているバージョンは以下の通りです。
+
+|項目|バージョン(Windows)|バージョン(Ubuntu)|
+|----|-------------------|------------------|
+|Doxygen|1.8.12|1.8.11|
+|Graphviz|2.38.0|2.38.0|
+
 Theolizerのドキュメントは、主にsource/reference_and_test/jaフォルダにおいています。<br>
 また、ライブラリのソース・コードはsource/libraryですが、ユーザが直接使うことを想定しているもののみドキュメントを付けています。<br>
 
-Theolizer内部用の要素についてはDoxygen化していません。<br>
 名前空間 <b>internal</b> 内のクラス等 全ての要素、および、<b>THEOLIZER_INTERNAL</b> もしくは <b>THEOLIZER_GENERATED</b>で始まるマクロは全てTheolizer内部用です。<br>
 Theolizerのアップデート時、上位互換性を考慮しませんので使用しないようお願いします。
 

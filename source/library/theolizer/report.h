@@ -1,14 +1,21 @@
 ﻿//############################################################################
-//      Theolizerシステム部
-//          ①Theolizerからのエラー返却
-//              エラー・コード
-//              エラー通知用構造体
-//              エラー・ログ
-//              エラー通知用例外(エラー・ログが無い時、例外で通知)
-//          ②Theolizerの稼働記録
-//              Theolizerログ
-//          ③デバッグ・ツール
-//              ASSERT/ABORTマクロ
+//      
+/*!
+    @brief      Theolizerシステム部
+    @details    ①Theolizerからのエラー返却
+                    エラー・コード
+                    エラー通知用構造体
+                    エラー・ログ
+                    エラー通知用例外(エラー・ログが無い時、例外で通知)
+                ②Theolizerの稼働記録
+                    Theolizerログ
+                ③デバッグ・ツール
+                    ASSERT/ABORTマクロ
+    @ingroup    TheolizerLib
+    @file       report.h
+    @author     Yoshinori Tahara
+    @date       2015/08/06 Created
+*/
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
 
@@ -152,6 +159,11 @@ u8string printImpl(Format& iFormat, tFirst iFirst, tParams... iParams)
 //      theolizer::print()
 // ***************************************************************************
 
+/*!
+@brief      boost::formatのラッパ。
+@details    operator%ではなく、()内でカンマ区切りで表示したいアイテムを与える。<br>
+            書式指定（iFormat）は<a href=http://www.boost.org/doc/libs/release/libs/format/>boost::format</a>参照のこと。
+*/
 template<typename... tParams>
 u8string print(u8string const& iFormat, tParams... iParams)
 {
@@ -311,22 +323,18 @@ public:
 
 // ***************************************************************************
 //      クラス本体
-/*!
-    @todo   T.B.D.
-*/
 // ***************************************************************************
 
+//! @todo   T.B.D.
 class WorkingLog
 {
 //----------------------------------------------------------------------------
 //      1行出力用ストリーム・クラス(LogStream)
 //          1行出力のスレッド間排他制御も行う。
-/*!
-    @todo   T.B.D.
-*/
 //----------------------------------------------------------------------------
 
 public:
+    //! @todo   T.B.D.
     class THEOLIZER_INTERNAL_DLL LogStream
     {
     private:
@@ -337,19 +345,13 @@ public:
         void operator =(const LogStream&) = delete;
 
     public:
-/*!
-    @todo   T.B.D.
-*/
+        //! @todo   T.B.D.
         explicit LogStream(WorkingLog* iWorkingLog);
-/*!
-    @todo   T.B.D.
-*/
+        //! @todo   T.B.D.
         LogStream(LogStream&&);
         ~LogStream() noexcept;
 
-/*!
-    @todo   T.B.D.
-*/
+        //! @todo   T.B.D.
         template<typename Type>
         LogStream& operator<<(Type iObject)
         {
@@ -385,34 +387,26 @@ public:
     //              ファイル名には1つの%1%が必要。%1%はファイル番号に展開される
     // iFileCount   ログ・ファイル数
     // iFileSize    1ファイルのサイズ(バイト)
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     THEOLIZER_INTERNAL_DLL WorkingLog(const u8string& iPath, 
                             size_t iFileSize=1024*1024,
                             unsigned iFileCount=2);
     THEOLIZER_INTERNAL_DLL ~WorkingLog() noexcept;
 
     // 行ヘッダの時刻を設定する(UTCタイム or ローカルタイム)
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     void setUTCTime(bool iIsUTC) {mIsUTC = iIsUTC;}
 
     // ログ出力用ストリーム返却
     //  LogStreamのインスタンスでロックする
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     THEOLIZER_INTERNAL_DLL LogStream getLogStream();
 
 //----------------------------------------------------------------------------
 //      行ヘッダ解析
 //----------------------------------------------------------------------------
 
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     struct LineHeader
     {
         time_t      mDateTime;              //!< Mutex獲得直後の日付時刻(秒単位)
@@ -424,9 +418,7 @@ public:
     // 行ヘッダを解析する
     //  行ヘッダを取り出せたら、iLineHeaderに返却し、trueが返る。
     //  その時、*iPosにはログ文字列の先頭Indexが返る。
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     THEOLIZER_INTERNAL_DLL static bool getLineHeader
     (
         std::string const& iLine,
@@ -466,37 +458,37 @@ struct THEOLIZER_INTERNAL_DLL BaseAdditionalInfo
 }   // namespace internal
 
 // ***************************************************************************
-//      エラー種別
+//!     エラー種別
 // ***************************************************************************
 
 enum class ErrorType
 {
-    None=0,
-    Warning,
-    Error
+    None=0,         //!< エラー無し
+    Warning,        //!< 警告
+    Error           //!< エラー
 };
 
+//! エラー種別をシンボル名で出力する
 THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, ErrorType iErrorType);
 
 // ***************************************************************************
-//      エラー分類
+//!     エラー分類
 // ***************************************************************************
 
 enum class ErrorKind
 {
-    Unclassified=0,
-
-    // 使い方エラー
-    WrongUsing,
+    Unclassified=0, //!< 未分類
+    WrongUsing,     //!< 使い方エラー
 
     // 動作エラー
-    IOError,                    // Read/Write時のI/Oエラー
+    IOError,        //!< Read/Write時のI/Oエラー
 
     // デシリアイズ時のエラー
-    UnknownData,                // 非対応シリアライズ・データ
-    UnknownVerson               // 非対応バージョン
+    UnknownData,    //!< 非対応シリアライズ・データ・フォーマット
+    UnknownVerson   //!< 非対応バージョン
 };
 
+//! エラー分類をシンボル名で出力する
 THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, ErrorKind iErrorKind);
 
 // ***************************************************************************
@@ -505,11 +497,9 @@ THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, ErrorKin
 //              thread_localのデストラクタが適切に動作しない不具合がある。
 //              https://sourceforge.net/p/mingw-w64/bugs/445/
 //              デストラクタを呼ばないで良いようstd::stringを使わず固定長とする。
-/*!
-    @todo   T.B.D.
-*/
 // ***************************************************************************
 
+//! @todo   T.B.D.
 class THEOLIZER_INTERNAL_DLL ErrorInfo
 {
     friend class ErrorReporter;
@@ -523,9 +513,7 @@ class THEOLIZER_INTERNAL_DLL ErrorInfo
 
 public:
     // コンストラクタ
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     ErrorInfo() :
         mErrorType(ErrorType::None),
         mErrorKind(ErrorKind::Unclassified),
@@ -536,62 +524,40 @@ public:
     { }
 
     // メッセージと追加情報設定／取り出し
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     void setMessage(u8string const& iMessage);
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     void setAdditionalInfo(u8string const& iAdditionalInfo);
 
     // エラー情報取り出し
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     ErrorType   getErrorType() const {return mErrorType;}
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     ErrorKind   getErrorKind() const {return mErrorKind;}
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     char const* getFileName()  const {return (mFileName)?mFileName:"<none>";}
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     unsigned    getLineNo()    const {return mLineNo;}
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
 #if defined(__MINGW32__)
     u8string const getMessage()         const { return mMessage; }
 #else
     u8string const& getMessage()        const { return mMessage; }
 #endif
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
 #if defined(__MINGW32__)
     u8string const getAdditionalInfo()  const { return mAdditionalInfo; }
 #else
     u8string const& getAdditionalInfo() const { return mAdditionalInfo; }
 #endif
     // 全エラー情報
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     std::string getString() const;
 
     // boolへ変換(エラーが発生していたらtrue)
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     operator bool() const  { return mErrorType != ErrorType::None; }
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     bool operator!() const { return mErrorType == ErrorType::None; }
 
 private:
@@ -604,6 +570,7 @@ private:
 #endif
 };
 
+//! エラーの内容を出力する
 THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, ErrorInfo iErrorInfo);
 
 // ***************************************************************************
@@ -620,6 +587,7 @@ THEOLIZER_INTERNAL_DLL extern WeakData<char const*> gErrorLogPath;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
 
+//! @todo   T.B.D.
 #define THEOLIZER_ERRORLOG_FILE(dErrorLogName)                              \
     THEOLIZER_INTERNAL_SET_WEAK_DATA(theolizer::internal::gErrorLogPath,    \
                             char const*, dErrorLogName, ErrorLogPathDummy)
@@ -645,11 +613,9 @@ bool  writeWarning(u8string const&, ErrorKind, char const*, unsigned) noexcept;
 //              そうでない時は直ぐに投げる。
 //              ただし、既に例外が発行(mProcessing==true)されていたら、
 //              多重例外を防ぐため投げない。
-/*!
-    @todo   T.B.D.
-*/
 // ***************************************************************************
 
+//! @todo   T.B.D.
 class THEOLIZER_INTERNAL_DLL ErrorReporter
 {
     friend  class internal::Releasing;
@@ -716,9 +682,7 @@ class THEOLIZER_INTERNAL_DLL ErrorReporter
 
 public:
     // エラー情報獲得
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     static ErrorInfo const& getError() noexcept
     {
         return getInstance().mErrorInfo;
@@ -836,11 +800,9 @@ public:
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 // ***************************************************************************
 //      エラー管理用基底クラス
-/*!
-    @todo   T.B.D.
-*/
 // ***************************************************************************
 
+//! @todo   T.B.D.
 class THEOLIZER_INTERNAL_DLL ErrorBase
 {
 //      ---<<< 発生したエラーの管理 >>>---
@@ -867,16 +829,16 @@ protected:
 
 public:
     // エラー返却
-/*!
-    @todo   T.B.D.
-*/
+    //! @todo   T.B.D.
     ErrorInfo const& getError() {return mErrorInfo;}
 
-    // エラー状態を解除する
-    //  なお、コンストラクト中に発生したエラーは解除不可(例外不可でも例外)
-/*!
-    @todo   T.B.D.
-*/
+    /*!
+        エラー状態を解除する
+
+        なお、例外不許可の場合、コンストラクト中にエラーが発生すると、エラー状態となる。
+        このコンストラクト中のエラーは解除できない。（解除しても動作できないため）
+        コンストラクト中にエラーになった場合、デストラクトすることのみ可能。
+    */
     void resetError();
 };
 #ifndef THEOLIZER_INTERNAL_DOXYGEN

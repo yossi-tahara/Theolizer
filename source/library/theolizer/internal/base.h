@@ -481,10 +481,23 @@ namespace
     #include "version.h"
 }
 
+//! バージョン文字列獲得
 THEOLIZER_INTERNAL_DLL std::string getVersionString();
+
+//! バージョン番号獲得（バージョン文字列獲得の一部）
 THEOLIZER_INTERNAL_DLL std::string getVersionNo();
+
+//! ソース・コードのMD5ハッシュ値獲得（バージョン文字列獲得の一部）
 THEOLIZER_INTERNAL_DLL std::string getSourcesHash();
+
+//! ライブラリ・ヘッダのMD5ハッシュ値獲得（バージョン文字列獲得の一部）
 THEOLIZER_INTERNAL_DLL std::string getLibraryHash();
+
+/*!
+@brief      ライブラリ・バイナリとライブラリ・ヘッダのバージョンが一致している時、true返却
+@details    不一致の場合、正常に動作しない恐れがあるため、共有ライブラリを使用する時は、
+            checkLibraryHash()がtrueであることをチェックすることを推奨する。
+*/
 THEOLIZER_INTERNAL_DLL bool checkLibraryHash(char const* iLibraryHash=kTheolizerLibraryHash);
 
 #endif  //THEOLIZER_INTERNAL_EXCLUDE_VERSION_H

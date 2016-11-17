@@ -1,5 +1,12 @@
 ﻿//############################################################################
-//      Theolizerライブラリのコア部(型情報リスト)
+//      
+/*!
+@brief      Theolizerライブラリのコア部(型情報リスト)
+@ingroup    TheolizerLib
+@file       core_assorted.h
+@author     Yoshinori Tahara(Theoride Technology)
+@date       2016/07/18 Created
+*/
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
 
@@ -51,6 +58,7 @@
 // ***************************************************************************
 
 #if !defined(THEOLIZER_NO_ANALYZE) && !defined(THEOLIZER_WRITE_CODE)
+    //! @todo T.B.D.
     #define THEOLIZER_WRITE_CODE
 #endif
 
@@ -63,12 +71,14 @@
 //              そうでない場合に更新を検出したらエラー
 // ***************************************************************************
 
+//! @todo T.B.D.
 #define THEOLIZER_PROVIDED_BY(dVendor)
 
 //############################################################################
 //      theolizer名前空間定義
 //############################################################################
 
+//! theolizer名前空間
 namespace theolizer{namespace destination{ }}
 namespace theolizerD = theolizer::destination;
 
@@ -335,6 +345,9 @@ public:
     unsigned* end()   const {return &mBitList[mDataCount];}
 };
 
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
+}   // namespace internal
+
 // ***************************************************************************
 //      保存先シンボル定義用ツール群
 // ***************************************************************************
@@ -347,19 +360,16 @@ public:
 //          名前空間:theolizer
 //----------------------------------------------------------------------------
 
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
-}   // internal
-
+//! @todo T.B.D.
 enum class Destination : unsigned { };
-
-namespace internal
-{
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 //----------------------------------------------------------------------------
 //      ビット番号管理ツール
 //----------------------------------------------------------------------------
 
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+namespace internal
+{
 namespace
 {
 
@@ -371,6 +381,7 @@ enum : unsigned {All=0};
 }   // namespace bits
 
 }   // namespace
+}   // namespace internal
 
 //----------------------------------------------------------------------------
 //      ユーザが使用する保存先シンボルを定義
@@ -379,9 +390,6 @@ enum : unsigned {All=0};
 //          theolizerD::All      全て保存する
 //----------------------------------------------------------------------------
 
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
-}   // namespace internal
-
 namespace destination
 {
 namespace
@@ -389,10 +397,6 @@ namespace
     Destination const All=static_cast<Destination>(internal::bits::All);
 }   // namespace
 }   // namespace destination
-
-namespace internal
-{
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 //----------------------------------------------------------------------------
 //      保存先シンボル定義マクロ
@@ -407,6 +411,9 @@ namespace internal
 //      保存先を保持するクラス
 //          名前空間:theolizer
 // ***************************************************************************
+
+namespace internal
+{
 
 class Destinations
 {
@@ -677,16 +684,15 @@ namespace{
 //          名前空間は、theolizer::匿名::
 //----------------------------------------------------------------------------
 
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
 
-namespace{
+namespace
+{
     extern unsigned const kLastGlobalVersionNo;
 }   // namespace
 
 namespace internal
 {
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 //----------------------------------------------------------------------------
 //      ソース自動生成用マクロ
@@ -709,12 +715,14 @@ namespace internal
 //      型管理用プライマリ・テンプレート定義
 // ***************************************************************************
 
-}   // namespace theolizer
 }   // namespace internal
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
 
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
+}   // namespace theolizer
 
 //      ---<<<< 非侵入型/enum型プライマリー・テンプレート >>>---
+
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 template<class tClassType>
 struct TheolizerNonIntrusive {};
@@ -742,35 +750,34 @@ struct tTheolizerVersion
     {
     }
 };
-
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
-
-// ***************************************************************************
-//      型チェックのモード指定
-//          InMemoryは、回復時のチェックを一切行わない。
-//          また、ポインタの先がシリアライズされてなかったら、元のアドレスを
-//          回復する。(つまり、管理外ポインタはシャロー・コピーになる。)
-//          負荷が最も低く、変更されていないクラス同士でのみ保存／回復可能。
-// ***************************************************************************
 
 namespace theolizer
 {
 
+// ***************************************************************************
 /*!
-    @todo   T.B.D.
+@brief      型チェック・モード
+@details    TypeIndexは「型」に割り当てられるインデックス番号。<br>
+            ソフトウェアが起動される時に確定する。
 */
+//      InMemoryは、FastSerializer専用
+//          変更されていないクラス同士でのみ保存／回復可能な負荷が最も軽いモード。
+//          回復時の型チェックを一切行わない。
+//          ポインタの先がシリアライズされてなかったら、元のアドレスを回復する。
+//          (つまり、そのようなポインタはシャロー・コピーとなる。)
+// ***************************************************************************
+
 enum class CheckMode
 {
-    InMemory,                   // メモリ内動作のみ、かつ、型チェック無し
-    NoTypeCheck,                // 型チェック無し
-    TypeCheck,                  // 型名による型チェック(テキスト型用)
-    TypeCheckByIndex,           // TypeIndexによる型チェック(バイナリ型用)
-    MetaMode                    // メタ・データ・モード(型定義情報を保存／回復)
+    InMemory,                   //   メモリ内動作のみ、かつ、型チェック無し（非公開）
+    NoTypeCheck,                //!< 型チェック無し
+    TypeCheck,                  //!< 型名による型チェック
+    TypeCheckByIndex,           //!< TypeIndexによる型チェック
+    MetaMode                    //   メタ処理－型定義情報を保存／回復（非公開）
 };
 
-/*!
-    @todo   T.B.D.
-*/
+//! @todo T.B.D.
 THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, CheckMode iCheckMode);
 
 // ***************************************************************************
@@ -779,6 +786,8 @@ THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, CheckMod
 
 namespace internal
 {
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+
 THEOLIZER_INTERNAL_DLL extern const std::size_t kInvalidSize;
 
 //----------------------------------------------------------------------------
