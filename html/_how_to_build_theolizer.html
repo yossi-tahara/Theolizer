@@ -29,7 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.0</span>
+   &#160;<span id="projectnumber">Version.0.4.1-Prerease.</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -349,11 +349,19 @@ llvm_build  linux.cmake, prepare.cmake, windows.cmake, zz_full_all.bat, zz_full_
 <h1><a class="anchor" id="Documents"></a>
 4.ドキュメントについて補足</h1>
 <hr/>
+<p>ドキュメントの生成に<a href="http://www.stack.nl/~dimitri/doxygen/">Doxygen</a>と<a href="http://www.graphviz.org/">Graphviz</a>を用いています。 現在使っているバージョンは以下の通りです。</p>
+<table class="doxtable">
+<tr>
+<th>項目</th><th>バージョン(Windows)</th><th>バージョン(Ubuntu)  </th></tr>
+<tr>
+<td>Doxygen</td><td>1.8.12</td><td>1.8.11 </td></tr>
+<tr>
+<td>Graphviz</td><td>2.38.0</td><td>2.38.0 </td></tr>
+</table>
 <p>Theolizerのドキュメントは、主にsource/reference_and_test/jaフォルダにおいています。<br />
  また、ライブラリのソース・コードはsource/libraryですが、ユーザが直接使うことを想定しているもののみドキュメントを付けています。<br />
 </p>
-<p>Theolizer内部用の要素についてはDoxygen化していません。<br />
- 名前空間 <b>internal</b> 内のクラス等 全ての要素、および、<b>THEOLIZER_INTERNAL</b> もしくは <b>THEOLIZER_GENERATED</b>で始まるマクロは全てTheolizer内部用です。<br />
+<p>名前空間 <b>internal</b> 内のクラス等 全ての要素、および、<b>THEOLIZER_INTERNAL</b> もしくは <b>THEOLIZER_GENERATED</b>で始まるマクロは全てTheolizer内部用です。<br />
  Theolizerのアップデート時、上位互換性を考慮しませんので使用しないようお願いします。 </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
