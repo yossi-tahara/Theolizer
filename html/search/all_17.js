@@ -1,13 +1,7 @@
 var searchData=
 [
-  ['sources_20of_20documents',['Sources of documents',['../group___documents.html',1,'']]],
-  ['serializer_5fjson_2eh',['serializer_json.h',['../serializer__json_8h.html',1,'']]],
-  ['setacp',['setACP',['../u8string_8h.html#aa09517ed7cbf36ab3f9a551a616c81eb',1,'theolizer']]],
-  ['setadditionalinfo',['setAdditionalInfo',['../classtheolizer_1_1_error_info.html#a4887e21addd903dd7128b2b8517a0622',1,'theolizer::ErrorInfo']]],
-  ['setcharismultibyte',['setCharIsMultiByte',['../classtheolizer_1_1internal_1_1_json_mid_o_serializer.html#a45e39491c469bc0b071cee49a282535b',1,'theolizer::internal::JsonMidOSerializer::setCharIsMultiByte()'],['../classtheolizer_1_1internal_1_1_json_mid_i_serializer.html#ac90cff59d86b80147d0c95f015dacbf8',1,'theolizer::internal::JsonMidISerializer::setCharIsMultiByte()']]],
-  ['setmessage',['setMessage',['../classtheolizer_1_1_error_info.html#a23fba25703221b8e28a18eaf87b1e383',1,'theolizer::ErrorInfo']]],
-  ['setutctime',['setUTCTime',['../classtheolizer_1_1_working_log.html#a55c36c70e9d82c067d01a3c3d383686e',1,'theolizer::WorkingLog']]],
-  ['setwritepermission',['setWritePermission',['../test__tool_8h.html#a99b880d1e11549e64b2ea9a3773fed24',1,'theolizer']]],
-  ['sources_20of_20theolizerdriver',['Sources of TheolizerDriver',['../group___theolizer_driver.html',1,'']]],
-  ['sources_20of_20theolizerlib_2ftest',['Sources of TheolizerLib/Test',['../group___theolizer_lib.html',1,'']]]
+  ['registerstream',['registerStream',['../group___unicode.html#ga5b50c2df37efb2ba7c669355c5e0fd3f',1,'theolizer::registerStream(std::istream *iIStream)'],['../group___unicode.html#gad4a4d2ac76feba196ae50620d6f9c8de',1,'theolizer::registerStream(std::ostream *iOStream)'],['../group___unicode.html#ga8fec88e3cc3bcd4682ab9c6b957311f0',1,'theolizer::registerStream(std::iostream *iIOStream)']]],
+  ['removefile',['removeFile',['../namespacetheolizer.html#a78b05f902134ab4dcddf2ec2b021b26a',1,'theolizer']]],
+  ['report_2eh',['report.h',['../report_8h.html',1,'']]],
+  ['reseterror',['resetError',['../classtheolizer_1_1internal_1_1_error_base.html#a9708e19b72d0370f441e65e38aa10d11',1,'theolizer::internal::ErrorBase']]]
 ];

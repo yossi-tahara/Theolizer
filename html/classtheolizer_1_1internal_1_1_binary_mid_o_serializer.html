@@ -29,7 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.1-Prerease.</span>
+   &#160;<span id="projectnumber">Version.0.4.1-Prerelease.</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -90,13 +90,16 @@ $(document).ready(function(){initNavTree('classtheolizer_1_1internal_1_1_binary_
 </div><!--header-->
 <div class="contents">
 
+<p>保存用中間BinarySerializer  
+ <a href="classtheolizer_1_1internal_1_1_binary_mid_o_serializer.html#details">[詳解]</a></p>
+
 <p><code>#include &lt;<a class="el" href="serializer__binary_8h_source.html">serializer_binary.h</a>&gt;</code></p>
 <div class="dynheader">
 theolizer::internal::BinaryMidOSerializer の継承関係図</div>
 <div class="dyncontent">
 <div class="center"><img src="classtheolizer_1_1internal_1_1_binary_mid_o_serializer__inherit__graph.png" border="0" usemap="#theolizer_1_1internal_1_1_binary_mid_o_serializer_inherit__map" alt="Inheritance graph"/></div>
 <map name="theolizer_1_1internal_1_1_binary_mid_o_serializer_inherit__map" id="theolizer_1_1internal_1_1_binary_mid_o_serializer_inherit__map">
-<area shape="rect" id="node4" href="classtheolizer_1_1_binary_o_serializer.html" title="theolizer::BinaryOSerializer\l\&lt; uDefault, uDestinations \&gt;" alt="" coords="5,273,185,315"/>
+<area shape="rect" id="node4" href="classtheolizer_1_1_binary_o_serializer.html" title="保存用BinarySerializer " alt="" coords="5,273,185,315"/>
 <area shape="rect" id="node2" href="classtheolizer_1_1internal_1_1_base_serializer.html" title="theolizer::internal\l::BaseSerializer" alt="" coords="35,95,156,136"/>
 <area shape="rect" id="node3" href="classtheolizer_1_1internal_1_1_error_base.html" title="theolizer::internal\l::ErrorBase" alt="" coords="35,5,156,47"/>
 </map>
@@ -113,7 +116,9 @@ theolizer::internal::BinaryMidOSerializer 連携図</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 静的公開変数類</h2></td></tr>
-<tr class="memitem:a5b6ba62b8c866224fadd2c887021787c"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1internal_1_1_binary_mid_o_serializer.html#a5b6ba62b8c866224fadd2c887021787c">kIsSaver</a> =true</td></tr>
+<tr class="memitem:a5b6ba62b8c866224fadd2c887021787c"><td class="memItemLeft" align="right" valign="top"><a id="a5b6ba62b8c866224fadd2c887021787c"></a>
+static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1internal_1_1_binary_mid_o_serializer.html#a5b6ba62b8c866224fadd2c887021787c">kIsSaver</a> =true</td></tr>
+<tr class="memdesc:a5b6ba62b8c866224fadd2c887021787c"><td class="mdescLeft">&#160;</td><td class="mdescRight">保存用なのでtrue <br /></td></tr>
 <tr class="separator:a5b6ba62b8c866224fadd2c887021787c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_static_attribs_classtheolizer_1_1internal_1_1_base_serializer"><td colspan="2" onclick="javascript:toggleInherit('pub_static_attribs_classtheolizer_1_1internal_1_1_base_serializer')"><img src="closed.png" alt="-"/>&#160;基底クラス <a class="el" href="classtheolizer_1_1internal_1_1_base_serializer.html">theolizer::internal::BaseSerializer</a> に属する継承静的公開変数類</td></tr>
 <tr class="memitem:ac952541ee997db26a03d158007b46430 inherit pub_static_attribs_classtheolizer_1_1internal_1_1_base_serializer"><td class="memItemLeft" align="right" valign="top">static const bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1internal_1_1_base_serializer.html#ac952541ee997db26a03d158007b46430">kIsFastSerialzier</a> =false</td></tr>
@@ -137,36 +142,11 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>BaseSerializer</b></
 <tr class="separator:a9708e19b72d0370f441e65e38aa10d11 inherit pub_methods_classtheolizer_1_1internal_1_1_error_base"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">詳解</h2>
-<div class="textblock"><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000062">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<div class="textblock"><p>保存用中間BinarySerializer </p>
+<p>主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。 </p>
 
-<p> <a class="el" href="serializer__binary_8h_source.html">serializer_binary.h</a> の <a class="el" href="serializer__binary_8h_source.html#l00310">310</a> 行目に定義があります。</p>
-</div><h2 class="groupheader">メンバ詳解</h2>
-<a id="a5b6ba62b8c866224fadd2c887021787c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5b6ba62b8c866224fadd2c887021787c">&sect;&nbsp;</a></span>kIsSaver</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">const bool theolizer::internal::BinaryMidOSerializer::kIsSaver =true</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000064">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-<p> <a class="el" href="serializer__binary_8h_source.html">serializer_binary.h</a> の <a class="el" href="serializer__binary_8h_source.html#l00333">333</a> 行目に定義があります。</p>
-
-</div>
-</div>
-<hr/>このクラス詳解は次のファイルから抽出されました:<ul>
+<p> <a class="el" href="serializer__binary_8h_source.html">serializer_binary.h</a> の <a class="el" href="serializer__binary_8h_source.html#l00309">309</a> 行目に定義があります。</p>
+</div><hr/>このクラス詳解は次のファイルから抽出されました:<ul>
 <li><a class="el" href="serializer__binary_8h_source.html">serializer_binary.h</a></li>
 </ul>
 </div><!-- contents -->
@@ -174,7 +154,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><b>BaseSerializer</b></
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>theolizer</b></li><li class="navelem"><b>internal</b></li><li class="navelem"><a class="el" href="classtheolizer_1_1internal_1_1_binary_mid_o_serializer.html">BinaryMidOSerializer</a></li>
+    <li class="navelem"><a class="el" href="namespacetheolizer.html">theolizer</a></li><li class="navelem"><b>internal</b></li><li class="navelem"><a class="el" href="classtheolizer_1_1internal_1_1_binary_mid_o_serializer.html">BinaryMidOSerializer</a></li>
     <li class="footer">構築:
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.12 </li>

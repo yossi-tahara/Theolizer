@@ -2,8 +2,18 @@ var NAVTREE =
 [
   [ "Theolizer", "index.html", [
     [ "--目次--", "index.html", "index" ],
+    [ "エラー処理方法", "_error_report.html", null ],
     [ "todo一覧", "todo.html", null ],
     [ "モジュール", "modules.html", "modules" ],
+    [ "名前空間", null, [
+      [ "名前空間一覧", "namespaces.html", "namespaces" ],
+      [ "名前空間メンバ", "namespacemembers.html", [
+        [ "全て", "namespacemembers.html", null ],
+        [ "関数", "namespacemembers_func.html", null ],
+        [ "変数", "namespacemembers_vars.html", null ],
+        [ "列挙型", "namespacemembers_enum.html", null ]
+      ] ]
+    ] ],
     [ "クラス", "annotated.html", [
       [ "クラス一覧", "annotated.html", "annotated_dup" ],
       [ "クラス索引", "classes.html", null ],
@@ -29,7 +39,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"serializer__json_8h_source.html"
+"group___unicode.html"
 ];
 
 var SYNCONMSG = 'クリックで同期表示が無効になります';

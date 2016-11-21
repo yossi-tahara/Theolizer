@@ -29,7 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.1-Prerease.</span>
+   &#160;<span id="projectnumber">Version.0.4.1-Prerelease.</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -85,8 +85,11 @@ $(document).ready(function(){initNavTree('_how_to_make_project.html','');});
 <div class="title">Theolizerの組み込み方とファイル構成 </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="Selecting"></a>
+<div class="textblock"><p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="Selecting"></a>
 1.Theolizerライブラリの選択</h1>
+<h6></h6>
 <hr/>
 <p> Theolizerは下記ライブラリを用意しています。</p>
 <table class="doxtable">
@@ -107,9 +110,10 @@ Theolizerライブラリのビルドを避けたい時 <b>(*2)</b> </td></tr>
 <a href="https://ja.wikipedia.org/wiki/Boost">boost</a>を既にお使いの方ならばあまり問題はないと思いますが、そうでない方にとっては結構面倒な作業が必要となります。<br />
 そこで、プリビルド版の静的リンク・ライブラリとして<a href="https://ja.wikipedia.org/wiki/Boost">boost</a>を同梱したライブラリも用意しました。それがStaticWithBoostです。</p>
 <p><br />
- </p>
+ </p><h6></h6>
 <h1><a class="anchor" id="CMake"></a>
 2.CMakeを使う場合</h1>
+<h6></h6>
 <hr/>
 <p> あなたのプロジェクトのCMakeLists.txtに下記を追加して下さい。 </p><pre class="fragment">find_package(THEOLIZER)
   :
@@ -119,9 +123,10 @@ setup_theolizer(${TARGET_NAME} ${LINK_TYPE})
 <p>CMakeLists.txt作成後、THEOLIZER_DIRに <b>Theolizerルート・フォルダ</b> を設定し、CMakeでプロジェクトを生成して下さい。<br />
 </p>
 <p><br />
- </p>
+ </p><h6></h6>
 <h1><a class="anchor" id="Example"></a>
 3.exampleのビルド例(CMake使用)</h1>
+<h6></h6>
 <hr/>
 <p>TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソース・コードとCMakeLists.txtを <b>source/samples/example</b> に置いています。これは「2.CMakeを使う場合」のサンプルとなります。<br />
 適切なビルド・フォルダを作成して、そこで下記コマンドを実行することで、プロジェクト生成→ビルド→テスト実行が行われます。<br />
@@ -139,9 +144,10 @@ make BuildTest
 <pre class="fragment">cmake -G "Unix Makefiles" &lt;source/samples/exampleフォルダ&gt; -DTHEOLIZER_DIR=&lt;Theolizerルート・フォルダ&gt; -DCMAKE_BUILD_TYPE=Release
 make BuildTest
 </pre><p><br />
- </p>
+ </p><h6></h6>
 <h1><a class="anchor" id="NonCMake"></a>
 4.CMakeを使わない場合</h1>
+<h6></h6>
 <hr/>
 <p> 「5.ファイル構成」を参考にして、下記をプロジェクトへ設定下さい。</p><ul>
 <li>一般的なライブラリと同様、インクルード・パス、ライブラリ・パス、および、ライブラリを指定下さい。</li>
@@ -149,12 +155,13 @@ make BuildTest
 <li>Sharedを用いる場合は、コンパイラ・オプションにてTHEOLIZER_DYN_LINKマクロを定義して下さい。</li>
 </ul>
 <p><br />
- </p>
+ </p><h6></h6>
 <h1><a class="anchor" id="FileStructure"></a>
 5.ファイル構成</h1>
+<h6></h6>
 <hr/>
 <p> <b>Theolizerルート・フォルダ</b>からの相対パスにて各ファイルが存在する場所を示します。</p>
-<h3>Visual Studio C++</h3>
+<h4>Visual Studio C++</h4>
 <table class="doxtable">
 <tr>
 <th>相対パス</th><th>ファイル種別</th><th>ファイル名  </th></tr>
@@ -210,7 +217,7 @@ make BuildTest
 <td>samples</td><td>サンプル・プログラム</td><td>CMakeLists.txt, *.cpp, *.h </td></tr>
 </table>
 <p>注）テスト用ライブラリは、Theolizerの自動テストで使用しているライブラリです。</p>
-<h3>MinGWとgcc</h3>
+<h4>MinGWとgcc</h4>
 <table class="doxtable">
 <tr>
 <th>相対パス</th><th>ファイル種別</th><th>ファイル名  </th></tr>

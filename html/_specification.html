@@ -29,7 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.1-Prerease.</span>
+   &#160;<span id="projectnumber">Version.0.4.1-Prerelease.</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -85,8 +85,11 @@ $(document).ready(function(){initNavTree('_specification.html','');});
 <div class="title">仕様 </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1><a class="anchor" id="Basic"></a>
+<div class="textblock"><p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="Basic"></a>
 1.基本仕様</h1>
+<h6></h6>
 <hr/>
 <h2><a class="anchor" id="Basic11"></a>
 1-1.シリアライズ可能な型</h2>
@@ -144,9 +147,9 @@ $(document).ready(function(){initNavTree('_specification.html','');});
 <p>非侵入型完全自動と侵入型半自動は、自動的にメンバ変数を枚挙して、シリアライズします。そして、デシリアライズする際にシリアライズされたデータとメンバ変数の対応を取る必要があります。この対応方法として2つ用意しました。<br />
 </p>
 <ol type="1">
-<li><b>変数名で対応</b><br />
+<li><b>名前対応</b><br />
  メンバ変数名が一致するものを回復します。メンバ変数の記述順序変更や、メンバ変数の並びの途中への追加／削除を行っても旧シリアライズ・データからクラス・インスタンスを回復できます。</li>
-<li><b>順序で対応</b><br />
+<li><b>順序対応</b><br />
  メンバ変数の記述順に従って回復します。メンバ変数名をシリアライズ・データ内に記録しないのでデータ・サイズを減らせますが、メンバ変数の記述順序を変更できません。また、メンバ変数の追加／削除はメンバ変数の並びの最後のみ可能です。</li>
 </ol>
 <h3><a class="anchor" id="Basic122"></a>
@@ -247,9 +250,10 @@ $(document).ready(function(){initNavTree('_specification.html','');});
 <p>現在、仮想基底クラスは非対応です。<br />
  オブジェクト追跡することで対応できる可能性はありますので、有用性が高い場合に対応を検討します。</p>
 <p><br />
- </p>
+ </p><h6></h6>
 <h1><a class="anchor" id="Tracking"></a>
 2.オブジェクト追跡</h1>
+<h6></h6>
 <hr/>
 <h2><a class="anchor" id="Basic21"></a>
 2-1.オブジェクト追跡する領域について</h2>
@@ -275,9 +279,10 @@ $(document).ready(function(){initNavTree('_specification.html','');});
  なお、現在のところクラス・テンプレートはポリモーフィズム非対応です。<br />
 </p>
 <p><br />
- </p>
+ </p><h6></h6>
 <h1><a class="anchor" id="Modifying"></a>
 3.バージョン変更</h1>
+<h6></h6>
 <hr/>
 <h2><a class="anchor" id="Basic31"></a>
 3-1.クラス定義とenum定義の変更</h2>

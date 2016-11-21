@@ -29,7 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.1-Prerease.</span>
+   &#160;<span id="projectnumber">Version.0.4.1-Prerelease.</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -306,7 +306,7 @@ llvm_build  linux.cmake, prepare.cmake, windows.cmake, zz_full_all.bat, zz_full_
 3.バージョン番号の付け方</h1>
 <p>バージョン番号は下記のように管理する予定です。</p>
 <p><code>&lt;Major&gt;.&lt;Minor&gt;.&lt;Detail&gt;</code><br />
- <code>&lt;Major&gt;.&lt;Minor&gt;.&lt;Detail&gt;-Prerease</code><br />
+ <code>&lt;Major&gt;.&lt;Minor&gt;.&lt;Detail&gt;-Prerelease</code><br />
  <code>&lt;Major&gt;.&lt;Minor&gt;.&lt;Detail&gt;-Temp</code></p>
 <table class="doxtable">
 <tr>
@@ -323,7 +323,7 @@ llvm_build  linux.cmake, prepare.cmake, windows.cmake, zz_full_all.bat, zz_full_
 <tr>
 <td>-Temp</td><td>暫定的なバージョンに付加する(Deprecated) </td></tr>
 </table>
-<p>GitHubには-Tempの有るものも登録しますが、同じバージョン番号のものが複数登録されることになります。<br />
+<p>GitHubには-Prerelease/-Tempの有るものも登録しますが、同じバージョン番号のものが複数登録されることになります。<br />
  それを判別できるようにするため、TheolizerドライバとTheolizerライブラリのそれぞれがversion.hを持ち、これにソース・コードのMD5ハッシュ値（kTheolizerSourcesHash）を記録しています。<br />
  この値はそれぞれをビルドする際に自動的に更新されます。（linuxタイプの改行コードへ変換後、計算しています。）</p>
 <table class="doxtable">
@@ -341,7 +341,7 @@ llvm_build  linux.cmake, prepare.cmake, windows.cmake, zz_full_all.bat, zz_full_
 <tr>
 <td>Theolzierドライバ</td><td>TheolizerDriver &ndash;theolizer-versionにて表示されるSourcesHash </td></tr>
 <tr>
-<td>Theolzierライブラリ</td><td>theolizer::getVersionString()にて得ることができるSourcesHash </td></tr>
+<td>Theolzierライブラリ</td><td><a class="el" href="namespacetheolizer.html#a3d6a1789d20a7e609a019b6d71cd7c3c" title="バージョン文字列獲得 ">theolizer::getVersionString()</a>にて得ることができるSourcesHash </td></tr>
 </table>
 <p>SourcesHash値と同じ値を持つversion.hがGitHubに登録されている時にはソース・コードを特定できます。</p>
 <p><br />
