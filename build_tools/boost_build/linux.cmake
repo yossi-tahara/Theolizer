@@ -31,6 +31,12 @@
 #       設定するパラメータ
 #-----------------------------------------------------------------------------
 
+# Boostダウンロード指定
+#set(BOOST_DOWNLOAD "1.59.0")
+
+# Boostのソース・フォルダ
+set(BOOST_SOURCE "../boost")
+
 # boostのインストール先のプリフィクス(これに32/64を追加したフォルダにインストールされる)
 # linuxの場合、更にTheolizerライブラリSharedへリンクするものは-fPICが追加される。
 set(BOOST_PREFIX "$ENV{HOME}/install/boost")

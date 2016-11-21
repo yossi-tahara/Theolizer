@@ -25,6 +25,8 @@
 function(parameter_log LOG_FILE)
 
     file(WRITE  ${LOG_FILE} "--- Parameters ---\n")
+    file(APPEND ${LOG_FILE} "BOOST_DOWNLOAD  =${BOOST_DOWNLOAD}\n")
+    file(APPEND ${LOG_FILE} "BOOST_SOURCE    =${BOOST_SOURCE}\n")
     file(APPEND ${LOG_FILE} "BOOST_PREFIX    =${BOOST_PREFIX}\n")
     file(APPEND ${LOG_FILE} "COMPLIER        =${COMPLIER}\n")
     file(APPEND ${LOG_FILE} "BIT_NUM         =${BIT_NUM}\n")
@@ -146,7 +148,9 @@ function(absolute_path PATH_STRING RESULT)
     set(${RESULT} "${PATH_STRING}${LAST_CHAR}" PARENT_SCOPE)
 endfunction()
 
+absolute_path("${BOOST_SOURCE}" BOOST_SOURCE)
 absolute_path("${BOOST_PREFIX}" BOOST_PREFIX)
+message(STATUS "BOOST_SOURCE=${BOOST_SOURCE}")
 message(STATUS "BOOST_PREFIX=${BOOST_PREFIX}")
 
 # 環境変数のPATHを確保しておく
@@ -221,7 +225,7 @@ endif()
     message(STATUS "TOOLSET     =${TOOLSET}")
 
     # ビルド・フォルダ・パス
-    set(BUILD_DIR "build/${COMPLIER}x${BIT_NUM}")
+    set(BUILD_DIR "${CMAKE_SOURCE_DIR}/build/${COMPLIER}x${BIT_NUM}")
     if("${fPIC}" STREQUAL "TRUE")
         set(BUILD_DIR "${BUILD_DIR}-fPIC")
     endif()
@@ -234,6 +238,46 @@ endif()
     message(STATUS "MAKE        =${MAKE}")
 
 endmacro()
+
+#-----------------------------------------------------------------------------
+#       ダウンロードと解凍
+#-----------------------------------------------------------------------------
+
+function(download_extract FILE_NAME EXTRACT_NAME EXTRACT_PATH)
+    message(STATUS "FILE_NAME   =${FILE_NAME}")
+    message(STATUS "EXTRACT_NAME=${EXTRACT_NAME}")
+    message(STATUS "EXTRACT_PATH=${EXTRACT_PATH}")
+    message(STATUS "ROOT        =${ROOT}")
+    message(STATUS "URL         =${URL}")
+    if(WIN32)
+        set(EXT ".7z")
+    else()
+        set(EXT ".tar.bz2")
+    endif()
+    file(DOWNLOAD ${URL}/${FILE_NAME}${EXT}/download ${ROOT}/${FILE_NAME}${EXT} SHOW_PROGRESS)
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E tar xvf "${ROOT}/${FILE_NAME}${EXT}"
+        WORKING_DIRECTORY "${EXTRACT_PATH}"
+    )
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E rename "${FILE_NAME}" "${EXTRACT_NAME}"
+        WORKING_DIRECTORY "${EXTRACT_PATH}"
+    )
+endfunction()
+
+function(boost_setup VERSION)
+    string(REPLACE "." "_" VERSION2 ${VERSION})
+    set(URL "https://sourceforge.net/projects/boost/files/boost/${VERSION}")
+
+    get_filename_component(ROOT     "${BOOST_SOURCE}" DIRECTORY)
+    get_filename_component(DIR_NAME "${BOOST_SOURCE}" NAME      )
+    download_extract("boost_${VERSION2}" ${DIR_NAME} "${ROOT}")
+endfunction()
+
+# boostをダウンロードする
+if ((NOT "${BOOST_DOWNLOAD}" STREQUAL "") AND (NOT EXISTS ${BOOST_SOURCE}))
+    boost_setup(${BOOST_DOWNLOAD})
+endif()
 
 #-----------------------------------------------------------------------------
 #       ビルド処理
@@ -262,24 +306,26 @@ function(build_process COMPLIER BIT_NUM CONFIG_TYPE fPIC)
     endif()
 
     if(WIN32)
-        if(NOT EXISTS "b2.exe")
+        if(NOT EXISTS "${BOOST_SOURCE}/b2.exe")
             start("bootstrap     ...")
             execute_process(
                 COMMAND bootstrap.bat
                 OUTPUT_VARIABLE OUTPUT_LOG
                 ERROR_VARIABLE  OUTPUT_LOG
                 RESULT_VARIABLE RETURN_CODE
+                WORKING_DIRECTORY "${BOOST_SOURCE}"
             )
             end("${BUILD_DIR}/bootstrap.log" TRUE)
         endif()
     else()
-        if(NOT EXISTS "b2")
+        if(NOT EXISTS "${BOOST_SOURCE}/b2")
             start("bootstrap     ...")
             execute_process(
                 COMMAND ./bootstrap.sh
                 OUTPUT_VARIABLE OUTPUT_LOG
                 ERROR_VARIABLE  OUTPUT_LOG
                 RESULT_VARIABLE RETURN_CODE
+                WORKING_DIRECTORY "${BOOST_SOURCE}"
             )
             end("${BUILD_DIR}/bootstrap.log" TRUE)
         endif()
@@ -305,6 +351,7 @@ function(build_process COMPLIER BIT_NUM CONFIG_TYPE fPIC)
             OUTPUT_VARIABLE OUTPUT_LOG
             ERROR_VARIABLE  OUTPUT_LOG
             RESULT_VARIABLE RETURN_CODE
+            WORKING_DIRECTORY "${BOOST_SOURCE}"
         )
     else()
         execute_process(
@@ -323,6 +370,7 @@ function(build_process COMPLIER BIT_NUM CONFIG_TYPE fPIC)
             OUTPUT_VARIABLE OUTPUT_LOG
             ERROR_VARIABLE  OUTPUT_LOG
             RESULT_VARIABLE RETURN_CODE
+            WORKING_DIRECTORY "${BOOST_SOURCE}"
         )
     endif()
     end("${BUILD_DIR}/zz1_build.log" FALSE)

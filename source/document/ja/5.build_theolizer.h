@@ -55,24 +55,50 @@ TheolzierのドキュメントはDoxygenとGraphvizを用いて生成します�
 @subsubsection HowToBuildLibrary121 1-2-1.boostのsystemとfilesystemをビルドしてインストール
 コンパイラはTheolizerをビルドするものと同じものを使用します。<br>
 
-まず、使いたいバージョンの[boost](http://www.boost.org/users/history/)をダウンロードして適切なフォルダへ解凍しておいて下さい。
+便利のためにcmakeスクリプトを用意しています。<br>
+Theolizerのソースのbuild/boost_buildフォルダにおいてます。Windowsでビルドする場合はwindows.cmakeを、linuxでビルドする場合linux.cmakeを用いて下さい。<br>
+下記のように使います。<br>
 
-次に、boostをビルドします。便利のためにcmakeスクリプトを用意しています。Theolizerのソースのbuild/boost_buildフォルダにおいてますので、その中のファイルをboostのソースがあるフォルダ（1.59.0ならboost_1_59_0の直下)へコピーしてお使い下さい。<br>
-Windowsでビルドする場合はwindows.cmakeを、linuxでビルドする場合linux.cmakeを用います。
-使う方のcmakeスクリプトをエディタで開き、下記を指定して下さい。
+1. 作業に用いるフォルダを作成して下さい。<br>
+    例えば、boost1.59.0をビルドする場合、boost-159のようにboostのバージョン番号を反映したフォルダ名をお勧めします。（以下作業フォルダをboost-159と仮定して説明します。）<br>
+<br>
+
+2. そのフォルダ(boost-159)の下へ使いたいバージョンの[boost](http://www.boost.org/users/history/)をダウンロードして解凍して下さい。（フォルダ名をboostへ変更しておくことをお勧めします。）<br>
+    この作業はオプションです。後述のBOOST_DOWNLOADを有効にすれば自動的にダウンロードします。<br>
+    ただし、Windows上にインストールしたVirtualBox上のubuntuではダウンロードに成功しませんでした。<br>
+    そのような場合は手動でダウンロードし解凍して下さい。<br>
+<br>
+
+3. そのフォルダ(boost-159)の下へboost_buildフォルダをコピーして下さい。<br>
+<br>
+
+4. 下記の<b>設定表</b>に従って、cmakeスクリプトのオプションを設定して下さい<br>
+<br>
+
+5. そして、Windowsならzz_full_all.bat、linuxならzz_full_all.shを起動すればビルドとインストールされます。<br>
+    １組み合わせ当たり数分でビルド完了します。<br>
+<br>
+
+6. ビルド完了時のフォルダ構成<br>
+    boost-159                   ダウンロードした圧縮ファイル
+    boost-159/boost             boostのソース・ファイル群<br>
+    boost-159/boost_build       ビルド用スクリプト群<br>
+    boost-159/boost_build/build ビルド・フォルダ（ビルド・ログや中間ファイル群)<br>
+
+<b>設定表</b>
 
 |設定先|設定内容|
 |------|--------|
+|BOOST_DOWNLOAD|設定した場合、boostを自動ダウンロードします。<br>ダウンロードするバージョン番号を設定して下さい。例："1.59.0"|
+|BOOST_SOURCE|boostのソースのフォルダ|
 |BOOST_PREFIX|boostのインストール先フォルダ名のプリフィクス|
 |CC32|MingWまたはgccの32ビット版のbinフォルダのパス(既にパスが通っているなら指定不要)|
 |CC64|MingWまたはgccの64ビット版のbinフォルダのパス(既にパスが通っているなら指定不要)|
 |build_process()|ビルドする組み合わせを指定|
 
-そして、Windowsならzz_full_all.bat、linuxならzz_full_all.shを起動すればビルドとインストールされます。<br>
-１組み合わせ当たり数分でビルド完了します。
-
-boostのソースがあるフォルダの直下にbuildフォルダが生成され、その中に中間ファイル群が置かれます。\n
-ビルド中のログもここに保存しますので必要に応じて確認下さい。
+#### BOOST_DOWNLOADの補足
+BOOST_DOWNLOADを設定し、かつ、BOOST_SOURCEが存在しない時のみ自動ダウンロードします。<br>
+既にダウンロードが完了しているのに再度処理することを回避するためです。
 
 @subsubsection HowToBuildLibrary122 1-2-2.Theolizerライブラリをビルドしてインストール
 
@@ -147,37 +173,54 @@ build_by_msvc()とbuild_by_gcc()について補足
 @subsubsection HowToBuildLibrary222 2-2-2.LLVM(libTooling含む)をビルドしてインストール
 コンパイラはTheolizerをビルドするものと同じものを使用して下さい。
 
-まず、[LLVM](http://llvm.org/releases/download.html#3.9.0)をダウンロードして適切なフォルダへ解凍して下さい。
+boostのビルドと同様、llvmをビルドするためのcmakeスクリプトを用意しています。<br>
+Theolizerのソースのbuild/llvm_buildフォルダにおいてます。Windowsでビルドする場合はwindows.cmakeを、linuxでビルドする場合linux.cmakeを用いて下さい。<br>
+下記のように使います。<br>
 
-|ダウンロードするアイテム|ダウンロードするファイル名|解凍先フォルダ|
-|------------------------|--------------------------|--------------|
+1. 作業に用いるフォルダを作成して下さい。<br>
+    例えば、llvm3.9.0をビルドする場合、llvm-390のようにllvmのバージョン番号を反映したフォルダ名をお勧めします。（以下作業フォルダをllvm-390と仮定して説明します。）<br>
+<br>
+
+2. そのフォルダ(llvm-390)の下へ使いたいバージョンの[llvm](http://llvm.org/releases/download.html)をダウンロードして解凍して下さい。<br>
+    下記の<b>ダウンロード表</b>に従ってダウンロードし解凍して下さい。<br>
+    この作業はオプションです。後述のLLVM_DOWNLOADを有効にすれば自動的にダウンロードします。<br>
+    llvmはboostの場合と異なり、ubuntu環境からも正常にダウンロードできました。<br>
+<br>
+
+3. そのフォルダ(llvm-390)の下へllvm_buildフォルダをコピーして下さい。<br>
+<br>
+
+4. 下記の<b>設定表</b>に従って、cmakeスクリプトのオプションを設定して下さい<br>
+<br>
+
+5. そして、Windowsならzz_full_all.bat、linuxならzz_full_all.shを起動すればビルドとインストールされます。<br>
+    １組み合わせ当たり<b>１～２時間かかります</b>ので、時間に余裕のある時にビルドして下さい。<br>
+<br>
+
+6. ビルド完了時のフォルダ構成<br>
+    llvm-390                    ダウンロードした圧縮ファイル群
+    llvm-390/llvm               llvmのソース・ファイル群<br>
+    llvm-390/llvm_build         ビルド用スクリプト群<br>
+    llvm-390/llvm_build/build   ビルド・フォルダ（ビルド・ログや中間ファイル群)<br>
+
+<b>ダウンロード表</b>
+
+|ダウンロードするアイテム|ダウンロードするファイル名|解凍後のフォルダ名|
+|------------------------|--------------------------|------------------|
 |LLVM source code|llvm-3.9.0.src.tar.xz|llvm|
 |Clang source code|cfe-3.9.0.src.tar.xz|llvm/tools/clang|
 |clang-tools-extra|clang-tools-extra-3.9.0.src.tar.xz|llvm/tools/clang/tools/extra|
 
-次に、LLVMをビルドしますが、そのためのcmakeスクリプトを用意しています。Theolizerのソースのbuild/llvm_buildフォルダにおいてますので、llvmフォルダと同じ階層のフォルダへコピーして下さい。<br>
-
-下記のようなフォルダ構成になります
-
-    llvm        解凍したLLVMソース
-    llvm_build  linux.cmake, prepare.cmake, windows.cmake, zz_full_all.bat, zz_full_all.sh
-
-Windowsでビルドする場合はwindows.cmakeを、linuxでビルドする場合linux.cmakeを用います。
-使う方のcmakeスクリプトをエディタで開き、下記を修正して下さい。
+<b>設定表</b>
 
 |設定先|設定内容|
 |------|--------|
+|LLVM_DOWNLOAD|設定した場合、必要なllvmを自動ダウンロードします。<br>ダウンロードするバージョン番号を設定して下さい。例："3.9.0"|
 |LLVM_PREFIX|LLVMのインストール先パス名のプリフィックス|
 |CC32|MingWまたはgccの32ビット版のbinフォルダのパス(既にパスが通っているなら指定不要)|
 |CC64|MingWまたはgccの64ビット版のbinフォルダのパス(既にパスが通っているなら指定不要)|
 |MAKE|[jom](https://wiki.qt.io/Jom)等の高速なmakeを使う場合にそのフルパス(標準のmakeを使う時は指定不要)|
 |build_process()|ビルドする組み合わせを指定|
-
-そして、Windowsならzz_full_all.bat、linuxならzz_full_all.shを起動すればビルドとインストールされます。<br>
-１組み合わせ当たり<b>１～２時間かかります</b>ので、時間に余裕のある時にビルドして下さい。
-
-llvm_buildフォルダの直下にコンパイラ毎にbuild用フォルダが生成され、その中に中間ファイル群が置かれます。\n
-ビルド中のログもここに保存しますので必要に応じて確認下さい。
 
 @subsubsection HowToBuildLibrary223 2-2-3.Theolizerライブラリをビルドしてインストール
 

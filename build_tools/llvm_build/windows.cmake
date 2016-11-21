@@ -33,6 +33,9 @@
 #       設定するパラメータ
 #-----------------------------------------------------------------------------
 
+# LLVMダウンロード指定
+set(LLVM_DOWNLOAD "3.9.0")
+
 # LLVMのソース・フォルダ
 set(LLVM_SOURCE "../llvm")
 
@@ -58,10 +61,10 @@ set(SUMMARY windows.log)
 
 cmake_minimum_required(VERSION 3.5.0)
 
-include(prepare.cmake)
-
 set(SUMMARY ${SUMMARY})
 file(WRITE ${SUMMARY} "")
+
+include(prepare.cmake)
 
 #-----------------------------------------------------------------------------
 #       各ビルド・フォルダの準備とビルド・テスト・インストール

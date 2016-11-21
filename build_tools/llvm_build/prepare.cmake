@@ -25,6 +25,7 @@
 function(parameter_log LOG_FILE)
 
     file(WRITE  ${LOG_FILE} "--- Parameters ---\n")
+    file(APPEND ${LOG_FILE} "LLVM_DOWNLOAD   =${LLVM_DOWNLOAD}\n")
     file(APPEND ${LOG_FILE} "LLVM_SOURCE     =${LLVM_SOURCE}\n")
     file(APPEND ${LOG_FILE} "LLVM_PREFIX     =${LLVM_PREFIX}\n")
     file(APPEND ${LOG_FILE} "COMPLIER        =${COMPLIER}\n")
@@ -289,6 +290,47 @@ endif()
     )
 
 endmacro()
+
+#-----------------------------------------------------------------------------
+#       ダウンロードと解凍
+#-----------------------------------------------------------------------------
+
+function(download_extract FILE_NAME EXTRACT_NAME EXTRACT_PATH)
+    message(STATUS "FILE_NAME   =${FILE_NAME}")
+    message(STATUS "EXTRACT_NAME=${EXTRACT_NAME}")
+    message(STATUS "EXTRACT_PATH=${EXTRACT_PATH}")
+    message(STATUS "ROOT        =${ROOT}")
+    file(DOWNLOAD ${URL}/${FILE_NAME}.tar.xz ${ROOT}/${FILE_NAME}.tar.xz SHOW_PROGRESS)
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E tar xvf "${ROOT}/${FILE_NAME}.tar.xz"
+        WORKING_DIRECTORY "${EXTRACT_PATH}"
+    )
+    execute_process(
+        COMMAND ${CMAKE_COMMAND} -E rename "${FILE_NAME}" "${EXTRACT_NAME}"
+        WORKING_DIRECTORY "${EXTRACT_PATH}"
+    )
+endfunction()
+
+function(llvm_setup VERSION)
+    if(    "${VERSION}" STREQUAL "3.9.0")
+        set(URL "http://llvm.org/releases/3.9.0")
+    elseif("${VERSION}" STREQUAL "3.8.1")
+        set(URL "http://llvm.org/releases/3.8.1")
+    else()
+        message(SEND_ERROR "Not supported LLVM version. ${VERSION}")
+    endif()
+
+    get_filename_component(ROOT     "${LLVM_SOURCE}" DIRECTORY)
+    get_filename_component(DIR_NAME "${LLVM_SOURCE}" NAME      )
+    download_extract("llvm-${VERSION}.src"              ${DIR_NAME} "${ROOT}"                         )
+    download_extract("cfe-${VERSION}.src"               clang       "${LLVM_SOURCE}/tools"            )
+    download_extract("clang-tools-extra-${VERSION}.src" extra       "${LLVM_SOURCE}/tools/clang/tools")
+endfunction()
+
+# llvmをダウンロードする
+if ((NOT "${LLVM_DOWNLOAD}" STREQUAL "") AND (NOT EXISTS ${LLVM_SOURCE}))
+    llvm_setup(${LLVM_DOWNLOAD})
+endif()
 
 #-----------------------------------------------------------------------------
 #       ビルド処理
