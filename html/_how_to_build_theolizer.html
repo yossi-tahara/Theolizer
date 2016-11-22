@@ -362,11 +362,11 @@ zz4_ja.bat </td><td>ドキュメントのビルド </td></tr>
 <p><br />
  </p>
 <h1><a class="anchor" id="VersionNo"></a>
-3.バージョン番号の付け方</h1>
-<p>バージョン番号は下記のように管理する予定です。</p>
+3.Theolizer自身のバージョン番号について</h1>
+<p>バージョン番号は下記のように管理します。</p>
 <p><code>&lt;Major&gt;.&lt;Minor&gt;.&lt;Detail&gt;</code><br />
  <code>&lt;Major&gt;.&lt;Minor&gt;.&lt;Detail&gt;-Prerelease</code><br />
- <code>&lt;Major&gt;.&lt;Minor&gt;.&lt;Detail&gt;-Temp</code></p>
+</p>
 <table class="doxtable">
 <tr>
 <th>項目</th><th>更新するタイミング  </th></tr>
@@ -379,12 +379,10 @@ zz4_ja.bat </td><td>ドキュメントのビルド </td></tr>
 <tr>
 <td>-Prerease</td><td>暫定的な正規リリース前のバージョンに付加する<br />
 正規リリース後のPrereaseはバージョン番号を上げて行う </td></tr>
-<tr>
-<td>-Temp</td><td>暫定的なバージョンに付加する(Deprecated) </td></tr>
 </table>
-<p>GitHubには-Prerelease/-Tempの有るものも登録しますが、同じバージョン番号のものが複数登録されることになります。<br />
+<p>コミットの度にバージョン番号を上げるわけでないため、GitHubには同じバージョン番号のものが複数登録されることになります。<br />
  それを判別できるようにするため、TheolizerドライバとTheolizerライブラリのそれぞれがversion.hを持ち、これにソース・コードのMD5ハッシュ値（kTheolizerSourcesHash）を記録しています。<br />
- この値はそれぞれをビルドする際に自動的に更新されます。（linuxタイプの改行コードへ変換後、計算しています。）</p>
+ この値はそれぞれをビルドする際に自動的に更新されます。（linuxタイプの改行コードへ変換後、計算していますので、改行コードの異なるOSで処理しても同じ値になります。）</p>
 <table class="doxtable">
 <tr>
 <th>項目</th><th>生成元ファイル群  </th></tr>
@@ -402,7 +400,9 @@ zz4_ja.bat </td><td>ドキュメントのビルド </td></tr>
 <tr>
 <td>Theolzierライブラリ</td><td><a class="el" href="namespacetheolizer.html#a3d6a1789d20a7e609a019b6d71cd7c3c" title="バージョン文字列獲得 ">theolizer::getVersionString()</a>にて得ることができるSourcesHash </td></tr>
 </table>
-<p>SourcesHash値と同じ値を持つversion.hがGitHubに登録されている時にはソース・コードを特定できます。</p>
+<p>gitのcommit-msgフックにより、コミット・メッセージへこれらのSourcesHash値を下記のフォーマットで自動追加しています。<br />
+ 以上の仕組みによりSourcesHash値がGitHubに登録されている時にはソース・コードを特定できます。</p>
+<div class="fragment"><div class="line">----------------- MD5 Hash Values -----------------</div><div class="line">TheolizerDriver  : ce745e6dc35b70e87674e1daac64b739</div><div class="line">TheolizerLibrary : 3de4f1e42c55188f88ececb53e88fc49</div><div class="line">Library<span class="stringliteral">&#39;s Header : 97197bb96f6980c19c222542c8d89d54</span></div></div><!-- fragment --><p>なお、コミット・メッセージを修正する時（最後のコミットをやり直すなど）は、これらをコミット・メッセージから手動で削除して下さい。</p>
 <p><br />
  </p>
 <h1><a class="anchor" id="Documents"></a>

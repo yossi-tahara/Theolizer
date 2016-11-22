@@ -83,7 +83,7 @@ var index =
           [ "2-2-3.Theolizerライブラリをビルドしてインストール", "_how_to_build_theolizer.html#HowToBuildLibrary223", null ]
         ] ]
       ] ],
-      [ "3.バージョン番号の付け方", "_how_to_build_theolizer.html#VersionNo", null ],
+      [ "3.Theolizer自身のバージョン番号について", "_how_to_build_theolizer.html#VersionNo", null ],
       [ "4.ドキュメントについて補足", "_how_to_build_theolizer.html#Documents", null ]
     ] ],
     [ "使用方法（全体）", "_usage_total.html", [
