@@ -94,6 +94,20 @@ endif()
 message(STATUS "CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
 
 #-----------------------------------------------------------------------------
+#       copy git hook
+#-----------------------------------------------------------------------------
+
+if (EXISTS "${CMAKE_SOURCE_DIR}/../.git")
+    message(STATUS "Copying commit-msg to .git/hooks")
+    file(COPY "${CMAKE_SOURCE_DIR}/commit-msg" DESTINATION "${CMAKE_SOURCE_DIR}/../.git/hooks"
+        FILE_PERMISSIONS
+            OWNER_EXECUTE OWNER_WRITE OWNER_READ
+            GROUP_READ GROUP_WRITE GROUP_EXECUTE
+            WORLD_READ WORLD_WRITE WORLD_EXECUTE
+    )
+endif()
+
+#-----------------------------------------------------------------------------
 #       default compile options
 #-----------------------------------------------------------------------------
 

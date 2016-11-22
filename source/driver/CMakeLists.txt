@@ -52,7 +52,9 @@ endif()
 
 file(GLOB_RECURSE THEOLIZER_DRIVER_LIST *.cpp *.c *.h *.inc *.hpp)
 file(GLOB_RECURSE VERSION_H version.h)
-list(REMOVE_ITEM THEOLIZER_DRIVER_LIST ${VERSION_H} ${THEOLIZER_TEST_LIST})
+if (NOT "${VERSION_H}" STREQUAL "")
+    list(REMOVE_ITEM THEOLIZER_DRIVER_LIST ${VERSION_H})
+endif()
 file(GLOB_RECURSE HELPER_LIST helper/*)
 list(REMOVE_ITEM THEOLIZER_DRIVER_LIST ${HELPER_LIST})
 
@@ -89,6 +91,7 @@ link_directories("${LLVM_LIBRARY_DIRS}")
 
 add_executable(TheolizerDriver ${THEOLIZER_DRIVER_LIST})
 add_dependencies(TheolizerDriver checkBuildSystem)
+add_dependencies(LongTest TheolizerDriver)
 
 target_link_libraries(TheolizerDriver ${TheolizerLib})
 target_link_libraries(TheolizerDriver ${Boost_LIBRARIES})

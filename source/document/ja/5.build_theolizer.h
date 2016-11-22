@@ -227,12 +227,11 @@ Theolizerのソースのbuild/llvm_buildフォルダにおいてます。Windows
 @ref HowToBuildLibrary122 と同じなので省略します。
 
 <br>
-@section VersionNo 3.バージョン番号の付け方
-バージョン番号は下記のように管理する予定です。
+@section VersionNo 3.Theolizer自身のバージョン番号について
+バージョン番号は下記のように管理します。
 
 `<Major>.<Minor>.<Detail>`<br>
 `<Major>.<Minor>.<Detail>-Prerelease`<br>
-`<Major>.<Minor>.<Detail>-Temp`
 
 |項目|更新するタイミング|
 |----|------------------|
@@ -240,11 +239,10 @@ Theolizerのソースのbuild/llvm_buildフォルダにおいてます。Windows
 |Minor|仕様変更する時|
 |Detail|バグ・フィックス、自動テスト等の周辺機能、ドキュメントを修正した時|
 |-Prerease|暫定的な正規リリース前のバージョンに付加する<br>正規リリース後のPrereaseはバージョン番号を上げて行う|
-|-Temp|暫定的なバージョンに付加する(Deprecated)|
 
-GitHubには-Prerelease/-Tempの有るものも登録しますが、同じバージョン番号のものが複数登録されることになります。<br>
+コミットの度にバージョン番号を上げるわけでないため、GitHubには同じバージョン番号のものが複数登録されることになります。<br>
 それを判別できるようにするため、TheolizerドライバとTheolizerライブラリのそれぞれがversion.hを持ち、これにソース・コードのMD5ハッシュ値（kTheolizerSourcesHash）を記録しています。<br>
-この値はそれぞれをビルドする際に自動的に更新されます。（linuxタイプの改行コードへ変換後、計算しています。）
+この値はそれぞれをビルドする際に自動的に更新されます。（linuxタイプの改行コードへ変換後、計算していますので、改行コードの異なるOSで処理しても同じ値になります。）
 
 |項目|生成元ファイル群|
 |----|----------------|
@@ -258,7 +256,17 @@ GitHubには-Prerelease/-Tempの有るものも登録しますが、同じバー
 |Theolzierドライバ|TheolizerDriver --theolizer-versionにて表示されるSourcesHash|
 |Theolzierライブラリ|theolizer::getVersionString()にて得ることができるSourcesHash|
 
-SourcesHash値と同じ値を持つversion.hがGitHubに登録されている時にはソース・コードを特定できます。
+gitのcommit-msgフックにより、コミット・メッセージへこれらのSourcesHash値を下記のフォーマットで自動追加しています。<br>
+以上の仕組みによりSourcesHash値がGitHubに登録されている時にはソース・コードを特定できます。
+
+@code
+----------------- MD5 Hash Values -----------------
+TheolizerDriver  : ce745e6dc35b70e87674e1daac64b739
+TheolizerLibrary : 3de4f1e42c55188f88ececb53e88fc49
+Library's Header : 97197bb96f6980c19c222542c8d89d54
+@endcode
+
+なお、コミット・メッセージを修正する時（最後のコミットをやり直すなど）は、これらをコミット・メッセージから手動で削除して下さい。
 
 <br>
 @section Documents 4.ドキュメントについて補足
