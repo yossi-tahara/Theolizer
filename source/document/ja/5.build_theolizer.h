@@ -228,7 +228,9 @@ Theolizerのソースのbuild/llvm_buildフォルダにおいてます。Windows
 
 <br>
 @section VersionNo 3.Theolizer自身のバージョン番号について
-バージョン番号は下記のように管理します。
+
+@subsection VersionManagement 3-1.バージョン番号の付け方
+バージョン番号を下記のように付けて管理します。
 
 `<Major>.<Minor>.<Detail>`<br>
 `<Major>.<Minor>.<Detail>-Prerelease`<br>
@@ -240,7 +242,8 @@ Theolizerのソースのbuild/llvm_buildフォルダにおいてます。Windows
 |Detail|バグ・フィックス、自動テスト等の周辺機能、ドキュメントを修正した時|
 |-Prerease|暫定的な正規リリース前のバージョンに付加する<br>正規リリース後のPrereaseはバージョン番号を上げて行う|
 
-コミットの度にバージョン番号を上げるわけでないため、GitHubには同じバージョン番号のものが複数登録されることになります。<br>
+@subsection NonVersionNo 3-2.コミットの管理
+コミットの度にバージョン番号を上げるわけではないため、GitHubには同じバージョン番号のものが複数登録されることになります。<br>
 それを判別できるようにするため、TheolizerドライバとTheolizerライブラリのそれぞれがversion.hを持ち、これにソース・コードのMD5ハッシュ値（kTheolizerSourcesHash）を記録しています。<br>
 この値はそれぞれをビルドする際に自動的に更新されます。（linuxタイプの改行コードへ変換後、計算していますので、改行コードの異なるOSで処理しても同じ値になります。）
 
@@ -249,14 +252,23 @@ Theolizerのソースのbuild/llvm_buildフォルダにおいてます。Windows
 |Theolzierドライバ|ライブラリとドライバのソース、および、CMakeLists.txt|
 |Theolzierライブラリ|ライブラリのソースとCMakeLists.txt|
 
-バイナリーから下記方法でkTheolizerSourcesHashを得ることができます。
+Theolizerバイナリから下記方法でkTheolizerSourcesHashを得ることができます。
 
 |項目|方法|
 |----|----|
 |Theolzierドライバ|TheolizerDriver --theolizer-versionにて表示されるSourcesHash|
 |Theolzierライブラリ|theolizer::getVersionString()にて得ることができるSourcesHash|
+<br>
+<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
+gitのコミット・ハッシュ値を用いて管理する方法も検討したのですが、Theolizerバイナリ生成後にコミットする手順にしたかったため、このような仕組みにしています。
+</div>
 
-gitのcommit-msgフックにより、コミット・メッセージへこれらのSourcesHash値を下記のフォーマットで自動追加しています。<br>
+<br>
+@subsection GitHooks 3-3.gitのフックについて
+２つフックしています。
+
+@subsubsection commit-msg 3-3-1.commit-msgフック
+これにより、上述のSourcesHash値を下記のフォーマットでコミット・メッセージへ自動追加しています。<br>
 以上の仕組みによりSourcesHash値がGitHubに登録されている時にはソース・コードを特定できます。
 
 @code
@@ -266,7 +278,14 @@ TheolizerLibrary : 3de4f1e42c55188f88ececb53e88fc49
 Library's Header : 97197bb96f6980c19c222542c8d89d54
 @endcode
 
-なお、コミット・メッセージを修正する時（最後のコミットをやり直すなど）は、これらをコミット・メッセージから手動で削除して下さい。
+なお、コミット・メッセージを修正するような場合（最後のコミットをやり直すなど）は、これらをコミット・メッセージから手動で削除して下さい。
+
+@subsubsection pre-commit 3-3-2.pre-commitフック
+コミット操作した時、pre-commitフックにより、ソースのハッシュ値を計算し、ビルド時のソース・ハッシュ値と比較して、不一致ならコミットできないようにしています。<br>
+これにより、コミット・メッセージに登録されるハッシュ値が操作ミスで不適切になることはない筈です。
+
+@subsubsection InstallHooks 3-3-3.gitフックのインストールはコンフィグ時に自動インストール
+CMakeの機能を使ってコンフィグ時に.git/hooksへインストールしています。
 
 <br>
 @section Documents 4.ドキュメントについて補足

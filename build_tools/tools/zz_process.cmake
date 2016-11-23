@@ -481,7 +481,7 @@ elseif("${PROC}" STREQUAL "full")
 
         # ライセンス・ファイルのコピー
         file(GLOB_RECURSE LICENSE_LIST "${ORIGINAL_DIR}/other_licenses/*")
-        file(COPY ${THEOLIZER_SOURCE}/../LICENSE.TXT DESTINATION "${THEOLIZER_ROOT}")
+        file(COPY "${THEOLIZER_SOURCE}/../LICENSE.TXT" DESTINATION "${THEOLIZER_ROOT}")
         file(COPY ${LICENSE_LIST} DESTINATION "${THEOLIZER_ROOT}/other_licenses")
 
     else()

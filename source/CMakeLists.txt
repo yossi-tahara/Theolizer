@@ -99,7 +99,10 @@ message(STATUS "CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
 
 if (EXISTS "${CMAKE_SOURCE_DIR}/../.git")
     message(STATUS "Copying commit-msg to .git/hooks")
-    file(COPY "${CMAKE_SOURCE_DIR}/commit-msg" DESTINATION "${CMAKE_SOURCE_DIR}/../.git/hooks"
+    file(COPY
+        "${CMAKE_SOURCE_DIR}/commit-msg"
+        "${CMAKE_SOURCE_DIR}/pre-commit"
+        DESTINATION "${CMAKE_SOURCE_DIR}/../.git/hooks"
         FILE_PERMISSIONS
             OWNER_EXECUTE OWNER_WRITE OWNER_READ
             GROUP_READ GROUP_WRITE GROUP_EXECUTE
@@ -209,6 +212,10 @@ set(LIBRARY_LIST ${TheolizerLib} ${TheolizerTest})
 function(version_at_build TARGET_NAME VERSION_DIR SOURCES)
     #message(STATUS "SOURCES=${SOURCES}")
     add_custom_target(VersionOf${TARGET_NAME}
+        COMMAND ${CMAKE_COMMAND}
+            -D CURRENT_SOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"
+            -P \"${CMAKE_SOURCE_DIR}/sources_hash.cmake\"
+             > \"${VERSION_DIR}/sources_hash.txt\"
         COMMAND $<TARGET_FILE:remove_crlf> source.hash  -- ${SOURCES}
         COMMAND $<TARGET_FILE:remove_crlf> library.hash -- ${LIBRARY_HEADERS}
         COMMAND ${CMAKE_COMMAND}
@@ -218,7 +225,6 @@ function(version_at_build TARGET_NAME VERSION_DIR SOURCES)
             -P ${CMAKE_SOURCE_DIR}/configure_file.cmake
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
-    add_dependencies(${TheolizerLib} VersionOf${TARGET_NAME})
 endfunction()
 
 #       ---<<< EXCLUDE sub >>>---

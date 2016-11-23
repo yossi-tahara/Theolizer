@@ -3,9 +3,17 @@
 echo "" >> $1
 echo "----------------- MD5 Hash Values -----------------" >> $1
 echo -n "TheolizerDriver  : " >> $1
-grep -h "SourcesHash\[\]" source/driver/version.h                     | sed -e 's/^.*=\"//g' | sed -e 's/\";//g' >> $1
+if [ -e source/driver/version.h ]; then
+    grep -h "SourcesHash\[\]" source/driver/version.h                     | sed -e 's/^.*=\"//g' | sed -e 's/\";//g' >> $1
+else
+    echo "no version.h" >> $1
+fi
 
 echo -n "TheolizerLibrary : " >> $1
-grep -h "SourcesHash\[\]" source/library/theolizer/internal/version.h | sed -e 's/^.*=\"//g' | sed -e 's/\";//g' >> $1
-echo -n "Library's Header : " >> $1
-grep -h "LibraryHash\[\]" source/library/theolizer/internal/version.h | sed -e 's/^.*=\"//g' | sed -e 's/\";//g' >> $1
+if [ -e source/library/theolizer/internal/version.h ]; then
+    grep -h "SourcesHash\[\]" source/library/theolizer/internal/version.h | sed -e 's/^.*=\"//g' | sed -e 's/\";//g' >> $1
+    echo -n "Library's Header : " >> $1
+    grep -h "LibraryHash\[\]" source/library/theolizer/internal/version.h | sed -e 's/^.*=\"//g' | sed -e 's/\";//g' >> $1
+else
+    echo "no version.h" >> $1
+fi

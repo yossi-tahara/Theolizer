@@ -48,29 +48,13 @@ endif()
 #       target definition
 #-----------------------------------------------------------------------------
 
-#       ---<<< make source list >>>---
+set(CURRENT_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+include(sources_list.cmake)
 
-file(GLOB_RECURSE THEOLIZER_DRIVER_LIST *.cpp *.c *.h *.inc *.hpp)
-file(GLOB_RECURSE VERSION_H version.h)
-if (NOT "${VERSION_H}" STREQUAL "")
-    list(REMOVE_ITEM THEOLIZER_DRIVER_LIST ${VERSION_H})
-endif()
-file(GLOB_RECURSE HELPER_LIST helper/*)
-list(REMOVE_ITEM THEOLIZER_DRIVER_LIST ${HELPER_LIST})
-
-list(SORT THEOLIZER_DRIVER_LIST)
-
-message(STATUS "Source of TheolizerDriver")
+message(STATUS "Sources of TheolizerDriver")
 foreach(SOURCE IN LISTS THEOLIZER_DRIVER_LIST)
     message(STATUS "${SOURCE}")
 endforeach()
-
-#       ---<<< make version.h at config >>>---
-
-# ドライバのソースとライブラリのソース
-set(VERSION_SOURCE "${THEOLIZER_DRIVER_LIST};${VERSION_SOURCE}")
-# 関連するCMakeLists.txtも含める
-set(VERSION_SOURCE "${VERSION_SOURCE};${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
 
 #-----------------------------------------------------------
 #       make target
@@ -102,6 +86,7 @@ endif()
 
 # version.h生成
 version_at_build(TheolizerDriver "${CMAKE_CURRENT_SOURCE_DIR}" "${VERSION_SOURCE}")
+add_dependencies(TheolizerDriver VersionOfTheolizerDriver)
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     foreach(link_lib IN LISTS LIBRARY_LIST)

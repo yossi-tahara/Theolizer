@@ -22,15 +22,9 @@
 
 #       ---<<< make source list >>>---
 
-# TheolizerTest
-file(GLOB_RECURSE THEOLIZER_TEST_LIST test_tool.cpp test_tool.h)
-list(SORT THEOLIZER_TEST_LIST)
-
-# TheolzierLib
-file(GLOB_RECURSE THEOLIZER_LIB_LIST *.cpp *.c *.h *.inc *.hpp)
-file(GLOB_RECURSE VERSION_H version.h)
-list(REMOVE_ITEM THEOLIZER_LIB_LIST ${VERSION_H} ${THEOLIZER_TEST_LIST})
-list(SORT THEOLIZER_LIB_LIST)
+set(CURRENT_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+include(sources_list.cmake)
+set(VERSION_SOURCE "${VERSION_SOURCE}" PARENT_SCOPE)
 
 message(STATUS "Source of TheolizerLib")
 foreach(SOURCE IN LISTS THEOLIZER_LIB_LIST)
@@ -39,6 +33,11 @@ endforeach()
 
 message(STATUS "Source of TheolizerTest")
 foreach(SOURCE IN LISTS THEOLIZER_TEST_LIST)
+    message(STATUS "${SOURCE}")
+endforeach()
+
+message(STATUS "Source of library's for hash")
+foreach(SOURCE IN LISTS VERSION_SOURCE)
     message(STATUS "${SOURCE}")
 endforeach()
 
@@ -64,19 +63,6 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/theolizer
 
 # 親へ返却する
 set(LIBRARY_HEADERS "${LIBRARY_HEADERS}" PARENT_SCOPE)
-
-#       ---<<< make version.h at config >>>---
-
-# TheolizerLibのソース
-set(VERSION_SOURCE "${THEOLIZER_LIB_LIST}")
-# 関連するCMakeLists.txtも含める
-set(VERSION_SOURCE "${VERSION_SOURCE};${CMAKE_SOURCE_DIR}/CMakeLists.txt")
-set(VERSION_SOURCE "${VERSION_SOURCE};${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt")
-set(VERSION_SOURCE "${VERSION_SOURCE}" PARENT_SCOPE)
-message(STATUS "Source of library's for hash")
-foreach(SOURCE IN LISTS VERSION_SOURCE)
-    message(STATUS "${SOURCE}")
-endforeach()
 
 #       ---<<< tool >>>---
 
@@ -177,6 +163,7 @@ add_dependencies(${TheolizerLib} checkBuildSystem)
 
 # version.h生成
 version_at_build(${TheolizerLib} "${CMAKE_CURRENT_SOURCE_DIR}/theolizer/internal" "${VERSION_SOURCE}")
+add_dependencies(${TheolizerLib} VersionOf${TheolizerLib})
 
 # boostをTheolizerLibにパッケージする場合(MSVC)
 if (${IS_MSVC} AND ${STATIC_WITH_BOOST})

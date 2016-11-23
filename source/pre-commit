@@ -1,0 +1,13 @@
+#!/bin/sh
+
+cmake -P source/dirty_check.cmake
+
+if [ "$?" -ne 0 ];
+then
+    cat <<\EOF
+******************************************************************
+Sources are dirty.  Please build TheolizerDriver and TheolizerLib.
+******************************************************************
+EOF
+    exit 1
+fi
