@@ -62,7 +62,7 @@ namespace internal
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 const static char kJsonSerializerName[]="JsonTheolizer";
-const static unsigned kJsonSerializerVersionNo=2;
+const static unsigned kJsonSerializerVersionNo=1;
 
 // ***************************************************************************
 //      プリミティブ(組み込み型)名生成
@@ -71,7 +71,7 @@ const static unsigned kJsonSerializerVersionNo=2;
 class JsonMidOSerializer;
 class JsonMidISerializer;
 
-#define THEOLIZER_INTERNAL_INTEGRAL(dSigned, dDigits, dName1, dName2)       \
+#define THEOLIZER_INTERNAL_INTEGRAL(dSigned, dDigits, dName1)               \
     template<class tMidSerializer, typename tPrimitive>                     \
     struct PrimitiveName                                                    \
     <                                                                       \
@@ -92,7 +92,6 @@ class JsonMidISerializer;
         {                                                                   \
             switch(iSerializerVersionNo)                                    \
             {                                                               \
-            case 2: return dName2;                                          \
             case 1: return dName1;                                          \
             }                                                               \
             THEOLIZER_INTERNAL_ABORT("getPrimitiveName() : iVersionNo is illegal.");\
@@ -100,7 +99,7 @@ class JsonMidISerializer;
         }                                                                   \
     }
 
-#define THEOLIZER_INTERNAL_FLOAT(dDigits, dMaxExponent, dName1, dName2)     \
+#define THEOLIZER_INTERNAL_FLOAT(dDigits, dMaxExponent, dName1)             \
     template<class tMidSerializer, typename tPrimitive>                     \
     struct PrimitiveName                                                    \
     <                                                                       \
@@ -121,7 +120,6 @@ class JsonMidISerializer;
         {                                                                   \
             switch(iSerializerVersionNo)                                    \
             {                                                               \
-            case 2: return dName2;                                          \
             case 1: return dName1;                                          \
             }                                                               \
             THEOLIZER_INTERNAL_ABORT("getPrimitiveName() : iVersionNo is illegal.");\
@@ -129,7 +127,7 @@ class JsonMidISerializer;
         }                                                                   \
     }
 
-#define THEOLIZER_INTERNAL_STRING(dBytes, dName1, dName2)                   \
+#define THEOLIZER_INTERNAL_STRING(dBytes, dName1)                           \
     template<class tMidSerializer, typename tPrimitive>                     \
     struct PrimitiveName                                                    \
     <                                                                       \
@@ -148,7 +146,6 @@ class JsonMidISerializer;
         {                                                                   \
             switch(iSerializerVersionNo)                                    \
             {                                                               \
-            case 2: return dName2;                                          \
             case 1: return dName1;                                          \
             }                                                               \
             THEOLIZER_INTERNAL_ABORT("getPrimitiveName() : iVersionNo is illegal.");\
@@ -156,25 +153,25 @@ class JsonMidISerializer;
         }                                                                   \
     }
 
-THEOLIZER_INTERNAL_INTEGRAL(0,  1,  "bool",      "bool");
+THEOLIZER_INTERNAL_INTEGRAL(0,  1,  "bool");
 
-THEOLIZER_INTERNAL_INTEGRAL(1,  7,  "int8_t",    "int8");
-THEOLIZER_INTERNAL_INTEGRAL(1, 15,  "int16_t",   "int16");
-THEOLIZER_INTERNAL_INTEGRAL(1, 31,  "int32_t",   "int32");
-THEOLIZER_INTERNAL_INTEGRAL(1, 63,  "int64_t",   "int64");
+THEOLIZER_INTERNAL_INTEGRAL(1,  7,  "int8");
+THEOLIZER_INTERNAL_INTEGRAL(1, 15,  "int16");
+THEOLIZER_INTERNAL_INTEGRAL(1, 31,  "int32");
+THEOLIZER_INTERNAL_INTEGRAL(1, 63,  "int64");
 
-THEOLIZER_INTERNAL_INTEGRAL(0,  8,  "unit8_t",   "unit8");
-THEOLIZER_INTERNAL_INTEGRAL(0, 16,  "uint16_t",  "uint16");
-THEOLIZER_INTERNAL_INTEGRAL(0, 32,  "uint32_t",  "uint32");
-THEOLIZER_INTERNAL_INTEGRAL(0, 64,  "uint64_t",  "uint64");
+THEOLIZER_INTERNAL_INTEGRAL(0,  8,  "unit8");
+THEOLIZER_INTERNAL_INTEGRAL(0, 16,  "uint16");
+THEOLIZER_INTERNAL_INTEGRAL(0, 32,  "uint32");
+THEOLIZER_INTERNAL_INTEGRAL(0, 64,  "uint64");
 
-THEOLIZER_INTERNAL_FLOAT(24,   128, "float32_t", "float32");
-THEOLIZER_INTERNAL_FLOAT(53,  1024, "float64_t", "float64");
-THEOLIZER_INTERNAL_FLOAT(64, 16384, "float80_t", "float80");
+THEOLIZER_INTERNAL_FLOAT(24,   128, "float32");
+THEOLIZER_INTERNAL_FLOAT(53,  1024, "float64");
+THEOLIZER_INTERNAL_FLOAT(64, 16384, "float80");
 
-THEOLIZER_INTERNAL_STRING(1,        "String",    "String");
-THEOLIZER_INTERNAL_STRING(2,        "String",    "String");
-THEOLIZER_INTERNAL_STRING(4,        "String",    "String");
+THEOLIZER_INTERNAL_STRING(1,        "String");
+THEOLIZER_INTERNAL_STRING(2,        "String");
+THEOLIZER_INTERNAL_STRING(4,        "String");
 
 #undef  THEOLIZER_INTERNAL_INTEGRAL
 #undef  THEOLIZER_INTERNAL_FLOAT

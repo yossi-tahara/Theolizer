@@ -25,8 +25,8 @@ namespace theolizer{namespace internal{
 namespace global_table{
     MyGVNT::MyGVNT()
     {
-        add(typeid(theolizer::internal::JsonMidOSerializer),1u,1u,1u,2u);
-        add(typeid(theolizer::internal::JsonMidISerializer),1u,1u,1u,2u);
+        add(typeid(theolizer::internal::JsonMidOSerializer),1u,1u,1u,1u);
+        add(typeid(theolizer::internal::JsonMidISerializer),1u,1u,1u,1u);
         add(typeid(IntrusiveBase),                      1u,1u,2u,2u);
         add(typeid(IntrusiveBase2),                     1u,1u,1u,1u);
         add(typeid(IntrusiveDerived),                   1u,2u,3u,4u);
