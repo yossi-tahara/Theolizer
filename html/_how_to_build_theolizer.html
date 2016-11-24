@@ -363,7 +363,9 @@ zz4_ja.bat </td><td>ドキュメントのビルド </td></tr>
  </p>
 <h1><a class="anchor" id="VersionNo"></a>
 3.Theolizer自身のバージョン番号について</h1>
-<p>バージョン番号は下記のように管理します。</p>
+<h2><a class="anchor" id="VersionManagement"></a>
+3-1.バージョン番号の付け方</h2>
+<p>バージョン番号を下記のように付けて管理します。</p>
 <p><code>&lt;Major&gt;.&lt;Minor&gt;.&lt;Detail&gt;</code><br />
  <code>&lt;Major&gt;.&lt;Minor&gt;.&lt;Detail&gt;-Prerelease</code><br />
 </p>
@@ -380,7 +382,9 @@ zz4_ja.bat </td><td>ドキュメントのビルド </td></tr>
 <td>-Prerease</td><td>暫定的な正規リリース前のバージョンに付加する<br />
 正規リリース後のPrereaseはバージョン番号を上げて行う </td></tr>
 </table>
-<p>コミットの度にバージョン番号を上げるわけでないため、GitHubには同じバージョン番号のものが複数登録されることになります。<br />
+<h2><a class="anchor" id="NonVersionNo"></a>
+3-2.コミットの管理</h2>
+<p>コミットの度にバージョン番号を上げるわけではないため、GitHubには同じバージョン番号のものが複数登録されることになります。<br />
  それを判別できるようにするため、TheolizerドライバとTheolizerライブラリのそれぞれがversion.hを持ち、これにソース・コードのMD5ハッシュ値（kTheolizerSourcesHash）を記録しています。<br />
  この値はそれぞれをビルドする際に自動的に更新されます。（linuxタイプの改行コードへ変換後、計算していますので、改行コードの異なるOSで処理しても同じ値になります。）</p>
 <table class="doxtable">
@@ -391,7 +395,7 @@ zz4_ja.bat </td><td>ドキュメントのビルド </td></tr>
 <tr>
 <td>Theolzierライブラリ</td><td>ライブラリのソースとCMakeLists.txt </td></tr>
 </table>
-<p>バイナリーから下記方法でkTheolizerSourcesHashを得ることができます。</p>
+<p>Theolizerバイナリから下記方法でkTheolizerSourcesHashを得ることができます。</p>
 <table class="doxtable">
 <tr>
 <th>項目</th><th>方法  </th></tr>
@@ -400,9 +404,24 @@ zz4_ja.bat </td><td>ドキュメントのビルド </td></tr>
 <tr>
 <td>Theolzierライブラリ</td><td><a class="el" href="namespacetheolizer.html#a3d6a1789d20a7e609a019b6d71cd7c3c" title="バージョン文字列獲得 ">theolizer::getVersionString()</a>にて得ることができるSourcesHash </td></tr>
 </table>
-<p>gitのcommit-msgフックにより、コミット・メッセージへこれらのSourcesHash値を下記のフォーマットで自動追加しています。<br />
+<p><br />
+ </p><div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> gitのコミット・ハッシュ値を用いて管理する方法も検討したのですが、Theolizerバイナリ生成後にコミットする手順にしたかったため、このような仕組みにしています。 </div><p><br />
+ </p>
+<h2><a class="anchor" id="GitHooks"></a>
+3-3.gitのフックについて</h2>
+<p>２つフックしています。</p>
+<h3><a class="anchor" id="commit-msg"></a>
+3-3-1.commit-msgフック</h3>
+<p>これにより、上述のSourcesHash値を下記のフォーマットでコミット・メッセージへ自動追加しています。<br />
  以上の仕組みによりSourcesHash値がGitHubに登録されている時にはソース・コードを特定できます。</p>
-<div class="fragment"><div class="line">----------------- MD5 Hash Values -----------------</div><div class="line">TheolizerDriver  : ce745e6dc35b70e87674e1daac64b739</div><div class="line">TheolizerLibrary : 3de4f1e42c55188f88ececb53e88fc49</div><div class="line">Library<span class="stringliteral">&#39;s Header : 97197bb96f6980c19c222542c8d89d54</span></div></div><!-- fragment --><p>なお、コミット・メッセージを修正する時（最後のコミットをやり直すなど）は、これらをコミット・メッセージから手動で削除して下さい。</p>
+<div class="fragment"><div class="line">----------------- MD5 Hash Values -----------------</div><div class="line">TheolizerDriver  : ce745e6dc35b70e87674e1daac64b739</div><div class="line">TheolizerLibrary : 3de4f1e42c55188f88ececb53e88fc49</div><div class="line">Library<span class="stringliteral">&#39;s Header : 97197bb96f6980c19c222542c8d89d54</span></div></div><!-- fragment --><p>なお、コミット・メッセージを修正するような場合（最後のコミットをやり直すなど）は、これらをコミット・メッセージから手動で削除して下さい。</p>
+<h3><a class="anchor" id="pre-commit"></a>
+3-3-2.pre-commitフック</h3>
+<p>コミット操作した時、pre-commitフックにより、ソースのハッシュ値を計算し、ビルド時のソース・ハッシュ値と比較して、不一致ならコミットできないようにしています。<br />
+ これにより、コミット・メッセージに登録されるハッシュ値が操作ミスで不適切になることはない筈です。</p>
+<h3><a class="anchor" id="InstallHooks"></a>
+3-3-3.gitフックのインストールはコンフィグ時に自動インストール</h3>
+<p>CMakeの機能を使ってコンフィグ時に.git/hooksへインストールしています。</p>
 <p><br />
  </p>
 <h1><a class="anchor" id="Documents"></a>

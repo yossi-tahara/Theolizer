@@ -83,7 +83,15 @@ var index =
           [ "2-2-3.Theolizerライブラリをビルドしてインストール", "_how_to_build_theolizer.html#HowToBuildLibrary223", null ]
         ] ]
       ] ],
-      [ "3.Theolizer自身のバージョン番号について", "_how_to_build_theolizer.html#VersionNo", null ],
+      [ "3.Theolizer自身のバージョン番号について", "_how_to_build_theolizer.html#VersionNo", [
+        [ "3-1.バージョン番号の付け方", "_how_to_build_theolizer.html#VersionManagement", null ],
+        [ "3-2.コミットの管理", "_how_to_build_theolizer.html#NonVersionNo", null ],
+        [ "3-3.gitのフックについて", "_how_to_build_theolizer.html#GitHooks", [
+          [ "3-3-1.commit-msgフック", "_how_to_build_theolizer.html#commit-msg", null ],
+          [ "3-3-2.pre-commitフック", "_how_to_build_theolizer.html#pre-commit", null ],
+          [ "3-3-3.gitフックのインストールはコンフィグ時に自動インストール", "_how_to_build_theolizer.html#InstallHooks", null ]
+        ] ]
+      ] ],
       [ "4.ドキュメントについて補足", "_how_to_build_theolizer.html#Documents", null ]
     ] ],
     [ "使用方法（全体）", "_usage_total.html", [

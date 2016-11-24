@@ -39,6 +39,7 @@ var NAVTREEINDEX0 =
 "_error_report.html":[1],
 "_how_to_build_theolizer.html":[0,4],
 "_how_to_build_theolizer.html#Documents":[0,4,3],
+"_how_to_build_theolizer.html#GitHooks":[0,4,2,2],
 "_how_to_build_theolizer.html#HowToBuildDriver":[0,4,1],
 "_how_to_build_theolizer.html#HowToBuildLibrary":[0,4,0],
 "_how_to_build_theolizer.html#HowToBuildLibrary11":[0,4,0,0],
@@ -50,7 +51,12 @@ var NAVTREEINDEX0 =
 "_how_to_build_theolizer.html#HowToBuildLibrary221":[0,4,1,1,0],
 "_how_to_build_theolizer.html#HowToBuildLibrary222":[0,4,1,1,1],
 "_how_to_build_theolizer.html#HowToBuildLibrary223":[0,4,1,1,2],
+"_how_to_build_theolizer.html#InstallHooks":[0,4,2,2,2],
+"_how_to_build_theolizer.html#NonVersionNo":[0,4,2,1],
+"_how_to_build_theolizer.html#VersionManagement":[0,4,2,0],
 "_how_to_build_theolizer.html#VersionNo":[0,4,2],
+"_how_to_build_theolizer.html#commit-msg":[0,4,2,2,0],
+"_how_to_build_theolizer.html#pre-commit":[0,4,2,2,1],
 "_how_to_make_project.html":[0,3],
 "_how_to_make_project.html#CMake":[0,3,1],
 "_how_to_make_project.html#Example":[0,3,2],
@@ -243,11 +249,5 @@ var NAVTREEINDEX0 =
 "functions.html":[5,3,0],
 "functions_func.html":[5,3,1],
 "functions_vars.html":[5,3,2],
-"globals.html":[6,1,0],
-"globals_defs.html":[6,1,3],
-"globals_func.html":[6,1,1],
-"globals_vars.html":[6,1,2],
-"group___documents.html":[3,2],
-"group___theolizer_driver.html":[3,0],
-"group___theolizer_lib.html":[3,1]
+"globals.html":[6,1,0]
 };
