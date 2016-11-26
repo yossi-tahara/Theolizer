@@ -444,16 +444,27 @@ ASTANALYZE_OUTPUT("    Def=" ,iCXXRecordDecl->isThisDeclarationADefinition(),
         if (!iCXXRecordDecl->isThisDeclarationADefinition())
     return true;
 
-        // unionや名前無し自身はシリアライズ対象としないが、
-        // その中身にシリアライズ指定されているものがあるかも知れないので枚挙する
+        // unionや名前無し自身はシリアライズ対象としない
         if ((iCXXRecordDecl->isUnion())
-         || (!iCXXRecordDecl->getIdentifier())) {
-            EnumerateDecl(iCXXRecordDecl);
+         || (!iCXXRecordDecl->getIdentifier()))
+    return true;
+
+        // std空間なら登録だけする
+        if (mIsStdSpace)
+        {
+            mAstInterface.mSerializeListClass.addCandidate(iCXXRecordDecl);
     return true;
         }
 
         // クラス名取り出し
-        string  aClassName = iCXXRecordDecl->getQualifiedNameAsString();
+        std::string aClassName=iCXXRecordDecl->getQualifiedNameAsString();
+
+        // ::Theolizerを含むクラスは処理しない
+        if (aClassName.find("::Theolizer") != std::string::npos)
+        {
+ASTANALYZE_OUTPUT("    ::Theolizer does not process.");
+    return true;
+        }
 
 //      ---<<< グローバル・バージョン番号テーブル処理 >>>---
 //       theolizer::internal::GlobalVersionNoTableを継承していたら、それを設定する(追跡しない)
@@ -556,7 +567,8 @@ ASTANALYZE_OUTPUT("++++Version : ", aClassName);
                 // 親クラス取り出し
                 DeclContext const* memberof = iCXXRecordDecl->getDeclContext();
                 CXXRecordDecl const* crd = dyn_cast<CXXRecordDecl>(memberof);
-                if (crd) {
+                if (crd)
+                {
                     aTargetClass=crd;
                 }
             }
@@ -711,6 +723,13 @@ ASTANALYZE_OUTPUT("    aUniqueClass=", aUniqueClass->getQualifiedNameAsString(),
             }
         }
 
+//      ---<<< シリアライズ候補の登録 >>>---
+
+        if (!aIsNonIntrusive && !aIsVertion)
+        {
+            mAstInterface.mSerializeListClass.addCandidate(iCXXRecordDecl);
+        }
+
 //      ---<<< シリアライズ対象の登録 >>>---
 
         if (aIsSerialize)
@@ -816,41 +835,11 @@ ASTANALYZE_OUTPUT("----Version aTargetEnum=", aTargetEnum);
             }
         }
 
-//          ---<<< 通常の枚挙処理を行う >>>---
-
-        // シリアライズ対象の場合、TheolizerVersionとTheolizerNonIntrusiveは追跡しない。
-        //  また、内部のTheolizerも追跡しない
-        if (aIsSerialize)
-        {
-            if (!aIsVertion && !aIsNonIntrusive)
-            {
-                for (auto decl : iCXXRecordDecl->decls())
-                {
-                    if (decl->hasBody() && (decl != aTheolizerDecl))
-                    {
-                        Visit(decl);
-                    }
-                }
-            }
-        }
-        else
-        {
-            for (auto decl : iCXXRecordDecl->decls())
-            {
-                // 完全自動型の場合、aIsSerializeがあるとは限らないため、
-                // フィールドへのアノテーションはチェックしない
-                if (decl->getKind() != Decl::Field)
-                {
-                    Visit(decl);
-                }
-            }
-        }
-
         return true;
     }
 
 //----------------------------------------------------------------------------
-//      クラス・テンプレートの処理
+//      クラス・テンプレートの処理（プライマリ）
 //          NamedDeclではあるが、TagDeclではない。
 //          つまり、CXXRecordDeclの派生クラスでないので注意
 //
@@ -861,6 +850,7 @@ ASTANALYZE_OUTPUT("----Version aTargetEnum=", aTargetEnum);
 
     virtual bool VisitClassTemplateDecl(ClassTemplateDecl *iClassTemplateDecl)
     {
+ASTANALYZE_OUTPUT("VisitClassTemplateDecl(", iClassTemplateDecl->getQualifiedNameAsString(), ")");
         getAnnotationInfo(iClassTemplateDecl, AnnotateType::None);
 
         if (mIsTheolizerSpace)
@@ -955,17 +945,23 @@ ASTANALYZE_OUTPUT("VisitFunctionTemplateDecl(", iFunctionTemplateDecl->getName()
         StringRef name = iNamespaceDecl->getName();
 
         // theolizer名前空間処理
-        if (name.equals("theolizer")) {
+        if (name.equals("theolizer"))
+        {
             AutoFalse auto_false(mIsTheolizerSpace);
-            EnumerateDecl(iNamespaceDecl);
+            enumerateDecl(iNamespaceDecl);
     return true;
         }
 
         // std名前空間は処理しない
         // 他にも不要な名前空間は処理しない方がよいが、特定できない。
-        if (!name.equals("std")) {
-            EnumerateDecl(iNamespaceDecl);
+        if (name.equals("std"))
+        {
+            AutoFalse auto_false(mIsStdSpace);
+            enumerateDecl(iNamespaceDecl);
+    return true;
         }
+
+        enumerateDecl(iNamespaceDecl);
         return true;
     }
 
@@ -978,32 +974,42 @@ ASTANALYZE_OUTPUT("VisitFunctionTemplateDecl(", iFunctionTemplateDecl->getName()
         switch (iLinkageSpecDecl->getLanguage())
         {
         case LinkageSpecDecl::lang_c:           // "C" : NOP
-            EnumerateDecl(iLinkageSpecDecl);
+            enumerateDecl(iLinkageSpecDecl);
             break;
 
         case LinkageSpecDecl::lang_cxx:         // "C++"
-            EnumerateDecl(iLinkageSpecDecl);
+            enumerateDecl(iLinkageSpecDecl);
             break;
         }
         return true;
     }
 
-//      ---<<< 以下は追跡しない >>>---
-
-#if 0   // enumテスト
     virtual bool VisitEnumDecl(EnumDecl *iEnumDecl)
     {
-ASTANALYZE_OUTPUT("start of VisitEnumDecl(", iEnumDecl->getName(), ")");
-        for (auto decl : iEnumDecl->decls()) {
-            if (const NamedDecl *named_decl = dyn_cast<NamedDecl>(decl)) {
-ASTANALYZE_OUTPUT("    ", named_decl->getName());
-                if (named_decl->hasAttrs()) {
-ASTANALYZE_OUTPUT("        hasAttrs()");
-                    getAnnotationInfo(named_decl, AnnotateType::None);
-                }
-            }
-        }
-ASTANALYZE_OUTPUT("end of VisitEnumDecl()");
+        // 定義でないなら非対象
+        if (!iEnumDecl->isThisDeclarationADefinition())
+    return true;
+
+        // 名前無しは非対象
+        if (!iEnumDecl->getIdentifier())
+    return true;
+
+        // theolizer名前空間内なら登録
+        if (mIsTheolizerSpace)
+    return true;
+
+        mAstInterface.mSerializeListEnum.addCandidate(iEnumDecl);
+        return true;
+    }
+
+//      ---<<< 以下は追跡しない >>>---
+
+#if 0
+    virtual bool VisitClassTemplateSpecializationDecl(
+        ClassTemplateSpecializationDecl * iClassTemplateSpecializationDecl )
+    {
+ASTANALYZE_OUTPUT("VisitClassTemplateSpecializationDecl(",
+                  iClassTemplateSpecializationDecl->getQualifiedNameAsString(), ")");
         return true;
     }
 #endif
@@ -1014,7 +1020,7 @@ ASTANALYZE_OUTPUT("end of VisitEnumDecl()");
     {
         getAnnotationInfo(iTagDecl, AnnotateType::None);
 
-        EnumerateDecl(iTagDecl);
+        enumerateDecl(iTagDecl);
         return true;
     }
 #endif
@@ -1024,7 +1030,7 @@ ASTANALYZE_OUTPUT("end of VisitEnumDecl()");
     virtual bool VisitBlockDecl (BlockDecl *iBlockDecl)
     {
         getAnnotationInfo(iBlockDecl, AnnotateType::None);
-        EnumerateDecl(iBlockDecl);
+        enumerateDecl(iBlockDecl);
         return true;
     }
 #endif
@@ -1045,9 +1051,10 @@ ASTANALYZE_OUTPUT("end of VisitEnumDecl()");
 //----------------------------------------------------------------------------
 
 public:
-    void EnumerateDecl(DeclContext *iDeclContext)
+    void enumerateDecl(DeclContext *iDeclContext)
     {
-        for (auto decl : iDeclContext->decls()) {
+        for (auto decl : iDeclContext->decls())
+        {
             Visit(decl);
         }
     }
@@ -1069,6 +1076,7 @@ private:
 
 //      ---<<< 内部処理 >>>---
 
+    bool    mIsStdSpace;                        // std名前空間処理中
     bool    mIsTheolizerSpace;                  // theolizer名前空間処理中
 
 public:
@@ -1078,6 +1086,7 @@ public:
         mHasGlobalVersionTable(false),
         mAstInterface(iAstInterface),
         mNonTemplateMarker(nullptr),
+        mIsStdSpace(false),
         mIsTheolizerSpace(false)
     { }
 };
@@ -1181,6 +1190,7 @@ ASTANALYZE_OUTPUT("          This is primitive.(", qt.getAsString(), ")");
 ASTANALYZE_OUTPUT("    processElement() ", qt.getAsString());
 ASTANALYZE_OUTPUT("      ", qt->getTypeClass(),
                   " : ", Type::Builtin,
+                  ", ", Type::ConstantArray,
                   ", ", Type::Record,
                   ", ", Type::Enum,
                   ", ", Type::TemplateTypeParm,
@@ -1190,7 +1200,14 @@ ASTANALYZE_OUTPUT("      ", qt->getTypeClass(),
         {
         case Type::Builtin:
         case Type::TemplateTypeParm:
+    return ;
+
         case Type::ConstantArray:
+        {
+            clang::ArrayType const* at=dyn_cast<clang::ArrayType>(qt.getTypePtr());
+            QualType    at_qt=at->getElementType();
+            processElement(at_qt, iErrorPos);
+        }
     return ;
 
         case Type::Pointer:
@@ -1258,6 +1275,16 @@ ASTANALYZE_OUTPUT("          aTargetClass=", aTargetClass->getQualifiedNameAsStr
                 }
             }
             break;
+
+        // コンストラクトの記述ミス時ここに来る
+        //  デフォルト・コンストラクタを呼ぶつもりで()を付けると、関数として解釈されるため
+        case Type::FunctionProto:
+ASTANALYZE_OUTPUT("Theolizer unkown pattern.(Type::FunctionProto)");
+            gCustomDiag.ErrorReport(iErrorPos->getLocation(),
+                "Illigal format. Please construct %0 by {} instead of ().(%1)")
+                << qt.getAsString()
+                << __LINE__;
+    return __VA_ARGS__;
 
         // 不明ケースも警告
         default:
@@ -1375,7 +1402,7 @@ ASTANALYZE_OUTPUT("$$$$ processSwitcher() : ", qt.getAsString());
 //          ---<<< 情報収集 >>>---
 
         // 1Pass目(シリアライズ・クラス収集)
-        mASTVisitor.EnumerateDecl(iContext.getTranslationUnitDecl());
+        mASTVisitor.enumerateDecl(iContext.getTranslationUnitDecl());
 
         // 2Pass目(save/load処理)
         if (mASTVisitor.mSwicher)

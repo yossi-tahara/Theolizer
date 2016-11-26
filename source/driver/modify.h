@@ -281,7 +281,8 @@ ASTANALYZE_OUTPUT("  Array : ", iType.getDesugaredType(*gASTContext).getAsString
             if (found)
             {
                 // 侵入型のみKeep-step
-                if (!found->second.mNonIntrusive)
+                //  （完全自動型でもmNonIntrusiveがnullptrのケース有り）
+                if (!found->second.mNonIntrusive && !found->second.mIsFullAuto)
                 {
                     aKind=KeepStepIntrusive;
                     aVersionNo=found->second.mLastVersionNo;
@@ -1289,6 +1290,13 @@ ASTANALYZE_OUTPUT("  Element Name=", field->getName());
                 ASTANALYZE_OUTPUT("    Field : ", field->getName(),
                                   " ", aFieldAnno.c_str(), ":", aFieldAnno.mParameter);
 
+                // 完全自動型のprivateなら、スキップする
+                if ((iSerializeInfo.mIsFullAuto) && (field->getAccess() == clang::AS_private))
+                {
+                    ASTANALYZE_OUTPUT("    FullAuto & private");
+            continue;
+                }
+
                 // 非保存フィールドなら、スキップ
                 if (aFieldAnno.mAnnotate == AnnotationInfo::FN)
                 {
@@ -2147,7 +2155,8 @@ public:
 
 //          ---<<< ソース修正 >>>---
 
-ASTANALYZE_OUTPUT("============ enum ============================");
+ASTANALYZE_OUTPUT("============ enum sorting ====================");
+        std::map<unsigned, SerializeInfo<EnumDecl>* > aEnumList;
         for (auto&& aSerializeInfo : mAstInterface.mSerializeListEnum.getList())
         {
             // 完全自動でsave/load無しなら、処理しないことで削除する。
@@ -2155,14 +2164,31 @@ ASTANALYZE_OUTPUT("============ enum ============================");
              && (aSerializeInfo.second.mSerializeStat == esSerializeOnly))
         continue;
 
-            SourceStatus aSourceStatus=modifyEnum(aSerializeInfo.second);
-ASTANALYZE_OUTPUT("aSourceStatus=", aSourceStatus);
+            unsigned index = mAstInterface.mSerializeListEnum.
+                getIndex(aSerializeInfo.second.mTheolizerTarget);
+            if (index == kInvalidIndex)
+        continue;
+
+            aEnumList.emplace(index, &(aSerializeInfo.second));
+        }
+
+ASTANALYZE_OUTPUT("============ enum processing =================");
+        for (auto&& aSerializeInfo : aEnumList)
+        {
+ASTANALYZE_OUTPUT("enum processing : ",
+                  aSerializeInfo.second->mTheolizerTarget->getQualifiedNameAsString(),
+                  "=", aSerializeInfo.first);
+            SourceStatus aSourceStatus=modifyEnum(*(aSerializeInfo.second));
+ASTANALYZE_OUTPUT("    aSourceStatus=", aSourceStatus);
             if (aSourceStatus != eAborted)
             {
-                modifySource(aSerializeInfo.second, aSourceStatus);
+                modifySource(*(aSerializeInfo.second), aSourceStatus);
             }
         }
-ASTANALYZE_OUTPUT("============ class ===========================");
+        aEnumList.clear();  // 不要メモリ解放
+
+ASTANALYZE_OUTPUT("============ class sorting ===================");
+        std::map<unsigned, SerializeInfo<CXXRecordDecl>* > aClassList;
         for (auto&& aSerializeInfo : mAstInterface.mSerializeListClass.getList())
         {
             // 完全自動でsave/load無しなら、処理しないことで削除する。
@@ -2170,13 +2196,27 @@ ASTANALYZE_OUTPUT("============ class ===========================");
              && (aSerializeInfo.second.mSerializeStat == esSerializeOnly))
         continue;
 
-            SourceStatus aSourceStatus=modifyClass(aSerializeInfo.second);
-ASTANALYZE_OUTPUT("aSourceStatus=", aSourceStatus);
+            unsigned index = mAstInterface.mSerializeListClass.
+                getIndex(aSerializeInfo.second.mTheolizerTarget);
+            if (index == kInvalidIndex)
+        continue;
+
+            aClassList.emplace(index, &(aSerializeInfo.second));
+        }
+ASTANALYZE_OUTPUT("============ class processing ================");
+        for (auto&& aSerializeInfo : aClassList)
+        {
+ASTANALYZE_OUTPUT("class processing : ",
+                  aSerializeInfo.second->mTheolizerTarget->getQualifiedNameAsString(),
+                  "=", aSerializeInfo.first);
+            SourceStatus aSourceStatus=modifyClass(*(aSerializeInfo.second));
+ASTANALYZE_OUTPUT("    aSourceStatus=", aSourceStatus);
             if (aSourceStatus != eAborted)
             {
-                modifySource(aSerializeInfo.second, aSourceStatus);
+                modifySource(*(aSerializeInfo.second), aSourceStatus);
             }
         }
+        aClassList.clear(); // 不要メモリ解放
 
 ASTANALYZE_OUTPUT("============ GlobalVersionNoTable ============");
         // グローバル・バージョン番号テーブル無し

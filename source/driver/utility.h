@@ -996,7 +996,7 @@ CustomDiag              gCustomDiag;
 #define WARNING(dCond, dDecl, ...)                                          \
     if (dCond) {                                                            \
         gCustomDiag.WarningReport(dDecl->getLocation(),                     \
-            "Theolizer unkown pattern. Please repost to Theolizer developper.(%0)")\
+            "Theolizer unkown pattern. Please report to Theolizer developper.(%0)")\
         << __LINE__;                                                        \
     return __VA_ARGS__;                                                     \
     }                                                                       \
@@ -1004,7 +1004,7 @@ CustomDiag              gCustomDiag;
 #define WARNING_CONT(dCond, dDecl)                                          \
     if (dCond) {                                                            \
         gCustomDiag.WarningReport(dDecl->getLocation(),                     \
-            "Theolizer unkown pattern. Please repost to Theolizer developper.(%0)")\
+            "Theolizer unkown pattern. Please report to Theolizer developper.(%0)")\
         << __LINE__;                                                        \
     continue;                                                               \
     }                                                                       \
@@ -1331,18 +1331,46 @@ EnumDecl const* getPrimary(EnumDecl const* iTheolizerTarget)
 
 //      ---<<< シリアライズ・クラスのリスト >>>---
 
+static const unsigned kInvalidIndex=std::numeric_limits<unsigned>::max();
+
 template<class tDecl>
 class SerializeList
 {
 private:
+    // シリアライズ候補のリスト（生成順を決めるため、出現順序を記録する)
+    unsigned    mDeclIndex;
+    typedef std::map<tDecl const*, unsigned>    DeclMapType;
+    DeclMapType mDeclMap;
+
+    // シリアライズ対象のリスト
     typedef std::map<tDecl const*, SerializeInfo<tDecl> > MapType;
     MapType mMap;
 
 public:
-    SerializeList() {}
+    SerializeList() : mDeclIndex(0) {}
 
     // clear
-    void clear() { mMap.clear(); }
+    void clear() { mDeclIndex=0; mDeclMap.clear(); mMap.clear(); }
+
+    // シリアライズ候補登録
+    void addCandidate(tDecl const* iCandidate)
+    {
+ASTANALYZE_OUTPUT("addCandidate(", iCandidate->getQualifiedNameAsString(),
+                  ") : ", mDeclIndex);
+        mDeclMap.emplace(iCandidate, mDeclIndex++);
+    }
+    // 指定シリアライズ候補のインデックス獲得
+    unsigned getIndex(tDecl const* iCandidate)
+    {
+        auto pos=mDeclMap.find(iCandidate);
+        if (pos == mDeclMap.end())
+        {
+            gCustomDiag.FatalReport(iCandidate->getLocation(),
+                "Can not find decl. %0") << iCandidate->getQualifiedNameAsString();
+    return kInvalidIndex;
+        }
+        return pos->second;
+    }
 
     // シリアライズ指定クラス登録(重複していたら、エラー)
     void addSerializable(tDecl const* iTheolizerTarget,
@@ -1358,8 +1386,9 @@ public:
         auto pos = mMap.lower_bound(iTheolizerTarget);
         if ((pos != mMap.end()) && (pos->first == iTheolizerTarget))
         {
-            // 完全自動型から半自動のVersion.2へ変わった場合はエラーにせず、登録もしない。
-            //  手動型Version.2への直接変更はできない。
+            // 完全自動型から半自動のVersion.2へ変わった場合の完全自動型はNOP。
+            //  エラーにせず、登録もしない。（Version.2の侵入型で処理されるので)
+            //  また、手動型Version.2への直接変更はできない。
             //  なお、enum型はNonIntrusiveのiIsManual=falseにて登録している。
             if (iIsFullAuto && !pos->second.mIsManual && (pos->second.mLastVersionNo <= 2))
             {
@@ -1517,7 +1546,8 @@ ASTANALYZE_OUTPUT("iLastVersionNoLoc=", iLastVersionNoLoc.printToString(*gSource
     {
         auto pos = mMap.find(iTheolizerTarget);
         // 見つからなかった時、プライマリーを取り出して再トライ
-        if (pos == mMap.end()) {
+        if (pos == mMap.end())
+        {
             tDecl const* aTheolizerTarget=getPrimary(iTheolizerTarget);
             if (aTheolizerTarget != iTheolizerTarget)
             {

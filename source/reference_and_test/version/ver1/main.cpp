@@ -56,6 +56,16 @@ void saveBasicProcess(tSerializer& iSerializer);
 template<class tSerializer>
 void loadBasicProcess(tSerializer& iSerializer);
 
+// ---------------------------------------------------------------------------
+//      classの様々なバリエーション
+// ---------------------------------------------------------------------------
+
+template<class tSerializer>
+void saveClassVariation(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadClassVariation(tSerializer& iSerializer);
+
 // ***************************************************************************
 //      各テスト呼び出し
 // ***************************************************************************
@@ -64,12 +74,14 @@ template<class tSerializer>
 void saveBasic(tSerializer& iSerializer)
 {
     saveBasicProcess(iSerializer);
+    saveClassVariation(iSerializer);
 }
 
 template<class tSerializer>
 void loadBasic(tSerializer& iSerializer)
 {
     loadBasicProcess(iSerializer);
+    loadClassVariation(iSerializer);
 }
 
 //############################################################################

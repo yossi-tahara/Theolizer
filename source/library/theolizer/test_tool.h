@@ -54,6 +54,19 @@
 //############################################################################
 
 // ***************************************************************************
+//      文字型の表示補助
+// ***************************************************************************
+
+//! char型を数値として出力する
+std::ostream& operator<<(std::ostream& iOStream, char iChar);
+
+//! signed char型を数値として出力する
+std::ostream& operator<<(std::ostream& iOStream, signed char iSChar);
+
+//! unsgined char型を数値として出力する
+std::ostream& operator<<(std::ostream& iOStream, unsigned char iUChar);
+
+// ***************************************************************************
 //      scoped enum型表示補助
 /*!
     @todo   T.B.D.

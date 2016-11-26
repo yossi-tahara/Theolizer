@@ -53,12 +53,41 @@ namespace boostF = boost::filesystem;
     #pragma warning(disable:4996)
 #endif
 
-namespace theolizer
+//############################################################################
+//      theolizer名前空間外のユーティリティ
+//############################################################################
+
+// ***************************************************************************
+//      文字型の表示補助
+/*!
+    @todo   T.B.D.
+*/
+// ***************************************************************************
+
+std::ostream& operator<<(std::ostream& iOStream, char iChar)
 {
+    iOStream << static_cast<int>(iChar);
+    return iOStream;
+}
+
+std::ostream& operator<<(std::ostream& iOStream, signed char iSChar)
+{
+    iOStream << static_cast<int>(iSChar);
+    return iOStream;
+}
+
+std::ostream& operator<<(std::ostream& iOStream, unsigned char iUChar)
+{
+    iOStream << static_cast<int>(iUChar);
+    return iOStream;
+}
 
 //############################################################################
 //      ファイル操作
 //############################################################################
+
+namespace theolizer
+{
 
 // ***************************************************************************
 //      テスト用フォルダの準備

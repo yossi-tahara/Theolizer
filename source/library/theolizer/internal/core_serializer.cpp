@@ -213,7 +213,7 @@ return;
     for (auto&& aLoop : getRBForIndexer(mTypeInfoList))
     {
         std::cout << "[" << aLoop.getIndex() << "] "
-                  << aLoop.front()->getTypeName(aLoop.front()->getLastVersionNoV())
+                  << aLoop.front()->getTypeName(mVersionNoList)
                   << " isTopLevel()=" << aLoop.front()->isTopLovel()
                   << " isManual()=" << aLoop.front()->isManual() << "\n";
     }
@@ -268,6 +268,18 @@ return;
                 }
             }
 
+            // 配列ならば、基本型について出力指示する
+            if (aTypeInfo->mTypeCategory == etcArrayType)
+            {
+                std::size_t aUnderlyingTypeIndex=aTypeInfo->getUnderlyingTypeIndex();
+                aSaveStatList[aUnderlyingTypeIndex]=essSaving;
+                // 自分より前のものなら、再ループ
+                if (aUnderlyingTypeIndex <= aTypeIndex)
+                {
+                    aAgain=true;
+                }
+            }
+
             // TypeCheckの時はClassTypeのみ出力する
             if ((mCheckMode == CheckMode::TypeCheck)
              && (aTypeInfo->mTypeCategory != etcClassType))
@@ -310,7 +322,8 @@ return;
                     {
                         aSaveStatList[aElementTypeIndex]=essSaving;
                         // 自分より前のものなら、再ループ
-                        if (aElementTypeIndex <= aTypeIndex) {
+                        if (aElementTypeIndex <= aTypeIndex)
+                        {
                             aAgain=true;
                         }
                     }
@@ -352,7 +365,8 @@ return;
                 {
                     aSaveStatList[aElementTypeIndex]=essSaving;
                     // 自分より前のものなら、再ループ
-                    if (aElementTypeIndex <= aTypeIndex) {
+                    if (aElementTypeIndex <= aTypeIndex)
+                    {
                         aAgain=true;
                     }
                 }
