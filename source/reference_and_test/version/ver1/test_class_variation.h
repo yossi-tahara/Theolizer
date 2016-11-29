@@ -446,7 +446,7 @@ public:
                     dVar##Array2Private[j][i]=dVal;         \
                     dVar##Array2Protected[j][i]=dVal;       \
                     dVar##Array2[j][i]=dVal;                \
-                    for (std::size_t k=0; k < 2; ++k)       \
+                    for (std::size_t k=0; k < 3; ++k)       \
                     {                                       \
                         dVar##Array3Private[k][j][i]=dVal;  \
                         dVar##Array3Protected[k][j][i]=dVal;\
@@ -479,7 +479,7 @@ public:
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
                     THEOLIZER_EQUAL(dVar##Array2Private[j][i], ((!isValued)?dDef:dVal));\
-                    for (std::size_t k=0; k < 2; ++k)                       \
+                    for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
                         THEOLIZER_EQUAL(dVar##Array3Private[k][j][i], ((!isValued)?dDef:dVal));\
                     }                                                       \
@@ -502,7 +502,7 @@ public:
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
                     THEOLIZER_EQUAL(dVar##Array2Protected[j][i], ((!isValued)?dDef:dVal));\
-                    for (std::size_t k=0; k < 2; ++k)                       \
+                    for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
                         THEOLIZER_EQUAL(dVar##Array3Protected[k][j][i], ((!isValued)?dDef:dVal));\
                     }                                                       \
@@ -525,7 +525,7 @@ public:
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
                     THEOLIZER_EQUAL(dVar##Array2[j][i], ((!isValued)?dDef:dVal));\
-                    for (std::size_t k=0; k < 2; ++k)                       \
+                    for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
                         THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!isValued)?dDef:dVal));\
                     }                                                       \
@@ -546,6 +546,180 @@ public:
 
     // 侵入型半自動 指定
     THEOLIZER_INTRUSIVE(CS, (BaseHalfAuto), 1);
+};
+
+// ---------------------------------------------------------------------------
+//      非侵入型手動（基底クラス）
+// ---------------------------------------------------------------------------
+
+//      ---<<< 配列のみで参照される完全自動型 >>>---
+//      専用処理が必要なのでテストを設ける
+
+struct ArrayOnly2
+{
+    int     mInt;
+    ArrayOnly2() : mInt(0) { }
+};
+
+//      ---<<< 本体 >>>---
+
+class BaseManual
+{
+public:
+    // publicメンバ定義
+    #define DEFINE(dType, dVar, dDef, dVal) dType dVar;
+    #define ARRAY(dType, dVar, dNum, dDef, dVal)    \
+        dType dVar##Array1[dNum];                   \
+        dType dVar##Array2[2][dNum];                \
+        dType dVar##Array3[3][2][dNum];
+    DEFINE_MEMBERS()
+    #undef  ARRAY
+    #undef  DEFINE
+
+    // クラス配列
+    static const std::size_t    kRow=2;
+    static const std::size_t    kCol=2;
+    static const int            kValue=-123;
+    ArrayOnly2  mArrayOnly[kRow][kCol];
+
+    // デフォルト・コンストラクタ
+    BaseManual() :
+        #define DEFINE(dType, dVar, dDef, dVal) dVar(dDef),
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)\
+            dVar##Array1{},                         \
+            dVar##Array2{},                         \
+            dVar##Array3{},
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+        mArrayOnly{}
+    { }
+
+    // 保存前の値設定
+    BaseManual(bool) :
+        #undef  DEFINE
+        #define DEFINE(dType, dVar, dDef, dVal) dVar(dVal),
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)\
+            dVar##Array1{},                         \
+            dVar##Array2{},                         \
+            dVar##Array3{},
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+        mArrayOnly{}
+    {
+        #define DEFINE(dType, dVar, dDef, dVal)
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)        \
+            for (std::size_t i=0; i < dNum; ++i)            \
+            {                                               \
+                dVar##Array1[i]=dVal;                       \
+                for (std::size_t j=0; j < 2; ++j)           \
+                {                                           \
+                    dVar##Array2[j][i]=dVal;                \
+                    for (std::size_t k=0; k < 3; ++k)       \
+                    {                                       \
+                        dVar##Array3[k][j][i]=dVal;         \
+                    }                                       \
+                }                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+
+        for (std::size_t i=0; i < kRow; ++i)
+        {
+            for (std::size_t j=0; j < kCol; ++j)
+            {
+                mArrayOnly[i][j].mInt=kValue;
+            }
+        }
+    }
+
+    // publicメンバの値をチェック
+    void checkPublic(bool isValued=false)
+    {
+        #define DEFINE(dType, dVar, dDef, dVal)                             \
+            THEOLIZER_EQUAL(dVar, ((!isValued)?dDef:dVal));
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
+            for (std::size_t i=0; i < dNum; ++i)                            \
+            {                                                               \
+                THEOLIZER_EQUAL(dVar##Array1[i], ((!isValued)?dDef:dVal));  \
+                for (std::size_t j=0; j < 2; ++j)                           \
+                {                                                           \
+                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!isValued)?dDef:dVal));\
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!isValued)?dDef:dVal));\
+                    }                                                       \
+                }                                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+
+        for (std::size_t i=0; i < kRow; ++i)
+        {
+            for (std::size_t j=0; j < kCol; ++j)
+            {
+                THEOLIZER_EQUAL(mArrayOnly[i][j].mInt, ((!isValued)?0:kValue));
+            }
+        }
+    }
+};
+
+//      ---<<< シリアライズ用の手動記述 >>>---
+
+THEOLIZER_NON_INTRUSIVE_ORDER((BaseManual), 1);
+
+// 以下、test_class_variation.cpp.theolizer.hppから、
+//  #ifdef  THEOLIZER_WRITE_CODE // ###### BaseManual ######の
+//  #if false // Sample of save/load function.
+//  から
+//  #endif // Sample of save/load function.
+//  までの間をコピーして、saveClassManual()/loadClassManual()の内容を記述。
+
+template<class tBaseSerializer, class tTheolizerVersion>
+struct TheolizerNonIntrusive<BaseManual>::TheolizerUserDefine<tBaseSerializer, tTheolizerVersion,1>
+{
+    // Save members.
+    static void saveClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
+    )
+    {
+        #define DEFINE(dType, dVar, dDef, dVal)                         \
+            THEOLIZER_PROCESS(iSerializer, iInstance->dVar);
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)                    \
+            THEOLIZER_PROCESS(iSerializer, iInstance->dVar##Array1);    \
+            THEOLIZER_PROCESS(iSerializer, iInstance->dVar##Array2);    \
+            THEOLIZER_PROCESS(iSerializer, iInstance->dVar##Array3);
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+        THEOLIZER_PROCESS(iSerializer, iInstance->mArrayOnly);
+    }
+
+    // Load members.
+    static void loadClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget*& oInstance
+    )
+    {
+        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
+
+        #define DEFINE(dType, dVar, dDef, dVal)                         \
+            THEOLIZER_PROCESS(iSerializer, oInstance->dVar);
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)                    \
+            THEOLIZER_PROCESS(iSerializer, oInstance->dVar##Array1);    \
+            THEOLIZER_PROCESS(iSerializer, oInstance->dVar##Array2);    \
+            THEOLIZER_PROCESS(iSerializer, oInstance->dVar##Array3);
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+        THEOLIZER_PROCESS(iSerializer, oInstance->mArrayOnly);
+    }
 };
 
 // ---------------------------------------------------------------------------

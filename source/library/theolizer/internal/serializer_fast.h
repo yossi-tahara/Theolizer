@@ -137,8 +137,7 @@ private:
 
 //      ---<<< Element前処理 >>>---
 
-    void writePreElement()
-    { }
+    void writePreElement(bool iDoProcess=false) { }
 
 //----------------------------------------------------------------------------
 //      内部処理
@@ -250,7 +249,7 @@ private:
 
 //      ---<<< Element前処理 >>>---
 
-    ReadStat readPreElement() {return DontCare;}
+    ReadStat readPreElement(bool iDoProcess=false) {return DontCare;}
 
 //      ---<<< 要素破棄処理 >>>---
 

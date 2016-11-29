@@ -2302,8 +2302,7 @@ ASTANALYZE_OUTPUT("mModifiedFiles.size(1)=", mModifiedFiles.size());
 
 ASTANALYZE_OUTPUT("mModifiedFiles.size(2)=", mModifiedFiles.size());
         // 自動生成ファイルのみの更新ならば、排他制御なし
-        if ((mModifiedFiles.size() == 1)
-         && (*(mModifiedFiles.begin()) == aFileId))
+        if ((mModifiedFiles.size() == 1) && (*(mModifiedFiles.begin()) == aFileId))
         {
             bool error=mRewriter.overwriteChangedFiles();
 ASTANALYZE_OUTPUT("Update default file only. : overwriteChangedFiles()=", error);

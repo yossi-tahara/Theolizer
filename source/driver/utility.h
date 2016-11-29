@@ -1405,10 +1405,11 @@ ASTANALYZE_OUTPUT("addSerializable(", iTheolizerTarget->getQualifiedNameAsString
             }
     return;
         }
-ASTANALYZE_OUTPUT("SerializeList::addSerializable(", iTheolizerTarget->getQualifiedNameAsString(),
-                  " ", iTheolizerTarget,
-                  ", ", iTheolizerTarget->getQualifiedNameAsString(),
+ASTANALYZE_OUTPUT("SerializeList::addSerializable(",
+                        iTheolizerTarget->getQualifiedNameAsString(),
+                  " ",  iTheolizerTarget,
                   ", ", iAnnotationInfo.c_str(),
+                  ", ", iAnnotationInfoTS.c_str(),
                   ", ", (iNonIntrusive)?iNonIntrusive->getQualifiedNameAsString():"<NULL>",
                   ");");
 

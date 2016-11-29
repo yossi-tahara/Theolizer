@@ -54,12 +54,20 @@ void saveClassVariation(tSerializer& iSerializer)
 //      ---<<< 非侵入型完全自動（基底クラス） >>>---
 
     BaseFullAuto    aBaseFullAuto{true};
+    std::cout << "        saveClassVariation() : aBaseFullAuto\n";
     THEOLIZER_PROCESS(iSerializer, aBaseFullAuto);
 
 //      ---<<< 侵入型半自動（基底クラス） >>>---
 
     BaseHalfAuto    aBaseHalfAuto{true};
+    std::cout << "        saveClassVariation() : aBaseHalfAuto\n";
     THEOLIZER_PROCESS(iSerializer, aBaseHalfAuto);
+
+//      ---<<< 非侵入型手動（基底クラス） >>>---
+
+    BaseManual    aBaseManual{true};
+    std::cout << "        saveClassVariation() : aBaseManual\n";
+    THEOLIZER_PROCESS(iSerializer, aBaseManual);
 }
 //! [saveClassVariation]
 
@@ -77,6 +85,7 @@ void loadClassVariation(tSerializer& iSerializer)
 //      ---<<< 非侵入型完全自動（基底クラス） >>>---
 
     BaseFullAuto    aBaseFullAuto{};
+    std::cout << "        loadClassVariation() : aBaseFullAuto\n";
     THEOLIZER_PROCESS(iSerializer, aBaseFullAuto);
     aBaseFullAuto.checkPrivate();
     aBaseFullAuto.checkProtected(true);
@@ -85,10 +94,18 @@ void loadClassVariation(tSerializer& iSerializer)
 //      ---<<< 侵入型半自動（基底クラス） >>>---
 
     BaseHalfAuto    aBaseHalfAuto{};
+    std::cout << "        loadClassVariation() : aBaseHalfAuto\n";
     THEOLIZER_PROCESS(iSerializer, aBaseHalfAuto);
     aBaseHalfAuto.checkPrivate(true);
     aBaseHalfAuto.checkProtected(true);
     aBaseHalfAuto.checkPublic(true);
+
+//      ---<<< 非侵入型手動（基底クラス） >>>---
+
+    BaseManual    aBaseManual{};
+    std::cout << "        loadClassVariation() : aBaseManual\n";
+    THEOLIZER_PROCESS(iSerializer, aBaseManual);
+    aBaseManual.checkPublic(true);
 }
 //! [loadClassVariation]
 

@@ -280,7 +280,7 @@ private:
 
 //      ---<<< Element前処理 >>>---
 
-    void writePreElement();
+    void writePreElement(bool iDoProcess=false);
 
 //----------------------------------------------------------------------------
 //      内部処理
@@ -437,7 +437,7 @@ private:
 //              次があるなら、Continue  (mTerminated=false)
 //              それ以外なら、例外
 
-    ReadStat readPreElement();
+    ReadStat readPreElement(bool iDoProcess=false);
 
 //      ---<<< 要素破棄処理 >>>---
 

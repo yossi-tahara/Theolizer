@@ -1265,15 +1265,19 @@ struct BranchedProcess
         // 保存／回復処理
         if (iSerializer.mIsSaver)
         {
+            iSerializer.writePreElement(true);
             BaseSerializer::AutoRestoreSaveProcess
                 aAutoRestoreSaveTop(iSerializer, getTypeIndex<tType>());
             Switcher<BaseSerializer, tType, true, tTrackingMode>::save(iSerializer, ioInstance);
         }
         else
         {
-            BaseSerializer::AutoRestoreLoadProcess
-                aAutoRestoreLoadTop(iSerializer, getTypeIndex<tType>());
-            Switcher<BaseSerializer, tType, true, tTrackingMode>::load(iSerializer,ioInstance);
+            if (iSerializer.readPreElement(true))
+            {
+                BaseSerializer::AutoRestoreLoadProcess
+                    aAutoRestoreLoadTop(iSerializer, getTypeIndex<tType>());
+                Switcher<BaseSerializer, tType, true, tTrackingMode>::load(iSerializer,ioInstance);
+            }
         }
     }
 };

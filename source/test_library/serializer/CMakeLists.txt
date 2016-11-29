@@ -75,7 +75,7 @@ add_test_function(${TARGET_NAME} ${SOURCE_LIST})
 if(FALSE)
 set(TARGET_NAME Debug)
 
-set(SOURCE_LIST main.cpp sub.cpp common.h main.cpp.theolizer.hpp)
+set(SOURCE_LIST main.cpp main.h main.cpp.theolizer.hpp)
 add_test_function(${TARGET_NAME} ${SOURCE_LIST})
 
 endif()

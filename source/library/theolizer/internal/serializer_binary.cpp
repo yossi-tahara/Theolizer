@@ -723,8 +723,11 @@ template void BinaryMidISerializer::loadFloat<long double>(long double& oFloat);
 //      Element前処理
 //----------------------------------------------------------------------------
 
-ReadStat BinaryMidISerializer::readPreElement()
+ReadStat BinaryMidISerializer::readPreElement(bool iDoProcess)
 {
+    if (iDoProcess)
+return Continue;
+
     bool aContinue=readNext();
 
     return (aContinue && !ErrorReporter::getError())?Continue:Terminated;

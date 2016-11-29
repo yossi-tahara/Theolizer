@@ -459,11 +459,18 @@ ASTANALYZE_OUTPUT("    Def=" ,iCXXRecordDecl->isThisDeclarationADefinition(),
         // クラス名取り出し
         std::string aClassName=iCXXRecordDecl->getQualifiedNameAsString();
 
-        // ::Theolizerを含むクラスは処理しない
-        if (aClassName.find("::Theolizer") != std::string::npos)
+        // ::Theolizerを含むクラス(TheolizerVersionを除く)は処理しない
         {
+            std::size_t pos=aClassName.find("::Theolizer");
+            if (pos != std::string::npos)
+            {
+                if (aClassName.compare(
+                    pos+sizeof("::Theolizer")-1, sizeof("Version")-1, "Version") != 0)
+                {
 ASTANALYZE_OUTPUT("    ::Theolizer does not process.");
     return true;
+                }
+            }
         }
 
 //      ---<<< グローバル・バージョン番号テーブル処理 >>>---
@@ -1284,7 +1291,7 @@ ASTANALYZE_OUTPUT("Theolizer unkown pattern.(Type::FunctionProto)");
                 "Illigal format. Please construct %0 by {} instead of ().(%1)")
                 << qt.getAsString()
                 << __LINE__;
-    return __VA_ARGS__;
+    return;
 
         // 不明ケースも警告
         default:

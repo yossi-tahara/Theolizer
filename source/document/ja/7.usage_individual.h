@@ -31,8 +31,9 @@
 @subpage BasicProcess \n
 @subpage ClassVariation \n
 @subpage EnumVariation \n
-@subpage ObjectTracking \n
+@subpage Destinations \n
 @subpage UsageSTL \n
+@subpage ObjectTracking \n
 @subpage ChangingClass \n
 @subpage ChangingEnum \n
 
@@ -131,6 +132,18 @@ enum型は従来のenum型と、C++11で追加されたscoped enum型の２つ�
 ここでは、クラス（classとstruct）をシリアライズする時の様々なバリエーションについて説明します。
 # T.B.D.
 
+非侵入型完全自動<br>
+シリアライスのために事前準備の必要はなく、シリアライズするのみ。<br>
+オプションでメンバへの保存指定が可能。@ref Destinations
+
+侵入型半自動<br>
+クラス定義の内側にTHEOLIZER_INTRUSIVE()シリーズ・マクロを記述する。
+このマクロの最後にprivate:をおいているので、クラス定義の最後に置くことを推奨する。
+
+非侵入型手動<br>
+THEOLIZER_NON_INTRUSIVE_ORDER()シリーズ・マクロでシリアライズ指定する。
+その状態でビルドすると、未定義エラーとなる。*.hppにその関数の雛形があるので、コピーしてを必要な保存／回復処理を記述する。
+
 */
 
 /*!
@@ -155,14 +168,20 @@ enum型は従来のenum型と、C++11で追加されたscoped enum型の２つ�
 */
 
 /*!
-    @page ObjectTracking オブジェクト追跡について
-ここでは、オブジェクト追跡について説明します。
+    @page Destinations 保存先指定について
+ここでは、保存先指定について説明します。
 # T.B.D.
 */
 
 /*!
     @page UsageSTL 標準コンテナ（STL）の使い方
 ここでは、標準コンテナ（STL）の使い方を説明します。
+# T.B.D.
+*/
+
+/*!
+    @page ObjectTracking オブジェクト追跡について
+ここでは、オブジェクト追跡について説明します。
 # T.B.D.
 */
 

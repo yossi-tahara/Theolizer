@@ -698,7 +698,7 @@ protected:
 
 //      ---<<< 制御用 >>>---
 
-    virtual void writePreElement()                          {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void writePreElement(bool iDoProcess=false)     {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveClassStart(bool iIsTop=false)          {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveClassEnd(bool iIsTop=false)            {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveControl(int iControl)                  {THEOLIZER_INTERNAL_ABORT("");}
@@ -863,7 +863,7 @@ protected:
 
 //      ---<<< 制御用 >>>---
 
-    virtual ReadStat readPreElement()                       {THEOLIZER_INTERNAL_ABORT("");}
+    virtual ReadStat readPreElement(bool iDoProcess=false)  {THEOLIZER_INTERNAL_ABORT("");}
     virtual void disposeElement()                           {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadClassStart(bool iIsTop=false)          {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadClassEnd(bool iIsTop=false)            {THEOLIZER_INTERNAL_ABORT("");}

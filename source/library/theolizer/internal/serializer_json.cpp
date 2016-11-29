@@ -231,7 +231,7 @@ struct Decimal<long double>
 //      Element前処理
 //----------------------------------------------------------------------------
 
-void JsonMidOSerializer::writePreElement()
+void JsonMidOSerializer::writePreElement(bool iDoProcess)
 {
     writeCommaIndent(mWriteComma);
 }
@@ -592,7 +592,7 @@ bool JsonMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
 //      Element前処理
 //----------------------------------------------------------------------------
 
-ReadStat JsonMidISerializer::readPreElement()
+ReadStat JsonMidISerializer::readPreElement(bool iDoProcess)
 {
     bool aContinue=readComma(mReadComma);
     mReadComma=true;
