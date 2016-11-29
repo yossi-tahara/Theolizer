@@ -85,7 +85,23 @@ $(document).ready(function(){initNavTree('_enum_variation.html','');});
 <div class="title">enum型のバリエーション </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>ここでは、enum型をシリアライズする時の様々なバリエーションについて説明します。 </p><h1>T.B.D.</h1>
+<div class="textblock"><p>ここでは、enum型の下記組み合わせをテストします。</p>
+<ul>
+<li>従来のenum型</li>
+<li>C++11で追加されたscoped enum型</li>
+</ul>
+<p>のそれぞれに対して</p>
+<ul>
+<li>非侵入型完全自動</li>
+<li>非侵入型半自動<br />
+ 非侵入型半自動は、下記オプションを指定します。<ul>
+<li>シンボル名保存（デフォルト）</li>
+<li>シンボル値保存</li>
+</ul>
+</li>
+</ul>
+<p>また、基底型についても全てテストします。</p>
+<h1>T.B.D.</h1>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

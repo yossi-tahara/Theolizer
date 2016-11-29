@@ -39,7 +39,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"globals_defs.html"
+"globals.html"
 ];
 
 var SYNCONMSG = 'クリックで同期表示が無効になります';

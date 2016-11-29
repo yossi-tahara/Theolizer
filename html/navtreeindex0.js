@@ -32,9 +32,10 @@ var NAVTREEINDEX0 =
 "_basic_process.html":[0,6,0],
 "_basic_process.html#DefinitionEnumClass":[0,6,0,0],
 "_basic_process.html#TestBasicProcess":[0,6,0,1],
-"_changing_class.html":[0,6,5],
-"_changing_enum.html":[0,6,6],
+"_changing_class.html":[0,6,6],
+"_changing_enum.html":[0,6,7],
 "_class_variation.html":[0,6,1],
+"_destinations.html":[0,6,3],
 "_enum_variation.html":[0,6,2],
 "_error_report.html":[1],
 "_how_to_build_theolizer.html":[0,4],
@@ -63,7 +64,7 @@ var NAVTREEINDEX0 =
 "_how_to_make_project.html#FileStructure":[0,3,4],
 "_how_to_make_project.html#NonCMake":[0,3,3],
 "_how_to_make_project.html#Selecting":[0,3,0],
-"_object_tracking.html":[0,6,3],
+"_object_tracking.html":[0,6,5],
 "_prepare.html":[0,2],
 "_prepare.html#DeleteTheolizer":[0,2,1,1],
 "_prepare.html#Install":[0,2,0],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "files.html":[6,0],
 "functions.html":[5,3,0],
 "functions_func.html":[5,3,1],
-"functions_vars.html":[5,3,2],
-"globals.html":[6,1,0]
+"functions_vars.html":[5,3,2]
 };
