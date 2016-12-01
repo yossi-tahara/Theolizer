@@ -162,12 +162,19 @@ ASTANALYZE_OUTPUT("instertString");
 //      基底クラス生成
 //----------------------------------------------------------------------------
 
-    void createBaseClass(clang::AccessSpecifier iAccSpec, CXXRecordDecl const* iBase, unsigned iId)
+    void createBaseClass
+    (
+        clang::AccessSpecifier iAccSpec,
+        CXXRecordDecl const* iBase,
+        unsigned iId,
+        bool iIsManual
+    )
     {
         // Keep-step or Non-keep-step判定
         bool aIsKeepStep=false;
         auto found = mAstInterface.mSerializeListClass.find(iBase);
-        if (found)
+        // 派生先クラスが手動型の時は強制的にNon-keep-step
+        if (found && !iIsManual)
         {
             // 侵入型と完全自動型のみKeep-step
             if (found->second.mIsFullAuto || !found->second.mNonIntrusive) {
@@ -1256,6 +1263,13 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
 
 ASTANALYZE_OUTPUT("    Base : ", aBase->getName(), " hasDefinition()=", aBase->hasDefinition());
 
+            // 完全自動型のprivateなら、スキップする
+            if ((iSerializeInfo.mIsFullAuto) && (base.getAccessSpecifier() == clang::AS_private))
+            {
+                ASTANALYZE_OUTPUT("    Skip because FullAuto & private base class.");
+        continue;
+            }
+
             if (aIsFirst) {
                 aIsFirst=false;
                 mLastVersion << "#define THEOLIZER_GENERATED_BASE_LIST()\\\n";
@@ -1263,7 +1277,7 @@ ASTANALYZE_OUTPUT("    Base : ", aBase->getName(), " hasDefinition()=", aBase->h
                 mLastVersion << " THEOLIZER_GENERATED_SEP\\\n";
             }
 
-            createBaseClass(base.getAccessSpecifier(), aBase, aId++);
+            createBaseClass(base.getAccessSpecifier(), aBase, aId++, iSerializeInfo.mIsManual);
             // 要素リストへ登録
             aElementList.emplace(string("@")+aBase->getName().str(), ElementInfo(qt));
         }
@@ -1293,7 +1307,7 @@ ASTANALYZE_OUTPUT("  Element Name=", field->getName());
                 // 完全自動型のprivateなら、スキップする
                 if ((iSerializeInfo.mIsFullAuto) && (field->getAccess() == clang::AS_private))
                 {
-                    ASTANALYZE_OUTPUT("    FullAuto & private");
+                    ASTANALYZE_OUTPUT("    Skip because FullAuto & private member.");
             continue;
                 }
 

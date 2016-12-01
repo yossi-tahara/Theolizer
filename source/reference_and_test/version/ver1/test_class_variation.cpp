@@ -50,24 +50,69 @@
 template<class tSerializer>
 void saveClassVariation(tSerializer& iSerializer)
 {
+// ---------------------------------------------------------------------------
+//      単独テスト
+// ---------------------------------------------------------------------------
 
-//      ---<<< 非侵入型完全自動（基底クラス） >>>---
+//      ---<<< 非侵入型完全自動 >>>---
 
-    BaseFullAuto    aBaseFullAuto{true};
-    std::cout << "        saveClassVariation() : aBaseFullAuto\n";
-    THEOLIZER_PROCESS(iSerializer, aBaseFullAuto);
+    {
+        FullAuto    aFullAuto{true};
+        std::cout << "        saveClassVariation() : aFullAuto" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aFullAuto);
+    }
 
-//      ---<<< 侵入型半自動（基底クラス） >>>---
+//      ---<<< 侵入型半自動－名前対応 >>>---
 
-    BaseHalfAuto    aBaseHalfAuto{true};
-    std::cout << "        saveClassVariation() : aBaseHalfAuto\n";
-    THEOLIZER_PROCESS(iSerializer, aBaseHalfAuto);
+    {
+        HalfAutoName    aHalfAutoName{true};
+        std::cout << "        saveClassVariation() : aHalfAutoName" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aHalfAutoName);
+    }
 
-//      ---<<< 非侵入型手動（基底クラス） >>>---
+//      ---<<< 侵入型半自動－順序対応 >>>---
 
-    BaseManual    aBaseManual{true};
-    std::cout << "        saveClassVariation() : aBaseManual\n";
-    THEOLIZER_PROCESS(iSerializer, aBaseManual);
+    {
+        HalfAutoOrder   aHalfAutoOrder{true};
+        std::cout << "        saveClassVariation() : aHalfAutoOrder" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aHalfAutoOrder);
+    }
+
+//      ---<<< 非侵入型手動 >>>---
+
+    {
+        Manual    aManual{true};
+        std::cout << "        saveClassVariation() : aManual" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aManual);
+    }
+
+// ---------------------------------------------------------------------------
+//      ２重組み合わせテスト
+// ---------------------------------------------------------------------------
+
+//      ---<<< 非侵入型完全自動 >>>---
+
+    {
+        DerivedFullAuto aDerivedFullAuto{true};
+        std::cout << "        saveClassVariation() : aDerivedFullAuto" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aDerivedFullAuto);
+    }
+
+//      ---<<< 侵入型半自動 >>>---
+
+    {
+        DerivedHalfAuto aDerivedHalfAuto{true};
+        std::cout << "        saveClassVariation() : aDerivedHalfAuto" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aDerivedHalfAuto);
+    }
+
+//      ---<<< 非侵入型手動 >>>---
+
+    {
+        DerivedManual   aDerivedManual{true};
+        std::cout << "        saveClassVariation() : aDerivedManual" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aDerivedManual);
+    }
 }
 //! [saveClassVariation]
 
@@ -81,31 +126,82 @@ INSTANTIATION_ALL(void, saveClassVariation);
 template<class tSerializer>
 void loadClassVariation(tSerializer& iSerializer)
 {
+// ---------------------------------------------------------------------------
+//      単独テスト
+// ---------------------------------------------------------------------------
 
-//      ---<<< 非侵入型完全自動（基底クラス） >>>---
+//      ---<<< 非侵入型完全自動 >>>---
 
-    BaseFullAuto    aBaseFullAuto{};
-    std::cout << "        loadClassVariation() : aBaseFullAuto\n";
-    THEOLIZER_PROCESS(iSerializer, aBaseFullAuto);
-    aBaseFullAuto.checkPrivate();
-    aBaseFullAuto.checkProtected(true);
-    aBaseFullAuto.checkPublic(true);
+    {
+        FullAuto    aFullAuto{};
+        std::cout << "        loadClassVariation() : aFullAuto" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aFullAuto);
+        aFullAuto.checkPrivate();
+        aFullAuto.checkProtected(true);
+        aFullAuto.checkPublic(true);
+    }
 
-//      ---<<< 侵入型半自動（基底クラス） >>>---
+//      ---<<< 侵入型半自動－名前対応 >>>---
 
-    BaseHalfAuto    aBaseHalfAuto{};
-    std::cout << "        loadClassVariation() : aBaseHalfAuto\n";
-    THEOLIZER_PROCESS(iSerializer, aBaseHalfAuto);
-    aBaseHalfAuto.checkPrivate(true);
-    aBaseHalfAuto.checkProtected(true);
-    aBaseHalfAuto.checkPublic(true);
+    {
+        HalfAutoName    aHalfAutoName{};
+        std::cout << "        loadClassVariation() : aHalfAutoName" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aHalfAutoName);
+        aHalfAutoName.checkPrivate(true);
+        aHalfAutoName.checkProtected(true);
+        aHalfAutoName.checkPublic(true);
+    }
 
-//      ---<<< 非侵入型手動（基底クラス） >>>---
+//      ---<<< 侵入型半自動－順序対応 >>>---
 
-    BaseManual    aBaseManual{};
-    std::cout << "        loadClassVariation() : aBaseManual\n";
-    THEOLIZER_PROCESS(iSerializer, aBaseManual);
-    aBaseManual.checkPublic(true);
+    {
+        HalfAutoOrder   aHalfAutoOrder{true};
+        std::cout << "        loadClassVariation() : aHalfAutoOrder" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aHalfAutoOrder);
+        aHalfAutoOrder.checkPrivate(true);
+        aHalfAutoOrder.checkProtected(true);
+        aHalfAutoOrder.checkPublic(true);
+    }
+
+//      ---<<< 非侵入型手動 >>>---
+
+    {
+        Manual      aManual{};
+        std::cout << "        loadClassVariation() : aManual" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aManual);
+        aManual.checkPublic(true);
+    }
+
+// ---------------------------------------------------------------------------
+//      ２重組み合わせテスト
+// ---------------------------------------------------------------------------
+
+//      ---<<< 非侵入型完全自動 >>>---
+
+    {
+        DerivedFullAuto aDerivedFullAuto{};
+        std::cout << "        loadClassVariation() : aDerivedFullAuto" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aDerivedFullAuto);
+        aDerivedFullAuto.check();
+    }
+
+//      ---<<< 侵入型半自動 >>>---
+
+    {
+        DerivedHalfAuto aDerivedHalfAuto{};
+        std::cout << "        loadClassVariation() : aDerivedHalfAuto" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aDerivedHalfAuto);
+        aDerivedHalfAuto.check();
+    }
+
+//      ---<<< 非侵入型手動 >>>---
+
+    {
+        DerivedManual   aDerivedManual{};
+        std::cout << "        loadClassVariation() : aDerivedManual" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aDerivedManual);
+        aDerivedManual.check();
+    }
 }
 //! [loadClassVariation]
 

@@ -837,7 +837,7 @@ template<class tClass>
 struct IsIntrusiveImpl
 <
     tClass,
-    EnableIf<tClass::kIsTheolizer && !tClass::Theolizer::kIsNonIntrusive>
+    EnableIf<tClass::kIsTheolizer && !IsNonIntrusive<tClass>::value>
 > : public std::true_type
 { };
 

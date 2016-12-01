@@ -27,7 +27,7 @@
 #include "test_basic_process.h"
 
 // ***************************************************************************
-//      クラス
+//      単独テスト
 // ***************************************************************************
 
 // ---------------------------------------------------------------------------
@@ -114,7 +114,7 @@ struct ArrayOnly0
 
 //      ---<<< 本体 >>>---
 
-class BaseFullAuto
+class FullAuto
 {
     // privateメンバ定義
     #define DEFINE(dType, dVar, dDef, dVal)     dType dVar##Private;
@@ -150,12 +150,12 @@ public:
 
     // クラス配列
     static const std::size_t    kRow=2;
-    static const std::size_t    kCol=3;
+    static const std::size_t    kCol=2;
     static const int            kValue=123;
     ArrayOnly0  mArrayOnly[kRow][kCol];
 
     // デフォルト・コンストラクタ
-    BaseFullAuto() :
+    FullAuto() :
         #define DEFINE(dType, dVar, dDef, dVal) dVar##Private(dDef),
         #define ARRAY(dType, dVar, dNum, dDef, dVal)\
             dVar##Array1Private{},                  \
@@ -184,7 +184,7 @@ public:
     { }
 
     // 保存前の値設定
-    BaseFullAuto(bool) :
+    FullAuto(bool) :
         #define DEFINE(dType, dVar, dDef, dVal) dVar##Private(dVal),
         #define ARRAY(dType, dVar, dNum, dDef, dVal)\
             dVar##Array1Private{},                  \
@@ -323,7 +323,7 @@ public:
 };
 
 // ---------------------------------------------------------------------------
-//      侵入型半自動（基底クラス）
+//      侵入型半自動－名前対応（基底クラス）
 // ---------------------------------------------------------------------------
 
 //      ---<<< 配列のみで参照される完全自動型 >>>---
@@ -337,7 +337,7 @@ struct ArrayOnly1
 
 //      ---<<< 本体 >>>---
 
-class BaseHalfAuto
+class HalfAutoName
 {
     // privateメンバ定義
     #define DEFINE(dType, dVar, dDef, dVal)     dType dVar##Private;
@@ -372,13 +372,13 @@ public:
     #undef  DEFINE
 
     // クラス配列
-    static const std::size_t    kRow=3;
-    static const std::size_t    kCol=2;
-    static const int            kValue=321;
+    static const std::size_t    kRow=2;
+    static const std::size_t    kCol=3;
+    static const int            kValue=456;
     ArrayOnly1  mArrayOnly[kRow][kCol];
 
     // デフォルト・コンストラクタ
-    BaseHalfAuto() :
+    HalfAutoName() :
         #define DEFINE(dType, dVar, dDef, dVal) dVar##Private(dDef),
         #define ARRAY(dType, dVar, dNum, dDef, dVal)\
             dVar##Array1Private{},                  \
@@ -407,7 +407,7 @@ public:
     { }
 
     // 保存前の値設定
-    BaseHalfAuto(bool) :
+    HalfAutoName(bool) :
         #define DEFINE(dType, dVar, dDef, dVal) dVar##Private(dVal),
         #define ARRAY(dType, dVar, dNum, dDef, dVal)\
             dVar##Array1Private{},                  \
@@ -545,11 +545,11 @@ public:
     }
 
     // 侵入型半自動 指定
-    THEOLIZER_INTRUSIVE(CS, (BaseHalfAuto), 1);
+    THEOLIZER_INTRUSIVE(CS, (HalfAutoName), 1);
 };
 
 // ---------------------------------------------------------------------------
-//      非侵入型手動（基底クラス）
+//      侵入型半自動－順序対応（基底クラス）
 // ---------------------------------------------------------------------------
 
 //      ---<<< 配列のみで参照される完全自動型 >>>---
@@ -563,8 +563,29 @@ struct ArrayOnly2
 
 //      ---<<< 本体 >>>---
 
-class BaseManual
+class HalfAutoOrder
 {
+    // privateメンバ定義
+    #define DEFINE(dType, dVar, dDef, dVal)     dType dVar##Private;
+    #define ARRAY(dType, dVar, dNum, dDef, dVal)    \
+        dType dVar##Array1Private[dNum];            \
+        dType dVar##Array2Private[2][dNum];         \
+        dType dVar##Array3Private[3][2][dNum];
+    DEFINE_MEMBERS()
+    #undef  ARRAY
+    #undef  DEFINE
+
+protected:
+    // protectedメンバ定義
+    #define DEFINE(dType, dVar, dDef, dVal) dType dVar##Protected;
+    #define ARRAY(dType, dVar, dNum, dDef, dVal)    \
+        dType dVar##Array1Protected[dNum];          \
+        dType dVar##Array2Protected[2][dNum];       \
+        dType dVar##Array3Protected[3][2][dNum];
+    DEFINE_MEMBERS()
+    #undef  ARRAY
+    #undef  DEFINE
+
 public:
     // publicメンバ定義
     #define DEFINE(dType, dVar, dDef, dVal) dType dVar;
@@ -577,13 +598,29 @@ public:
     #undef  DEFINE
 
     // クラス配列
-    static const std::size_t    kRow=2;
+    static const std::size_t    kRow=3;
     static const std::size_t    kCol=2;
-    static const int            kValue=-123;
-    ArrayOnly2  mArrayOnly[kRow][kCol];
+    static const int            kValue=-456;
+    ArrayOnly1  mArrayOnly[kRow][kCol];
 
     // デフォルト・コンストラクタ
-    BaseManual() :
+    HalfAutoOrder() :
+        #define DEFINE(dType, dVar, dDef, dVal) dVar##Private(dDef),
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)\
+            dVar##Array1Private{},                  \
+            dVar##Array2Private{},                  \
+            dVar##Array3Private{},
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+        #define DEFINE(dType, dVar, dDef, dVal) dVar##Protected(dDef),
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)\
+            dVar##Array1Protected{},                \
+            dVar##Array2Protected{},                \
+            dVar##Array3Protected{},
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
         #define DEFINE(dType, dVar, dDef, dVal) dVar(dDef),
         #define ARRAY(dType, dVar, dNum, dDef, dVal)\
             dVar##Array1{},                         \
@@ -596,7 +633,196 @@ public:
     { }
 
     // 保存前の値設定
-    BaseManual(bool) :
+    HalfAutoOrder(bool) :
+        #define DEFINE(dType, dVar, dDef, dVal) dVar##Private(dVal),
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)\
+            dVar##Array1Private{},                  \
+            dVar##Array2Private{},                  \
+            dVar##Array3Private{},
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+        #define DEFINE(dType, dVar, dDef, dVal) dVar##Protected(dVal),
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)\
+            dVar##Array1Protected{},                \
+            dVar##Array2Protected{},                \
+            dVar##Array3Protected{},
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+        #define DEFINE(dType, dVar, dDef, dVal) dVar(dVal),
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)\
+            dVar##Array1{},                         \
+            dVar##Array2{},                         \
+            dVar##Array3{},
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+        mArrayOnly{}
+    {
+        #define DEFINE(dType, dVar, dDef, dVal)
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)        \
+            for (std::size_t i=0; i < dNum; ++i)            \
+            {                                               \
+                dVar##Array1Private[i]=dVal;                \
+                dVar##Array1Protected[i]=dVal;              \
+                dVar##Array1[i]=dVal;                       \
+                for (std::size_t j=0; j < 2; ++j)           \
+                {                                           \
+                    dVar##Array2Private[j][i]=dVal;         \
+                    dVar##Array2Protected[j][i]=dVal;       \
+                    dVar##Array2[j][i]=dVal;                \
+                    for (std::size_t k=0; k < 3; ++k)       \
+                    {                                       \
+                        dVar##Array3Private[k][j][i]=dVal;  \
+                        dVar##Array3Protected[k][j][i]=dVal;\
+                        dVar##Array3[k][j][i]=dVal;         \
+                    }                                       \
+                }                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+
+        for (std::size_t i=0; i < kRow; ++i)
+        {
+            for (std::size_t j=0; j < kCol; ++j)
+            {
+                mArrayOnly[i][j].mInt=kValue;
+            }
+        }
+    }
+
+    // privateメンバの値をチェック
+    void checkPrivate(bool isValued=false)
+    {
+        #define DEFINE(dType, dVar, dDef, dVal)                             \
+            THEOLIZER_EQUAL(dVar##Private, ((!isValued)?dDef:dVal));
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
+            for (std::size_t i=0; i < dNum; ++i)                            \
+            {                                                               \
+                THEOLIZER_EQUAL(dVar##Array1Private[i], ((!isValued)?dDef:dVal));\
+                for (std::size_t j=0; j < 2; ++j)                           \
+                {                                                           \
+                    THEOLIZER_EQUAL(dVar##Array2Private[j][i], ((!isValued)?dDef:dVal));\
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        THEOLIZER_EQUAL(dVar##Array3Private[k][j][i], ((!isValued)?dDef:dVal));\
+                    }                                                       \
+                }                                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+
+    // protectedメンバの値をチェック
+    void checkProtected(bool isValued=false)
+    {
+        #define DEFINE(dType, dVar, dDef, dVal)                             \
+            THEOLIZER_EQUAL(dVar##Protected, ((!isValued)?dDef:dVal));
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
+            for (std::size_t i=0; i < dNum; ++i)                            \
+            {                                                               \
+                THEOLIZER_EQUAL(dVar##Array1Protected[i], ((!isValued)?dDef:dVal));\
+                for (std::size_t j=0; j < 2; ++j)                           \
+                {                                                           \
+                    THEOLIZER_EQUAL(dVar##Array2Protected[j][i], ((!isValued)?dDef:dVal));\
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        THEOLIZER_EQUAL(dVar##Array3Protected[k][j][i], ((!isValued)?dDef:dVal));\
+                    }                                                       \
+                }                                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+
+    // publicメンバの値をチェック
+    void checkPublic(bool isValued=false)
+    {
+        #define DEFINE(dType, dVar, dDef, dVal)                             \
+            THEOLIZER_EQUAL(dVar, ((!isValued)?dDef:dVal));
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
+            for (std::size_t i=0; i < dNum; ++i)                            \
+            {                                                               \
+                THEOLIZER_EQUAL(dVar##Array1[i], ((!isValued)?dDef:dVal));  \
+                for (std::size_t j=0; j < 2; ++j)                           \
+                {                                                           \
+                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!isValued)?dDef:dVal));\
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!isValued)?dDef:dVal));\
+                    }                                                       \
+                }                                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+
+        for (std::size_t i=0; i < kRow; ++i)
+        {
+            for (std::size_t j=0; j < kCol; ++j)
+            {
+                THEOLIZER_EQUAL(mArrayOnly[i][j].mInt, ((!isValued)?0:kValue));
+            }
+        }
+    }
+
+    // 侵入型半自動 指定
+    THEOLIZER_INTRUSIVE_ORDER(CS, (HalfAutoOrder), 1);
+};
+
+// ---------------------------------------------------------------------------
+//      非侵入型手動（基底クラス）
+// ---------------------------------------------------------------------------
+
+//      ---<<< 配列のみで参照される完全自動型 >>>---
+//      専用処理が必要なのでテストを設ける
+
+struct ArrayOnly3
+{
+    int     mInt;
+    ArrayOnly3() : mInt(0) { }
+};
+
+//      ---<<< 本体 >>>---
+
+class Manual
+{
+public:
+    // メンバ定義
+    #define DEFINE(dType, dVar, dDef, dVal) dType dVar;
+    #define ARRAY(dType, dVar, dNum, dDef, dVal)    \
+        dType dVar##Array1[dNum];                   \
+        dType dVar##Array2[2][dNum];                \
+        dType dVar##Array3[3][2][dNum];
+    DEFINE_MEMBERS()
+    #undef  ARRAY
+    #undef  DEFINE
+
+    // クラス配列
+    static const std::size_t    kRow=3;
+    static const std::size_t    kCol=3;
+    static const int            kValue=-123;
+    ArrayOnly3  mArrayOnly[kRow][kCol];
+
+    // デフォルト・コンストラクタ
+    Manual() :
+        #define DEFINE(dType, dVar, dDef, dVal) dVar(dDef),
+        #define ARRAY(dType, dVar, dNum, dDef, dVal)\
+            dVar##Array1{},                         \
+            dVar##Array2{},                         \
+            dVar##Array3{},
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+        mArrayOnly{}
+    { }
+
+    // 保存前の値設定
+    Manual(bool) :
         #undef  DEFINE
         #define DEFINE(dType, dVar, dDef, dVal) dVar(dVal),
         #define ARRAY(dType, dVar, dNum, dDef, dVal)\
@@ -669,17 +895,17 @@ public:
 
 //      ---<<< シリアライズ用の手動記述 >>>---
 
-THEOLIZER_NON_INTRUSIVE_ORDER((BaseManual), 1);
+THEOLIZER_NON_INTRUSIVE_ORDER((Manual), 1);
 
 // 以下、test_class_variation.cpp.theolizer.hppから、
-//  #ifdef  THEOLIZER_WRITE_CODE // ###### BaseManual ######の
+//  #ifdef  THEOLIZER_WRITE_CODE // ###### Manual ######の
 //  #if false // Sample of save/load function.
 //  から
 //  #endif // Sample of save/load function.
 //  までの間をコピーして、saveClassManual()/loadClassManual()の内容を記述。
 
 template<class tBaseSerializer, class tTheolizerVersion>
-struct TheolizerNonIntrusive<BaseManual>::TheolizerUserDefine<tBaseSerializer, tTheolizerVersion,1>
+struct TheolizerNonIntrusive<Manual>::TheolizerUserDefine<tBaseSerializer, tTheolizerVersion,1>
 {
     // Save members.
     static void saveClassManual
@@ -722,6 +948,561 @@ struct TheolizerNonIntrusive<BaseManual>::TheolizerUserDefine<tBaseSerializer, t
     }
 };
 
+// ***************************************************************************
+//      組み合わせテスト用基底クラス
+// ***************************************************************************
+
+// ---------------------------------------------------------------------------
+//      private用基底クラス
+// ---------------------------------------------------------------------------
+
+class BasePrivate
+{
+    static const int kIntPrivate  =11;
+    static const int kIntProtected=12;
+    static const int kIntPublic   =13;
+
+    int     mIntPrivate;
+protected:
+    int     mIntProtected;
+public:
+    int     mIntPublic;
+
+    BasePrivate() : mIntPrivate(0), mIntProtected(0), mIntPublic(0)
+    { }
+    BasePrivate(bool) :
+        mIntPrivate(kIntPrivate),
+        mIntProtected(kIntProtected),
+        mIntPublic(kIntPublic)
+    { }
+
+    void checkPrivate(bool isValued=false)
+    {
+        THEOLIZER_EQUAL(mIntPrivate, ((!isValued)?0:kIntPrivate));
+    }
+
+    void checkProtected(bool isValued=false)
+    {
+        THEOLIZER_EQUAL(mIntProtected, ((!isValued)?0:kIntProtected));
+    }
+
+    void checkPublic(bool isValued=false)
+    {
+        THEOLIZER_EQUAL(mIntPublic, ((!isValued)?0:kIntPublic));
+    }
+};
+
+// ---------------------------------------------------------------------------
+//      protected用基底クラス
+// ---------------------------------------------------------------------------
+
+class BaseProtected
+{
+    static const int kIntPrivate  =21;
+    static const int kIntProtected=22;
+    static const int kIntPublic   =23;
+
+    int     mIntPrivate;
+protected:
+    int     mIntProtected;
+public:
+    int     mIntPublic;
+
+    BaseProtected() : mIntPrivate(0), mIntProtected(0), mIntPublic(0)
+    { }
+    BaseProtected(bool) :
+        mIntPrivate(kIntPrivate),
+        mIntProtected(kIntProtected),
+        mIntPublic(kIntPublic)
+    { }
+
+    void checkPrivate(bool isValued=false)
+    {
+        THEOLIZER_EQUAL(mIntPrivate, ((!isValued)?0:kIntPrivate));
+    }
+
+    void checkProtected(bool isValued=false)
+    {
+        THEOLIZER_EQUAL(mIntProtected, ((!isValued)?0:kIntProtected));
+    }
+
+    void checkPublic(bool isValued=false)
+    {
+        THEOLIZER_EQUAL(mIntPublic, ((!isValued)?0:kIntPublic));
+    }
+};
+
+// ---------------------------------------------------------------------------
+//      非侵入型完全自動　基底クラス
+// ---------------------------------------------------------------------------
+
+class BaseFullAuto
+{
+    static const int kIntPrivate  =31;
+    static const int kIntProtected=32;
+    static const int kIntPublic   =33;
+
+    int     mIntPrivate;
+
+protected:
+    int     mIntProtected;
+
+public:
+    int     mIntPublic;
+
+    // デフォルト・コンストラクタ
+    BaseFullAuto() : mIntPrivate(0), mIntProtected(0), mIntPublic(0)
+    { }
+
+    // 保存前の値設定
+    BaseFullAuto(bool) :
+        mIntPrivate(kIntPrivate),
+        mIntProtected(kIntProtected),
+        mIntPublic(kIntPublic)
+    { }
+
+    void checkPrivate(bool isValued=false)
+    {
+        THEOLIZER_EQUAL(mIntPrivate, ((!isValued)?0:kIntPrivate));
+    }
+
+    void checkProtected(bool isValued=false)
+    {
+        THEOLIZER_EQUAL(mIntProtected, ((!isValued)?0:kIntProtected));
+    }
+
+    void checkPublic(bool isValued=false)
+    {
+        THEOLIZER_EQUAL(mIntPublic, ((!isValued)?0:kIntPublic));
+    }
+};
+
+// ---------------------------------------------------------------------------
+//      侵入型半自動　基底クラス
+// ---------------------------------------------------------------------------
+
+class BaseHalfAuto
+{
+    static const int kIntPrivate  =41;
+    static const int kIntProtected=42;
+    static const int kIntPublic   =43;
+
+    int     mIntPrivate;
+
+protected:
+    int     mIntProtected;
+
+public:
+    int     mIntPublic;
+
+    // デフォルト・コンストラクタ
+    BaseHalfAuto() : mIntPrivate(0), mIntProtected(0), mIntPublic(0)
+    { }
+
+    // 保存前の値設定
+    BaseHalfAuto(bool) :
+        mIntPrivate(kIntPrivate),
+        mIntProtected(kIntProtected),
+        mIntPublic(kIntPublic)
+    { }
+
+    void checkPrivate(bool isValued=false)
+    {
+        THEOLIZER_EQUAL(mIntPrivate, ((!isValued)?0:kIntPrivate));
+    }
+
+    void checkProtected(bool isValued=false)
+    {
+        THEOLIZER_EQUAL(mIntProtected, ((!isValued)?0:kIntProtected));
+    }
+
+    void checkPublic(bool isValued=false)
+    {
+        THEOLIZER_EQUAL(mIntPublic, ((!isValued)?0:kIntPublic));
+    }
+
+    // 侵入型半自動 指定
+    THEOLIZER_INTRUSIVE(CS, (BaseHalfAuto), 1);
+};
+
+// ---------------------------------------------------------------------------
+//      非侵入型手動　基底クラス
+// ---------------------------------------------------------------------------
+
+class BaseManual
+{
+    static const int kIntPublic   =53;
+public:
+    int     mIntPublic;
+
+    // デフォルト・コンストラクタ
+    BaseManual() : mIntPublic(0)
+    { }
+
+    // 保存前の値設定
+    BaseManual(bool) : mIntPublic(kIntPublic)
+    { }
+
+    // publicメンバの値をチェック
+    void checkPublic(bool isValued=false)
+    {
+        THEOLIZER_EQUAL(mIntPublic, ((!isValued)?0:kIntPublic));
+    }
+};
+
+//      ---<<< シリアライズ用の手動記述 >>>---
+
+THEOLIZER_NON_INTRUSIVE_ORDER((BaseManual), 1);
+
+// 以下、test_class_variation.cpp.theolizer.hppから、
+//  #ifdef  THEOLIZER_WRITE_CODE // ###### BaseManual ######の
+//  #if false // Sample of save/load function.
+//  から
+//  #endif // Sample of save/load function.
+//  までの間をコピーして、saveClassManual()/loadClassManual()の内容を記述。
+
+template<class tBaseSerializer, class tTheolizerVersion>
+struct TheolizerNonIntrusive<BaseManual>::TheolizerUserDefine<tBaseSerializer, tTheolizerVersion,1>
+{
+    // Save members.
+    static void saveClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
+    )
+    {
+        THEOLIZER_PROCESS(iSerializer, iInstance->mIntPublic);
+    }
+
+    // Load members.
+    static void loadClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget*& oInstance
+    )
+    {
+        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
+
+        THEOLIZER_PROCESS(iSerializer, oInstance->mIntPublic);
+    }
+};
+
+// ***************************************************************************
+//      ２重組み合わせテスト
+// ***************************************************************************
+
+// ---------------------------------------------------------------------------
+//      非侵入型完全自動
+// ---------------------------------------------------------------------------
+
+class DerivedFullAuto :
+    private     BasePrivate,
+    protected   BaseProtected,
+    public      BaseFullAuto,
+    public      BaseHalfAuto,
+    public      BaseManual
+{
+    BaseFullAuto    mBaseFullAutoPrivate;
+    BaseHalfAuto    mBaseHalfAutoPrivate;
+    BaseManual      mBaseManualPrivate;
+protected:
+    BaseFullAuto    mBaseFullAutoProtected;
+    BaseHalfAuto    mBaseHalfAutoProtected;
+    BaseManual      mBaseManualProtected;
+public:
+    BaseFullAuto    mBaseFullAutoPublic;
+    BaseHalfAuto    mBaseHalfAutoPublic;
+    BaseManual      mBaseManualPublic;
+
+    DerivedFullAuto() :
+        BasePrivate{},
+        BaseProtected{},
+        BaseFullAuto{},
+        BaseHalfAuto{},
+        BaseManual{},
+        mBaseFullAutoPrivate{},
+        mBaseHalfAutoPrivate{},
+        mBaseManualPrivate{},
+        mBaseFullAutoProtected{},
+        mBaseHalfAutoProtected{},
+        mBaseManualProtected{},
+        mBaseFullAutoPublic{},
+        mBaseHalfAutoPublic{},
+        mBaseManualPublic{}
+    { }
+
+    DerivedFullAuto(bool) :
+        BasePrivate{true},
+        BaseProtected{true},
+        BaseFullAuto{true},
+        BaseHalfAuto{true},
+        BaseManual{true},
+        mBaseFullAutoPrivate{true},
+        mBaseHalfAutoPrivate{true},
+        mBaseManualPrivate{true},
+        mBaseFullAutoProtected{true},
+        mBaseHalfAutoProtected{true},
+        mBaseManualProtected{true},
+        mBaseFullAutoPublic{true},
+        mBaseHalfAutoPublic{true},
+        mBaseManualPublic{true}
+    { }
+
+    void check()
+    {
+        // private継承
+        BasePrivate::checkPrivate(false);               // private継承は保存無し
+        BasePrivate::checkProtected(false);             // private継承は保存無し
+        BasePrivate::checkPublic(false);                // private継承は保存無し
+
+        // protected継承
+        BaseProtected::checkPrivate(false);             // 完全自動のprivateは保存無し
+        BaseProtected::checkProtected(true);
+        BaseProtected::checkPublic(true);
+
+        // public継承
+        BaseFullAuto::checkPrivate(false);              // 完全自動のprivateは保存無し
+        BaseFullAuto::checkProtected(true);
+        BaseFullAuto::checkPublic(true);
+        BaseHalfAuto::checkPrivate(true);
+        BaseHalfAuto::checkProtected(true);
+        BaseHalfAuto::checkPublic(true);
+        BaseManual::checkPublic(true);
+
+        // privateメンバ
+        mBaseFullAutoPrivate.checkPrivate(false);       // privateメンバは保存無し
+        mBaseFullAutoPrivate.checkProtected(false);     // privateメンバは保存無し
+        mBaseFullAutoPrivate.checkPublic(false);        // privateメンバは保存無し
+        mBaseHalfAutoPrivate.checkPrivate(false);       // privateメンバは保存無し
+        mBaseHalfAutoPrivate.checkProtected(false);     // privateメンバは保存無し
+        mBaseHalfAutoPrivate.checkPublic(false);        // privateメンバは保存無し
+        mBaseManualPrivate.checkPublic(false);          // privateメンバは保存無し
+
+        // protectedメンバ
+        mBaseFullAutoProtected.checkPrivate(false);     // 完全自動のprivateは保存無し
+        mBaseFullAutoProtected.checkProtected(true);
+        mBaseFullAutoProtected.checkPublic(true);
+        mBaseHalfAutoProtected.checkPrivate(true);
+        mBaseHalfAutoProtected.checkProtected(true);
+        mBaseHalfAutoProtected.checkPublic(true);
+        mBaseManualProtected.checkPublic(true);
+
+        // publicメンバ
+        mBaseFullAutoPublic.checkPrivate(false);        // 完全自動のprivateは保存無し
+        mBaseFullAutoPublic.checkProtected(true);
+        mBaseFullAutoPublic.checkPublic(true);
+        mBaseHalfAutoPublic.checkPrivate(true);
+        mBaseHalfAutoPublic.checkProtected(true);
+        mBaseHalfAutoPublic.checkPublic(true);
+        mBaseManualPublic.checkPublic(true);
+    }
+};
+
+// ---------------------------------------------------------------------------
+//      侵入型半自動
+// ---------------------------------------------------------------------------
+
+class DerivedHalfAuto :
+    private     BasePrivate,
+    protected   BaseProtected,
+    public      BaseFullAuto,
+    public      BaseHalfAuto,
+    public      BaseManual
+{
+    BaseFullAuto    mBaseFullAutoPrivate;
+    BaseHalfAuto    mBaseHalfAutoPrivate;
+    BaseManual      mBaseManualPrivate;
+protected:
+    BaseFullAuto    mBaseFullAutoProtected;
+    BaseHalfAuto    mBaseHalfAutoProtected;
+    BaseManual      mBaseManualProtected;
+public:
+    BaseFullAuto    mBaseFullAutoPublic;
+    BaseHalfAuto    mBaseHalfAutoPublic;
+    BaseManual      mBaseManualPublic;
+
+    DerivedHalfAuto() :
+        BasePrivate{},
+        BaseProtected{},
+        BaseFullAuto{},
+        BaseHalfAuto{},
+        BaseManual{},
+        mBaseFullAutoPrivate{},
+        mBaseHalfAutoPrivate{},
+        mBaseManualPrivate{},
+        mBaseFullAutoProtected{},
+        mBaseHalfAutoProtected{},
+        mBaseManualProtected{},
+        mBaseFullAutoPublic{},
+        mBaseHalfAutoPublic{},
+        mBaseManualPublic{}
+    { }
+
+    DerivedHalfAuto(bool) :
+        BasePrivate{true},
+        BaseProtected{true},
+        BaseFullAuto{true},
+        BaseHalfAuto{true},
+        BaseManual{true},
+        mBaseFullAutoPrivate{true},
+        mBaseHalfAutoPrivate{true},
+        mBaseManualPrivate{true},
+        mBaseFullAutoProtected{true},
+        mBaseHalfAutoProtected{true},
+        mBaseManualProtected{true},
+        mBaseFullAutoPublic{true},
+        mBaseHalfAutoPublic{true},
+        mBaseManualPublic{true}
+    { }
+
+    void check()
+    {
+        // private継承
+        BasePrivate::checkPrivate(false);               // 完全自動のprivateは保存無し
+        BasePrivate::checkProtected(true);
+        BasePrivate::checkPublic(true);
+
+        // protected継承
+        BaseProtected::checkPrivate(false);             // 完全自動のprivateは保存無し
+        BaseProtected::checkProtected(true);
+        BaseProtected::checkPublic(true);
+
+        // public継承
+        BaseFullAuto::checkPrivate(false);              // 完全自動のprivateは保存無し
+        BaseFullAuto::checkProtected(true);
+        BaseFullAuto::checkPublic(true);
+        BaseHalfAuto::checkPrivate(true);
+        BaseHalfAuto::checkProtected(true);
+        BaseHalfAuto::checkPublic(true);
+        BaseManual::checkPublic(true);
+
+        // privateメンバ
+        mBaseFullAutoPrivate.checkPrivate(false);       // 完全自動のprivateは保存無し
+        mBaseFullAutoPrivate.checkProtected(true);
+        mBaseFullAutoPrivate.checkPublic(true);
+        mBaseHalfAutoPrivate.checkPrivate(true);
+        mBaseHalfAutoPrivate.checkProtected(true);
+        mBaseHalfAutoPrivate.checkPublic(true);
+        mBaseManualPrivate.checkPublic(true);   
+
+        // protectedメンバ
+        mBaseFullAutoProtected.checkPrivate(false);     // 完全自動のprivateは保存無し
+        mBaseFullAutoProtected.checkProtected(true);
+        mBaseFullAutoProtected.checkPublic(true);
+        mBaseHalfAutoProtected.checkPrivate(true);
+        mBaseHalfAutoProtected.checkProtected(true);
+        mBaseHalfAutoProtected.checkPublic(true);
+        mBaseManualProtected.checkPublic(true);
+
+        // publicメンバ
+        mBaseFullAutoPublic.checkPrivate(false);        // 完全自動のprivateは保存無し
+        mBaseFullAutoPublic.checkProtected(true);
+        mBaseFullAutoPublic.checkPublic(true);
+        mBaseHalfAutoPublic.checkPrivate(true);
+        mBaseHalfAutoPublic.checkProtected(true);
+        mBaseHalfAutoPublic.checkPublic(true);
+        mBaseManualPublic.checkPublic(true);
+    }
+
+    // 侵入型半自動 指定
+    THEOLIZER_INTRUSIVE(CS, (DerivedHalfAuto), 1);
+};
+
+// ---------------------------------------------------------------------------
+//      非侵入型手動
+// ---------------------------------------------------------------------------
+
+class DerivedManual :
+    public      BaseFullAuto,
+    public      BaseHalfAuto,
+    public      BaseManual
+{
+public:
+    BaseFullAuto    mBaseFullAutoPublic;
+    BaseHalfAuto    mBaseHalfAutoPublic;
+    BaseManual      mBaseManualPublic;
+
+    DerivedManual() :
+        BaseFullAuto{},
+        BaseHalfAuto{},
+        BaseManual{},
+        mBaseFullAutoPublic{},
+        mBaseHalfAutoPublic{},
+        mBaseManualPublic{}
+    { }
+
+    DerivedManual(bool) :
+        BaseFullAuto{true},
+        BaseHalfAuto{true},
+        BaseManual{true},
+        mBaseFullAutoPublic{true},
+        mBaseHalfAutoPublic{true},
+        mBaseManualPublic{true}
+    { }
+
+    void check()
+    {
+        // public継承
+        BaseFullAuto::checkPrivate(false);              // 完全自動のprivateは保存無し
+        BaseFullAuto::checkProtected(true);
+        BaseFullAuto::checkPublic(true);
+        BaseHalfAuto::checkPrivate(true);
+        BaseHalfAuto::checkProtected(true);
+        BaseHalfAuto::checkPublic(true);
+        BaseManual::checkPublic(true);
+
+        // publicメンバ
+        mBaseFullAutoPublic.checkPrivate(false);        // 完全自動のprivateは保存無し
+        mBaseFullAutoPublic.checkProtected(true);
+        mBaseFullAutoPublic.checkPublic(true);
+        mBaseHalfAutoPublic.checkPrivate(true);
+        mBaseHalfAutoPublic.checkProtected(true);
+        mBaseHalfAutoPublic.checkPublic(true);
+        mBaseManualPublic.checkPublic(true);
+    }
+};
+
+//      ---<<< シリアライズ用の手動記述 >>>---
+
+THEOLIZER_NON_INTRUSIVE_ORDER((DerivedManual), 1);
+
+template<class tBaseSerializer, class tTheolizerVersion>
+struct TheolizerNonIntrusive<DerivedManual>::
+    TheolizerUserDefine<tBaseSerializer, tTheolizerVersion,1>
+{
+    // Save members.
+    static void saveClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
+    )
+    {
+        THEOLIZER_PROCESS(iSerializer, static_cast<BaseFullAuto const&>(*iInstance));
+        THEOLIZER_PROCESS(iSerializer, static_cast<BaseHalfAuto const&>(*iInstance));
+        THEOLIZER_PROCESS(iSerializer, static_cast<BaseManual const&>(*iInstance));
+        THEOLIZER_PROCESS(iSerializer, iInstance->mBaseFullAutoPublic);
+        THEOLIZER_PROCESS(iSerializer, iInstance->mBaseHalfAutoPublic);
+        THEOLIZER_PROCESS(iSerializer, iInstance->mBaseManualPublic);
+    }
+
+    // Load members.
+    static void loadClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget*& oInstance
+    )
+    {
+        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
+
+        THEOLIZER_PROCESS(iSerializer, static_cast<BaseFullAuto&>(*oInstance));
+        THEOLIZER_PROCESS(iSerializer, static_cast<BaseHalfAuto&>(*oInstance));
+        THEOLIZER_PROCESS(iSerializer, static_cast<BaseManual&>(*oInstance));
+        THEOLIZER_PROCESS(iSerializer, oInstance->mBaseFullAutoPublic);
+        THEOLIZER_PROCESS(iSerializer, oInstance->mBaseHalfAutoPublic);
+        THEOLIZER_PROCESS(iSerializer, oInstance->mBaseManualPublic);
+    }
+};
+
 // ---------------------------------------------------------------------------
 /*
     組み合わせ検討
@@ -731,15 +1512,21 @@ struct TheolizerNonIntrusive<BaseManual>::TheolizerUserDefine<tBaseSerializer, t
             値設定(パラメータは1つだけ)
 
         単独
-            非侵入型完全自動Base
+            非侵入型完全自動
                 プリミティブ全部
                 enum型          非侵入型完全自動
                 scoped enum型   非侵入型完全自動
                 上記全ての配列  1次元、2次元、3次元
-            侵入型半自動Base
-                上記と同じ
-            非侵入型手動Base
+            侵入型半自動
+                上記と同じ      名前対応
+                上記と同じ      順序対応
+            非侵入型手動
                 上記と同じ（test_basic_processとほぼ同様)
+
+        基底クラス
+            非侵入型完全自動Base
+            侵入型半自動Base
+            非侵入型手動Base
 
         2重組み合わせ
             非侵入型完全自動Derived

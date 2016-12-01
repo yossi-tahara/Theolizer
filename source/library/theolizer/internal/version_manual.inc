@@ -257,7 +257,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         {
             wsInitialzied=true;
             #if defined(THEOLIZER_GENERATED_BASE_LIST)
-                #define THEOLIZER_GENERATED_SEP   ,
+                #define THEOLIZER_GENERATED_SEP
                 #define THEOLIZER_INTERNAL_VERSION_B(                       \
                     dSpec, dTrack, dId, dType, dVerNo, dVer, dAnno)         \
                     {                                                       \
