@@ -113,6 +113,34 @@ void saveClassVariation(tSerializer& iSerializer)
         std::cout << "        saveClassVariation() : aDerivedManual" << std::endl;
         THEOLIZER_PROCESS(iSerializer, aDerivedManual);
     }
+
+// ---------------------------------------------------------------------------
+//      ３重組み合わせテスト
+// ---------------------------------------------------------------------------
+
+//      ---<<< 非侵入型完全自動 >>>---
+
+    {
+        TripledFullAuto aTripledFullAuto{true};
+        std::cout << "        saveClassVariation() : aTripledFullAuto" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aTripledFullAuto);
+    }
+
+//      ---<<< 侵入型半自動 >>>---
+
+    {
+        TripledHalfAuto aTripledHalfAuto{true};
+        std::cout << "        saveClassVariation() : aTripledHalfAuto" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aTripledHalfAuto);
+    }
+
+//      ---<<< 非侵入型手動 >>>---
+
+    {
+        TripledManual   aTripledManual{true};
+        std::cout << "        saveClassVariation() : aTripledManual" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aTripledManual);
+    }
 }
 //! [saveClassVariation]
 
@@ -201,6 +229,37 @@ void loadClassVariation(tSerializer& iSerializer)
         std::cout << "        loadClassVariation() : aDerivedManual" << std::endl;
         THEOLIZER_PROCESS(iSerializer, aDerivedManual);
         aDerivedManual.check();
+    }
+
+// ---------------------------------------------------------------------------
+//      ３重組み合わせテスト
+// ---------------------------------------------------------------------------
+
+//      ---<<< 非侵入型完全自動 >>>---
+
+    {
+        TripledFullAuto aTripledFullAuto{};
+        std::cout << "        loadClassVariation() : aTripledFullAuto" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aTripledFullAuto);
+        aTripledFullAuto.check();
+    }
+
+//      ---<<< 侵入型半自動 >>>---
+
+    {
+        TripledHalfAuto aTripledHalfAuto{};
+        std::cout << "        loadClassVariation() : aTripledHalfAuto" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aTripledHalfAuto);
+        aTripledHalfAuto.check();
+    }
+
+//      ---<<< 非侵入型手動 >>>---
+
+    {
+        TripledManual   aTripledManual{};
+        std::cout << "        loadClassVariation() : aTripledManual" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aTripledManual);
+        aTripledManual.check();
     }
 }
 //! [loadClassVariation]

@@ -479,7 +479,7 @@ ASTANALYZE_OUTPUT("    ::Theolizer does not process.");
         for (auto base : iCXXRecordDecl->bases())
         {
             Type const* type = base.getType().split().Ty;
-            CXXRecordDecl* aBaseDecl = getCXXRecordDecl(type);
+            CXXRecordDecl* aBaseDecl = type->getAsCXXRecordDecl();
             if (aBaseDecl
              && (aBaseDecl->getName().equals("GlobalVersionNoTable")))
             {
@@ -1313,7 +1313,7 @@ ASTANALYZE_OUTPUT("++++++++++++ enumerateClass(", iClass->getQualifiedNameAsStri
         for (auto base : iClass->bases())
         {
             const Type *type = base.getType().split().Ty;
-            CXXRecordDecl* aBaseDecl = getCXXRecordDecl(type);
+            CXXRecordDecl* aBaseDecl = type->getAsCXXRecordDecl();
             if (aBaseDecl)
             {
                 // TheolizerBaseは登録しない

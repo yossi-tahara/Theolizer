@@ -522,30 +522,6 @@ return false;
 }
 
 //----------------------------------------------------------------------------
-//      TypeからCXXRecordDecl取り出し
-//          取り出せない時は、nullptr返却
-//----------------------------------------------------------------------------
-
-CXXRecordDecl* getCXXRecordDecl(const Type* iType)
-{
-    CXXRecordDecl* ret=nullptr;
-
-    if (iType->getTypeClass() == Type::Elaborated)
-    {
-        ret = iType->getAsCXXRecordDecl();
-    }
-    else if (iType->getTypeClass() == Type::Record)
-    {
-        RecordDecl* rd = cast<RecordType>(iType)->getDecl();
-        if (rd->getKind() == Decl::CXXRecord) {
-            ret = cast<CXXRecordDecl>(rd);
-        }
-    }
-
-    return ret;
-}
-
-//----------------------------------------------------------------------------
 //      名前空間取り出し
 //----------------------------------------------------------------------------
 

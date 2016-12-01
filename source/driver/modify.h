@@ -166,6 +166,7 @@ ASTANALYZE_OUTPUT("instertString");
     (
         clang::AccessSpecifier iAccSpec,
         CXXRecordDecl const* iBase,
+        std::string const& iBaseName,
         unsigned iId,
         bool iIsManual
     )
@@ -212,9 +213,12 @@ ASTANALYZE_OUTPUT("instertString");
 
         default:
             // 省略時、structならpublic、classならprivate
-            if (iBase->getTagKind() == clang::TTK_Struct) {
+            if (iBase->getTagKind() == clang::TTK_Struct)
+            {
                 mLastVersion << "public";
-            } else {
+            }
+            else
+            {
                 mLastVersion << "private";
             }
         }
@@ -225,12 +229,15 @@ ASTANALYZE_OUTPUT("instertString");
         mLastVersion << "," << iId;
 
         // 型名
-        mLastVersion << ",(" << iBase->getQualifiedNameAsString() << ")";
+        mLastVersion << ",(" << iBaseName << ")";
 
         // バージョン番号(ある時だけ)
-        if (aIsKeepStep) {
+        if (aIsKeepStep)
+        {
             mLastVersion << "," << found->second.mLastVersionNo << ")";
-        } else {
+        }
+        else
+        {
             mLastVersion << ")";
         }
     }
@@ -1036,7 +1043,8 @@ ASTANALYZE_OUTPUT("    Theolizer does not modify source "
 //      クラス・テンプレート対応
 //----------------------------------------------------------------------------
 
-        string aParameterList;  // template<...>
+        string aParameterList;      // template<...>
+        string aAddClassName;       // <...>
 
         bool aIsTemplate=false;
         bool aMakeTempalteName=false;
@@ -1047,8 +1055,7 @@ ASTANALYZE_OUTPUT("    Theolizer does not modify source "
         //  定義側ではなく宣言のパラメータ・リストになる模様。
         //  プライマリーの定義側に実引数(注入)リストはないためだろう。
         //  そこで、仮引数リスト(TemplateParameterList)から生成する。
-        if (ClassTemplateDecl* ctd=iSerializeInfo.mTheolizerTarget->
-            getDescribedClassTemplate())
+        if (ClassTemplateDecl* ctd=iSerializeInfo.mTheolizerTarget->getDescribedClassTemplate())
         {
             aIsTemplate=true;
             aMakeTempalteName=true;
@@ -1066,7 +1073,8 @@ ASTANALYZE_OUTPUT("    Theolizer does not modify source "
             aClassName=qt.getAsString();
             clang::ClassTemplatePartialSpecializationDecl const* ctpsd=
             dyn_cast<clang::ClassTemplatePartialSpecializationDecl>(ctsd);
-            if (ctpsd) {
+            if (ctpsd)
+            {
                 aIsTemplate=true;
                 aTemplateParameterList=ctpsd->getTemplateParameters();
             }
@@ -1074,20 +1082,27 @@ ASTANALYZE_OUTPUT("    Theolizer does not modify source "
         }
 
         // テンプレート・パラメータとクラス名生成
-        std::stringstream aArgumentList;    // クラス<...>の<...>の部分
+        std::stringstream aArgumentList;    // クラス<...>の...の部分
         if (aIsTemplate)
         {
-            ERROR(iSerializeInfo.mAnnotationInfoTS.mAnnotate != AnnotationInfo::TS,
-                  mTheolizerClass, eAborted);
-            std::pair<StringRef, StringRef> temp=
-                StringRef(iSerializeInfo.mAnnotationInfoTS.mParameter).split(';');
-            aClassName=temp.second;
-            aParameterList=temp.first;
-            aParameterList.append("\n");
+            // 完全自動型以外は、ユーザ指定マクロから取り出す
+            std::pair<StringRef, StringRef> temp;
+            if (!iSerializeInfo.mIsFullAuto)
+            {
+                temp=StringRef(iSerializeInfo.mAnnotationInfoTS.mParameter).split(';');
+                aClassName=temp.second;
+                aParameterList=temp.first;
+                aParameterList.append("\n");
 
-            temp=temp.second.split('<');
-            temp=temp.second.rsplit('>');
-            temp=temp.first.split(',');
+                temp=temp.second.split('<');
+                temp=temp.second.rsplit('>');
+                temp=temp.first.split(',');
+            }
+            else
+            {
+                aParameterList="template<";
+                aAddClassName="<";
+            }
 
             bool aIsFirst=true;
             for (unsigned i=0; i < aTemplateParameterList->size(); ++i)
@@ -1097,7 +1112,7 @@ ASTANALYZE_OUTPUT("    Theolizer does not modify source "
             continue;
 
                 StringRef aName;
-                if (iSerializeInfo.mNonIntrusive)
+                if (!iSerializeInfo.mIsFullAuto)
                 {
                     if (temp.first.empty())
             break;
@@ -1109,15 +1124,36 @@ ASTANALYZE_OUTPUT("    Theolizer does not modify source "
                     aName=nd->getName();
                 }
 
-                if (aIsFirst) {
+                if (aIsFirst)
+                {
                     aIsFirst=false;
-                } else {
+                }
+                else
+                {
                     aArgumentList << ",";
+                    if (iSerializeInfo.mIsFullAuto)
+                    {
+                        aParameterList.append(",");
+                        aAddClassName.append(",");
+                    }
                 }
 
                 if (clang::TemplateTypeParmDecl* ttpd=dyn_cast<clang::TemplateTypeParmDecl>(nd))
                 {
                     aArgumentList << aName.str();
+                    if (iSerializeInfo.mIsFullAuto)
+                    {
+                        if (ttpd->wasDeclaredWithTypename())
+                        {
+                            aParameterList.append("typename ");
+                        }
+                        else
+                        {
+                            aParameterList.append("class ");
+                        }
+                        aParameterList.append(nd->getName());
+                        aAddClassName.append(nd->getName());
+                    }
                 }
                 else if (clang::NonTypeTemplateParmDecl* nttpd=
                     dyn_cast<clang::NonTypeTemplateParmDecl>(nd))
@@ -1126,8 +1162,22 @@ ASTANALYZE_OUTPUT("    Theolizer does not modify source "
                                   << nttpd->getType().getAsString()
                                   << "," << aName.str()
                                   << ">";
+                    if (iSerializeInfo.mIsFullAuto)
+                    {
+                        aParameterList.append(nttpd->getType().getAsString());
+                        aParameterList.append(" ");
+                        aParameterList.append(nd->getName());
+                        aAddClassName.append(nd->getName());
+                    }
                 }
             }
+            if (iSerializeInfo.mIsFullAuto)
+            {
+                aParameterList.append(">\n");
+                aAddClassName.append(">");
+            }
+ASTANALYZE_OUTPUT("    aParameterList=", aParameterList);
+ASTANALYZE_OUTPUT("    aAddClassName=", aAddClassName);
         }
         else if (aMakeTempalteName)
         {
@@ -1199,18 +1249,26 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
         if (iSerializeInfo.mIsFullAuto)
         {
             mLastVersion << "#define THEOLIZER_GENERATED_FULL_AUTO "
-                         << aClassName << "\n";
+                         << aClassName << aAddClassName << "\n";
         }
         else
         {
             mLastVersion << "#define THEOLIZER_GENERATED_CLASS_TYPE "
                          << aClassName << "\n";
         }
-        if (aIsTemplate) {
+        if (aIsTemplate)
+        {
             mLastVersion << "#define THEOLIZER_GENERATED_PARAMETER_LIST "
                          << aParameterList;
-            mLastVersion << "#define THEOLIZER_GENERATED_UNIQUE_NAME "
-                         << iSerializeInfo.mUniqueClass->getQualifiedNameAsString() << "\n";
+            mLastVersion << "#define THEOLIZER_GENERATED_UNIQUE_NAME ";
+            if (!iSerializeInfo.mIsFullAuto)
+            {
+                mLastVersion << iSerializeInfo.mUniqueClass->getQualifiedNameAsString() << "\n";
+            }
+            else
+            {
+                mLastVersion << aClassName << "Primary\n";
+            }
         }
 
         mLastVersion << "\n//      ---<<< Version."
@@ -1221,14 +1279,18 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
                      << iSerializeInfo.mLastVersionNo << ")\n";
 
         mLastVersion << "#define THEOLIZER_GENERATED_CLASS_NAME()\\\n";
-        if (aMakeTempalteName) {
+        if (aMakeTempalteName)
+        {
             mLastVersion << "    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8\""
                          << iSerializeInfo.mClassName << "\"," << aArgumentList.str() << "))\n";
-        } else {
+        }
+        else
+        {
             mLastVersion << "    THEOLIZER_INTERNAL_CLASS_NAME((u8\""
                          << aClassName << "\"))\n";
         }
-        if (!iSerializeInfo.mIsManual) {
+        if (!iSerializeInfo.mIsManual)
+        {
             mLastVersion << "#define THEOLIZER_GENERATED_ELEMENT_MAP "
                          << kElementsMapping[iSerializeInfo.mAdditionalInfo] << "\n";
         }
@@ -1256,12 +1318,12 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
         for (auto&& base : iSerializeInfo.mTheolizerTarget->bases())
         {
             QualType qt = base.getType().getCanonicalType();
-            Type const* type = qt.getTypePtr();
-            CXXRecordDecl const* aBase = getCXXRecordDecl(type);
+            CXXRecordDecl const* aBase = qt->getAsCXXRecordDecl();
             if (!aBase)
         continue;
 
-ASTANALYZE_OUTPUT("    Base : ", aBase->getName(), " hasDefinition()=", aBase->hasDefinition());
+            std::string aBaseName = qt.getCanonicalType().getAsString(mPrintingPolicy);
+ASTANALYZE_OUTPUT("    Base : ", aBaseName, " hasDefinition()=", aBase->hasDefinition());
 
             // 完全自動型のprivateなら、スキップする
             if ((iSerializeInfo.mIsFullAuto) && (base.getAccessSpecifier() == clang::AS_private))
@@ -1270,18 +1332,29 @@ ASTANALYZE_OUTPUT("    Base : ", aBase->getName(), " hasDefinition()=", aBase->h
         continue;
             }
 
-            if (aIsFirst) {
+            if (aIsFirst)
+            {
                 aIsFirst=false;
                 mLastVersion << "#define THEOLIZER_GENERATED_BASE_LIST()\\\n";
-            } else {
+            }
+            else
+            {
                 mLastVersion << " THEOLIZER_GENERATED_SEP\\\n";
             }
 
-            createBaseClass(base.getAccessSpecifier(), aBase, aId++, iSerializeInfo.mIsManual);
+            createBaseClass
+            (
+                base.getAccessSpecifier(),
+                aBase,
+                aBaseName,
+                aId++,
+                iSerializeInfo.mIsManual
+            );
             // 要素リストへ登録
             aElementList.emplace(string("@")+aBase->getName().str(), ElementInfo(qt));
         }
-        if (!aIsFirst) {
+        if (!aIsFirst)
+        {
             mLastVersion << "\n";
         }
 
@@ -1533,7 +1606,7 @@ ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsSt
                 ERROR(cmd->param_size() != 1, cmd, eAborted);
                 clang::ParmVarDecl const* aParam=cmd->getParamDecl(0);
                 QualType qt = aParam->getType().getCanonicalType();
-                CXXRecordDecl const* aBase = getCXXRecordDecl(qt.getTypePtr());
+                CXXRecordDecl const* aBase = qt->getAsCXXRecordDecl();
                 string aKey = string("@")+aBase->getName().str();
                 auto found = aElementList.find(aKey);           // 最新版にあるか確認
                 bool aDeleted=true;
