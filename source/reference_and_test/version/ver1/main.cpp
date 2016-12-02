@@ -60,6 +60,12 @@ void loadBasicProcess(tSerializer& iSerializer);
 //      classの様々なバリエーション
 // ---------------------------------------------------------------------------
 
+//      ---<<< 使い方のサンプル・コード >>>---
+
+void tutoriseClassVariation();
+
+//      ---<<< 自動テスト >>>---
+
 template<class tSerializer>
 void saveClassVariation(tSerializer& iSerializer);
 
@@ -316,6 +322,20 @@ return 1;
     }
 
     std::cout << theolizer::print("aGlobalVersionNo:%d\n", aGlobalVersionNo);
+
+// ***************************************************************************
+//      使い方説明サンプル呼び出し
+// ***************************************************************************
+
+    // デフォルト起動時のみ呼び出す
+    if (aGlobalVersionNo == 0)
+    {
+        tutoriseClassVariation();
+
+        // ここまでの中間結果表示
+        theolizer::printResult("------------- Result of tutorial samples ----------");
+        std::cerr << "\n\n";
+    }
 
 // ***************************************************************************
 //      GlobalVersionNoとCheckModeを振って処理を呼び出す

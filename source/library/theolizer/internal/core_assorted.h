@@ -780,97 +780,19 @@ enum class CheckMode
 //! @todo T.B.D.
 THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, CheckMode iCheckMode);
 
-// ***************************************************************************
-//      不正値
-// ***************************************************************************
-
 namespace internal
 {
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
+// ***************************************************************************
+//      不正値
+// ***************************************************************************
+
 THEOLIZER_INTERNAL_DLL extern const std::size_t kInvalidSize;
 
-//----------------------------------------------------------------------------
-//      非侵入型生成
-//----------------------------------------------------------------------------
-
-template<class tClass>
-struct NonIntrusiveImpl
-{
-    typedef TheolizerNonIntrusive<typename std::remove_const<tClass>::type> Type;
-};
-
-template<class tClass>
-using NonIntrusive=typename NonIntrusiveImpl<tClass>::Type;
-
-//----------------------------------------------------------------------------
-//      非侵入型クラス判定
-//----------------------------------------------------------------------------
-
-template<class tClass, class tEnable=void>
-struct IsNonIntrusiveImpl : public std::false_type
-{ };
-
-template<class tClass>
-struct IsNonIntrusiveImpl
-<
-    tClass,
-    EnableIf<NonIntrusive<tClass>::kIsTheolizer>
-> : public std::true_type
-{ };
-
-template<class tClass>
-struct IsNonIntrusive
-{
-    static const bool value=IsNonIntrusiveImpl<tClass>::value;
-};
-
-//----------------------------------------------------------------------------
-//      侵入型判定
-//----------------------------------------------------------------------------
-
-template<class tClass, class tEnable=void>
-struct IsIntrusiveImpl : public std::false_type
-{ };
-
-template<class tClass>
-struct IsIntrusiveImpl
-<
-    tClass,
-    EnableIf<tClass::kIsTheolizer && !IsNonIntrusive<tClass>::value>
-> : public std::true_type
-{ };
-
-template<class tClass>
-struct IsIntrusive
-{
-    static const bool value=IsIntrusiveImpl<tClass>::value;
-};
-
-//----------------------------------------------------------------------------
-//      侵入型と非侵入型のTheolizerVersion判定
-//----------------------------------------------------------------------------
-
-template<class tClass, class tEnable=void>
-struct IsTheolizerVersionImpl : public std::false_type
-{ };
-
-template<class tClass>
-struct IsTheolizerVersionImpl
-<
-    tClass,
-    EnableIf
-    <
-        tClass::Theolizer::kIsVersion
-    >
-> : public std::true_type
-{ };
-
-template<class tClass>
-struct IsTheolizerVersion
-{
-    static const bool value=IsTheolizerVersionImpl<tClass>::value;
-};
+// ***************************************************************************
+//      型分岐用補助ツール
+// ***************************************************************************
 
 //----------------------------------------------------------------------------
 //      文字列型判定(std::string, std::wstring, std::u16string, std::u32string)
@@ -924,6 +846,116 @@ template<typename tType>
 struct IsPrimitive
 {
     static const bool value=IsPrimitiveImpl<tType>::value;
+};
+
+//----------------------------------------------------------------------------
+//      侵入型と非侵入型のTheolizerVersion判定
+//----------------------------------------------------------------------------
+
+template<class tClass, class tEnable=void>
+struct IsTheolizerVersionImpl : public std::false_type
+{ };
+
+template<class tClass>
+struct IsTheolizerVersionImpl
+<
+    tClass,
+    EnableIf
+    <
+        tClass::Theolizer::kIsVersion
+    >
+> : public std::true_type
+{ };
+
+template<class tClass>
+struct IsTheolizerVersion
+{
+    static const bool value=IsTheolizerVersionImpl<tClass>::value;
+};
+
+//----------------------------------------------------------------------------
+//      手動型用基底クラス(TheolizerBase)判定
+//----------------------------------------------------------------------------
+
+template<class tClass, class tEnable=void>
+struct IsTheolizerBaseImpl : public std::false_type
+{ };
+
+template<class tClass>
+struct IsTheolizerBaseImpl
+<
+    tClass,
+    EnableIf<tClass::kIsTheolizerBase && !IsTheolizerVersion<tClass>::value>
+> : public std::true_type
+{ };
+
+template<class tClass>
+struct IsTheolizerBase
+{
+    static const bool value=IsTheolizerBaseImpl<tClass>::value;
+};
+
+//----------------------------------------------------------------------------
+//      非侵入型生成
+//----------------------------------------------------------------------------
+
+template<class tClass>
+struct NonIntrusiveImpl
+{
+    typedef TheolizerNonIntrusive<typename std::remove_const<tClass>::type> Type;
+};
+
+template<class tClass>
+using NonIntrusive=typename NonIntrusiveImpl<tClass>::Type;
+
+//----------------------------------------------------------------------------
+//      非侵入型クラス判定
+//----------------------------------------------------------------------------
+
+template<class tClass, class tEnable=void>
+struct IsNonIntrusiveImpl : public std::false_type
+{ };
+
+template<class tClass>
+struct IsNonIntrusiveImpl
+<
+    tClass,
+    EnableIf<NonIntrusive<tClass>::kIsTheolizer>
+> : public std::true_type
+{ };
+
+template<class tClass>
+struct IsNonIntrusive
+{
+    static const bool value=IsNonIntrusiveImpl<tClass>::value;
+};
+
+//----------------------------------------------------------------------------
+//      侵入型判定
+//----------------------------------------------------------------------------
+
+template<class tClass, class tEnable=void>
+struct IsIntrusiveImpl : public std::false_type
+{ };
+
+template<class tClass>
+struct IsIntrusiveImpl
+<
+    tClass,
+    EnableIf
+    <
+        std::is_class<tClass>::value
+     && !IsString<tClass>::value
+     && !IsNonIntrusive<tClass>::value
+     && !IsTheolizerBase<tClass>::value
+    >
+> : public std::true_type
+{ };
+
+template<class tClass>
+struct IsIntrusive
+{
+    static const bool value=IsIntrusiveImpl<tClass>::value;
 };
 
 //----------------------------------------------------------------------------

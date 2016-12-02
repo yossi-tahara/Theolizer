@@ -335,10 +335,18 @@ void incrementFailCount()
     ++internal::gFailCount;
 }
 
-bool printResult()
+bool printResult(char const* iTitle)
 {
+    if (iTitle)
+    {
+        *internal::gOStream << iTitle << "\n";
+    }
+    else
+    {
+        *internal::gOStream << "\n------------- End Test ----------\n";
+    }
+
     *internal::gOStream
-        << "\n------------- End Test ----------\n"
         << "    Total = " << internal::gTotal << "\n"
         << "    Pass  = " << internal::gTotal - internal::gFailCount << "\n"
         << "    Fail  = " << internal::gFailCount << "\n";

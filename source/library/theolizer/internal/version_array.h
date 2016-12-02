@@ -240,6 +240,13 @@ struct ArrayManager<tUnderlyingType>
         typedef void TheolizerArrayUnderlying;  // Switcher<>分岐用
         typedef tUnderlyingType UnderlyingType; // Switcher<>処理用
 
+        // Switcher<>分岐用
+        struct Theolizer
+        {
+            static const bool kIsVersion=true;
+            static const bool kIsArray=true;
+        };
+
 //      --- 型定義 ---
 
         // ユーザ定義配列の「基本型」
@@ -314,6 +321,13 @@ struct ArrayManager<tUnderlyingType&>   // tUnderlyingTypeの参照がここで�
     {
         typedef void TheolizerArrayUnderlying;  // Switcher<>分岐用
         typedef tUnderlyingType UnderlyingType; // Switcher<>処理用
+
+        // Switcher<>分岐用
+        struct Theolizer
+        {
+            static const bool kIsVersion=true;
+            static const bool kIsArray=true;
+        };
 
 //      --- 型定義 ---
 

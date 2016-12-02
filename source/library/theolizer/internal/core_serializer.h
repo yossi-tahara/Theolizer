@@ -187,17 +187,11 @@ public:                                                                     \
                                                                             \
 private:                                                                    \
     static const bool kIsTheolizer=true;                                    \
-    template<class>         friend struct theolizer::internal::IsNonIntrusive;        \
-    template<class, class>  friend struct theolizer::internal::IsNonIntrusiveImpl;    \
-    template<class>         friend struct theolizer::internal::IsIntrusive;           \
-    template<class, class>  friend struct theolizer::internal::IsIntrusiveImpl;       \
-    template<class>         friend struct theolizer::internal::IsTheolizerVersion;    \
-    template<class, class>  friend struct theolizer::internal::IsTheolizerVersionImpl;\
-    template<class>         friend class theolizer::internal::ClassTypeInfo;          \
-    template<class, typename, bool, theolizer::internal::TrackingMode, class>         \
-        friend struct theolizer::internal::Switcher;                        \
-    template<typename, std::size_t...>                                      \
-        friend struct theolizer::internal::ArrayManager
+    template<class>         friend struct theolizer::internal::IsNonIntrusive;\
+    template<class, class>  friend struct theolizer::internal::IsNonIntrusiveImpl;\
+    template<class> friend class theolizer::internal::ClassTypeInfo;        \
+    template<class, typename, bool, theolizer::internal::TrackingMode, class>\
+        friend struct theolizer::internal::Switcher
 
 // ***************************************************************************
 //      enum型のシリアライズ指定

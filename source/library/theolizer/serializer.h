@@ -291,6 +291,7 @@ namespace internal
 
 //  ---<<< TheolizerBase<>分岐ヘルパー >>>---
 
+#if 0
 template<class tClass, class tEnable=void>
 struct IsTheolizerBase : public std::false_type
 { };
@@ -302,6 +303,7 @@ struct IsTheolizerBase
     internal::EnableIf<tClass::kIsTheolizerBase>
 > : public std::true_type
 { };
+#endif
 
 //  ---<<< コピーの実装 >>>---
 

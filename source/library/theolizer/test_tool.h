@@ -270,7 +270,7 @@ THEOLIZER_INTERNAL_DLL void incrementFailCount();
 /*!
     @todo   T.B.D.
 */
-THEOLIZER_INTERNAL_DLL bool printResult();
+THEOLIZER_INTERNAL_DLL bool printResult(char const* iTitle=nullptr);
 
 //############################################################################
 //      ファイル操作

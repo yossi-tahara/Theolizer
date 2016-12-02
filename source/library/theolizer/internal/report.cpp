@@ -71,27 +71,31 @@ struct tm getGmTime(time_t const& iTime)
     struct tm  aTm;
 
 #if defined(_MSC_VER)
-    if (gmtime_s(&aTm, &iTime)) {
+    if (gmtime_s(&aTm, &iTime))
+    {
         aTm={0};
     }
 #else
-    if (gmtime_r(&iTime, &aTm) == nullptr) {
+    if (gmtime_r(&iTime, &aTm) == nullptr)
+    {
         aTm={0};
     }
 #endif
 
     return aTm;
 }
-struct tm getLocalTime(const time_t& iTime)
+struct tm getLocalTime(time_t const& iTime)
 {
     struct tm  aTm;
 
 #if defined(_MSC_VER)
-    if (localtime_s(&aTm, &iTime)) {
+    if (localtime_s(&aTm, &iTime))
+    {
         aTm={0};
     }
 #else
-    if (localtime_r(&iTime, &aTm) == nullptr) {
+    if (localtime_r(&iTime, &aTm) == nullptr)
+    {
         aTm={0};
     }
 #endif

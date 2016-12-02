@@ -845,7 +845,7 @@ struct Switcher
     tBaseType,
     tIsRegister,
     tTrackingMode,
-    EnableIf<tBaseType::kIsTheolizerBase && !IsTheolizerVersion<tBaseType>::value>
+    EnableIf<IsTheolizerBase<tBaseType>::value>
 >
 {
     typedef typename tBaseType::Target Target;

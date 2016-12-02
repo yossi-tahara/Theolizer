@@ -25,7 +25,7 @@
 // 標準ライブラリ
 #include <iostream>
 #include <fstream>
-#include <string>
+#include <ctime>
 
 // theolizerライブラリ
 #include <theolizer/serializer_binary.h>
@@ -37,6 +37,181 @@
 
 // 自動生成ソース
 #include "test_class_variation.cpp.theolizer.hpp"
+
+//############################################################################
+//      使い方の説明
+//############################################################################
+
+// ***************************************************************************
+//      クラス実体定義
+// ***************************************************************************
+
+// ---------------------------------------------------------------------------
+//      非侵入型完全自動
+// ---------------------------------------------------------------------------
+
+void FullAutoTutorial::setNonPublic(int iFullAutoPrivate, int iFullAutoProtected)
+{
+    mFullAutoPrivate  =iFullAutoPrivate;
+    mFullAutoProtected=iFullAutoProtected;
+}
+
+void FullAutoTutorial::checkNonPublic(int iFullAutoPrivate, int iFullAutoProtected)
+{
+    THEOLIZER_EQUAL(mFullAutoPrivate  , iFullAutoPrivate);
+    THEOLIZER_EQUAL(mFullAutoProtected, iFullAutoProtected);
+}
+
+// ---------------------------------------------------------------------------
+//      侵入型半自動（名前対応）
+// ---------------------------------------------------------------------------
+
+void HalfAutoNameTutorial::setNonPublic(int iHalfAutoNamePrivate, int iHalfAutoNameProtected)
+{
+    mHalfAutoNamePrivate  =iHalfAutoNamePrivate;
+    mHalfAutoNameProtected=iHalfAutoNameProtected;
+}
+
+void HalfAutoNameTutorial::checkNonPublic(int iHalfAutoNamePrivate, int iHalfAutoNameProtected)
+{
+    THEOLIZER_EQUAL(mHalfAutoNamePrivate  , iHalfAutoNamePrivate);
+    THEOLIZER_EQUAL(mHalfAutoNameProtected, iHalfAutoNameProtected);
+}
+
+// ---------------------------------------------------------------------------
+//      侵入型半自動（順序対応）
+// ---------------------------------------------------------------------------
+
+void HalfAutoOrderTutorial::setNonPublic(int iHalfAutoOrderPrivate, int iHalfAutoOrderProtected)
+{
+    mHalfAutoOrderPrivate  =iHalfAutoOrderPrivate;
+    mHalfAutoOrderProtected=iHalfAutoOrderProtected;
+}
+
+void HalfAutoOrderTutorial::checkNonPublic(int iHalfAutoOrderPrivate, int iHalfAutoOrderProtected)
+{
+    THEOLIZER_EQUAL(mHalfAutoOrderPrivate  , iHalfAutoOrderPrivate);
+    THEOLIZER_EQUAL(mHalfAutoOrderProtected, iHalfAutoOrderProtected);
+}
+
+// ---------------------------------------------------------------------------
+//      派生／包含クラス
+// ---------------------------------------------------------------------------
+
+void DerivedClass::setNonPublic
+(
+    int iHalfAutoNamePrivate,
+    int iHalfAutoNameProtected,
+    int iHalfAutoOrderPrivate,
+    int iHalfAutoOrderProtected
+)
+{
+    HalfAutoNameTutorial::setNonPublic(iHalfAutoNamePrivate, iHalfAutoNameProtected);
+    mHalfAutoOrderTutorial.setNonPublic(iHalfAutoOrderPrivate, iHalfAutoOrderProtected);
+}
+
+void DerivedClass::checkNonPublic
+(
+    int iHalfAutoNamePrivate,
+    int iHalfAutoNameProtected,
+    int iHalfAutoOrderPrivate,
+    int iHalfAutoOrderProtected
+)
+{
+    HalfAutoNameTutorial::checkNonPublic(iHalfAutoNamePrivate, iHalfAutoNameProtected);
+    mHalfAutoOrderTutorial.checkNonPublic(iHalfAutoOrderPrivate, iHalfAutoOrderProtected);
+}
+
+// ***************************************************************************
+//      動作確認
+// ***************************************************************************
+
+void tutoriseClassVariation()
+{
+    std::cout << "tutoriseClassVariation() start" << std::endl;
+
+// ---------------------------------------------------------------------------
+//      保存
+// ---------------------------------------------------------------------------
+
+    {
+        std::ofstream   aStream("tutorise_class_variation.json");
+        theolizer::JsonOSerializer<> aSerializer(aStream);
+
+        // 非侵入型完全自動
+        FullAutoTutorial    aFullAutoTutorial;
+        aFullAutoTutorial.setNonPublic(123, 456);
+        aFullAutoTutorial.mFullAutoPublic=789;
+        THEOLIZER_PROCESS(aSerializer, aFullAutoTutorial);
+
+        // 侵入型半自動（名前対応）
+        HalfAutoNameTutorial    aHalfAutoNameTutorial;
+        aHalfAutoNameTutorial.setNonPublic(-123, -456);
+        aHalfAutoNameTutorial.mHalfAutoNamePublic=-789;
+        THEOLIZER_PROCESS(aSerializer, aHalfAutoNameTutorial);
+
+        // 侵入型半自動（順序対応）
+        HalfAutoOrderTutorial   aHalfAutoOrderTutorial;
+        aHalfAutoOrderTutorial.setNonPublic(-123, -456);
+        aHalfAutoOrderTutorial.mHalfAutoOrderPublic=-789;
+        THEOLIZER_PROCESS(aSerializer, aHalfAutoOrderTutorial);
+
+        // 非侵入型手動
+        ManualTutorial  aManualTutorial;
+        aManualTutorial.mManualPublic=100;
+        THEOLIZER_PROCESS(aSerializer, aManualTutorial);
+
+        // 派生／包含クラス
+        DerivedClass    aDerivedClass;
+        aDerivedClass.FullAutoTutorial::setNonPublic(200, 201);
+        aDerivedClass.mFullAutoPublic=202;
+        aDerivedClass.setNonPublic(203, 204, 205, 206);
+        aDerivedClass.mManualTutorial.mManualPublic=207;
+        THEOLIZER_PROCESS(aSerializer, aDerivedClass);
+    }
+
+// ---------------------------------------------------------------------------
+//      回復
+// ---------------------------------------------------------------------------
+
+    {
+        std::ifstream   aStream("tutorise_class_variation.json");
+        theolizer::JsonISerializer<> aSerializer(aStream);
+
+        // 非侵入型完全自動
+        FullAutoTutorial    aFullAutoTutorial;
+        THEOLIZER_PROCESS(aSerializer, aFullAutoTutorial);
+        aFullAutoTutorial.checkNonPublic(0, 456);       // 完全自動のprivateはシリアライズされない
+        THEOLIZER_EQUAL(aFullAutoTutorial.mFullAutoPublic, 789);
+
+        // 侵入型半自動（名前対応）
+        HalfAutoNameTutorial    aHalfAutoNameTutorial;
+        THEOLIZER_PROCESS(aSerializer, aHalfAutoNameTutorial);
+        aHalfAutoNameTutorial.checkNonPublic(-123, -456);   // 侵入型のprivateはシリアライズされる
+        THEOLIZER_EQUAL(aHalfAutoNameTutorial.mHalfAutoNamePublic, -789);
+
+        // 侵入型半自動（順序対応）
+        HalfAutoOrderTutorial   aHalfAutoOrderTutorial;
+        THEOLIZER_PROCESS(aSerializer, aHalfAutoOrderTutorial);
+        aHalfAutoOrderTutorial.checkNonPublic(-123, -456);  // 侵入型のprivateはシリアライズされる
+        THEOLIZER_EQUAL(aHalfAutoOrderTutorial.mHalfAutoOrderPublic, -789);
+
+        // 非侵入型手動
+        ManualTutorial  aManualTutorial;
+        THEOLIZER_PROCESS(aSerializer, aManualTutorial);
+        THEOLIZER_EQUAL(aManualTutorial.mManualPublic, 100);
+
+        // 派生／包含クラス
+        DerivedClass    aDerivedClass;
+        THEOLIZER_PROCESS(aSerializer, aDerivedClass);
+        aDerivedClass.FullAutoTutorial::checkNonPublic(0, 201);
+        THEOLIZER_EQUAL(aDerivedClass.mFullAutoPublic, 202);
+        aDerivedClass.checkNonPublic(0, 0, 0, 0);
+        THEOLIZER_EQUAL(aDerivedClass.mManualTutorial.mManualPublic, 207);
+    }
+
+    std::cout << "tutoriseClassVariation() end\n" << std::endl;
+}
 
 //############################################################################
 //      プリミティブ、enum型、クラス、配列
@@ -55,6 +230,8 @@ void saveClassVariation(tSerializer& iSerializer)
 // ---------------------------------------------------------------------------
 
 //      ---<<< 非侵入型完全自動 >>>---
+
+#ifndef DISABLE_SINGLE_TEST
 
     {
         FullAuto    aFullAuto{true};
@@ -85,6 +262,8 @@ void saveClassVariation(tSerializer& iSerializer)
         std::cout << "        saveClassVariation() : aManual" << std::endl;
         THEOLIZER_PROCESS(iSerializer, aManual);
     }
+
+#endif
 
 // ---------------------------------------------------------------------------
 //      ２重組み合わせテスト
@@ -160,6 +339,8 @@ void loadClassVariation(tSerializer& iSerializer)
 
 //      ---<<< 非侵入型完全自動 >>>---
 
+#ifndef DISABLE_SINGLE_TEST
+
     {
         FullAuto    aFullAuto{};
         std::cout << "        loadClassVariation() : aFullAuto" << std::endl;
@@ -199,6 +380,8 @@ void loadClassVariation(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aManual);
         aManual.checkPublic(true);
     }
+
+#endif
 
 // ---------------------------------------------------------------------------
 //      ２重組み合わせテスト
