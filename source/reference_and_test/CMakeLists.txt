@@ -186,4 +186,13 @@ endmacro(add_build_and_test)
 #       Test-Projects
 #-----------------------------------------------------------------------------
 
+# MinGWの不具合対策(https://github.com/assimp/assimp/issues/177)
+#  通常数分以内に終わるが、1時間かけても終わらないので、一旦保留。
+#  4.9には対策が入ったようだが、その後、5.3で発生しているとの報告があった。
+#  6では発生しなかったとの報告もある。後日6へ上げてみる。
+#if((CMAKE_COMPILER_IS_MINGW) AND (CMAKE_SIZEOF_VOID_P EQUAL 8))
+#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wa,-mbig-obj")
+#    message(STATUS "add(CMAKE_CXX_FLAGS -Wa,-mbig-obj)")
+#endif()
+
 add_subdirectory(version)

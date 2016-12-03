@@ -289,22 +289,6 @@ namespace internal
 {
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
-//  ---<<< TheolizerBase<>分岐ヘルパー >>>---
-
-#if 0
-template<class tClass, class tEnable=void>
-struct IsTheolizerBase : public std::false_type
-{ };
-
-template<class tClass>
-struct IsTheolizerBase
-<
-    tClass,
-    internal::EnableIf<tClass::kIsTheolizerBase>
-> : public std::true_type
-{ };
-#endif
-
 //  ---<<< コピーの実装 >>>---
 
 // 通常

@@ -46,9 +46,9 @@
 //      クラス実体定義
 // ***************************************************************************
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      非侵入型完全自動
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 void FullAutoTutorial::setNonPublic(int iFullAutoPrivate, int iFullAutoProtected)
 {
@@ -62,9 +62,9 @@ void FullAutoTutorial::checkNonPublic(int iFullAutoPrivate, int iFullAutoProtect
     THEOLIZER_EQUAL(mFullAutoProtected, iFullAutoProtected);
 }
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      侵入型半自動（名前対応）
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 void HalfAutoNameTutorial::setNonPublic(int iHalfAutoNamePrivate, int iHalfAutoNameProtected)
 {
@@ -78,9 +78,9 @@ void HalfAutoNameTutorial::checkNonPublic(int iHalfAutoNamePrivate, int iHalfAut
     THEOLIZER_EQUAL(mHalfAutoNameProtected, iHalfAutoNameProtected);
 }
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      侵入型半自動（順序対応）
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 void HalfAutoOrderTutorial::setNonPublic(int iHalfAutoOrderPrivate, int iHalfAutoOrderProtected)
 {
@@ -94,9 +94,9 @@ void HalfAutoOrderTutorial::checkNonPublic(int iHalfAutoOrderPrivate, int iHalfA
     THEOLIZER_EQUAL(mHalfAutoOrderProtected, iHalfAutoOrderProtected);
 }
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      派生／包含クラス
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 void DerivedClass::setNonPublic
 (
@@ -130,9 +130,9 @@ void tutoriseClassVariation()
 {
     std::cout << "tutoriseClassVariation() start" << std::endl;
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      保存
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
     {
         std::ofstream   aStream("tutorise_class_variation.json");
@@ -170,9 +170,9 @@ void tutoriseClassVariation()
         THEOLIZER_PROCESS(aSerializer, aDerivedClass);
     }
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      回復
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
     {
         std::ifstream   aStream("tutorise_class_variation.json");
@@ -204,6 +204,7 @@ void tutoriseClassVariation()
         // 派生／包含クラス
         DerivedClass    aDerivedClass;
         THEOLIZER_PROCESS(aSerializer, aDerivedClass);
+        // 基底クラスFullAutoTutorialのcheckNonPublic()関数呼び出し
         aDerivedClass.FullAutoTutorial::checkNonPublic(0, 201);
         THEOLIZER_EQUAL(aDerivedClass.mFullAutoPublic, 202);
         aDerivedClass.checkNonPublic(0, 0, 0, 0);
@@ -225,9 +226,9 @@ void tutoriseClassVariation()
 template<class tSerializer>
 void saveClassVariation(tSerializer& iSerializer)
 {
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      単独テスト
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 //      ---<<< 非侵入型完全自動 >>>---
 
@@ -263,11 +264,13 @@ void saveClassVariation(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aManual);
     }
 
-#endif
+#endif  // DISABLE_SINGLE_TEST
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      ２重組み合わせテスト
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+#ifndef DISABLE_COMBINATION_TEST
 
 //      ---<<< 非侵入型完全自動 >>>---
 
@@ -293,9 +296,11 @@ void saveClassVariation(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aDerivedManual);
     }
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      ３重組み合わせテスト
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+#ifndef DISABLE_TRIPLED_TEST
 
 //      ---<<< 非侵入型完全自動 >>>---
 
@@ -320,6 +325,9 @@ void saveClassVariation(tSerializer& iSerializer)
         std::cout << "        saveClassVariation() : aTripledManual" << std::endl;
         THEOLIZER_PROCESS(iSerializer, aTripledManual);
     }
+
+#endif  // DISABLE_TRIPLED_TEST
+#endif  // DISABLE_COMBINATION_TEST
 }
 //! [saveClassVariation]
 
@@ -333,9 +341,9 @@ INSTANTIATION_ALL(void, saveClassVariation);
 template<class tSerializer>
 void loadClassVariation(tSerializer& iSerializer)
 {
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      単独テスト
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 //      ---<<< 非侵入型完全自動 >>>---
 
@@ -381,11 +389,13 @@ void loadClassVariation(tSerializer& iSerializer)
         aManual.checkPublic(true);
     }
 
-#endif
+#endif  // DISABLE_SINGLE_TEST
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      ２重組み合わせテスト
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+#ifndef DISABLE_COMBINATION_TEST
 
 //      ---<<< 非侵入型完全自動 >>>---
 
@@ -414,9 +424,11 @@ void loadClassVariation(tSerializer& iSerializer)
         aDerivedManual.check();
     }
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      ３重組み合わせテスト
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
+
+#ifndef DISABLE_TRIPLED_TEST
 
 //      ---<<< 非侵入型完全自動 >>>---
 
@@ -444,6 +456,9 @@ void loadClassVariation(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aTripledManual);
         aTripledManual.check();
     }
+
+#endif  // DISABLE_TRIPLED_TEST
+#endif  // DISABLE_COMBINATION_TEST
 }
 //! [loadClassVariation]
 

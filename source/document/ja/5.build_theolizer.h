@@ -160,11 +160,11 @@ build_by_msvc()とbuild_by_gcc()について補足
 
 @subsection HowToBuildLibrary22 2-2.ビルド手順
 
-下記手順でTheolizerライブラリをビルドします。
+下記手順でTheolizerドライバをビルドします。
 
 1. boostのsystemとfilesystemをビルドしてインストール
 2. LLVM(libTooling含む)をビルドしてインストール
-3. Theolizerライブラリをビルドしてインストール
+3. Theolizerドライバをビルドしてインストール
 
 @subsubsection HowToBuildLibrary221 2-2-1.boostのsystemとfilesystemをビルドしてインストール
 
@@ -222,7 +222,7 @@ Theolizerのソースのbuild/llvm_buildフォルダにおいてます。Windows
 |MAKE|[jom](https://wiki.qt.io/Jom)等の高速なmakeを使う場合にそのフルパス(標準のmakeを使う時は指定不要)|
 |build_process()|ビルドする組み合わせを指定|
 
-@subsubsection HowToBuildLibrary223 2-2-3.Theolizerライブラリをビルドしてインストール
+@subsubsection HowToBuildLibrary223 2-2-3.Theolizerドライバをビルドしてインストール
 
 @ref HowToBuildLibrary122 と同じなので省略します。
 

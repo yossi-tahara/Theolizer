@@ -29,13 +29,19 @@
 // 単独テストを無効にする
 //#define DISABLE_SINGLE_TEST
 
+// 組み合わせテスト全体を無効にする
+//#define DISABLE_COMBINATION_TEST
+
+// ３重組み合わせテストを無効にする
+//#define DISABLE_TRIPLED_TEST
+
 // ***************************************************************************
 //      使い方の説明
 // ***************************************************************************
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      非侵入型完全自動
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 class FullAutoTutorial
 {
@@ -54,9 +60,9 @@ public:
     void checkNonPublic(int iFullAutoPrivate, int iFullAutoProtected);
 };
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      侵入型半自動（名前対応）
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 class HalfAutoNameTutorial
 {
@@ -78,9 +84,9 @@ public:
     THEOLIZER_INTRUSIVE(CS, (HalfAutoNameTutorial), 1);
 };
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      侵入型半自動（順序対応）
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 class HalfAutoOrderTutorial
 {
@@ -102,9 +108,9 @@ public:
     THEOLIZER_INTRUSIVE_ORDER(CS, (HalfAutoOrderTutorial), 1);
 };
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      非侵入型手動
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 class ManualTutorial
 {
@@ -118,8 +124,10 @@ public:
 
 //      ---<<< シリアライズ用の手動記述 >>>---
 
+// 非侵入型手動クラスの指定
 THEOLIZER_NON_INTRUSIVE_ORDER((ManualTutorial), 1);
 
+// 保存処理／回復処理関数
 template<class tBaseSerializer, class tTheolizerVersion>
 struct TheolizerNonIntrusive<ManualTutorial>::
     TheolizerUserDefine<tBaseSerializer, tTheolizerVersion, 1>
@@ -147,9 +155,9 @@ struct TheolizerNonIntrusive<ManualTutorial>::
     }
 };
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      派生／包含クラス
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 class DerivedClass : public FullAutoTutorial, private HalfAutoNameTutorial
 {
@@ -183,13 +191,13 @@ public:
 //      単独テスト
 // ***************************************************************************
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      メンバ変数リスト
 //          下記へ展開する
 //              メンバ変数定義
 //              メンバ変数初期化
 //              メンバ変数の値チェック
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 #ifndef DISABLE_SINGLE_TEST
 
@@ -258,9 +266,9 @@ public:
     ARRAY(ClassBasicTest, mClassBasicTest,  5,                                          \
            ClassBasicTest(), ClassBasicTest(1, "1", eneOne))
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      非侵入型完全自動
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 //      ---<<< 配列のみで参照される完全自動型 >>>---
 //      専用処理が必要なのでテストを設ける
@@ -481,12 +489,12 @@ public:
     }
 };
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      侵入型半自動－名前対応
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 //      ---<<< 配列のみで参照される完全自動型 >>>---
-//      専用処理が必要なのでテストを設ける
+//      ドライバがソース自動生成しない不具合が発生したのでその再発防止用
 
 struct ArrayOnly1
 {
@@ -707,12 +715,11 @@ public:
     THEOLIZER_INTRUSIVE(CS, (HalfAutoName), 1);
 };
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      侵入型半自動－順序対応
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 //      ---<<< 配列のみで参照される完全自動型 >>>---
-//      専用処理が必要なのでテストを設ける
 
 struct ArrayOnly2
 {
@@ -933,12 +940,11 @@ public:
     THEOLIZER_INTRUSIVE_ORDER(CS, (HalfAutoOrder), 1);
 };
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      非侵入型手動
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 //      ---<<< 配列のみで参照される完全自動型 >>>---
-//      専用処理が必要なのでテストを設ける
 
 struct ArrayOnly3
 {
@@ -1106,7 +1112,8 @@ struct TheolizerNonIntrusive<Manual>::TheolizerUserDefine<tBaseSerializer, tTheo
         THEOLIZER_PROCESS(iSerializer, oInstance->mArrayOnly);
     }
 };
-#endif
+
+#endif  // DISABLE_SINGLE_TEST
 
 // ***************************************************************************
 //      組み合わせテスト用基底クラス
@@ -1119,12 +1126,14 @@ struct TheolizerNonIntrusive<Manual>::TheolizerUserDefine<tBaseSerializer, tTheo
 //          現時点では非公開機能である。
 // ***************************************************************************
 
-// ---------------------------------------------------------------------------
+#ifndef DISABLE_COMBINATION_TEST
+
+//----------------------------------------------------------------------------
 //      非侵入型完全自動　基底クラス
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 //      ---<<< 追加テスト >>>---
-//      侵入型を非侵入型へprivate継承するとgccでビルド・エラーになる問題検出用
+//      侵入型を非侵入型へprivate継承するとMinGWでコンパイル・エラーになる不具合の再発防止用
 
 struct PrivateInheritance
 {
@@ -1174,9 +1183,9 @@ public:
     }
 };
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      侵入型半自動　基底クラス
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 template<int tInitialValue>
 class BaseHalfAuto
@@ -1229,12 +1238,12 @@ public:
     );
 };
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      非侵入型手動　基底クラス
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 //      ---<<< 追加テスト >>>---
-//      侵入型を非侵入型へprotected継承するとgccでビルド・エラーになる問題検出用
+//      侵入型を非侵入型へprotected継承するとMinGWでコンパイル・エラーになる不具合の再発防止用
 
 struct ProtectedInheritance
 {
@@ -1317,9 +1326,9 @@ struct TheolizerNonIntrusive<BaseManual<tInitialValue>>::
 //      ２重組み合わせテスト
 // ***************************************************************************
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      非侵入型完全自動
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 class DerivedFullAuto :
     private     BaseFullAuto<1111>,
@@ -1386,7 +1395,7 @@ public:
         mBaseManualPublic{true}
     { }
 
-    void check(bool iIsPrivate=false)
+    void check(bool doSave=true)
     {
         // private継承
         BaseFullAuto<1111>::checkPrivate(false);            // private継承は保存無し
@@ -1399,21 +1408,21 @@ public:
 
         // protected継承
         BaseFullAuto<1211>::checkPrivate(false);            // 非侵入型のprivateは保存無し
-        BaseFullAuto<1211>::checkProtected(!iIsPrivate);
-        BaseFullAuto<1211>::checkPublic(!iIsPrivate);
-        BaseHalfAuto<1221>::checkPrivate(!iIsPrivate);
-        BaseHalfAuto<1221>::checkProtected(!iIsPrivate);
-        BaseHalfAuto<1221>::checkPublic(!iIsPrivate);
-        BaseManual  <1231>::checkPublic(!iIsPrivate);
+        BaseFullAuto<1211>::checkProtected(doSave);
+        BaseFullAuto<1211>::checkPublic(doSave);
+        BaseHalfAuto<1221>::checkPrivate(doSave);
+        BaseHalfAuto<1221>::checkProtected(doSave);
+        BaseHalfAuto<1221>::checkPublic(doSave);
+        BaseManual  <1231>::checkPublic(doSave);
 
         // public継承
         BaseFullAuto<1311>::checkPrivate(false);            // 非侵入型のprivateは保存無し
-        BaseFullAuto<1311>::checkProtected(!iIsPrivate);
-        BaseFullAuto<1311>::checkPublic(!iIsPrivate);
-        BaseHalfAuto<1321>::checkPrivate(!iIsPrivate);
-        BaseHalfAuto<1321>::checkProtected(!iIsPrivate);
-        BaseHalfAuto<1321>::checkPublic(!iIsPrivate);
-        BaseManual  <1331>::checkPublic(!iIsPrivate);
+        BaseFullAuto<1311>::checkProtected(doSave);
+        BaseFullAuto<1311>::checkPublic(doSave);
+        BaseHalfAuto<1321>::checkPrivate(doSave);
+        BaseHalfAuto<1321>::checkProtected(doSave);
+        BaseHalfAuto<1321>::checkPublic(doSave);
+        BaseManual  <1331>::checkPublic(doSave);
 
         // privateメンバ
         mBaseFullAutoPrivate.checkPrivate(false);           // privateメンバは保存無し
@@ -1426,27 +1435,27 @@ public:
 
         // protectedメンバ
         mBaseFullAutoProtected.checkPrivate(false);         // 非侵入型のprivateは保存無し
-        mBaseFullAutoProtected.checkProtected(!iIsPrivate);
-        mBaseFullAutoProtected.checkPublic(!iIsPrivate);
-        mBaseHalfAutoProtected.checkPrivate(!iIsPrivate);
-        mBaseHalfAutoProtected.checkProtected(!iIsPrivate);
-        mBaseHalfAutoProtected.checkPublic(!iIsPrivate);
-        mBaseManualProtected.checkPublic(!iIsPrivate);
+        mBaseFullAutoProtected.checkProtected(doSave);
+        mBaseFullAutoProtected.checkPublic(doSave);
+        mBaseHalfAutoProtected.checkPrivate(doSave);
+        mBaseHalfAutoProtected.checkProtected(doSave);
+        mBaseHalfAutoProtected.checkPublic(doSave);
+        mBaseManualProtected.checkPublic(doSave);
 
         // publicメンバ
         mBaseFullAutoPublic.checkPrivate(false);            // 非侵入型のprivateは保存無し
-        mBaseFullAutoPublic.checkProtected(!iIsPrivate);
-        mBaseFullAutoPublic.checkPublic(!iIsPrivate);
-        mBaseHalfAutoPublic.checkPrivate(!iIsPrivate);
-        mBaseHalfAutoPublic.checkProtected(!iIsPrivate);
-        mBaseHalfAutoPublic.checkPublic(!iIsPrivate);
-        mBaseManualPublic.checkPublic(!iIsPrivate);
+        mBaseFullAutoPublic.checkProtected(doSave);
+        mBaseFullAutoPublic.checkPublic(doSave);
+        mBaseHalfAutoPublic.checkPrivate(doSave);
+        mBaseHalfAutoPublic.checkProtected(doSave);
+        mBaseHalfAutoPublic.checkPublic(doSave);
+        mBaseManualPublic.checkPublic(doSave);
     }
 };
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      侵入型半自動
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 class DerivedHalfAuto :
     private     BaseFullAuto<2111>,
@@ -1513,70 +1522,70 @@ public:
         mBaseManualPublic{true}
     { }
 
-    void check(bool iIsPrivate=false)
+    void check(bool doSave=true)
     {
         // private継承
         BaseFullAuto<2111>::checkPrivate(false);            // 非侵入型のprivateは保存無し
-        BaseFullAuto<2111>::checkProtected(!iIsPrivate);
-        BaseFullAuto<2111>::checkPublic(!iIsPrivate);
-        BaseHalfAuto<2121>::checkPrivate(!iIsPrivate);
-        BaseHalfAuto<2121>::checkProtected(!iIsPrivate);
-        BaseHalfAuto<2121>::checkPublic(!iIsPrivate);
-        BaseManual  <2131>::checkPublic(!iIsPrivate);
+        BaseFullAuto<2111>::checkProtected(doSave);
+        BaseFullAuto<2111>::checkPublic(doSave);
+        BaseHalfAuto<2121>::checkPrivate(doSave);
+        BaseHalfAuto<2121>::checkProtected(doSave);
+        BaseHalfAuto<2121>::checkPublic(doSave);
+        BaseManual  <2131>::checkPublic(doSave);
 
         // protected継承
         BaseFullAuto<2211>::checkPrivate(false);            // 非侵入型のprivateは保存無し
-        BaseFullAuto<2211>::checkProtected(!iIsPrivate);
-        BaseFullAuto<2211>::checkPublic(!iIsPrivate);
-        BaseHalfAuto<2221>::checkPrivate(!iIsPrivate);
-        BaseHalfAuto<2221>::checkProtected(!iIsPrivate);
-        BaseHalfAuto<2221>::checkPublic(!iIsPrivate);
-        BaseManual  <2231>::checkPublic(!iIsPrivate);
+        BaseFullAuto<2211>::checkProtected(doSave);
+        BaseFullAuto<2211>::checkPublic(doSave);
+        BaseHalfAuto<2221>::checkPrivate(doSave);
+        BaseHalfAuto<2221>::checkProtected(doSave);
+        BaseHalfAuto<2221>::checkPublic(doSave);
+        BaseManual  <2231>::checkPublic(doSave);
 
         // public継承
         BaseFullAuto<2311>::checkPrivate(false);            // 非侵入型のprivateは保存無し
-        BaseFullAuto<2311>::checkProtected(!iIsPrivate);
-        BaseFullAuto<2311>::checkPublic(!iIsPrivate);
-        BaseHalfAuto<2321>::checkPrivate(!iIsPrivate);
-        BaseHalfAuto<2321>::checkProtected(!iIsPrivate);
-        BaseHalfAuto<2321>::checkPublic(!iIsPrivate);
-        BaseManual  <2331>::checkPublic(!iIsPrivate);
+        BaseFullAuto<2311>::checkProtected(doSave);
+        BaseFullAuto<2311>::checkPublic(doSave);
+        BaseHalfAuto<2321>::checkPrivate(doSave);
+        BaseHalfAuto<2321>::checkProtected(doSave);
+        BaseHalfAuto<2321>::checkPublic(doSave);
+        BaseManual  <2331>::checkPublic(doSave);
 
         // privateメンバ
         mBaseFullAutoPrivate.checkPrivate(false);           // 非侵入型のprivateは保存無し
-        mBaseFullAutoPrivate.checkProtected(!iIsPrivate);
-        mBaseFullAutoPrivate.checkPublic(!iIsPrivate);
-        mBaseHalfAutoPrivate.checkPrivate(!iIsPrivate);
-        mBaseHalfAutoPrivate.checkProtected(!iIsPrivate);
-        mBaseHalfAutoPrivate.checkPublic(!iIsPrivate);
-        mBaseManualPrivate.checkPublic(!iIsPrivate);
+        mBaseFullAutoPrivate.checkProtected(doSave);
+        mBaseFullAutoPrivate.checkPublic(doSave);
+        mBaseHalfAutoPrivate.checkPrivate(doSave);
+        mBaseHalfAutoPrivate.checkProtected(doSave);
+        mBaseHalfAutoPrivate.checkPublic(doSave);
+        mBaseManualPrivate.checkPublic(doSave);
 
         // protectedメンバ
         mBaseFullAutoProtected.checkPrivate(false);         // 非侵入型のprivateは保存無し
-        mBaseFullAutoProtected.checkProtected(!iIsPrivate);
-        mBaseFullAutoProtected.checkPublic(!iIsPrivate);
-        mBaseHalfAutoProtected.checkPrivate(!iIsPrivate);
-        mBaseHalfAutoProtected.checkProtected(!iIsPrivate);
-        mBaseHalfAutoProtected.checkPublic(!iIsPrivate);
-        mBaseManualProtected.checkPublic(!iIsPrivate);
+        mBaseFullAutoProtected.checkProtected(doSave);
+        mBaseFullAutoProtected.checkPublic(doSave);
+        mBaseHalfAutoProtected.checkPrivate(doSave);
+        mBaseHalfAutoProtected.checkProtected(doSave);
+        mBaseHalfAutoProtected.checkPublic(doSave);
+        mBaseManualProtected.checkPublic(doSave);
 
         // publicメンバ
         mBaseFullAutoPublic.checkPrivate(false);            // 非侵入型のprivateは保存無し
-        mBaseFullAutoPublic.checkProtected(!iIsPrivate);
-        mBaseFullAutoPublic.checkPublic(!iIsPrivate);
-        mBaseHalfAutoPublic.checkPrivate(!iIsPrivate);
-        mBaseHalfAutoPublic.checkProtected(!iIsPrivate);
-        mBaseHalfAutoPublic.checkPublic(!iIsPrivate);
-        mBaseManualPublic.checkPublic(!iIsPrivate);
+        mBaseFullAutoPublic.checkProtected(doSave);
+        mBaseFullAutoPublic.checkPublic(doSave);
+        mBaseHalfAutoPublic.checkPrivate(doSave);
+        mBaseHalfAutoPublic.checkProtected(doSave);
+        mBaseHalfAutoPublic.checkPublic(doSave);
+        mBaseManualPublic.checkPublic(doSave);
     }
 
     // 侵入型半自動 指定
     THEOLIZER_INTRUSIVE(CS, (DerivedHalfAuto), 1);
 };
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      非侵入型手動
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 class DerivedManual :
     public      BaseFullAuto<3311>,
@@ -1606,25 +1615,25 @@ public:
         mBaseManualPublic{true}
     { }
 
-    void check(bool iIsPrivate=false)
+    void check(bool doSave=true)
     {
         // public継承
         BaseFullAuto::checkPrivate(false);              // 完全自動のprivateは保存無し
-        BaseFullAuto::checkProtected(!iIsPrivate);
-        BaseFullAuto::checkPublic(!iIsPrivate);
-        BaseHalfAuto::checkPrivate(!iIsPrivate);
-        BaseHalfAuto::checkProtected(!iIsPrivate);
-        BaseHalfAuto::checkPublic(!iIsPrivate);
-        BaseManual::checkPublic(!iIsPrivate);
+        BaseFullAuto::checkProtected(doSave);
+        BaseFullAuto::checkPublic(doSave);
+        BaseHalfAuto::checkPrivate(doSave);
+        BaseHalfAuto::checkProtected(doSave);
+        BaseHalfAuto::checkPublic(doSave);
+        BaseManual::checkPublic(doSave);
 
         // publicメンバ
         mBaseFullAutoPublic.checkPrivate(false);        // 完全自動のprivateは保存無し
-        mBaseFullAutoPublic.checkProtected(!iIsPrivate);
-        mBaseFullAutoPublic.checkPublic(!iIsPrivate);
-        mBaseHalfAutoPublic.checkPrivate(!iIsPrivate);
-        mBaseHalfAutoPublic.checkProtected(!iIsPrivate);
-        mBaseHalfAutoPublic.checkPublic(!iIsPrivate);
-        mBaseManualPublic.checkPublic(!iIsPrivate);
+        mBaseFullAutoPublic.checkProtected(doSave);
+        mBaseFullAutoPublic.checkPublic(doSave);
+        mBaseHalfAutoPublic.checkPrivate(doSave);
+        mBaseHalfAutoPublic.checkProtected(doSave);
+        mBaseHalfAutoPublic.checkPublic(doSave);
+        mBaseManualPublic.checkPublic(doSave);
     }
 };
 
@@ -1673,9 +1682,11 @@ struct TheolizerNonIntrusive<DerivedManual>::
 //      ３重組み合わせテスト
 // ***************************************************************************
 
-// ---------------------------------------------------------------------------
+#ifndef DISABLE_TRIPLED_TEST
+
+//----------------------------------------------------------------------------
 //      非侵入型完全自動
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 class TripledFullAuto :
     public      DerivedFullAuto,
@@ -1726,31 +1737,31 @@ public:
 
     void check()
     {
-        // public継承
+        // public継承（シリアライズ有りとして判定する）
         DerivedFullAuto::check();
         DerivedHalfAuto::check();
         DerivedManual::check();
 
-        // privateメンバ
-        mDerivedFullAutoPrivate.check(true);
-        mDerivedHalfAutoPrivate.check(true);
-        mDerivedManualPrivate.check(true);
+        // privateメンバ（シリアライズ無しとして判定する）
+        mDerivedFullAutoPrivate.check(false);
+        mDerivedHalfAutoPrivate.check(false);
+        mDerivedManualPrivate.check(false);
 
-        // protectedメンバ
+        // protectedメンバ（シリアライズ有りとして判定する）
         mDerivedFullAutoProtected.check();
         mDerivedHalfAutoProtected.check();
         mDerivedManualProtected.check();
 
-        // publicメンバ
+        // publicメンバ（シリアライズ有りとして判定する）
         mDerivedFullAutoPublic.check();
         mDerivedHalfAutoPublic.check();
         mDerivedManualPublic.check();
     }
 };
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      侵入型半自動
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 class TripledHalfAuto :
     public      DerivedFullAuto,
@@ -1801,22 +1812,22 @@ public:
 
     void check()
     {
-        // public継承
+        // public継承（シリアライズ有りとして判定する）
         DerivedFullAuto::check();
         DerivedHalfAuto::check();
         DerivedManual::check();
 
-        // privateメンバ
+        // privateメンバ（シリアライズ有りとして判定する）
         mDerivedFullAutoPrivate.check();
         mDerivedHalfAutoPrivate.check();
         mDerivedManualPrivate.check();   
 
-        // protectedメンバ
+        // protectedメンバ（シリアライズ有りとして判定する）
         mDerivedFullAutoProtected.check();
         mDerivedHalfAutoProtected.check();
         mDerivedManualProtected.check();
 
-        // publicメンバ
+        // publicメンバ（シリアライズ有りとして判定する）
         mDerivedFullAutoPublic.check();
         mDerivedHalfAutoPublic.check();
         mDerivedManualPublic.check();
@@ -1826,9 +1837,9 @@ public:
     THEOLIZER_INTRUSIVE(CS, (TripledHalfAuto), 1);
 };
 
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 //      非侵入型手動
-// ---------------------------------------------------------------------------
+//----------------------------------------------------------------------------
 
 class TripledManual :
     public      DerivedFullAuto,
@@ -1860,12 +1871,12 @@ public:
 
     void check()
     {
-        // public継承
+        // public継承（シリアライズ有りとして判定する）
         DerivedFullAuto::check();
         DerivedHalfAuto::check();
         DerivedManual::check();
 
-        // publicメンバ
+        // publicメンバ（シリアライズ有りとして判定する）
         mDerivedFullAutoPublic.check();
         mDerivedHalfAutoPublic.check();
         mDerivedManualPublic.check();
@@ -1913,95 +1924,7 @@ struct TheolizerNonIntrusive<TripledManual>::
     }
 };
 
-// ---------------------------------------------------------------------------
-/*
-    組み合わせ検討
-
-        全てコンストラクタを２種類
-            デフォルト
-            値設定(パラメータは1つだけ)
-
-        単独
-            非侵入型完全自動
-                プリミティブ全部
-                enum型          非侵入型完全自動
-                scoped enum型   非侵入型完全自動
-                上記全ての配列  1次元、2次元、3次元
-            侵入型半自動
-                上記と同じ      名前対応
-                上記と同じ      順序対応
-            非侵入型手動
-                上記と同じ（test_basic_processとほぼ同様)
-
-        基底クラス
-            非侵入型完全自動Base
-            侵入型半自動Base
-            非侵入型手動Base
-
-        2重組み合わせ
-            非侵入型完全自動Derived
-                非侵入型完全自動Base
-                    基底クラス
-                    包含クラス
-                侵入型半自動Base
-                    基底クラス
-                    包含クラス
-                非侵入型手動Base
-                    基底クラス
-                    包含クラス
-            侵入型半自動Derived
-                非侵入型完全自動Base
-                    基底クラス
-                    包含クラス
-                侵入型半自動Base
-                    基底クラス
-                    包含クラス
-                非侵入型手動Base
-                    基底クラス
-                    包含クラス
-            非侵入型手動Derived
-                非侵入型完全自動Base
-                    基底クラス
-                    包含クラス
-                侵入型半自動Base
-                    基底クラス
-                    包含クラス
-                非侵入型手動Base
-                    基底クラス
-                    包含クラス
-
-        3重組み合わせ
-            非侵入型完全自動Tripled
-                非侵入型完全自動Derived
-                    基底クラス
-                    包含クラス
-                侵入型半自動Derived
-                    基底クラス
-                    包含クラス
-                非侵入型手動Derived
-                    基底クラス
-                    包含クラス
-            侵入型半自動Tripled
-                非侵入型完全自動Derived
-                    基底クラス
-                    包含クラス
-                侵入型半自動Derived
-                    基底クラス
-                    包含クラス
-                非侵入型手動Derived
-                    基底クラス
-                    包含クラス
-            非侵入型手動Tripled
-                非侵入型完全自動Derived
-                    基底クラス
-                    包含クラス
-                侵入型半自動Derived
-                    基底クラス
-                    包含クラス
-                非侵入型手動Derived
-                    基底クラス
-                    包含クラス
-*/
-
+#endif  // DISABLE_TRIPLED_TEST
+#endif  // DISABLE_COMBINATION_TEST
 
 #endif  // TEST_CLASS_VARIATION_H
