@@ -26,6 +26,11 @@
 // 基本のenum型とclassを使用する
 #include "test_basic_process.h"
 
+#ifdef SHRINK_FOR_MINGW64           // MinGWx64におけるFile too big回避のため
+    // 単独テストを無効にする
+    #define DISABLE_SINGLE_TEST
+#endif
+
 // 単独テストを無効にする
 //#define DISABLE_SINGLE_TEST
 
