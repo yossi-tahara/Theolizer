@@ -80,7 +80,7 @@ var index =
         [ "2-2.ビルド手順", "_how_to_build_theolizer.html#HowToBuildLibrary22", [
           [ "2-2-1.boostのsystemとfilesystemをビルドしてインストール", "_how_to_build_theolizer.html#HowToBuildLibrary221", null ],
           [ "2-2-2.LLVM(libTooling含む)をビルドしてインストール", "_how_to_build_theolizer.html#HowToBuildLibrary222", null ],
-          [ "2-2-3.Theolizerライブラリをビルドしてインストール", "_how_to_build_theolizer.html#HowToBuildLibrary223", null ]
+          [ "2-2-3.Theolizerドライバをビルドしてインストール", "_how_to_build_theolizer.html#HowToBuildLibrary223", null ]
         ] ]
       ] ],
       [ "3.Theolizer自身のバージョン番号について", "_how_to_build_theolizer.html#VersionNo", [

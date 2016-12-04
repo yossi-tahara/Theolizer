@@ -85,14 +85,293 @@ $(document).ready(function(){initNavTree('_class_variation.html','');});
 <div class="title">クラスのバリエーション </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>ここでは、クラス（classとstruct）をシリアライズする時の様々なバリエーションについて説明します。 </p><h1>T.B.D.</h1>
-<p>非侵入型完全自動<br />
- シリアライスのために事前準備の必要はなく、シリアライズするのみ。<br />
- オプションでメンバへの保存指定が可能。<a class="el" href="_destinations.html">保存先指定について</a></p>
-<p>侵入型半自動<br />
- クラス定義の内側にTHEOLIZER_INTRUSIVE()シリーズ・マクロを記述する。 このマクロの最後にprivate:をおいているので、クラス定義の最後に置くことを推奨する。</p>
-<p>非侵入型手動<br />
- THEOLIZER_NON_INTRUSIVE_ORDER()シリーズ・マクロでシリアライズ指定する。 その状態でビルドすると、未定義エラーとなる。*.hppにその関数の雛形があるので、コピーしてを必要な保存／回復処理を記述する。 </p>
+<div class="textblock"><p>ここでは、クラス（classとstruct）をシリアライズする時の様々なバリエーションについて説明します。</p>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="FullAutoClass"></a>
+1.非侵入型完全自動クラス</h1>
+<h6></h6>
+<p>これはシリアライズするためにクラス定義への前準備が不要な使い方です。<br />
+ 使用している他のライブラリの「構造体」をシリアライズしたい時、および、プロトタイピングやデバッグ中に一時的にシリアライズしたい時に用います。<br />
+</p>
+<p>使い方は簡単で、シリアライズしたい構造体のインスタンスをいきなりTHEOLIZER_PROCESS()マクロに与えるだけです。</p>
+<p><b>定義例</b> (source/reference_and_test/version/ver1/test_class_variation.h)<br />
+ 非侵入型完全自動クラスの定義例です。</p>
+ <div class="fragment"><div class="line"><span class="keyword">class </span>FullAutoTutorial</div><div class="line">{</div><div class="line">    <span class="keywordtype">int</span>     mFullAutoPrivate;</div><div class="line"><span class="keyword">protected</span>:</div><div class="line">    <span class="keywordtype">int</span>     mFullAutoProtected;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="keywordtype">int</span>     mFullAutoPublic;</div><div class="line"></div><div class="line">    FullAutoTutorial() :</div><div class="line">        mFullAutoPrivate(0),</div><div class="line">        mFullAutoProtected(0),</div><div class="line">        mFullAutoPublic(0)</div><div class="line">    { }</div><div class="line">    <span class="keywordtype">void</span> setNonPublic(<span class="keywordtype">int</span> iFullAutoPrivate, <span class="keywordtype">int</span> iFullAutoProtected);</div><div class="line">    <span class="keywordtype">void</span> checkNonPublic(<span class="keywordtype">int</span> iFullAutoPrivate, <span class="keywordtype">int</span> iFullAutoProtected);</div><div class="line">};</div></div><!-- fragment --></p>
+<p><b>保存処理例</b> (source/reference_and_test/version/ver1/test_class_variation.cpp の <b>tutoriseClassVariation()</b> 関数)<br />
+ 上記のFullAutoTutorialを保存するコード例です。</p>
+ <div class="fragment"><div class="line">    {</div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;tutorise_class_variation.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="comment">// 非侵入型完全自動</span></div><div class="line">        FullAutoTutorial    aFullAutoTutorial;</div><div class="line">        aFullAutoTutorial.setNonPublic(123, 456);</div><div class="line">        aFullAutoTutorial.mFullAutoPublic=789;</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aFullAutoTutorial);</div><div class="line">    }</div></div><!-- fragment --></p>
+<p><b>保存結果</b> (<code>&lt;ビルド・フォルダ&gt;/Testing/tutorise_class_variation.json</code>)<br />
+ 上記で保存されたシリアライズ・データの該当部分です。<br />
+ このファイルは、<b>zy2_long_test.sh</b>や<b>zz2_long_test.bat</b> にて自動生成されます。（「<a class="el" href="_how_to_build_theolizer.html#HowToBuildLibrary122">1-2-2.Theolizerライブラリをビルドしてインストール</a> 」参照。）本節のビルド・フォルダ配下のファイルは全て同じです。<br />
+ privateメンバ以外のメンバが保存されています。 </p><div class="fragment"><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;mFullAutoProtected&quot;</span>:456,</div><div class="line">    <span class="stringliteral">&quot;mFullAutoPublic&quot;</span>:789</div><div class="line">}</div></div><!-- fragment --><p><b>回復処理例</b> (source/reference_and_test/version/ver1/test_class_variation.cpp の <b>tutoriseClassVariation()</b> 関数)<br />
+ 上記のFullAutoTutorialを回復して値をチェックするコード例です。</p>
+<p><div class="fragment"><div class="line">    {</div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;tutorise_class_variation.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="comment">// 非侵入型完全自動</span></div><div class="line">        FullAutoTutorial    aFullAutoTutorial;</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aFullAutoTutorial);</div><div class="line">        aFullAutoTutorial.checkNonPublic(0, 456);       <span class="comment">// 完全自動のprivateはシリアライズされない</span></div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aFullAutoTutorial.mFullAutoPublic, 789);</div><div class="line">    }</div></div><!-- fragment --></p>
+<p>Theolizerドライバがシリアライズされていることを検出し、自動的に必要なメンバ・リストを生成して、シリアライズ可能な状態にします。<br />
+ privateメンバをシリアライズするためには、対象構造体の内部にシリアライズ関数を設ける必要が有ります。 それを自動的に行うと問題が多発してしまいます。（例えば「他のライブラリ」のソースを変更してしまう。）<br />
+ それは行うべきではありませんので完全自動クラスを「非侵入型」として実装しました。従って、privateメンバをシリアライズすることはできません。<br />
+ なお、対象クラスを派生して派生先クラスでシリアライズ関数を実装しているため、protectedメンバはシリアライズします。</p>
+<p>各メンバに対して保存の有無、および、保存先の指定が可能です。「<a class="el" href="_destinations.html">保存先指定について</a> 」を参照下さい。<br />
+ <br />
+ </p><h6></h6>
+<h1><a class="anchor" id="HalfAutoClass"></a>
+2.侵入型半自動クラス</h1>
+<h6></h6>
+<p>これはシリアライズするためにクラス定義への前準備が必要ですが、クラス定義のバージョン管理が可能になる使い方です。（バージョン管理については「<a class="el" href="_changing_class.html">クラス定義の変更方法、および、バージョン・アップ方法</a> 」を参照下さい。）<br />
+</p>
+<p>クラス定義のバージョン管理が不要な間は原則として使う必要はありません。<br />
+ 例外は下記です。</p><ul>
+<li>privateメンバもシリアライズしたい時</li>
+<li>メンバ変数を「順序対応」にしたい時</li>
+</ul>
+<p>「<a class="el" href="_specification.html#Basic121">1-2-1.クラスについて</a> 」で説明したように、シリアライズ・データとプログラム間でメンバ変数を対応する方法として２種類サポートしています。</p>
+<p><b>名前対応の定義例</b> (source/reference_and_test/version/ver1/test_class_variation.h)<br />
+ 侵入型半自動クラスを「名前対応」で定義する時はTHEOLIZER_INTRUSIVE()マクロを使います。</p>
+ <div class="fragment"><div class="line"><span class="keyword">class </span>HalfAutoNameTutorial</div><div class="line">{</div><div class="line">    <span class="keywordtype">int</span>     mHalfAutoNamePrivate;</div><div class="line"><span class="keyword">protected</span>:</div><div class="line">    <span class="keywordtype">int</span>     mHalfAutoNameProtected;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="keywordtype">int</span>     mHalfAutoNamePublic;</div><div class="line"></div><div class="line">    HalfAutoNameTutorial() :</div><div class="line">        mHalfAutoNamePrivate(0),</div><div class="line">        mHalfAutoNameProtected(0),</div><div class="line">        mHalfAutoNamePublic(0)</div><div class="line">    { }</div><div class="line">    <span class="keywordtype">void</span> setNonPublic(<span class="keywordtype">int</span> iHalfAutoNamePrivate, <span class="keywordtype">int</span> iHalfAutoNameProtected);</div><div class="line">    <span class="keywordtype">void</span> checkNonPublic(<span class="keywordtype">int</span> iHalfAutoNamePrivate, <span class="keywordtype">int</span> iHalfAutoNameProtected);</div><div class="line"></div><div class="line">    <span class="comment">// 侵入型半自動 指定</span></div><div class="line">    THEOLIZER_INTRUSIVE(CS, (HalfAutoNameTutorial), 1);</div><div class="line">};</div></div><!-- fragment --></p>
+<p><b>順序対応の定義例</b> (source/reference_and_test/version/ver1/test_class_variation.h)<br />
+ 侵入型半自動クラスを「名前対応」で定義する時はTHEOLIZER_INTRUSIVE_ORDER()マクロを使います。</p>
+<p><div class="fragment"><div class="line"><span class="keyword">class </span>HalfAutoOrderTutorial</div><div class="line">{</div><div class="line">    <span class="keywordtype">int</span>     mHalfAutoOrderPrivate;</div><div class="line"><span class="keyword">protected</span>:</div><div class="line">    <span class="keywordtype">int</span>     mHalfAutoOrderProtected;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="keywordtype">int</span>     mHalfAutoOrderPublic;</div><div class="line"></div><div class="line">    HalfAutoOrderTutorial() :</div><div class="line">        mHalfAutoOrderPrivate(0),</div><div class="line">        mHalfAutoOrderProtected(0),</div><div class="line">        mHalfAutoOrderPublic(0)</div><div class="line">    { }</div><div class="line">    <span class="keywordtype">void</span> setNonPublic(<span class="keywordtype">int</span> iHalfAutoOrderPrivate, <span class="keywordtype">int</span> iHalfAutoOrderProtected);</div><div class="line">    <span class="keywordtype">void</span> checkNonPublic(<span class="keywordtype">int</span> iHalfAutoOrderPrivate, <span class="keywordtype">int</span> iHalfAutoOrderProtected);</div><div class="line"></div><div class="line">    <span class="comment">// 侵入型半自動 指定</span></div><div class="line">    THEOLIZER_INTRUSIVE_ORDER(CS, (HalfAutoOrderTutorial), 1);</div><div class="line">};</div></div><!-- fragment --></p>
+<p>THEOLIZER_INTRUSIVE()とTHEOLIZER_INTRUSIVE_ORDER()は、最後に<b>private:</b> で終わっています。ですので、クラス定義の最後に置くことをお勧めします。</p>
+<p>これらのマクロは次のように使います。</p>
+<ul>
+<li><b>THEOLIZER_INTRUSIVE(dAnno, dClass, dLastVersionNo);</b></li>
+<li><b>THEOLIZER_INTRUSIVE_ORDER(dAnno, dClass, dLastVersionNo);</b></li>
+</ul>
+<p>それぞれのパラメータは以下の通りです。</p>
+<ul>
+<li><b>dAnno</b><br />
+ メンバ保存の指定方法のオプションです。詳しくは「<a class="el" href="_destinations.html">保存先指定について</a> 」を参照下さい。<br />
+<ul>
+<li>CS : デフォルトで保存します。（通常はこちらを指定して下さい。）<br />
+</li>
+<li>CN : デフォルトは保存しません。（保存するメンバを指定します）<br />
+</li>
+</ul>
+</li>
+<li><b>dClass</b><br />
+ 自クラス名を指定します。C++はメンバ関数の外クラス定義内で自クラスにアクセスできないため、指定が必要なのです。クラス名の外側に必ず()を付けて下さい。<br />
+</li>
+<li><b>dLastVersionNo</b><br />
+ 最新版のバージョン番号は指定します。最初は1を指定して下さい。<br />
+ 「<a class="el" href="_changing_class.html">クラス定義の変更方法、および、バージョン・アップ方法</a> 」で使い方を説明します。<br />
+ <br />
+</li>
+</ul>
+<p><b>保存処理／回復処理</b>は非侵入型完全自動と同じですので、省略します。</p>
+<p><b>保存結果</b> (<code>&lt;ビルド・フォルダ&gt;/Testing/tutorise_class_variation.json</code>)<br />
+ 保存されたシリアライズ・データの該当部分です。<br />
+ privateメンバも含めて保存されています。 </p><div class="fragment"><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;mHalfAutoNamePrivate&quot;</span>:-123,</div><div class="line">    <span class="stringliteral">&quot;mHalfAutoNameProtected&quot;</span>:-456,</div><div class="line">    <span class="stringliteral">&quot;mHalfAutoNamePublic&quot;</span>:-789</div><div class="line">}</div></div><!-- fragment --><p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="ManualClass"></a>
+3.非侵入型手動クラス</h1>
+<h6></h6>
+<p>これは自動でシリアライズすることが困難なクラスに対応するために設けました。<br />
+ 例えば、std::vector&lt;&gt;を自動的に適切なシリアライズをすることは現実的ではありません。そのような場合に保存／回復処理を手動で記述するための仕組みです。<br />
+ 使い方が難しいため、どうしても必要な時だけお使い下さい。（クラス・テンプレートにも対応しているのですが、使い方の難易度が高いこと、および、十分なテストを行うには時間が掛かりそうですので、現時点ではクラス・テンプレート対応は非公開と致します。）</p>
+<p>下記の手順で保存／回復処理を記述することを推奨します。<br />
+</p>
+<ol type="1">
+<li><a class="el" href="_class_variation.html#DefineManualClass">プロジェクトをビルド・エラーがでない状態にして下さい。</a><br />
+ シリアライズ対象クラスの定義を行って下さい。そして、ビルド・エラーをなくすことをお勧めします。<br />
+ <br />
+</li>
+<li><a class="el" href="_class_variation.html#SpecifyManualClass">対象とするクラスをTHEOLIZER_NON_INTRUSIVE_ORDER()マクロで指定します。</a><br />
+ <br />
+</li>
+<li><a class="el" href="_class_variation.html#TemplateManualClass">一度ビルドします。この時、未定義エラーが出ます。</a><br />
+ TheolizerNonIntrusive&lt;対象クラス名&gt;::TheolizerUserDefine を含むエラーになります。<br />
+ この部分はテンプレートを使っていることもあり、あまり適切なエラー・メッセージになりません。たいへん申し訳ないですが、注意深くご使用下さい。<br />
+ <br />
+</li>
+<li><a class="el" href="_class_variation.html#CopyManualClass">自動生成されたソース内にある未定義エラーのクラス定義雛形をコピーします。</a><br />
+ これは保存／回復処理の記述先関数の枠組み定義です。<br />
+ これをTHEOLIZER_NON_INTRUSIVE_ORDER()マクロの直後へコピーして下さい。<br />
+ <br />
+</li>
+<li><a class="el" href="_class_variation.html#WriteManualClass">上記のクラス内に保存／回復処理を記述して下さい。</a><br />
+ <br />
+</li>
+<li><a class="el" href="_class_variation.html#SaveLoadManualClass">後は通常通りTHEOLIZER_PROCESS()シリーズ・マクロでシリアライズ処理します。</a><br />
+</li>
+</ol>
+<h2><a class="anchor" id="DefineManualClass"></a>
+3-1.非侵入型手動クラスの定義例</h2>
+<p>サンプル・ソースは source/reference_and_test/version/ver1/test_class_variation.h です。<br />
+ 非侵入型手動クラスの定義例です。</p>
+<p><div class="fragment"><div class="line"><span class="keyword">class </span>ManualTutorial</div><div class="line">{</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="keywordtype">int</span>     mManualPublic;</div><div class="line"></div><div class="line">    ManualTutorial() :</div><div class="line">        mManualPublic(0)</div><div class="line">    { }</div><div class="line">};</div></div><!-- fragment --></p>
+<h2><a class="anchor" id="SpecifyManualClass"></a>
+3-2.非侵入型手動クラスのシリアライズ指定</h2>
+<p>サンプルですのでクラス定義に続けてシリアライズ指定していますが、実際にはシリアライズ指定はクラス定義より後であれば離れていてもよいです。</p>
+<p><div class="fragment"><div class="line">THEOLIZER_NON_INTRUSIVE_ORDER((ManualTutorial), 1);</div></div><!-- fragment --></p>
+<p>THEOLIZER_NON_INTRUSIVE_ORDER()マクロは次のように使います。</p>
+<ul>
+<li><b>THEOLIZER_NON_INTRUSIVE_ORDER(dClass, dLastVersionNo);</b><br />
+ 手動型は順序対応のみです。<br />
+</li>
+</ul>
+<p>パラメータは以下の通りです。</p>
+<ul>
+<li><b>dClass</b><br />
+ 対象クラス名を指定します。クラス名の外側に必ず()を付けて下さい。<br />
+</li>
+<li><b>dLastVersionNo</b><br />
+ 最新版のバージョン番号は指定します。最初は1を指定して下さい。<br />
+ 「<a class="el" href="_changing_class.html">クラス定義の変更方法、および、バージョン・アップ方法</a> 」で使い方を説明します。<br />
+ <br />
+</li>
+</ul>
+<h2><a class="anchor" id="TemplateManualClass"></a>
+3-3.自動生成される保存／回復処理用関数の雛形例</h2>
+<p>サンプルは <code>&lt;ビルド・フォルダ&gt;/reference_and_test/version/ver1/test_class_variation.cpp.theolizer.hpp</code> に生成されます。<br />
+ ManualTutorialクラスに対する部分は下記です。<br />
+</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#ifdef  THEOLIZER_WRITE_CODE // ###### ManualTutorial ######</span></div><div class="line"></div><div class="line"><span class="preprocessor">#if false // Sample of save/load function.</span></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> tBaseSerializer, <span class="keyword">class</span> tTheolizerVersion&gt;</div><div class="line"><span class="keyword">struct </span>TheolizerNonIntrusive&lt;ManualTutorial&gt;::TheolizerUserDefine&lt;tBaseSerializer, tTheolizerVersion, 1&gt;</div><div class="line">{</div><div class="line">    <span class="comment">// Save members.</span></div><div class="line">    <span class="keyword">static</span> <span class="keywordtype">void</span> saveClassManual</div><div class="line">    (</div><div class="line">        tBaseSerializer&amp; iSerializer,</div><div class="line">        <span class="keyword">typename</span> tTheolizerVersion::TheolizerTarget <span class="keyword">const</span>*<span class="keyword">const</span>&amp; iInstance</div><div class="line">    )</div><div class="line">    {</div><div class="line">        </div><div class="line">        </div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// Load members.</span></div><div class="line">    <span class="keyword">static</span> <span class="keywordtype">void</span> loadClassManual</div><div class="line">    (</div><div class="line">        tBaseSerializer&amp; iSerializer,</div><div class="line">        <span class="keyword">typename</span> tTheolizerVersion::TheolizerTarget*&amp; oInstance</div><div class="line">    )</div><div class="line">    {</div><div class="line">        <span class="keywordflow">if</span> (!oInstance) oInstance=<span class="keyword">new</span> <span class="keyword">typename</span> tTheolizerVersion::TheolizerTarget();</div><div class="line">        </div><div class="line">        </div><div class="line">    }</div><div class="line">};</div><div class="line"><span class="preprocessor">#endif // Sample of save/load function.</span></div><div class="line"></div><div class="line"><span class="preprocessor">#define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)</span></div><div class="line"><span class="preprocessor">#define THEOLIZER_GENERATED_CLASS_TYPE ManualTutorial</span></div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; Version.1 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line"><span class="preprocessor">#define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)</span></div><div class="line"><span class="preprocessor">#define THEOLIZER_GENERATED_CLASS_NAME()\</span></div><div class="line"><span class="preprocessor">    THEOLIZER_INTERNAL_CLASS_NAME((u8&quot;ManualTutorial&quot;))</span></div><div class="line"><span class="preprocessor">#include &lt;theolizer/internal/version_manual.inc&gt;</span></div><div class="line"><span class="preprocessor">#undef  THEOLIZER_GENERATED_VERSION_NO</span></div><div class="line"></div><div class="line"><span class="preprocessor">#endif//THEOLIZER_WRITE_CODE // ###### ManualTutorial ######</span></div></div><!-- fragment --><h2><a class="anchor" id="CopyManualClass"></a>
+3-4.クラス定義雛形のコピー</h2>
+<p>上記雛形の <b>#if false // Sample of save/load function.</b> の次の行から、 <b>#endif // Sample of save/load function.</b> の前の行までを、THEOLIZER_NON_INTRUSIVE_ORDER((ManualTutorial), 1);の直後へコピーします。</p>
+<h2><a class="anchor" id="WriteManualClass"></a>
+3-5.保存／回復処理関数の記述例</h2>
+<p>下記はTHEOLIZER_NON_INTRUSIVE_ORDER()マクロによるシリアライズ指定から、コピーした雛形に保存／回復処理を記述したサンプルです。</p>
+ <div class="fragment"><div class="line"><span class="comment">//      ---&lt;&lt;&lt; シリアライズ用の手動記述 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line"><span class="comment">// 非侵入型手動クラスの指定</span></div><div class="line">THEOLIZER_NON_INTRUSIVE_ORDER((ManualTutorial), 1);</div><div class="line"></div><div class="line"><span class="comment">// 保存処理／回復処理関数</span></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> tBaseSerializer, <span class="keyword">class</span> tTheolizerVersion&gt;</div><div class="line"><span class="keyword">struct </span>TheolizerNonIntrusive&lt;ManualTutorial&gt;::</div><div class="line">    TheolizerUserDefine&lt;tBaseSerializer, tTheolizerVersion, 1&gt;</div><div class="line">{</div><div class="line">    <span class="comment">// Save members.</span></div><div class="line">    <span class="keyword">static</span> <span class="keywordtype">void</span> saveClassManual</div><div class="line">    (</div><div class="line">        tBaseSerializer&amp; iSerializer,</div><div class="line">        <span class="keyword">typename</span> tTheolizerVersion::TheolizerTarget <span class="keyword">const</span>*<span class="keyword">const</span>&amp; iInstance</div><div class="line">    )</div><div class="line">    {</div><div class="line">        THEOLIZER_PROCESS(iSerializer, iInstance-&gt;mManualPublic);</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// Load members.</span></div><div class="line">    <span class="keyword">static</span> <span class="keywordtype">void</span> loadClassManual</div><div class="line">    (</div><div class="line">        tBaseSerializer&amp; iSerializer,</div><div class="line">        <span class="keyword">typename</span> tTheolizerVersion::TheolizerTarget*&amp; oInstance</div><div class="line">    )</div><div class="line">    {</div><div class="line">        <span class="keywordflow">if</span> (!oInstance) oInstance=<span class="keyword">new</span> <span class="keyword">typename</span> tTheolizerVersion::TheolizerTarget();</div><div class="line">        </div><div class="line">        THEOLIZER_PROCESS(iSerializer, oInstance-&gt;mManualPublic);</div><div class="line">    }</div><div class="line">};</div></div><!-- fragment --></p>
+<p><b>tTheolizerVersion::TheolizerTarget</b> は、指定した対象クラス型へ展開されます。<br />
+ この例ではManualTutorialです。constや参照がついていて分かりにくいですが、意味的には下記となります。</p>
+<ul>
+<li>saveClassManual() 関数の<b>iInstance</b> : ManualTutorialへのポインタ</li>
+<li>loadClassManual() 関数の<b>oInstance</b> : ManualTutorialへのポインタへの参照</li>
+</ul>
+<p>oInstanceにnullptrが設定されていた場合は、領域を獲得して下さい。<br />
+ その際、一部の回復処理を先に行い、その値を使ってコンストラクタしてポインタを返却するため、ポインタへの参照にしています。</p>
+<h2><a class="anchor" id="SaveLoadManualClass"></a>
+3-6.保存／回復処理例</h2>
+<p><b>保存処理／回復処理</b>は非侵入型完全自動と同じですので、省略します。</p>
+<p><b>保存結果</b> (<code>&lt;ビルド・フォルダ&gt;/Testing/tutorise_class_variation.json</code>)<br />
+ 保存されたシリアライズ・データの該当部分です。<br />
+ 順序対応なのでメンバ変数名は出力されません。mManualPublicに100を設定して保存していますので、100のみが出力されます。 </p><div class="fragment"><div class="line">[</div><div class="line">    100</div><div class="line">]</div></div><!-- fragment --><p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="DerivedIncluded"></a>
+4.それらを派生したり包含したりしたクラス</h1>
+<h6></h6>
+<p>各種クラスの派生、および、包含（メンバ変数として他のクラス型を用いる)は、通常通りです。</p>
+<p><b>各種クラスを派生／包含した例</b> (source/reference_and_test/version/ver1/test_class_variation.h)<br />
+ FullAutoTutorialをpublic継承、HalfAutoNameTutorialをprivate継承、HalfAutoOrderTutorialをprivateメンバ、ManualTutorialをpublicメンバとした非侵入型完全自動クラスです。<br />
+ protectedを定義していませんが、protected継承、protectedメンバの両方とも使えます。</p>
+<p><div class="fragment"><div class="line"><span class="keyword">class </span>DerivedClass : <span class="keyword">public</span> FullAutoTutorial, <span class="keyword">private</span> HalfAutoNameTutorial</div><div class="line">{</div><div class="line">    HalfAutoOrderTutorial   mHalfAutoOrderTutorial;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    ManualTutorial          mManualTutorial;</div><div class="line"></div><div class="line">    DerivedClass() :</div><div class="line">        FullAutoTutorial(),</div><div class="line">        HalfAutoNameTutorial(),</div><div class="line">        mHalfAutoOrderTutorial(),</div><div class="line">        mManualTutorial()</div><div class="line">    { }</div><div class="line">    <span class="keywordtype">void</span> setNonPublic</div><div class="line">    (</div><div class="line">        <span class="keywordtype">int</span> iHalfAutoNamePrivate,</div><div class="line">        <span class="keywordtype">int</span> iHalfAutoNameProtected,</div><div class="line">        <span class="keywordtype">int</span> iHalfAutoOrderPrivate,</div><div class="line">        <span class="keywordtype">int</span> iHalfAutoOrderProtected</div><div class="line">    );</div><div class="line">    <span class="keywordtype">void</span> checkNonPublic</div><div class="line">    (</div><div class="line">        <span class="keywordtype">int</span> iHalfAutoNamePrivate,</div><div class="line">        <span class="keywordtype">int</span> iHalfAutoNameProtected,</div><div class="line">        <span class="keywordtype">int</span> iHalfAutoOrderPrivate,</div><div class="line">        <span class="keywordtype">int</span> iHalfAutoOrderProtected</div><div class="line">    );</div><div class="line">};</div></div><!-- fragment --></p>
+<p><b>保存処理例</b> (source/reference_and_test/version/ver1/test_class_variation.cpp の <b>tutoriseClassVariation()</b> 関数)<br />
+ 上記のDerivedClassを保存するコード例です。</p>
+ <div class="fragment"><div class="line">    {</div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;tutorise_class_variation.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line">        <span class="comment">// 派生／包含クラス</span></div><div class="line">        DerivedClass    aDerivedClass;</div><div class="line">        aDerivedClass.FullAutoTutorial::setNonPublic(200, 201);</div><div class="line">        aDerivedClass.mFullAutoPublic=202;</div><div class="line">        aDerivedClass.setNonPublic(203, 204, 205, 206);</div><div class="line">        aDerivedClass.mManualTutorial.mManualPublic=207;</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aDerivedClass);</div><div class="line">    }</div></div><!-- fragment --></p>
+<p><b>保存結果</b> (<code>&lt;ビルド・フォルダ&gt;/Testing/tutorise_class_variation.json</code>)<br />
+ 上記で保存されたシリアライズ・データの該当部分です。<br />
+ 名前対応ですので、基底クラスの定義順序変更に備え基底クラスは()付きでクラス名で保存しています。<br />
+ 非侵入型ですのでprivate継承したクラス、およひ、privateメンバは保存されません。</p>
+<div class="fragment"><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;(FullAutoTutorial)&quot;</span>:{</div><div class="line">        <span class="stringliteral">&quot;mFullAutoProtected&quot;</span>:201,</div><div class="line">        <span class="stringliteral">&quot;mFullAutoPublic&quot;</span>:202</div><div class="line">    },</div><div class="line">    <span class="stringliteral">&quot;mManualTutorial&quot;</span>:[</div><div class="line">        207</div><div class="line">    ]</div><div class="line">}</div></div><!-- fragment --><p><b>回復処理例</b> (source/reference_and_test/version/ver1/test_class_variation.cpp の <b>tutoriseClassVariation()</b> 関数)<br />
+ 上記のFullAutoTutorialを回復して値をチェックするコード例です。</p>
+<p><div class="fragment"><div class="line">    {</div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;tutorise_class_variation.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line">        <span class="comment">// 派生／包含クラス</span></div><div class="line">        DerivedClass    aDerivedClass;</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aDerivedClass);</div><div class="line">        <span class="comment">// 基底クラスFullAutoTutorialのcheckNonPublic()関数呼び出し</span></div><div class="line">        aDerivedClass.FullAutoTutorial::checkNonPublic(0, 201);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aDerivedClass.mFullAutoPublic, 202);</div><div class="line">        aDerivedClass.checkNonPublic(0, 0, 0, 0);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aDerivedClass.mManualTutorial.mManualPublic, 207);</div><div class="line">    }</div></div><!-- fragment --></p>
+<p>private継承したクラス、およひ、privateメンバは保存されないため、デフォルト・コンストラクタで生成された値(0)のまま変化しませんので、0と一致することを確認しています。</p>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="TestClassVariation"></a>
+5.網羅的な使用例（自動テスト）の説明</h1>
+<h6></h6>
+<p>網羅的な自動テスト用のクラスは<b>source/reference_and_test/version/ver1/test_class_variation.h</b> ファイルの「単独テスト」以降で定義しています。<br />
+ また、テスト処理は<b>source/reference_and_test/version/ver1/test_class_variation.cpp</b> ファイルで定義しており、saveClassVariation()関数で保存処理、loadClassVariation()関数で回復処理と値の検証を行っています。</p>
+<h2><a class="anchor" id="SingleTest"></a>
+5-1.単独テスト</h2>
+<p>内容は、以下の通りです。</p>
+<ol type="1">
+<li>「<a class="el" href="_basic_process.html">THEOLIZER_PROCESS()の使用例</a> 」の網羅テストと同じプリミティブとenum型、クラス、配列のセットの定義<br />
+ 多数用いるのでDEFINE_MEMBERS()マクロで定義しています。<br />
+ <br />
+</li>
+<li>非侵入型完全自動クラス（FullAuto）<br />
+ DEFINE_MEMBERS()マクロのメンバについて、private, protected, publicのそれぞれに定義しています。<br />
+ ArrayOnly0（非侵入型完全自動クラス）クラスの配列メンバをpublicとして定義しています。<br />
+ privateメンバ以外は保存／回復でき、privateメンバは初期値が維持されることを検証しています。<br />
+ <br />
+</li>
+<li>侵入型半自動－名前対応クラス（HalfAutoName）<br />
+ DEFINE_MEMBERS()マクロのメンバについて、private, protected, publicのそれぞれに定義しています。<br />
+ ArrayOnly1（非侵入型完全自動クラス）クラスの配列メンバをpublicとして定義しています。<br />
+ 全てのメンバが保存／回復できることを検証しています。<br />
+ <br />
+</li>
+<li>侵入型半自動－順序対応クラス（HalfAutoorder）<br />
+ DEFINE_MEMBERS()マクロのメンバについて、private, protected, publicのそれぞれに定義しています。<br />
+ ArrayOnly2（非侵入型完全自動クラス）クラスの配列メンバをpublicとして定義しています。<br />
+ 全てのメンバが保存／回復できることを検証しています。<br />
+ <br />
+</li>
+<li>非侵入型手動クラス（Manual）<br />
+ DEFINE_MEMBERS()マクロのメンバについて、public定義しています。<br />
+ ArrayOnly3（非侵入型完全自動クラス）クラスの配列メンバをpublicとして定義しています。<br />
+ 全てのメンバの保存／回復処理を実装しています。<br />
+ 全てのメンバが保存／回復できることを検証しています。<br />
+ （非侵入型手動クラスで、private/protectedメンバをシリアライズするコードを記述するとコンパイルできないため、これらのメンバの実装とシリアライズ・テストは行なっていません。）</li>
+</ol>
+<p><br />
+</p>
+<p><b>ArrayOnly</b>について<br />
+ 他のクラスメンバに配列としてのみ使用される非侵入型完全自動クラスのソース自動生成に不具合が発生したため、その再発防止用として実装しています。<br />
+</p>
+<h2><a class="anchor" id="DoubleTest"></a>
+5-2.二重組み合わせテスト</h2>
+<h3><a class="anchor" id="DoubleTestHelper"></a>
+5-2-1.二重組み合わせテスト用のヘルパー・クラス</h3>
+<p>非侵入型完全自動(BaseFullAuto)、侵入型半自動(BaseHalfAuto)、非侵入型手動(BaseManual)のクラス・テンプレートを定義しています。<br />
+ これらは全てテンプレート・パラメータとしてint型の非型パラメータを1つ持ち、メンバ変数の初期値を決めてます。<br />
+</p>
+<p>これらのBaseXxxクラス群を派生したクラスは更に別のクラスへ派生されます。その際、同じ基底クラスを複数の派生クラスを経由して１つの派生クラスに継承されることは許されないため、この非型パラメータを用いて別クラスにしています。<br />
+ 例えば、下記のように定義すると、BaseFullAutoがDrivedFullAutoとDrivedHalfAutoを経由してTripledFullAutoへ継承されるためエラーになります。それを防ぐためにBaseFullAutoをクラス・テンプレートとし、DrivedFullAutoとDrivedHalfAutoへの継承は別実体としています。 </p><div class="fragment"><div class="line">BaseFullAuto { };</div><div class="line">DrivedFullAuto : <span class="keyword">public</span> BaseFullAuto { };</div><div class="line">DrivedHalfAuto : <span class="keyword">public</span> BaseFullAuto { };</div><div class="line">TripledFullAuto : <span class="keyword">public</span> DrivedFullAuto, <span class="keyword">public</span> DrivedHalfAuto { };</div></div><!-- fragment --><p>BaseFullAutoは侵入型半自動クラスPrivateInheritanceをprivate継承しています。<br />
+ BaseManualは侵入型半自動クラスProtectedInheritanceをprotected継承しています。<br />
+ 侵入型を非侵入型へprivate/protected継承するとMinGWでビルド・エラーになる不具合が発生したため、その再発防止用です。<br />
+</p>
+<p>侵入型内部で定義しているstatic変数（kIsTheolizer）の有無で侵入型であることを判定していたのですが、private継承しているため非侵入型クラスにkIsTheolizerがprivateで存在していることになります。<br />
+ kIsTheolizerはアクセスできないのでSFINAEにより合致しないことを期待したのですが、「privateなのでアクセスできないエラー」となってしまいました。他の手段で判定し回避しました。</p>
+<h3><a class="anchor" id="DoubleTestImpl"></a>
+5-2-2.二重組み合わせテスト本体</h3>
+<p>内容は、以下の通りです。</p>
+<ol type="1">
+<li>非侵入型完全自動クラス（DerivedFullAuto）<br />
+ BaseFullAuto, BaseHalfAuto, BaseManualのそれぞれを、private, protected, public継承しています。合計9個のクラスを継承しています。<br />
+ BaseFullAuto, BaseHalfAuto, BaseManualのそれぞれを、private, protected, publicメンバ変数として定義しています。<br />
+ private継承したクラス、および、DerivedFullAutoのprivateメンバ変数は全て初期値が維持されること、それら以外のクラスについてはBaseFullAutoのprivateメンバ以外は全て保存／回復されること、BaseFullAutoのprivateメンバは初期値が維持されることを検証しています。<br />
+ <br />
+</li>
+<li>侵入型半自動クラス（DerivedHalfAuto）<br />
+ BaseFullAuto, BaseHalfAuto, BaseManualのそれぞれを、private, protected, public継承しています。合計9個のクラスを継承しています。<br />
+ BaseFullAuto, BaseHalfAuto, BaseManualのそれぞれを、private, protected, publicメンバ変数として定義しています。<br />
+ 全ての継承したクラス、および、DerivedHalfAutoのメンバ変数において、BaseFullAuto型のprivateメンバは全て初期値が維持されること、それら以外については全て保存／回復されることを検証しています。<br />
+ <br />
+</li>
+<li>非侵入型手動クラス（DerivedManual）<br />
+ BaseFullAuto, BaseHalfAuto, BaseManualのそれぞれを、public継承しています。合計3個のクラスを継承しています。<br />
+ BaseFullAuto, BaseHalfAuto, BaseManualのそれぞれを、publicメンバ変数として定義しています。<br />
+ 全ての基底クラスと全てのメンバ変数について保存／回復処理関数を実装しています。 BaseFullAutoのprivateメンバは全て初期値が維持されること、それら以外については全て保存／回復されることを検証しています。<br />
+ <br />
+</li>
+</ol>
+<h2><a class="anchor" id="TripledTest"></a>
+5-3.三重組み合わせテスト</h2>
+<p>DerivedFullAuto, DerivedHalfAuto, DerivedManualを更に組み合わせて以下の自動テストを行います。</p>
+<ol type="1">
+<li>非侵入型完全自動クラス（TripledFullAuto）<br />
+ DrivedFullAuto, DrivedHalfAuto, DrivedManualのそれぞれを、public継承しています。合計3個のクラスを継承しています。<br />
+ DrivedFullAuto, DrivedHalfAuto, DrivedManualのそれぞれを、private, protected, publicメンバ変数として定義しています。<br />
+ TripledFullAutoクラスのprivateメンバ変数は全て初期値が維持されること、それら以外について、非侵入型完全自動クラスのprivateメンバは初期値が維持されること、それら以外については全て保存／回復されることを検証しています。<br />
+ <br />
+</li>
+<li>侵入型半自動クラス（TripledHalfAuto）<br />
+ DrivedFullAuto, DrivedHalfAuto, DrivedManualのそれぞれを、public継承しています。合計3個のクラスを継承しています。<br />
+ DrivedFullAuto, DrivedHalfAuto, DrivedManualのそれぞれを、private, protected, publicメンバ変数として定義しています。<br />
+ 非侵入型完全自動クラスのprivateメンバは全て初期値が維持されること、それら以外については全て保存／回復されることを検証しています。<br />
+ <br />
+</li>
+<li>非侵入型手動クラス（TripledManual）<br />
+ DrivedFullAuto, DrivedHalfAuto, DrivedManualのそれぞれを、public継承しています。合計3個のクラスを継承しています。<br />
+ DrivedFullAuto, DrivedHalfAuto, DrivedManualのそれぞれを、publicメンバ変数として定義しています。<br />
+ 全ての基底クラスと全てのメンバ変数について保存／回復処理関数を実装しています。<br />
+ 非侵入型完全自動クラスのprivateメンバは全て初期値が維持されること、それら以外については全て保存／回復されることを検証しています。<br />
+ <br />
+ </li>
+</ol>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
