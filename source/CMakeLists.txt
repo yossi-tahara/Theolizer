@@ -24,8 +24,8 @@ message(STATUS "THEOLIZER_ROOT=${THEOLIZER_ROOT}")
 #       Project version
 #-----------------------------------------------------------------------------
 
-project(Theolizer VERSION 0.4.1)
-#set(TEMPORARY_VERSION "-Prerelease.")
+project(Theolizer VERSION 0.4.2)
+set(TEMPORARY_VERSION "-Prerelease.")
 
 message(STATUS "PROJECT_VERSION=${PROJECT_VERSION}${TEMPORARY_VERSION}")
 
@@ -317,6 +317,7 @@ function(add_test_function TARGET_NAME)
     else()
         target_link_libraries(${TARGET_NAME} ${LIBRARY_LIST})
 
+        # https://sourceforge.net/p/mingw-w64/discussion/723797/thread/c6b70624/#7f0a
         # https://github.com/assimp/assimp/issues/177
         if((CMAKE_COMPILER_IS_MINGW) AND (CMAKE_SIZEOF_VOID_P EQUAL 8))
 #           add_definitions(-DASSIMP_BUILD_NO_IFC_IMPORTER)
