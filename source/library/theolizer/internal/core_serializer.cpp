@@ -568,17 +568,17 @@ void BaseSerializer::loadProcessEnd()
 
 thread_local BaseSerializer* xNowSerializer=nullptr;
 
-THEOLIZER_INTERNAL_DLL bool isLastVersion()
+bool isLastVersion()
 {
     return xNowSerializer->isLastVersion();
 }
 
-THEOLIZER_INTERNAL_DLL bool isSaver()
+bool isSaver()
 {
     return xNowSerializer->isSaver();
 }
 
-THEOLIZER_INTERNAL_DLL bool duringBackup()
+bool duringBackup()
 {
     return xNowSerializer->duringBackup();
 }

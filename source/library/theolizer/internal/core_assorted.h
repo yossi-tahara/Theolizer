@@ -415,7 +415,7 @@ namespace
 namespace internal
 {
 
-class Destinations
+class THEOLIZER_INTERNAL_DLL Destinations
 {
     static unsigned const   kAlways = (1u << static_cast<unsigned>(theolizerD::All));
     internal::BitString   mDestinations;

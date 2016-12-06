@@ -146,8 +146,6 @@ if(${BUILD_SHARED_LIBS})
 
     if (NOT ${IS_MSVC})
         if(WIN32)
-            set(SCRIPT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/theolizer/internal/version_script.def)
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--version-script,${SCRIPT_FILE}")
         else()
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
         endif()

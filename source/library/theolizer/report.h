@@ -326,7 +326,7 @@ public:
 // ***************************************************************************
 
 //! @todo   T.B.D.
-class WorkingLog
+class THEOLIZER_INTERNAL_DLL WorkingLog
 {
 //----------------------------------------------------------------------------
 //      1行出力用ストリーム・クラス(LogStream)
@@ -370,7 +370,7 @@ private:
     static std::string      mErrorLogPath;
     bool                    mIsUTC;
 
-    THEOLIZER_INTERNAL_DLL std::ostream& getOStream();
+    std::ostream& getOStream();
 
 //----------------------------------------------------------------------------
 //      メンバー関数
@@ -388,10 +388,8 @@ public:
     // iFileCount   ログ・ファイル数
     // iFileSize    1ファイルのサイズ(バイト)
     //! @todo   T.B.D.
-    THEOLIZER_INTERNAL_DLL WorkingLog(const u8string& iPath, 
-                            size_t iFileSize=1024*1024,
-                            unsigned iFileCount=2);
-    THEOLIZER_INTERNAL_DLL ~WorkingLog() noexcept;
+    WorkingLog(const u8string& iPath, size_t iFileSize=1024*1024, unsigned iFileCount=2);
+     ~WorkingLog() noexcept;
 
     // 行ヘッダの時刻を設定する(UTCタイム or ローカルタイム)
     //! @todo   T.B.D.
@@ -400,7 +398,7 @@ public:
     // ログ出力用ストリーム返却
     //  LogStreamのインスタンスでロックする
     //! @todo   T.B.D.
-    THEOLIZER_INTERNAL_DLL LogStream getLogStream();
+    LogStream getLogStream();
 
 //----------------------------------------------------------------------------
 //      行ヘッダ解析
@@ -419,7 +417,7 @@ public:
     //  行ヘッダを取り出せたら、iLineHeaderに返却し、trueが返る。
     //  その時、*iPosにはログ文字列の先頭Indexが返る。
     //! @todo   T.B.D.
-    THEOLIZER_INTERNAL_DLL static bool getLineHeader
+    static bool getLineHeader
     (
         std::string const& iLine,
         LineHeader& iLineHeader,

@@ -244,13 +244,13 @@ public:
 //              メタ・シリアライズ／デシリアライズ・モード・フラグ
 //----------------------------------------------------------------------------
 
-class VersionNoList : public std::vector<unsigned>
+class THEOLIZER_INTERNAL_DLL VersionNoList : public std::vector<unsigned>
 {
     bool    mIsMetaMode;
 public:
     VersionNoList(bool iIsMetaMode=false) : mIsMetaMode(iIsMetaMode) { }
     bool isMetaMode() const {return mIsMetaMode;}
-    THEOLIZER_INTERNAL_DLL unsigned at(std::size_t iTypeIndex) const;
+    unsigned at(std::size_t iTypeIndex) const;
 };
 
 // ***************************************************************************
