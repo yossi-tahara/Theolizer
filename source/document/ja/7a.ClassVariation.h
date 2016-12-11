@@ -343,7 +343,16 @@ private継承したクラス、およひ、privateメンバは保存されない
 また、テスト処理は<b>source/reference_and_test/version/ver1/test_class_variation.cpp</b> ファイルで定義しており、saveClassVariation()関数で保存処理、loadClassVariation()関数で回復処理と値の検証を行っています。
 
 @subsection SingleTest 5-1.単独テスト
-内容は、以下の通りです。
+単独テストの先頭で<b>DEFINE_MEMBERS()マクロ</b>を定義しています。<br>
+
+これは、全てのプリミティブ型、幾つかの基本的なenum型とクラスについて、単独、および、配列を定義するためのマクロです。このマクロを展開する直前でDEFINE()とARRAY()マクロを定義することで各々について、メンバ変数の定義、初期化、保存、回復、値チェックするコードを生成しています。
+
+@dontinclude test_class_variation.h
+@skip DEFINE_MEMBERS
+@until ARRAY(ClassBasicTest
+@until ClassBasicTest()
+
+単独テストの内容は、以下の通りです。
 
 1. 「@ref BasicProcess 」の網羅テストと同じプリミティブとenum型、クラス、配列のセットの定義<br>
     多数用いるのでDEFINE_MEMBERS()マクロで定義しています。<br>

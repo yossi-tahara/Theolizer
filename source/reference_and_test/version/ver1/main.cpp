@@ -72,6 +72,22 @@ void saveClassVariation(tSerializer& iSerializer);
 template<class tSerializer>
 void loadClassVariation(tSerializer& iSerializer);
 
+//----------------------------------------------------------------------------
+//      enum型の様々なバリエーション
+//----------------------------------------------------------------------------
+
+//      ---<<< 使い方のサンプル・コード >>>---
+
+void tutoriseEnumVariation();
+
+//      ---<<< 自動テスト >>>---
+
+template<class tSerializer>
+void saveEnumVariation(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadEnumVariation(tSerializer& iSerializer);
+
 // ***************************************************************************
 //      各テスト呼び出し
 // ***************************************************************************
@@ -81,6 +97,7 @@ void saveBasic(tSerializer& iSerializer)
 {
     saveBasicProcess(iSerializer);
     saveClassVariation(iSerializer);
+    saveEnumVariation(iSerializer);
 }
 
 template<class tSerializer>
@@ -88,6 +105,7 @@ void loadBasic(tSerializer& iSerializer)
 {
     loadBasicProcess(iSerializer);
     loadClassVariation(iSerializer);
+    loadEnumVariation(iSerializer);
 }
 
 //############################################################################
@@ -331,6 +349,7 @@ return 1;
     if (aGlobalVersionNo == 0)
     {
         tutoriseClassVariation();
+        tutoriseEnumVariation();
 
         // ここまでの中間結果表示
         theolizer::printResult("------------- Result of tutorial samples ----------");
@@ -369,8 +388,4 @@ return 2;
 return 3;
 
     return 0;
-}
-
-void dummy()
-{
 }
