@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['workinglog',['WorkingLog',['../classtheolizer_1_1_working_log.html#af17063317a35bd14b0d2762f3d1262a2',1,'theolizer::WorkingLog']]]
+  ['workinglog',['WorkingLog',['../classtheolizer_1_1_working_log.html#abdce4397f5728ca1a442fd5f9ac984c5',1,'theolizer::WorkingLog']]]
 ];

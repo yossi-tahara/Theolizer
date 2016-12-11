@@ -29,7 +29,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.1</span>
+   &#160;<span id="projectnumber">Version.0.4.2-Prerelease.</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -85,13 +85,14 @@ $(document).ready(function(){initNavTree('_enum_variation.html','');});
 <div class="title">enum型のバリエーション </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>ここでは、enum型の下記組み合わせをテストします。</p>
-<ul>
+<div class="textblock"><p>Theolizerは下記のenum型をシリアライズするための機能を持っています。</p>
+<p><b>対応するenum型</b><br />
+</p><ul>
 <li>従来のenum型</li>
 <li>C++11で追加されたscoped enum型</li>
 </ul>
-<p>のそれぞれに対して</p>
-<ul>
+<p><b>Theolizerのenum型サポート</b><br />
+</p><ul>
 <li>非侵入型完全自動</li>
 <li>非侵入型半自動<br />
  非侵入型半自動は、下記オプションを指定します。<ul>
@@ -100,8 +101,73 @@ $(document).ready(function(){initNavTree('_enum_variation.html','');});
 </ul>
 </li>
 </ul>
-<p>また、基底型についても全てテストします。</p>
-<h1>T.B.D.</h1>
+<p>ここでは、これらの使い方と自動テストについて説明します。<br />
+</p>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="FullAutoEnum"></a>
+1.非侵入型完全自動enum型</h1>
+<h6></h6>
+<p>完全自動方式の使い方については<a class="el" href="_usage_total.html#BasicUsage">2.基本的な使い方</a> で説明していますのでそちらを御覧ください。</p>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="HalfAutoEnumSymName"></a>
+2.非侵入型半自動enum型</h1>
+<h6></h6>
+<p>enum型をシリアライズ対象であることを明示的に指定する際に、下記マクロを用いることができます。</p>
+<ul>
+<li><b>THEOLIZER_ENUM(dEnum, dLastVersionNo);</b><br />
+ シンボル名でシリアライズするよう指定します。</li>
+<li><b>THEOLIZER_ENUM_VALUE(dEnum, dLastVersionNo);</b> シンボル値でシリアライズするよう指定します。</li>
+</ul>
+<p>それぞれのパラメータは以下の通りです。</p>
+<ul>
+<li><b>dEnum</b><br />
+ シリアライズ対象のenum型名を指定します。<br />
+</li>
+<li><b>dLastVersionNo</b><br />
+ そのバージョン番号を指定します。詳しくは<a class="el" href="_changing_enum.html">enum型の変更方法、および、バージョン・アップ方法</a> を参照下さい。<br />
+ <br />
+</li>
+</ul>
+ <div class="fragment"><div class="line"><span class="keyword">enum</span> EnumSymName</div><div class="line">{</div><div class="line">    eesnDef=1000,</div><div class="line">    eesnVal</div><div class="line">};</div></div><!-- fragment --></p>
+<p>例えば、上記ように定義されている時、次の構文でEnumSymNameをシリアライズ対象として指定します。</p>
+<p><div class="fragment"><div class="line">THEOLIZER_ENUM(EnumSymName, 1);</div></div><!-- fragment --></p>
+<p>保存／回復処理は従来通りです。</p>
+ <div class="fragment"><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      保存</span></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"></div><div class="line">    {</div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;tutorise_enum_variation.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="comment">// 非侵入型半自動（シンボル名対応）</span></div><div class="line">        EnumSymName aEnumSymName=eesnVal;</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aEnumSymName);</div><div class="line"></div><div class="line">        <span class="comment">// 非侵入型半自動（シンボル値対応）</span></div><div class="line">        EnumSymVal  aEnumSymVal=eesvVal;</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aEnumSymVal);</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      回復</span></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"></div><div class="line">    {</div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;tutorise_enum_variation.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="comment">// 非侵入型半自動（シンボル名対応）</span></div><div class="line">        EnumSymName aEnumSymName=eesnDef;</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aEnumSymName);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aEnumSymName, eesnVal);</div><div class="line"></div><div class="line">        <span class="comment">// 非侵入型半自動（シンボル値対応）</span></div><div class="line">        EnumSymVal  aEnumSymVal=eesvDef;</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aEnumSymVal);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aEnumSymVal, eesvVal);</div><div class="line">    }</div></div><!-- fragment --></p>
+<p>シリライズされた<b>tutorise_enum_variation.json</b> は以下の通りです。<br />
+</p>
+<div class="fragment"><div class="line"> json</div><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;SerialzierName&quot;</span>:<span class="stringliteral">&quot;JsonTheolizer&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;GlobalVersionNo&quot;</span>:1,</div><div class="line">    <span class="stringliteral">&quot;TypeInfoList&quot;</span>:[1]</div><div class="line">}</div><div class="line"><span class="stringliteral">&quot;eesnVal&quot;</span></div><div class="line">3001</div></div><!-- fragment --><p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="TestEnumVariation"></a>
+3.網羅的な使用例（自動テスト）の説明</h1>
+<h6></h6>
+<p>網羅的な自動テスト用のクラスは<b>source/reference_and_test/version/ver1/test_enum_variation.h</b> ファイルで定義しています。<br />
+ また、テスト処理は<b>source/reference_and_test/version/ver1/test_enum_variation.cpp</b> ファイルで定義しており、saveEnumVariation()関数で保存処理、loadEnumVariation()関数で回復処理と値の検証を行っています。</p>
+<p><b>test_enum_variation.h</b> ファイル先頭で<b>DEFINE_ENUM()マクロ</b>を定義しています。<br />
+</p>
+ <div class="fragment"><div class="line"><span class="preprocessor">#define DEFINE_ENUM()                                                       \</span></div><div class="line"><span class="preprocessor">    </span><span class="comment">/* デフォルト */</span><span class="preprocessor">                                                        \</span></div><div class="line"><span class="preprocessor">    DEFINE(Default,                        )                                \</span></div><div class="line"><span class="preprocessor">    </span><span class="comment">/* 文字型 */</span><span class="preprocessor">                                                            \</span></div><div class="line"><span class="preprocessor">    DEFINE(Char,       : char              )                                \</span></div><div class="line"><span class="preprocessor">    DEFINE(SChar,      : signed char       )                                \</span></div><div class="line"><span class="preprocessor">    DEFINE(UChar,      : unsigned char     )                                \</span></div><div class="line"><span class="preprocessor">    DEFINE(Wchar,      : wchar_t           )                                \</span></div><div class="line"><span class="preprocessor">    DEFINE(Char16,     : char16_t          )                                \</span></div><div class="line"><span class="preprocessor">    DEFINE(Char32,     : char32_t          )                                \</span></div><div class="line"><span class="preprocessor">    </span><span class="comment">/* 整数型 */</span><span class="preprocessor">                                                            \</span></div><div class="line"><span class="preprocessor">    DEFINE(Short,      : short             )                                \</span></div><div class="line"><span class="preprocessor">    DEFINE(UShort,     : unsigned short    )                                \</span></div><div class="line"><span class="preprocessor">    DEFINE(Int,        : int               )                                \</span></div><div class="line"><span class="preprocessor">    DEFINE(UInt,       : unsigned int      )                                \</span></div><div class="line"><span class="preprocessor">    DEFINE(Long,       : long              )                                \</span></div><div class="line"><span class="preprocessor">    DEFINE(ULong,      : unsigned long     )                                \</span></div><div class="line"><span class="preprocessor">    DEFINE(LongLong,   : long long         )                                \</span></div><div class="line"><span class="preprocessor">    DEFINE(ULongLong,  : unsigned long long)</span></div></div><!-- fragment --></p>
+<p>C++11規格でenum型の値を保存する整数型を基底型として指定できるようになりました。その全ての基底型（指定していないものも含む）に対して自動テストを容易に展開できるようにするためのマクロです。<br />
+ このマクロを展開する直前でDEFINE()マクロを定義することで、enum型の定義、初期化、保存、回復、値チェックのためのコードを生成しています。</p>
+<p>下記の３種類のTheolizer機能に分けて自動テストを実装しています。</p>
+<ul>
+<li>非侵入型完全自動</li>
+<li>非侵入型半自動（シンボル名対応）</li>
+<li>非侵入型半自動（シンボル値対応）</li>
+</ul>
+<p>それぞれについて下記定義を行っています。</p>
+<ul>
+<li>通常のenum型定義</li>
+<li>Scoped enum型定義</li>
+<li>トップ・レベルの保存／回復関数定義<ul>
+<li>saveEnumFullAuto, loadEnumFullAuto ・・・ 非侵入型完全自動</li>
+<li>saveEnumSymName, loadEnumSymName ・・・ 非侵入型半自動（シンボル名対応）</li>
+<li>saveEnumFSymVal, loadEnumSymVal ・・・ 非侵入型半自動（シンボル値対応）</li>
+</ul>
+</li>
+<li>非侵入型完全自動クラスのメンバとしての定義（メンバ・リスト自動生成対応の検証のため）</li>
+<li>非侵入型手動クラスのメンバとしての定義（非トップ・レベルの保存／回復検証のため） </li>
+</ul>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

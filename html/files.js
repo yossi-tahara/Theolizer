@@ -8,6 +8,7 @@ var files =
     [ "6.usage_total.h", "6_8usage__total_8h.html", null ],
     [ "7.usage_individual.h", "7_8usage__individual_8h.html", null ],
     [ "7a.ClassVariation.h", "7a_8_class_variation_8h.html", null ],
+    [ "7b.EnumVariation.h", "7b_8_enum_variation_8h.html", null ],
     [ "8.reference.h", "8_8reference_8h.html", null ],
     [ "avoid-trouble.h", "avoid-trouble_8h_source.html", null ],
     [ "base.h", "base_8h_source.html", null ],

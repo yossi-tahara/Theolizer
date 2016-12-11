@@ -25,7 +25,11 @@ var _usage_individual =
         [ "5-3.三重組み合わせテスト", "_class_variation.html#TripledTest", null ]
       ] ]
     ] ],
-    [ "enum型のバリエーション", "_enum_variation.html", null ],
+    [ "enum型のバリエーション", "_enum_variation.html", [
+      [ "1.非侵入型完全自動enum型", "_enum_variation.html#FullAutoEnum", null ],
+      [ "2.非侵入型半自動enum型", "_enum_variation.html#HalfAutoEnumSymName", null ],
+      [ "3.網羅的な使用例（自動テスト）の説明", "_enum_variation.html#TestEnumVariation", null ]
+    ] ],
     [ "保存先指定について", "_destinations.html", null ],
     [ "標準コンテナ（STL）の使い方", "_usage_s_t_l.html", null ],
     [ "オブジェクト追跡について", "_object_tracking.html", null ],
