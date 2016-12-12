@@ -121,13 +121,18 @@ C++11規格でenum型の値を保存する整数型を基底型として指定�
 
 それぞれについて下記定義を行っています。
 
-  - 通常のenum型定義
-  - Scoped enum型定義
-  - トップ・レベルの保存／回復関数定義
-    - saveEnumFullAuto, loadEnumFullAuto  ・・・ 非侵入型完全自動
-    - saveEnumSymName,  loadEnumSymName   ・・・ 非侵入型半自動（シンボル名対応）
-    - saveEnumFSymVal,  loadEnumSymVal    ・・・ 非侵入型半自動（シンボル値対応）
-  - 非侵入型完全自動クラスのメンバとしての定義（メンバ・リスト自動生成対応の検証のため）
-  - 非侵入型手動クラスのメンバとしての定義（非トップ・レベルの保存／回復検証のため）
+  1. 通常のenum型定義
+  2. Scoped enum型定義
+  3. トップ・レベルの保存（左辺値）／保存（右辺値）／回復関数定義
+    - 非侵入型完全自動<br>
+        saveLValueEnumFullAuto, saveRValueEnumFullAuto, loadEnumFullAuto
+    - 非侵入型半自動（シンボル名対応）<br>
+        saveLValueEnumSymName,  saveRValueEnumSymName,  loadEnumSymName
+    - 非侵入型半自動（シンボル値対応）<br>
+        saveLValueEnumFSymVal,  saveRValueEnumFSymVal,  loadEnumSymVal
+  4. 非侵入型完全自動クラスのメンバとしての定義（メンバ・リスト自動生成対応の検証のため）
+  5. 非侵入型手動クラスのメンバとしての定義（非トップ・レベルの保存／回復検証のため）
+
+3.と5.については、THEOLIZER_PROCESS()で保存／回復しますが、THEOLIZER_PROCESS()は定数の保存も可能なので、左辺値と右辺値（定数)をテストします。定数への回復はできないので、回復は左辺値のみです。
 
 */

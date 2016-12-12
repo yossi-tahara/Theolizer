@@ -106,7 +106,7 @@ THEOLIZER_ENUM_VALUE(ScopedEnumSymVal, 1);
 #define DEFINE(dName, dType)                                                \
     enum Enum##dName dType                                                  \
     {                                                                       \
-        Enum##dName##Def,       /* デフォルト値 */                          \
+        Enum##dName##Def=10,    /* デフォルト値 */                          \
         Enum##dName##Val        /* 設定値 */                                \
     };
 DEFINE_ENUM()
@@ -117,8 +117,8 @@ DEFINE_ENUM()
 #define DEFINE(dName, dType)                                                \
     enum class ScopedEnum##dName dType                                      \
     {                                                                       \
-        dName##Def,     /* デフォルト値 */                                  \
-        dName##Val      /* 設定値 */                                        \
+        Def=20,             /* デフォルト値 */                              \
+        Val                 /* 設定値 */                                    \
     };
 DEFINE_ENUM()
 #undef  DEFINE
@@ -126,9 +126,9 @@ DEFINE_ENUM()
 //      ---<<< 処理関数 >>>---
 //      手動(トップ・レベル)による保存／回復
 
-// 保存
+// 保存（左辺値）
 template<class tSerializer>
-inline void saveEnumFullAuto(tSerializer& iSerializer)
+inline void saveLValueEnumFullAuto(tSerializer& iSerializer)
 {
     #define DEFINE(dName, dType)                                            \
         Enum##dName aEnum##dName=Enum##dName##Val;                          \
@@ -136,8 +136,22 @@ inline void saveEnumFullAuto(tSerializer& iSerializer)
     DEFINE_ENUM()
     #undef  DEFINE
     #define DEFINE(dName, dType)                                            \
-        ScopedEnum##dName aScopedEnum##dName=ScopedEnum##dName::dName##Val; \
+        ScopedEnum##dName aScopedEnum##dName=ScopedEnum##dName::Val;        \
         THEOLIZER_PROCESS(iSerializer, aScopedEnum##dName);
+    DEFINE_ENUM()
+    #undef  DEFINE
+}
+
+// 保存（右辺値）
+template<class tSerializer>
+inline void saveRValueEnumFullAuto(tSerializer& iSerializer)
+{
+    #define DEFINE(dName, dType)                                            \
+        THEOLIZER_PROCESS(iSerializer, Enum##dName##Val);
+    DEFINE_ENUM()
+    #undef  DEFINE
+    #define DEFINE(dName, dType)                                            \
+        THEOLIZER_PROCESS(iSerializer, ScopedEnum##dName::Val);
     DEFINE_ENUM()
     #undef  DEFINE
 }
@@ -153,9 +167,9 @@ inline void loadEnumFullAuto(tSerializer& iSerializer)
     DEFINE_ENUM()
     #undef  DEFINE
     #define DEFINE(dName, dType)                                            \
-        ScopedEnum##dName aScopedEnum##dName=ScopedEnum##dName::dName##Def; \
+        ScopedEnum##dName aScopedEnum##dName=ScopedEnum##dName::Def;        \
         THEOLIZER_PROCESS(iSerializer, aScopedEnum##dName);                 \
-        THEOLIZER_EQUAL(aScopedEnum##dName, ScopedEnum##dName::dName##Val);
+        THEOLIZER_EQUAL(aScopedEnum##dName, ScopedEnum##dName::Val);
     DEFINE_ENUM()
     #undef  DEFINE
 }
@@ -183,7 +197,7 @@ struct FullAutoClass4EnumFullAuto
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Def),
+            mScopedEnum##dName(ScopedEnum##dName::Def),
         DEFINE_ENUM()
         #undef  DEFINE
         mDummy(0)
@@ -196,7 +210,7 @@ struct FullAutoClass4EnumFullAuto
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Val),
+            mScopedEnum##dName(ScopedEnum##dName::Val),
         DEFINE_ENUM()
         #undef  DEFINE
         mDummy(0)
@@ -210,7 +224,7 @@ struct FullAutoClass4EnumFullAuto
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_EQUAL(mScopedEnum##dName, ScopedEnum##dName::dName##Val);
+            THEOLIZER_EQUAL(mScopedEnum##dName, ScopedEnum##dName::Val);
         DEFINE_ENUM()
         #undef  DEFINE
     }
@@ -239,7 +253,7 @@ struct ManualClass4EnumFullAuto
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Def),
+            mScopedEnum##dName(ScopedEnum##dName::Def),
         DEFINE_ENUM()
         #undef  DEFINE
         mDummy(0)
@@ -252,7 +266,7 @@ struct ManualClass4EnumFullAuto
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Val),
+            mScopedEnum##dName(ScopedEnum##dName::Val),
         DEFINE_ENUM()
         #undef  DEFINE
         mDummy(0)
@@ -266,7 +280,7 @@ struct ManualClass4EnumFullAuto
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_EQUAL(mScopedEnum##dName, ScopedEnum##dName::dName##Val);
+            THEOLIZER_EQUAL(mScopedEnum##dName, ScopedEnum##dName::Val);
         DEFINE_ENUM()
         #undef  DEFINE
     }
@@ -286,11 +300,13 @@ struct TheolizerNonIntrusive<ManualClass4EnumFullAuto>::
     )
     {
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, iInstance->mEnum##dName);
+            THEOLIZER_PROCESS(iSerializer, iInstance->mEnum##dName);        \
+            THEOLIZER_PROCESS(iSerializer, Enum##dName##Val);
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, iInstance->mScopedEnum##dName);
+            THEOLIZER_PROCESS(iSerializer, iInstance->mScopedEnum##dName);  \
+            THEOLIZER_PROCESS(iSerializer, ScopedEnum##dName::Val);
         DEFINE_ENUM()
         #undef  DEFINE
     }
@@ -304,11 +320,17 @@ struct TheolizerNonIntrusive<ManualClass4EnumFullAuto>::
     {
         if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, oInstance->mEnum##dName);
+            THEOLIZER_PROCESS(iSerializer, oInstance->mEnum##dName);        \
+            Enum##dName aEnum##dName;                                       \
+            THEOLIZER_PROCESS(iSerializer, aEnum##dName);                   \
+            THEOLIZER_EQUAL(aEnum##dName, Enum##dName##Val);
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, oInstance->mScopedEnum##dName);
+            THEOLIZER_PROCESS(iSerializer, oInstance->mScopedEnum##dName);  \
+            ScopedEnum##dName aScopedEnum##dName;                           \
+            THEOLIZER_PROCESS(iSerializer, aScopedEnum##dName);             \
+            THEOLIZER_EQUAL(aScopedEnum##dName, ScopedEnum##dName::Val);
         DEFINE_ENUM()
         #undef  DEFINE
     }
@@ -323,8 +345,8 @@ struct TheolizerNonIntrusive<ManualClass4EnumFullAuto>::
 #define DEFINE(dName, dType)                                                \
     enum EnumSymName##dName dType                                           \
     {                                                                       \
-        EnumSymName##dName##Def,        /* デフォルト値 */                  \
-        EnumSymName##dName##Val     /* 設定値 */                            \
+        EnumSymName##dName##Def=30,     /* デフォルト値 */                  \
+        EnumSymName##dName##Val         /* 設定値 */                        \
     };                                                                      \
     THEOLIZER_ENUM(EnumSymName##dName, 1);
 DEFINE_ENUM()
@@ -335,8 +357,8 @@ DEFINE_ENUM()
 #define DEFINE(dName, dType)                                                \
     enum class ScopedEnumSymName##dName dType                               \
     {                                                                       \
-        dName##Def,     /* デフォルト値 */                                  \
-        dName##Val      /* 設定値 */                                        \
+        Def=40,     /* デフォルト値 */                                      \
+        Val         /* 設定値 */                                            \
     };                                                                      \
     THEOLIZER_ENUM(ScopedEnumSymName##dName, 1);
 DEFINE_ENUM()
@@ -345,18 +367,32 @@ DEFINE_ENUM()
 //      ---<<< 処理関数 >>>---
 //      手動(トップ・レベル)による保存／回復
 
-// 保存
+// 保存（左辺値）
 template<class tSerializer>
-inline void saveEnumSymName(tSerializer& iSerializer)
+inline void saveLValueEnumSymName(tSerializer& iSerializer)
 {
     #define DEFINE(dName, dType)                                            \
-        Enum##dName aEnum##dName=Enum##dName##Val;                          \
+        EnumSymName##dName aEnum##dName=EnumSymName##dName##Val;            \
         THEOLIZER_PROCESS(iSerializer, aEnum##dName);
     DEFINE_ENUM()
     #undef  DEFINE
     #define DEFINE(dName, dType)                                            \
-        ScopedEnum##dName aScopedEnum##dName=ScopedEnum##dName::dName##Val; \
+        ScopedEnumSymName##dName aScopedEnum##dName=ScopedEnumSymName##dName::Val;\
         THEOLIZER_PROCESS(iSerializer, aScopedEnum##dName);
+    DEFINE_ENUM()
+    #undef  DEFINE
+}
+
+// 保存（右辺値）
+template<class tSerializer>
+inline void saveRValueEnumSymName(tSerializer& iSerializer)
+{
+    #define DEFINE(dName, dType)                                            \
+        THEOLIZER_PROCESS(iSerializer, EnumSymName##dName##Val);
+    DEFINE_ENUM()
+    #undef  DEFINE
+    #define DEFINE(dName, dType)                                            \
+        THEOLIZER_PROCESS(iSerializer, ScopedEnumSymName##dName::Val);
     DEFINE_ENUM()
     #undef  DEFINE
 }
@@ -366,15 +402,15 @@ template<class tSerializer>
 inline void loadEnumSymName(tSerializer& iSerializer)
 {
     #define DEFINE(dName, dType)                                            \
-        Enum##dName aEnum##dName=Enum##dName##Def;                          \
-        THEOLIZER_PROCESS(iSerializer, aEnum##dName);                       \
-        THEOLIZER_EQUAL(aEnum##dName, Enum##dName##Val);
+        EnumSymName##dName aEnumSymName##dName=EnumSymName##dName##Def;     \
+        THEOLIZER_PROCESS(iSerializer, aEnumSymName##dName);                \
+        THEOLIZER_EQUAL(aEnumSymName##dName, EnumSymName##dName##Val);
     DEFINE_ENUM()
     #undef  DEFINE
     #define DEFINE(dName, dType)                                            \
-        ScopedEnum##dName aScopedEnum##dName=ScopedEnum##dName::dName##Def; \
-        THEOLIZER_PROCESS(iSerializer, aScopedEnum##dName);                 \
-        THEOLIZER_EQUAL(aScopedEnum##dName, ScopedEnum##dName::dName##Val);
+        ScopedEnumSymName##dName aScopedEnumSymName##dName=ScopedEnumSymName##dName::Def;\
+        THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName##dName);          \
+        THEOLIZER_EQUAL(aScopedEnumSymName##dName, ScopedEnumSymName##dName::Val);
     DEFINE_ENUM()
     #undef  DEFINE
 }
@@ -385,11 +421,11 @@ inline void loadEnumSymName(tSerializer& iSerializer)
 struct FullAutoClass4EnumSymName
 {
     #define DEFINE(dName, dType)                                            \
-        Enum##dName mEnum##dName;
+        EnumSymName##dName mEnumSymName##dName;
     DEFINE_ENUM()
     #undef  DEFINE
     #define DEFINE(dName, dType)                                            \
-        ScopedEnum##dName mScopedEnum##dName;
+        ScopedEnumSymName##dName mScopedEnumSymName##dName;
     DEFINE_ENUM()
     #undef  DEFINE
 
@@ -398,11 +434,11 @@ struct FullAutoClass4EnumSymName
     // デフォルト・コンストラクタ(Def値で初期化)
     FullAutoClass4EnumSymName() :
         #define DEFINE(dName, dType)                                        \
-            mEnum##dName(Enum##dName##Def),
+            mEnumSymName##dName(EnumSymName##dName##Def),
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Def),
+            mScopedEnumSymName##dName(ScopedEnumSymName##dName::Def),
         DEFINE_ENUM()
         #undef  DEFINE
         mDummy(0)
@@ -411,11 +447,11 @@ struct FullAutoClass4EnumSymName
     // 初期値設定コンストラクタ(Val値で初期化)
     FullAutoClass4EnumSymName(bool) :
         #define DEFINE(dName, dType)                                        \
-            mEnum##dName(Enum##dName##Val),
+            mEnumSymName##dName(EnumSymName##dName##Val),
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Val),
+            mScopedEnumSymName##dName(ScopedEnumSymName##dName::Val),
         DEFINE_ENUM()
         #undef  DEFINE
         mDummy(0)
@@ -425,11 +461,11 @@ struct FullAutoClass4EnumSymName
     void check()
     {
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_EQUAL(mEnum##dName, Enum##dName##Val);
+            THEOLIZER_EQUAL(mEnumSymName##dName, EnumSymName##dName##Val);
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_EQUAL(mScopedEnum##dName, ScopedEnum##dName::dName##Val);
+            THEOLIZER_EQUAL(mScopedEnumSymName##dName, ScopedEnumSymName##dName::Val);
         DEFINE_ENUM()
         #undef  DEFINE
     }
@@ -441,11 +477,11 @@ struct FullAutoClass4EnumSymName
 struct ManualClass4EnumSymName
 {
     #define DEFINE(dName, dType)                                            \
-        Enum##dName mEnum##dName;
+        EnumSymName##dName mEnumSymName##dName;
     DEFINE_ENUM()
     #undef  DEFINE
     #define DEFINE(dName, dType)                                            \
-        ScopedEnum##dName mScopedEnum##dName;
+        ScopedEnumSymName##dName mScopedEnumSymName##dName;
     DEFINE_ENUM()
     #undef  DEFINE
 
@@ -454,11 +490,11 @@ struct ManualClass4EnumSymName
     // デフォルト・コンストラクタ(Def値で初期化)
     ManualClass4EnumSymName() :
         #define DEFINE(dName, dType)                                        \
-            mEnum##dName(Enum##dName##Def),
+            mEnumSymName##dName(EnumSymName##dName##Def),
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Def),
+            mScopedEnumSymName##dName(ScopedEnumSymName##dName::Def),
         DEFINE_ENUM()
         #undef  DEFINE
         mDummy(0)
@@ -467,11 +503,11 @@ struct ManualClass4EnumSymName
     // 初期値設定コンストラクタ(Val値で初期化)
     ManualClass4EnumSymName(bool) :
         #define DEFINE(dName, dType)                                        \
-            mEnum##dName(Enum##dName##Val),
+            mEnumSymName##dName(EnumSymName##dName##Val),
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Val),
+            mScopedEnumSymName##dName(ScopedEnumSymName##dName::Val),
         DEFINE_ENUM()
         #undef  DEFINE
         mDummy(0)
@@ -481,11 +517,11 @@ struct ManualClass4EnumSymName
     void check()
     {
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_EQUAL(mEnum##dName, Enum##dName##Val);
+            THEOLIZER_EQUAL(mEnumSymName##dName, EnumSymName##dName##Val);
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_EQUAL(mScopedEnum##dName, ScopedEnum##dName::dName##Val);
+            THEOLIZER_EQUAL(mScopedEnumSymName##dName, ScopedEnumSymName##dName::Val);
         DEFINE_ENUM()
         #undef  DEFINE
     }
@@ -505,11 +541,13 @@ struct TheolizerNonIntrusive<ManualClass4EnumSymName>::
     )
     {
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, iInstance->mEnum##dName);
+            THEOLIZER_PROCESS(iSerializer, iInstance->mEnumSymName##dName); \
+            THEOLIZER_PROCESS(iSerializer, EnumSymName##dName##Val);
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, iInstance->mScopedEnum##dName);
+            THEOLIZER_PROCESS(iSerializer, iInstance->mScopedEnumSymName##dName);\
+            THEOLIZER_PROCESS(iSerializer, ScopedEnumSymName##dName::Val);
         DEFINE_ENUM()
         #undef  DEFINE
     }
@@ -523,11 +561,17 @@ struct TheolizerNonIntrusive<ManualClass4EnumSymName>::
     {
         if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, oInstance->mEnum##dName);
+            THEOLIZER_PROCESS(iSerializer, oInstance->mEnumSymName##dName); \
+            EnumSymName##dName aEnumSymName##dName;                         \
+            THEOLIZER_PROCESS(iSerializer, aEnumSymName##dName);            \
+            THEOLIZER_EQUAL(aEnumSymName##dName, EnumSymName##dName##Val);
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, oInstance->mScopedEnum##dName);
+            THEOLIZER_PROCESS(iSerializer, oInstance->mScopedEnumSymName##dName);\
+            ScopedEnumSymName##dName aScopedEnumSymName##dName;             \
+            THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName##dName);      \
+            THEOLIZER_EQUAL(aScopedEnumSymName##dName, ScopedEnumSymName##dName::Val);
         DEFINE_ENUM()
         #undef  DEFINE
     }
@@ -542,7 +586,7 @@ struct TheolizerNonIntrusive<ManualClass4EnumSymName>::
 #define DEFINE(dName, dType)                                                \
     enum EnumSymVal##dName dType                                            \
     {                                                                       \
-        EnumSymVal##dName##Def,     /* デフォルト値 */                      \
+        EnumSymVal##dName##Def=50,  /* デフォルト値 */                      \
         EnumSymVal##dName##Val      /* 設定値 */                            \
     };                                                                      \
     THEOLIZER_ENUM_VALUE(EnumSymVal##dName, 1);
@@ -554,8 +598,8 @@ DEFINE_ENUM()
 #define DEFINE(dName, dType)                                                \
     enum class ScopedEnumSymVal##dName dType                                \
     {                                                                       \
-        dName##Def,     /* デフォルト値 */                                  \
-        dName##Val      /* 設定値 */                                        \
+        Def=60,  /* デフォルト値 */                                         \
+        Val      /* 設定値 */                                               \
     };                                                                      \
     THEOLIZER_ENUM_VALUE(ScopedEnumSymVal##dName, 1);
 DEFINE_ENUM()
@@ -564,18 +608,32 @@ DEFINE_ENUM()
 //      ---<<< 処理関数 >>>---
 //      手動(トップ・レベル)による保存／回復
 
-// 保存
+// 保存（左辺値）
 template<class tSerializer>
-inline void saveEnumSymVal(tSerializer& iSerializer)
+inline void saveLValueEnumSymVal(tSerializer& iSerializer)
 {
     #define DEFINE(dName, dType)                                            \
-        Enum##dName aEnum##dName=Enum##dName##Val;                          \
-        THEOLIZER_PROCESS(iSerializer, aEnum##dName);
+        EnumSymVal##dName aEnumSymVal##dName=EnumSymVal##dName##Val;        \
+        THEOLIZER_PROCESS(iSerializer, aEnumSymVal##dName);
     DEFINE_ENUM()
     #undef  DEFINE
     #define DEFINE(dName, dType)                                            \
-        ScopedEnum##dName aScopedEnum##dName=ScopedEnum##dName::dName##Val; \
+        ScopedEnum##dName aScopedEnum##dName=ScopedEnum##dName::Val;        \
         THEOLIZER_PROCESS(iSerializer, aScopedEnum##dName);
+    DEFINE_ENUM()
+    #undef  DEFINE
+}
+
+// 保存（右辺値）
+template<class tSerializer>
+inline void saveRValueEnumSymVal(tSerializer& iSerializer)
+{
+    #define DEFINE(dName, dType)                                            \
+        THEOLIZER_PROCESS(iSerializer, EnumSymVal##dName##Val);
+    DEFINE_ENUM()
+    #undef  DEFINE
+    #define DEFINE(dName, dType)                                            \
+        THEOLIZER_PROCESS(iSerializer, ScopedEnum##dName::Val);
     DEFINE_ENUM()
     #undef  DEFINE
 }
@@ -585,15 +643,15 @@ template<class tSerializer>
 inline void loadEnumSymVal(tSerializer& iSerializer)
 {
     #define DEFINE(dName, dType)                                            \
-        Enum##dName aEnum##dName=Enum##dName##Def;                          \
-        THEOLIZER_PROCESS(iSerializer, aEnum##dName);                       \
-        THEOLIZER_EQUAL(aEnum##dName, Enum##dName##Val);
+        EnumSymVal##dName aEnumSymVal##dName=EnumSymVal##dName##Def;  \
+        THEOLIZER_PROCESS(iSerializer, aEnumSymVal##dName);                 \
+        THEOLIZER_EQUAL(aEnumSymVal##dName, EnumSymVal##dName##Val);
     DEFINE_ENUM()
     #undef  DEFINE
     #define DEFINE(dName, dType)                                            \
-        ScopedEnum##dName aScopedEnum##dName=ScopedEnum##dName::dName##Def; \
+        ScopedEnum##dName aScopedEnum##dName=ScopedEnum##dName::Def;        \
         THEOLIZER_PROCESS(iSerializer, aScopedEnum##dName);                 \
-        THEOLIZER_EQUAL(aScopedEnum##dName, ScopedEnum##dName::dName##Val);
+        THEOLIZER_EQUAL(aScopedEnum##dName, ScopedEnum##dName::Val);
     DEFINE_ENUM()
     #undef  DEFINE
 }
@@ -604,7 +662,7 @@ inline void loadEnumSymVal(tSerializer& iSerializer)
 struct FullAutoClass4EnumSymVal
 {
     #define DEFINE(dName, dType)                                            \
-        Enum##dName mEnum##dName;
+        EnumSymVal##dName mEnumSymVal##dName;
     DEFINE_ENUM()
     #undef  DEFINE
     #define DEFINE(dName, dType)                                            \
@@ -617,11 +675,11 @@ struct FullAutoClass4EnumSymVal
     // デフォルト・コンストラクタ(Def値で初期化)
     FullAutoClass4EnumSymVal() :
         #define DEFINE(dName, dType)                                        \
-            mEnum##dName(Enum##dName##Def),
+            mEnumSymVal##dName(EnumSymVal##dName##Def),
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Def),
+            mScopedEnum##dName(ScopedEnum##dName::Def),
         DEFINE_ENUM()
         #undef  DEFINE
         mDummy(0)
@@ -630,11 +688,11 @@ struct FullAutoClass4EnumSymVal
     // 初期値設定コンストラクタ(Val値で初期化)
     FullAutoClass4EnumSymVal(bool) :
         #define DEFINE(dName, dType)                                        \
-            mEnum##dName(Enum##dName##Val),
+            mEnumSymVal##dName(EnumSymVal##dName##Val),
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Val),
+            mScopedEnum##dName(ScopedEnum##dName::Val),
         DEFINE_ENUM()
         #undef  DEFINE
         mDummy(0)
@@ -644,11 +702,11 @@ struct FullAutoClass4EnumSymVal
     void check()
     {
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_EQUAL(mEnum##dName, Enum##dName##Val);
+            THEOLIZER_EQUAL(mEnumSymVal##dName, EnumSymVal##dName##Val);
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_EQUAL(mScopedEnum##dName, ScopedEnum##dName::dName##Val);
+            THEOLIZER_EQUAL(mScopedEnum##dName, ScopedEnum##dName::Val);
         DEFINE_ENUM()
         #undef  DEFINE
     }
@@ -660,7 +718,7 @@ struct FullAutoClass4EnumSymVal
 struct ManualClass4EnumSymVal
 {
     #define DEFINE(dName, dType)                                            \
-        Enum##dName mEnum##dName;
+        EnumSymVal##dName mEnumSymVal##dName;
     DEFINE_ENUM()
     #undef  DEFINE
     #define DEFINE(dName, dType)                                            \
@@ -673,11 +731,11 @@ struct ManualClass4EnumSymVal
     // デフォルト・コンストラクタ(Def値で初期化)
     ManualClass4EnumSymVal() :
         #define DEFINE(dName, dType)                                        \
-            mEnum##dName(Enum##dName##Def),
+            mEnumSymVal##dName(EnumSymVal##dName##Def),
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Def),
+            mScopedEnum##dName(ScopedEnum##dName::Def),
         DEFINE_ENUM()
         #undef  DEFINE
         mDummy(0)
@@ -686,11 +744,11 @@ struct ManualClass4EnumSymVal
     // 初期値設定コンストラクタ(Val値で初期化)
     ManualClass4EnumSymVal(bool) :
         #define DEFINE(dName, dType)                                        \
-            mEnum##dName(Enum##dName##Val),
+            mEnumSymVal##dName(EnumSymVal##dName##Val),
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Val),
+            mScopedEnum##dName(ScopedEnum##dName::Val),
         DEFINE_ENUM()
         #undef  DEFINE
         mDummy(0)
@@ -700,11 +758,11 @@ struct ManualClass4EnumSymVal
     void check()
     {
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_EQUAL(mEnum##dName, Enum##dName##Val);
+            THEOLIZER_EQUAL(mEnumSymVal##dName, EnumSymVal##dName##Val);
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_EQUAL(mScopedEnum##dName, ScopedEnum##dName::dName##Val);
+            THEOLIZER_EQUAL(mScopedEnum##dName, ScopedEnum##dName::Val);
         DEFINE_ENUM()
         #undef  DEFINE
     }
@@ -724,11 +782,13 @@ struct TheolizerNonIntrusive<ManualClass4EnumSymVal>::
     )
     {
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, iInstance->mEnum##dName);
+            THEOLIZER_PROCESS(iSerializer, iInstance->mEnumSymVal##dName);  \
+            THEOLIZER_PROCESS(iSerializer, EnumSymVal##dName##Val);
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, iInstance->mScopedEnum##dName);
+            THEOLIZER_PROCESS(iSerializer, iInstance->mScopedEnum##dName);  \
+            THEOLIZER_PROCESS(iSerializer, ScopedEnum##dName::Val);
         DEFINE_ENUM()
         #undef  DEFINE
     }
@@ -742,11 +802,17 @@ struct TheolizerNonIntrusive<ManualClass4EnumSymVal>::
     {
         if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, oInstance->mEnum##dName);
+            THEOLIZER_PROCESS(iSerializer, oInstance->mEnumSymVal##dName);  \
+            EnumSymVal##dName aEnumSymVal##dName;                           \
+            THEOLIZER_PROCESS(iSerializer, aEnumSymVal##dName);             \
+            THEOLIZER_EQUAL(aEnumSymVal##dName, EnumSymVal##dName##Val);
         DEFINE_ENUM()
         #undef  DEFINE
         #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, oInstance->mScopedEnum##dName);
+            THEOLIZER_PROCESS(iSerializer, oInstance->mScopedEnum##dName);  \
+            ScopedEnum##dName aScopedEnum##dName;                           \
+            THEOLIZER_PROCESS(iSerializer, aScopedEnum##dName);             \
+            THEOLIZER_EQUAL(aScopedEnum##dName, ScopedEnum##dName::Val);
         DEFINE_ENUM()
         #undef  DEFINE
     }

@@ -106,19 +106,22 @@ void saveEnumVariation(tSerializer& iSerializer)
 
 //      ---<<< 非侵入型完全自動 >>>---
 
-    saveEnumFullAuto(iSerializer);
+    saveLValueEnumFullAuto(iSerializer);
+    saveRValueEnumFullAuto(iSerializer);
     FullAutoClass4EnumFullAuto  aFullAutoClass4EnumFullAuto{true};
     THEOLIZER_PROCESS(iSerializer, aFullAutoClass4EnumFullAuto);
 
 //      ---<<< 非侵入型半自動（シンボル名対応） >>>---
 
-    saveEnumSymName(iSerializer);
+    saveLValueEnumSymName(iSerializer);
+    saveRValueEnumSymName(iSerializer);
     FullAutoClass4EnumSymName   aFullAutoClass4EnumSymName{true};
     THEOLIZER_PROCESS(iSerializer, aFullAutoClass4EnumSymName);
 
 //      ---<<< 非侵入型半自動（シンボル値対応） >>>---
 
-    saveEnumSymVal(iSerializer);
+    saveLValueEnumSymVal(iSerializer);
+    saveRValueEnumSymVal(iSerializer);
     FullAutoClass4EnumSymVal    aFullAutoClass4EnumSymVal{true};
     THEOLIZER_PROCESS(iSerializer, aFullAutoClass4EnumSymVal);
 }
@@ -139,6 +142,7 @@ void loadEnumVariation(tSerializer& iSerializer)
 //      ---<<< 非侵入型完全自動 >>>---
 
     loadEnumFullAuto(iSerializer);
+    loadEnumFullAuto(iSerializer);
     FullAutoClass4EnumFullAuto  aFullAutoClass4EnumFullAuto{};
     THEOLIZER_PROCESS(iSerializer, aFullAutoClass4EnumFullAuto);
     aFullAutoClass4EnumFullAuto.check();
@@ -146,12 +150,14 @@ void loadEnumVariation(tSerializer& iSerializer)
 //      ---<<< 非侵入型半自動（シンボル名対応） >>>---
 
     loadEnumSymName(iSerializer);
+    loadEnumSymName(iSerializer);
     FullAutoClass4EnumSymName   aFullAutoClass4EnumSymName{};
     THEOLIZER_PROCESS(iSerializer, aFullAutoClass4EnumSymName);
     aFullAutoClass4EnumSymName.check();
 
 //      ---<<< 非侵入型半自動（シンボル値対応） >>>---
 
+    loadEnumSymVal(iSerializer);
     loadEnumSymVal(iSerializer);
     FullAutoClass4EnumSymVal    aFullAutoClass4EnumSymVal{};
     THEOLIZER_PROCESS(iSerializer, aFullAutoClass4EnumSymVal);
