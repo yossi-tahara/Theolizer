@@ -395,7 +395,7 @@ public:
                     dVar##Array2Private[j][i]=dVal;         \
                     dVar##Array2Protected[j][i]=dVal;       \
                     dVar##Array2[j][i]=dVal;                \
-                    for (std::size_t k=0; k < 2; ++k)       \
+                    for (std::size_t k=0; k < 3; ++k)       \
                     {                                       \
                         dVar##Array3Private[k][j][i]=dVal;  \
                         dVar##Array3Protected[k][j][i]=dVal;\
@@ -424,13 +424,14 @@ public:
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1Private[i], ((!isValued)?dDef:dVal));\
+                THEOLIZER_EQUAL(dVar##Array1Private[i], ((!isValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2Private[j][i], ((!isValued)?dDef:dVal));\
-                    for (std::size_t k=0; k < 2; ++k)                       \
+                    THEOLIZER_EQUAL(dVar##Array2Private[j][i], ((!isValued)?dDef:dVal), j, i);\
+                    for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3Private[k][j][i], ((!isValued)?dDef:dVal));\
+                        THEOLIZER_EQUAL(dVar##Array3Private[k][j][i], ((!isValued)?dDef:dVal),\
+                                        k, j, i);                           \
                     }                                                       \
                 }                                                           \
             }
@@ -447,13 +448,14 @@ public:
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1Protected[i], ((!isValued)?dDef:dVal));\
+                THEOLIZER_EQUAL(dVar##Array1Protected[i], ((!isValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2Protected[j][i], ((!isValued)?dDef:dVal));\
-                    for (std::size_t k=0; k < 2; ++k)                       \
+                    THEOLIZER_EQUAL(dVar##Array2Protected[j][i], ((!isValued)?dDef:dVal), j, i);\
+                    for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3Protected[k][j][i], ((!isValued)?dDef:dVal));\
+                        THEOLIZER_EQUAL(dVar##Array3Protected[k][j][i], ((!isValued)?dDef:dVal),\
+                                        k, j, i);                           \
                     }                                                       \
                 }                                                           \
             }
@@ -470,13 +472,14 @@ public:
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1[i], ((!isValued)?dDef:dVal));  \
+                THEOLIZER_EQUAL(dVar##Array1[i], ((!isValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!isValued)?dDef:dVal));\
-                    for (std::size_t k=0; k < 2; ++k)                       \
+                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!isValued)?dDef:dVal), j, i);\
+                    for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!isValued)?dDef:dVal));\
+                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!isValued)?dDef:dVal),\
+                                        k, j, i);                           \
                     }                                                       \
                 }                                                           \
             }
@@ -647,13 +650,14 @@ public:
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1Private[i], ((!isValued)?dDef:dVal));\
+                THEOLIZER_EQUAL(dVar##Array1Private[i], ((!isValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2Private[j][i], ((!isValued)?dDef:dVal));\
+                    THEOLIZER_EQUAL(dVar##Array2Private[j][i], ((!isValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3Private[k][j][i], ((!isValued)?dDef:dVal));\
+                        THEOLIZER_EQUAL(dVar##Array3Private[k][j][i], ((!isValued)?dDef:dVal),\
+                                        k, j, i);                           \
                     }                                                       \
                 }                                                           \
             }
@@ -665,24 +669,27 @@ public:
     // protectedメンバの値をチェック
     void checkProtected(bool isValued=false)
     {
+std::cout << "HalfAutoName::checkProtected() start\n";
         #define DEFINE(dType, dVar, dDef, dVal)                             \
             THEOLIZER_EQUAL(dVar##Protected, ((!isValued)?dDef:dVal));
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1Protected[i], ((!isValued)?dDef:dVal));\
+                THEOLIZER_EQUAL(dVar##Array1Protected[i], ((!isValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2Protected[j][i], ((!isValued)?dDef:dVal));\
+                    THEOLIZER_EQUAL(dVar##Array2Protected[j][i], ((!isValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3Protected[k][j][i], ((!isValued)?dDef:dVal));\
+                        THEOLIZER_EQUAL(dVar##Array3Protected[k][j][i], ((!isValued)?dDef:dVal),\
+                                        k, j, i);                           \
                     }                                                       \
                 }                                                           \
             }
         DEFINE_MEMBERS()
         #undef  ARRAY
         #undef  DEFINE
+std::cout << "HalfAutoName::checkProtected() end\n";
     }
 
     // publicメンバの値をチェック
@@ -693,13 +700,14 @@ public:
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1[i], ((!isValued)?dDef:dVal));  \
+                THEOLIZER_EQUAL(dVar##Array1[i], ((!isValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!isValued)?dDef:dVal));\
+                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!isValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!isValued)?dDef:dVal));\
+                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!isValued)?dDef:dVal),\
+                                        k, j, i);                           \
                     }                                                       \
                 }                                                           \
             }
@@ -872,13 +880,14 @@ public:
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1Private[i], ((!isValued)?dDef:dVal));\
+                THEOLIZER_EQUAL(dVar##Array1Private[i], ((!isValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2Private[j][i], ((!isValued)?dDef:dVal));\
+                    THEOLIZER_EQUAL(dVar##Array2Private[j][i], ((!isValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3Private[k][j][i], ((!isValued)?dDef:dVal));\
+                        THEOLIZER_EQUAL(dVar##Array3Private[k][j][i], ((!isValued)?dDef:dVal),\
+                                        k, j, i);                           \
                     }                                                       \
                 }                                                           \
             }
@@ -895,13 +904,14 @@ public:
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1Protected[i], ((!isValued)?dDef:dVal));\
+                THEOLIZER_EQUAL(dVar##Array1Protected[i], ((!isValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2Protected[j][i], ((!isValued)?dDef:dVal));\
+                    THEOLIZER_EQUAL(dVar##Array2Protected[j][i], ((!isValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3Protected[k][j][i], ((!isValued)?dDef:dVal));\
+                        THEOLIZER_EQUAL(dVar##Array3Protected[k][j][i], ((!isValued)?dDef:dVal),\
+                                        k, j, i);                           \
                     }                                                       \
                 }                                                           \
             }
@@ -918,13 +928,14 @@ public:
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1[i], ((!isValued)?dDef:dVal));  \
+                THEOLIZER_EQUAL(dVar##Array1[i], ((!isValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!isValued)?dDef:dVal));\
+                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!isValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!isValued)?dDef:dVal));\
+                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!isValued)?dDef:dVal),\
+                                        k, j, i);                           \
                     }                                                       \
                 }                                                           \
             }

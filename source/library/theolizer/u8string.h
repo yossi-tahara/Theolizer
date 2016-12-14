@@ -565,9 +565,12 @@ public:
 
 inline std::ostream& operator<<(std::ostream& iOStream, char const* iString)
 {
-    if (theolizer::isOutputByUtf8(&iOStream)) {
+    if (theolizer::isOutputByUtf8(&iOStream))
+    {
         std::operator<<(iOStream, iString);
-    } else {
+    }
+    else
+    {
         std::operator<<(iOStream,
             theolizer::internal::Converter<theolizer::MultiByte, char>::conv(iString));
     }
@@ -590,9 +593,12 @@ inline std::ostream& operator<<(std::ostream& iOStream, std::string const& iStri
 
 inline std::istream& operator>>(std::istream& iIStream, std::string& iString)
 {
-    if (theolizer::isInputByUtf8(&iIStream)) {
+    if (theolizer::isInputByUtf8(&iIStream))
+    {
         std::operator>>(iIStream, iString);
-    } else {
+    }
+    else
+    {
         std::string aString;
         std::operator>>(iIStream, aString);
         iString=theolizer::internal::Converter<char, theolizer::MultiByte>::conv(aString);

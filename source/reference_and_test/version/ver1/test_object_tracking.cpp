@@ -1,7 +1,7 @@
 ﻿//############################################################################
 //      Theolizer仕様／テスト・プログラム
 //
-//          enum型の様々なバリエーション
+//          オブジェクト追跡
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
 
@@ -19,7 +19,7 @@
 //############################################################################
 
 #include "disable_test.h"
-#ifndef DISABLE_ENUM_VARIATION_TEST
+#ifndef DISABLE_OBJECT_TRACKING_TEST
 
 // ***************************************************************************
 //      インクルード
@@ -36,38 +36,41 @@
 
 // プロジェクト・ヘッダ
 #include "common.h"
-#include "test_enum_variation.h"
+#include "test_object_tracking.h"
 
 // 自動生成ソース
-#include "test_enum_variation.cpp.theolizer.hpp"
+#include "test_object_tracking.cpp.theolizer.hpp"
 
 //############################################################################
 //      使い方の説明
 //############################################################################
 
 // ***************************************************************************
+//      クラス実体定義
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      
+//----------------------------------------------------------------------------
+
+// ***************************************************************************
 //      動作確認
 // ***************************************************************************
 
-void tutoriseEnumVariation()
+void tutoriseObjectTracking()
 {
-    std::cout << "tutoriseEnumVariation() start" << std::endl;
+    std::cout << "tutoriseObjectTracking() start" << std::endl;
 
 //----------------------------------------------------------------------------
 //      保存
 //----------------------------------------------------------------------------
 
     {
-        std::ofstream   aStream("tutorise_enum_variation.json");
+        std::ofstream   aStream("tutorise_object_tracking.json");
         theolizer::JsonOSerializer<> aSerializer(aStream);
 
-        // 非侵入型半自動（シンボル名対応）
-        EnumSymName aEnumSymName=eesnVal;
-        THEOLIZER_PROCESS(aSerializer, aEnumSymName);
+        // 非侵入型完全自動
 
-        // 非侵入型半自動（シンボル値対応）
-        EnumSymVal  aEnumSymVal=eesvVal;
-        THEOLIZER_PROCESS(aSerializer, aEnumSymVal);
     }
 
 //----------------------------------------------------------------------------
@@ -75,21 +78,13 @@ void tutoriseEnumVariation()
 //----------------------------------------------------------------------------
 
     {
-        std::ifstream   aStream("tutorise_enum_variation.json");
+        std::ifstream   aStream("tutorise_object_tracking.json");
         theolizer::JsonISerializer<> aSerializer(aStream);
 
-        // 非侵入型半自動（シンボル名対応）
-        EnumSymName aEnumSymName=eesnDef;
-        THEOLIZER_PROCESS(aSerializer, aEnumSymName);
-        THEOLIZER_EQUAL(aEnumSymName, eesnVal);
-
-        // 非侵入型半自動（シンボル値対応）
-        EnumSymVal  aEnumSymVal=eesvDef;
-        THEOLIZER_PROCESS(aSerializer, aEnumSymVal);
-        THEOLIZER_EQUAL(aEnumSymVal, eesvVal);
+        // 非侵入型完全自動
     }
 
-    std::cout << "tutoriseEnumVariation() end\n" << std::endl;
+    std::cout << "tutoriseObjectTracking() end\n" << std::endl;
 }
 
 //############################################################################
@@ -101,73 +96,85 @@ void tutoriseEnumVariation()
 // ***************************************************************************
 
 template<class tSerializer>
-void saveEnumVariation(tSerializer& iSerializer)
+void saveObjectTracking(tSerializer& iSerializer)
 {
 //----------------------------------------------------------------------------
 //      テスト
 //----------------------------------------------------------------------------
 
-//      ---<<< 非侵入型完全自動 >>>---
+//      ---<<< 処理関数 >>>---
+//      手動(トップ・レベル)によるポインタの保存／回復
 
-    saveLValueEnumFullAuto(iSerializer);
-    saveRValueEnumFullAuto(iSerializer);
-    FullAutoClass4EnumFullAuto  aFullAutoClass4EnumFullAuto{true};
-    THEOLIZER_PROCESS(iSerializer, aFullAutoClass4EnumFullAuto);
+#if 1
+    {
+        // ポイント先群
+        PointeeList aPointeeList{true};
 
-//      ---<<< 非侵入型半自動（シンボル名対応） >>>---
+        // ポイント先保存前にポインタ保存
+        std::cout << "        savePointer() : aPointerList" << std::endl;
+        PointerList aPointerList(aPointeeList);
+        savePointer(iSerializer, aPointerList);
 
-    saveLValueEnumSymName(iSerializer);
-    saveRValueEnumSymName(iSerializer);
-    FullAutoClass4EnumSymName   aFullAutoClass4EnumSymName{true};
-    THEOLIZER_PROCESS(iSerializer, aFullAutoClass4EnumSymName);
+        // ポイント先保存
+        std::cout << "        THEOLIZER_PROCESS() : gPointeeList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointeeList);
 
-//      ---<<< 非侵入型半自動（シンボル値対応） >>>---
+        // ポイント先保存後にポインタ保存
+        std::cout << "        savePointer() : aPointerList2" << std::endl;
+        PointerList aPointerList2(aPointeeList);
+        savePointer(iSerializer, aPointerList2);
 
-    saveLValueEnumSymVal(iSerializer);
-    saveRValueEnumSymVal(iSerializer);
-    FullAutoClass4EnumSymVal    aFullAutoClass4EnumSymVal{true};
-    THEOLIZER_PROCESS(iSerializer, aFullAutoClass4EnumSymVal);
+        iSerializer.clearTracking();
+    }
+#endif
 }
 
-INSTANTIATION_ALL(void, saveEnumVariation);
+INSTANTIATION_ALL(void, saveObjectTracking);
 
 // ***************************************************************************
 //      回復
 // ***************************************************************************
 
 template<class tSerializer>
-void loadEnumVariation(tSerializer& iSerializer)
+void loadObjectTracking(tSerializer& iSerializer)
 {
 //----------------------------------------------------------------------------
 //      テスト
 //----------------------------------------------------------------------------
 
-//      ---<<< 非侵入型完全自動 >>>---
+//      ---<<< 処理関数 >>>---
+//      手動(トップ・レベル)によるポインタ（左辺値）の保存／回復
 
-    loadEnumFullAuto(iSerializer);
-    loadEnumFullAuto(iSerializer);
-    FullAutoClass4EnumFullAuto  aFullAutoClass4EnumFullAuto{};
-    THEOLIZER_PROCESS(iSerializer, aFullAutoClass4EnumFullAuto);
-    aFullAutoClass4EnumFullAuto.check();
+#if 1
+    {
+        // 回復領域
+        PointeeList aPointeeList;
 
-//      ---<<< 非侵入型半自動（シンボル名対応） >>>---
+        // 非ポインタ回復前にポインタ回復
+        std::cout << "        loadPointer() : aPointerList" << std::endl;
+        PointerList aPointerList;
+        loadPointer(iSerializer, aPointerList);
 
-    loadEnumSymName(iSerializer);
-    loadEnumSymName(iSerializer);
-    FullAutoClass4EnumSymName   aFullAutoClass4EnumSymName{};
-    THEOLIZER_PROCESS(iSerializer, aFullAutoClass4EnumSymName);
-    aFullAutoClass4EnumSymName.check();
+        // 非ポインタ回復
+        std::cout << "        THEOLIZER_PROCESS() : aPointeeList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointeeList);
+        aPointeeList.check();
 
-//      ---<<< 非侵入型半自動（シンボル値対応） >>>---
+        // 非ポインタ回復後にポインタ回復
+        std::cout << "        loadPointer() : aPointeeList" << std::endl;
+        PointerList aPointerList2;
+        loadPointer(iSerializer, aPointerList2);
 
-    loadEnumSymVal(iSerializer);
-    loadEnumSymVal(iSerializer);
-    FullAutoClass4EnumSymVal    aFullAutoClass4EnumSymVal{};
-    THEOLIZER_PROCESS(iSerializer, aFullAutoClass4EnumSymVal);
-    aFullAutoClass4EnumSymVal.check();
+        // アドレス解決確認
+        iSerializer.clearTracking();
 
+        // 回復結果のチェック
+        aPointerList.check(aPointeeList);
+        aPointerList2.check(aPointeeList);
+    }
+#endif
 }
 
-INSTANTIATION_ALL(void, loadEnumVariation);
+INSTANTIATION_ALL(void, loadObjectTracking);
 
-#endif  // DISABLE_ENUM_VARIATION_TEST
+#endif  // DISABLE_OBJECT_TRACKING_TEST

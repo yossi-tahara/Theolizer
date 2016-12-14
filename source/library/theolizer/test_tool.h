@@ -547,6 +547,28 @@ namespace internal
     }                                                                       \
     while(0)
 
+//      ---<<< ポインタが等しいことをチェックする(Fail時、処理継続) >>>---
+//      char型へのポインタの値を出力しようとすると文字列として出力される。
+//      ポインタ値がnullptrだったら落ちる。
+
+#define THEOLIZER_EQUAL_PTR(dLhs, dRhs)                                     \
+    do                                                                      \
+    {                                                                       \
+        bool    aIsPass=true;                                               \
+        THEOLIZER_INTERNAL_JUDGE_ONLY(false, (dLhs) == (dRhs));             \
+        if (!aIsPass) {                                                     \
+            theolizer::internal::getOStream()                               \
+                << THEOLIZER_INTERNAL_FILE << "("  << __LINE__ << ")\n";    \
+        } else if (theolizer::DisplayPass::on()) {                          \
+            theolizer::internal::getOStream() << "\n" THEOLIZER_INTERNAL_PASS "\n"\
+                << THEOLIZER_INTERNAL_FILE << "("  << __LINE__ << ")\n";    \
+        }                                                                   \
+        THEOLIZER_INTERNAL_RESULT(reinterpret_cast<void const*>(dLhs));     \
+        THEOLIZER_INTERNAL_RESULT(reinterpret_cast<void const*>(dRhs));     \
+        theolizer::internal::unlockMutex();                                 \
+    }                                                                       \
+    while(0)
+
 //      ---<<< 結果をチェックする(Fail時、処理継続) >>>---
 
 /*! @def    THEOLIZER_CHECK

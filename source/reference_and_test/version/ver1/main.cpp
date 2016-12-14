@@ -33,6 +33,7 @@
 #include <theolizer/serializer_json.h>
 
 // プロジェクト・ヘッダ
+#include "disable_test.h"
 #include "common.h"
 
 // 自動生成ソース
@@ -88,6 +89,22 @@ void saveEnumVariation(tSerializer& iSerializer);
 template<class tSerializer>
 void loadEnumVariation(tSerializer& iSerializer);
 
+//----------------------------------------------------------------------------
+//      オブジェクト追跡
+//----------------------------------------------------------------------------
+
+//      ---<<< 使い方のサンプル・コード >>>---
+
+void tutoriseObjectTracking();
+
+//      ---<<< 自動テスト >>>---
+
+template<class tSerializer>
+void saveObjectTracking(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadObjectTracking(tSerializer& iSerializer);
+
 // ***************************************************************************
 //      各テスト呼び出し
 // ***************************************************************************
@@ -95,17 +112,35 @@ void loadEnumVariation(tSerializer& iSerializer);
 template<class tSerializer>
 void saveBasic(tSerializer& iSerializer)
 {
+#ifndef DISABLE_BASIC_PROCESS_TEST
     saveBasicProcess(iSerializer);
+#endif
+#ifndef DISABLE_CLASS_VARIATION_TEST
     saveClassVariation(iSerializer);
+#endif
+#ifndef DISABLE_ENUM_VARIATION_TEST
     saveEnumVariation(iSerializer);
+#endif
+#ifndef DISABLE_OBJECT_TRACKING_TEST
+    saveObjectTracking(iSerializer);
+#endif
 }
 
 template<class tSerializer>
 void loadBasic(tSerializer& iSerializer)
 {
+#ifndef DISABLE_BASIC_PROCESS_TEST
     loadBasicProcess(iSerializer);
+#endif
+#ifndef DISABLE_CLASS_VARIATION_TEST
     loadClassVariation(iSerializer);
+#endif
+#ifndef DISABLE_ENUM_VARIATION_TEST
     loadEnumVariation(iSerializer);
+#endif
+#ifndef DISABLE_OBJECT_TRACKING_TEST
+    loadObjectTracking(iSerializer);
+#endif
 }
 
 //############################################################################
@@ -348,8 +383,15 @@ return 1;
     // デフォルト起動時のみ呼び出す
     if (aGlobalVersionNo == 0)
     {
+#ifndef DISABLE_CLASS_VARIATION_TEST
         tutoriseClassVariation();
+#endif
+#ifndef DISABLE_ENUM_VARIATION_TEST
         tutoriseEnumVariation();
+#endif
+#ifndef DISABLE_OBJECT_TRACKING_TEST
+        tutoriseObjectTracking();
+#endif
 
         // ここまでの中間結果表示
         theolizer::printResult("------------- Result of tutorial samples ----------");

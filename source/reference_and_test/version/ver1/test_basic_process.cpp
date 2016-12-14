@@ -18,6 +18,9 @@
 */
 //############################################################################
 
+#include "disable_test.h"
+#ifndef DISABLE_BASIC_PROCESS_TEST
+
 // ***************************************************************************
 //      インクルード
 // ***************************************************************************
@@ -611,3 +614,5 @@ void loadBasicProcess(tSerializer& iSerializer)
 //! [loadBasicProcess]
 
 INSTANTIATION_ALL(void, loadBasicProcess);
+
+#endif  // DISABLE_BASIC_PROCESS_TEST

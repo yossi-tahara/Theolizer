@@ -330,6 +330,7 @@ struct Switcher
             (
                 aObjectId,
                 reinterpret_cast<void*&>(oPointer),
+                typeid(oPointer),
                 tTrackingMode
             );
         }
@@ -376,6 +377,7 @@ struct Switcher
             (
                 aObjectId,
                 reinterpret_cast<void*&>(oPointer),
+                typeid(oPointer),
                 tTrackingMode
             );
         }
@@ -584,6 +586,7 @@ struct Switcher
             (
                 aObjectId,
                 reinterpret_cast<void*&>(aPointer),
+                typeid(aPointer),
                 aTrackingMode,
                 &aIsLoaded
             );
@@ -702,6 +705,7 @@ struct Switcher
             (
                 aObjectId,
                 reinterpret_cast<void*&>(aInstancePtr),
+                typeid(aInstancePtr),
                 aTrackingMode,
                 &aIsLoaded
             );
@@ -819,6 +823,7 @@ struct Switcher
             (
                 aObjectId,
                 reinterpret_cast<void*&>(oInstance.mTheolizerSpecials.mTarget),
+                typeid(oInstance.mTheolizerSpecials.mTarget),
                 aTrackingMode,
                 &aIsLoaded
             );
@@ -942,6 +947,7 @@ struct Switcher
             (
                 aObjectId,
                 reinterpret_cast<void*&>(aPointer),
+                typeid(aPointer),
                 tTrackingMode,
                 &aIsLoaded
             );
@@ -1019,6 +1025,7 @@ struct Switcher
             (
                 aObjectId,
                 reinterpret_cast<void*&>(oInstance.mTarget),
+                typeid(oInstance.mTarget),
                 tTrackingMode,
                 &aIsLoaded
             );
@@ -1099,6 +1106,7 @@ struct Switcher
             (
                 aObjectId,
                 reinterpret_cast<void*&>(aPointer),
+                typeid(aPointer),
                 tTrackingMode,
                 &aIsLoaded
             );
@@ -1304,6 +1312,8 @@ void process
     size_t          iLineNo
 )
 {
+    THEOLIZER_INTERNAL_ASSERT(iSerializer.mIsSaver, "Can not load to const variable.(%1%)", iName);
+
     // const外し
     typedef typename RemoveCV<tType>::type  Type;
 
@@ -1330,9 +1340,17 @@ void process
     size_t          iLineNo
 )
 {
+    // const外し
+    typedef typename RemoveCV<tType>::type  Type;
+
     // 呼び出し
-    BranchedProcess<tTrackingMode, tTheolizerVersion, tSerializer, tType>::
-        process(iSerializer, ioInstance, iName, iFileName, iLineNo);
+    //  Cスタイル・キャストを意図的に使用している
+    //  例えば、char const* array[10];のようなオブジェクトを保存する時、
+    //  constを解除しておかないと、後の処理でconst回避に苦労する。
+    //  しかし、const領域へのポインタ配列は、C++スタイル・キャストでは
+    //  constを解除できないため。
+    BranchedProcess<tTrackingMode, tTheolizerVersion, tSerializer, Type>::
+        process(iSerializer, (Type&)ioInstance, iName, iFileName, iLineNo);
 }
 
 //############################################################################

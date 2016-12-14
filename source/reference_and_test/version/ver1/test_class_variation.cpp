@@ -18,6 +18,9 @@
 */
 //############################################################################
 
+#include "disable_test.h"
+#ifndef DISABLE_CLASS_VARIATION_TEST
+
 // ***************************************************************************
 //      インクルード
 // ***************************************************************************
@@ -463,3 +466,5 @@ void loadClassVariation(tSerializer& iSerializer)
 //! [loadClassVariation]
 
 INSTANTIATION_ALL(void, loadClassVariation);
+
+#endif  // DISABLE_CLASS_VARIATION_TEST

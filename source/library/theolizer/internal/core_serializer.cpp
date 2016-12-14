@@ -886,8 +886,8 @@ SerializeInfo& BaseSerializer::registerObject
     switch(iTrackingMode)
     {
     case etmDefault:    aTrackingStatus=etsRegistered;  break;
-    case etmOwner:      aTrackingStatus=etsOwner;       break;
-    case etmPointee:    aTrackingStatus=etsPointee;     break;
+    case etmPointee:    aTrackingStatus=etsProcessed;   break;
+    case etmOwner:      aTrackingStatus=etsRefered;     break;
     }
 
     auto found = lower_bound(mSerializeList->begin(),
@@ -903,23 +903,41 @@ SerializeInfo& BaseSerializer::registerObject
      && (found->mStdTypeIndex == aTypeIndex)
      && (!(mDuringBackup && (iTrackingMode == etmPointee)))) // バックアップ中のPointeeは強制不一致
     {
-        // 既にターゲット保存(etsOwner, etsPointee)済みなら更新しない
+        // 既にターゲット保存(etsProcessed, etsRefered, etsMultiProcessed)済みなら更新しない
         if (found->mStatus != etsRegistered)
         {
-            // エラー・チェック(静的領域指定なのに既に保存されているとエラー)
-            if (iTrackingMode == etmPointee)
+            // エラー・チェック(複数回保存とポインタ参照の両方ならエラー)
+            if (((found->mStatus != etsRefered) && (iTrackingMode != etmPointee))
+             || ((found->mStatus == etsRefered) && (iTrackingMode == etmPointee)))
             {
-                THEOLIZER_INTERNAL_IO_ERROR(u8"Tracking %1% as static definition area.", 
+//std::cout << "mStatus=" << found->mStatus << " iTrackingMode=" << iTrackingMode << "\n";
+                THEOLIZER_INTERNAL_DATA_ERROR(
+                    u8"Do not save pointed class-object(%1%) multiple times.", 
                     getNameByTypeId(std::type_index(iTypeInfo)));
             }
+            // 保存済領域の静的領域保存なら、etsMultiProcessedへ更新
+            else if ((found->mStatus != etsMultiProcessed) && (iTrackingMode == etmPointee))
+            {
+                found->mStatus=etsMultiProcessed;
+            }
 
-            if (oIsSaved) *oIsSaved=true;
+            // 静的領域保存でない時のみ、保存済み返却（呼び出し元で保存しない）
+            if (iTrackingMode != etmPointee)
+            {
+                if (oIsSaved) *oIsSaved=true;
+            }
 //std::cout << "    saved : mObjectId=" << found->mObjectId << " mStatus=" << found->mStatus
 //          << " " << iAddress << "\n";
         }
 
+        // ポインタからの参照有り
         else
         {
+            // 静的領域保存なら、etsReferedへ
+            if (iTrackingMode == etmPointee)
+            {
+                aTrackingStatus=etsRefered;
+            }
             found->mStatus=aTrackingStatus;
 //std::cout << "    found : mObjectId=" << found->mObjectId << " mStatus=" << found->mStatus
 //          << " " << iAddress << "\n";
@@ -954,8 +972,14 @@ return false;
 //      デシリアライズ用アドレス登録／回復
 //----------------------------------------------------------------------------
 
-void BaseSerializer::recoverObject(size_t iObjectId, void*& oPointer,
-                                       TrackingMode iTrackingMode, bool* oIsLoaded)
+void BaseSerializer::recoverObject
+(
+    size_t iObjectId,
+    void*& oPointer,
+    std::type_info const& iTypeInfo,
+    TrackingMode iTrackingMode,
+    bool* oIsLoaded
+)
 {
     if (oIsLoaded) *oIsLoaded=false;
 
@@ -981,9 +1005,9 @@ void BaseSerializer::recoverObject(size_t iObjectId, void*& oPointer,
             // 追跡指定されていたら、回復済設定し、
             if (iTrackingMode == etmOwner)
             {
-                (*mDeserializeList)[iObjectId].mStatus = etsOwner;
+                (*mDeserializeList)[iObjectId].mStatus = etsRefered;
             } else {
-                (*mDeserializeList)[iObjectId].mStatus = etsPointee;
+                (*mDeserializeList)[iObjectId].mStatus = etsProcessed;
             }
 
             // アドレスを登録する
@@ -1001,16 +1025,13 @@ void BaseSerializer::recoverObject(size_t iObjectId, void*& oPointer,
         else
         {
             // 追跡指定されていたら、回復済設定し、
-            if (iTrackingMode == etmOwner) {
-                (*mDeserializeList)[iObjectId].mStatus = etsOwner;
-            } else {
-                (*mDeserializeList)[iObjectId].mStatus = etsPointee;
-            }
+            (*mDeserializeList)[iObjectId].mStatus = etsRefered;
 
             // リンク・リストを解決する
             void** p=reinterpret_cast<void**>((*mDeserializeList)[iObjectId].mAddress);
             (*mDeserializeList)[iObjectId].mAddress=oPointer;
-            while(p != nullptr) {
+            while(p != nullptr)
+            {
                 void **q=reinterpret_cast<void**>(*p);  // 次のポインタを一旦退避
                 *p=oPointer;            // ポインタへオブジェクトのアドレスを設定
                 p=q;                    // 次のポインタ処理へ
@@ -1023,13 +1044,21 @@ void BaseSerializer::recoverObject(size_t iObjectId, void*& oPointer,
         oPointer=nullptr;
         break;
 
-    case etsOwner:          // アドレス登録済／オブジェクト回復済
-    case etsPointee:        // アドレス登録済／オブジェクト回復済
-        if (oIsLoaded) *oIsLoaded=true;
-
+    case etsRefered:        // アドレス登録済／オブジェクト回復済
         // エラー・チェック(回復先が静的領域→２回目の回復はエラー)
-        if (iTrackingMode == etmPointee) {
-            THEOLIZER_INTERNAL_IO_ERROR(u8"静的定義領域として追跡指定されています。");
+        if (iTrackingMode == etmPointee)
+        {
+            THEOLIZER_INTERNAL_DATA_ERROR(
+                u8"Do not load pointed class-object(%1%) multiple times.", 
+                getNameByTypeId(std::type_index(iTypeInfo)));
+        }
+        // 以下へ処理継続する(breakは意図的に置いていない)
+
+    case etsProcessed:      // アドレス登録済／オブジェクト回復済
+        // 静的領域回復でない時のみ、回復済み返却（呼び出し元で回復しない）
+        if (iTrackingMode != etmPointee)
+        {
+            if (oIsLoaded) *oIsLoaded=true;
         }
 
         oPointer=(*mDeserializeList)[iObjectId].mAddress;
@@ -1098,7 +1127,7 @@ void BaseSerializer::clearTrackingImpl()
                     std::uintptr_t aPointer;
                     loadControl(aPointer);
                     void* aPointer2=reinterpret_cast<void*>(aPointer);
-                    recoverObject(aObjectId, aPointer2, etmOwner);
+                    recoverObject(aObjectId, aPointer2, typeid(aPointer2), etmOwner);
                 }
             }
         }

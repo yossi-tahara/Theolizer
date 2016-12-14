@@ -61,14 +61,14 @@ struct ClassBasicTest
         mNormalEnum(iNormalEnum)
     { }
 
-    bool operator==(ClassBasicTest const& iRhs)
+    bool operator==(ClassBasicTest const& iRhs) const
     {
         return (mInt==iRhs.mInt) && (mString==iRhs.mString) && (mNormalEnum==iRhs.mNormalEnum);
     }
 
     friend std::ostream& operator<<(std::ostream& iOStream, ClassBasicTest const& iRhs)
     {
-        iOStream << "(" << iRhs.mInt << ", " << iRhs.mString << ", " << iRhs.mNormalEnum << ")";
+        iOStream <<"("<< iRhs.mInt << ", \"" << iRhs.mString << "\", " << iRhs.mNormalEnum<<")";
         return iOStream;
     }
 };

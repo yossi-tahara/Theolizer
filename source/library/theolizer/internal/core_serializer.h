@@ -341,11 +341,12 @@ public:
 
 enum TrackingStatus
 {
-    etsInit,        // 初期状態
-    etsRegistered,  // オブジェクト・テーブルへ登録
-    etsNullPtr,     // 全てのnullptrのための追跡状態
-    etsPointee,     // ポイントすることはないオブジェクト追跡対象として保存／回復完了
-    etsOwner        // ポイントすることもあるオブジェクト追跡対象として保存／回復完了
+    etsInit,            // 初期状態
+    etsRegistered,      // オブジェクト・テーブルへ登録
+    etsNullPtr,         // 全てのnullptrのための追跡状態
+    etsProcessed,       // 対象領域の保存／回復済、かつ、ポインタからは未参照
+    etsRefered,         // 対象領域の保存／回復済、かつ、ポインタからも参照済（複数回保存不可）
+    etsMultiProcessed   // 複数回の対象領域の保存／回復済（ポインタからの参照不可）
 };
 
 // ***************************************************************************
@@ -1096,8 +1097,14 @@ private:
 //      戻り値：追跡指定異常時、false
 //----------------------------------------------------------------------------
 
-    void recoverObject(size_t iObjectId, void*& oPointer,
-                       TrackingMode iTrackingMode, bool* oIsLoaded=nullptr);
+    void recoverObject
+    (
+        size_t iObjectId,
+        void*& oPointer,
+        std::type_info const& iTypeInfo,
+        TrackingMode iTrackingMode,
+        bool* oIsLoaded=nullptr
+    );
 
 // ***************************************************************************
 //      ポリモーフィズム対応
