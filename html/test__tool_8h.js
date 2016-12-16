@@ -7,6 +7,7 @@ var test__tool_8h =
     [ "THEOLIZER_CHECK_EXCEPTION", "test__tool_8h.html#ae68ebb46b20311e93886b098a68324ed", null ],
     [ "THEOLIZER_CHECK_EXCEPTION2", "test__tool_8h.html#a949740ec30dee5027887661c6974ecce", null ],
     [ "THEOLIZER_EQUAL", "test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30", null ],
+    [ "THEOLIZER_EQUAL_PTR", "test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e", null ],
     [ "THEOLIZER_REQUIRE", "test__tool_8h.html#aed6a369542ce50a6f48dc6966b4482c7", null ],
     [ "THEOLIZER_REQUIRE_EXCEPTION", "test__tool_8h.html#a90221382e5f374c7f976a2bd9088b427", null ],
     [ "THEOLIZER_REQUIRE_EXCEPTION2", "test__tool_8h.html#a5ec5de25d814c9c3bb14354a2757f5d8", null ],

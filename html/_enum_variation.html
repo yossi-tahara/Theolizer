@@ -156,18 +156,22 @@ $(document).ready(function(){initNavTree('_enum_variation.html','');});
 <li>非侵入型半自動（シンボル値対応）</li>
 </ul>
 <p>それぞれについて下記定義を行っています。</p>
-<ul>
+<ol type="1">
 <li>通常のenum型定義</li>
 <li>Scoped enum型定義</li>
-<li>トップ・レベルの保存／回復関数定義<ul>
-<li>saveEnumFullAuto, loadEnumFullAuto ・・・ 非侵入型完全自動</li>
-<li>saveEnumSymName, loadEnumSymName ・・・ 非侵入型半自動（シンボル名対応）</li>
-<li>saveEnumFSymVal, loadEnumSymVal ・・・ 非侵入型半自動（シンボル値対応）</li>
+<li>トップ・レベルの保存（左辺値）／保存（右辺値）／回復関数定義<ul>
+<li>非侵入型完全自動<br />
+ saveLValueEnumFullAuto, saveRValueEnumFullAuto, loadEnumFullAuto</li>
+<li>非侵入型半自動（シンボル名対応）<br />
+ saveLValueEnumSymName, saveRValueEnumSymName, loadEnumSymName</li>
+<li>非侵入型半自動（シンボル値対応）<br />
+ saveLValueEnumFSymVal, saveRValueEnumFSymVal, loadEnumSymVal</li>
 </ul>
 </li>
 <li>非侵入型完全自動クラスのメンバとしての定義（メンバ・リスト自動生成対応の検証のため）</li>
-<li>非侵入型手動クラスのメンバとしての定義（非トップ・レベルの保存／回復検証のため） </li>
-</ul>
+<li>非侵入型手動クラスのメンバとしての定義（非トップ・レベルの保存／回復検証のため）</li>
+</ol>
+<p>3.と5.については、THEOLIZER_PROCESS()で保存／回復しますが、THEOLIZER_PROCESS()は定数の保存も可能なので、左辺値と右辺値（定数)をテストします。定数への回復はできないので、回復は左辺値のみです。 </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
