@@ -342,11 +342,9 @@ public:
 enum TrackingStatus
 {
     etsInit,            // 初期状態
-    etsRegistered,      // オブジェクト・テーブルへ登録
     etsNullPtr,         // 全てのnullptrのための追跡状態
-    etsProcessed,       // 対象領域の保存／回復済、かつ、ポインタからは未参照
-    etsRefered,         // 対象領域の保存／回復済、かつ、ポインタからも参照済（複数回保存不可）
-    etsMultiProcessed   // 複数回の対象領域の保存／回復済（ポインタからの参照不可）
+    etsPointed,         // 対象領域へのポインタ処理済(データは未処理)
+    etsProcessed        // 対象領域のデータの処理(保存／回復)済
 };
 
 // ***************************************************************************

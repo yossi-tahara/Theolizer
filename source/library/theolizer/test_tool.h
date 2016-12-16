@@ -511,6 +511,24 @@ namespace internal
     }                                                                       \
     while(0)
 
+//      --- ポインタ表示用のマクロ ---
+//      char*は文字列として出力されるのでそれを回避する
+
+#define THEOLIZER_INTERNAL_RESULT_PTR(dResult)                              \
+    do                                                                      \
+    {                                                                       \
+        if (!aIsPass || theolizer::DisplayPass::on())                       \
+        {                                                                   \
+            std::ostream& os=theolizer::internal::getOStream();             \
+            std::streamsize precision=os.precision();                       \
+            os.precision(std::numeric_limits<long double>::digits10);       \
+            os << THEOLIZER_INTERNAL_U8(#dResult) " : "                     \
+               << reinterpret_cast<void const*>(dResult) << "\n";           \
+            os.precision(precision);                                        \
+        }                                                                   \
+    }                                                                       \
+    while(0)
+
 #endif //THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
@@ -551,6 +569,9 @@ namespace internal
 //      char型へのポインタの値を出力しようとすると文字列として出力される。
 //      ポインタ値がnullptrだったら落ちる。
 
+/*! @def    THEOLIZER_EQUAL_PTR
+    @todo   T.B.D.
+*/
 #define THEOLIZER_EQUAL_PTR(dLhs, dRhs)                                     \
     do                                                                      \
     {                                                                       \
@@ -563,8 +584,8 @@ namespace internal
             theolizer::internal::getOStream() << "\n" THEOLIZER_INTERNAL_PASS "\n"\
                 << THEOLIZER_INTERNAL_FILE << "("  << __LINE__ << ")\n";    \
         }                                                                   \
-        THEOLIZER_INTERNAL_RESULT(reinterpret_cast<void const*>(dLhs));     \
-        THEOLIZER_INTERNAL_RESULT(reinterpret_cast<void const*>(dRhs));     \
+        THEOLIZER_INTERNAL_RESULT_PTR(dLhs);                                \
+        THEOLIZER_INTERNAL_RESULT_PTR(dRhs);                                \
         theolizer::internal::unlockMutex();                                 \
     }                                                                       \
     while(0)

@@ -46,7 +46,6 @@ namespace theolizer
 //      ---<<< 通常 >>>---
 
 #define THEOLIZER_PROCESS(dSerializer, dInstance)                           \
-std::cout << "THEOLIZER_PROCESS(..., " #dInstance ")\n";\
     theolizer::internal::process<theolizer::internal::etmDefault,tTheolizerVersion>\
         (dSerializer, dInstance, #dInstance, THEOLIZER_INTERNAL_FILE, __LINE__)
 

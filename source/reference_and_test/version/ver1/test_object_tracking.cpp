@@ -107,6 +107,11 @@ void saveObjectTracking(tSerializer& iSerializer)
 
 #if 1
     {
+        // オブジェクト追跡前準備
+        //  ここに来るまでにオブジェクト追跡テーブルに登録され、その領域が開放されるので必要。
+        //  (オブジェクト追跡単位内でシリアライズした領域を開放してはいけない。)
+        iSerializer.clearTracking();
+
         // ポイント先群
         PointeeList aPointeeList{true};
 
@@ -147,6 +152,11 @@ void loadObjectTracking(tSerializer& iSerializer)
 
 #if 1
     {
+        // オブジェクト追跡前準備
+        //  ここに来るまでにオブジェクト追跡テーブルに登録され、その領域が開放されるので必要。
+        //  (オブジェクト追跡単位内でシリアライズした領域を開放してはいけない。)
+        iSerializer.clearTracking();
+
         // 回復領域
         PointeeList aPointeeList;
 
@@ -161,7 +171,7 @@ void loadObjectTracking(tSerializer& iSerializer)
         aPointeeList.check();
 
         // 非ポインタ回復後にポインタ回復
-        std::cout << "        loadPointer() : aPointeeList" << std::endl;
+        std::cout << "        loadPointer() : aPointerList2" << std::endl;
         PointerList aPointerList2;
         loadPointer(iSerializer, aPointerList2);
 
