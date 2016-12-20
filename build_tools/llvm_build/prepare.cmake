@@ -28,7 +28,7 @@ function(parameter_log LOG_FILE)
     file(APPEND ${LOG_FILE} "LLVM_DOWNLOAD   =${LLVM_DOWNLOAD}\n")
     file(APPEND ${LOG_FILE} "LLVM_SOURCE     =${LLVM_SOURCE}\n")
     file(APPEND ${LOG_FILE} "LLVM_PREFIX     =${LLVM_PREFIX}\n")
-    file(APPEND ${LOG_FILE} "COMPLIER        =${COMPLIER}\n")
+    file(APPEND ${LOG_FILE} "COMPILER        =${COMPILER}\n")
     file(APPEND ${LOG_FILE} "BIT_NUM         =${BIT_NUM}\n")
     file(APPEND ${LOG_FILE} "CONFIG_TYPE     =${CONFIG_TYPE}\n")
     file(APPEND ${LOG_FILE} "LLVM_INSTALL    =${LLVM_INSTALL}\n")
@@ -206,10 +206,10 @@ endfunction()
 #       ビルド準備（パラメータ設定とビルド・フォルダとサブ・ファイル用意）
 #-----------------------------------------------------------------------------
 
-macro(setup_build_folder COMPLIER BIT_NUM CONFIG_TYPE)
+macro(setup_build_folder COMPILER BIT_NUM CONFIG_TYPE)
 
-    set(LLVM_INSTALL "${LLVM_PREFIX}${COMPLIER}x${BIT_NUM}")
-    if(NOT "${COMPLIER}" STREQUAL "msvc2015")
+    set(LLVM_INSTALL "${LLVM_PREFIX}${COMPILER}x${BIT_NUM}")
+    if(NOT "${COMPILER}" STREQUAL "msvc2015")
         if(NOT "${CONFIG_TYPE}" STREQUAL "")
             set(LLVM_INSTALL "${LLVM_INSTALL}-${CONFIG_TYPE}")
         endif()
@@ -218,7 +218,7 @@ macro(setup_build_folder COMPLIER BIT_NUM CONFIG_TYPE)
 if(FALSE)
     message(STATUS "LLVM_SOURCE =${LLVM_SOURCE}")
     message(STATUS "LLVM_PREFIX =${LLVM_PREFIX}")
-    message(STATUS "COMPLIER    =${COMPLIER}")
+    message(STATUS "COMPILER    =${COMPILER}")
     message(STATUS "BIT_NUM     =${BIT_NUM}")
     message(STATUS "CONFIG_TYPE =${CONFIG_TYPE}")
     message(STATUS "LLVM_INSTALL=${LLVM_INSTALL}")
@@ -239,7 +239,7 @@ endif()
     endif()
 
     # ジェネレータ生成
-    if("${COMPLIER}" STREQUAL "msvc2015")
+    if("${COMPILER}" STREQUAL "msvc2015")
         set(GENERATOR "Visual Studio 14")
         if("${BIT_NUM}" STREQUAL "64")
             set(GENERATOR "${GENERATOR} Win64")
@@ -250,7 +250,7 @@ endif()
         set(MSVC_PATH "$ENV{VSSDK140Install}../VC/bin")
         STRING(REPLACE "\\" "/" MSVC_PATH "${MSVC_PATH}")
         set(CC_PATH "")
-    elseif("${COMPLIER}" MATCHES "mingw")
+    elseif("${COMPILER}" MATCHES "mingw")
         set(GENERATOR "MinGW Makefiles")
         if("${BIT_NUM}" STREQUAL "64")
             set(CC_PATH "${CC64}")
@@ -258,7 +258,7 @@ endif()
             set(CC_PATH "${CC32}")
         endif()
         set(MSVC_PATH "")
-    elseif("${COMPLIER}" MATCHES "gcc")
+    elseif("${COMPILER}" MATCHES "gcc")
         set(GENERATOR "Unix Makefiles")
         if("${BIT_NUM}" STREQUAL "64")
             set(CC_PATH "${CC64}")
@@ -267,12 +267,12 @@ endif()
         endif()
         set(MSVC_PATH "")
     else()
-        message(SEND_ERROR "unknown compiler ${COMPLIER}")
+        message(SEND_ERROR "unknown compiler ${COMPILER}")
     endif()
     message(STATUS "GENERATOR   =${GENERATOR}")
 
     # ビルド・フォルダ・パス
-    set(BUILD_DIR "${COMPLIER}x${BIT_NUM}")
+    set(BUILD_DIR "${COMPILER}x${BIT_NUM}")
     if(NOT "${CONFIG_TYPE}" STREQUAL "")
         set(BUILD_DIR "${BUILD_DIR}-${CONFIG_TYPE}")
     endif()
@@ -336,9 +336,9 @@ endif()
 #       ビルド処理
 #-----------------------------------------------------------------------------
 
-function(build_process COMPLIER BIT_NUM CONFIG_TYPE)
+function(build_process COMPILER BIT_NUM CONFIG_TYPE)
 
-    setup_build_folder("${COMPLIER}" "${BIT_NUM}" "${CONFIG_TYPE}")
+    setup_build_folder("${COMPILER}" "${BIT_NUM}" "${CONFIG_TYPE}")
 
     if (NOT "${MSVC_PATH}" STREQUAL "")
         set(ENV{PATH} "${MSVC_PATH};${ENV_PATH}")
@@ -349,7 +349,7 @@ function(build_process COMPLIER BIT_NUM CONFIG_TYPE)
     endif()
 
     start("Configuring   ...")
-    if("${COMPLIER}" STREQUAL "msvc2015")
+    if("${COMPILER}" STREQUAL "msvc2015")
         execute_process(
             COMMAND ${CMAKE_COMMAND}
                 -G "${GENERATOR}"
@@ -361,7 +361,7 @@ function(build_process COMPLIER BIT_NUM CONFIG_TYPE)
             ERROR_VARIABLE  OUTPUT_LOG
             RESULT_VARIABLE RETURN_CODE
         )
-    elseif("${COMPLIER}" MATCHES "mingw")
+    elseif("${COMPILER}" MATCHES "mingw")
         execute_process(
             COMMAND ${CMAKE_COMMAND}
                 -G "${GENERATOR}"

@@ -61,8 +61,8 @@ file(WRITE ${SUMMARY} "")
 #-----------------------------------------------------------------------------
 #       各ビルド・フォルダの準備とビルド・テスト・インストール
 #
-#       build_process(COMPLIER BIT_NUM CONFIG_TYPE fPIC)
-#           COMPLIER        msvc2015/mingw540/gcc540
+#       build_process(COMPILER BIT_NUM CONFIG_TYPE fPIC)
+#           COMPILER        msvc2015/mingw540/gcc540
 #           BIT_NUM         64/32
 #           CONFIG_TYPE     ""/Debug/Release
 #           fPIC            FALSE/TRUE

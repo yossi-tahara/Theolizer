@@ -57,8 +57,8 @@ set(THEOLIZER_PREFIX "$ENV{HOME}/install/Theolizer-")
 set(BOOST_PREFIX "$ENV{HOME}/install/boost")
 
 # llvmのルート・フォールダ(ドライバをビルドしない時は未指定でOK)
-#   msvc   : ${LLVM}/${COMPLIER}x${BIT_NUM}
-#   その他 : ${LLVM}/${COMPLIER}x${BIT_NUM}-${CONFIG_TYPE}
+#   msvc   : ${LLVM}/${COMPILER}x${BIT_NUM}
+#   その他 : ${LLVM}/${COMPILER}x${BIT_NUM}-${CONFIG_TYPE}
 #   これ以外のフォルダを指定する時は、LLVM_ROOTを設定する
 
 set(LLVM "$ENV{HOME}/install/llvm390")
@@ -90,8 +90,8 @@ file(WRITE ${SUMMARY} "")
 #-----------------------------------------------------------------------------
 #       各ビルド・フォルダの準備とビルド・テスト・インストール
 #
-#       build_by_gcc(COMPLIER BIT_NUM LIB_TYPE BUILD_DRIVER BUILD_DOCUMENT RELEASE_LIST DEBUG_LIST)
-#           COMPLIER        msvc2015/mingw540/gcc540
+#       build_by_gcc(COMPILER BIT_NUM LIB_TYPE BUILD_DRIVER BUILD_DOCUMENT RELEASE_LIST DEBUG_LIST)
+#           COMPILER        msvc2015/mingw540/gcc540
 #           BIT_NUM         64/32
 #           LIB_TYPE        StaticWithBoost/Static/Shared
 #           BUILD_DRIVER    TRUE/FALSE

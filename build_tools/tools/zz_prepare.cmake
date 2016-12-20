@@ -57,14 +57,14 @@ endfunction()
 #       ビルド準備（パラメータ設定とビルド・フォルダとサブ・ファイル用意）
 #-----------------------------------------------------------------------------
 
-macro(setup_build_folder COMPLIER BIT_NUM LIB_TYPE CONFIG_TYPE BUILD_DRIVER BUILD_DOCUMENT)
+macro(setup_build_folder COMPILER BIT_NUM LIB_TYPE CONFIG_TYPE BUILD_DRIVER BUILD_DOCUMENT)
 
 if(FALSE)
     message(STATUS "THEOLIZER_SOURCE=${THEOLIZER_SOURCE}")
     message(STATUS "THEOLIZER_BINARY=${THEOLIZER_BINARY}")
     message(STATUS "THEOLIZER_PREFIX=${THEOLIZER_PREFIX}")
     message(STATUS "LIB_TYPE        =${LIB_TYPE}")
-    message(STATUS "COMPLIER        =${COMPLIER}")
+    message(STATUS "COMPILER        =${COMPILER}")
     message(STATUS "BIT_NUM         =${BIT_NUM}")
     message(STATUS "CONFIG_TYPE     =${CONFIG_TYPE}")
     message(STATUS "BUILD_DRIVER    =${BUILD_DRIVER}")
@@ -106,7 +106,7 @@ endif()
     endif()
 
     # ジェネレータ生成
-    if("${COMPLIER}" STREQUAL "msvc2015")
+    if("${COMPILER}" STREQUAL "msvc2015")
         set(GENERATOR "Visual Studio 14")
         if("${BIT_NUM}" STREQUAL "64")
             set(GENERATOR "${GENERATOR} Win64")
@@ -117,7 +117,7 @@ endif()
         set(MSVC_PATH "$ENV{VSSDK140Install}../VC/bin")
         STRING(REPLACE "\\" "/" MSVC_PATH "${MSVC_PATH}")
         set(CC_PATH "")
-    elseif("${COMPLIER}" STREQUAL "mingw540")
+    elseif("${COMPILER}" STREQUAL "mingw540")
         set(GENERATOR "MinGW Makefiles")
         if("${BIT_NUM}" STREQUAL "64")
             set(CC_PATH "${CC64}")
@@ -125,7 +125,7 @@ endif()
             set(CC_PATH "${CC32}")
         endif()
         set(MSVC_PATH "")
-    elseif("${COMPLIER}" STREQUAL "gcc540")
+    elseif("${COMPILER}" STREQUAL "gcc540")
         set(GENERATOR "Unix Makefiles")
         if("${BIT_NUM}" STREQUAL "64")
             set(CC_PATH "${CC64}")
@@ -134,12 +134,12 @@ endif()
         endif()
         set(MSVC_PATH "")
     else()
-        message(SEND_ERROR "unknown compiler ${COMPLIER}")
+        message(SEND_ERROR "unknown compiler ${COMPILER}")
     endif()
     message(STATUS "GENERATOR   =${GENERATOR}")
 
     # ビルド・フォルダ・パス
-    set(BUILD_DIR "${THEOLIZER_BINARY}${COMPLIER}x${BIT_NUM}-${LIB_TYPE}")
+    set(BUILD_DIR "${THEOLIZER_BINARY}${COMPILER}x${BIT_NUM}-${LIB_TYPE}")
     if(NOT "${CONFIG_TYPE}" STREQUAL "")
         set(BUILD_DIR "${BUILD_DIR}-${CONFIG_TYPE}")
     endif()
@@ -159,7 +159,7 @@ endif()
     # llvmのフォルダ・パス
     if("${BUILD_DRIVER}" STREQUAL "TRUE")
         if("${LLVM_ROOT}" STREQUAL "")
-            set(LLVM_ROOT "${LLVM}/${COMPLIER}x${BIT_NUM}")
+            set(LLVM_ROOT "${LLVM}/${COMPILER}x${BIT_NUM}")
             if(NOT "${CONFIG_TYPE}" STREQUAL "")
                 set(LLVM_ROOT "${LLVM_ROOT}-${CONFIG_TYPE}")
             endif()
@@ -202,8 +202,8 @@ endmacro()
 #       ビルド準備とビルド：ビルド・フォルダ構築、configure、full-test
 #-----------------------------------------------------------------------------
 
-function(build_process COMPLIER BIT_NUM LIB_TYPE CONFIG_TYPE BUILD_DRIVER BUILD_DOCUMENT)
-    setup_build_folder("${COMPLIER}" "${BIT_NUM}" "${LIB_TYPE}" "${CONFIG_TYPE}" "${BUILD_DRIVER}" "${BUILD_DOCUMENT}")
+function(build_process COMPILER BIT_NUM LIB_TYPE CONFIG_TYPE BUILD_DRIVER BUILD_DOCUMENT)
+    setup_build_folder("${COMPILER}" "${BIT_NUM}" "${LIB_TYPE}" "${CONFIG_TYPE}" "${BUILD_DRIVER}" "${BUILD_DOCUMENT}")
 
     execute_process(
         COMMAND ${CMAKE_COMMAND} -DPROC=config -DPROC_ALL=${PROC_ALL} "-DSUMMARY=${SUMMARY}" -P zz_process.cmake
@@ -235,27 +235,27 @@ endfunction()
 
 #       ---<<< MSVC用 >>>---
 
-function(build_by_msvc COMPLIER BIT_NUM LIB_TYPE BUILD_DRIVER BUILD_DOCUMENT PASS_LIST)
+function(build_by_msvc COMPILER BIT_NUM LIB_TYPE BUILD_DRIVER BUILD_DOCUMENT PASS_LIST)
 
     if(${BUILD_DRIVER})
         set(DRIVER "[Build Driver] ")
     endif()
-    output_title("------ ${COMPLIER}x${BIT_NUM}-${LIB_TYPE} ${DRIVER}------")
-    build_process("${COMPLIER}" "${BIT_NUM}" "${LIB_TYPE}" "" "${BUILD_DRIVER}" "${BUILD_DOCUMENT}" ${PASS_LIST})
+    output_title("------ ${COMPILER}x${BIT_NUM}-${LIB_TYPE} ${DRIVER}------")
+    build_process("${COMPILER}" "${BIT_NUM}" "${LIB_TYPE}" "" "${BUILD_DRIVER}" "${BUILD_DOCUMENT}" ${PASS_LIST})
 
 endfunction()
 
 #       ---<<< GCC/MinGW用 >>>---
 
-function(build_by_gcc COMPLIER BIT_NUM LIB_TYPE BUILD_DRIVER BUILD_DOCUMENT RELEASE_LIST DEBUG_LIST)
+function(build_by_gcc COMPILER BIT_NUM LIB_TYPE BUILD_DRIVER BUILD_DOCUMENT RELEASE_LIST DEBUG_LIST)
 
     if(${BUILD_DRIVER})
         set(DRIVER "[Build Driver] ")
     endif()
-    output_title("------ ${COMPLIER}x${BIT_NUM}-${LIB_TYPE}-Release ${DRIVER}------")
-    build_process("${COMPLIER}" "${BIT_NUM}" "${LIB_TYPE}" "Release" "${BUILD_DRIVER}" "${BUILD_DOCUMENT}" ${RELEASE_LIST})
+    output_title("------ ${COMPILER}x${BIT_NUM}-${LIB_TYPE}-Release ${DRIVER}------")
+    build_process("${COMPILER}" "${BIT_NUM}" "${LIB_TYPE}" "Release" "${BUILD_DRIVER}" "${BUILD_DOCUMENT}" ${RELEASE_LIST})
 
-    output_title("------ ${COMPLIER}x${BIT_NUM}-${LIB_TYPE}-Debug ------")
-    build_process("${COMPLIER}" "${BIT_NUM}" "${LIB_TYPE}" "Debug"   "FALSE" "FALSE" ${DEBUG_LIST})
+    output_title("------ ${COMPILER}x${BIT_NUM}-${LIB_TYPE}-Debug ------")
+    build_process("${COMPILER}" "${BIT_NUM}" "${LIB_TYPE}" "Debug"   "FALSE" "FALSE" ${DEBUG_LIST})
 
 endfunction()
