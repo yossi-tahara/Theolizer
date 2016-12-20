@@ -49,68 +49,70 @@
 
 #define DEFINE_MEMBERS()                                                                \
     /* 文字型 */                                                                        \
-    DEFINE(char,                Char,           0,       110)                           \
-    DEFINE(signed char,         SChar,          0,      -111)                           \
-    DEFINE(unsigned char,       UChar,          0,       112)                           \
-    DEFINE(wchar_t,             Wchar,          0,       1100)                          \
-    DEFINE(char16_t,            Char16,         0,       1101)                          \
-    DEFINE(char32_t,            Char32,         0,       1102)                          \
+    DEFINE(char,                Char,           0,       10,      20)                   \
+    DEFINE(signed char,         SChar,          0,      -11,      21)                   \
+    DEFINE(unsigned char,       UChar,          0,       12,      22)                   \
+    DEFINE(wchar_t,             Wchar,          0,       1100,    1200)                 \
+    DEFINE(char16_t,            Char16,         0,       1101,    1201)                 \
+    DEFINE(char32_t,            Char32,         0,       1102,    1202)                 \
     /* 整数型 */                                                                        \
-    DEFINE(short,               Short,          0,      -2100)                          \
-    DEFINE(unsigned short,      UShort,         0,       2100)                          \
-    DEFINE(int,                 Int,            0,      -3100)                          \
-    DEFINE(unsigned int,        UInt,           0U,      3100U)                         \
-    DEFINE(long,                Long,           0L,     -4100L)                         \
-    DEFINE(unsigned long,       ULong,          0UL,     4100UL)                        \
-    DEFINE(long long,           LongLong,       0LL,    -5100LL)                        \
-    DEFINE(unsigned long long,  ULongLong,      0ULL,    5100ULL)                       \
+    DEFINE(short,               Short,          0,      -2100,   -2200)                 \
+    DEFINE(unsigned short,      UShort,         0,       2100,    2200)                 \
+    DEFINE(int,                 Int,            0,      -3100,   -3200)                 \
+    DEFINE(unsigned int,        UInt,           0U,      3100U,   3200U)                \
+    DEFINE(long,                Long,           0L,     -4100L,  -4200L)                \
+    DEFINE(unsigned long,       ULong,          0UL,     4100UL,  3200U)                \
+    DEFINE(long long,           LongLong,       0LL,    -5100LL, -4200L)                \
+    DEFINE(unsigned long long,  ULongLong,      0ULL,    5100ULL, 5200ULL)              \
     /* 浮動小数点型 */                                                                  \
-    DEFINE(float,               Float,          0.0F,   2.23456F)                       \
-    DEFINE(double,              Double,         0.0,    2.23456789012345)               \
-    DEFINE(long double,         LongDouble,     0.0L,   2.23456789012345L)              \
+    DEFINE(float,               Float,          0.0F,   2.23456F, 3.23456F)             \
+    DEFINE(double,              Double,         0.0,    2.23456789012345,  3.23456789012345)\
+    DEFINE(long double,         LongDouble,     0.0L,   2.23456789012345L, 3.23456789012345L)\
     /* 文字列型 */                                                                      \
-    DEFINE(std::string,         String,         u8"",   u8"ＵＴＦ－８a")                \
-    DEFINE(std::wstring,        Wstring,        L"",    L"ＵＴＦ－１６／３２a")         \
-    DEFINE(std::u16string,      U16string,      u"",    u"ＵＴＦ－１６a")               \
-    DEFINE(std::u32string,      U32string,      U"",    U"ＵＴＦ－３２a")               \
+    DEFINE(std::string,         String,         u8"",   u8"ＵＴＦ８a", u8"ＵＴＦ８b")   \
+    DEFINE(std::wstring,        Wstring,        L"",    L"ＵＴＦ１６/３２a", L"ＵＴＦ１６/３２b")\
+    DEFINE(std::u16string,      U16string,      u"",    u"ＵＴＦ１６a", u"ＵＴＦ１６b") \
+    DEFINE(std::u32string,      U32string,      U"",    U"ＵＴＦ３２a", U"ＵＴＦ３２b") \
     /* enum型 */                                                                        \
-    DEFINE(NormalEnum,  NormalEnum,     eneZero,            eneOne)                     \
-    DEFINE(ScopedEnum,  ScopedEnum,     ScopedEnum::ZERO,   ScopedEnum::TWO)            \
+    DEFINE(NormalEnum,  NormalEnum,     eneZero,          eneOne,          eneTwo)      \
+    DEFINE(ScopedEnum,  ScopedEnum,     ScopedEnum::ZERO, ScopedEnum::ONE, ScopedEnum::TWO)\
     /* クラス */                                                                        \
     DEFINE(ClassBasicTest, ClassBasicTest,                                              \
-           ClassBasicTest(), ClassBasicTest(1, "1", eneOne))                            \
+           ClassBasicTest(), ClassBasicTest(1, "1", eneOne), ClassBasicTest(2, "2", eneTwo))\
     /* --- 配列 --- */                                                                  \
     /* 文字型 */                                                                        \
-    ARRAY(char,                 Char,       5,  0,       120)                           \
-    ARRAY(signed char,          SChar,      6,  0,      -121)                           \
-    ARRAY(unsigned char,        UChar,      7,  0,       112)                           \
-    ARRAY(wchar_t,              Wchar,      8,  0,       1100)                          \
-    ARRAY(char16_t,             Char16,     9,  0,       1101)                          \
-    ARRAY(char32_t,             Char32,     10, 0,       1102)                          \
+    ARRAY(char,                 Char,       5,  0,       30,      40)                   \
+    ARRAY(signed char,          SChar,      6,  0,      -31,      41)                   \
+    ARRAY(unsigned char,        UChar,      7,  0,       32,      42)                   \
+    ARRAY(wchar_t,              Wchar,      8,  0,       1300,    1400)                 \
+    ARRAY(char16_t,             Char16,     9,  0,       1301,    1401)                 \
+    ARRAY(char32_t,             Char32,     10, 0,       1302,    1402)                 \
     /* 整数型 */                                                                        \
-    ARRAY(short,                Short,      5,  0,      -2200)                          \
-    ARRAY(unsigned short,       UShort,     6,  0,       2200)                          \
-    ARRAY(int,                  Int,        7,  0,      -3200)                          \
-    ARRAY(unsigned int,         UInt,       8,  0U,      3200U)                         \
-    ARRAY(long,                 Long,       9,  0L,     -4200L)                         \
-    ARRAY(unsigned long,        ULong,      10, 0UL,     4200UL)                        \
-    ARRAY(long long,            LongLong,   11, 0LL,    -5200LL)                        \
-    ARRAY(unsigned long long,   ULongLong,  12, 0ULL,    5200ULL)                       \
+    ARRAY(short,                Short,      5,  0,      -2300,   -2400)                 \
+    ARRAY(unsigned short,       UShort,     6,  0,       2300,    2400)                 \
+    ARRAY(int,                  Int,        7,  0,      -3300,   -3400)                 \
+    ARRAY(unsigned int,         UInt,       8,  0U,      3300U,   3400U)                \
+    ARRAY(long,                 Long,       9,  0L,     -4300L,  -4400L)                \
+    ARRAY(unsigned long,        ULong,      10, 0UL,     4300UL,  3400U)                \
+    ARRAY(long long,            LongLong,   11, 0LL,    -5300LL, -4400L)                \
+    ARRAY(unsigned long long,   ULongLong,  12, 0ULL,    5300ULL, 5400ULL)              \
     /* 浮動小数点型 */                                                                  \
-    ARRAY(float,                Float,      5,  0.0F,   3.23456F)                       \
-    ARRAY(double,               Double,     6,  0.0,    3.23456789012345)               \
-    ARRAY(long double,          LongDouble, 7,  0.0L,   3.23456789012345L)              \
+    ARRAY(float,                Float,      5,  0.0F,   4.23456F, 5.23456F)             \
+    ARRAY(double,               Double,     6,  0.0,    4.23456789012345,  5.23456789012345)\
+    ARRAY(long double,          LongDouble, 7,  0.0L,   4.23456789012345L, 5.23456789012345L)\
     /* 文字列型 */                                                                      \
-    ARRAY(std::string,          String,     5,  u8"",   u8"ＵＴＦ－８a")                \
-    ARRAY(std::wstring,         Wstring,    6,  L"",    L"ＵＴＦ－１６／３２a")         \
-    ARRAY(std::u16string,       U16string,  7,  u"",    u"ＵＴＦ－１６a")               \
-    ARRAY(std::u32string,       U32string,  8,  U"",    U"ＵＴＦ－３２a")               \
+    ARRAY(std::string,          String,     5,  u8"",   u8"ＵＴＦ８c", u8"ＵＴＦd")     \
+    ARRAY(std::wstring,         Wstring,    6,  L"",    L"ＵＴＦ１６/３２c", L"ＵＴＦ１６/３２d")\
+    ARRAY(std::u16string,       U16string,  7,  u"",    u"ＵＴＦ１６c", u"ＵＴＦ１６d") \
+    ARRAY(std::u32string,       U32string,  8,  U"",    U"ＵＴＦ３２c", U"ＵＴＦ３２d") \
     /* enum型 */                                                                        \
-    ARRAY(NormalEnum,       NormalEnum,     5,  eneZero,            eneOne)             \
-    ARRAY(ScopedEnum,       ScopedEnum,     6,  ScopedEnum::ZERO,   ScopedEnum::TWO)    \
+    ARRAY(NormalEnum,       NormalEnum,     5,  eneZero,         eneOne,         eneTwo)\
+    ARRAY(ScopedEnum,       ScopedEnum,     6,  ScopedEnum::ZERO,ScopedEnum::ONE,ScopedEnum::TWO)\
     /* クラス */                                                                        \
     ARRAY(ClassBasicTest, ClassBasicTest,   5,                                          \
-           ClassBasicTest(), ClassBasicTest(1, "1", eneOne))
+           ClassBasicTest(), ClassBasicTest(1, "1", eneOne), ClassBasicTest(2, "2", eneTwo))
+
+#define DEFAULT_PTR(dType)  reinterpret_cast<dType*>(0xffff)
 
 //----------------------------------------------------------------------------
 //              通常のポインタ
@@ -121,9 +123,9 @@
 
 struct PointeeList
 {
-    #define DEFINE(dType, dVar, dDef, dVal)                                 \
+    #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                        \
         dType m##dVar THEOLIZER_ANNOTATE(FS:<>Pointee);
-    #define ARRAY(dType, dVar, dNum, dDef, dVal)                            \
+    #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                   \
         dType m##dVar##Array1[dNum] THEOLIZER_ANNOTATE(FS:<>Pointee);       \
         dType m##dVar##Array2[2][dNum] THEOLIZER_ANNOTATE(FS:<>Pointee);    \
         dType m##dVar##Array3[3][2][dNum] THEOLIZER_ANNOTATE(FS:<>Pointee);
@@ -135,8 +137,8 @@ struct PointeeList
 
     // デフォルト・コンストラクタ
     PointeeList() :
-        #define DEFINE(dType, dVar, dDef, dVal) m##dVar(dDef),
-        #define ARRAY(dType, dVar, dNum, dDef, dVal)\
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2) m##dVar(dVal0),
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)\
             m##dVar##Array1{},                      \
             m##dVar##Array2{},                      \
             m##dVar##Array3{},
@@ -146,10 +148,10 @@ struct PointeeList
         mDummy(0)
     { }
 
-    // 保存前の値設定
+    // 保存前の値設定1
     PointeeList(bool) :
-        #define DEFINE(dType, dVar, dDef, dVal) m##dVar(dVal),
-        #define ARRAY(dType, dVar, dNum, dDef, dVal)\
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2) m##dVar(dVal1),
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)\
             m##dVar##Array1{},                      \
             m##dVar##Array2{},                      \
             m##dVar##Array3{},
@@ -158,57 +160,289 @@ struct PointeeList
         #undef  DEFINE
         mDummy(0)
     {
-        #define DEFINE(dType, dVar, dDef, dVal)
-        #define ARRAY(dType, dVar, dNum, dDef, dVal)        \
-            for (std::size_t i=0; i < dNum; ++i)            \
-            {                                               \
-                m##dVar##Array1[i]=dVal;                    \
-                for (std::size_t j=0; j < 2; ++j)           \
-                {                                           \
-                    m##dVar##Array2[j][i]=dVal;             \
-                    for (std::size_t k=0; k < 3; ++k)       \
-                    {                                       \
-                        m##dVar##Array3[k][j][i]=dVal;      \
-                    }                                       \
-                }                                           \
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            for (std::size_t i=0; i < dNum; ++i)                            \
+            {                                                               \
+                m##dVar##Array1[i]=dVal1;                                   \
+                for (std::size_t j=0; j < 2; ++j)                           \
+                {                                                           \
+                    m##dVar##Array2[j][i]=dVal1;                            \
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        m##dVar##Array3[k][j][i]=dVal1;                     \
+                    }                                                       \
+                }                                                           \
             }
         DEFINE_MEMBERS()
         #undef  ARRAY
         #undef  DEFINE
     }
 
-    // 値確認（dVal側と等しいことをチェックする)
-    void check()
+    // 保存前の値設定2
+    PointeeList(int) :
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2) m##dVar(dVal2),
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)\
+            m##dVar##Array1{},                      \
+            m##dVar##Array2{},                      \
+            m##dVar##Array3{},
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+        mDummy(0)
     {
-    #define DEFINE(dType, dVar, dDef, dVal)                                 \
-        THEOLIZER_EQUAL(m##dVar, dVal);
-    #define ARRAY(dType, dVar, dNum, dDef, dVal)                            \
-        for (std::size_t i=0; i < dNum; ++i)                                \
-        {                                                                   \
-            THEOLIZER_EQUAL(m##dVar##Array1[i], dVal);                      \
-            for (std::size_t j=0; j < 2; ++j)                               \
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(m##dVar##Array2[j][i], dVal);               \
-                for (std::size_t k=0; k < 3; ++k)                           \
+                m##dVar##Array1[i]=dVal2;                                   \
+                for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(m##dVar##Array3[k][j][i], dVal);        \
+                    m##dVar##Array2[j][i]=dVal2;                            \
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        m##dVar##Array3[k][j][i]=dVal2;                     \
+                    }                                                       \
                 }                                                           \
-            }                                                               \
-        }
-    DEFINE_MEMBERS()
-    #undef  ARRAY
-    #undef  DEFINE
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+
+    // 値確認（dVal1側と等しいことをチェックする)
+    void check(bool)
+    {
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            THEOLIZER_EQUAL(m##dVar, dVal1);
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            for (std::size_t i=0; i < dNum; ++i)                            \
+            {                                                               \
+                THEOLIZER_EQUAL(m##dVar##Array1[i], dVal1);                 \
+                for (std::size_t j=0; j < 2; ++j)                           \
+                {                                                           \
+                    THEOLIZER_EQUAL(m##dVar##Array2[j][i], dVal1);          \
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        THEOLIZER_EQUAL(m##dVar##Array3[k][j][i], dVal1);   \
+                    }                                                       \
+                }                                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+
+    // 値確認（dVal2側と等しいことをチェックする)
+    void check(int)
+    {
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            THEOLIZER_EQUAL(m##dVar, dVal2);
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            for (std::size_t i=0; i < dNum; ++i)                            \
+            {                                                               \
+                THEOLIZER_EQUAL(m##dVar##Array1[i], dVal2);                 \
+                for (std::size_t j=0; j < 2; ++j)                           \
+                {                                                           \
+                    THEOLIZER_EQUAL(m##dVar##Array2[j][i], dVal2);          \
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        THEOLIZER_EQUAL(m##dVar##Array3[k][j][i], dVal2);   \
+                    }                                                       \
+                }                                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
     }
 };
 
 //      ---<<< ポインタの定義 >>>---
-//      テストの実装を手軽に行うために構造体に纏めた
+//      下記に使用する
+//          トップ・レベルのシリアライズ    メンバ1つ1つをTHEOLIZER_PROCESS()する
+//          自動シリアライズ                PointerList全体をTHEOLIZER_PROCESS()する
 
 struct PointerList
 {
-    #define DEFINE(dType, dVar, dDef, dVal)                                 \
+    #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                        \
+        dType*          m##dVar;                                            \
+        dType const*    m##dVar##Const;
+    #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                   \
+        dType*          m##dVar##Array1[dNum];                              \
+        dType*          m##dVar##Array2[2][dNum];                           \
+        dType*          m##dVar##Array3[3][2][dNum];                        \
+        dType const*    m##dVar##Array1##Const[dNum];                       \
+        dType const*    m##dVar##Array2##Const[2][dNum];                    \
+        dType const*    m##dVar##Array3##Const[3][2][dNum];
+    DEFINE_MEMBERS()
+    #undef  ARRAY
+    #undef  DEFINE
+
+    int mDummy;
+
+    // デフォルト・コンストラクタ
+    PointerList() :
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            m##dVar(DEFAULT_PTR(dType)),                                    \
+            m##dVar##Const(DEFAULT_PTR(dType)),
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            m##dVar##Array1{},                                              \
+            m##dVar##Array2{},                                              \
+            m##dVar##Array3{},                                              \
+            m##dVar##Array1##Const{},                                       \
+            m##dVar##Array2##Const{},                                       \
+            m##dVar##Array3##Const{},
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+        mDummy(0)
+    {
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            for (std::size_t i=0; i < dNum; ++i)                            \
+            {                                                               \
+                m##dVar##Array1[i]=DEFAULT_PTR(dType);                      \
+                m##dVar##Array1##Const[i]=DEFAULT_PTR(dType);               \
+                for (std::size_t j=0; j < 2; ++j)                           \
+                {                                                           \
+                    m##dVar##Array2[j][i]=DEFAULT_PTR(dType);               \
+                    m##dVar##Array2##Const[j][i]=DEFAULT_PTR(dType);        \
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        m##dVar##Array3[k][j][i]=DEFAULT_PTR(dType);        \
+                        m##dVar##Array3##Const[k][j][i]=DEFAULT_PTR(dType); \
+                    }                                                       \
+                }                                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+
+    // 保存前の値設定
+    PointerList(PointeeList& iPointeeList, PointeeList const& iPointeeList2) :
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            m##dVar(&iPointeeList.m##dVar),                                 \
+            m##dVar##Const(&iPointeeList2.m##dVar),
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            m##dVar##Array1{},                                              \
+            m##dVar##Array2{},                                              \
+            m##dVar##Array3{},                                              \
+            m##dVar##Array1##Const{},                                       \
+            m##dVar##Array2##Const{},                                       \
+            m##dVar##Array3##Const{},
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+        mDummy(0)
+    {
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            for (std::size_t i=0; i < dNum; ++i)                            \
+            {                                                               \
+                m##dVar##Array1[i]=&iPointeeList.m##dVar##Array1[i];        \
+                m##dVar##Array1##Const[i]=&iPointeeList2.m##dVar##Array1[i];\
+                for (std::size_t j=0; j < 2; ++j)                           \
+                {                                                           \
+                    m##dVar##Array2[j][i]=&iPointeeList.m##dVar##Array2[j][i];\
+                    m##dVar##Array2##Const[j][i]=&iPointeeList2.m##dVar##Array2[j][i];\
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        m##dVar##Array3[k][j][i]=&iPointeeList.m##dVar##Array3[k][j][i];\
+                        m##dVar##Array3##Const[k][j][i]=&iPointeeList2.m##dVar##Array3[k][j][i];\
+                    }                                                       \
+                }                                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+
+    // 値確認（dVal1側と等しいことをチェックする)
+    void check(PointeeList const& iPointeeList, PointeeList const& iPointeeList2)
+    {
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            THEOLIZER_EQUAL_PTR(m##dVar, &iPointeeList.m##dVar);            \
+            THEOLIZER_EQUAL_PTR(m##dVar##Const, &iPointeeList2.m##dVar);
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            for (std::size_t i=0; i < dNum; ++i)                            \
+            {                                                               \
+                THEOLIZER_EQUAL_PTR(m##dVar##Array1[i],                     \
+                    &iPointeeList.m##dVar##Array1[i]);                      \
+                THEOLIZER_EQUAL_PTR(m##dVar##Array1##Const[i],              \
+                    &iPointeeList2.m##dVar##Array1[i]);                     \
+                for (std::size_t j=0; j < 2; ++j)                           \
+                {                                                           \
+                    THEOLIZER_EQUAL_PTR(m##dVar##Array2[j][i],              \
+                        &iPointeeList.m##dVar##Array2[j][i]);               \
+                    THEOLIZER_EQUAL_PTR(m##dVar##Array2##Const[j][i],       \
+                        &iPointeeList2.m##dVar##Array2[j][i]);              \
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        THEOLIZER_EQUAL_PTR(m##dVar##Array3[k][j][i],       \
+                            &iPointeeList.m##dVar##Array3[k][j][i]);        \
+                        THEOLIZER_EQUAL_PTR(m##dVar##Array3##Const[k][j][i],\
+                            &iPointeeList2.m##dVar##Array3[k][j][i]);       \
+                    }                                                       \
+                }                                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+};
+
+//      ---<<< 処理関数 >>>---
+//      手動(トップ・レベル)によるポインタの保存／回復
+
+// 保存
+template<class tSerializer>
+inline void savePointer(tSerializer& iSerializer, PointerList& iPointerList)
+{
+    // ポインタ変数を保存する
+    #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                        \
+      THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar);                 \
+      THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Const);
+    #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                   \
+        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array1);       \
+        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array2);       \
+        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array3);       \
+        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array1##Const);\
+        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array2##Const);\
+        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array3##Const);
+    DEFINE_MEMBERS()
+    #undef  ARRAY
+    #undef  DEFINE
+}
+
+// 回復
+template<class tSerializer>
+inline void loadPointer(tSerializer& iSerializer, PointerList& iPointerList)
+{
+    // ポインタ変数を回復する
+    #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                        \
+        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar);               \
+        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Const);
+    #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                   \
+        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array1);       \
+        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array2);       \
+        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array3);       \
+        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array1##Const);\
+        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array2##Const);\
+        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array3##Const);
+    DEFINE_MEMBERS()
+    #undef  ARRAY
+    #undef  DEFINE
+}
+
+//      ---<<< 手動処理の検証 >>>---
+//      手動(非トップ・レベル)による保存／回復
+
+struct ManualClass4PointerList
+{
+    #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                        \
         dType const* m##dVar;
-    #define ARRAY(dType, dVar, dNum, dDef, dVal)                            \
+    #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                   \
         dType const* m##dVar##Array1[dNum];                                 \
         dType const* m##dVar##Array2[2][dNum];                              \
         dType const* m##dVar##Array3[3][2][dNum];
@@ -219,10 +453,10 @@ struct PointerList
     int mDummy;
 
     // デフォルト・コンストラクタ
-    PointerList() :
-        #define DEFINE(dType, dVar, dDef, dVal)                             \
-            m##dVar(reinterpret_cast<dType*>(0xffff)),
-        #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
+    ManualClass4PointerList() :
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            m##dVar(DEFAULT_PTR(dType)),
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
             m##dVar##Array1{},                                              \
             m##dVar##Array2{},                                              \
             m##dVar##Array3{},
@@ -231,17 +465,17 @@ struct PointerList
         #undef  DEFINE
         mDummy(0)
     {
-        #define DEFINE(dType, dVar, dDef, dVal)
-        #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                m##dVar##Array1[i]=reinterpret_cast<dType*>(0xffff);        \
+                m##dVar##Array1[i]=DEFAULT_PTR(dType);        \
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    m##dVar##Array2[j][i]=reinterpret_cast<dType*>(0xffff); \
+                    m##dVar##Array2[j][i]=DEFAULT_PTR(dType); \
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        m##dVar##Array3[k][j][i]=reinterpret_cast<dType*>(0xffff);\
+                        m##dVar##Array3[k][j][i]=DEFAULT_PTR(dType);\
                     }                                                       \
                 }                                                           \
             }
@@ -251,10 +485,10 @@ struct PointerList
     }
 
     // 保存前の値設定
-    PointerList(PointeeList const& iPointeeList) :
-        #define DEFINE(dType, dVar, dDef, dVal)                             \
+    ManualClass4PointerList(PointeeList const& iPointeeList) :
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
             m##dVar(&iPointeeList.m##dVar),
-        #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
             m##dVar##Array1{},                                              \
             m##dVar##Array2{},                                              \
             m##dVar##Array3{},
@@ -263,8 +497,8 @@ struct PointerList
         #undef  DEFINE
         mDummy(0)
     {
-        #define DEFINE(dType, dVar, dDef, dVal)
-        #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
                 m##dVar##Array1[i]=&iPointeeList.m##dVar##Array1[i];        \
@@ -282,28 +516,24 @@ struct PointerList
         #undef  DEFINE
     }
 
-    // 値確認（dVal側と等しいことをチェックする)
+    // 値確認（dVal1側と等しいことをチェックする)
     void check(PointeeList const& iPointeeList)
     {
-    #define CHECK_EQUAL(dLhs, dRhs)                                         \
-        THEOLIZER_EQUAL_PTR(dLhs, dRhs);                                    \
-        if (dLhs)                                                           \
-        {                                                                   \
-            THEOLIZER_EQUAL(*dLhs,  *dRhs);                                 \
-        }
-
-    #define DEFINE(dType, dVar, dDef, dVal)                                 \
-        CHECK_EQUAL(m##dVar, &iPointeeList.m##dVar);
-    #define ARRAY(dType, dVar, dNum, dDef, dVal)                            \
+    #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                        \
+        THEOLIZER_EQUAL_PTR(m##dVar, &iPointeeList.m##dVar);
+    #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                   \
         for (std::size_t i=0; i < dNum; ++i)                                \
         {                                                                   \
-            CHECK_EQUAL(m##dVar##Array1[i], &iPointeeList.m##dVar##Array1[i]);\
+            THEOLIZER_EQUAL_PTR(m##dVar##Array1[i],                         \
+                &iPointeeList.m##dVar##Array1[i]);                          \
             for (std::size_t j=0; j < 2; ++j)                               \
             {                                                               \
-                CHECK_EQUAL(m##dVar##Array2[j][i], &iPointeeList.m##dVar##Array2[j][i]);\
+                THEOLIZER_EQUAL_PTR(m##dVar##Array2[j][i],                  \
+                    &iPointeeList.m##dVar##Array2[j][i]);                   \
                 for (std::size_t k=0; k < 3; ++k)                           \
                 {                                                           \
-                    CHECK_EQUAL(m##dVar##Array3[k][j][i], &iPointeeList.m##dVar##Array3[k][j][i]);\
+                    THEOLIZER_EQUAL_PTR(m##dVar##Array3[k][j][i],           \
+                        &iPointeeList.m##dVar##Array3[k][j][i]);            \
                 }                                                           \
             }                                                               \
         }
@@ -313,158 +543,10 @@ struct PointerList
     }
 };
 
-//      ---<<< 処理関数 >>>---
-//      手動(トップ・レベル)によるポインタの保存／回復
-
-// 保存
-template<class tSerializer>
-inline void savePointer(tSerializer& iSerializer, PointerList& iPointerList)
-{
-    // ポインタ変数を保存する
-    #define DEFINE(dType, dVar, dDef, dVal)                                 \
-      THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar);
-    #define ARRAY(dType, dVar, dNum, dDef, dVal)                            \
-        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array1);       \
-        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array2);       \
-        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array3);
-    DEFINE_MEMBERS()
-    #undef  ARRAY
-    #undef  DEFINE
-}
-
-// 回復
-template<class tSerializer>
-inline void loadPointer(tSerializer& iSerializer, PointerList& iPointerList)
-{
-    // ポインタ変数を回復する
-    #define DEFINE(dType, dVar, dDef, dVal)                                 \
-        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar);
-    #define ARRAY(dType, dVar, dNum, dDef, dVal)                            \
-        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array1);       \
-        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array2);       \
-        THEOLIZER_PROCESS(iSerializer, iPointerList.m##dVar##Array3);
-    DEFINE_MEMBERS()
-    #undef  ARRAY
-    #undef  DEFINE
-}
-
-//      ---<<< 自動処理の検証 >>>---
-//      自動による保存／回復
-
-#if 0
-struct FullAutoClass4EnumFullAuto
-{
-    #define DEFINE(dName, dType)                                            \
-        Enum##dName mEnum##dName;
-    DEFINE_ENUM()
-    #undef  DEFINE
-    #define DEFINE(dName, dType)                                            \
-        ScopedEnum##dName mScopedEnum##dName;
-    DEFINE_ENUM()
-    #undef  DEFINE
-
-    int     mDummy;
-
-    // デフォルト・コンストラクタ(Def値で初期化)
-    FullAutoClass4EnumFullAuto() :
-        #define DEFINE(dName, dType)                                        \
-            mEnum##dName(Enum##dName##Def),
-        DEFINE_ENUM()
-        #undef  DEFINE
-        #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Def),
-        DEFINE_ENUM()
-        #undef  DEFINE
-        mDummy(0)
-    { }
-
-    // 初期値設定コンストラクタ(Val値で初期化)
-    FullAutoClass4EnumFullAuto(bool) :
-        #define DEFINE(dName, dType)                                        \
-            mEnum##dName(Enum##dName##Val),
-        DEFINE_ENUM()
-        #undef  DEFINE
-        #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Val),
-        DEFINE_ENUM()
-        #undef  DEFINE
-        mDummy(0)
-    { }
-
-    // 結果チェック
-    void check()
-    {
-        #define DEFINE(dName, dType)                                        \
-            THEOLIZER_EQUAL(mEnum##dName, Enum##dName##Val);
-        DEFINE_ENUM()
-        #undef  DEFINE
-        #define DEFINE(dName, dType)                                        \
-            THEOLIZER_EQUAL(mScopedEnum##dName, ScopedEnum##dName::dName##Val);
-        DEFINE_ENUM()
-        #undef  DEFINE
-    }
-};
-
-//      ---<<< 手動処理の検証 >>>---
-//      手動(非トップ・レベル)による保存／回復
-
-struct ManualClass4EnumFullAuto
-{
-    #define DEFINE(dName, dType)                                            \
-        Enum##dName mEnum##dName;
-    DEFINE_ENUM()
-    #undef  DEFINE
-    #define DEFINE(dName, dType)                                            \
-        ScopedEnum##dName mScopedEnum##dName;
-    DEFINE_ENUM()
-    #undef  DEFINE
-
-    int     mDummy;
-
-    // デフォルト・コンストラクタ(Def値で初期化)
-    ManualClass4EnumFullAuto() :
-        #define DEFINE(dName, dType)                                        \
-            mEnum##dName(Enum##dName##Def),
-        DEFINE_ENUM()
-        #undef  DEFINE
-        #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Def),
-        DEFINE_ENUM()
-        #undef  DEFINE
-        mDummy(0)
-    { }
-
-    // 初期値設定コンストラクタ(Val値で初期化)
-    ManualClass4EnumFullAuto(bool) :
-        #define DEFINE(dName, dType)                                        \
-            mEnum##dName(Enum##dName##Val),
-        DEFINE_ENUM()
-        #undef  DEFINE
-        #define DEFINE(dName, dType)                                        \
-            mScopedEnum##dName(ScopedEnum##dName::dName##Val),
-        DEFINE_ENUM()
-        #undef  DEFINE
-        mDummy(0)
-    { }
-
-    // 結果チェック
-    void check()
-    {
-        #define DEFINE(dName, dType)                                        \
-            THEOLIZER_EQUAL(mEnum##dName, Enum##dName##Val);
-        DEFINE_ENUM()
-        #undef  DEFINE
-        #define DEFINE(dName, dType)                                        \
-            THEOLIZER_EQUAL(mScopedEnum##dName, ScopedEnum##dName::dName##Val);
-        DEFINE_ENUM()
-        #undef  DEFINE
-    }
-};
-
-THEOLIZER_NON_INTRUSIVE_ORDER((ManualClass4EnumFullAuto), 1);
+THEOLIZER_NON_INTRUSIVE_ORDER((ManualClass4PointerList), 1);
 
 template<class tBaseSerializer, class tTheolizerVersion>
-struct TheolizerNonIntrusive<ManualClass4EnumFullAuto>::
+struct TheolizerNonIntrusive<ManualClass4PointerList>::
     TheolizerUserDefine<tBaseSerializer, tTheolizerVersion, 1>
 {
     // Save members.
@@ -474,13 +556,15 @@ struct TheolizerNonIntrusive<ManualClass4EnumFullAuto>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
-        #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, iInstance->mEnum##dName);
-        DEFINE_ENUM()
-        #undef  DEFINE
-        #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, iInstance->mScopedEnum##dName);
-        DEFINE_ENUM()
+        // ポインタ変数を保存する
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+          THEOLIZER_PROCESS(iSerializer, iInstance->m##dVar);
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            THEOLIZER_PROCESS(iSerializer, iInstance->m##dVar##Array1);     \
+            THEOLIZER_PROCESS(iSerializer, iInstance->m##dVar##Array2);     \
+            THEOLIZER_PROCESS(iSerializer, iInstance->m##dVar##Array3);
+        DEFINE_MEMBERS()
+        #undef  ARRAY
         #undef  DEFINE
     }
 
@@ -491,18 +575,18 @@ struct TheolizerNonIntrusive<ManualClass4EnumFullAuto>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
-        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
-        #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, oInstance->mEnum##dName);
-        DEFINE_ENUM()
-        #undef  DEFINE
-        #define DEFINE(dName, dType)                                        \
-            THEOLIZER_PROCESS(iSerializer, oInstance->mScopedEnum##dName);
-        DEFINE_ENUM()
+        // ポインタ変数を回復する
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar);
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar##Array1);     \
+            THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar##Array2);     \
+            THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar##Array3);
+        DEFINE_MEMBERS()
+        #undef  ARRAY
         #undef  DEFINE
     }
 };
-#endif
 
 //----------------------------------------------------------------------------
 //              オーナー指定ポインタ

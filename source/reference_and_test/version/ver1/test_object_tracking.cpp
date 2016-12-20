@@ -102,10 +102,8 @@ void saveObjectTracking(tSerializer& iSerializer)
 //      テスト
 //----------------------------------------------------------------------------
 
-//      ---<<< 処理関数 >>>---
-//      手動(トップ・レベル)によるポインタの保存／回復
+//      ---<<< 手動(トップ・レベル)によるポインタの保存 >>>---
 
-#if 1
     {
         // オブジェクト追跡前準備
         //  ここに来るまでにオブジェクト追跡テーブルに登録され、その領域が開放されるので必要。
@@ -114,24 +112,84 @@ void saveObjectTracking(tSerializer& iSerializer)
 
         // ポイント先群
         PointeeList aPointeeList{true};
+        PointeeList aPointeeList2{2};
 
-        // ポイント先保存前にポインタ保存
-        std::cout << "        savePointer() : aPointerList" << std::endl;
-        PointerList aPointerList(aPointeeList);
-        savePointer(iSerializer, aPointerList);
-
-        // ポイント先保存
-        std::cout << "        THEOLIZER_PROCESS() : gPointeeList" << std::endl;
+        // ポイント先1保存
+        std::cout << "        THEOLIZER_PROCESS() : aPointeeList" << std::endl;
         THEOLIZER_PROCESS(iSerializer, aPointeeList);
 
+        // ポイント先保存前／後にポインタ保存
+        PointerList aPointerList(aPointeeList, aPointeeList2);
+        std::cout << "        savePointer() : aPointerList" << std::endl;
+        savePointer(iSerializer, aPointerList);
+
+        // ポイント先保存2
+        std::cout << "        THEOLIZER_PROCESS() : aPointeeList2" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointeeList2);
+
         // ポイント先保存後にポインタ保存
+        PointerList aPointerList2(aPointeeList, aPointeeList2);
         std::cout << "        savePointer() : aPointerList2" << std::endl;
-        PointerList aPointerList2(aPointeeList);
         savePointer(iSerializer, aPointerList2);
 
         iSerializer.clearTracking();
     }
-#endif
+
+//      ---<<< 自動メンバ・リスト生成によるポインタの保存 >>>---
+
+    {
+        // ポイント先群
+        PointeeList aPointeeList{true};
+        PointeeList aPointeeList2{2};
+
+        // ポイント先1保存
+        std::cout << "        THEOLIZER_PROCESS() : aPointeeList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointeeList);
+
+        // ポイント先保存前／後にポインタ保存
+        PointerList aPointerList(aPointeeList, aPointeeList2);
+        std::cout << "        THEOLIZER_PROCESS() : aPointerList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointerList);
+
+        // ポイント先2保存
+        std::cout << "        THEOLIZER_PROCESS() : aPointeeList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointeeList2);
+
+        // ポイント先保存後にポインタ保存
+        PointerList aPointerList2(aPointeeList, aPointeeList2);
+        std::cout << "        THEOLIZER_PROCESS() : aPointerList2" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointerList2);
+
+        iSerializer.clearTracking();
+    }
+
+//      ---<<< 手動(非トップ・レベル)によるポインタの保存 >>>---
+
+    {
+        // ポイント先群
+        PointeeList aPointeeList{true};
+        PointeeList aPointeeList2{2};
+
+        // ポイント先1保存
+        std::cout << "        THEOLIZER_PROCESS() : aPointeeList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointeeList);
+
+        // ポイント先保存前／後にポインタ保存
+        ManualClass4PointerList aManualClass4PointerList(aPointeeList);
+        std::cout << "        THEOLIZER_PROCESS() : aManualClass4PointerList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aManualClass4PointerList);
+
+        // ポイント先2保存
+        std::cout << "        THEOLIZER_PROCESS() : aPointeeList2" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointeeList2);
+
+        // ポイント先保存後にポインタ保存
+        ManualClass4PointerList aManualClass4PointerList2(aPointeeList);
+        std::cout << "        THEOLIZER_PROCESS() : aManualClass4PointerList2" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aManualClass4PointerList2);
+
+        iSerializer.clearTracking();
+    }
 }
 
 INSTANTIATION_ALL(void, saveObjectTracking);
@@ -147,10 +205,8 @@ void loadObjectTracking(tSerializer& iSerializer)
 //      テスト
 //----------------------------------------------------------------------------
 
-//      ---<<< 処理関数 >>>---
-//      手動(トップ・レベル)によるポインタ（左辺値）の保存／回復
+//      ---<<< 手動(トップ・レベル)によるポインタ（左辺値）の回復 >>>---
 
-#if 1
     {
         // オブジェクト追跡前準備
         //  ここに来るまでにオブジェクト追跡テーブルに登録され、その領域が開放されるので必要。
@@ -159,30 +215,105 @@ void loadObjectTracking(tSerializer& iSerializer)
 
         // 回復領域
         PointeeList aPointeeList;
+        PointeeList aPointeeList2;
 
-        // 非ポインタ回復前にポインタ回復
-        std::cout << "        loadPointer() : aPointerList" << std::endl;
-        PointerList aPointerList;
-        loadPointer(iSerializer, aPointerList);
-
-        // 非ポインタ回復
+        // ポイント先1回復
         std::cout << "        THEOLIZER_PROCESS() : aPointeeList" << std::endl;
         THEOLIZER_PROCESS(iSerializer, aPointeeList);
-        aPointeeList.check();
+        aPointeeList.check(true);
 
-        // 非ポインタ回復後にポインタ回復
-        std::cout << "        loadPointer() : aPointerList2" << std::endl;
+        // ポイント先回復前／後にポインタ回復
+        PointerList aPointerList;
+        std::cout << "        loadPointer() : aPointerList" << std::endl;
+        loadPointer(iSerializer, aPointerList);
+
+        // ポイント先2回復
+        std::cout << "        THEOLIZER_PROCESS() : aPointeeList2" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointeeList2);
+        aPointeeList.check(true);
+
+        // ポイント先回復後にポインタ回復
         PointerList aPointerList2;
+        std::cout << "        loadPointer() : aPointerList2" << std::endl;
         loadPointer(iSerializer, aPointerList2);
 
         // アドレス解決確認
         iSerializer.clearTracking();
 
         // 回復結果のチェック
-        aPointerList.check(aPointeeList);
-        aPointerList2.check(aPointeeList);
+        aPointerList.check(aPointeeList, aPointeeList2);
+        aPointerList2.check(aPointeeList, aPointeeList2);
     }
-#endif
+
+//      ---<<< 自動メンバ・リスト生成によるポインタの回復 >>>---
+
+    {
+        // 回復領域
+        PointeeList aPointeeList;
+        PointeeList aPointeeList2;
+
+        // ポイント先1回復
+        std::cout << "        THEOLIZER_PROCESS() : aPointeeList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointeeList);
+        aPointeeList.check(true);
+
+        // ポイント先回復前／後にポインタ回復
+        PointerList aPointerList;
+        std::cout << "        THEOLIZER_PROCESS() : aPointerList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointerList);
+
+        // ポイント先2回復
+        std::cout << "        THEOLIZER_PROCESS() : aPointeeList2" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointeeList2);
+        aPointeeList.check(true);
+
+        // ポイント先回復後にポインタ回復
+        PointerList aPointerList2;
+        std::cout << "        THEOLIZER_PROCESS() : aPointerList2" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointerList2);
+
+        // アドレス解決確認
+        iSerializer.clearTracking();
+
+        // 回復結果のチェック
+        aPointerList.check(aPointeeList, aPointeeList2);
+        aPointerList2.check(aPointeeList, aPointeeList2);
+    }
+
+//      ---<<< 手動(非トップ・レベル)によるポインタの回復 >>>---
+
+    {
+        // 回復領域
+        PointeeList aPointeeList;
+        PointeeList aPointeeList2;
+
+        // ポイント先1回復
+        std::cout << "        THEOLIZER_PROCESS() : aPointeeList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointeeList);
+        aPointeeList.check(true);
+
+        // ポイント先回復前／後にポインタ回復
+        ManualClass4PointerList aManualClass4PointerList;
+        std::cout << "        THEOLIZER_PROCESS() : aManualClass4PointerList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aManualClass4PointerList);
+
+        // ポイント先2回復
+        std::cout << "        THEOLIZER_PROCESS() : aPointeeList2" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aPointeeList2);
+        aPointeeList.check(true);
+
+        // ポイント先回復後にポインタ回復
+        ManualClass4PointerList aManualClass4PointerList2;
+        std::cout << "        THEOLIZER_PROCESS() : aManualClass4PointerList2" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aManualClass4PointerList2);
+
+        // アドレス解決確認
+        iSerializer.clearTracking();
+
+        // 回復結果のチェック
+        aManualClass4PointerList.check(aPointeeList);
+        aManualClass4PointerList2.check(aPointeeList);
+    }
 }
 
 INSTANTIATION_ALL(void, loadObjectTracking);

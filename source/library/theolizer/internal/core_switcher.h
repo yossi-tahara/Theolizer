@@ -275,6 +275,9 @@ struct Switcher
     // 保存
     static void save(tBaseSerializer& iSerializer, tPointerType& iPointer)
     {
+        // const外し
+        typedef typename RemoveCV<tPointerType>::type   PointerType;
+
         bool aIsSaved;
 //std::cout << "Switcher(Pointer) " << THEOLIZER_INTERNAL_TYPE_NAME(tPointerType)
 //          << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(iPointer)
@@ -282,8 +285,8 @@ struct Switcher
         SerializeInfo& aSerializeInfo=
             iSerializer.registerObject
             (
-                iPointer,
-                typeid(iPointer),
+                const_cast<PointerType&>(iPointer),
+                typeid(PointerType&),
                 tTrackingMode,
                 &aIsSaved
             );
@@ -311,8 +314,8 @@ struct Switcher
             {
                 iSerializer.writePreElement();
                 SavePointer<tBaseSerializer,
-                            typename std::remove_pointer<tPointerType>::type
-                           >::save(iSerializer, iPointer);
+                            typename std::remove_pointer<PointerType>::type
+                           >::save(iSerializer, const_cast<PointerType&>(iPointer));
             }
         }
         iSerializer.mRequireCheckTracking=true;
@@ -320,6 +323,9 @@ struct Switcher
     // 回復
     static void load(tBaseSerializer& iSerializer, tPointerType& oPointer)
     {
+        // const外し
+        typedef typename RemoveCV<tPointerType>::type   PointerType;
+
         // 追跡指定なし
         if (tTrackingMode == etmDefault)
         {
@@ -329,8 +335,8 @@ struct Switcher
             iSerializer.recoverObject
             (
                 aObjectId,
-                reinterpret_cast<void*&>(oPointer),
-                typeid(oPointer),
+                reinterpret_cast<void*&>(const_cast<PointerType&>(oPointer)),
+                typeid(PointerType&),
                 tTrackingMode
             );
         }
@@ -361,8 +367,8 @@ struct Switcher
                 LoadPointer
                 <
                     tBaseSerializer,
-                    typename std::remove_pointer<tPointerType>::type
-                >::load(iSerializer, oPointer);
+                    typename std::remove_pointer<PointerType>::type
+                >::load(iSerializer, const_cast<PointerType&>(oPointer));
             }
             else
             {
@@ -376,7 +382,7 @@ struct Switcher
             iSerializer.recoverObject
             (
                 aObjectId,
-                reinterpret_cast<void*&>(oPointer),
+                reinterpret_cast<void*&>(const_cast<PointerType&>(oPointer)),
                 typeid(oPointer),
                 tTrackingMode
             );
@@ -1318,8 +1324,13 @@ void process
     typedef typename RemoveCV<tType>::type  Type;
 
     // 呼び出し
+    //  Cスタイル・キャストを意図的に使用している
+    //  例えば、char const* array[10];のようなオブジェクトを保存する時、
+    //  constを解除しておかないと、後の処理でconst回避に苦労する。
+    //  しかし、const領域へのポインタ配列は、C++スタイル・キャストでは
+    //  constを解除できないため。
     BranchedProcess<tTrackingMode, tTheolizerVersion, tSerializer, Type>::
-        process(iSerializer, const_cast<Type&>(iInstance), iName, iFileName, iLineNo);
+        process(iSerializer, (Type&)iInstance, iName, iFileName, iLineNo);
 }
 
 //      ---<<< 通常のオブジェクト >>>---
@@ -1340,17 +1351,8 @@ void process
     size_t          iLineNo
 )
 {
-    // const外し
-    typedef typename RemoveCV<tType>::type  Type;
-
-    // 呼び出し
-    //  Cスタイル・キャストを意図的に使用している
-    //  例えば、char const* array[10];のようなオブジェクトを保存する時、
-    //  constを解除しておかないと、後の処理でconst回避に苦労する。
-    //  しかし、const領域へのポインタ配列は、C++スタイル・キャストでは
-    //  constを解除できないため。
-    BranchedProcess<tTrackingMode, tTheolizerVersion, tSerializer, Type>::
-        process(iSerializer, (Type&)ioInstance, iName, iFileName, iLineNo);
+    BranchedProcess<tTrackingMode, tTheolizerVersion, tSerializer, tType>::
+        process(iSerializer, ioInstance, iName, iFileName, iLineNo);
 }
 
 //############################################################################
