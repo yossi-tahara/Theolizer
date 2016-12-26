@@ -35,7 +35,7 @@
 //----------------------------------------------------------------------------
 
 // ***************************************************************************
-//      組み合わせテスト
+//      組み合わせテスト共通
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
@@ -114,12 +114,16 @@
 
 #define DEFAULT_PTR(dType)  reinterpret_cast<dType*>(0xffff)
 
+// ***************************************************************************
+//      通常のポインタのテスト
+// ***************************************************************************
+
 //----------------------------------------------------------------------------
-//              通常のポインタ
+//      ポイント先の定義
+//          テストの実装を手軽に行うために構造体に纏めた
 //----------------------------------------------------------------------------
 
-//      ---<<< ポイント先の定義 >>>---
-//      テストの実装を手軽に行うために構造体に纏めた
+//      ---<<< 定義本体 >>>---
 
 struct PointeeList
 {
@@ -137,10 +141,11 @@ struct PointeeList
 
     // デフォルト・コンストラクタ
     PointeeList() :
-        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2) m##dVar(dVal0),
-        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)\
-            m##dVar##Array1{},                      \
-            m##dVar##Array2{},                      \
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            m##dVar{dVal0},
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            m##dVar##Array1{},                                              \
+            m##dVar##Array2{},                                              \
             m##dVar##Array3{},
         DEFINE_MEMBERS()
         #undef  ARRAY
@@ -150,10 +155,11 @@ struct PointeeList
 
     // 保存前の値設定1
     PointeeList(bool) :
-        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2) m##dVar(dVal1),
-        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)\
-            m##dVar##Array1{},                      \
-            m##dVar##Array2{},                      \
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            m##dVar{dVal1},
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            m##dVar##Array1{},                                              \
+            m##dVar##Array2{},                                              \
             m##dVar##Array3{},
         DEFINE_MEMBERS()
         #undef  ARRAY
@@ -181,10 +187,11 @@ struct PointeeList
 
     // 保存前の値設定2
     PointeeList(int) :
-        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2) m##dVar(dVal2),
-        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)\
-            m##dVar##Array1{},                      \
-            m##dVar##Array2{},                      \
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            m##dVar{dVal2},
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            m##dVar##Array1{},                                              \
+            m##dVar##Array2{},                                              \
             m##dVar##Array3{},
         DEFINE_MEMBERS()
         #undef  ARRAY
@@ -257,10 +264,99 @@ struct PointeeList
     }
 };
 
-//      ---<<< ポインタの定義 >>>---
-//      下記に使用する
-//          トップ・レベルのシリアライズ    メンバ1つ1つをTHEOLIZER_PROCESS()する
-//          自動シリアライズ                PointerList全体をTHEOLIZER_PROCESS()する
+//      ---<<< ポイント先の手動（トップ・レベル）処理 >>>---
+
+// 保存
+template<class tSerializer>
+inline void savePointee(tSerializer& iSerializer, PointeeList& iPointeeList)
+{
+    // ポインタ変数を保存する
+    #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                                \
+      THEOLIZER_PROCESS_POINTEE(iSerializer, iPointeeList.m##dVar);
+    #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                           \
+        THEOLIZER_PROCESS_POINTEE(iSerializer, iPointeeList.m##dVar##Array1);       \
+        THEOLIZER_PROCESS_POINTEE(iSerializer, iPointeeList.m##dVar##Array2);       \
+        THEOLIZER_PROCESS_POINTEE(iSerializer, iPointeeList.m##dVar##Array3);
+    DEFINE_MEMBERS()
+    #undef  ARRAY
+    #undef  DEFINE
+}
+
+// 回復
+template<class tSerializer>
+inline void loadPointee(tSerializer& iSerializer, PointeeList& iPointeeList)
+{
+    // ポインタ変数を回復する
+    #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                                \
+        THEOLIZER_PROCESS_POINTEE(iSerializer, iPointeeList.m##dVar);
+    #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                           \
+        THEOLIZER_PROCESS_POINTEE(iSerializer, iPointeeList.m##dVar##Array1);       \
+        THEOLIZER_PROCESS_POINTEE(iSerializer, iPointeeList.m##dVar##Array2);       \
+        THEOLIZER_PROCESS_POINTEE(iSerializer, iPointeeList.m##dVar##Array3);
+    DEFINE_MEMBERS()
+    #undef  ARRAY
+    #undef  DEFINE
+}
+
+//      ---<<< ポイント先の手動（非トップ・レベル）処理 >>>---
+//      PointeeListを派生して、派生先を手動型とする
+
+struct PointeeListManual : public PointeeList
+{
+   using PointeeList::PointeeList;
+};
+
+
+THEOLIZER_NON_INTRUSIVE_ORDER((PointeeListManual), 1);
+
+template<class tBaseSerializer, class tTheolizerVersion>
+struct TheolizerNonIntrusive<PointeeListManual>::
+    TheolizerUserDefine<tBaseSerializer, tTheolizerVersion, 1>
+{
+    // Save members.
+    static void saveClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
+    )
+    {
+        // PointeeListのメンバ変数を保存する
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                            \
+          THEOLIZER_PROCESS_POINTEE(iSerializer, iInstance->m##dVar);
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                       \
+            THEOLIZER_PROCESS_POINTEE(iSerializer, iInstance->m##dVar##Array1);     \
+            THEOLIZER_PROCESS_POINTEE(iSerializer, iInstance->m##dVar##Array2);     \
+            THEOLIZER_PROCESS_POINTEE(iSerializer, iInstance->m##dVar##Array3);
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+
+    // Load members.
+    static void loadClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget*& oInstance
+    )
+    {
+        // PointeeListのメンバ変数を回復する
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                            \
+            THEOLIZER_PROCESS_POINTEE(iSerializer, oInstance->m##dVar);
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                       \
+            THEOLIZER_PROCESS_POINTEE(iSerializer, oInstance->m##dVar##Array1);     \
+            THEOLIZER_PROCESS_POINTEE(iSerializer, oInstance->m##dVar##Array2);     \
+            THEOLIZER_PROCESS_POINTEE(iSerializer, oInstance->m##dVar##Array3);
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+};
+
+//----------------------------------------------------------------------------
+//      ポインタ側１
+//          手動（トップ・レベル）  メンバ1つ1つをTHEOLIZER_PROCESS()する
+//          自動メンバ・リスト生成  PointerList全体をTHEOLIZER_PROCESS()する
+//----------------------------------------------------------------------------
 
 struct PointerList
 {
@@ -283,8 +379,8 @@ struct PointerList
     // デフォルト・コンストラクタ
     PointerList() :
         #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
-            m##dVar(DEFAULT_PTR(dType)),                                    \
-            m##dVar##Const(DEFAULT_PTR(dType)),
+            m##dVar{DEFAULT_PTR(dType)},                                    \
+            m##dVar##Const{DEFAULT_PTR(dType)},
         #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
             m##dVar##Array1{},                                              \
             m##dVar##Array2{},                                              \
@@ -322,8 +418,8 @@ struct PointerList
     // 保存前の値設定
     PointerList(PointeeList& iPointeeList, PointeeList const& iPointeeList2) :
         #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
-            m##dVar(&iPointeeList.m##dVar),                                 \
-            m##dVar##Const(&iPointeeList2.m##dVar),
+            m##dVar{&iPointeeList.m##dVar},                                 \
+            m##dVar##Const{&iPointeeList2.m##dVar},
         #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
             m##dVar##Array1{},                                              \
             m##dVar##Array2{},                                              \
@@ -435,112 +531,14 @@ inline void loadPointer(tSerializer& iSerializer, PointerList& iPointerList)
     #undef  DEFINE
 }
 
-//      ---<<< 手動処理の検証 >>>---
-//      手動(非トップ・レベル)による保存／回復
+//----------------------------------------------------------------------------
+//      ポインタ側２
+//          手動（非トップ・レベル）メンバ1つ1つをTHEOLIZER_PROCESS()する
+//----------------------------------------------------------------------------
 
-struct ManualClass4PointerList
+struct ManualClass4PointerList : public PointerList
 {
-    #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                        \
-        dType const* m##dVar;
-    #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                   \
-        dType const* m##dVar##Array1[dNum];                                 \
-        dType const* m##dVar##Array2[2][dNum];                              \
-        dType const* m##dVar##Array3[3][2][dNum];
-    DEFINE_MEMBERS()
-    #undef  ARRAY
-    #undef  DEFINE
-
-    int mDummy;
-
-    // デフォルト・コンストラクタ
-    ManualClass4PointerList() :
-        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
-            m##dVar(DEFAULT_PTR(dType)),
-        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
-            m##dVar##Array1{},                                              \
-            m##dVar##Array2{},                                              \
-            m##dVar##Array3{},
-        DEFINE_MEMBERS()
-        #undef  ARRAY
-        #undef  DEFINE
-        mDummy(0)
-    {
-        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)
-        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
-            for (std::size_t i=0; i < dNum; ++i)                            \
-            {                                                               \
-                m##dVar##Array1[i]=DEFAULT_PTR(dType);        \
-                for (std::size_t j=0; j < 2; ++j)                           \
-                {                                                           \
-                    m##dVar##Array2[j][i]=DEFAULT_PTR(dType); \
-                    for (std::size_t k=0; k < 3; ++k)                       \
-                    {                                                       \
-                        m##dVar##Array3[k][j][i]=DEFAULT_PTR(dType);\
-                    }                                                       \
-                }                                                           \
-            }
-        DEFINE_MEMBERS()
-        #undef  ARRAY
-        #undef  DEFINE
-    }
-
-    // 保存前の値設定
-    ManualClass4PointerList(PointeeList const& iPointeeList) :
-        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
-            m##dVar(&iPointeeList.m##dVar),
-        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
-            m##dVar##Array1{},                                              \
-            m##dVar##Array2{},                                              \
-            m##dVar##Array3{},
-        DEFINE_MEMBERS()
-        #undef  ARRAY
-        #undef  DEFINE
-        mDummy(0)
-    {
-        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)
-        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
-            for (std::size_t i=0; i < dNum; ++i)                            \
-            {                                                               \
-                m##dVar##Array1[i]=&iPointeeList.m##dVar##Array1[i];        \
-                for (std::size_t j=0; j < 2; ++j)                           \
-                {                                                           \
-                    m##dVar##Array2[j][i]=&iPointeeList.m##dVar##Array2[j][i];\
-                    for (std::size_t k=0; k < 3; ++k)                       \
-                    {                                                       \
-                        m##dVar##Array3[k][j][i]=&iPointeeList.m##dVar##Array3[k][j][i];\
-                    }                                                       \
-                }                                                           \
-            }
-        DEFINE_MEMBERS()
-        #undef  ARRAY
-        #undef  DEFINE
-    }
-
-    // 値確認（dVal1側と等しいことをチェックする)
-    void check(PointeeList const& iPointeeList)
-    {
-    #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                        \
-        THEOLIZER_EQUAL_PTR(m##dVar, &iPointeeList.m##dVar);
-    #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                   \
-        for (std::size_t i=0; i < dNum; ++i)                                \
-        {                                                                   \
-            THEOLIZER_EQUAL_PTR(m##dVar##Array1[i],                         \
-                &iPointeeList.m##dVar##Array1[i]);                          \
-            for (std::size_t j=0; j < 2; ++j)                               \
-            {                                                               \
-                THEOLIZER_EQUAL_PTR(m##dVar##Array2[j][i],                  \
-                    &iPointeeList.m##dVar##Array2[j][i]);                   \
-                for (std::size_t k=0; k < 3; ++k)                           \
-                {                                                           \
-                    THEOLIZER_EQUAL_PTR(m##dVar##Array3[k][j][i],           \
-                        &iPointeeList.m##dVar##Array3[k][j][i]);            \
-                }                                                           \
-            }                                                               \
-        }
-    DEFINE_MEMBERS()
-    #undef  ARRAY
-    #undef  DEFINE
-    }
+    using   PointerList::PointerList;
 };
 
 THEOLIZER_NON_INTRUSIVE_ORDER((ManualClass4PointerList), 1);
@@ -558,11 +556,15 @@ struct TheolizerNonIntrusive<ManualClass4PointerList>::
     {
         // ポインタ変数を保存する
         #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
-          THEOLIZER_PROCESS(iSerializer, iInstance->m##dVar);
+          THEOLIZER_PROCESS(iSerializer, iInstance->m##dVar);               \
+          THEOLIZER_PROCESS(iSerializer, iInstance->m##dVar##Const);
         #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
             THEOLIZER_PROCESS(iSerializer, iInstance->m##dVar##Array1);     \
             THEOLIZER_PROCESS(iSerializer, iInstance->m##dVar##Array2);     \
-            THEOLIZER_PROCESS(iSerializer, iInstance->m##dVar##Array3);
+            THEOLIZER_PROCESS(iSerializer, iInstance->m##dVar##Array3);     \
+            THEOLIZER_PROCESS(iSerializer, iInstance->m##dVar##Array1##Const);\
+            THEOLIZER_PROCESS(iSerializer, iInstance->m##dVar##Array2##Const);\
+            THEOLIZER_PROCESS(iSerializer, iInstance->m##dVar##Array3##Const);
         DEFINE_MEMBERS()
         #undef  ARRAY
         #undef  DEFINE
@@ -576,20 +578,25 @@ struct TheolizerNonIntrusive<ManualClass4PointerList>::
     )
     {
         // ポインタ変数を回復する
+        // ポインタ変数を回復する
         #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
-            THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar);
+            THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar);             \
+            THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar##Const);
         #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
             THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar##Array1);     \
             THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar##Array2);     \
-            THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar##Array3);
+            THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar##Array3);     \
+            THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar##Array1##Const);\
+            THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar##Array2##Const);\
+            THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar##Array3##Const);
         DEFINE_MEMBERS()
         #undef  ARRAY
         #undef  DEFINE
     }
 };
 
-//----------------------------------------------------------------------------
-//              オーナー指定ポインタ
-//----------------------------------------------------------------------------
+// ***************************************************************************
+//      オーナー指定ポインタのテスト
+// ***************************************************************************
 
 #endif  // TEST_OBJECT_TRACKING_H
