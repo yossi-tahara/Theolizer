@@ -26,11 +26,6 @@
 // 基本のenum型とclassを使用する
 #include "test_basic_process.h"
 
-#ifdef SHRINK_FOR_MINGW64           // MinGWx64におけるFile too big回避のため
-    // 単独テストを無効にする
-    #define DISABLE_SINGLE_TEST
-#endif
-
 // 単独テストを無効にする
 //#define DISABLE_SINGLE_TEST
 
@@ -206,6 +201,8 @@ public:
 
 #ifndef DISABLE_SINGLE_TEST
 
+#ifndef SHRINK_FOR_MINGW64          // MinGWx64におけるFile too big回避用
+
 #define DEFINE_MEMBERS()                                                                \
     /* 文字型 */                                                                        \
     DEFINE(char,                mChar,          0,       110)                           \
@@ -270,6 +267,52 @@ public:
     /* クラス */                                                                        \
     ARRAY(ClassBasicTest, mClassBasicTest,  5,                                          \
            ClassBasicTest(), ClassBasicTest(1, "1", eneOne))
+
+#else
+
+#define DEFINE_MEMBERS()                                                                \
+    /* 文字型 */                                                                        \
+    DEFINE(char,                mChar,          0,       110)                           \
+    DEFINE(signed char,         mSChar,         0,      -111)                           \
+    DEFINE(unsigned char,       mUChar,         0,       112)                           \
+    /* 整数型 */                                                                        \
+    DEFINE(short,               mShort,         0,      -2100)                          \
+    DEFINE(unsigned short,      mUShort,        0,       2100)                          \
+    DEFINE(int,                 mInt,           0,      -3100)                          \
+    DEFINE(unsigned int,        mUInt,          0U,      3100U)                         \
+    /* 浮動小数点型 */                                                                  \
+    DEFINE(float,               mFloat,         0.0F,   2.23456F)                       \
+    DEFINE(double,              mDouble,        0.0,    2.23456789012345)               \
+    /* 文字列型 */                                                                      \
+    DEFINE(std::string,         mString,        u8"",   u8"ＵＴＦ－８a")                \
+    DEFINE(std::wstring,        mWstring,       L"",    L"ＵＴＦ－１６／３２a")         \
+    /* enum型 */                                                                        \
+    DEFINE(NormalEnum,  mNormalEnum,    eneZero,            eneOne)                     \
+    /* クラス */                                                                        \
+    DEFINE(ClassBasicTest, mClassBasicTest,                                             \
+           ClassBasicTest(), ClassBasicTest(1, "1", eneOne))                            \
+    /* --- 配列 --- */                                                                  \
+    /* 文字型 */                                                                        \
+    ARRAY(wchar_t,              mWchar,     8,  0,       1100)                          \
+    ARRAY(char16_t,             mChar16,    9,  0,       1101)                          \
+    ARRAY(char32_t,             mChar32,    10, 0,       1102)                          \
+    /* 整数型 */                                                                        \
+    ARRAY(long,                 mLong,      9,  0L,     -4200L)                         \
+    ARRAY(unsigned long,        mULong,     10, 0UL,     4200UL)                        \
+    ARRAY(long long,            mLongLong,  11, 0LL,    -5200LL)                        \
+    ARRAY(unsigned long long,   mULongLong, 12, 0ULL,    5200ULL)                       \
+    /* 浮動小数点型 */                                                                  \
+    ARRAY(long double,          mLongDouble,7,  0.0L,   3.23456789012345L)              \
+    /* 文字列型 */                                                                      \
+    ARRAY(std::u16string,       mU16string, 7,  u"",    u"ＵＴＦ－１６a")               \
+    ARRAY(std::u32string,       mU32string, 8,  U"",    U"ＵＴＦ－３２a")               \
+    /* enum型 */                                                                        \
+    ARRAY(ScopedEnum,       mScopedEnum,    6,  ScopedEnum::ZERO,   ScopedEnum::TWO)    \
+    /* クラス */                                                                        \
+    ARRAY(ClassBasicTest, mClassBasicTest,  5,                                          \
+           ClassBasicTest(), ClassBasicTest(1, "1", eneOne))
+
+#endif
 
 //----------------------------------------------------------------------------
 //      非侵入型完全自動
@@ -669,7 +712,6 @@ public:
     // protectedメンバの値をチェック
     void checkProtected(bool isValued=false)
     {
-std::cout << "HalfAutoName::checkProtected() start\n";
         #define DEFINE(dType, dVar, dDef, dVal)                             \
             THEOLIZER_EQUAL(dVar##Protected, ((!isValued)?dDef:dVal));
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
@@ -689,7 +731,6 @@ std::cout << "HalfAutoName::checkProtected() start\n";
         DEFINE_MEMBERS()
         #undef  ARRAY
         #undef  DEFINE
-std::cout << "HalfAutoName::checkProtected() end\n";
     }
 
     // publicメンバの値をチェック

@@ -47,6 +47,8 @@
 //              (4)回復したポインタ変数のアドレス値のチェックとポイント先の値のチェック
 //----------------------------------------------------------------------------
 
+#ifndef SHRINK_FOR_MINGW64          // MinGWx64におけるFile too big回避用
+
 #define DEFINE_MEMBERS()                                                                \
     /* 文字型 */                                                                        \
     DEFINE(char,                Char,           0,       10,      20)                   \
@@ -111,6 +113,39 @@
     /* クラス */                                                                        \
     ARRAY(ClassBasicTest, ClassBasicTest,   5,                                          \
            ClassBasicTest(), ClassBasicTest(1, "1", eneOne), ClassBasicTest(2, "2", eneTwo))
+
+#else
+
+#define DEFINE_MEMBERS()                                                                \
+    /* 文字型 */                                                                        \
+    DEFINE(char,                Char,           0,       10,      20)                   \
+    /* 整数型 */                                                                        \
+    DEFINE(int,                 Int,            0,      -3100,   -3200)                 \
+    /* 浮動小数点型 */                                                                  \
+    DEFINE(double,              Double,         0.0,    2.23456789012345,  3.23456789012345)\
+    /* 文字列型 */                                                                      \
+    DEFINE(std::string,         String,         u8"",   u8"ＵＴＦ８a", u8"ＵＴＦ８b")   \
+    /* enum型 */                                                                        \
+    DEFINE(NormalEnum,  NormalEnum,     eneZero,          eneOne,          eneTwo)      \
+    /* クラス */                                                                        \
+    DEFINE(ClassBasicTest, ClassBasicTest,                                              \
+           ClassBasicTest(), ClassBasicTest(1, "1", eneOne), ClassBasicTest(2, "2", eneTwo))\
+    /* --- 配列 --- */                                                                  \
+    /* 文字型 */                                                                        \
+    ARRAY(wchar_t,              Wchar,      8,  0,       1300,    1400)                 \
+    /* 整数型 */                                                                        \
+    ARRAY(unsigned int,         UInt,       8,  0U,      3300U,   3400U)                \
+    /* 浮動小数点型 */                                                                  \
+    ARRAY(float,                Float,      5,  0.0F,   4.23456F, 5.23456F)             \
+    /* 文字列型 */                                                                      \
+    ARRAY(std::wstring,         Wstring,    6,  L"",    L"ＵＴＦ１６/３２c", L"ＵＴＦ１６/３２d")\
+    /* enum型 */                                                                        \
+    ARRAY(ScopedEnum,       ScopedEnum,     6,  ScopedEnum::ZERO,ScopedEnum::ONE,ScopedEnum::TWO)\
+    /* クラス */                                                                        \
+    ARRAY(ClassBasicTest, ClassBasicTest,   5,                                          \
+           ClassBasicTest(), ClassBasicTest(1, "1", eneOne), ClassBasicTest(2, "2", eneTwo))
+
+#endif
 
 #define DEFAULT_PTR(dType)  reinterpret_cast<dType*>(0xffff)
 

@@ -514,6 +514,20 @@ namespace internal
 //      --- ポインタ表示用のマクロ ---
 //      char*は文字列として出力されるのでそれを回避する
 
+namespace internal
+{
+    template<typename tType>
+    tType const* OutputData(tType const* iType)
+    {
+        return iType;
+    }
+
+    inline void const* OutputData(char const* iCharPtr)
+    {
+        return reinterpret_cast<void const*>(iCharPtr);
+    }
+}
+
 #define THEOLIZER_INTERNAL_RESULT_PTR(dResult)                              \
     do                                                                      \
     {                                                                       \
@@ -523,7 +537,7 @@ namespace internal
             std::streamsize precision=os.precision();                       \
             os.precision(std::numeric_limits<long double>::digits10);       \
             os << THEOLIZER_INTERNAL_U8(#dResult) " : "                     \
-               << reinterpret_cast<void const*>(dResult) << "\n";           \
+               << theolizer::internal::OutputData(dResult) << "\n";         \
             os.precision(precision);                                        \
         }                                                                   \
     }                                                                       \
