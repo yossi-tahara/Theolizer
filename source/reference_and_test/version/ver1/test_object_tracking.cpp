@@ -226,6 +226,64 @@ void saveObjectTracking(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
+
+//----------------------------------------------------------------------------
+//      オーナー指定ポインタのテスト
+//----------------------------------------------------------------------------
+
+//      ---<<< 手動(トップ・レベル)によるポインタの保存 >>>---
+
+    {
+        // ボインタ群
+        OwnerList aOwnerListNull;
+        OwnerList aOwnerList{true};
+
+        // nullptrポインタ保存
+        std::cout << "        saveOwner() : aOwnerListNull" << std::endl;
+        saveOwner(iSerializer, aOwnerListNull);
+
+        // 領域有りポインタ保存
+        std::cout << "        saveOwner() : aOwnerList" << std::endl;
+        saveOwner(iSerializer, aOwnerList);
+
+        iSerializer.clearTracking();
+    }
+
+//      ---<<< 自動メンバ・リスト生成によるポインタの保存 >>>---
+
+    {
+        // ボインタ群
+        OwnerList aOwnerListNull;
+        OwnerList aOwnerList{true};
+
+        // nullptrポインタ保存
+        std::cout << "        THEOLIZER_PROCESS() : aOwnerListNull" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aOwnerListNull);
+
+        // 領域有りポインタ保存
+        std::cout << "        THEOLIZER_PROCESS() : aOwnerList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aOwnerList);
+
+        iSerializer.clearTracking();
+    }
+
+//      ---<<< 手動(非トップ・レベル)によるポインタの保存 >>>---
+
+    {
+        // ポインタ群
+        ManualClass4OwnerList aManualClass4OwnerListNull;
+        ManualClass4OwnerList aManualClass4OwnerList{true};
+
+        // nullptrポインタ保存
+        std::cout << "        THEOLIZER_PROCESS() : aManualClass4OwnerListNull" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aManualClass4OwnerListNull);
+
+        // 領域有りポインタ保存
+        std::cout << "        THEOLIZER_PROCESS() : aManualClass4OwnerList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aManualClass4OwnerList);
+
+        iSerializer.clearTracking();
+    }
 }
 
 INSTANTIATION_ALL(void, saveObjectTracking);
@@ -391,6 +449,77 @@ void loadObjectTracking(tSerializer& iSerializer)
         aManualClass4PointerListA.check(aPointeeList,  aPointeeList2);
         aManualClass4PointerListB.check(aPointeeList,  aPointeeListManual);
         aManualClass4PointerListC.check(aPointeeList2, aPointeeListManual);
+    }
+
+//----------------------------------------------------------------------------
+//      オーナー指定ポインタのテスト
+//----------------------------------------------------------------------------
+
+//      ---<<< 手動(トップ・レベル)によるポインタの回復 >>>---
+
+    {
+        // ボインタ群
+        OwnerList aOwnerListNull;
+        OwnerList aOwnerList{true};
+
+        // nullptrポインタ回復
+        std::cout << "        loadOwner() : aOwnerListNull" << std::endl;
+        loadOwner(iSerializer, aOwnerListNull);
+
+        // 領域有りポインタ回復
+        std::cout << "        loadOwner() : aOwnerList" << std::endl;
+        loadOwner(iSerializer, aOwnerList);
+
+        iSerializer.clearTracking();
+
+        // 回復結果のチェック
+        aOwnerListNull.check();
+        aOwnerList.check(true);
+    }
+
+
+//      ---<<< 自動メンバ・リスト生成によるポインタの回復 >>>---
+
+    {
+        // ボインタ群
+        OwnerList aOwnerListNull;
+        OwnerList aOwnerList{true};
+
+        // nullptrポインタ回復
+        std::cout << "        THEOLIZER_PROCESS() : aOwnerListNull" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aOwnerListNull);
+
+        // 領域有りポインタ回復
+        std::cout << "        THEOLIZER_PROCESS() : aOwnerList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aOwnerList);
+
+        iSerializer.clearTracking();
+
+        // 回復結果のチェック
+        aOwnerListNull.check();
+        aOwnerList.check(true);
+    }
+
+//      ---<<< 手動(非トップ・レベル)によるポインタの回復 >>>---
+
+    {
+        // ポインタ群
+        ManualClass4OwnerList aManualClass4OwnerListNull;
+        ManualClass4OwnerList aManualClass4OwnerList{true};
+
+        // nullptrポインタ回復
+        std::cout << "        THEOLIZER_PROCESS() : aManualClass4OwnerListNull" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aManualClass4OwnerListNull);
+
+        // 領域有りポインタ回復
+        std::cout << "        THEOLIZER_PROCESS() : aManualClass4OwnerList" << std::endl;
+        THEOLIZER_PROCESS(iSerializer, aManualClass4OwnerList);
+
+        iSerializer.clearTracking();
+
+        // 回復結果のチェック
+        aManualClass4OwnerListNull.check();
+        aManualClass4OwnerList.check(true);
     }
 }
 

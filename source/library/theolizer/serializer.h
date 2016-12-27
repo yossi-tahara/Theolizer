@@ -70,7 +70,7 @@ namespace theolizer
 #define THEOLIZER_PROCESS_OWNER(dSerializer, dInstance)                     \
     do {                                                                    \
         typedef typename std::remove_reference<decltype(dInstance)>::type Type;\
-        static_assert(std::is_pointer<Type>::value,                         \
+        static_assert(std::is_pointer<typename std::remove_all_extents<Type>::type>::value,\
             "THEOLIZER_PROCESS_OWNER() support a pointer only.");           \
         theolizer::internal::process<theolizer::internal::etmOwner,tTheolizerVersion>\
             (dSerializer, dInstance, #dInstance, THEOLIZER_INTERNAL_FILE, __LINE__);\

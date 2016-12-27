@@ -599,4 +599,251 @@ struct TheolizerNonIntrusive<ManualClass4PointerList>::
 //      オーナー指定ポインタのテスト
 // ***************************************************************************
 
+//----------------------------------------------------------------------------
+//      配列の領域獲得
+//          dTypeは基本型
+//          dSizesは例えば[3][2][2]のように多次元配列指定
+//          newが返却する型はdType(*)[3][2][2]ではなく、
+//          dType(*)[2][2]になってしまうため、
+//          reinterpret_cast<>して正しい型へ戻す。
+//----------------------------------------------------------------------------
+
+#define NEW_ARRAY(dType, dSizes)                                            \
+    reinterpret_cast<dType(*)dSizes>(new dType##dSizes)
+
+//----------------------------------------------------------------------------
+//      オーナー・ポインタ１
+//          手動（トップ・レベル）  メンバ1つ1つをTHEOLIZER_PROCESS_OWNER()する
+//          自動メンバ・リスト生成
+//              各メンバにTHEOLIZER_ANNOTATE()でオーナー指定しておき、
+//              OwnerList全体をTHEOLIZER_PROCESS()する
+//----------------------------------------------------------------------------
+
+struct OwnerList
+{
+    #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                        \
+        dType*  m##dVar                     THEOLIZER_ANNOTATE(FS:<>Owner);
+    #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                   \
+        dType*  m##dVar##Array1[dNum]       THEOLIZER_ANNOTATE(FS:<>Owner); \
+        dType*  m##dVar##Array2[2][dNum]    THEOLIZER_ANNOTATE(FS:<>Owner); \
+        dType*  m##dVar##Array3[3][2][dNum] THEOLIZER_ANNOTATE(FS:<>Owner);
+    DEFINE_MEMBERS()
+    #undef  ARRAY
+    #undef  DEFINE
+
+    int mDummy;
+
+    // デフォルト・コンストラクタ
+    OwnerList() :
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            m##dVar{nullptr},
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            m##dVar##Array1{},                                              \
+            m##dVar##Array2{},                                              \
+            m##dVar##Array3{},
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+        mDummy(0)
+    {
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            for (std::size_t i=0; i < dNum; ++i)                            \
+            {                                                               \
+                m##dVar##Array1[i]=nullptr;                                 \
+                for (std::size_t j=0; j < 2; ++j)                           \
+                {                                                           \
+                    m##dVar##Array2[j][i]=nullptr;                          \
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        m##dVar##Array3[k][j][i]=nullptr;                   \
+                    }                                                       \
+                }                                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+
+    // 保存前の値設定1
+    OwnerList(bool) :
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            m##dVar{new dType{dVal1}},
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            m##dVar##Array1{},                                              \
+            m##dVar##Array2{},                                              \
+            m##dVar##Array3{},
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+        mDummy(0)
+    {
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            for (std::size_t i=0; i < dNum; ++i)                            \
+            {                                                               \
+                m##dVar##Array1[i]=new dType{dVal1};                        \
+                for (std::size_t j=0; j < 2; ++j)                           \
+                {                                                           \
+                    m##dVar##Array2[j][i]=new dType{dVal1};                 \
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        m##dVar##Array3[k][j][i]=new dType{dVal1};          \
+                    }                                                       \
+                }                                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+
+    // デストラクタ(領域のオーナーなので解放が必要）
+    ~OwnerList()
+    {
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            delete m##dVar;
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            for (std::size_t i=0; i < dNum; ++i)                            \
+            {                                                               \
+                delete m##dVar##Array1[i];                                  \
+                for (std::size_t j=0; j < 2; ++j)                           \
+                {                                                           \
+                    delete m##dVar##Array2[j][i];                           \
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        delete m##dVar##Array3[k][j][i];                    \
+                    }                                                       \
+                }                                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+
+    // 値確認（nullptr or dVal1と等しいことをチェックする)
+    void check(bool iIsVal1=false)
+    {
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            if (iIsVal1)                                                    \
+                THEOLIZER_EQUAL(*m##dVar, dVal1);                           \
+            else                                                            \
+                THEOLIZER_EQUAL_PTR(m##dVar, nullptr);
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            for (std::size_t i=0; i < dNum; ++i)                            \
+            {                                                               \
+                if (iIsVal1)                                                \
+                    THEOLIZER_EQUAL(*m##dVar##Array1[i], dVal1);            \
+                else                                                        \
+                    THEOLIZER_EQUAL_PTR(m##dVar##Array1[i], nullptr);       \
+                for (std::size_t j=0; j < 2; ++j)                           \
+                {                                                           \
+                    if (iIsVal1)                                            \
+                        THEOLIZER_EQUAL(*m##dVar##Array2[j][i], dVal1);     \
+                    else                                                    \
+                        THEOLIZER_EQUAL_PTR(m##dVar##Array2[j][i], nullptr);\
+                    for (std::size_t k=0; k < 3; ++k)                       \
+                    {                                                       \
+                        if (iIsVal1)                                        \
+                            THEOLIZER_EQUAL(*m##dVar##Array3[k][j][i], dVal1);\
+                        else                                                \
+                            THEOLIZER_EQUAL_PTR(m##dVar##Array3[k][j][i], nullptr);\
+                    }                                                       \
+                }                                                           \
+            }
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+};
+
+//      ---<<< 処理関数 >>>---
+//      手動(トップ・レベル)によるポインタの保存／回復
+
+// 保存
+template<class tSerializer>
+inline void saveOwner(tSerializer& iSerializer, OwnerList& iOwnerList)
+{
+    // ポインタ変数を保存する
+    #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                        \
+        THEOLIZER_PROCESS_OWNER(iSerializer, iOwnerList.m##dVar);
+    #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                   \
+        THEOLIZER_PROCESS_OWNER(iSerializer, iOwnerList.m##dVar##Array1);   \
+        THEOLIZER_PROCESS_OWNER(iSerializer, iOwnerList.m##dVar##Array2);   \
+        THEOLIZER_PROCESS_OWNER(iSerializer, iOwnerList.m##dVar##Array3);
+    DEFINE_MEMBERS()
+    #undef  ARRAY
+    #undef  DEFINE
+}
+
+// 回復
+template<class tSerializer>
+inline void loadOwner(tSerializer& iSerializer, OwnerList& iOwnerList)
+{
+    // ポインタ変数を回復する
+    #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                        \
+        THEOLIZER_PROCESS_OWNER(iSerializer, iOwnerList.m##dVar);
+    #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                   \
+        THEOLIZER_PROCESS_OWNER(iSerializer, iOwnerList.m##dVar##Array1);   \
+        THEOLIZER_PROCESS_OWNER(iSerializer, iOwnerList.m##dVar##Array2);   \
+        THEOLIZER_PROCESS_OWNER(iSerializer, iOwnerList.m##dVar##Array3);
+    DEFINE_MEMBERS()
+    #undef  ARRAY
+    #undef  DEFINE
+}
+
+//----------------------------------------------------------------------------
+//      オーナー・ポインタ２
+//          手動（非トップ・レベル）メンバ1つ1つをTHEOLIZER_PROCESS_OWNER()する
+//----------------------------------------------------------------------------
+
+struct ManualClass4OwnerList : public OwnerList
+{
+    using   OwnerList::OwnerList;
+};
+
+THEOLIZER_NON_INTRUSIVE_ORDER((ManualClass4OwnerList), 1);
+
+template<class tBaseSerializer, class tTheolizerVersion>
+struct TheolizerNonIntrusive<ManualClass4OwnerList>::
+    TheolizerUserDefine<tBaseSerializer, tTheolizerVersion, 1>
+{
+    // Save members.
+    static void saveClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
+    )
+    {
+        // ポインタ変数を保存する
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+          THEOLIZER_PROCESS_OWNER(iSerializer, iInstance->m##dVar);
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            THEOLIZER_PROCESS_OWNER(iSerializer, iInstance->m##dVar##Array1);\
+            THEOLIZER_PROCESS_OWNER(iSerializer, iInstance->m##dVar##Array2);\
+            THEOLIZER_PROCESS_OWNER(iSerializer, iInstance->m##dVar##Array3);
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+
+    // Load members.
+    static void loadClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget*& oInstance
+    )
+    {
+        // ポインタ変数を回復する
+        #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
+            THEOLIZER_PROCESS_OWNER(iSerializer, oInstance->m##dVar);
+        #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)               \
+            THEOLIZER_PROCESS_OWNER(iSerializer, oInstance->m##dVar##Array1);\
+            THEOLIZER_PROCESS_OWNER(iSerializer, oInstance->m##dVar##Array2);\
+            THEOLIZER_PROCESS_OWNER(iSerializer, oInstance->m##dVar##Array3);
+        DEFINE_MEMBERS()
+        #undef  ARRAY
+        #undef  DEFINE
+    }
+};
+
 #endif  // TEST_OBJECT_TRACKING_H
