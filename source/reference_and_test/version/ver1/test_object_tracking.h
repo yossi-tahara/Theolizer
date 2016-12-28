@@ -374,6 +374,8 @@ struct TheolizerNonIntrusive<PointeeListManual>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
+        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
+
         // PointeeListのメンバ変数を回復する
         #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                            \
             THEOLIZER_PROCESS_POINTEE(iSerializer, oInstance->m##dVar);
@@ -612,7 +614,8 @@ struct TheolizerNonIntrusive<ManualClass4PointerList>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
-        // ポインタ変数を回復する
+        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
+
         // ポインタ変数を回復する
         #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
             THEOLIZER_PROCESS(iSerializer, oInstance->m##dVar);             \
@@ -868,6 +871,8 @@ struct TheolizerNonIntrusive<ManualClass4OwnerList>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
+        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
+
         // ポインタ変数を回復する
         #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                    \
             THEOLIZER_PROCESS_OWNER(iSerializer, oInstance->m##dVar);
