@@ -28,6 +28,7 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_basic
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_class_variation.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_enum_variation.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_object_tracking.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_polymorphism.cpp)
 
 message(STATUS "start of add_build_and_test(${TARGET_NAME}${VERSION})")
 add_build_and_test(${TARGET_NAME} ${VERSION} "" ${SOURCE_LIST})

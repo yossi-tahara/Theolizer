@@ -1984,4 +1984,29 @@ struct TheolizerNonIntrusive<TripledManual>::
 #endif  // DISABLE_TRIPLED_TEST
 #endif  // DISABLE_COMBINATION_TEST
 
+//----------------------------------------------------------------------------
+//      シリアライズしていない完全自動型を含む半自動型のテスト
+//          完全自動型はシリアライズしないとシリアライズ・コードが生成されない
+//          しかし、完全自動型を含んでいる半自動型は、keep-step処理のため、
+//          完全自動型のシリアライズ・コードを必要とする。
+//          このようなケースでも完全自動型のシリアライズ・コードを生成するように
+//          したのでそのテスト。（コンパイル・エラーでFAIL）
+//----------------------------------------------------------------------------
+
+struct FullAutoBase1
+{
+    int mInt;
+};
+
+struct FullAutoBase2
+{
+    int mInt;
+};
+
+struct HalfAutoDerived : public FullAutoBase1
+{
+    FullAutoBase2   mFullAutoBase2;
+    THEOLIZER_INTRUSIVE(CS, (HalfAutoDerived), 1);
+};
+
 #endif  // TEST_CLASS_VARIATION_H

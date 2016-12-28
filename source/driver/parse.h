@@ -1341,7 +1341,7 @@ ASTANALYZE_OUTPUT("          base : ", aBaseDecl->getQualifiedNameAsString());
 ASTANALYZE_OUTPUT("          field : ", field->getType().getCanonicalType().getAsString(),
                   " ", field->getName());
 
-            // privateは処理しない→暫定：正しくは保存対象なら処理する
+            // privateは処理しない
             if (field->getAccess() == clang::AS_private)
         continue;
 
@@ -1360,6 +1360,26 @@ ASTANALYZE_OUTPUT("          field : ", field->getType().getCanonicalType().getA
             processElement(field->getType(), iClass);
         }
 ASTANALYZE_OUTPUT("------------ enumerateClass(", iClass->getQualifiedNameAsString(), ")");
+    }
+
+//----------------------------------------------------------------------------
+//      シリアライズ・クラスの半自動型の基底クラスをsave/load対象とする
+//          保存／回復していない完全自動型をコード生成対象とするため
+//----------------------------------------------------------------------------
+
+    void enumerateHalfAuto()
+    {
+ASTANALYZE_OUTPUT("++++++++++++ enumerateHalfAuto()");
+        for (auto&& aSerializeInfo : mAstInterface.mSerializeListClass.getList())
+        {
+            // 半自動なら、基底クラスを処理する。
+            if (!aSerializeInfo.second.mIsFullAuto
+             && !aSerializeInfo.second.mIsManual)
+            {
+                enumerateClass(aSerializeInfo.second.mTheolizerTarget);
+            }
+        }
+ASTANALYZE_OUTPUT("------------ enumerateHalfAuto()");
     }
 
 //----------------------------------------------------------------------------
@@ -1411,7 +1431,10 @@ ASTANALYZE_OUTPUT("$$$$ processSwitcher() : ", qt.getAsString());
         // 1Pass目(シリアライズ・クラス収集)
         mASTVisitor.enumerateDecl(iContext.getTranslationUnitDecl());
 
-        // 2Pass目(save/load処理)
+        // 2Pass目(半自動の基底クラスをsave/load処理する：基底クラスにある完全自動対応)
+        enumerateHalfAuto();
+
+        // 3Pass目(save/load処理)
         if (mASTVisitor.mSwicher)
         {
             processSwitcher(mASTVisitor.mSwicher);

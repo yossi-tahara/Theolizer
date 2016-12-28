@@ -90,7 +90,7 @@ template<class tSerializer>
 void loadEnumVariation(tSerializer& iSerializer);
 
 //----------------------------------------------------------------------------
-//      オブジェクト追跡
+//      オブジェクト追跡（ポインタとオーナー指定ポインタ）
 //----------------------------------------------------------------------------
 
 //      ---<<< 使い方のサンプル・コード >>>---
@@ -104,6 +104,22 @@ void saveObjectTracking(tSerializer& iSerializer);
 
 template<class tSerializer>
 void loadObjectTracking(tSerializer& iSerializer);
+
+//----------------------------------------------------------------------------
+//      オブジェクト追跡（ポリモーフィズム）
+//----------------------------------------------------------------------------
+
+//      ---<<< 使い方のサンプル・コード >>>---
+
+void tutorisePolymorphism();
+
+//      ---<<< 自動テスト >>>---
+
+template<class tSerializer>
+void savePolymorphism(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadPolymorphism(tSerializer& iSerializer);
 
 // ***************************************************************************
 //      各テスト呼び出し
@@ -124,6 +140,9 @@ void saveBasic(tSerializer& iSerializer)
 #ifndef DISABLE_OBJECT_TRACKING_TEST
     saveObjectTracking(iSerializer);
 #endif
+#ifndef DISABLE_POLYMORPHISM_TEST
+    savePolymorphism(iSerializer);
+#endif
 }
 
 template<class tSerializer>
@@ -140,6 +159,9 @@ void loadBasic(tSerializer& iSerializer)
 #endif
 #ifndef DISABLE_OBJECT_TRACKING_TEST
     loadObjectTracking(iSerializer);
+#endif
+#ifndef DISABLE_POLYMORPHISM_TEST
+    loadPolymorphism(iSerializer);
 #endif
 }
 
