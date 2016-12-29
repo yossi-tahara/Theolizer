@@ -707,7 +707,8 @@ return true;
 //      デフォルト・コンストラクタがある時のみコンストラクトする
 //----------------------------------------------------------------------------
 
-template<
+template
+<
     class tClassType,
     THEOLIZER_INTERNAL_OVERLOAD((!std::is_constructible<tClassType>::value))
 >
@@ -716,7 +717,8 @@ tClassType* createClass(tClassType const*)
     return nullptr;
 }
 
-template<
+template
+<
     class tClassType,
     THEOLIZER_INTERNAL_OVERLOAD((std::is_constructible<tClassType>::value))
 >
@@ -733,7 +735,9 @@ template<class tClassType>
 bool ClassTypeInfo<tClassType>::loadTypeInstance(
     BaseSerializer& iSerializer, void*& iPointer, TypeIndexList& iTypeIndexList)
 {
-    tClassType* aPointer=reinterpret_cast<tClassType*>(iPointer);
+    typedef typename tClassType::TheolizerTarget    TheolizerTarget;
+
+    TheolizerTarget* aPointer=reinterpret_cast<TheolizerTarget*>(iPointer);
 
     std::size_t aFoundTypeIndex=0;
     bool aFound=false;
@@ -768,8 +772,9 @@ bool ClassTypeInfo<tClassType>::loadTypeInstance(
         }
 
         // 自動型で、nullptrなら領域獲得
-        if (tClassType::Theolizer::kIsAuto) {
-            if (!iPointer) iPointer = createClass(static_cast<tClassType*>(iPointer));
+        if (tClassType::Theolizer::kIsAuto)
+        {
+            if (!iPointer) iPointer = createClass(static_cast<TheolizerTarget*>(iPointer));
         }
 
         // インスタンス回復

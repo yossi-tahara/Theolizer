@@ -19,7 +19,13 @@
 //############################################################################
 
 #include "disable_test.h"
-#ifndef DISABLE_OBJECT_TRACKING_TEST
+#ifndef DISABLE_POLYMORPHISM_TEST
+
+namespace std
+{
+    template<class _Ty>
+    struct default_delete;
+}
 
 // ***************************************************************************
 //      インクルード
@@ -33,6 +39,9 @@
 // theolizerライブラリ
 #include <theolizer/serializer_binary.h>
 #include <theolizer/serializer_json.h>
+
+#include <theolizer/memory.h>   // std::unique_ptrのシリアライズ化
+#include <theolizer/vector.h>   // std::vectorのシリアライス化
 
 // プロジェクト・ヘッダ
 #include "common.h"
@@ -99,7 +108,25 @@ template<class tSerializer>
 void savePolymorphism(tSerializer& iSerializer)
 {
 //----------------------------------------------------------------------------
-//      テスト
+//      非侵入型完全自動
+//----------------------------------------------------------------------------
+
+    {
+        std::vector<std::unique_ptr<PolyBaseFullAuto> > aVector;
+        aVector.emplace_back(new PolyDerivedFullAuto(true));
+        aVector.emplace_back(new PolyDerivedHalfAuto(true));
+        aVector.emplace_back(new PolyDerivedManual(true));
+        THEOLIZER_PROCESS(iSerializer, aVector);
+
+        iSerializer.clearTracking();
+    }
+
+//----------------------------------------------------------------------------
+//      侵入型半自動
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+//      非侵入型手動
 //----------------------------------------------------------------------------
 
 }
@@ -114,11 +141,36 @@ template<class tSerializer>
 void loadPolymorphism(tSerializer& iSerializer)
 {
 //----------------------------------------------------------------------------
-//      テスト
+//      非侵入型完全自動
+//----------------------------------------------------------------------------
+
+theolizer::DisplayPass aDisplayPass;
+    {
+        std::vector<std::unique_ptr<PolyBaseFullAuto> > aVector;
+        THEOLIZER_PROCESS(iSerializer, aVector);
+
+        iSerializer.clearTracking();
+
+        aVector[0]->check(true);
+        THEOLIZER_EQUAL(typeid(*aVector[0].get()), typeid(PolyDerivedFullAuto));
+
+        aVector[1]->check(true);
+        THEOLIZER_EQUAL(typeid(*aVector[1].get()), typeid(PolyDerivedHalfAuto));
+
+        aVector[2]->check(true);
+        THEOLIZER_EQUAL(typeid(*aVector[2].get()), typeid(PolyDerivedManual));
+    }
+
+//----------------------------------------------------------------------------
+//      侵入型半自動
+//----------------------------------------------------------------------------
+
+//----------------------------------------------------------------------------
+//      非侵入型手動
 //----------------------------------------------------------------------------
 
 }
 
 INSTANTIATION_ALL(void, loadPolymorphism);
 
-#endif  // DISABLE_OBJECT_TRACKING_TEST
+#endif  // DISABLE_POLYMORPHISM_TEST

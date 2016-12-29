@@ -857,7 +857,9 @@ ASTANALYZE_OUTPUT("----Version aTargetEnum=", aTargetEnum);
 
     virtual bool VisitClassTemplateDecl(ClassTemplateDecl *iClassTemplateDecl)
     {
-ASTANALYZE_OUTPUT("VisitClassTemplateDecl(", iClassTemplateDecl->getQualifiedNameAsString(), ")");
+ASTANALYZE_OUTPUT("VisitClassTemplateDecl(", iClassTemplateDecl->getQualifiedNameAsString(),
+                  " : ",  iClassTemplateDecl,
+                  " : ",  iClassTemplateDecl->getCanonicalDecl(), ")");
         getAnnotationInfo(iClassTemplateDecl, AnnotateType::None);
 
         if (mIsTheolizerSpace)
@@ -865,6 +867,11 @@ ASTANALYZE_OUTPUT("VisitClassTemplateDecl(", iClassTemplateDecl->getQualifiedNam
             if (iClassTemplateDecl->getName().equals("Switcher"))
             {
                 mSwicher = iClassTemplateDecl;
+            }
+
+            else if (iClassTemplateDecl->getName().equals("RegisterToBaseClass"))
+            {
+                mRegisterToBaseClass = iClassTemplateDecl;
             }
 
             else if (iClassTemplateDecl->getName().equals("MidSerializer"))
@@ -876,7 +883,9 @@ return true;
 
         // 定義なら追跡する
         if (iClassTemplateDecl->isThisDeclarationADefinition())
+        {
             Visit(iClassTemplateDecl->getTemplatedDecl());
+        }
 
         return true;
     }
@@ -1074,6 +1083,7 @@ public:
 
 public:
     ClassTemplateDecl*  mSwicher;               // Switcher<>のDecl
+    ClassTemplateDecl*  mRegisterToBaseClass;   // RegisterToBaseClass<>のDecl
     bool                mHasSaveLoad;           // save/load有り
     bool                mHasGlobalVersionTable; // グローバル・バージョン番号テーブル有り
 
@@ -1089,6 +1099,7 @@ private:
 public:
     ASTVisitor(AstInterface& iAstInterface) :
         mSwicher(nullptr),
+        mRegisterToBaseClass(nullptr),
         mHasSaveLoad(false),
         mHasGlobalVersionTable(false),
         mAstInterface(iAstInterface),
@@ -1383,6 +1394,30 @@ ASTANALYZE_OUTPUT("------------ enumerateHalfAuto()");
     }
 
 //----------------------------------------------------------------------------
+//      RegisterToBaseClass<>を実体化しているクラス抽出する
+//----------------------------------------------------------------------------
+
+    void processRegisterToBaseClass(ClassTemplateDecl* iRegisterToBaseClass)
+    {
+ASTANALYZE_OUTPUT("============ RegisterToBaseClass ===========================");
+
+        // 特殊化を枚挙する
+        for (auto spec : iRegisterToBaseClass->specializations())
+        {
+            TemplateArgumentList const& tal=spec->getTemplateArgs();
+            if (tal.size() != 1)
+        continue;
+
+            // テンプレート・パラメータ取り出し
+            TemplateArgument const& ta = tal.get(0);
+            QualType qt = ta.getAsType();
+ASTANALYZE_OUTPUT("$$$$ RegisterToBaseClass() : ", qt.getAsString());
+
+            processElement(qt, iRegisterToBaseClass);
+        }
+    }
+
+//----------------------------------------------------------------------------
 //      Swicher<>::save/loadを追跡し、保存／回復しているクラスとenum型を抽出する
 //----------------------------------------------------------------------------
 
@@ -1401,17 +1436,6 @@ ASTANALYZE_OUTPUT("============ processSwitcher ===========================");
             TemplateArgument const& ta = tal.get(1);
             QualType qt = ta.getAsType();
 ASTANALYZE_OUTPUT("$$$$ processSwitcher() : ", qt.getAsString());
-
-            // std::string, std::wstring, std::u16string, std::u32stringは除く
-            //  これらはライブラリ側で「プリミティブ」扱いしているため
-            if (isString(qt, iSwitcher))
-        continue;
-
-            // TheolizerVersionとTheolizerBaseは追跡しない
-            if ((qt.getBaseTypeIdentifier())
-             && ((qt.getBaseTypeIdentifier()->getName().equals("TheolizerVersion"))
-              || (qt.getBaseTypeIdentifier()->getName().equals("TheolizerBase"))))
-        continue;
 
             processElement(qt, iSwitcher);
         }
@@ -1434,7 +1458,13 @@ ASTANALYZE_OUTPUT("$$$$ processSwitcher() : ", qt.getAsString());
         // 2Pass目(半自動の基底クラスをsave/load処理する：基底クラスにある完全自動対応)
         enumerateHalfAuto();
 
-        // 3Pass目(save/load処理)
+        // 3Pass目(THEOLIZER_REGISTER_CLASSで登録された派生クラスをsave/load処理する)
+        if (mASTVisitor.mRegisterToBaseClass)
+        {
+            processRegisterToBaseClass(mASTVisitor.mRegisterToBaseClass);
+        }
+
+        // 4Pass目(save/load処理)
         if (mASTVisitor.mSwicher)
         {
             processSwitcher(mASTVisitor.mSwicher);

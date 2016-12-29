@@ -42,7 +42,8 @@ struct PolyBaseFullAuto
     int     mBaseData;
     PolyBaseFullAuto() : mBaseData(0) { }
     PolyBaseFullAuto(bool) : mBaseData(100) { }
-    void check(bool iIsNonDefault)
+    virtual ~PolyBaseFullAuto() { }
+    virtual void check(bool iIsNonDefault)
     {
         if (!iIsNonDefault)
             THEOLIZER_EQUAL(mBaseData, 0);
@@ -60,7 +61,8 @@ struct PolyBaseHalfAuto
     int     mBaseData;
     PolyBaseHalfAuto() : mBaseData(0) { }
     PolyBaseHalfAuto(bool) : mBaseData(200) { }
-    void check(bool iIsNonDefault)
+    virtual ~PolyBaseHalfAuto() { }
+    virtual void check(bool iIsNonDefault)
     {
         if (!iIsNonDefault)
             THEOLIZER_EQUAL(mBaseData, 0);
@@ -80,7 +82,8 @@ struct PolyBaseManual
     int     mBaseData;
     PolyBaseManual() : mBaseData(0) { }
     PolyBaseManual(bool) : mBaseData(300) { }
-    void check(bool iIsNonDefault)
+    virtual ~PolyBaseManual() { }
+    virtual void check(bool iIsNonDefault)
     {
         if (!iIsNonDefault)
             THEOLIZER_EQUAL(mBaseData, 0);
@@ -102,6 +105,7 @@ struct TheolizerNonIntrusive<PolyBaseManual>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
+        THEOLIZER_PROCESS(iSerializer, iInstance->mBaseData);
     }
 
     // Load members.
@@ -111,6 +115,9 @@ struct TheolizerNonIntrusive<PolyBaseManual>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
+        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
+
+        THEOLIZER_PROCESS(iSerializer, oInstance->mBaseData);
     }
 };
 
@@ -128,16 +135,31 @@ struct PolyDerivedFullAuto :
     public PolyBaseManual
 {
     int     mDerivedData;
-    PolyDerivedFullAuto() : mDerivedData(0) { }
-    PolyDerivedFullAuto(bool) : mDerivedData(1000) { }
+    PolyDerivedFullAuto() :
+        PolyBaseFullAuto{},
+        PolyBaseHalfAuto{},
+        PolyBaseManual{},
+        mDerivedData{0}
+    { }
+    PolyDerivedFullAuto(bool) :
+        PolyBaseFullAuto{true},
+        PolyBaseHalfAuto{true},
+        PolyBaseManual{true},
+        mDerivedData{1000}
+    { }
     void check(bool iIsNonDefault)
     {
+        PolyBaseFullAuto::check(iIsNonDefault);
+        PolyBaseHalfAuto::check(iIsNonDefault);
+        PolyBaseManual::check(iIsNonDefault);
         if (!iIsNonDefault)
             THEOLIZER_EQUAL(mDerivedData, 0);
         else 
             THEOLIZER_EQUAL(mDerivedData, 1000);
     }
 };
+
+THEOLIZER_REGISTER_CLASS((PolyDerivedFullAuto));
 
 //----------------------------------------------------------------------------
 //      侵入型半自動
@@ -149,10 +171,23 @@ struct PolyDerivedHalfAuto :
     public PolyBaseManual
 {
     int     mDerivedData;
-    PolyDerivedHalfAuto() : mDerivedData(0) { }
-    PolyDerivedHalfAuto(bool) : mDerivedData(2000) { }
+    PolyDerivedHalfAuto() :
+        PolyBaseFullAuto{},
+        PolyBaseHalfAuto{},
+        PolyBaseManual{},
+        mDerivedData{0}
+    { }
+    PolyDerivedHalfAuto(bool) :
+        PolyBaseFullAuto{true},
+        PolyBaseHalfAuto{true},
+        PolyBaseManual{true},
+        mDerivedData{2000}
+    { }
     void check(bool iIsNonDefault)
     {
+        PolyBaseFullAuto::check(iIsNonDefault);
+        PolyBaseHalfAuto::check(iIsNonDefault);
+        PolyBaseManual::check(iIsNonDefault);
         if (!iIsNonDefault)
             THEOLIZER_EQUAL(mDerivedData, 0);
         else 
@@ -161,6 +196,8 @@ struct PolyDerivedHalfAuto :
 
     THEOLIZER_INTRUSIVE(CS, (PolyDerivedHalfAuto), 1);
 };
+
+THEOLIZER_REGISTER_CLASS((PolyDerivedHalfAuto));
 
 //----------------------------------------------------------------------------
 //      非侵入型手動
@@ -172,10 +209,23 @@ struct PolyDerivedManual :
     public PolyBaseManual
 {
     int     mDerivedData;
-    PolyDerivedManual() : mDerivedData(0) { }
-    PolyDerivedManual(bool) : mDerivedData(3000) { }
+    PolyDerivedManual() :
+        PolyBaseFullAuto{},
+        PolyBaseHalfAuto{},
+        PolyBaseManual{},
+        mDerivedData{0}
+    { }
+    PolyDerivedManual(bool) :
+        PolyBaseFullAuto{true},
+        PolyBaseHalfAuto{true},
+        PolyBaseManual{true},
+        mDerivedData{3000}
+    { }
     void check(bool iIsNonDefault)
     {
+        PolyBaseFullAuto::check(iIsNonDefault);
+        PolyBaseHalfAuto::check(iIsNonDefault);
+        PolyBaseManual::check(iIsNonDefault);
         if (!iIsNonDefault)
             THEOLIZER_EQUAL(mDerivedData, 0);
         else 
@@ -196,6 +246,10 @@ struct TheolizerNonIntrusive<PolyDerivedManual>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
+        THEOLIZER_PROCESS(iSerializer, static_cast<PolyBaseFullAuto const&>(*iInstance));
+        THEOLIZER_PROCESS(iSerializer, static_cast<PolyBaseHalfAuto const&>(*iInstance));
+        THEOLIZER_PROCESS(iSerializer, static_cast<PolyBaseManual const&>(*iInstance));
+        THEOLIZER_PROCESS(iSerializer, iInstance->mDerivedData);
     }
 
     // Load members.
@@ -205,7 +259,15 @@ struct TheolizerNonIntrusive<PolyDerivedManual>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
+        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
+
+        THEOLIZER_PROCESS(iSerializer, static_cast<PolyBaseFullAuto&>(*oInstance));
+        THEOLIZER_PROCESS(iSerializer, static_cast<PolyBaseHalfAuto&>(*oInstance));
+        THEOLIZER_PROCESS(iSerializer, static_cast<PolyBaseManual&>(*oInstance));
+        THEOLIZER_PROCESS(iSerializer, oInstance->mDerivedData);
     }
 };
+
+THEOLIZER_REGISTER_CLASS((PolyDerivedManual));
 
 #endif  // TEST_POLYMORPHISM_H

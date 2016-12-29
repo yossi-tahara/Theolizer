@@ -1288,12 +1288,16 @@ CXXRecordDecl const* getPrimary(CXXRecordDecl const* iTheolizerTarget)
     // プライマリー・テンプレート展開を試みる
     ClassTemplateSpecializationDecl const* ctsd = 
         dyn_cast<ClassTemplateSpecializationDecl>(iTheolizerTarget);
-    if (ctsd) {
+    if (ctsd)
+    {
         ClassTemplateDecl* ctd = ctsd->getSpecializedTemplate();
-        iTheolizerTarget = ctd->getTemplatedDecl();
-ASTANALYZE_OUTPUT("      CXXRecordDecl -> Primary");
-      //gCustomDiag.RemarkReport(iTheolizerTarget->getLocation(),
-//         "getNonIntrusiveTarget(CXXRecordDecl -> Primary template)") ;
+        iTheolizerTarget = ctd->getMostRecentDecl()->getTemplatedDecl();
+ASTANALYZE_OUTPUT("      CXXRecordDecl -> Primary ctd=", ctd,
+                  " : ", iTheolizerTarget->getQualifiedNameAsString(),
+                  " : ", ctd->getMostRecentDecl()->getTemplatedDecl(),
+                  " : ", iTheolizerTarget->getCanonicalDecl ());
+//      gCustomDiag.RemarkReport(iTheolizerTarget->getLocation(),
+//          "getNonIntrusiveTarget(CXXRecordDecl -> Primary template)") ;
     }
     return iTheolizerTarget;
 }
@@ -1332,6 +1336,7 @@ public:
     void addCandidate(tDecl const* iCandidate)
     {
 ASTANALYZE_OUTPUT("addCandidate(", iCandidate->getQualifiedNameAsString(),
+                  " : ", iCandidate,
                   ") : ", mDeclIndex);
         mDeclMap.emplace(iCandidate, mDeclIndex++);
     }
@@ -1341,6 +1346,9 @@ ASTANALYZE_OUTPUT("addCandidate(", iCandidate->getQualifiedNameAsString(),
         auto pos=mDeclMap.find(iCandidate);
         if (pos == mDeclMap.end())
         {
+ASTANALYZE_OUTPUT("getIndex(", iCandidate->getQualifiedNameAsString(),
+                  " : ", iCandidate,
+                  ") Error");
             gCustomDiag.FatalReport(iCandidate->getLocation(),
                 "Can not find decl. %0") << iCandidate->getQualifiedNameAsString();
     return kInvalidIndex;
@@ -1410,7 +1418,8 @@ ASTANALYZE_OUTPUT("SerializeList::addSerializable(",
     }
 
     // save/loadクラス登録
-    //  重複の場合、登録しない。esSaveLoadOnly済ならfalse返却。
+    //  重複の場合、登録しない。
+    //  登録したクラスの内容を追跡処理するならtrue返却。(esSerializeOnly、かつ、手動型でない)
     bool addSaveLoad(tDecl const* iTheolizerTarget)
     {
         auto pos = mMap.lower_bound(iTheolizerTarget);
@@ -1435,7 +1444,7 @@ ASTANALYZE_OUTPUT("      SerializeList::addSaveLoad(",iTheolizerTarget->getQuali
             {
 ASTANALYZE_OUTPUT("      set esBoth");
                 pos->second.mSerializeStat=esBoth;
-    return true;
+    return !pos->second.mIsManual;
             }
 
 ASTANALYZE_OUTPUT("      return false;");
@@ -1448,26 +1457,26 @@ ASTANALYZE_OUTPUT("      SerializeList::addSaveLoad(",iTheolizerTarget->getQuali
         // 未登録時の処理
         //  シリアライズ指定がないので、完全自動型である。
         //  従ってLastVersionNo=1/iAdditionalInfo=0/mIsFullAuto=true
-        mMap.emplace_hint
-        (
-            pos,
-            iTheolizerTarget,
-            SerializeInfo<tDecl>
+        pos=mMap.emplace_hint
             (
+                pos,
                 iTheolizerTarget,
-                nullptr,
-                1,
-                0,
-                AnnotationInfo(),
-                AnnotationInfo(),
-                nullptr,
-                false,
-                true,
-                esSaveLoadOnly
-            )
-        );
+                SerializeInfo<tDecl>
+                (
+                    iTheolizerTarget,
+                    nullptr,
+                    1,
+                    0,
+                    AnnotationInfo(),
+                    AnnotationInfo(),
+                    nullptr,
+                    false,
+                    true,
+                    esSaveLoadOnly
+                )
+            );
 
-        return true;
+        return !pos->second.mIsManual;
     }
 
     // TheolizerVersion情報の付加

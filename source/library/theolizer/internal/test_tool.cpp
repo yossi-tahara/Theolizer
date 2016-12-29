@@ -59,9 +59,6 @@ namespace boostF = boost::filesystem;
 
 // ***************************************************************************
 //      文字型の表示補助
-/*!
-    @todo   T.B.D.
-*/
 // ***************************************************************************
 
 std::ostream& operator<<(std::ostream& iOStream, char iChar)
@@ -79,6 +76,16 @@ std::ostream& operator<<(std::ostream& iOStream, signed char iSChar)
 std::ostream& operator<<(std::ostream& iOStream, unsigned char iUChar)
 {
     iOStream << static_cast<int>(iUChar);
+    return iOStream;
+}
+
+// ***************************************************************************
+//      type_info型表示補助
+// ***************************************************************************
+
+std::ostream& operator<<(std::ostream& iOStream, std::type_info const& iTypeInfo)
+{
+    iOStream << theolizer::internal::getNameByTypeId(iTypeInfo);
     return iOStream;
 }
 
