@@ -88,13 +88,23 @@ struct SavePointer<tBaseSerializer, tClassType, EnableIf<IsIntrusive<tClassType>
     {
         tClassType* aPointer=iPointer;
         auto& aClassTypeInfo=ClassTypeInfo<tClassType>::getInstance();
+#if 0
         bool ret=aClassTypeInfo.saveTypeInstance
         (
             iSerializer,
             reinterpret_cast<void*&>(iPointer),
             std::type_index(typeid(*aPointer))
         );
-        if (!ret) {
+#else
+        bool ret=aClassTypeInfo.saveTypeInstance2
+        (
+            iSerializer,
+            iPointer,
+            std::type_index(typeid(*aPointer))
+        );
+#endif
+        if (!ret)
+        {
             THEOLIZER_INTERNAL_DATA_ERROR
                 (u8"Can not find the derived class for %1%.", aClassTypeInfo.getCName());
         }
@@ -114,13 +124,23 @@ struct SavePointer
     {
         typedef TheolizerNonIntrusive<tClassType> NonIntrusiveType;
         auto& aClassTypeInfo=ClassTypeInfo<NonIntrusiveType>::getInstance();
+#if 0
         bool ret=aClassTypeInfo.saveTypeInstance
         (
             iSerializer,
             reinterpret_cast<void*&>(iPointer),
             std::type_index(typeid(*iPointer))
         );
-        if (!ret) {
+#else
+        bool ret=aClassTypeInfo.saveTypeInstance2
+        (
+            iSerializer,
+            reinterpret_cast<NonIntrusiveType*&>(iPointer),
+            std::type_index(typeid(*iPointer))
+        );
+#endif
+        if (!ret)
+        {
             THEOLIZER_INTERNAL_DATA_ERROR
                 (u8"Can not find the derived class for %1%.", aClassTypeInfo.getCName());
         }
@@ -157,12 +177,21 @@ struct LoadPointer<tBaseSerializer, tClassType, EnableIf<IsIntrusive<tClassType>
         // 通常のデータ交換
         if (iSerializer.mCheckMode != CheckMode::InMemory)
         {
+#if 0
             ret=aClassTypeInfo.loadTypeInstance
             (
                 iSerializer,
                 reinterpret_cast<void*&>(oPointer),
                 iSerializer.getProgramTypeIndex()
             );
+#else
+            ret=aClassTypeInfo.loadTypeInstance2
+            (
+                iSerializer,
+                oPointer,
+                iSerializer.getProgramTypeIndex()
+            );
+#endif
         }
         // メモリ内のデータ交換(TypeIndexが変化しない)
         else
@@ -171,12 +200,21 @@ struct LoadPointer<tBaseSerializer, tClassType, EnableIf<IsIntrusive<tClassType>
             iSerializer.loadControl(aTypeIndex);
             TypeIndexList aTypeIndexList;
             aTypeIndexList.emplace_back(aTypeIndex);
+#if 0
             ret=aClassTypeInfo.loadTypeInstance
             (
                 iSerializer,
                 reinterpret_cast<void*&>(oPointer),
                 aTypeIndexList
             );
+#else
+            ret=aClassTypeInfo.loadTypeInstance2
+            (
+                iSerializer,
+                oPointer,
+                aTypeIndexList
+            );
+#endif
         }
         if (!ret) {
             THEOLIZER_INTERNAL_DATA_ERROR
@@ -198,12 +236,21 @@ struct LoadPointer<tBaseSerializer, tClassType, EnableIf<IsNonIntrusive<tClassTy
         // 通常のデータ交換
         if (iSerializer.mCheckMode != CheckMode::InMemory)
         {
+#if 0
             ret=aClassTypeInfo.loadTypeInstance
             (
                 iSerializer,
                 reinterpret_cast<void*&>(oPointer),
                 iSerializer.getProgramTypeIndex()
             );
+#else
+            ret=aClassTypeInfo.loadTypeInstance2
+            (
+                iSerializer,
+                reinterpret_cast<NonIntrusiveType*&>(oPointer),
+                iSerializer.getProgramTypeIndex()
+            );
+#endif
         }
         // メモリ内のデータ交換(TypeIndexが変化しない)
         else
@@ -212,12 +259,21 @@ struct LoadPointer<tBaseSerializer, tClassType, EnableIf<IsNonIntrusive<tClassTy
             iSerializer.loadControl(aTypeIndex);
             TypeIndexList aTypeIndexList;
             aTypeIndexList.emplace_back(aTypeIndex);
+#if 0
             ret=aClassTypeInfo.loadTypeInstance
             (
                 iSerializer,
                 reinterpret_cast<void*&>(oPointer),
                 aTypeIndexList
             );
+#else
+            ret=aClassTypeInfo.loadTypeInstance2
+            (
+                iSerializer,
+                reinterpret_cast<NonIntrusiveType*&>(oPointer),
+                aTypeIndexList
+            );
+#endif
         }
         if (!ret) {
             THEOLIZER_INTERNAL_DATA_ERROR

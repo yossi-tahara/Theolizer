@@ -113,6 +113,7 @@ return aTypeInfoListImpl[iTypeIndex]->getLastVersionNoV();
 //          自分よりTypeInfoList上、前にあるクラスについて保存要求したら、true返却
 //----------------------------------------------------------------------------
 
+#if 0
 bool BaseTypeInfo::setSaving(BaseSerializer& iSerializer, std::vector<SaveStat>& ioSaveStatList)
 {
     // 派生クラスが登録されていないなら、NOP
@@ -138,6 +139,7 @@ return false;
     }
     return ret;
 }
+#endif
 
 }   // namespace internal
 }   // namespace theolizer

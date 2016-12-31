@@ -461,6 +461,26 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
     static void registerToBaseClass(
         theolizer::internal::BaseTypeInfo* iBaseTypeInfo);
 
+
+#if (THEOLIZER_GENERATED_VERSION_NO == THEOLIZER_GENERATED_LAST_VERSION_NO)
+    static void registerToBaseClass2()
+    {
+        // 自分を基底クラスへ登録する
+        #if defined(THEOLIZER_GENERATED_BASE_LIST)
+            #define THEOLIZER_GENERATED_SEP
+            #define THEOLIZER_INTERNAL_VERSION_B(dSpec, dTrack, dId, dType, dVerNo, dVer, dAnno)\
+                THEOLIZER_INTERNAL_MAKE_CLASS_TYPE(dType)::getInstance().template\
+                    registerDrivedClass<THEOLIZER_GENERATED_CLASS_TYPE>();
+            #define THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
+                THEOLIZER_INTERNAL_VERSION_B(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)
+            THEOLIZER_GENERATED_BASE_LIST()
+            #undef  THEOLIZER_GENERATED_SEP
+            #undef  THEOLIZER_INTERNAL_VERSION_B
+            #undef  THEOLIZER_INTERNAL_VERSION_B_DEL
+        #endif
+    }
+#endif
+
 //----------------------------------------------------------------------------
 //      要素群
 //----------------------------------------------------------------------------
@@ -1493,11 +1513,20 @@ inline void THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::registerToBaseClass
     theolizer::internal::BaseTypeInfo* iBaseTypeInfo
 )
 {
+std::cout << THEOLIZER_INTERNAL_STRINGIZE(THEOLIZER_GENERATED_CLASS_TYPE) 
+          << " registerToBaseClass\n";
+
     THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
     <
         theolizer::internal::BaseSerializer,
         Theolizer::kLastVersionNo
     >::registerToBaseClass(iBaseTypeInfo);
+
+    THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
+    <
+        theolizer::internal::BaseSerializer,
+        Theolizer::kLastVersionNo
+    >::registerToBaseClass2();
 }
 #endif
 

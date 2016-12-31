@@ -1184,7 +1184,10 @@ void registerToBaseClassImpl(
         {
             THEOLIZER_INTERNAL_ASSERT(
                 aBaseClassInfo->mDrivedClassListVersions.size() == iLastVersionNo+1,
-                "Unmatch LastVersionNo");
+                "Unmatch LastVersionNo : %s %u %u",
+                aBaseClassInfo->getCName(),
+                aBaseClassInfo->mDrivedClassListVersions.size(),
+                iLastVersionNo+1);
         }
 
         // 基底クラスへ自分を登録する

@@ -223,6 +223,25 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     static void registerToBaseClass(
         theolizer::internal::BaseTypeInfo* iBaseTypeInfo);
 
+#if (THEOLIZER_GENERATED_VERSION_NO == THEOLIZER_GENERATED_LAST_VERSION_NO)
+    static void registerToBaseClass2()
+    {
+        // 自分を基底クラスへ登録する
+        #if defined(THEOLIZER_GENERATED_BASE_LIST)
+            #define THEOLIZER_GENERATED_SEP
+            #define THEOLIZER_INTERNAL_VERSION_B(dSpec, dTrack, dId, dType, dVerNo, dVer, dAnno)\
+                THEOLIZER_INTERNAL_MAKE_CLASS_TYPE(dType)::getInstance().template\
+                    registerDrivedClass<THEOLIZER_INTERNAL_DERIVED>();
+            #define THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
+                THEOLIZER_INTERNAL_VERSION_B(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)
+            THEOLIZER_GENERATED_BASE_LIST()
+            #undef  THEOLIZER_GENERATED_SEP
+            #undef  THEOLIZER_INTERNAL_VERSION_B
+            #undef  THEOLIZER_INTERNAL_VERSION_B_DEL
+        #endif
+    }
+#endif
+
 //----------------------------------------------------------------------------
 //      コンストラクタ(ターゲットからコンストラクト)
 //----------------------------------------------------------------------------
@@ -751,6 +770,12 @@ inline void THEOLIZER_INTERNAL_DERIVED::Theolizer::registerToBaseClass
         theolizer::internal::BaseSerializer,
         Theolizer::kLastVersionNo
     >::registerToBaseClass(iBaseTypeInfo);
+
+    THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
+    <
+        theolizer::internal::BaseSerializer,
+        Theolizer::kLastVersionNo
+    >::registerToBaseClass2();
 }
 #endif
 

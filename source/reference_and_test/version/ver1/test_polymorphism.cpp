@@ -125,6 +125,16 @@ void savePolymorphism(tSerializer& iSerializer)
 //      侵入型半自動
 //----------------------------------------------------------------------------
 
+    {
+        std::vector<std::unique_ptr<PolyBaseHalfAuto> > aVector;
+        aVector.emplace_back(new PolyDerivedFullAuto(true));
+        aVector.emplace_back(new PolyDerivedHalfAuto(true));
+        aVector.emplace_back(new PolyDerivedManual(true));
+        THEOLIZER_PROCESS(iSerializer, aVector);
+
+        iSerializer.clearTracking();
+    }
+
 //----------------------------------------------------------------------------
 //      非侵入型手動
 //----------------------------------------------------------------------------
@@ -140,6 +150,7 @@ INSTANTIATION_ALL(void, savePolymorphism);
 template<class tSerializer>
 void loadPolymorphism(tSerializer& iSerializer)
 {
+std::cout << "loadPolymorphism() start\n";
 //----------------------------------------------------------------------------
 //      非侵入型完全自動
 //----------------------------------------------------------------------------
@@ -159,16 +170,34 @@ theolizer::DisplayPass aDisplayPass;
 
         aVector[2]->check(true);
         THEOLIZER_EQUAL(typeid(*aVector[2].get()), typeid(PolyDerivedManual));
+std::cout << "loadPolymorphism(1)\n";
     }
 
 //----------------------------------------------------------------------------
 //      侵入型半自動
 //----------------------------------------------------------------------------
 
+    {
+        std::vector<std::unique_ptr<PolyBaseHalfAuto> > aVector;
+        THEOLIZER_PROCESS(iSerializer, aVector);
+
+        iSerializer.clearTracking();
+
+        aVector[0]->check(true);
+        THEOLIZER_EQUAL(typeid(*aVector[0].get()), typeid(PolyDerivedFullAuto));
+
+        aVector[1]->check(true);
+        THEOLIZER_EQUAL(typeid(*aVector[1].get()), typeid(PolyDerivedHalfAuto));
+
+        aVector[2]->check(true);
+        THEOLIZER_EQUAL(typeid(*aVector[2].get()), typeid(PolyDerivedManual));
+    }
+
 //----------------------------------------------------------------------------
 //      非侵入型手動
 //----------------------------------------------------------------------------
 
+std::cout << "loadPolymorphism() end\n";
 }
 
 INSTANTIATION_ALL(void, loadPolymorphism);
