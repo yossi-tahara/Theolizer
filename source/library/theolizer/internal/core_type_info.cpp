@@ -108,38 +108,5 @@ return aTypeInfoListImpl[iTypeIndex]->getLastVersionNoV();
     return std::vector<unsigned>::at(iTypeIndex);
 }
 
-//----------------------------------------------------------------------------
-//      当クラスから派生したクラスについてヘッダへ型情報記録するよう指示する
-//          自分よりTypeInfoList上、前にあるクラスについて保存要求したら、true返却
-//----------------------------------------------------------------------------
-
-#if 0
-bool BaseTypeInfo::setSaving(BaseSerializer& iSerializer, std::vector<SaveStat>& ioSaveStatList)
-{
-    // 派生クラスが登録されていないなら、NOP
-    if (!mDrivedClassListVersions.size())
-return false;
-
-    unsigned aVersionNo=iSerializer.mVersionNoList.at(mTypeIndex);
-    bool ret=false;
-    DrivedClassList&    aDrivedClassList=mDrivedClassListVersions.at(aVersionNo);
-//std::cout << "setSaving(" << getCName()
-//          << " aVersionNo=" << aVersionNo
-//          << " aDrivedClassList.size()=" << aDrivedClassList.size() << "\n";
-    for (auto&& aDrivedClass : aDrivedClassList)
-    {
-        SaveStat& aSaveStat = ioSaveStatList.at(aDrivedClass->mTypeIndex);
-//std::cout << "    " << aDrivedClass->getCName() << "\n";
-        if (aSaveStat == essIdle)
-        {
-            aSaveStat=essSaving;
-            if (aDrivedClass->mTypeIndex < mTypeIndex) ret=true;
-        }
-        if (aDrivedClass->setSaving(iSerializer, ioSaveStatList)) ret=true;
-    }
-    return ret;
-}
-#endif
-
 }   // namespace internal
 }   // namespace theolizer

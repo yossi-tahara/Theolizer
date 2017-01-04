@@ -1008,7 +1008,8 @@ public:
     // 領域獲得
     Type& get()
     {
-        if (!mData) {
+        if (!mData)
+        {
             //  (配列型へのポインタに対応するためreinterpret_castする)
             mData=reinterpret_cast<tType*>(new Type());
         }

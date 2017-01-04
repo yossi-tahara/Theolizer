@@ -261,11 +261,6 @@ public:
 //      ポリモーフィズム対応用
 //----------------------------------------------------------------------------
 
-//      ---<<< registerToBaseClassImpl()をfriend指定するため >>>---
-
-template<class tClassType>
-class Element;
-
 //      ---<<< ヘッダ・シリアライズ中の各型の出力状態 >>>---
 
 enum SaveStat
@@ -353,8 +348,6 @@ private:
     template<typename, bool, class>                         friend struct Switcher2;
     template<typename...>                                   friend struct ParameterName;
     template<class>                                         friend class Element;
-    friend THEOLIZER_INTERNAL_DLL 
-    void registerToBaseClassImpl(ElementRange&&, BaseTypeInfo*, unsigned, unsigned);
 
     // TypeIndexを記録する
     void registerTypeIndex(std::size_t iTypeIndex)
@@ -453,13 +446,6 @@ public:
 //      ---<<< ポリモーフィズム対応 >>>---
 
 private:
-    // 派生クラスのリスト
-    typedef std::vector<BaseTypeInfo*>  DrivedClassList;
-    std::vector<DrivedClassList>        mDrivedClassListVersions;
-
-    // 基底クラスのmDrivedClassListVersionsへ自分(派生クラスのBaseTypeInfo)を登録する
-    virtual void registerToBaseClass() { }
-
     // 当クラスから派生したクラスについてヘッダへ型情報記録するよう指示する
     //  自分より前にあるクラスについて保存要求したら、true返却
     virtual bool setSaving(BaseSerializer& iSerializer, std::vector<SaveStat>& ioSaveStatList)
@@ -471,26 +457,6 @@ private:
     // 配列の基本型のTypeIndex獲得
     virtual std::size_t getUnderlyingTypeIndex()
     {THEOLIZER_INTERNAL_ABORT("BaseTypeInfo::getUnderlyingTypeIndex()");}
-
-#if 0
-    // 型、および、インスタンス保存(保存したらtrue返却)
-    virtual bool saveTypeInstance
-    (
-        BaseSerializer& iSerializer,
-        void*& iPointer,
-        std::type_index iStdTypeIndex
-    )
-    {return false;}
-
-    // 型、および、インスタンス回復(回復したらtrue返却)
-    virtual bool loadTypeInstance
-    (
-        BaseSerializer& iSerializer,
-        void*& ioPointer,
-        TypeIndexList& iTypeIndexList
-    )
-    {return false;}
-#endif
 
 //      ---<<< メタ・シリアライズ用 >>>---
 
@@ -756,46 +722,19 @@ public:
         return tClassType::Theolizer::getElementRange(iVersionNo);
     }
 
-//      ---<<< ポリモーフィズム対応(旧) >>>---
-
-private:
-    // 基底クラスのmDrivedClassListVersionsへ自分(派生クラスのBaseTypeInfo)を登録する
-    virtual void registerToBaseClass()
-    {
-        tClassType::Theolizer::registerToBaseClass(this);
-    }
-
-#if 0
-    // 型、および、インスタンス保存
-    bool saveTypeInstance
-    (
-        BaseSerializer& iSerializer,
-        void*& iPointer,
-        std::type_index iStdTypeIndex
-    );
-
-    // 型、および、インスタンス回復
-    bool loadTypeInstance
-    (
-        BaseSerializer& iSerializer,
-        void*& ioPointer,
-        TypeIndexList& iTypeIndexList
-    );
-#endif
-
 //      ---<<< ポリモーフィズム対応 >>>---
 
 private:
     // 派生クラスのsaveTypeInstance/loadTypeInstance呼び出し登録用クラス
     struct HolderBase
     {
-        virtual bool saveTypeInstance2
+        virtual bool saveTypeInstance
         (
             BaseSerializer& iSerializer,
             tClassType*& iPointer,
             std::type_index iStdTypeIndex
         )=0;
-        virtual bool loadTypeInstance2
+        virtual bool loadTypeInstance
         (
             BaseSerializer& iSerializer,
             tClassType*& ioPointer,
@@ -817,7 +756,7 @@ private:
         Holder() { }
         ~Holder() = default;
 
-        bool saveTypeInstance2
+        bool saveTypeInstance
         (
             BaseSerializer& iSerializer,
             tClassType*& iPointer,
@@ -828,7 +767,7 @@ private:
             tDrivedClassType* aPointer=
                 static_cast<tDrivedClassType*>(reinterpret_cast<TheolizerTarget*>(iPointer));
             return ClassTypeInfo<tDrivedClassType>::getInstance().
-                saveTypeInstance2
+                saveTypeInstance
                 (
                     iSerializer,
                     aPointer,
@@ -836,7 +775,7 @@ private:
                 );
         }
 
-        bool loadTypeInstance2
+        bool loadTypeInstance
         (
             BaseSerializer& iSerializer,
             tClassType*& ioPointer,
@@ -846,7 +785,7 @@ private:
             tDrivedClassType* aPointer=
                 static_cast<tDrivedClassType*>(reinterpret_cast<TheolizerTarget*>(ioPointer));
             bool ret=ClassTypeInfo<tDrivedClassType>::getInstance().
-                loadTypeInstance2
+                loadTypeInstance
                 (
                     iSerializer,
                     aPointer,
@@ -872,7 +811,7 @@ private:
     std::vector<std::unique_ptr<HolderBase> >   mDrivedClassList;
 
 public:
-    // 派生クラスをmDrivedClassListVersionsへ登録する
+    // 派生クラスをmDrivedClassListへ登録する
     template<class tDrivedClassType>
     void registerDrivedClass()
     {
@@ -883,7 +822,7 @@ public:
     }
 
     // 型、および、インスタンス保存(privateだとHolderからの呼び出しができない。friend化が難しい。)
-    bool saveTypeInstance2
+    bool saveTypeInstance
     (
         BaseSerializer& iSerializer,
         tClassType*& iPointer,
@@ -891,7 +830,7 @@ public:
     );
 
     // 型、および、インスタンス回復
-    bool loadTypeInstance2
+    bool loadTypeInstance
     (
         BaseSerializer& iSerializer,
         tClassType*& ioPointer,
@@ -936,9 +875,8 @@ private:
     unsigned getTypeFlags(unsigned iVersionNo)
     {
         // 自動型
-        if (tClassType::Theolizer::kIsAuto) {
+        if (tClassType::Theolizer::kIsAuto)
     return tClassType::Theolizer::getTypeFlags(iVersionNo);
-        }
 
         // 手動型はここで求める(バージョン毎に異なる部分がない)
         unsigned ret=0;
@@ -950,11 +888,13 @@ private:
     {
         std::underlying_type<TypeKind>::type ret = etkClassFlag;
 
-        if (tClassType::Theolizer::kIsNonIntrusive) {
+        if (tClassType::Theolizer::kIsNonIntrusive)
+        {
             ret |= etkNonIntrusiveFlag;
         }
 
-        if (!tClassType::Theolizer::kIsAuto) {
+        if (!tClassType::Theolizer::kIsAuto)
+        {
             ret |= etkManualFlag;
         }
 

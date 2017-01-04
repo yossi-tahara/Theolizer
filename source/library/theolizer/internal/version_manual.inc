@@ -219,10 +219,6 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
 //      ---<<< ポリモーフィズム対応 >>>---
 
-    // 入口関数
-    static void registerToBaseClass(
-        theolizer::internal::BaseTypeInfo* iBaseTypeInfo);
-
 #if (THEOLIZER_GENERATED_VERSION_NO == THEOLIZER_GENERATED_LAST_VERSION_NO)
     static void registerToBaseClass2()
     {
@@ -497,35 +493,6 @@ THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
     return getElementRange();
 }
-
-//----------------------------------------------------------------------------
-//      ポリモーフィズム対応
-//----------------------------------------------------------------------------
-
-//      ---<<< 基底クラスへ自分を登録する >>>---
-
-THEOLIZER_GENERATED_PARAMETER_LIST
-template<class tBaseSerializer>
-void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
-<
-    tBaseSerializer,
-    THEOLIZER_GENERATED_VERSION_NO+1
->::registerToBaseClass(theolizer::internal::BaseTypeInfo* iBaseTypeInfo)
-{
-    theolizer::internal::registerToBaseClassImpl
-    (
-        std::move(getElementRange()),
-        iBaseTypeInfo,
-        THEOLIZER_GENERATED_VERSION_NO+1,
-        Theolizer::kLastVersionNo
-    );
-
-    THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
-    <
-        tBaseSerializer,
-        THEOLIZER_GENERATED_VERSION_NO
-    >::registerToBaseClass(iBaseTypeInfo);
-}
 #endif
 
 // ***************************************************************************
@@ -623,28 +590,6 @@ THEOLIZER_INTERNAL_DERIVED::TheolizerVersion<tBaseSerializer, 1>::getElementRang
 )
 {
     return getElementRange();
-}
-
-//----------------------------------------------------------------------------
-//      ポリモーフィズム対応
-//----------------------------------------------------------------------------
-
-//      ---<<< 基底クラスへ自分を登録する >>>---
-
-THEOLIZER_GENERATED_PARAMETER_LIST
-template<class tBaseSerializer>
-void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion<tBaseSerializer, 1>::registerToBaseClass
-(
-    theolizer::internal::BaseTypeInfo* iBaseTypeInfo
-)
-{
-    theolizer::internal::registerToBaseClassImpl
-    (
-        getElementRange(),
-        iBaseTypeInfo,
-        1,
-        Theolizer::kLastVersionNo
-    );
 }
 #endif
 
@@ -765,12 +710,6 @@ inline void THEOLIZER_INTERNAL_DERIVED::Theolizer::registerToBaseClass
     theolizer::internal::BaseTypeInfo* iBaseTypeInfo
 )
 {
-    THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
-    <
-        theolizer::internal::BaseSerializer,
-        Theolizer::kLastVersionNo
-    >::registerToBaseClass(iBaseTypeInfo);
-
     THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     <
         theolizer::internal::BaseSerializer,

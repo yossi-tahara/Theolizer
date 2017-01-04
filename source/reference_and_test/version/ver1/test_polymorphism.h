@@ -40,15 +40,12 @@
 struct PolyBaseFullAuto
 {
     int     mBaseData;
-    PolyBaseFullAuto() : mBaseData(0) { }
-    PolyBaseFullAuto(bool) : mBaseData(100) { }
+    PolyBaseFullAuto(int iBaseData=0) : mBaseData(iBaseData) { }
     virtual ~PolyBaseFullAuto() { }
-    virtual void check(bool iIsNonDefault)
+    virtual void check(bool iIsNonDefault)=0;
+    void check(int iBaseData)
     {
-        if (!iIsNonDefault)
-            THEOLIZER_EQUAL(mBaseData, 0);
-        else 
-            THEOLIZER_EQUAL(mBaseData, 100);
+        THEOLIZER_EQUAL(mBaseData, iBaseData);
     }
 };
 
@@ -58,16 +55,13 @@ struct PolyBaseFullAuto
 
 struct PolyBaseHalfAuto
 {
-    int     mBaseData;
-    PolyBaseHalfAuto() : mBaseData(0) { }
-    PolyBaseHalfAuto(bool) : mBaseData(200) { }
+    unsigned    mBaseData;
+    PolyBaseHalfAuto(unsigned iBaseData=0) : mBaseData(iBaseData) { }
     virtual ~PolyBaseHalfAuto() { }
-    virtual void check(bool iIsNonDefault)
+    virtual void check(bool iIsNonDefault)=0;
+    void check(unsigned iBaseData)
     {
-        if (!iIsNonDefault)
-            THEOLIZER_EQUAL(mBaseData, 0);
-        else 
-            THEOLIZER_EQUAL(mBaseData, 200);
+        THEOLIZER_EQUAL(mBaseData, iBaseData);
     }
 
     THEOLIZER_INTRUSIVE(CS, (PolyBaseHalfAuto), 1);
@@ -79,16 +73,13 @@ struct PolyBaseHalfAuto
 
 struct PolyBaseManual
 {
-    int     mBaseData;
-    PolyBaseManual() : mBaseData(0) { }
-    PolyBaseManual(bool) : mBaseData(300) { }
+    std::string mBaseData;
+    PolyBaseManual(char const* iBaseData="") : mBaseData(iBaseData) { }
     virtual ~PolyBaseManual() { }
-    virtual void check(bool iIsNonDefault)
+    virtual void check(bool iIsNonDefault) { }  // 手動型は抽象クラス非サポート
+    void check(char const* iBaseData)
     {
-        if (!iIsNonDefault)
-            THEOLIZER_EQUAL(mBaseData, 0);
-        else 
-            THEOLIZER_EQUAL(mBaseData, 300);
+        THEOLIZER_EQUAL(mBaseData, iBaseData);
     }
 };
 
@@ -142,16 +133,16 @@ struct PolyDerivedFullAuto :
         mDerivedData{0}
     { }
     PolyDerivedFullAuto(bool) :
-        PolyBaseFullAuto{true},
-        PolyBaseHalfAuto{true},
-        PolyBaseManual{true},
+        PolyBaseFullAuto{-100},
+        PolyBaseHalfAuto{100},
+        PolyBaseManual{"String100"},
         mDerivedData{1000}
     { }
     void check(bool iIsNonDefault)
     {
-        PolyBaseFullAuto::check(iIsNonDefault);
-        PolyBaseHalfAuto::check(iIsNonDefault);
-        PolyBaseManual::check(iIsNonDefault);
+        PolyBaseFullAuto::check((iIsNonDefault)?-100:0);
+        PolyBaseHalfAuto::check((iIsNonDefault)?100u:0u);
+        PolyBaseManual::check((iIsNonDefault)?"String100":"");
         if (!iIsNonDefault)
             THEOLIZER_EQUAL(mDerivedData, 0);
         else 
@@ -166,28 +157,28 @@ THEOLIZER_REGISTER_CLASS((PolyDerivedFullAuto));
 //----------------------------------------------------------------------------
 
 struct PolyDerivedHalfAuto :
-    public PolyBaseFullAuto,
     public PolyBaseHalfAuto,
-    public PolyBaseManual
+    public PolyBaseManual,
+    public PolyBaseFullAuto
 {
     int     mDerivedData;
     PolyDerivedHalfAuto() :
-        PolyBaseFullAuto{},
         PolyBaseHalfAuto{},
         PolyBaseManual{},
+        PolyBaseFullAuto{},
         mDerivedData{0}
     { }
     PolyDerivedHalfAuto(bool) :
-        PolyBaseFullAuto{true},
-        PolyBaseHalfAuto{true},
-        PolyBaseManual{true},
+        PolyBaseHalfAuto{200},
+        PolyBaseManual{"String200"},
+        PolyBaseFullAuto{-200},
         mDerivedData{2000}
     { }
     void check(bool iIsNonDefault)
     {
-        PolyBaseFullAuto::check(iIsNonDefault);
-        PolyBaseHalfAuto::check(iIsNonDefault);
-        PolyBaseManual::check(iIsNonDefault);
+        PolyBaseFullAuto::check((iIsNonDefault)?-200:0);
+        PolyBaseHalfAuto::check((iIsNonDefault)?200u:0u);
+        PolyBaseManual::check((iIsNonDefault)?"String200":"");
         if (!iIsNonDefault)
             THEOLIZER_EQUAL(mDerivedData, 0);
         else 
@@ -204,28 +195,28 @@ THEOLIZER_REGISTER_CLASS((PolyDerivedHalfAuto));
 //----------------------------------------------------------------------------
 
 struct PolyDerivedManual :
+    public PolyBaseManual,
     public PolyBaseFullAuto,
-    public PolyBaseHalfAuto,
-    public PolyBaseManual
+    public PolyBaseHalfAuto
 {
     int     mDerivedData;
     PolyDerivedManual() :
+        PolyBaseManual{},
         PolyBaseFullAuto{},
         PolyBaseHalfAuto{},
-        PolyBaseManual{},
         mDerivedData{0}
     { }
     PolyDerivedManual(bool) :
-        PolyBaseFullAuto{true},
-        PolyBaseHalfAuto{true},
-        PolyBaseManual{true},
+        PolyBaseManual{"String300"},
+        PolyBaseFullAuto{-300},
+        PolyBaseHalfAuto{300},
         mDerivedData{3000}
     { }
     void check(bool iIsNonDefault)
     {
-        PolyBaseFullAuto::check(iIsNonDefault);
-        PolyBaseHalfAuto::check(iIsNonDefault);
-        PolyBaseManual::check(iIsNonDefault);
+        PolyBaseFullAuto::check((iIsNonDefault)?-300:0);
+        PolyBaseHalfAuto::check((iIsNonDefault)?300u:0u);
+        PolyBaseManual::check((iIsNonDefault)?"String300":"");
         if (!iIsNonDefault)
             THEOLIZER_EQUAL(mDerivedData, 0);
         else 

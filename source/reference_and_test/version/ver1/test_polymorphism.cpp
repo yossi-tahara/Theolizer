@@ -139,6 +139,15 @@ void savePolymorphism(tSerializer& iSerializer)
 //      非侵入型手動
 //----------------------------------------------------------------------------
 
+    {
+        std::vector<std::unique_ptr<PolyBaseManual> > aVector;
+        aVector.emplace_back(new PolyDerivedFullAuto(true));
+        aVector.emplace_back(new PolyDerivedHalfAuto(true));
+        aVector.emplace_back(new PolyDerivedManual(true));
+        THEOLIZER_PROCESS(iSerializer, aVector);
+
+        iSerializer.clearTracking();
+    }
 }
 
 INSTANTIATION_ALL(void, savePolymorphism);
@@ -155,7 +164,6 @@ std::cout << "loadPolymorphism() start\n";
 //      非侵入型完全自動
 //----------------------------------------------------------------------------
 
-theolizer::DisplayPass aDisplayPass;
     {
         std::vector<std::unique_ptr<PolyBaseFullAuto> > aVector;
         THEOLIZER_PROCESS(iSerializer, aVector);
@@ -170,7 +178,6 @@ theolizer::DisplayPass aDisplayPass;
 
         aVector[2]->check(true);
         THEOLIZER_EQUAL(typeid(*aVector[2].get()), typeid(PolyDerivedManual));
-std::cout << "loadPolymorphism(1)\n";
     }
 
 //----------------------------------------------------------------------------
@@ -197,7 +204,22 @@ std::cout << "loadPolymorphism(1)\n";
 //      非侵入型手動
 //----------------------------------------------------------------------------
 
-std::cout << "loadPolymorphism() end\n";
+theolizer::DisplayPass aDisplayPass;
+    {
+        std::vector<std::unique_ptr<PolyBaseManual> > aVector;
+        THEOLIZER_PROCESS(iSerializer, aVector);
+
+        iSerializer.clearTracking();
+
+        aVector[0]->check(true);
+        THEOLIZER_EQUAL(typeid(*aVector[0].get()), typeid(PolyDerivedFullAuto));
+
+        aVector[1]->check(true);
+        THEOLIZER_EQUAL(typeid(*aVector[1].get()), typeid(PolyDerivedHalfAuto));
+
+        aVector[2]->check(true);
+        THEOLIZER_EQUAL(typeid(*aVector[2].get()), typeid(PolyDerivedManual));
+    }
 }
 
 INSTANTIATION_ALL(void, loadPolymorphism);

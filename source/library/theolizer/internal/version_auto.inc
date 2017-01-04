@@ -457,11 +457,6 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
 
 //      ---<<< ポリモーフィズム対応 >>>---
 
-    // 入口関数
-    static void registerToBaseClass(
-        theolizer::internal::BaseTypeInfo* iBaseTypeInfo);
-
-
 #if (THEOLIZER_GENERATED_VERSION_NO == THEOLIZER_GENERATED_LAST_VERSION_NO)
     static void registerToBaseClass2()
     {
@@ -1238,34 +1233,6 @@ THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
 
     return  getTypeFlags();
 }
-
-//----------------------------------------------------------------------------
-//      ポリモーフィズム対応
-//----------------------------------------------------------------------------
-
-//      ---<<< 基底クラスへ自分を登録する >>>---
-
-THEOLIZER_GENERATED_PARAMETER_LIST
-template<class tBaseSerializer>
-void
-THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
-<
-    tBaseSerializer,
-    THEOLIZER_GENERATED_VERSION_NO+1
->::registerToBaseClass(theolizer::internal::BaseTypeInfo* iBaseTypeInfo)
-{
-    theolizer::internal::registerToBaseClassImpl
-    (
-        getElementRange(),
-        iBaseTypeInfo,
-        THEOLIZER_GENERATED_VERSION_NO+1,
-        Theolizer::kLastVersionNo
-    );
-
-    THEOLIZER_GENERATED_CLASS_TYPE::
-        TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO>::
-                                            registerToBaseClass(iBaseTypeInfo);
-}
 #endif
 
 // ***************************************************************************
@@ -1358,29 +1325,6 @@ THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion<tBaseSerializer, 1>::getTypeFla
 )
 {
     return getTypeFlags();
-}
-
-//----------------------------------------------------------------------------
-//      ポリモーフィズム対応
-//----------------------------------------------------------------------------
-
-//      ---<<< 基底クラスへ自分を登録する >>>---
-
-THEOLIZER_GENERATED_PARAMETER_LIST
-template<class tBaseSerializer>
-void
-THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion<tBaseSerializer, 1>::registerToBaseClass
-(
-    theolizer::internal::BaseTypeInfo* iBaseTypeInfo
-)
-{
-    theolizer::internal::registerToBaseClassImpl
-    (
-        getElementRange(),
-        iBaseTypeInfo,
-        1,
-        Theolizer::kLastVersionNo
-    );
 }
 #endif
 
@@ -1513,15 +1457,6 @@ inline void THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::registerToBaseClass
     theolizer::internal::BaseTypeInfo* iBaseTypeInfo
 )
 {
-std::cout << THEOLIZER_INTERNAL_STRINGIZE(THEOLIZER_GENERATED_CLASS_TYPE) 
-          << " registerToBaseClass\n";
-
-    THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
-    <
-        theolizer::internal::BaseSerializer,
-        Theolizer::kLastVersionNo
-    >::registerToBaseClass(iBaseTypeInfo);
-
     THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
     <
         theolizer::internal::BaseSerializer,

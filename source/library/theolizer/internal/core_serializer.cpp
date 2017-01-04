@@ -1148,57 +1148,6 @@ void BaseSerializer::clearTracking()
     }
 }
 
-//----------------------------------------------------------------------------
-//      ポリモーフィズム対応
-//          派生クラスのバージョン毎に呼ばれ、
-//          基底クラスのmDrivedClassListVersionsへ
-//          自分(派生クラスのBaseTypeInfo)を登録する
-//----------------------------------------------------------------------------
-
-void registerToBaseClassImpl(
-    ElementRange&& iElementRange,
-    BaseTypeInfo* iDerivedTypeInfo,
-    unsigned iVersionNo,
-    unsigned iLastVersionNo)
-{
-//std::cout << "registerToBaseClassImpl(" << iDerivedTypeInfo->getCName()
-//          << ") " << THEOLIZER_INTERNAL_TYPE_NAME(tTheolizerVersion)
-//          << " LastVersionNo= " << iLastVersionNo << "\n";
-
-    for (auto&& element : iElementRange)
-    {
-        if (!element.isBaseClass())
-    continue;
-
-        size_t aBaseClassIndex = element.getTypeIndex();
-
-        BaseTypeInfo* aBaseClassInfo = 
-            TypeInfoList::getInstance().getList().at(aBaseClassIndex);
-
-        // バージョン・リスト未生成なら生成する
-        if (!aBaseClassInfo->mDrivedClassListVersions.size())
-        {
-            aBaseClassInfo->mDrivedClassListVersions.resize(iLastVersionNo+1);
-        }
-        else
-        {
-            THEOLIZER_INTERNAL_ASSERT(
-                aBaseClassInfo->mDrivedClassListVersions.size() == iLastVersionNo+1,
-                "Unmatch LastVersionNo : %s %u %u",
-                aBaseClassInfo->getCName(),
-                aBaseClassInfo->mDrivedClassListVersions.size(),
-                iLastVersionNo+1);
-        }
-
-        // 基底クラスへ自分を登録する
-        aBaseClassInfo->mDrivedClassListVersions.at(iVersionNo).push_back(iDerivedTypeInfo);
-//std::cout << "    VersionNo[" << iVersionNo << "].push_back(" << element.getName() << ") : "
-//          << "aBaseClassIndex=" << aBaseClassIndex
-//          << " DerivedClassIndex=" << iDerivedTypeInfo->getTypeIndex() << "\n";
-    }
-//std::cout << "registerToBaseClassImpl() Ended\n";
-}
-
 // ***************************************************************************
 //      ClassTypeの破棄処理
 // ***************************************************************************

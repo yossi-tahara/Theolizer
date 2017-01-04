@@ -667,61 +667,15 @@ class RegisterToBaseClass
 };
 
 // ***************************************************************************
-//      ClassTypeInfoからのSwitcher呼び出し
+//      ClassTypeInfoからのBaseSerializer呼び出し
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
 //      型、および、インスタンス保存(保存したらtrue返却)
 //----------------------------------------------------------------------------
 
-#if 0
 template<class tClassType>
-bool ClassTypeInfo<tClassType>::saveTypeInstance(
-    BaseSerializer& iSerializer, void*& iPointer, std::type_index iStdTypeIndex)
-{
-    unsigned aVersionNo=iSerializer.mVersionNoList.at(BaseTypeInfo::mTypeIndex);
-
-    if (getTargetStdTypeIndex() == iStdTypeIndex)
-    {
-        if ((iSerializer.mCheckMode != CheckMode::TypeCheckByIndex)
-         && (iSerializer.mCheckMode != CheckMode::InMemory))
-        {
-            // 型名保存
-            std::string aTypeName=getTypeName(iSerializer.mVersionNoList);
-            iSerializer.saveControl(aTypeName);
-        }
-        else
-        {
-            // TypeIndex保存
-            iSerializer.saveControl(BaseTypeInfo::mTypeIndex);
-        }
-        // インスタンス保存
-        iSerializer.writePreElement();
-
-        tClassType::Theolizer::saveClass
-        (
-            iSerializer,
-            reinterpret_cast<tClassType*&>(iPointer),
-            aVersionNo
-        );
-return true;
-    }
-
-    if (!BaseTypeInfo::mDrivedClassListVersions.size())
-return false;
-
-    for (auto&& aDrivedClass : BaseTypeInfo::mDrivedClassListVersions.at(aVersionNo))
-    {
-        if (aDrivedClass->saveTypeInstance(iSerializer, iPointer, iStdTypeIndex))
-return true;
-    }
-    return false;
-}
-#endif
-
-//----------------------------------------------------------------------------
-template<class tClassType>
-bool ClassTypeInfo<tClassType>::saveTypeInstance2
+bool ClassTypeInfo<tClassType>::saveTypeInstance
 (
     BaseSerializer& iSerializer,
     tClassType*& iPointer,
@@ -758,7 +712,7 @@ return true;
 
     for (auto&& aDrivedClass : mDrivedClassList)
     {
-        if (aDrivedClass->saveTypeInstance2(iSerializer, iPointer, iStdTypeIndex))
+        if (aDrivedClass->saveTypeInstance(iSerializer, iPointer, iStdTypeIndex))
 return true;
     }
     return false;
@@ -812,82 +766,8 @@ tClassType* createClass2()
 //      型、および、インスタンス回復(回復したらtrue返却)
 //----------------------------------------------------------------------------
 
-#if 0
 template<class tClassType>
-bool ClassTypeInfo<tClassType>::loadTypeInstance(
-    BaseSerializer& iSerializer, void*& iPointer, TypeIndexList& iTypeIndexList)
-{
-    typedef typename tClassType::TheolizerTarget    TheolizerTarget;
-
-    TheolizerTarget* aPointer=reinterpret_cast<TheolizerTarget*>(iPointer);
-
-    std::size_t aFoundTypeIndex=0;
-    bool aFound=false;
-    bool aDoRelease=true;
-    for (auto aTypeIndex : iTypeIndexList)
-    {
-        if (aTypeIndex != BaseTypeInfo::mTypeIndex)
-    continue;
-
-        if (!aFound)
-        {
-            aFound=true;
-            aFoundTypeIndex=aTypeIndex;
-        }
-
-        // ポイント先領域のstd::type_indexと、シリアライズ・データ中のstd::type_indexが一致
-        if ((aPointer != nullptr)
-         && (std::type_index(typeid(*aPointer))
-          == TypeInfoList::getInstance().getList()[aTypeIndex]->getStdTypeIndex(true)))
-        {   // この場合のみ領域開放しない
-            aDoRelease=false;
-    break;
-        }
-    }
-
-    if (aFound)
-    {
-        if (aDoRelease)
-        {
-            delete aPointer;        // 元の型へ戻しているものを開放する
-            iPointer=nullptr;
-        }
-
-        // 自動型で、nullptrなら領域獲得
-        if (tClassType::Theolizer::kIsAuto)
-        {
-            if (!iPointer) iPointer = createClass(static_cast<TheolizerTarget*>(iPointer));
-        }
-
-        // インスタンス回復
-        if (!iSerializer.readPreElement()) {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
-        }
-        tClassType::Theolizer::loadClass
-        (
-            iSerializer,
-            reinterpret_cast<tClassType*&>(iPointer),
-            iSerializer.mVersionNoList.at(aFoundTypeIndex)
-        );
-return true;
-    }
-
-    if (!BaseTypeInfo::mDrivedClassListVersions.size())
-return false;
-
-    unsigned aVersionNo=iSerializer.mVersionNoList.at(BaseTypeInfo::mTypeIndex);
-    for (auto&& aDrivedClass : BaseTypeInfo::mDrivedClassListVersions.at(aVersionNo))
-    {
-        if (aDrivedClass->loadTypeInstance(iSerializer, iPointer, iTypeIndexList))
-return true;
-    }
-
-    return false;
-}
-#endif
-//----------------------------------------------------------------------------
-template<class tClassType>
-bool ClassTypeInfo<tClassType>::loadTypeInstance2
+bool ClassTypeInfo<tClassType>::loadTypeInstance
 (
     BaseSerializer& iSerializer,
     tClassType*& iPointer,
@@ -950,25 +830,12 @@ return true;
 
     for (auto&& aDrivedClass : mDrivedClassList)
     {
-        if (aDrivedClass->loadTypeInstance2(iSerializer, iPointer, iTypeIndexList))
+        if (aDrivedClass->loadTypeInstance(iSerializer, iPointer, iTypeIndexList))
 return true;
     }
 
     return false;
 }
-
-//----------------------------------------------------------------------------
-//      基底クラスへ登録する
-//          派生クラスのバージョン毎に呼ばれ、
-//          基底クラスのmDrivedClassListVersionsへ
-//          自分(派生クラスのBaseTypeInfo)を登録する
-//----------------------------------------------------------------------------
-
-THEOLIZER_INTERNAL_DLL void registerToBaseClassImpl(
-    ElementRange&& iElementRange,
-    BaseTypeInfo* iDerivedTypeInfo,
-    unsigned iVersionNo,
-    unsigned iLastVersionNo);
 
 //############################################################################
 //      End
