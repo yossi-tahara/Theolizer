@@ -44,6 +44,7 @@
 #include "test_object_tracking2.cpp.theolizer.hpp"
 
 //############################################################################
+//      2番目以降の基底クラス・ポインタのオブジェクト追跡テスト
 //      組み合わせテスト
 //############################################################################
 
@@ -54,6 +55,25 @@
 template<class tSerializer>
 void saveObjectTracking(tSerializer& iSerializer)
 {
+    // オブジェクト追跡前準備
+    //  ここに来るまでにオブジェクト追跡テーブルに登録され、その領域が開放されるので必要。
+    //  (オブジェクト追跡単位内でシリアライズした領域を開放してはいけない。)
+    iSerializer.clearTracking();
+
+//----------------------------------------------------------------------------
+//      2番目以降の基底クラス・ポインタのオブジェクト追跡テスト
+//----------------------------------------------------------------------------
+
+    {
+        ObjectTrackingDerived   aObjectTrackingDerived;
+        THEOLIZER_PROCESS(iSerializer, aObjectTrackingDerived);
+
+        ObjectTrackingBase1* aObjectTrackingBase1 = &aObjectTrackingDerived;
+        THEOLIZER_PROCESS(iSerializer, aObjectTrackingBase1);
+
+        iSerializer.clearTracking();
+    }
+
 //----------------------------------------------------------------------------
 //      通常ポインタのテスト
 //----------------------------------------------------------------------------
@@ -61,10 +81,6 @@ void saveObjectTracking(tSerializer& iSerializer)
 //      ---<<< 手動(トップ・レベル)によるポインタの保存 >>>---
 
     {
-        // オブジェクト追跡前準備
-        //  ここに来るまでにオブジェクト追跡テーブルに登録され、その領域が開放されるので必要。
-        //  (オブジェクト追跡単位内でシリアライズした領域を開放してはいけない。)
-        iSerializer.clearTracking();
 
         // ポイント先群
         PointeeList         aPointeeList{true};
@@ -193,6 +209,27 @@ INSTANTIATION_ALL(void, saveObjectTracking);
 template<class tSerializer>
 void loadObjectTracking(tSerializer& iSerializer)
 {
+    // オブジェクト追跡前準備
+    //  ここに来るまでにオブジェクト追跡テーブルに登録され、その領域が開放されるので必要。
+    //  (オブジェクト追跡単位内でシリアライズした領域を開放してはいけない。)
+    iSerializer.clearTracking();
+
+//----------------------------------------------------------------------------
+//      2番目以降の基底クラス・ポインタのオブジェクト追跡テスト
+//----------------------------------------------------------------------------
+
+    {
+        ObjectTrackingDerived   aObjectTrackingDerived;
+        THEOLIZER_PROCESS(iSerializer, aObjectTrackingDerived);
+
+        ObjectTrackingBase1* aObjectTrackingBase1 = nullptr;
+        THEOLIZER_PROCESS(iSerializer, aObjectTrackingBase1);
+
+        iSerializer.clearTracking();
+
+        THEOLIZER_EQUAL_PTR(&aObjectTrackingDerived, aObjectTrackingBase1);
+    }
+
 //----------------------------------------------------------------------------
 //      通常ポインタのテスト
 //----------------------------------------------------------------------------
@@ -200,11 +237,6 @@ void loadObjectTracking(tSerializer& iSerializer)
 //      ---<<< 手動(トップ・レベル)によるポインタ（左辺値）の回復 >>>---
 
     {
-        // オブジェクト追跡前準備
-        //  ここに来るまでにオブジェクト追跡テーブルに登録され、その領域が開放されるので必要。
-        //  (オブジェクト追跡単位内でシリアライズした領域を開放してはいけない。)
-        iSerializer.clearTracking();
-
         // ポイント先群
         PointeeList         aPointeeList;
         PointeeList         aPointeeList2;

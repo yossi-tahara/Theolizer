@@ -125,6 +125,33 @@ struct Pointers
 };
 
 // ***************************************************************************
+//      2番目以降の基底クラス・ポインタのオブジェクト追跡テスト
+//          派生クラスのインスタンスを2番目以降の基底クラスへのポインタで
+//          追跡する場合のテスト用。
+//          派生クラスのインスタンス先頭アドレスと基底クラスへのポインタに
+//          設定されるアドレスは通常異なるため、テストが必要
+// ***************************************************************************
+
+struct ObjectTrackingBase0
+{
+    int     mInt;
+    ObjectTrackingBase0() : mInt(0) { }
+};
+
+struct ObjectTrackingBase1
+{
+    short   mShort;
+    ObjectTrackingBase1() : mShort(0) { }
+};
+
+
+struct ObjectTrackingDerived : public ObjectTrackingBase0, public ObjectTrackingBase1
+{
+    long    mLong;
+    ObjectTrackingDerived() : mLong(0) { }
+};
+
+// ***************************************************************************
 //      組み合わせテスト共通
 // ***************************************************************************
 
