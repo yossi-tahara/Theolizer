@@ -151,7 +151,6 @@ INSTANTIATION_ALL(void, savePolymorphism);
 template<class tSerializer>
 void loadPolymorphism(tSerializer& iSerializer)
 {
-std::cout << "loadPolymorphism() start\n";
 //----------------------------------------------------------------------------
 //      非侵入型完全自動
 //----------------------------------------------------------------------------
@@ -196,7 +195,6 @@ std::cout << "loadPolymorphism() start\n";
 //      非侵入型手動
 //----------------------------------------------------------------------------
 
-theolizer::DisplayPass aDisplayPass;
     {
         std::vector<std::unique_ptr<PolyBaseManual> > aVector;
         THEOLIZER_PROCESS(iSerializer, aVector);

@@ -88,7 +88,8 @@ void tutoriseObjectTracking()
 
 //      ---<<< 動的定義領域 >>>---
 
-        std::shared_ptr<long>   aDynamicLong{new long{500}};
+        std::shared_ptr<long>                   aDynamicLong{new long{500}};
+        std::shared_ptr<ObjectTrackingDerived>  aDynamicClass{new ObjectTrackingDerived{true}};
 
 //      ---<<< ポインタ設定(THEOLIZER_PROCESS用) >>>---
 
@@ -120,7 +121,8 @@ void tutoriseObjectTracking()
         aPointers.mMemberLongPtr            =&(aStaticDefinition->mLong);
         aPointers.mMemberObjectTracking0Ptr =&(aStaticDefinition->mObjectTracking0);
         aPointers.mMemberObjectTracking1Ptr =&(aStaticDefinition->mObjectTracking1);
-//        aPointers.mDynamicLong              =aDynamicLong;
+        aPointers.mDynamicLong              =aDynamicLong;
+        aPointers.mDynamicClass             =aDynamicClass;
 
 //      ---<<< 保存処理 >>>---
 
@@ -140,6 +142,7 @@ void tutoriseObjectTracking()
 
         // 動的生成領域保存
         THEOLIZER_PROCESS(aSerializer, aDynamicLong);
+        THEOLIZER_PROCESS(aSerializer, aDynamicClass);
 
         // インスタンス保存
         THEOLIZER_PROCESS_POINTEE(aSerializer, gLongSave);
@@ -175,7 +178,8 @@ void tutoriseObjectTracking()
 
 //      ---<<< 動的定義領域 >>>---
 
-        std::shared_ptr<long>   aDynamicLong{};
+        std::shared_ptr<long>                   aDynamicLong{};
+        std::shared_ptr<ObjectTrackingDerived>  aDynamicClass{};
 
 //      ---<<< ポインタ設定(THEOLIZER_PROCESS用) >>>---
 
@@ -216,6 +220,7 @@ void tutoriseObjectTracking()
 
         // 動的生成領域回復
         THEOLIZER_PROCESS(aSerializer, aDynamicLong);
+        THEOLIZER_PROCESS(aSerializer, aDynamicClass);
 
         // インスタンス回復
         THEOLIZER_PROCESS_POINTEE(aSerializer, gLongLoad);
@@ -247,6 +252,7 @@ void tutoriseObjectTracking()
 
         // 動的生成領域
         THEOLIZER_EQUAL(*(aDynamicLong.get()),          500);
+        aDynamicClass->check();
 
         // インスタンス
         THEOLIZER_EQUAL(gLongLoad,                      101);
@@ -270,9 +276,8 @@ void tutoriseObjectTracking()
         THEOLIZER_EQUAL_PTR(aPointers.mMemberObjectTracking1Ptr,
             &(aStaticDefinition->mObjectTracking1));
 
-//auto x=aPointers.mDynamicLong.get();
-//auto y=aDynamicLong.get();
-//        THEOLIZER_EQUAL_PTR(aPointers.mDynamicLong.get(),           aDynamicLong.get());
+        THEOLIZER_EQUAL_PTR(aPointers.mDynamicLong.get(),           aDynamicLong.get());
+        THEOLIZER_EQUAL_PTR(aPointers.mDynamicClass.get(),          aDynamicClass.get());
     }
 
     std::cout << "tutoriseObjectTracking() end\n" << std::endl;

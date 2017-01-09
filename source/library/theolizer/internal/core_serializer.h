@@ -395,6 +395,54 @@ struct DeserializeInfo
     { }
 };
 
+// ***************************************************************************
+//      shared_ptrデシリアライズ時の共有判定用テーブル
+//          std::shared_ptr<>に用いるが、他の形式の共有ポインタにも使用できるよう
+//          テーブルの構造は使う側に任せるので、boost::any方式とする。
+// ***************************************************************************
+
+struct SharedPtrTable
+{
+
+//      ---<<< 記録用内部クラスの基底型 >>>---
+
+    struct HolderBase
+    {
+        virtual void clear() = 0;
+        virtual ~HolderBase() { }
+    };
+
+//      ---<<< 記録用内部クラス >>>---
+
+    template<typename tListType>
+    struct Holder : public HolderBase
+    {
+        tListType   mList;
+
+        Holder() { }
+        ~Holder() = default;
+
+        virtual void clear()
+        {
+            mList.clear();
+        }
+    };
+
+//      ---<<< 記録領域 >>>---
+
+    std::unique_ptr<HolderBase> mHolder;
+
+//      ---<<< コンストラクタ >>>---
+
+    SharedPtrTable() { }
+
+    // 登録をクリアする
+    void clear()
+    {
+        mHolder->clear();
+    }
+};
+
 //############################################################################
 //      Serializer用フレンド・リスト
 //############################################################################
@@ -448,7 +496,7 @@ class THEOLIZER_INTERNAL_DLL BaseSerializer : public ErrorBase
 private:
     THEOLIZER_INTERNAL_FRIENDS_FOR_INTERNAL;
 
-    virtual void AbstructSerializer() = 0;  // インスタンス生成禁止
+    virtual void AbstructSerializer() = 0;      // インスタンス生成禁止
 
     BaseSerializer*         mSerializerBack;    // 前回処理中のSerializer(退避領域)
 
@@ -591,6 +639,34 @@ private:
 public:
     //! @todo T.B.D.
     void clearTracking();
+
+//----------------------------------------------------------------------------
+//      SharedPtrTable登録テーブル
+//----------------------------------------------------------------------------
+
+private:
+    struct SharedPtrTables;
+    std::unique_ptr<SharedPtrTables>            mSharedPtrTables;
+
+    SharedPtrTable& registerSharedPtrTable(std::type_index iTypeIndex);
+
+public:
+    //! @todo T.B.D.
+    template<typename tTypeList>
+    tTypeList& getSharedPtrTable(std::type_index iTypeIndex)
+    {
+        SharedPtrTable& aSharedPtrTable=registerSharedPtrTable(iTypeIndex);
+
+        // 実テーブルが未生成なら生成する
+        if (!aSharedPtrTable.mHolder)
+        {
+            aSharedPtrTable.mHolder.reset(new SharedPtrTable::Holder<tTypeList>);
+        }
+
+        SharedPtrTable::Holder<tTypeList>* aHolder=
+            dynamic_cast<SharedPtrTable::Holder<tTypeList>*>(aSharedPtrTable.mHolder.get());
+        return aHolder->mList;
+    }
 
 // ***************************************************************************
 //      シリアライズ／デシリアライズ補助

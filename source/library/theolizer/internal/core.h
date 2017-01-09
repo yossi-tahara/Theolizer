@@ -819,6 +819,7 @@ bool ClassTypeInfo<tClassType>::loadTypeInstance
         {
             THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
         }
+
         tClassType::Theolizer::loadClass
         (
             iSerializer,
@@ -835,6 +836,30 @@ return true;
     }
 
     return false;
+}
+
+//----------------------------------------------------------------------------
+//      現インスタンスの先頭アドレス返却
+//          ２番目以降の基底クラスへのポインタに対応するため
+//----------------------------------------------------------------------------
+
+template<class tClassType>
+void const*  ClassTypeInfo<tClassType>::getDerivedPointer
+(
+    typename tClassType::TheolizerTarget* iBasePointer
+)
+{
+    if (getTargetStdTypeIndex() == std::type_index(typeid(*iBasePointer)))
+return iBasePointer;
+
+    for (auto&& aDrivedClass : mDrivedClassList)
+    {
+        void const* ret=aDrivedClass->getDerivedPointer(iBasePointer);
+        if (ret)
+return ret;
+    }
+
+    return nullptr;
 }
 
 //############################################################################

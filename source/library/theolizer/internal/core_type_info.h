@@ -745,6 +745,7 @@ private:
             BaseSerializer& iSerializer,
             std::vector<SaveStat>& ioSaveStatList
         )=0;
+        virtual void const* getDerivedPointer(TheolizerTarget* iBasePointer)=0;
         virtual std::size_t getTypeIndex()=0;
         virtual ~HolderBase() { }
     };
@@ -799,6 +800,12 @@ private:
         {
             return ClassTypeInfo<tDrivedClassType>::getInstance().
                 setSaving(iSerializer, ioSaveStatList);
+        }
+
+        void const* getDerivedPointer(TheolizerTarget* iBasePointer)
+        {
+            void* aPointer=static_cast<tDrivedClassType*>(iBasePointer);
+            return aPointer;
         }
 
         std::size_t getTypeIndex()
@@ -862,6 +869,9 @@ public:
         }
         return ret;
     }
+
+    // 現インスタンスの先頭アドレス返却
+    void const* getDerivedPointer(TheolizerTarget* iBasePointer);
 
 private:
     // ターゲットクラスのstd::type_index返却
@@ -1446,6 +1456,12 @@ struct Switcher2
         static_assert(Ignore<tType>::kFalse, "This is not serializable class.");
         return 0;
     }
+    // そのまま返却
+    static void const* getDerivedPointer(tType* iPointer)
+    {
+        static_assert(Ignore<tType>::kFalse, "This is not serializable class.");
+        return iPointer;
+    }
 };
 
 //----------------------------------------------------------------------------
@@ -1477,6 +1493,11 @@ struct Switcher2
     {
         return PointerTypeInfo<PointerType>::getInstance().mTypeIndex;
     }
+    // これは不要(多重ポインタは非サポート)
+//  static void const* getDerivedPointer(tPointerType* iPointer)
+//  {
+//      return iPointer;
+//  }
 };
 
 //----------------------------------------------------------------------------
@@ -1507,6 +1528,11 @@ struct Switcher2
     static std::size_t getTypeIndex()
     {
         return ArrayTypeInfo<ArrayType>::getInstance().mTypeIndex;
+    }
+    // そのまま返却
+    static void const* getDerivedPointer(tArrayType* iPointer)
+    {
+        return iPointer;
     }
 };
 
@@ -1541,6 +1567,11 @@ struct Switcher2
     {
         return ClassTypeInfo<ClassType>::getInstance().mTypeIndex;
     }
+    // 派生クラスのアドレスを返却
+    static void const* getDerivedPointer(tClassType* iPointer)
+    {
+        return ClassTypeInfo<ClassType>::getInstance().getDerivedPointer(iPointer);
+    }
 };
 
 //      ---<<< 非侵入型用Switcher2本体 >>>---
@@ -1574,6 +1605,11 @@ struct Switcher2
     {
         return ClassTypeInfo<ClassType>::getInstance().mTypeIndex;
     }
+    // 派生クラスのアドレスを返却
+    static void const* getDerivedPointer(tClassType* iPointer)
+    {
+        return ClassTypeInfo<ClassType>::getInstance().getDerivedPointer(iPointer);
+    }
 };
 
 //----------------------------------------------------------------------------
@@ -1604,6 +1640,11 @@ struct Switcher2
     static std::size_t getTypeIndex()
     {
         return EnumTypeInfo<EnumType>::getInstance().mTypeIndex;
+    }
+    // そのまま返却
+    static void const* getDerivedPointer(tEnumType* iPointer)
+    {
+        return iPointer;
     }
 };
 
@@ -1640,6 +1681,11 @@ struct Switcher2
     {
         return PrimitiveTypeInfo<PrimitiveType>::getInstance().mTypeIndex;
     }
+    // そのまま返却
+    static void const* getDerivedPointer(tPrimitiveType* iPointer)
+    {
+        return iPointer;
+    }
 };
 
 //----------------------------------------------------------------------------
@@ -1651,6 +1697,18 @@ std::size_t getTypeIndex()
 {
     typedef typename std::remove_reference<tType>::type Type;
     return Switcher2<Type>::getTypeIndex();
+}
+
+//----------------------------------------------------------------------------
+//      派生クラスの先頭アドレス返却
+//          クラスでない場合は、そのまま返却
+//----------------------------------------------------------------------------
+
+template<typename tType>
+void const* getDerivedPointer(tType* iPointer)
+{
+    return Switcher2<tType>::getDerivedPointer(iPointer);
+//return nullptr;
 }
 
 // ***************************************************************************

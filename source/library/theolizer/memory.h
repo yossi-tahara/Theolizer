@@ -29,6 +29,7 @@
 //############################################################################
 
 #include <memory>
+#include <map>
 #include "serializer.h"
 
 THEOLIZER_PROVIDED_BY("Theoride Technology");
@@ -82,9 +83,9 @@ struct TheolizerNonIntrusive<std::unique_ptr<T>>::
 
         typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
         typedef typename TheolizerTarget::element_type Type;
-        Type *aType=nullptr;
-        THEOLIZER_PROCESS_OWNER(iSerializer, aType);
-        oInstance->reset(aType);
+        Type *aInstance=nullptr;
+        THEOLIZER_PROCESS_OWNER(iSerializer, aInstance);
+        oInstance->reset(aInstance);
     }
 };
 
@@ -129,6 +130,8 @@ THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((template<class T>),
 //              処理しておくこと。
 //----------------------------------------------------------------------------
 
+struct shared_ptrPrimary;
+
 //      ---<<< Version.1 >>>---
 
 template<class T>
@@ -158,9 +161,39 @@ struct TheolizerNonIntrusive<std::shared_ptr<T>>::
 
         typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
         typedef typename TheolizerTarget::element_type Type;
-        Type *aType=nullptr;
-        THEOLIZER_PROCESS_OWNER(iSerializer, aType);
-        oInstance->reset(aType);
+        Type *aInstance=nullptr;
+        THEOLIZER_PROCESS_OWNER(iSerializer, aInstance);
+
+        // nullptrなら追跡しない
+        if (!aInstance)
+        {
+            oInstance->reset();
+    return;
+        }
+
+        // 既に共有されているならそれを用いる
+        // 登録リスト獲得
+        typedef std::map<void const*, std::shared_ptr<void const> > SharedPtrMap;
+        SharedPtrMap& aSharedPtrMap=
+            iSerializer.template getSharedPtrTable<SharedPtrMap>(typeid(shared_ptrPrimary));
+
+        // 派生クラスのインタンスへのポインタ獲得
+        void const* aDerivedPointer=theolizer::internal::getDerivedPointer(aInstance);
+
+        // 既に回復したことのあるポインタ
+        auto aFound=aSharedPtrMap.find(aDerivedPointer);
+        if (aFound != aSharedPtrMap.end())
+        {
+            *oInstance=std::shared_ptr<Type>(aFound->second, aInstance);
+        }
+
+        // 初めて
+        else
+        {
+            oInstance->reset(aInstance);
+            std::shared_ptr<void const> temp(*oInstance, aDerivedPointer);
+            aSharedPtrMap.insert(aFound, std::make_pair(aDerivedPointer, temp));
+        }
     }
 };
 

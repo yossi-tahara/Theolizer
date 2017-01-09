@@ -31,6 +31,50 @@
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
+//      2番目以降の基底クラス・ポインタのオブジェクト追跡テスト
+//          派生クラスのインスタンスを2番目以降の基底クラスへのポインタで
+//          追跡する場合のテスト用。
+//          派生クラスのインスタンス先頭アドレスと基底クラスへのポインタに
+//          設定されるアドレスは通常異なるため、テストが必要
+//----------------------------------------------------------------------------
+
+struct ObjectTrackingBase0
+{
+    int     mInt;
+    ObjectTrackingBase0() : mInt{0} { }
+    ObjectTrackingBase0(int iInt) : mInt{iInt} { }
+    virtual ~ObjectTrackingBase0() { }
+};
+
+struct ObjectTrackingBase1
+{
+    short   mShort;
+    ObjectTrackingBase1() : mShort{0} { }
+    ObjectTrackingBase1(short iShort) : mShort{iShort} { }
+    virtual ~ObjectTrackingBase1() { }
+};
+
+
+struct ObjectTrackingDerived : public ObjectTrackingBase0, public ObjectTrackingBase1
+{
+    long    mLong;
+    ObjectTrackingDerived() : mLong{0} { }
+    ObjectTrackingDerived(bool) : 
+        ObjectTrackingBase0{100},
+        ObjectTrackingBase1{200},
+        mLong{300}
+    { }
+
+    void check()
+    {
+        THEOLIZER_EQUAL(mInt,   100);
+        THEOLIZER_EQUAL(mShort, 200);
+        THEOLIZER_EQUAL(mLong,  300);
+    }
+};
+THEOLIZER_REGISTER_CLASS((ObjectTrackingDerived));
+
+//----------------------------------------------------------------------------
 //      Pointee指定なし用
 //----------------------------------------------------------------------------
 
@@ -107,7 +151,8 @@ struct Pointers
     ObjectTracking1*    mMemberObjectTracking1Ptr;
 
     // 動的生成領域ポイント用
-//    std::shared_ptr<long>   mDynamicLong;
+    std::shared_ptr<long>                   mDynamicLong;
+    std::shared_ptr<ObjectTrackingBase1>    mDynamicClass;
 
     // nullptr初期化用
     Pointers() :
@@ -119,36 +164,10 @@ struct Pointers
         mLocalObjectTracking1Ptr{nullptr},
         mMemberLongPtr{nullptr},
         mMemberObjectTracking0Ptr{nullptr},
-        mMemberObjectTracking1Ptr{nullptr}//,
-//        mDynamicLong{}
+        mMemberObjectTracking1Ptr{nullptr},
+        mDynamicLong{},
+        mDynamicClass{}
     { }
-};
-
-// ***************************************************************************
-//      2番目以降の基底クラス・ポインタのオブジェクト追跡テスト
-//          派生クラスのインスタンスを2番目以降の基底クラスへのポインタで
-//          追跡する場合のテスト用。
-//          派生クラスのインスタンス先頭アドレスと基底クラスへのポインタに
-//          設定されるアドレスは通常異なるため、テストが必要
-// ***************************************************************************
-
-struct ObjectTrackingBase0
-{
-    int     mInt;
-    ObjectTrackingBase0() : mInt(0) { }
-};
-
-struct ObjectTrackingBase1
-{
-    short   mShort;
-    ObjectTrackingBase1() : mShort(0) { }
-};
-
-
-struct ObjectTrackingDerived : public ObjectTrackingBase0, public ObjectTrackingBase1
-{
-    long    mLong;
-    ObjectTrackingDerived() : mLong(0) { }
 };
 
 // ***************************************************************************

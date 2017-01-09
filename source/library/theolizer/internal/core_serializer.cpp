@@ -1152,6 +1152,31 @@ void BaseSerializer::clearTracking()
     }
 }
 
+//----------------------------------------------------------------------------
+//      SharedPtrTable登録テーブル
+//----------------------------------------------------------------------------
+
+struct BaseSerializer::SharedPtrTables : public std::map<std::type_index, SharedPtrTable>
+{ };
+
+SharedPtrTable& BaseSerializer::registerSharedPtrTable(std::type_index iTypeIndex)
+{
+    // テーブル未生成なら生成する
+    if (!mSharedPtrTables)
+    {
+        mSharedPtrTables.reset(new SharedPtrTables);
+    }
+
+    // 対象が未登録なら登録する
+    auto aFound=mSharedPtrTables->find(iTypeIndex);
+    if (aFound == mSharedPtrTables->end())
+    {
+        aFound=mSharedPtrTables->insert(aFound, std::make_pair(iTypeIndex, SharedPtrTable()));
+    }
+
+    return aFound->second;
+}
+
 // ***************************************************************************
 //      ClassTypeの破棄処理
 // ***************************************************************************
