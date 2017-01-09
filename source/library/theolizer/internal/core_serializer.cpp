@@ -1081,7 +1081,11 @@ void BaseSerializer::clearTrackingImpl()
                 {
                     if (mCheckMode != CheckMode::InMemory)
                     {
-                        THEOLIZER_INTERNAL_ERROR(u8"Some pointed data does not save.");
+                        THEOLIZER_INTERNAL_ERROR
+                        (
+                            u8"Some pointed data does not save.(%1%)",
+                            getNameByTypeId(aSerializeInfo.mStdTypeIndex)
+                        );
                     }
                     else
                     {

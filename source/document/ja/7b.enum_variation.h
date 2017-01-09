@@ -2,7 +2,7 @@
 /*!
     @brief      ドキュメント・ファイル－使用方法（個別）
     @ingroup    Documents
-    @file       7b.EnumVariation.h
+    @file       7b.enum_variation.h
     @author     Yoshinori Tahara
     @date       2016/12/02 Created
 */

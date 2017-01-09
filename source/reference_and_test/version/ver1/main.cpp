@@ -90,7 +90,7 @@ template<class tSerializer>
 void loadEnumVariation(tSerializer& iSerializer);
 
 //----------------------------------------------------------------------------
-//      オブジェクト追跡（ポインタとオーナー指定ポインタ）
+//      オブジェクト追跡
 //----------------------------------------------------------------------------
 
 //      ---<<< 使い方のサンプル・コード >>>---
@@ -105,8 +105,14 @@ void saveObjectTracking(tSerializer& iSerializer);
 template<class tSerializer>
 void loadObjectTracking(tSerializer& iSerializer);
 
+template<class tSerializer>
+void saveObjectTracking3(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadObjectTracking3(tSerializer& iSerializer);
+
 //----------------------------------------------------------------------------
-//      オブジェクト追跡（ポリモーフィズム）
+//      ポリモーフィズム
 //----------------------------------------------------------------------------
 
 //      ---<<< 使い方のサンプル・コード >>>---
@@ -137,8 +143,11 @@ void saveBasic(tSerializer& iSerializer)
 #ifndef DISABLE_ENUM_VARIATION_TEST
     saveEnumVariation(iSerializer);
 #endif
-#ifndef DISABLE_OBJECT_TRACKING_TEST
+#ifndef DISABLE_OBJECT_TRACKING2_TEST
     saveObjectTracking(iSerializer);
+#endif
+#ifndef DISABLE_OBJECT_TRACKING3_TEST
+    saveObjectTracking3(iSerializer);
 #endif
 #ifndef DISABLE_POLYMORPHISM_TEST
     savePolymorphism(iSerializer);
@@ -157,8 +166,11 @@ void loadBasic(tSerializer& iSerializer)
 #ifndef DISABLE_ENUM_VARIATION_TEST
     loadEnumVariation(iSerializer);
 #endif
-#ifndef DISABLE_OBJECT_TRACKING_TEST
+#ifndef DISABLE_OBJECT_TRACKING2_TEST
     loadObjectTracking(iSerializer);
+#endif
+#ifndef DISABLE_OBJECT_TRACKING3_TEST
+    loadObjectTracking3(iSerializer);
 #endif
 #ifndef DISABLE_POLYMORPHISM_TEST
     loadPolymorphism(iSerializer);
@@ -402,22 +414,35 @@ return 1;
 //      使い方説明サンプル呼び出し
 // ***************************************************************************
 
-    // デフォルト起動時のみ呼び出す
-    if (aGlobalVersionNo == 0)
+    try
     {
+        // デフォルト起動時のみ呼び出す
+        if (aGlobalVersionNo == 0)
+        {
 #ifndef DISABLE_CLASS_VARIATION_TEST
-        tutoriseClassVariation();
+            tutoriseClassVariation();
 #endif
 #ifndef DISABLE_ENUM_VARIATION_TEST
-        tutoriseEnumVariation();
+            tutoriseEnumVariation();
 #endif
 #ifndef DISABLE_OBJECT_TRACKING_TEST
-        tutoriseObjectTracking();
+            tutoriseObjectTracking();
 #endif
+#ifndef DISABLE_POLYMORPHISM_TEST
+            tutorisePolymorphism();
+#endif
+            // ここまでの中間結果表示
+            theolizer::printResult("------------- Result of tutorial samples ----------");
+            std::cerr << "\n\n";
+        }
+    }
+    catch(theolizer::ErrorInfo& e)
+    {
+        std::cerr << e.getString() << "\n";
 
-        // ここまでの中間結果表示
-        theolizer::printResult("------------- Result of tutorial samples ----------");
-        std::cerr << "\n\n";
+        theolizer::incrementFailCount();
+        theolizer::printResult();
+return 2;
     }
 
 // ***************************************************************************
@@ -444,12 +469,12 @@ return 1;
 
         theolizer::incrementFailCount();
         theolizer::printResult();
-return 2;
+return 3;
     }
 
     // Failが0でないならエラー終了
     if (!theolizer::printResult())
-return 3;
+return 4;
 
     return 0;
 }

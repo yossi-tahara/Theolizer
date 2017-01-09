@@ -1374,23 +1374,25 @@ ASTANALYZE_OUTPUT("------------ enumerateClass(", iClass->getQualifiedNameAsStri
     }
 
 //----------------------------------------------------------------------------
-//      シリアライズ・クラスの半自動型の基底クラスをsave/load対象とする
+//      シリアライズ・クラスの完全自動型以外の基底クラスをsave/load対象とする
 //          保存／回復していない完全自動型をコード生成対象とするため
+//          下記が対象である
+//              侵入型半自動(基底クラスとメンバ変数)
+//              非侵入型手動(基底クラス)
 //----------------------------------------------------------------------------
 
-    void enumerateHalfAuto()
+    void enumerateNonFullAuto()
     {
-ASTANALYZE_OUTPUT("++++++++++++ enumerateHalfAuto()");
+ASTANALYZE_OUTPUT("++++++++++++ enumerateNonFullAuto()");
         for (auto&& aSerializeInfo : mAstInterface.mSerializeListClass.getList())
         {
             // 半自動なら、基底クラスを処理する。
-            if (!aSerializeInfo.second.mIsFullAuto
-             && !aSerializeInfo.second.mIsManual)
+            if (!aSerializeInfo.second.mIsFullAuto)
             {
                 enumerateClass(aSerializeInfo.second.mTheolizerTarget);
             }
         }
-ASTANALYZE_OUTPUT("------------ enumerateHalfAuto()");
+ASTANALYZE_OUTPUT("------------ enumerateNonFullAuto()");
     }
 
 //----------------------------------------------------------------------------
@@ -1455,8 +1457,8 @@ ASTANALYZE_OUTPUT("$$$$ processSwitcher() : ", qt.getAsString());
         // 1Pass目(シリアライズ・クラス収集)
         mASTVisitor.enumerateDecl(iContext.getTranslationUnitDecl());
 
-        // 2Pass目(半自動の基底クラスをsave/load処理する：基底クラスにある完全自動対応)
-        enumerateHalfAuto();
+        // 2Pass目(他のクラスから使われている完全自動型を生成対象とするため)
+        enumerateNonFullAuto();
 
         // 3Pass目(THEOLIZER_REGISTER_CLASSで登録された派生クラスをsave/load処理する)
         if (mASTVisitor.mRegisterToBaseClass)

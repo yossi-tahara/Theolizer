@@ -31,11 +31,12 @@
 @subpage BasicProcess \n
 @subpage ClassVariation \n
 @subpage EnumVariation \n
+@subpage ObjectTracking \n
 @subpage Destinations \n
 @subpage UsageSTL \n
-@subpage ObjectTracking \n
-@subpage ChangingClass \n
 @subpage ChangingEnum \n
+@subpage ChangingClass \n
+@subpage ErrorReport \n
 
 */
 
@@ -134,14 +135,13 @@ enum型は従来のenum型と、C++11で追加されたscoped enum型の２つ�
 */
 
 /*!
-    @page UsageSTL 標準コンテナ（STL）の使い方
-ここでは、標準コンテナ（STL）の使い方を説明します。
+    @page ChangingEnum enum型の変更方法、および、バージョン・アップ方法
 # T.B.D.
 */
 
 /*!
-    @page ObjectTracking オブジェクト追跡について
-ここでは、オブジェクト追跡について説明します。
+    @page UsageSTL 標準コンテナ（STL）の使い方
+ここでは、標準コンテナ（STL）の使い方を説明します。
 # T.B.D.
 */
 
@@ -151,12 +151,7 @@ enum型は従来のenum型と、C++11で追加されたscoped enum型の２つ�
 */
 
 /*!
-    @page ChangingEnum enum型の変更方法、および、バージョン・アップ方法
-# T.B.D.
-*/
-
-/*!
-    @page ErrorReport エラー処理方法
+    @page ErrorReport エラー処理
 
     エラー状態の解除は、下記のように、resetError()で行って下さい。<br>
 

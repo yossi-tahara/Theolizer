@@ -110,6 +110,82 @@ struct TheolizerNonIntrusive<std::unique_ptr<T>>::
 #endif//THEOLIZER_WRITE_CODE // ###### std::unique_ptr<T> ######
 
 //############################################################################
+//      std::shared_ptr<>
+//############################################################################
+
+// ***************************************************************************
+//      シリアライズ指定
+// ***************************************************************************
+
+THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((template<class T>),
+                                        (std::shared_ptr<T>), 1,
+                                        shared_ptrPrimary);
+
+//----------------------------------------------------------------------------
+//      ユーザ定義
+//          回復処理の注意事項：
+//              余分なデータの破棄、および、ClassType終了処理のため、
+//              必ずiSerializer.readPreElement()がfalseを返却するまで
+//              処理しておくこと。
+//----------------------------------------------------------------------------
+
+//      ---<<< Version.1 >>>---
+
+template<class T>
+template<class tMidSerializer, class tTheolizerVersion>
+struct TheolizerNonIntrusive<std::shared_ptr<T>>::
+    TheolizerUserDefine<tMidSerializer, tTheolizerVersion, 1>
+{
+    // 保存
+    static void saveClassManual
+    (
+        tMidSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
+    )
+    {
+        THEOLIZER_PROCESS_OWNER(iSerializer, iInstance->get());
+    }
+
+    // 回復
+    static void loadClassManual
+    (
+        tMidSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget*& oInstance
+    )
+    {
+        // もし、nullptrなら、インスタンス生成
+        if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
+
+        typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
+        typedef typename TheolizerTarget::element_type Type;
+        Type *aType=nullptr;
+        THEOLIZER_PROCESS_OWNER(iSerializer, aType);
+        oInstance->reset(aType);
+    }
+};
+
+//----------------------------------------------------------------------------
+//      自動生成
+//----------------------------------------------------------------------------
+
+#ifdef  THEOLIZER_WRITE_CODE // ###### std::shared_ptr<T> ######
+
+#define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_TYPE std::shared_ptr<T>
+#define THEOLIZER_GENERATED_PARAMETER_LIST template<class T>
+#define THEOLIZER_GENERATED_UNIQUE_NAME shared_ptrPrimary
+
+//      ---<<< Version.1 >>>---
+
+#define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_NAME()\
+    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"std::shared_ptr",T))
+#include <theolizer/internal/version_manual.inc>
+#undef  THEOLIZER_GENERATED_VERSION_NO
+
+#endif//THEOLIZER_WRITE_CODE // ###### std::shared_ptr<T> ######
+
+//############################################################################
 //      End
 //############################################################################
 

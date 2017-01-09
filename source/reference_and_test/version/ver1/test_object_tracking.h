@@ -31,8 +31,98 @@
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
-//      
+//      Pointee指定なし用
 //----------------------------------------------------------------------------
+
+struct ObjectTracking0
+{
+    int     mInt;
+    ObjectTracking0(int iInt=0) : mInt(iInt) { }
+};
+
+//----------------------------------------------------------------------------
+//      Pointee指定あり用
+//----------------------------------------------------------------------------
+
+struct ObjectTracking1
+{
+    short   mShort;
+    ObjectTracking1(short iShort=0) : mShort(iShort) { }
+};
+
+//----------------------------------------------------------------------------
+//      静的定義領域（メンバ変数）
+//----------------------------------------------------------------------------
+
+struct StaticDefinition
+{
+    long                mLong               THEOLIZER_ANNOTATE(FS:<>Pointee);
+    ObjectTracking0     mObjectTracking0;
+    ObjectTracking1     mObjectTracking1    THEOLIZER_ANNOTATE(FS:<>Pointee);
+    StaticDefinition() :
+        mLong{0},
+        mObjectTracking0{},
+        mObjectTracking1{}
+    { }
+    StaticDefinition(bool) :
+        mLong{100},
+        mObjectTracking0{200},
+        mObjectTracking1{300}
+    { }
+
+    void check()
+    {
+        THEOLIZER_EQUAL(mLong, 0);
+        THEOLIZER_EQUAL(mObjectTracking0.mInt, 0);
+        THEOLIZER_EQUAL(mObjectTracking1.mShort, 0);
+    }
+
+    void check(bool)
+    {
+        THEOLIZER_EQUAL(mLong, 100);
+        THEOLIZER_EQUAL(mObjectTracking0.mInt, 200);
+        THEOLIZER_EQUAL(mObjectTracking1.mShort, 300);
+    }
+};
+
+//----------------------------------------------------------------------------
+//      ポインタ定義(自動シリアライズ用)
+//----------------------------------------------------------------------------
+
+struct Pointers
+{
+    // グローバル変数ポイント用
+    long*               mGlobalLongPtr;
+    ObjectTracking0*    mGlobalObjectTracking0Ptr;
+    ObjectTracking1*    mGlobalObjectTracking1Ptr;
+
+    // ローカル変数ポイント用
+    long*               mLocalLongPtr;
+    ObjectTracking0*    mLocalObjectTracking0Ptr;
+    ObjectTracking1*    mLocalObjectTracking1Ptr;
+
+    // メンバ変数ポイント用
+    long*               mMemberLongPtr;
+    ObjectTracking0*    mMemberObjectTracking0Ptr;
+    ObjectTracking1*    mMemberObjectTracking1Ptr;
+
+    // 動的生成領域ポイント用
+//    std::shared_ptr<long>   mDynamicLong;
+
+    // nullptr初期化用
+    Pointers() :
+        mGlobalLongPtr{nullptr},
+        mGlobalObjectTracking0Ptr{nullptr},
+        mGlobalObjectTracking1Ptr{nullptr},
+        mLocalLongPtr{nullptr},
+        mLocalObjectTracking0Ptr{nullptr},
+        mLocalObjectTracking1Ptr{nullptr},
+        mMemberLongPtr{nullptr},
+        mMemberObjectTracking0Ptr{nullptr},
+        mMemberObjectTracking1Ptr{nullptr}//,
+//        mDynamicLong{}
+    { }
+};
 
 // ***************************************************************************
 //      組み合わせテスト共通
