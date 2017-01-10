@@ -49,6 +49,22 @@
 //############################################################################
 
 // ***************************************************************************
+//      静的定義領域（グローバル変数）
+// ***************************************************************************
+
+//      ---<<< 保存側 >>>---
+
+long            gLongSave{101};             // プリミティブ
+ObjectTracking0 gObjectTracking0Save{201};  // Pointeeなしクラス
+ObjectTracking1 gObjectTracking1Save{301};  // Pointeeありクラス
+
+//      ---<<< 回復側 >>>---
+
+long            gLongLoad;              // プリミティブ
+ObjectTracking0 gObjectTracking0Load;   // Pointeeなしクラス
+ObjectTracking1 gObjectTracking1Load;   // Pointeeありクラス
+
+// ***************************************************************************
 //      保存
 // ***************************************************************************
 
@@ -61,10 +77,90 @@ void saveObjectTracking(tSerializer& iSerializer)
     iSerializer.clearTracking();
 
 //----------------------------------------------------------------------------
-//      2番目以降の基底クラス・ポインタのオブジェクト追跡テスト
+//      各種メモリへのポインタのテスト
+//          2番目以降の基底クラス・ポインタからのオブジェクト追跡テスト含む
+//
+//          shared_ptrの2番目以降の基底クラスによる保存／回復テストを含む。
+//          ただし、shared_ptrの網羅的テストはコンテナの自動テストで行う。
 //----------------------------------------------------------------------------
 
     {
+
+//      ---<<< データ構造生成 >>>---
+
+        // 静的定義領域（ローカル変数）
+        long            aLong{102};             // プリミティブ
+        ObjectTracking0 aObjectTracking0{202};  // Pointeeなしクラス
+        ObjectTracking1 aObjectTracking1{302};  // Pointeeありクラス
+
+        // 静的定義領域
+        std::unique_ptr<StaticDefinition>   aStaticDefinition{new StaticDefinition{true}};
+
+        // 動的定義領域(クラス側は2番目以降の基底クラス・ポインタのテスト含む)
+        std::shared_ptr<long>                   aDynamicLong{new long{500}};
+        std::shared_ptr<ObjectTrackingDerived>  aDynamicClass{new ObjectTrackingDerived{true}};
+
+        // ポインタ設定(THEOLIZER_PROCESS用)
+        //  グローバル変数ポイント用
+        long*               aGlobalLongPtr              =&gLongSave;
+        ObjectTracking0*    aGlobalObjectTracking0Ptr   =&gObjectTracking0Save;
+        ObjectTracking1*    aGlobalObjectTracking1Ptr   =&gObjectTracking1Save;
+
+        //  ローカル変数ポイント用
+        long*               aLocalLongPtr               =&aLong;
+        ObjectTracking0*    aLocalObjectTracking0Ptr    =&aObjectTracking0;
+        ObjectTracking1*    aLocalObjectTracking1Ptr    =&aObjectTracking1;
+
+        //  メンバ変数ポイント用
+        long*               aMemberLongPtr              =&(aStaticDefinition->mLong);
+        ObjectTracking0*    aMemberObjectTracking0Ptr   =&(aStaticDefinition->mObjectTracking0);
+        ObjectTracking1*    aMemberObjectTracking1Ptr   =&(aStaticDefinition->mObjectTracking1);
+
+        // ポインタ設定(自動コード生成用)
+        Pointers    aPointers;
+        aPointers.mGlobalLongPtr            =&gLongSave;
+        aPointers.mGlobalObjectTracking0Ptr =&gObjectTracking0Save;
+        aPointers.mGlobalObjectTracking1Ptr =&gObjectTracking1Save;
+        aPointers.mLocalLongPtr             =&aLong;
+        aPointers.mLocalObjectTracking0Ptr  =&aObjectTracking0;
+        aPointers.mLocalObjectTracking1Ptr  =&aObjectTracking1;
+        aPointers.mMemberLongPtr            =&(aStaticDefinition->mLong);
+        aPointers.mMemberObjectTracking0Ptr =&(aStaticDefinition->mObjectTracking0);
+        aPointers.mMemberObjectTracking1Ptr =&(aStaticDefinition->mObjectTracking1);
+        aPointers.mDynamicLong              =aDynamicLong;
+        aPointers.mDynamicClass             =aDynamicClass;
+
+//      ---<<< 保存処理 >>>---
+
+        // ポインタ(THEOLIZER_PROCESS用)保存
+        THEOLIZER_PROCESS(iSerializer, aGlobalLongPtr);
+        THEOLIZER_PROCESS(iSerializer, aGlobalObjectTracking0Ptr);
+        THEOLIZER_PROCESS(iSerializer, aGlobalObjectTracking1Ptr);
+        THEOLIZER_PROCESS(iSerializer, aLocalLongPtr);
+        THEOLIZER_PROCESS(iSerializer, aLocalObjectTracking0Ptr);
+        THEOLIZER_PROCESS(iSerializer, aLocalObjectTracking1Ptr);
+        THEOLIZER_PROCESS(iSerializer, aMemberLongPtr);
+        THEOLIZER_PROCESS(iSerializer, aMemberObjectTracking0Ptr);
+        THEOLIZER_PROCESS(iSerializer, aMemberObjectTracking1Ptr);
+
+        // 動的生成領域保存
+        THEOLIZER_PROCESS(iSerializer, aDynamicLong);
+        THEOLIZER_PROCESS(iSerializer, aDynamicClass);
+
+        // インスタンス保存
+        THEOLIZER_PROCESS_POINTEE(iSerializer, gLongSave);
+        THEOLIZER_PROCESS(iSerializer, gObjectTracking0Save);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, gObjectTracking1Save);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aLong);
+        THEOLIZER_PROCESS(iSerializer, aObjectTracking0);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aObjectTracking1);
+        THEOLIZER_PROCESS(iSerializer, aStaticDefinition);
+
+        // ポインタ(自動シリアライズ用)保存
+        THEOLIZER_PROCESS(iSerializer, aPointers);
+
+//      ---<<< 2番目以降の基底クラス・ポインタ(静的定義領域) >>>---
+
         ObjectTrackingDerived   aObjectTrackingDerived;
         THEOLIZER_PROCESS(iSerializer, aObjectTrackingDerived);
 
@@ -81,7 +177,6 @@ void saveObjectTracking(tSerializer& iSerializer)
 //      ---<<< 手動(トップ・レベル)によるポインタの保存 >>>---
 
     {
-
         // ポイント先群
         PointeeList         aPointeeList{true};
         PointeeList         aPointeeList2{2};
@@ -215,10 +310,121 @@ void loadObjectTracking(tSerializer& iSerializer)
     iSerializer.clearTracking();
 
 //----------------------------------------------------------------------------
-//      2番目以降の基底クラス・ポインタのオブジェクト追跡テスト
+//      各種メモリへのポインタのテスト
+//          2番目以降の基底クラス・ポインタからのオブジェクト追跡テスト含む
+//
+//          shared_ptrの2番目以降の基底クラスによる保存／回復テストを含む。
+//          ただし、shared_ptrの網羅的テストはコンテナの自動テストで行う。
 //----------------------------------------------------------------------------
 
     {
+
+//      ---<<< 回復先領域準備 >>>---
+
+        // 静的定義領域（ローカル変数）
+        long            aLong{0};               // プリミティブ
+        ObjectTracking0 aObjectTracking0{};     // Pointeeなしクラス
+        ObjectTracking1 aObjectTracking1{};     // Pointeeありクラス
+
+        // 静的定義領域（メンバ変数）
+        std::unique_ptr<StaticDefinition>   aStaticDefinition{new StaticDefinition{}};
+
+        // 動的定義領域
+        std::shared_ptr<long>                   aDynamicLong{};
+        std::shared_ptr<ObjectTrackingDerived>  aDynamicClass{};
+
+        // ポインタ設定(THEOLIZER_PROCESS用)
+        //  グローバル変数ポイント用
+        long*               aGlobalLongPtr              =nullptr;
+        ObjectTracking0*    aGlobalObjectTracking0Ptr   =nullptr;
+        ObjectTracking1*    aGlobalObjectTracking1Ptr   =nullptr;
+
+        //  ローカル変数ポイント用
+        long*               aLocalLongPtr               =nullptr;
+        ObjectTracking0*    aLocalObjectTracking0Ptr    =nullptr;
+        ObjectTracking1*    aLocalObjectTracking1Ptr    =nullptr;
+
+        //  メンバ変数ポイント用
+        long*               aMemberLongPtr              =nullptr;
+        ObjectTracking0*    aMemberObjectTracking0Ptr   =nullptr;
+        ObjectTracking1*    aMemberObjectTracking1Ptr   =nullptr;
+
+        // ポインタ領域(自動シリアライズ用)
+        Pointers    aPointers;
+
+//      ---<<< 回復処理 >>>---
+
+        // ポインタ(THEOLIZER_PROCESS用)回復
+        THEOLIZER_PROCESS(iSerializer, aGlobalLongPtr);
+        THEOLIZER_PROCESS(iSerializer, aGlobalObjectTracking0Ptr);
+        THEOLIZER_PROCESS(iSerializer, aGlobalObjectTracking1Ptr);
+        THEOLIZER_PROCESS(iSerializer, aLocalLongPtr);
+        THEOLIZER_PROCESS(iSerializer, aLocalObjectTracking0Ptr);
+        THEOLIZER_PROCESS(iSerializer, aLocalObjectTracking1Ptr);
+        THEOLIZER_PROCESS(iSerializer, aMemberLongPtr);
+        THEOLIZER_PROCESS(iSerializer, aMemberObjectTracking0Ptr);
+        THEOLIZER_PROCESS(iSerializer, aMemberObjectTracking1Ptr);
+
+        // 動的生成領域回復
+        THEOLIZER_PROCESS(iSerializer, aDynamicLong);
+        THEOLIZER_PROCESS(iSerializer, aDynamicClass);
+
+        // インスタンス回復
+        THEOLIZER_PROCESS_POINTEE(iSerializer, gLongLoad);
+        THEOLIZER_PROCESS(iSerializer, gObjectTracking0Load);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, gObjectTracking1Load);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aLong);
+        THEOLIZER_PROCESS(iSerializer, aObjectTracking0);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aObjectTracking1);
+        THEOLIZER_PROCESS(iSerializer, aStaticDefinition);
+
+        // ポインタ(自動シリアライズ用)回復
+        THEOLIZER_PROCESS(iSerializer, aPointers);
+
+//      ---<<< チェック >>>---
+
+        // ポインタ(THEOLIZER_PROCESS用)
+        THEOLIZER_EQUAL_PTR(aGlobalLongPtr,             &gLongLoad);
+        THEOLIZER_EQUAL_PTR(aGlobalObjectTracking0Ptr,  &gObjectTracking0Load);
+        THEOLIZER_EQUAL_PTR(aGlobalObjectTracking1Ptr,  &gObjectTracking1Load);
+        THEOLIZER_EQUAL_PTR(aLocalLongPtr,              &aLong);
+        THEOLIZER_EQUAL_PTR(aLocalObjectTracking0Ptr,   &aObjectTracking0);
+        THEOLIZER_EQUAL_PTR(aLocalObjectTracking1Ptr,   &aObjectTracking1);
+        THEOLIZER_EQUAL_PTR(aMemberLongPtr,             &(aStaticDefinition->mLong));
+        THEOLIZER_EQUAL_PTR(aMemberObjectTracking0Ptr,  &(aStaticDefinition->mObjectTracking0));
+        THEOLIZER_EQUAL_PTR(aMemberObjectTracking1Ptr,  &(aStaticDefinition->mObjectTracking1));
+
+        // 動的生成領域
+        THEOLIZER_EQUAL(*(aDynamicLong.get()),          500);
+        aDynamicClass->check();
+
+        // インスタンス
+        THEOLIZER_EQUAL(gLongLoad,                      101);
+        THEOLIZER_EQUAL(gObjectTracking0Load.mInt,      201);
+        THEOLIZER_EQUAL(gObjectTracking1Load.mShort,    301);
+        THEOLIZER_EQUAL(aLong,                          102);
+        THEOLIZER_EQUAL(aObjectTracking0.mInt,          202);
+        THEOLIZER_EQUAL(aObjectTracking1.mShort,        302);
+        aStaticDefinition->check(true);
+
+        // ポインタ(自動シリアライズ用)
+        THEOLIZER_EQUAL_PTR(aPointers.mGlobalLongPtr,               &gLongLoad);
+        THEOLIZER_EQUAL_PTR(aPointers.mGlobalObjectTracking0Ptr,    &gObjectTracking0Load);
+        THEOLIZER_EQUAL_PTR(aPointers.mGlobalObjectTracking1Ptr,    &gObjectTracking1Load);
+        THEOLIZER_EQUAL_PTR(aPointers.mLocalLongPtr,                &aLong);
+        THEOLIZER_EQUAL_PTR(aPointers.mLocalObjectTracking0Ptr,     &aObjectTracking0);
+        THEOLIZER_EQUAL_PTR(aPointers.mLocalObjectTracking1Ptr,     &aObjectTracking1);
+        THEOLIZER_EQUAL_PTR(aPointers.mMemberLongPtr,               &(aStaticDefinition->mLong));
+        THEOLIZER_EQUAL_PTR(aPointers.mMemberObjectTracking0Ptr,
+            &(aStaticDefinition->mObjectTracking0));
+        THEOLIZER_EQUAL_PTR(aPointers.mMemberObjectTracking1Ptr,
+            &(aStaticDefinition->mObjectTracking1));
+
+        THEOLIZER_EQUAL_PTR(aPointers.mDynamicLong.get(),           aDynamicLong.get());
+        THEOLIZER_EQUAL_PTR(aPointers.mDynamicClass.get(),          aDynamicClass.get());
+
+//      ---<<< 2番目以降の基底クラス・ポインタ(静的定義領域) >>>---
+
         ObjectTrackingDerived   aObjectTrackingDerived;
         THEOLIZER_PROCESS(iSerializer, aObjectTrackingDerived);
 
