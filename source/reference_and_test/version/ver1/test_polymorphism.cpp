@@ -67,11 +67,22 @@ void tutorisePolymorphism()
 //----------------------------------------------------------------------------
 
     {
-        std::ofstream   aStream("tutorise_object_tracking.json");
+//      ---<<< シリアライズ対象変数定義 >>>---
+
+        PolyBase*   aPolyBase0=new PolyDerived0{true};
+        PolyBase*   aPolyBase1=new PolyDerived1{true};
+
+//      ---<<< 保存処理 >>>---
+
+        std::ofstream   aStream("tutorise_polymorphism.json");
         theolizer::JsonOSerializer<> aSerializer(aStream);
 
-        // 非侵入型完全自動
+        // オーナーとして保存／回復する
+        THEOLIZER_PROCESS_OWNER(aSerializer, aPolyBase0);
+        THEOLIZER_PROCESS_OWNER(aSerializer, aPolyBase1);
 
+        // オブジェクトIDテーブルのクリア
+        aSerializer.clearTracking();
     }
 
 //----------------------------------------------------------------------------
@@ -79,10 +90,28 @@ void tutorisePolymorphism()
 //----------------------------------------------------------------------------
 
     {
-        std::ifstream   aStream("tutorise_object_tracking.json");
+
+//      ---<<< 回復先変数定義 >>>---
+
+        PolyBase*   aPolyBase0=nullptr;
+        PolyBase*   aPolyBase1=nullptr;
+
+//      ---<<< 回復処理 >>>---
+
+        std::ifstream   aStream("tutorise_polymorphism.json");
         theolizer::JsonISerializer<> aSerializer(aStream);
 
-        // 非侵入型完全自動
+        // オーナーとして保存／回復する
+        THEOLIZER_PROCESS_OWNER(aSerializer, aPolyBase0);
+        THEOLIZER_PROCESS_OWNER(aSerializer, aPolyBase1);
+
+        // オブジェクトIDテーブルのクリア
+        aSerializer.clearTracking();
+
+//      ---<<< 結果のチェック >>>---
+
+        aPolyBase0->check();
+        aPolyBase1->check();
     }
 
     std::cout << "tutorisePolymorphism() end\n" << std::endl;

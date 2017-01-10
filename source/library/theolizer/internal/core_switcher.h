@@ -68,6 +68,12 @@ struct Switcher
 //      ポインタ型(オブジェクト追跡)用Switcher
 //----------------------------------------------------------------------------
 
+#define THEOLIZER_INTERNAL_NON_FOUND_DERIVED(dBase)                         \
+    THEOLIZER_INTERNAL_DATA_ERROR(                                          \
+        u8"Can not find the derived class for %1%."                         \
+        " Please specify the derived class by THEOLIZER_REGISTER_CLASS((derived class));",\
+        dBase.getCName())
+
 //      ---<<< オブジェクト実体の保存 >>>---
 
 // ClassType以外
@@ -96,8 +102,7 @@ struct SavePointer<tBaseSerializer, tClassType, EnableIf<IsIntrusive<tClassType>
         );
         if (!ret)
         {
-            THEOLIZER_INTERNAL_DATA_ERROR
-                (u8"Can not find the derived class for %1%.", aClassTypeInfo.getCName());
+            THEOLIZER_INTERNAL_NON_FOUND_DERIVED(aClassTypeInfo);
         }
     }
 };
@@ -123,8 +128,7 @@ struct SavePointer
         );
         if (!ret)
         {
-            THEOLIZER_INTERNAL_DATA_ERROR
-                (u8"Can not find the derived class for %1%.", aClassTypeInfo.getCName());
+            THEOLIZER_INTERNAL_NON_FOUND_DERIVED(aClassTypeInfo);
         }
     }
 };
@@ -180,9 +184,9 @@ struct LoadPointer<tBaseSerializer, tClassType, EnableIf<IsIntrusive<tClassType>
                 aTypeIndexList
             );
         }
-        if (!ret) {
-            THEOLIZER_INTERNAL_DATA_ERROR
-                (u8"Can not find the derived class for %1%.", aClassTypeInfo.getCName());
+        if (!ret)
+        {
+            THEOLIZER_INTERNAL_NON_FOUND_DERIVED(aClassTypeInfo);
         }
     }
 };
@@ -221,9 +225,9 @@ struct LoadPointer<tBaseSerializer, tClassType, EnableIf<IsNonIntrusive<tClassTy
                 aTypeIndexList
             );
         }
-        if (!ret) {
-            THEOLIZER_INTERNAL_DATA_ERROR
-                (u8"Can not find the derived class for %1%.", aClassTypeInfo.getCName());
+        if (!ret)
+        {
+            THEOLIZER_INTERNAL_NON_FOUND_DERIVED(aClassTypeInfo);
         }
     }
 };

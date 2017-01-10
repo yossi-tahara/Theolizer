@@ -52,6 +52,7 @@
 
 void tutoriseObjectTracking()
 {
+//theolizer::DisplayPass aDisplayPass;
     std::cout << "tutoriseObjectTracking() start" << std::endl;
 
 //----------------------------------------------------------------------------
@@ -59,11 +60,62 @@ void tutoriseObjectTracking()
 //----------------------------------------------------------------------------
 
     {
+
+//      ---<<< シリアライズ対象変数定義 >>>---
+
+        // 静的定義領域(プリミティブ)
+        long    aLong{100};
+
+        // 静的定義領域(クラス)、動的生成領域(メンバ変数)
+        ObjectTrackingClass     aObjectTrackingClass{200, 300};
+
+        // 静的定義領域を指すポインタ
+        long*                   aLongPtr=&aLong;
+        ObjectTrackingClass*    aObjectTrackingClassPtr=&aObjectTrackingClass;
+
+        // 動的生成領域を指すポインタ(オーナー)
+        long*                   aLongOwner=new long{101};
+        ObjectTrackingClass*    aObjectTrackingClassOwner=new ObjectTrackingClass{201, 301};
+
+        auto temp0=makeAutoRelease(aLongOwner);                 // 自動解放設定
+        auto temp1=makeAutoRelease(aObjectTrackingClassOwner);  // 自動解放設定
+
+        // 動的生成領域を指すポインタ(非オーナー)
+        long*                   aLongPtr2=aLongOwner;
+        ObjectTrackingClass*    aObjectTrackingClassPtr2=aObjectTrackingClassOwner;
+
+        // THEOLIZER_ANNOTATE()でオブジェクト追跡指定された静的定義領域を指すポインタ
+        int*                    aIntPtr=aObjectTrackingClassOwner->getStatic();
+
+        // THEOLIZER_ANNOTATE()でオーナー指定された動的生成領域を指すポインタ(非オーナー)
+        short*                  aShortPtr=aObjectTrackingClassOwner->getDynamic();
+
 //      ---<<< 保存処理 >>>---
 
         std::ofstream   aStream("tutorise_object_tracking.json");
         theolizer::JsonOSerializer<> aSerializer(aStream);
 
+        // 通常のポインタ(静的定義領域)を保存
+        THEOLIZER_PROCESS(aSerializer, aLongPtr);
+        THEOLIZER_PROCESS(aSerializer, aObjectTrackingClassPtr);
+
+        // 静的定義領域(プリミティブ)を保存
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aLong);
+
+        // 静的定義領域(クラス)、動的生成領域(メンバ変数)を保存
+        THEOLIZER_PROCESS(aSerializer, aObjectTrackingClass);
+
+        // 動的生成領域を指すポインタ(オーナー)を保存
+        THEOLIZER_PROCESS_OWNER(aSerializer, aLongOwner);
+        THEOLIZER_PROCESS_OWNER(aSerializer, aObjectTrackingClassOwner);
+
+        // 動的生成領域を指すポインタ(非オーナー)を保存
+        THEOLIZER_PROCESS(aSerializer, aLongPtr2);
+        THEOLIZER_PROCESS(aSerializer, aObjectTrackingClassPtr2);
+
+        // THEOLIZER_ANNOTATE()で指定したインスタンスを指すボインタを保存
+        THEOLIZER_PROCESS(aSerializer, aIntPtr);
+        THEOLIZER_PROCESS(aSerializer, aShortPtr);
 
         // オブジェクトIDテーブルのクリア
         aSerializer.clearTracking();
@@ -74,13 +126,89 @@ void tutoriseObjectTracking()
 //----------------------------------------------------------------------------
 
     {
+
+//      ---<<< 回復先変数定義 >>>---
+
+        // 静的定義領域(プリミティブ)
+        long    aLong{0};
+
+        // 静的定義領域(クラス)、動的生成領域(メンバ変数)
+        ObjectTrackingClass     aObjectTrackingClass;
+
+        // 静的定義領域を指すポインタ
+        long*                   aLongPtr=nullptr;
+        ObjectTrackingClass*    aObjectTrackingClassPtr=nullptr;
+
+        // 動的生成領域を指すポインタ(オーナー)
+        long*                   aLongOwner=nullptr;
+        ObjectTrackingClass*    aObjectTrackingClassOwner=nullptr;
+
+        auto temp0=makeAutoRelease(aLongOwner);                 // 自動解放設定
+        auto temp1=makeAutoRelease(aObjectTrackingClassOwner);  // 自動解放設定
+
+        // 動的生成領域を指すポインタ(非オーナー)
+        long*                   aLongPtr2=nullptr;
+        ObjectTrackingClass*    aObjectTrackingClassPtr2=nullptr;
+
+        // THEOLIZER_ANNOTATE()でオブジェクト追跡指定された静的定義領域を指すポインタ
+        int*                    aIntPtr=nullptr;
+
+        // THEOLIZER_ANNOTATE()でオーナー指定された動的生成領域を指すポインタ(非オーナー)
+        short*                  aShortPtr=nullptr;
+
 //      ---<<< 回復処理 >>>---
 
         std::ifstream   aStream("tutorise_object_tracking.json");
         theolizer::JsonISerializer<> aSerializer(aStream);
 
+        // 通常のポインタ(静的定義領域)を回復
+        THEOLIZER_PROCESS(aSerializer, aLongPtr);
+        THEOLIZER_PROCESS(aSerializer, aObjectTrackingClassPtr);
+
+        // 静的定義領域(プリミティブ)を回復
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aLong);
+
+        // 静的定義領域(クラス)、動的生成領域(メンバ変数)を回復
+        THEOLIZER_PROCESS(aSerializer, aObjectTrackingClass);
+
+        // 動的生成領域を指すポインタ(オーナー)を回復
+        THEOLIZER_PROCESS_OWNER(aSerializer, aLongOwner);
+        THEOLIZER_PROCESS_OWNER(aSerializer, aObjectTrackingClassOwner);
+
+        // 動的生成領域を指すポインタ(非オーナー)を回復
+        THEOLIZER_PROCESS(aSerializer, aLongPtr2);
+        THEOLIZER_PROCESS(aSerializer, aObjectTrackingClassPtr2);
+
+        // THEOLIZER_ANNOTATE()で指定したインスタンスを指すボインタを回復
+        THEOLIZER_PROCESS(aSerializer, aIntPtr);
+        THEOLIZER_PROCESS(aSerializer, aShortPtr);
+
         // オブジェクトIDテーブルのクリア
         aSerializer.clearTracking();
+
+//      ---<<< 結果のチェック >>>---
+
+        // 通常のポインタ(静的定義領域)
+        THEOLIZER_EQUAL_PTR(aLongPtr, &aLong);
+        THEOLIZER_EQUAL_PTR(aObjectTrackingClassPtr, &aObjectTrackingClass);
+
+        // 静的定義領域(プリミティブ)
+        THEOLIZER_EQUAL(aLong, 100);
+
+        // 静的定義領域(クラス)、動的生成領域(メンバ変数)
+        aObjectTrackingClass.check(200, 300);
+
+        // 動的生成領域を指すポインタ(オーナー)
+        THEOLIZER_EQUAL(*aLongOwner, 101);
+        aObjectTrackingClassOwner->check(201, 301);
+
+        // 動的生成領域を指すポインタ(非オーナー)
+        THEOLIZER_EQUAL_PTR(aLongPtr2, aLongOwner);
+        THEOLIZER_EQUAL_PTR(aObjectTrackingClassPtr2, aObjectTrackingClassOwner);
+
+        // THEOLIZER_ANNOTATE()で指定したインスタンスを指すボインタ
+        THEOLIZER_EQUAL_PTR(aIntPtr,   aObjectTrackingClassOwner->getStatic());
+        THEOLIZER_EQUAL_PTR(aShortPtr, aObjectTrackingClassOwner->getDynamic());
     }
 
     std::cout << "tutoriseObjectTracking() end\n" << std::endl;

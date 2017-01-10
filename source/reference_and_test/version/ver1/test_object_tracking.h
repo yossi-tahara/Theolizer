@@ -31,6 +31,46 @@
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
+//      追跡対象のクラス例
+//----------------------------------------------------------------------------
+
+class   ObjectTrackingClass
+{
+    // 静的定義領域
+    int     mInt    THEOLIZER_ANNOTATE(FS:<>Pointee);
+
+    // 動的生成領域
+    short*  mShort  THEOLIZER_ANNOTATE(FS:<>Owner);
+public:
+    ObjectTrackingClass() :
+        mInt{0},
+        mShort{nullptr}
+    { }
+    ObjectTrackingClass(int iInt, short iShort) :
+        mInt{iInt},
+        mShort{new short{iShort}}
+    { }
+    ~ObjectTrackingClass()
+    {
+        delete mShort;
+    }
+    void check(int iInt, short iShort)
+    {
+        THEOLIZER_EQUAL(mInt, iInt);
+        THEOLIZER_EQUAL(*mShort, iShort);
+    }
+    int*   getStatic()  { return &mInt;  }
+    short* getDynamic() { return mShort; }
+
+    THEOLIZER_INTRUSIVE(CS, (ObjectTrackingClass), 1);
+};
+
+// ***************************************************************************
+//      各種メモリへのポインタのテスト
+//          2番目以降の基底クラス・ポインタからのオブジェクト追跡テスト含む
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
 //      2番目以降の基底クラス・ポインタのオブジェクト追跡テスト
 //          派生クラスのインスタンスを2番目以降の基底クラスへのポインタで
 //          追跡する場合のテスト用。

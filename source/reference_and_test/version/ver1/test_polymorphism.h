@@ -26,8 +26,46 @@
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
-//      
+//      基底クラス
 //----------------------------------------------------------------------------
+
+struct PolyBase
+{
+    int     mInt;
+    PolyBase(int iInt) : mInt(iInt) { }
+    virtual ~PolyBase() { }
+    virtual void check()=0;
+};
+
+//----------------------------------------------------------------------------
+//      派生クラス
+//----------------------------------------------------------------------------
+
+struct PolyDerived0 : public PolyBase
+{
+    short   mShort;
+    PolyDerived0() : PolyBase(0), mShort(0) { }
+    PolyDerived0(bool) : PolyBase(100), mShort(200) { }
+    void check()
+    {
+        THEOLIZER_EQUAL(mInt,   100);
+        THEOLIZER_EQUAL(mShort, 200);
+    }
+};
+THEOLIZER_REGISTER_CLASS((PolyDerived0));
+
+struct PolyDerived1 : public PolyBase
+{
+    std::string mString;
+    PolyDerived1() : PolyBase(0), mString("") { }
+    PolyDerived1(bool) : PolyBase(1000), mString("string") { }
+    void check()
+    {
+        THEOLIZER_EQUAL(mInt,    1000);
+        THEOLIZER_EQUAL(mString, "string");
+    }
+};
+THEOLIZER_REGISTER_CLASS((PolyDerived1));
 
 // ***************************************************************************
 //      基底クラス定義
