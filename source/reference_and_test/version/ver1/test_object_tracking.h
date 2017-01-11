@@ -222,7 +222,7 @@ struct Pointers
 //              (4)回復したポインタ変数のアドレス値のチェックとポイント先の値のチェック
 //----------------------------------------------------------------------------
 
-#ifndef SHRINK_FOR_MINGW64          // MinGWx64におけるFile too big回避用
+#ifndef SHRINK_FOR_MINGW            // MinGWにおけるFile too big回避用
 
 #define DEFINE_MEMBERS()                                                                \
     /* 文字型 */                                                                        \

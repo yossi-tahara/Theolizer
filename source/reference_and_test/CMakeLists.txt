@@ -188,10 +188,9 @@ endmacro(add_build_and_test)
 
 # MinGWの不具合(https://sourceforge.net/p/mingw-w64/discussion/723797/thread/c6b70624/#7f0a)暫定対策
 # 巨大なテスト用コンパイル単位を縮小する
-if((CMAKE_COMPILER_IS_MINGW) AND (CMAKE_SIZEOF_VOID_P EQUAL 8))
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSHRINK_FOR_MINGW64")
-    message(STATUS "add(CMAKE_CXX_FLAGS -DSHRINK_FOR_MINGW64)")
-
+if(CMAKE_COMPILER_IS_MINGW)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSHRINK_FOR_MINGW")
+    message(STATUS "add(CMAKE_CXX_FLAGS -DSHRINK_FOR_MINGW)")
 ##  通常数分のビルドが1時間以上経過しても終了しない
 ##  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -Wa,-mbig-obj")
 ##  message(STATUS "add(CMAKE_CXX_FLAGS -O3 -Wa,-mbig-obj)")
