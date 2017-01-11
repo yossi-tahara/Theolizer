@@ -93,7 +93,7 @@ void saveObjectTracking(tSerializer& iSerializer)
         ObjectTracking0 aObjectTracking0{202};  // Pointeeなしクラス
         ObjectTracking1 aObjectTracking1{302};  // Pointeeありクラス
 
-        // 静的定義領域
+        // 静的定義領域（メンバ変数）
         std::unique_ptr<StaticDefinition>   aStaticDefinition{new StaticDefinition{true}};
 
         // 動的定義領域(クラス側は2番目以降の基底クラス・ポインタのテスト含む)
@@ -171,7 +171,7 @@ void saveObjectTracking(tSerializer& iSerializer)
     }
 
 //----------------------------------------------------------------------------
-//      通常ポインタのテスト
+//      ポインタのテスト
 //----------------------------------------------------------------------------
 
 //      ---<<< 手動(トップ・レベル)によるポインタの保存 >>>---
@@ -263,9 +263,9 @@ void saveObjectTracking(tSerializer& iSerializer)
         PointeeListManual   aPointeeListManual{true};
 
         // ポインタ群
-        ManualClass4PointerList aManualClass4PointerListA{aPointeeList,  aPointeeList2};
-        ManualClass4PointerList aManualClass4PointerListB{aPointeeList,  aPointeeListManual};
-        ManualClass4PointerList aManualClass4PointerListC{aPointeeList2, aPointeeListManual};
+        PointerListManual aManualClass4PointerListA{aPointeeList,  aPointeeList2};
+        PointerListManual aManualClass4PointerListB{aPointeeList,  aPointeeListManual};
+        PointerListManual aManualClass4PointerListC{aPointeeList2, aPointeeListManual};
 
         // ポイント先保存1：手動(トップ・レベル)
         std::cout << "        savePointee() : aPointeeList" << std::endl;
@@ -437,7 +437,7 @@ void loadObjectTracking(tSerializer& iSerializer)
     }
 
 //----------------------------------------------------------------------------
-//      通常ポインタのテスト
+//      ポインタのテスト
 //----------------------------------------------------------------------------
 
 //      ---<<< 手動(トップ・レベル)によるポインタ（左辺値）の回復 >>>---
@@ -547,9 +547,9 @@ void loadObjectTracking(tSerializer& iSerializer)
         PointeeListManual   aPointeeListManual;
 
         // ポインタ
-        ManualClass4PointerList aManualClass4PointerListA;
-        ManualClass4PointerList aManualClass4PointerListB;
-        ManualClass4PointerList aManualClass4PointerListC;
+        PointerListManual aManualClass4PointerListA;
+        PointerListManual aManualClass4PointerListB;
+        PointerListManual aManualClass4PointerListC;
 
         // ポイント先回復1：手動(トップ・レベル)
         std::cout << "        loadPointee() : aPointeeList" << std::endl;

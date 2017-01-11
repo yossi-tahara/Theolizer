@@ -55,7 +55,7 @@ template<class tSerializer>
 void saveObjectTracking3(tSerializer& iSerializer)
 {
 //----------------------------------------------------------------------------
-//      オーナー指定ポインタのテスト
+//      オーナー・ポインタのテスト
 //----------------------------------------------------------------------------
 
 //      ---<<< 手動(トップ・レベル)によるポインタの保存 >>>---
@@ -98,8 +98,8 @@ void saveObjectTracking3(tSerializer& iSerializer)
 
     {
         // ポインタ群
-        ManualClass4OwnerList aManualClass4OwnerListNull;
-        ManualClass4OwnerList aManualClass4OwnerList{true};
+        OwnerListManual aManualClass4OwnerListNull;
+        OwnerListManual aManualClass4OwnerList{true};
 
         // nullptrポインタ保存
         std::cout << "        THEOLIZER_PROCESS() : aManualClass4OwnerListNull" << std::endl;
@@ -123,7 +123,7 @@ template<class tSerializer>
 void loadObjectTracking3(tSerializer& iSerializer)
 {
 //----------------------------------------------------------------------------
-//      オーナー指定ポインタのテスト
+//      オーナー・ポインタのテスト
 //----------------------------------------------------------------------------
 
 //      ---<<< 手動(トップ・レベル)によるポインタの回復 >>>---
@@ -175,8 +175,8 @@ void loadObjectTracking3(tSerializer& iSerializer)
 
     {
         // ポインタ群
-        ManualClass4OwnerList aManualClass4OwnerListNull;
-        ManualClass4OwnerList aManualClass4OwnerList{true};
+        OwnerListManual aManualClass4OwnerListNull;
+        OwnerListManual aManualClass4OwnerList{true};
 
         // nullptrポインタ回復
         std::cout << "        THEOLIZER_PROCESS() : aManualClass4OwnerListNull" << std::endl;

@@ -94,7 +94,6 @@ struct ObjectTrackingBase1
     virtual ~ObjectTrackingBase1() { }
 };
 
-
 struct ObjectTrackingDerived : public ObjectTrackingBase0, public ObjectTrackingBase1
 {
     long    mLong;
@@ -326,7 +325,7 @@ struct Pointers
 #define DEFAULT_PTR(dType)  reinterpret_cast<dType*>(0xffff)
 
 // ***************************************************************************
-//      通常のポインタのテスト
+//      ポインタのテスト
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
@@ -749,15 +748,15 @@ inline void loadPointer(tSerializer& iSerializer, PointerList& iPointerList)
 //          手動（非トップ・レベル）メンバ1つ1つをTHEOLIZER_PROCESS()する
 //----------------------------------------------------------------------------
 
-struct ManualClass4PointerList : public PointerList
+struct PointerListManual : public PointerList
 {
     using   PointerList::PointerList;
 };
 
-THEOLIZER_NON_INTRUSIVE_ORDER((ManualClass4PointerList), 1);
+THEOLIZER_NON_INTRUSIVE_ORDER((PointerListManual), 1);
 
 template<class tBaseSerializer, class tTheolizerVersion>
-struct TheolizerNonIntrusive<ManualClass4PointerList>::
+struct TheolizerNonIntrusive<PointerListManual>::
     TheolizerUserDefine<tBaseSerializer, tTheolizerVersion, 1>
 {
     // Save members.
@@ -810,7 +809,7 @@ struct TheolizerNonIntrusive<ManualClass4PointerList>::
 };
 
 // ***************************************************************************
-//      オーナー指定ポインタのテスト
+//      オーナー・ポインタのテスト
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
@@ -1010,15 +1009,15 @@ inline void loadOwner(tSerializer& iSerializer, OwnerList& iOwnerList)
 //          手動（非トップ・レベル）メンバ1つ1つをTHEOLIZER_PROCESS_OWNER()する
 //----------------------------------------------------------------------------
 
-struct ManualClass4OwnerList : public OwnerList
+struct OwnerListManual : public OwnerList
 {
     using   OwnerList::OwnerList;
 };
 
-THEOLIZER_NON_INTRUSIVE_ORDER((ManualClass4OwnerList), 1);
+THEOLIZER_NON_INTRUSIVE_ORDER((OwnerListManual), 1);
 
 template<class tBaseSerializer, class tTheolizerVersion>
-struct TheolizerNonIntrusive<ManualClass4OwnerList>::
+struct TheolizerNonIntrusive<OwnerListManual>::
     TheolizerUserDefine<tBaseSerializer, tTheolizerVersion, 1>
 {
     // Save members.
