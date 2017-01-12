@@ -15,6 +15,7 @@ var searchData=
   ['getrbforadaptor',['getRBForAdaptor',['../namespacetheolizer.html#af1882553ed93e096447de1347c52ea42',1,'theolizer']]],
   ['getrbforindexer',['getRBForIndexer',['../namespacetheolizer.html#a272329e3c82199c56e5a7559e49af7a2',1,'theolizer']]],
   ['getrbforseparator',['getRBForSeparator',['../namespacetheolizer.html#a76ac39d337c51eac758bf4f5e29c6c4b',1,'theolizer']]],
+  ['getsharedptrtable',['getSharedPtrTable',['../classtheolizer_1_1internal_1_1_base_serializer.html#ad0a41928bd274cd1b091a18b30640b11',1,'theolizer::internal::BaseSerializer']]],
   ['getsourceshash',['getSourcesHash',['../namespacetheolizer.html#a2a32c180b64431f2d0a538255aa9b82b',1,'theolizer']]],
   ['getstring',['getString',['../classtheolizer_1_1_error_info.html#ae6d35783fff94d91b1e62b461cfdca12',1,'theolizer::ErrorInfo']]],
   ['getthreadid',['getThreadId',['../classtheolizer_1_1_thread_guard.html#aefbb0efd018bfefde67a61b5b27cfd41',1,'theolizer::ThreadGuard']]],

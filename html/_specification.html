@@ -20,6 +20,7 @@
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="my_style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -29,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.2-Prerelease.</span>
+   &#160;<span id="projectnumber">Version.0.4.2</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -266,6 +267,18 @@ $(document).ready(function(){initNavTree('_specification.html','');});
 1-6-3.仮想基底クラス</h3>
 <p>現在、仮想基底クラスは非対応です。<br />
  オブジェクト追跡することで対応できる可能性はありますので、有用性が高い場合に対応を検討します。</p>
+<h3><a class="anchor" id="Basic164"></a>
+1-6-4.ポリモーフィズムにおける制約事項</h3>
+<p>現在のTheolizerでは<a href="https://github.com/yossi-tahara/Theolizer/issues/13">2点制約</a>があります。<br />
+</p>
+<ol type="1">
+<li>抽象クラスの非侵入型手動クラスに対応していません<br />
+ 自動型（非侵入型完全自動クラスと侵入型半自動クラス）については抽象クラスでも問題ありません。通常通り派生してインスタンス生成すればシリアライズ可能です。<br />
+ しかし、非侵入型手動クラスが抽象クラスの時は派生してインスタンス生成した場合でも、シリアライズできません。対応は可能ですが、開発に時間がかかるため現時点では対応していません。<br />
+</li>
+<li>基底クラスを異なるクラスへ変更することはできません。<br />
+ 基底クラスをバージョン・アップすることは可能ですが、例えば既存の別のクラスへ変更するような修正には対応していません。必要性は低いと思いますので、現時点では非対応とします。</li>
+</ol>
 <p><br />
  </p><h6></h6>
 <h1><a class="anchor" id="Tracking"></a>
@@ -274,26 +287,25 @@ $(document).ready(function(){initNavTree('_specification.html','');});
 <hr/>
 <h2><a class="anchor" id="Basic21"></a>
 2-1.オブジェクト追跡する領域について</h2>
-<p>下記についてオブジェクト追跡を行いますので、これらへのポインタはアドレス解決できます。</p>
+<p>全ての変数についてオブジェクト追跡すれば確実にアドレス解決できるのですが、ポイントされていないものまで追跡するのは無駄です。<br />
+ そこで、原則としてポインタ経由でシリアライズされた「型」についてオブジェクト追跡しています。ただし、int型等のプリミティブについて1つのint型変数がポイントされただけで全てのint型を追跡するのは無駄が多いです。そこで、プリミティブについては追跡する変数自体に追跡指定するようにしました。</p>
+<p>そこで、下記についてオブジェクト追跡を行ようにしました。</p>
 <ul>
 <li>ポインタ型からポイントされたクラス型の全てのインスタンス</li>
 <li>被ポインタ(THEOLIZER_ANNOTATE(FS:...&lt;...&gt;Pointee))指定されたメンバ変数</li>
 <li>被ポインタ(THEOLIZER_PROCESS_POINTEE)として保存指定された変数</li>
 </ul>
-<p>被ポインタ指定はプリミティブ型をオブジェクト追跡する場合に用いることを想定しています。<br />
- ポイントされたプリミティブ型全てのインスタンスを追跡するとオブジェクト追跡が重くなりすぎると予想されるため、指定されたインスタンスに対してのみオブジェクト追跡します。</p>
 <p>また、配列については、その1つ1つの要素をオブジェクト追跡します。配列全体は追跡しません。<br />
  例えば、int foo[3];の時、foo[0], foo[1], foo[2]を追跡しますが、foo全体は追跡しません。<br />
  foo[0]のアドレスとfoo全体の先頭アドレスは同じアドレスですが型が異なるため、異なるオブジェクトとしてとして取り扱うためです。</p>
 <h2><a class="anchor" id="Basic22"></a>
-2-2.ポインタ型のアドレス回復について</h2>
-<p>ポイント先が同じ<b>オブジェクト追跡単位</b>内に記録されていることが必要です。<br />
- <b>オブジェクト追跡単位</b>とは、下記の期間です。</p><ul>
+2-2.オブジェクト追跡単位について</h2>
+<p>オブジェクト追跡はインタンス実体のアドレスを追跡しますので、ポインタの指すインスタンスが同じ<b>オブジェクト追跡単位</b>内に記録されている必要があります。<br />
+</p>
+<p>その<b>オブジェクト追跡単位</b>は、下記の期間です。</p><ul>
 <li>コンストラクト～clearTracking()</li>
 <li>clearTracking()～clearTracking()</li>
 </ul>
-<p><b>注意事項：</b><br />
- C/C++では一般にポインタが指す領域を開放してしまうと、そのポインタは不正領域へのポインタとなります。その制限はTheolizerも回避できません。シリアライズした領域を開放した場合、そこへのポインタも開放した領域へのポインタとなります。</p>
 <h2><a class="anchor" id="Basic23"></a>
 2-3.ポリモーフィズム対応</h2>
 <p>基底クラスのオーナー・ポインタ型に対して、派生クラス・インスタンスの回復が可能です。<br />

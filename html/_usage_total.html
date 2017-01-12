@@ -20,6 +20,7 @@
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
 <link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="my_style.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <div id="top"><!-- do not remove this div, it is closed by doxygen! -->
@@ -29,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.2-Prerelease.</span>
+   &#160;<span id="projectnumber">Version.0.4.2</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -206,7 +207,7 @@ $(document).ready(function(){initNavTree('_usage_total.html','');});
 <p>最後にシリアライザ・インスタンスを破棄することでシリアライズ処理を完了します。<br />
  生成時に例外発生を禁止していた場合に、エラー状態をリセットしないまま破棄すると、プロセスをアボートします。これはエラー状態の見逃しを回避するための仕様です。<br />
  例外発生を禁止している場合は、破棄する前には必ずエラー情報をチェクした上で、エラー状態をリセットして下さい。<br />
- 具体的手順は<a class="el" href="_error_report.html">エラー処理方法</a> にて説明します。</p>
+ 具体的手順は<a class="el" href="_error_report.html">エラー処理</a> にて説明します。</p>
 <p><b>ファイルへの保存例：(source/samples/example/example.cpp）</b></p>
  <div class="fragment"><div class="line">    {</div><div class="line">        <span class="comment">// データを生成する</span></div><div class="line">        StructType aStructType;</div><div class="line">        aStructType.mEnum   = EnumB;</div><div class="line">        aStructType.mInt    = 1001;</div><div class="line">        aStructType.mString = u8<span class="stringliteral">&quot;ＵＴＦ－８　ｓｔｒｉｎｇ&quot;</span>;</div><div class="line"></div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;example.json&quot;</span>);    <span class="comment">// 保存先のファイルをオープンする</span></div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> js(aStream);   <span class="comment">// シリアライザを用意する</span></div><div class="line">        THEOLIZER_PROCESS(js, aStructType);         <span class="comment">// example.jsonファイルへ保存する</span></div><div class="line">    }</div></div><!-- fragment --></p>
 <p><b>ファイルからの回復例：(source/samples/example/example.cpp）</b></p>

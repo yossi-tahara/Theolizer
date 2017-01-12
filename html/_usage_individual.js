@@ -30,9 +30,40 @@ var _usage_individual =
       [ "2.非侵入型半自動enum型", "_enum_variation.html#HalfAutoEnumSymName", null ],
       [ "3.網羅的な使用例（自動テスト）の説明", "_enum_variation.html#TestEnumVariation", null ]
     ] ],
+    [ "オブジェクト追跡について", "_object_tracking.html", [
+      [ "1.オブジェクト追跡の使い方", "_object_tracking.html#HowToObjectTracking", [
+        [ "1-1.指定方法", "_object_tracking.html#HowToObjectTracking11", null ],
+        [ "1-2.サンプル・ソース", "_object_tracking.html#HowToObjectTracking12", null ]
+      ] ],
+      [ "2.ポリモーフィズムの使い方", "_object_tracking.html#Polymorphism", [
+        [ "3-1.使い方", "_object_tracking.html#Polymorphism31", null ]
+      ] ],
+      [ "3.オブジェクト追跡の仕組み", "_object_tracking.html#ClearTracking", [
+        [ "3-1.ポインタをシリアライズする仕組み", "_object_tracking.html#HowToObjectTracking31", null ],
+        [ "3-2.オブジェクト追跡の課題", "_object_tracking.html#HowToObjectTracking32", null ],
+        [ "3-3.オブジェクト追跡で用いる用語", "_object_tracking.html#HowToObjectTracking33", null ],
+        [ "3-4.オブジェクト追跡対象について", "_object_tracking.html#HowToObjectTracking34", null ],
+        [ "3-5.オブジェクト追跡単位について", "_object_tracking.html#HowToObjectTracking35", null ]
+      ] ],
+      [ "4.オブジェクト追跡の網羅的な使用例（自動テスト）の説明", "_object_tracking.html#TestObjectTracking", [
+        [ "4-1.各種メモリへのポインタのテスト", "_object_tracking.html#TestObjectTracking41", [
+          [ "4-1-1.概要", "_object_tracking.html#TestObjectTracking411", null ],
+          [ "4-1-2.ソース・コード", "_object_tracking.html#TestObjectTracking412", null ]
+        ] ],
+        [ "4-2.ポインタ(非オーナー)のテスト", "_object_tracking.html#TestObjectTracking42", [
+          [ "4-2-1.概要", "_object_tracking.html#TestObjectTracking421", null ],
+          [ "4-2-2.ソース・コード", "_object_tracking.html#TestObjectTracking422", null ]
+        ] ],
+        [ "4-3.オーナー・ポインタのテスト", "_object_tracking.html#TestObjectTracking43", [
+          [ "4-3-1.概要", "_object_tracking.html#TestObjectTracking431", null ],
+          [ "4-3-2.ソース・コード", "_object_tracking.html#TestObjectTracking432", null ]
+        ] ]
+      ] ],
+      [ "5.ポリモーフィズムの網羅的な使用例（自動テスト）の説明", "_object_tracking.html#TestPolymorphism", null ]
+    ] ],
     [ "保存先指定について", "_destinations.html", null ],
     [ "標準コンテナ（STL）の使い方", "_usage_s_t_l.html", null ],
-    [ "オブジェクト追跡について", "_object_tracking.html", null ],
+    [ "enum型の変更方法、および、バージョン・アップ方法", "_changing_enum.html", null ],
     [ "クラス定義の変更方法、および、バージョン・アップ方法", "_changing_class.html", null ],
-    [ "enum型の変更方法、および、バージョン・アップ方法", "_changing_enum.html", null ]
+    [ "エラー処理", "_error_report.html", null ]
 ];

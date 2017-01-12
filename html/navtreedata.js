@@ -2,7 +2,6 @@ var NAVTREE =
 [
   [ "Theolizer", "index.html", [
     [ "--目次--", "index.html", "index" ],
-    [ "エラー処理方法", "_error_report.html", null ],
     [ "todo一覧", "todo.html", null ],
     [ "モジュール", "modules.html", "modules" ],
     [ "名前空間", null, [
@@ -39,7 +38,7 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 ".html",
-"classtheolizer_1_1internal_1_1_json_mid_o_serializer.html#a9488d9fdd45a7de9855f6367014f084f"
+"classtheolizer_1_1internal_1_1_base_serializer.html"
 ];
 
 var SYNCONMSG = 'クリックで同期表示が無効になります';

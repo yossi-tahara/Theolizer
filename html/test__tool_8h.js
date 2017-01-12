@@ -22,6 +22,7 @@ var test__tool_8h =
     [ "operator<<", "test__tool_8h.html#a37ac656fb0bf23e1e9b29c81778298b3", null ],
     [ "operator<<", "test__tool_8h.html#a8e287e87ff13ef16dc571b076f515640", null ],
     [ "operator<<", "test__tool_8h.html#a8013255e40614de9b6c0e0d3a50d9cf5", null ],
+    [ "operator<<", "test__tool_8h.html#a1cedc9429f1c7eaa17911659d40854f8", null ],
     [ "printResult", "test__tool_8h.html#a436bafe5d223b76aaeaf020a5407c4eb", null ],
     [ "removeFile", "test__tool_8h.html#a78b05f902134ab4dcddf2ec2b021b26a", null ],
     [ "setWritePermission", "test__tool_8h.html#a99b880d1e11549e64b2ea9a3773fed24", null ]

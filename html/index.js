@@ -33,12 +33,13 @@ var index =
         [ "1-6.制約事項", "_specification.html#Basic16", [
           [ "1-6-1.デフォルト・コンストラクタが必要", "_specification.html#Basic161", null ],
           [ "1-6-2.クラスのstatic変数について", "_specification.html#Basic162", null ],
-          [ "1-6-3.仮想基底クラス", "_specification.html#Basic163", null ]
+          [ "1-6-3.仮想基底クラス", "_specification.html#Basic163", null ],
+          [ "1-6-4.ポリモーフィズムにおける制約事項", "_specification.html#Basic164", null ]
         ] ]
       ] ],
       [ "2.オブジェクト追跡", "_specification.html#Tracking", [
         [ "2-1.オブジェクト追跡する領域について", "_specification.html#Basic21", null ],
-        [ "2-2.ポインタ型のアドレス回復について", "_specification.html#Basic22", null ],
+        [ "2-2.オブジェクト追跡単位について", "_specification.html#Basic22", null ],
         [ "2-3.ポリモーフィズム対応", "_specification.html#Basic23", null ]
       ] ],
       [ "3.バージョン変更", "_specification.html#Modifying", [
