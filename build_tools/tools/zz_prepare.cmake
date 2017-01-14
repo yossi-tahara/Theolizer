@@ -51,6 +51,13 @@ function(output_summary)
     message(STATUS "\n\n########## Summary ##########")
     file(READ ${SUMMARY} OUTPUT_STRING)
     message(STATUS ${OUTPUT_STRING})
+
+    string(REGEX MATCH "Test failed!!\n" RESULT "${OUTPUT_STRING}")
+    if("${RESULT}" STREQUAL "")
+        message(STATUS "\n########## Test passed. ##########\n")
+    else()
+        message(SEND_ERROR "\n########## Test failed. ##########\n")
+    endif()
 endfunction()
 
 #-----------------------------------------------------------------------------
@@ -70,6 +77,7 @@ if(FALSE)
     message(STATUS "BUILD_DRIVER    =${BUILD_DRIVER}")
     message(STATUS "BUILD_DOCUMENT  =${BUILD_DOCUMENT}")
     message(STATUS "PROC_ALL        =${PROC_ALL}")
+    message(STATUS "BUILD_DEBUG     =${BUILD_DEBUG}")
 endif()
 
     # パラメータ・チェック
@@ -116,17 +124,17 @@ endif()
         endif()
         set(MSVC_PATH "$ENV{VSSDK140Install}../VC/bin")
         STRING(REPLACE "\\" "/" MSVC_PATH "${MSVC_PATH}")
-        set(CC_PATH "")
-    elseif("${COMPILER}" STREQUAL "mingw540")
-        set(GENERATOR "MinGW Makefiles")
+    elseif("${COMPILER}" STREQUAL "gcc540")
+        set(GENERATOR "Unix Makefiles")
         if("${BIT_NUM}" STREQUAL "64")
             set(CC_PATH "${CC64}")
         else()
             set(CC_PATH "${CC32}")
         endif()
         set(MSVC_PATH "")
-    elseif("${COMPILER}" STREQUAL "gcc540")
-        set(GENERATOR "Unix Makefiles")
+        set(CC_PATH "")
+    elseif("${COMPILER}" STREQUAL "mingw540")
+        set(GENERATOR "MinGW Makefiles")
         if("${BIT_NUM}" STREQUAL "64")
             set(CC_PATH "${CC64}")
         else()
@@ -203,6 +211,11 @@ endmacro()
 #-----------------------------------------------------------------------------
 
 function(build_process COMPILER BIT_NUM LIB_TYPE CONFIG_TYPE BUILD_DRIVER BUILD_DOCUMENT)
+
+    if("${BUILD_DEBUG}" STREQUAL "")
+        set(BUILD_DEBUG TRUE)
+    endif()
+
     setup_build_folder("${COMPILER}" "${BIT_NUM}" "${LIB_TYPE}" "${CONFIG_TYPE}" "${BUILD_DRIVER}" "${BUILD_DOCUMENT}")
 
     execute_process(
@@ -216,7 +229,8 @@ function(build_process COMPILER BIT_NUM LIB_TYPE CONFIG_TYPE BUILD_DRIVER BUILD_
 
     if(NOT "${PROC_ALL}" STREQUAL "config_all")
         execute_process(
-            COMMAND ${CMAKE_COMMAND} -DPROC=full   -DPROC_ALL=${PROC_ALL} "-DSUMMARY=${SUMMARY}" "-DPASS_LIST=${ARGN}"
+            COMMAND ${CMAKE_COMMAND} -DPROC=full   -DPROC_ALL=${PROC_ALL} "-DSUMMARY=${SUMMARY}"
+                "-DBUILD_DEBUG=${BUILD_DEBUG}" "-DPASS_LIST=${ARGN}"
                 -P zz_process.cmake
             WORKING_DIRECTORY "${BUILD_DIR}"
             RESULT_VARIABLE RETURN_CODE
@@ -255,7 +269,9 @@ function(build_by_gcc COMPILER BIT_NUM LIB_TYPE BUILD_DRIVER BUILD_DOCUMENT RELE
     output_title("------ ${COMPILER}x${BIT_NUM}-${LIB_TYPE}-Release ${DRIVER}------")
     build_process("${COMPILER}" "${BIT_NUM}" "${LIB_TYPE}" "Release" "${BUILD_DRIVER}" "${BUILD_DOCUMENT}" ${RELEASE_LIST})
 
-    output_title("------ ${COMPILER}x${BIT_NUM}-${LIB_TYPE}-Debug ------")
-    build_process("${COMPILER}" "${BIT_NUM}" "${LIB_TYPE}" "Debug"   "FALSE" "FALSE" ${DEBUG_LIST})
+    if(BUILD_DEBUG)
+        output_title("------ ${COMPILER}x${BIT_NUM}-${LIB_TYPE}-Debug ------")
+        build_process("${COMPILER}" "${BIT_NUM}" "${LIB_TYPE}" "Debug"   "FALSE" "FALSE" ${DEBUG_LIST})
+    endif()
 
 endfunction()

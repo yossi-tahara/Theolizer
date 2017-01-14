@@ -64,6 +64,7 @@ if(FALSE)
 
     message(STATUS "PROC_ALL        =${PROC_ALL}")
     message(STATUS "THEOLIZER_ROOT  =${THEOLIZER_ROOT}")
+    message(STATUS "BUILD_DEBUG     =${BUILD_DEBUG}")
 endif()
 
 set(BUILD_TYPE "")
@@ -100,6 +101,7 @@ function(parameter_log LOG_FILE)
 
     file(APPEND ${LOG_FILE} "PROC_ALL        =${PROC_ALL}\n")
     file(APPEND ${LOG_FILE} "THEOLIZER_ROOT  =${THEOLIZER_ROOT}\n")
+    file(APPEND ${LOG_FILE} "BUILD_DEBUG     =${BUILD_DEBUG}\n")
     file(APPEND ${LOG_FILE} "\n")
 
 endfunction()
@@ -119,15 +121,33 @@ endmacro()
 
 #       ---<<< search >>>---
 
-function(search LOG_FILE REGEX_STRING)
+function(search LOG_FILE IS_PASSED_NUMBER REGEX_STRING)
 
-    file(STRINGS  ${LOG_FILE} FOUND_LIST REGEX "${REGEX_STRING}")
+    file(READ ${LOG_FILE} OUTPUT_STRING)
+    string(REGEX MATCHALL "${REGEX_STRING}" FOUND_LIST  ${OUTPUT_STRING})
+
+    set(IS_FALSE FALSE)
     foreach(LINE IN LISTS FOUND_LIST)
         message(STATUS "${LINE}")
         if (NOT "${SUMMARY}" STREQUAL "")
             file(APPEND ${SUMMARY} "${LINE}\n")
         endif()
+        if(IS_PASSED_NUMBER)
+            if(NOT "${LINE}" MATCHES "100%")
+                set(IS_FALSE TRUE)
+            endif()
+        endif()
     endforeach()
+
+    if(IS_PASSED_NUMBER)
+        if (IS_FALSE)
+            file(APPEND ${SUMMARY} "Test failed!!\n")
+        endif()
+    else()
+        if (NOT "${FOUND_LIST}" STREQUAL "")
+            file(APPEND ${SUMMARY} "Test failed!!\n")
+        endif()
+    endif()
 
 endfunction()
 
@@ -183,11 +203,11 @@ macro(end LOG_FILE BREAK)
         endif()
     endif()
 
-    search(${LOG_FILE} "Configuring incomplete,")
-    search(${LOG_FILE} ": warning")
-    search(${LOG_FILE} ": error ")
-    search(${LOG_FILE} ": undefined reference to ")
-    search(${LOG_FILE} "% tests passed")
+    search(${LOG_FILE} FALSE "[^\n]*Configuring incomplete,")
+    search(${LOG_FILE} FALSE "[^\n]*[^0-9A-Za-z_]warning[^0-9A-Za-z_]............")
+    search(${LOG_FILE} FALSE "[^\n]*[^0-9A-Za-z_]error[^0-9A-Za-z_]............")
+    search(${LOG_FILE} FALSE "[^\n]*[^0-9A-Za-z_]undefined reference[^0-9A-Za-z_]")
+    search(${LOG_FILE} TRUE  "[^\n]*[0-9]% tests passed[^0-9A-Za-z_][^\n]*")
 
     if(BREAK)
         if(NOT ${RETURN_CODE} EQUAL 0)
@@ -197,22 +217,15 @@ macro(end LOG_FILE BREAK)
 
     # テスト結果の数を確認
     if(NOT "${ARGN}" STREQUAL "")
-        set(PASS_LIST ${ARGN})
-        set(INDEX 0)
+        set(NOW_PASS_LIST ${ARGN})
         file(STRINGS  ${LOG_FILE} FOUND_LIST REGEX "% tests passed")
+
+        set(INDEX 0)
         foreach(LINE IN LISTS FOUND_LIST)
-            list(GET PASS_LIST ${INDEX} PASS_NUMBER)
+            list(GET NOW_PASS_LIST ${INDEX} PASS_NUMBER)
             math(EXPR INDEX "${INDEX} + 1")
 
 ##          message(STATUS "${LINE}")
-            if(NOT "${LINE}" MATCHES "100%")
-                message(STATUS "error: ${LINE}")
-                if (NOT "${SUMMARY}" STREQUAL "")
-                    file(APPEND ${SUMMARY} "error: ${LINE}\n")
-                endif()
-        continue()
-            endif()
-
             string(REGEX MATCH "out of [0-9]+" NUMBER "${LINE}")
             string(SUBSTRING "${NUMBER}" 7 10 NUMBER)
             if (NOT ${NUMBER} EQUAL ${PASS_NUMBER})
@@ -284,8 +297,10 @@ macro(prepare_sample TARGET)
     if("${CONFIG_TYPE}" STREQUAL "")
         build(BuildTest Release "${CMAKE_SOURCE_DIR}/${TARGET}")
         set(TEMP_LOG2 "${TEMP_LOG2}${OUTPUT_LOG}")
-        build(BuildTest Debug "${CMAKE_SOURCE_DIR}/${TARGET}")
-        set(TEMP_LOG2 "${TEMP_LOG2}${OUTPUT_LOG}")
+        if(BUILD_DEBUG)
+            build(BuildTest Debug "${CMAKE_SOURCE_DIR}/${TARGET}")
+            set(TEMP_LOG2 "${TEMP_LOG2}${OUTPUT_LOG}")
+        endif()
     else()
         build(BuildTest ${CONFIG_TYPE} "${CMAKE_SOURCE_DIR}/${TARGET}")
         set(TEMP_LOG2 "${TEMP_LOG2}${OUTPUT_LOG}")
@@ -353,8 +368,9 @@ macro(get_pass_list)
 
     if(NOT "${PASS_LIST}" STREQUAL "")
         list(GET PASS_LIST ${INDEX} PASS_NUMBER)
-        math(EXPR INDEX "${INDEX} + 1")
         set(PASS_CHECK_LIST ${PASS_CHECK_LIST} ${PASS_NUMBER})
+    else()
+        set(PASS_CHECK_LIST "")
     endif()
 
 endmacro()
@@ -446,8 +462,8 @@ elseif("${PROC}" STREQUAL "full")
             build(FullTest Release .)
             set(TEMP_LOG "${TEMP_LOG}${OUTPUT_LOG}")
         endif()
-
         get_pass_list()
+        math(EXPR INDEX "${INDEX} + 1")
 
         if(${RETURN_CODE} EQUAL 0)
             relay("  Installing  ...")
@@ -464,19 +480,21 @@ elseif("${PROC}" STREQUAL "full")
         endif()
 
         if(${GENERATOR} MATCHES "Visual Studio")
-            # デバッグ・ビルド時のTheolizerドライバは異常に遅いので
-            # ドライバによるビルド・テストはしない
-            relay("  Debug Build ...")
-            build(ShortTest Debug .)
-            set(TEMP_LOG "${TEMP_LOG}${OUTPUT_LOG}")
-
-            get_pass_list()
-
-            if(${RETURN_CODE} EQUAL 0)
-                relay("  Installing  ...")
-                build(install Debug .)
+            if(BUILD_DEBUG)
+                # デバッグ・ビルド時のTheolizerドライバは異常に遅いので
+                # ドライバによるビルド・テストはしない
+                relay("  Debug Build ...")
+                build(ShortTest Debug .)
                 set(TEMP_LOG "${TEMP_LOG}${OUTPUT_LOG}")
+                get_pass_list()
+    
+                if(${RETURN_CODE} EQUAL 0)
+                    relay("  Installing  ...")
+                    build(install Debug .)
+                    set(TEMP_LOG "${TEMP_LOG}${OUTPUT_LOG}")
+                endif()
             endif()
+            math(EXPR INDEX "${INDEX} + 1")
         endif()
 
         # ライセンス・ファイルのコピー
@@ -485,10 +503,12 @@ elseif("${PROC}" STREQUAL "full")
         file(COPY ${LICENSE_LIST} DESTINATION "${THEOLIZER_ROOT}/other_licenses")
 
     else()
+
+        math(EXPR INDEX "${INDEX} + 1")
         if(${GENERATOR} MATCHES "Visual Studio")
             math(EXPR INDEX "${INDEX} + 1")
         endif()
-        math(EXPR INDEX "${INDEX} + 1")
+
     endif()
 
     # インストールされたTheolizerを用いたテスト
@@ -497,10 +517,14 @@ elseif("${PROC}" STREQUAL "full")
             relay("  Last Test   ...")
             last_test()
             set(TEMP_LOG "${TEMP_LOG}${OUTPUT_LOG}")
-
             get_pass_list()
-            if("${CONFIG_TYPE}" STREQUAL "")
-                get_pass_list()
+            math(EXPR INDEX "${INDEX} + 1")
+
+            if(${GENERATOR} MATCHES "Visual Studio")
+                if(BUILD_DEBUG)
+                    get_pass_list()
+                endif()
+                math(EXPR INDEX "${INDEX} + 1")
             endif()
         endif()
     endif()
