@@ -71,7 +71,7 @@ set(CC64 "/usr/bin")
 #set(MAKE "/usr/bin/make")
 
 # make時の並列処理数を指定(msvc、jom使用時は指定不要)
-set(PARALLEL "-j4")
+set(PARALLEL "-j8")
 
 # 結果概要ファイル名
 set(SUMMARY linux-${PROC_ALL}.log)
@@ -102,10 +102,10 @@ file(WRITE ${SUMMARY} "")
 output_title("****** StaticWithBoost ******")
 build_by_gcc(gcc540 64 StaticWithBoost TRUE TRUE "13 1" "11 1")
 
-output_title("****** Static ******")
-build_by_gcc(gcc540 64 Static FALSE FALSE "13 1" "11 1")
+#output_title("****** Static ******")
+#build_by_gcc(gcc540 64 Static FALSE FALSE "13 1" "11 1")
 
-output_title("****** Shared ******")
-build_by_gcc(gcc540 64 Shared FALSE FALSE "13 1" "11 1")
+#output_title("****** Shared ******")
+#build_by_gcc(gcc540 64 Shared FALSE FALSE "13 1" "11 1")
 
 output_summary()

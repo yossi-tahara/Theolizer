@@ -68,10 +68,10 @@ set(CC32 "C:/mingw-w64/i686-5.4.0-posix-dwarf-rt_v5-rev0/mingw32/bin")
 set(CC64 "C:/mingw-w64/x86_64-5.4.0-posix-seh-rt_v5-rev0/mingw64/bin")
 
 # MinGW/gcc用のMakeのパス名(未指定ならmakeを使用する)
-set(MAKE "C:/Qt/Tools/QtCreator/bin/jom")
+set(MAKE "mingw32-make.exe")
 
 # make時の並列処理数を指定(msvc、jom使用時は指定不要)
-#set(PARALLEL "-j4")
+set(PARALLEL "-j8")
 
 # 結果概要ファイル名
 set(SUMMARY windows-${PROC_ALL}.log)
@@ -101,12 +101,13 @@ file(WRITE ${SUMMARY} "")
 #           DEBUG_LIST      CTest結果の正しいテスト数のリスト(Debug用)
 #-----------------------------------------------------------------------------
 
-output_title("****** StaticWithBoost ******")
-build_by_msvc(msvc2015 64 StaticWithBoost TRUE TRUE "13 11 1 1")
-build_by_msvc(msvc2015 32 StaticWithBoost TRUE TRUE "13 11 1 1")
+#output_title("****** StaticWithBoost ******")
+#build_by_msvc(msvc2015 64 StaticWithBoost TRUE TRUE "13 11 1 1")
+#build_by_msvc(msvc2015 32 StaticWithBoost TRUE TRUE "13 11 1 1")
 build_by_gcc( mingw540 64 StaticWithBoost TRUE TRUE "13 1" "11 1")
-build_by_gcc( mingw540 32 StaticWithBoost TRUE TRUE "13 1" "11 1")
+#build_by_gcc( mingw540 32 StaticWithBoost TRUE TRUE "13 1" "11 1")
 
+if(FALSE)
 output_title("****** Static ******")
 build_by_msvc(msvc2015 64 Static FALSE FALSE "13 11 1 1")
 build_by_msvc(msvc2015 32 Static FALSE FALSE "13 11 1 1")
@@ -118,5 +119,6 @@ build_by_msvc(msvc2015 64 Shared FALSE FALSE "13 11 1 1")
 build_by_msvc(msvc2015 32 Shared FALSE FALSE "13 11 1 1")
 build_by_gcc( mingw540 64 Shared FALSE FALSE "13 1" "11 1")
 build_by_gcc( mingw540 32 Shared FALSE FALSE "13 1" "11 1")
+endif()
 
 output_summary()
