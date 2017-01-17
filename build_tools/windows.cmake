@@ -52,14 +52,14 @@ set(THEOLIZER_PREFIX "C:/Theolizer-")
 
 # boostのルート・フォルダ   ${BOOST_PREFIX}${BIT_NUM}[fPIC]
 #   fPICは非WindowsにおいてSharedビルドする時自動的に付加する。
-#   これ以外のフォルダを指定する時は、BOOST_ROOTを設定する
+#   これ以外のフォルダを指定する時は、BOOST_PREFIXを""にしてBOOST_ROOTを設定する
 
 set(BOOST_PREFIX "C:/Boost")
 
 # llvmのルート・フォールダ(ドライバをビルドしない時は未指定でOK)
 #   msvc   : ${LLVM}/${COMPILER}x${BIT_NUM}
 #   その他 : ${LLVM}/${COMPILER}x${BIT_NUM}-${CONFIG_TYPE}
-#   これ以外のフォルダを指定する時は、LLVM_ROOTを設定する
+#   これ以外のフォルダを指定する時は、LLVMを""にしてLLVM_ROOTを設定する
 
 set(LLVM "C:/llvm390")
 
@@ -102,7 +102,7 @@ file(WRITE ${SUMMARY} "")
 #-----------------------------------------------------------------------------
 
 #output_title("****** StaticWithBoost ******")
-#build_by_msvc(msvc2015 64 StaticWithBoost TRUE TRUE "13 11 1 1")
+build_by_msvc(msvc2015 64 StaticWithBoost TRUE TRUE "13 11 1 1")
 #build_by_msvc(msvc2015 32 StaticWithBoost TRUE TRUE "13 11 1 1")
 build_by_gcc( mingw540 64 StaticWithBoost TRUE TRUE "13 1" "11 1")
 #build_by_gcc( mingw540 32 StaticWithBoost TRUE TRUE "13 1" "11 1")

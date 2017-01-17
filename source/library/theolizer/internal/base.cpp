@@ -81,7 +81,7 @@ std::string getVersionString()
     ret += "    SourcesHash : ";
     ret += getSourcesHash();
 
-#error "Error for tring travis CI"
+#//error "Error for tring travis CI"
 
     return ret;
 }

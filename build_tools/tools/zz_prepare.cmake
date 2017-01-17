@@ -77,7 +77,7 @@ if(FALSE)
     message(STATUS "BUILD_DRIVER    =${BUILD_DRIVER}")
     message(STATUS "BUILD_DOCUMENT  =${BUILD_DOCUMENT}")
     message(STATUS "PROC_ALL        =${PROC_ALL}")
-    message(STATUS "BUILD_DEBUG     =${BUILD_DEBUG}")
+    message(STATUS "CI_SERVICE      =${CI_SERVICE}")
 endif()
 
     # パラメータ・チェック
@@ -166,7 +166,7 @@ endif()
 
     # llvmのフォルダ・パス
     if("${BUILD_DRIVER}" STREQUAL "TRUE")
-        if("${LLVM_ROOT}" STREQUAL "")
+        if(NOT "${LLVM}" STREQUAL "")
             set(LLVM_ROOT "${LLVM}/${COMPILER}x${BIT_NUM}")
             if(NOT "${CONFIG_TYPE}" STREQUAL "")
                 set(LLVM_ROOT "${LLVM_ROOT}-${CONFIG_TYPE}")
@@ -212,10 +212,6 @@ endmacro()
 
 function(build_process COMPILER BIT_NUM LIB_TYPE CONFIG_TYPE BUILD_DRIVER BUILD_DOCUMENT)
 
-    if("${BUILD_DEBUG}" STREQUAL "")
-        set(BUILD_DEBUG TRUE)
-    endif()
-
     setup_build_folder("${COMPILER}" "${BIT_NUM}" "${LIB_TYPE}" "${CONFIG_TYPE}" "${BUILD_DRIVER}" "${BUILD_DOCUMENT}")
 
     execute_process(
@@ -225,12 +221,13 @@ function(build_process COMPILER BIT_NUM LIB_TYPE CONFIG_TYPE BUILD_DRIVER BUILD_
     )
     if(NOT ${RETURN_CODE} EQUAL 0)
         message(SEND_ERROR "error: ${RETURN_CODE}")
+return()
     endif()
 
     if(NOT "${PROC_ALL}" STREQUAL "config_all")
         execute_process(
             COMMAND ${CMAKE_COMMAND} -DPROC=full   -DPROC_ALL=${PROC_ALL} "-DSUMMARY=${SUMMARY}"
-                "-DBUILD_DEBUG=${BUILD_DEBUG}" "-DPASS_LIST=${ARGN}"
+                "-DCI_SERVICE=${CI_SERVICE}" "-DPASS_LIST=${ARGN}"
                 -P zz_process.cmake
             WORKING_DIRECTORY "${BUILD_DIR}"
             RESULT_VARIABLE RETURN_CODE
@@ -269,7 +266,7 @@ function(build_by_gcc COMPILER BIT_NUM LIB_TYPE BUILD_DRIVER BUILD_DOCUMENT RELE
     output_title("------ ${COMPILER}x${BIT_NUM}-${LIB_TYPE}-Release ${DRIVER}------")
     build_process("${COMPILER}" "${BIT_NUM}" "${LIB_TYPE}" "Release" "${BUILD_DRIVER}" "${BUILD_DOCUMENT}" ${RELEASE_LIST})
 
-    if(BUILD_DEBUG)
+    if("${CI_SERVICE}" STREQUAL "")
         output_title("------ ${COMPILER}x${BIT_NUM}-${LIB_TYPE}-Debug ------")
         build_process("${COMPILER}" "${BIT_NUM}" "${LIB_TYPE}" "Debug"   "FALSE" "FALSE" ${DEBUG_LIST})
     endif()

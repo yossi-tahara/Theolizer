@@ -19,6 +19,7 @@
 cmake_minimum_required(VERSION 3.5.0)
 
 message(STATUS "THEOLIZER_ROOT=${THEOLIZER_ROOT}")
+message(STATUS "CI_SERVICE    =${CI_SERVICE}")
 
 #-----------------------------------------------------------------------------
 #       Project version
@@ -122,19 +123,14 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 endif()
 
-# ドライバをビルドすることのチェック
-if (NOT ${LLVM_ROOT} STREQUAL "")
-    set(BUILD_DRIVER TRUE)
-else()
-    set(BUILD_DRIVER FALSE)
-endif()
-
 #-----------------------------------------------------------------------------
 #       Boost
 #-----------------------------------------------------------------------------
 
 message(STATUS "BOOST_ROOT=${BOOST_ROOT}")
-set(Boost_USE_STATIC_LIBS ON)
+if(WIN32)
+    set(Boost_USE_STATIC_LIBS ON)
+endif()
 set(Boost_USE_MULTITHREADED ON)
 
 find_package(Boost 1.58.0 REQUIRED COMPONENTS filesystem system)
@@ -261,7 +257,7 @@ exclude_all_target(ShortTest)
 # sudoが必要な処理の入り口(TARGET_NAMEはプロジェクト名)
 function(add_test_sub_sudo TEST_NAME TARGET_NAME)
     set(SUDO "")
-    if(NOT WIN32)
+    if((NOT WIN32) AND ("${CI_SERVER}" STREQUAL ""))
         set(SUDO "sudo")
     endif()
     add_test_sub_base(${TEST_NAME} ${SUDO} $<TARGET_FILE:${TARGET_NAME}> ${ARGN})

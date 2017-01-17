@@ -1,0 +1,18 @@
+addons:
+  apt:
+    sources:
+    - llvm-toolchain-precise-3.9
+    - boost-latest
+    packages:
+    - libclang-3.9-dev
+    - llvm-3.9-dev
+    - libboost-all-dev
+    - cmake
+
+language: cpp
+
+compiler: gcc
+
+script:
+  - cd build_tools
+  - cmake -DPROC_ALL=full_all -P .travis.cmake

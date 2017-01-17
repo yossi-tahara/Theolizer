@@ -65,5 +65,7 @@ endif()
 get_filename_component(DOT_PATH ${DOXYGEN_DOT_EXECUTABLE} DIRECTORY)
 message(STATUS "DOT_PATH=${DOT_PATH}")
 
+message(STATUS "DOXYGEN_VERSION=${DOXYGEN_VERSION}")
+
 # 日本語用
 set_language(ja)

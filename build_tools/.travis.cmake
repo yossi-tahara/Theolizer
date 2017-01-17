@@ -1,5 +1,5 @@
 #[[###########################################################################
-        Linux用ビルドCMakeスクリプト
+        Travis CI用ビルドCMakeスクリプト
 
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
 
@@ -40,6 +40,9 @@
 #-----------------------------------------------------------------------------
 #       設定するパラメータ
 #-----------------------------------------------------------------------------
+
+set(CI_SERVICE "Travis")
+message(STATUS "CI_SERVICE=${CI_SERVICE}")
 
 # Theolizerのソース・フォルダ
 set(THEOLIZER_SOURCE "../source")
@@ -102,12 +105,12 @@ set(ENV{LC_ALL} "C")
 #-----------------------------------------------------------------------------
 
 output_title("****** StaticWithBoost ******")
-build_by_gcc(gcc540 64 StaticWithBoost TRUE TRUE "13 1" "11 1")
+build_by_gcc(gcc540 64 StaticWithBoost TRUE FALSE "13 1" "11 1")
 
-output_title("****** Static ******")
-build_by_gcc(gcc540 64 Static FALSE FALSE "13 1" "11 1")
+#output_title("****** Static ******")
+#build_by_gcc(gcc540 64 Static FALSE FALSE "13 1" "11 1")
 
-output_title("****** Shared ******")
-build_by_gcc(gcc540 64 Shared FALSE FALSE "13 1" "11 1")
+#output_title("****** Shared ******")
+#build_by_gcc(gcc540 64 Shared FALSE FALSE "13 1" "11 1")
 
 output_summary()

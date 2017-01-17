@@ -23,8 +23,12 @@
 
 message(STATUS "LLVM_ROOT : ${LLVM_ROOT}")
 
-find_package(LLVM REQUIRED CONFIG
-             PATHS "${LLVM_ROOT}/share/llvm/cmake" "${LLVM_ROOT}/lib/cmake/llvm")
+if("${LLVM_ROOT}" STREQUAL "")
+    find_package(LLVM REQUIRED CONFIG)
+else()
+    find_package(LLVM REQUIRED CONFIG
+        PATHS "${LLVM_ROOT}/share/llvm/cmake" "${LLVM_ROOT}/lib/cmake/llvm")
+endif()
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
 
 if(LLVM_BUILD_MAIN_SRC_DIR)
@@ -77,7 +81,6 @@ add_executable(TheolizerDriver ${THEOLIZER_DRIVER_LIST})
 add_dependencies(TheolizerDriver checkBuildSystem)
 add_dependencies(LongTest TheolizerDriver)
 
-target_link_libraries(TheolizerDriver ${TheolizerLib})
 target_link_libraries(TheolizerDriver ${Boost_LIBRARIES})
 
 if (NOT IS_MSVC)
@@ -95,21 +98,33 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     endforeach()
 else()
     target_link_libraries(TheolizerDriver ${LIBRARY_LIST})
-    set(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++")
+    if (CMAKE_COMPILER_IS_MINGW)
+        set(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++")
+    endif()
 endif()
 if(NOT "${WINLIB_LIST}" STREQUAL "")
     target_link_libraries(TheolizerDriver ${WINLIB_LIST}.lib)
 endif()
 
-llvm_map_components_to_libnames(llvm_libs ${COMPONENT_LIST})
-target_link_libraries(TheolizerDriver ${llvm_libs})
+llvm_map_components_to_libnames(LLVM_LIBS ${COMPONENT_LIST})
+target_link_libraries(TheolizerDriver ${LLVM_LIBS})
 
-message(STATUS "LLVM_LIBRARY_DIRS: ${LLVM_LIBRARY_DIRS}")
-message(STATUS "llvm_libs        : ${llvm_libs}")
+message(STATUS "Boost_LIBRARIES  = ${Boost_LIBRARIES}")
+message(STATUS "LIBRARY_LIST     = ${LIBRARY_LIST}")
+message(STATUS "WINLIB_LIST      = ${WINLIB_LIST}")
 
-message(STATUS "User selected components = ${COMPONENT_LIST}")
-message(STATUS "    = ${llvm_libs}")
-message(STATUS "User selected librarys = ${LIBRARY_LIST}")
+message(STATUS "COMPONENT_LIST   = ${COMPONENT_LIST}")
+message(STATUS "LLVM_LIBRARY_DIRS= ${LLVM_LIBRARY_DIRS}")
+message(STATUS "LLVM_LIBS        = ${LLVM_LIBS}")
+
+# 以下デバッグ用
+get_property(LIBRARIES TARGET TheolizerDriver PROPERTY LINK_LIBRARIES)
+message(STATUS "LIBRARIES = ${LIBRARIES}")
+message(STATUS "CMAKE_CXX_IMPLICIT_LINK_LIBRARIES = ${CMAKE_CXX_IMPLICIT_LINK_LIBRARIES}")
+message(STATUS "CMAKE_C_FLAGS = ${CMAKE_C_FLAGS}")
+message(STATUS "CMAKE_C_FLAGS_RELEASE = ${CMAKE_C_FLAGS_RELEASE}")
+message(STATUS "CMAKE_CXX_FLAGS = ${CMAKE_CXX_FLAGS}")
+message(STATUS "CMAKE_CXX_FLAGS_RELEASE = ${CMAKE_CXX_FLAGS_RELEASE}")
 
 #-----------------------------------------------------------
 #       install target

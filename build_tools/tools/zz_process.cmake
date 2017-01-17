@@ -64,7 +64,7 @@ if(FALSE)
 
     message(STATUS "PROC_ALL        =${PROC_ALL}")
     message(STATUS "THEOLIZER_ROOT  =${THEOLIZER_ROOT}")
-    message(STATUS "BUILD_DEBUG     =${BUILD_DEBUG}")
+    message(STATUS "CI_SERVICE      =${CI_SERVICE}")
 endif()
 
 set(BUILD_TYPE "")
@@ -101,7 +101,7 @@ function(parameter_log LOG_FILE)
 
     file(APPEND ${LOG_FILE} "PROC_ALL        =${PROC_ALL}\n")
     file(APPEND ${LOG_FILE} "THEOLIZER_ROOT  =${THEOLIZER_ROOT}\n")
-    file(APPEND ${LOG_FILE} "BUILD_DEBUG     =${BUILD_DEBUG}\n")
+    file(APPEND ${LOG_FILE} "CI_SERVICE      =${CI_SERVICE}\n")
     file(APPEND ${LOG_FILE} "\n")
 
 endfunction()
@@ -181,6 +181,11 @@ endmacro()
 
 macro(end LOG_FILE BREAK)
 
+    string(REGEX REPLACE
+            "warning: jobserver unavailable"
+            "WARNING: jobserver unavailable"
+            OUTPUT_LOG ${OUTPUT_LOG})
+
     get_current_time()
     parameter_log(${LOG_FILE})
     file(APPEND ${LOG_FILE} "--- Result ---\n")
@@ -203,17 +208,11 @@ macro(end LOG_FILE BREAK)
         endif()
     endif()
 
-    search(${LOG_FILE} FALSE "[^\n]*Configuring incomplete,")
-    search(${LOG_FILE} FALSE "[^\n]*[^0-9A-Za-z_]warning[^0-9A-Za-z_]............")
-    search(${LOG_FILE} FALSE "[^\n]*[^0-9A-Za-z_]error[^0-9A-Za-z_]............")
-    search(${LOG_FILE} FALSE "[^\n]*[^0-9A-Za-z_]undefined reference[^0-9A-Za-z_]")
-    search(${LOG_FILE} TRUE  "[^\n]*[0-9]% tests passed[^0-9A-Za-z_][^\n]*")
-
-    if(BREAK)
-        if(NOT ${RETURN_CODE} EQUAL 0)
-            message(SEND_ERROR "")
-        endif()
-    endif()
+    search(${LOG_FILE} FALSE "[^\n0-9A-Za-z_]*Configuring incomplete,")
+    search(${LOG_FILE} FALSE "[^\n0-9A-Za-z_]*warning[^0-9A-Za-z_]............")
+    search(${LOG_FILE} FALSE "[^\n0-9A-Za-z_]*error[^0-9A-Za-z_]............")
+    search(${LOG_FILE} FALSE "[^\n0-9A-Za-z_]*undefined reference[^0-9A-Za-z_]")
+    search(${LOG_FILE} TRUE  "[^\nA-Za-z_]*% tests passed[^0-9A-Za-z_][^\n]*")
 
     # テスト結果の数を確認
     if(NOT "${ARGN}" STREQUAL "")
@@ -235,6 +234,12 @@ macro(end LOG_FILE BREAK)
                 endif()
             endif()
         endforeach()
+    endif()
+
+    if(BREAK)
+        if(NOT ${RETURN_CODE} EQUAL 0)
+            message(SEND_ERROR "")
+        endif()
     endif()
 
 endmacro()
@@ -297,7 +302,7 @@ macro(prepare_sample TARGET)
     if("${CONFIG_TYPE}" STREQUAL "")
         build(BuildTest Release "${CMAKE_SOURCE_DIR}/${TARGET}")
         set(TEMP_LOG2 "${TEMP_LOG2}${OUTPUT_LOG}")
-        if(BUILD_DEBUG)
+        if("${CI_SERVICE}" STREQUAL "")
             build(BuildTest Debug "${CMAKE_SOURCE_DIR}/${TARGET}")
             set(TEMP_LOG2 "${TEMP_LOG2}${OUTPUT_LOG}")
         endif()
@@ -312,7 +317,7 @@ endmacro()
 macro(last_test)
 
     set(SUDO "")
-    if(NOT WIN32)
+    if((NOT WIN32) AND ("${CI_SERVICE}" STREQUAL ""))
         set(SUDO "sudo")
     endif()
 
@@ -337,27 +342,27 @@ macro(last_test)
     )
     set(TEMP_LOG2 "${TEMP_LOG2}${OUTPUT_LOG}")
     if(NOT ${RETURN_CODE} EQUAL 0)
-        message(SEND_ERROR "${RETURN_CODE}")
-return()
-    endif()
+        message(AUTHOR_WARNING "error: last_test(${RETURN_CODE})")
+        set(OUTPUT_LOG "${OUTPUT_LOG}\nerror: last_test(${RETURN_CODE})\n")
+    else()
+        # サンプルのビルドとテスト
+        prepare_sample(example)
 
-    # サンプルのビルドとテスト
-    prepare_sample(example)
+        # Theolizerドライバーのリストア
+        execute_process(
+            COMMAND ${SUDO} ${THEOLIZER_ROOT}/bin/TheolizerDriver --theolizer-restore=${COMPILER}
+            OUTPUT_VARIABLE OUTPUT_LOG
+            ERROR_VARIABLE  OUTPUT_LOG
+            RESULT_VARIABLE RETURN_CODE2
+        )
+        set(OUTPUT_LOG "${TEMP_LOG2}${OUTPUT_LOG}")
 
-    # Theolizerドライバーのリストア
-    execute_process(
-        COMMAND ${SUDO} ${THEOLIZER_ROOT}/bin/TheolizerDriver --theolizer-restore=${COMPILER}
-        OUTPUT_VARIABLE OUTPUT_LOG
-        ERROR_VARIABLE  OUTPUT_LOG
-        RESULT_VARIABLE RETURN_CODE2
-    )
-    set(OUTPUT_LOG "${TEMP_LOG2}${OUTPUT_LOG}")
-
-    if(NOT ${RETURN_CODE1} EQUAL 0)
-        set(RETURN_CODE ${RETURN_CODE1})
-    endif()
-    if(NOT ${RETURN_CODE2} EQUAL 0)
-        set(RETURN_CODE ${RETURN_CODE2})
+        if(NOT ${RETURN_CODE1} EQUAL 0)
+            set(RETURN_CODE ${RETURN_CODE1})
+        endif()
+        if(NOT ${RETURN_CODE2} EQUAL 0)
+            set(RETURN_CODE ${RETURN_CODE2})
+        endif()
     endif()
 
 endmacro()
@@ -400,8 +405,10 @@ if("${PROC}" STREQUAL "config")
                 "-DCMAKE_INSTALL_PREFIX=${THEOLIZER_ROOT}"
                 "-DLIB_TYPE=${LIB_TYPE}"
                 "-DBOOST_ROOT=${BOOST_ROOT}"
+                "-DBUILD_DRIVER=${BUILD_DRIVER}"
                 "-DLLVM_ROOT=${LLVM_ROOT}"
                 "-DBUILD_DOCUMENT=${BUILD_DOCUMENT}"
+                "-DCI_SERVICE=${CI_SERVICE}"
                 ${BUILD_TYPE}
             OUTPUT_VARIABLE OUTPUT_LOG
             RESULT_VARIABLE RETURN_CODE
@@ -415,6 +422,7 @@ if("${PROC}" STREQUAL "config")
                 "-DLIB_TYPE=${LIB_TYPE}"
                 "-DBOOST_ROOT=${BOOST_ROOT}"
                 "-DBUILD_DOCUMENT=${BUILD_DOCUMENT}"
+                "-DCI_SERVICE=${CI_SERVICE}"
                 ${BUILD_TYPE}
             OUTPUT_VARIABLE OUTPUT_LOG
             RESULT_VARIABLE RETURN_CODE
@@ -480,7 +488,7 @@ elseif("${PROC}" STREQUAL "full")
         endif()
 
         if(${GENERATOR} MATCHES "Visual Studio")
-            if(BUILD_DEBUG)
+            if("${CI_SERVICE}" STREQUAL "")
                 # デバッグ・ビルド時のTheolizerドライバは異常に遅いので
                 # ドライバによるビルド・テストはしない
                 relay("  Debug Build ...")
@@ -521,7 +529,7 @@ elseif("${PROC}" STREQUAL "full")
             math(EXPR INDEX "${INDEX} + 1")
 
             if(${GENERATOR} MATCHES "Visual Studio")
-                if(BUILD_DEBUG)
+                if("${CI_SERVICE}" STREQUAL "")
                     get_pass_list()
                 endif()
                 math(EXPR INDEX "${INDEX} + 1")
