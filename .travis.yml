@@ -5,11 +5,13 @@ addons:
     - george-edison55-precise-backports
     - ubuntu-toolchain-r-test
     - llvm-toolchain-precise-3.9
+      key_url: 'http://apt.llvm.org/llvm-snapshot.gpg.key'
     packages:
     - libboost-all-dev
     - cmake
     - cmake-data
     - g++-5
+    - libclang-3.9-dev
     - llvm-3.9-dev
 
 language: cpp
