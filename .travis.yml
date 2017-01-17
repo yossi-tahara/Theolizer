@@ -4,21 +4,15 @@ addons:
     - boost-latest
     packages:
     - libboost-all-dev
-
-  apt:
     sources:
     - llvm-toolchain-precise-3.9
     packages:
     - libclang-3.9-dev
     - llvm-3.9-dev
-
-  apt:
     sources:
     - ubuntu-toolchain-r-test
     packages:
     - g++-5
-
-  apt:
     sources:
     - george-edison55-precise-backports
     packages:
