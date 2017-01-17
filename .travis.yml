@@ -2,8 +2,11 @@ addons:
   apt:
     sources:
     - boost-latest
+    - george-edison55-precise-backports
     packages:
     - libboost-all-dev
+    - cmake
+    - cmake-data
 
 language: cpp
 
