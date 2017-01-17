@@ -4,20 +4,6 @@ addons:
     - boost-latest
     packages:
     - libboost-all-dev
-    sources:
-    - llvm-toolchain-precise-3.9
-    packages:
-    - libclang-3.9-dev
-    - llvm-3.9-dev
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - g++-5
-    sources:
-    - george-edison55-precise-backports
-    packages:
-    - cmake
-    - cmake-data
 
 language: cpp
 
