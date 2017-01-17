@@ -3,6 +3,9 @@ addons:
     sources:
     - llvm-toolchain-precise-3.9
     - boost-latest
+
+addons:
+  apt:
     packages:
     - libclang-3.9-dev
     - llvm-3.9-dev
