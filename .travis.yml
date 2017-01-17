@@ -18,10 +18,7 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - g++-4.9
-    - g++-5.0
-    - g++-5.3
-    - g++-5.4
+    - g++-5
 
 addons:
   apt:
@@ -29,6 +26,7 @@ addons:
     - george-edison55-precise-backports
     packages:
     - cmake
+    - cmake-data
 
 language: cpp
 
