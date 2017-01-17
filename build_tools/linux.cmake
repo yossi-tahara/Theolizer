@@ -80,7 +80,7 @@ set(SUMMARY linux-${PROC_ALL}.log)
 #       基本準備
 #-----------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.2.3)
 
 include(tools/zz_prepare.cmake)
 

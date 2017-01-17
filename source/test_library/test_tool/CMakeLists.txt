@@ -21,7 +21,7 @@
 #       Base
 #-----------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.2.3)
 
 # for MSVC
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)

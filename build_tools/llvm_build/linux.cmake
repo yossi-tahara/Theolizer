@@ -59,7 +59,7 @@ set(SUMMARY linux.log)
 #       基本準備
 #-----------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.2.3)
 
 set(SUMMARY ${SUMMARY})
 file(WRITE ${SUMMARY} "")

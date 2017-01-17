@@ -16,7 +16,7 @@
 
 ]]############################################################################
 
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.2.3)
 
 message(STATUS "THEOLIZER_ROOT=${THEOLIZER_ROOT}")
 message(STATUS "CI_SERVICE    =${CI_SERVICE}")
