@@ -23,5 +23,6 @@ language: cpp
 compiler: gcc
 
 script:
+  - cmake --version
   - cd build_tools
   - cmake -DPROC_ALL=full_all -P .travis.cmake
