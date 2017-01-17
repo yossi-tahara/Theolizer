@@ -1,12 +1,10 @@
 addons:
   apt:
     sources:
-    - boost-latest
-    - george-edison55-precise-backports
+    - llvm-toolchain-precise-3.9
     packages:
-    - libboost-all-dev
-    - cmake
-    - cmake-data
+    - libclang-3.9-dev
+    - llvm-3.9-dev
 
 language: cpp
 
