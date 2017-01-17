@@ -1,15 +1,21 @@
 addons:
   apt:
     sources:
-    - llvm-toolchain-precise-3.9
     - boost-latest
+    packages:
+    - libboost-all-dev
+
+addons:
+  apt:
+    sources:
+    - llvm-toolchain-precise-3.9
+    packages:
+    - libclang-3.9-dev
+    - llvm-3.9-dev
 
 addons:
   apt:
     packages:
-    - libclang-3.9-dev
-    - llvm-3.9-dev
-    - libboost-all-dev
     - cmake
 
 language: cpp
