@@ -128,9 +128,7 @@ endif()
 #-----------------------------------------------------------------------------
 
 message(STATUS "BOOST_ROOT=${BOOST_ROOT}")
-if(WIN32)
-    set(Boost_USE_STATIC_LIBS ON)
-endif()
+set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 
 find_package(Boost 1.54.0 REQUIRED COMPONENTS filesystem system)
