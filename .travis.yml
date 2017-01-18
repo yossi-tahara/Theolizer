@@ -6,18 +6,12 @@ addons:
     sources:
     - boost-latest
     - llvm-toolchain-trusty-3.9
-    - ubuntu-toolchain-r-test
     packages:
     - libboost-all-dev
     - libclang-3.9-dev
     - llvm-3.9-dev
     - cmake
     - cmake-data
-    - g++-4.8
-    - gcc-4.8
-
-install:
-    - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
 
 language: cpp
 
