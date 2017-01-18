@@ -31,7 +31,7 @@ install:
 
 script:
   - cd build_tools
-  - cmake -DPROC_ALL=full_all -P .travis.cmake
+  - cmake -DPROC_ALL=middle_all -P .travis.cmake
   - cd ..
 
 after_script:

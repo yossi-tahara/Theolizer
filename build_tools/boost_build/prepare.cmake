@@ -255,9 +255,11 @@ function(download_extract FILE_NAME EXTRACT_NAME EXTRACT_PATH)
         set(EXT ".tar.bz2")
     endif()
     file(DOWNLOAD ${URL}/${FILE_NAME}${EXT}/download ${ROOT}/${FILE_NAME}${EXT} SHOW_PROGRESS)
+    # 解凍ログはファイルへ出力する
     execute_process(
         COMMAND ${CMAKE_COMMAND} -E tar xvf "${ROOT}/${FILE_NAME}${EXT}"
         WORKING_DIRECTORY "${EXTRACT_PATH}"
+        OUTPUT_FILE expand.log
     )
     execute_process(
         COMMAND ${CMAKE_COMMAND} -E rename "${FILE_NAME}" "${EXTRACT_NAME}"
