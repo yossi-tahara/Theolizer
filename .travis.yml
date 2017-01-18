@@ -4,7 +4,7 @@ addons:
     - boost-latest
     - george-edison55-precise-backports
     - ubuntu-toolchain-r-test
-    - llvm-toolchain-precise-3.9
+    - llvm-toolchain-precise-3.8
     packages:
     - libboost-all-dev
     - cmake
