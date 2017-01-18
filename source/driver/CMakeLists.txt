@@ -24,9 +24,9 @@
 message(STATUS "LLVM_ROOT : ${LLVM_ROOT}")
 
 if("${LLVM_ROOT}" STREQUAL "")
-    find_package(LLVM 3.8.0 REQUIRED CONFIG)
+    find_package(LLVM 3.9.1 REQUIRED CONFIG)
 else()
-    find_package(LLVM 3.8.0 REQUIRED CONFIG
+    find_package(LLVM 3.9.1 REQUIRED CONFIG
         PATHS "${LLVM_ROOT}/share/llvm/cmake" "${LLVM_ROOT}/lib/cmake/llvm")
 endif()
 message(STATUS "Found LLVM ${LLVM_PACKAGE_VERSION}")
