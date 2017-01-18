@@ -133,7 +133,7 @@ if(WIN32)
 endif()
 set(Boost_USE_MULTITHREADED ON)
 
-find_package(Boost 1.46.0 REQUIRED COMPONENTS filesystem system)
+find_package(Boost 1.54.0 REQUIRED COMPONENTS filesystem system)
 message(STATUS "  Boost_INCLUDE_DIR=${Boost_INCLUDE_DIR}")
 message(STATUS "  Boost_LIBRARY_DIR=${Boost_LIBRARY_DIR}")
 message(STATUS "  Boost_LIBRARIES  =${Boost_LIBRARIES}")
