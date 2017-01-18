@@ -65,6 +65,7 @@ set(THEOLIZER_PREFIX "$ENV{HOME}/install/Theolizer-")
 #   これ以外のフォルダを指定する時は、LLVMを""にしてLLVM_ROOTを設定する
 
 #set(LLVM "$ENV{HOME}/install/llvm390")
+set(LLVM_ROOT "/usr/lib/llvm-3.8/")
 
 # MinGW/gccのbinフォルダのパス
 set(CC32 "/usr/bin")
