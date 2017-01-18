@@ -492,6 +492,7 @@ int main(int iArgc, const char **iArgv)
 //  ENABLE_OUTPUT(KIND(Time));
 //  ENABLE_OUTPUT(KIND(Time)|KIND(Parameter));
     ENABLE_OUTPUT(KIND(Time)|KIND(Driver)|KIND(Parameter)|KIND(AstAnalyze));
+llvm::outs() << "Theolizer Driver started.\n";
 
     FineTimer   ft;
     int i;

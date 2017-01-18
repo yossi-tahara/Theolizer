@@ -264,6 +264,7 @@ private:
         // ログ・ファイルのパス生成
         string aLogPath(TemporaryDir::get()); 
         aLogPath.append(kTheolizerLogFile);
+llvm::outs() << "Theolizer Driver log = " << aLogPath << "\n";
 
         // ログ・ファイルがあれば、更新した日付時刻を取り出して、
         // 10分以上経過していたら、削除する。
