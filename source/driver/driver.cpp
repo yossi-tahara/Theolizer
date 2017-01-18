@@ -488,7 +488,6 @@ vector<string> GetCompilerInfo(const string& iExePath,
 
 int main(int iArgc, const char **iArgv)
 {
-llvm::outs() << "Theolizer Driver started.\n";
 //  DISABLE_OUTPUT();
 //  ENABLE_OUTPUT(KIND(Time));
 //  ENABLE_OUTPUT(KIND(Time)|KIND(Parameter));

@@ -256,6 +256,7 @@ function(download_extract FILE_NAME EXTRACT_NAME EXTRACT_PATH)
     endif()
     file(DOWNLOAD ${URL}/${FILE_NAME}${EXT}/download ${ROOT}/${FILE_NAME}${EXT} SHOW_PROGRESS)
     # 解凍ログはファイルへ出力する
+    message(STATUS "extracting...")
     execute_process(
         COMMAND ${CMAKE_COMMAND} -E tar xvf "${ROOT}/${FILE_NAME}${EXT}"
         WORKING_DIRECTORY "${EXTRACT_PATH}"
@@ -265,6 +266,7 @@ function(download_extract FILE_NAME EXTRACT_NAME EXTRACT_PATH)
         COMMAND ${CMAKE_COMMAND} -E rename "${FILE_NAME}" "${EXTRACT_NAME}"
         WORKING_DIRECTORY "${EXTRACT_PATH}"
     )
+    message(STATUS "extracted.")
 endfunction()
 
 function(boost_setup VERSION)
