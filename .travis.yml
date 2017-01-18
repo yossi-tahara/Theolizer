@@ -1,28 +1,38 @@
 dist: trusty
 sudo: false
+language: cpp
+compiler: gcc
 
 addons:
   apt:
     sources:
-    - boost-latest
     - llvm-toolchain-trusty-3.9
+    - ubuntu-toolchain-r-test
     packages:
-    - libboost-all-dev
     - libclang-3.9-dev
     - llvm-3.9-dev
     - cmake
     - cmake-data
+    - g++-5
+    - gcc-5
 
-language: cpp
-
-compiler: gcc
-
-script:
+before_install:
   - g++ --version
   - g++-5 --version
   - cmake --version
+
+install:
+  - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+  - cd build_tools
+  - cd boost_build
+  - cmake -P .travis.cmake
+  - cd ..
+  - cd ..
+
+script:
   - cd build_tools
   - cmake -DPROC_ALL=full_all -P .travis.cmake
+  - cd ..
 
 after_script:
     - # ---------------------------------------------------------------------------------
