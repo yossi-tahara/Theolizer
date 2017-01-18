@@ -189,7 +189,6 @@ private:                                                                    \
     static const bool kIsTheolizer=true;                                    \
     template<class>         friend struct theolizer::internal::IsNonIntrusive;\
     template<class, class>  friend struct theolizer::internal::IsNonIntrusiveImpl;\
-    template<class> friend class theolizer::internal::ClassTypeInfo;        \
     template<class, typename, bool, theolizer::internal::TrackingMode, class>\
         friend struct theolizer::internal::Switcher;                        \
     template<typename, bool> friend struct theolizer::internal::RegisterToBaseClassEntrance;\
