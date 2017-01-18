@@ -1,9 +1,12 @@
+dist: trusty
+sudo: false
+
 addons:
   apt:
     sources:
     - boost-latest
-    - llvm-toolchain-precise-3.8
-    - george-edison55-precise-backports
+    - llvm-toolchain-trusty-3.8
+    - george-edison55-trusty-backports
     - ubuntu-toolchain-r-test
     packages:
     - libboost-all-dev
