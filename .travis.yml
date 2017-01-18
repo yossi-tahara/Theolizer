@@ -13,11 +13,11 @@ addons:
     - llvm-3.9-dev
     - cmake
     - cmake-data
-    - g++-5
-    - gcc-5
+    - g++-4.9
+    - gcc-4.9
 
 install:
-    - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-4.9" CC="gcc-4.9"; fi
 
 language: cpp
 
