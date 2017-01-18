@@ -2,22 +2,28 @@ addons:
   apt:
     sources:
     - boost-latest
+    - llvm-toolchain-precise-3.8
     - george-edison55-precise-backports
     - ubuntu-toolchain-r-test
-    - llvm-toolchain-precise-3.8
     packages:
     - libboost-all-dev
+    - libclang-3.8-dev
+    - llvm-3.8-dev
     - cmake
     - cmake-data
     - g++-5
-    - libclang-3.8-dev
-    - llvm-3.8-dev
+    - gcc-5
+
+install:
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
 
 language: cpp
 
 compiler: gcc
 
 script:
+  - g++ --version
+  - g++-5 --version
   - cmake --version
   - cd build_tools
   - cmake -DPROC_ALL=full_all -P .travis.cmake
