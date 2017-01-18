@@ -30,9 +30,8 @@ install:
   - cd ..
 
 script:
-  - travis_wait 30 cmake
   - cd build_tools
-  - cmake -DPROC_ALL=middle_all -P .travis.cmake
+  - travis_wait 30 cmake -DPROC_ALL=middle_all -P .travis.cmake
 
 after_script:
     - echo '================================================================================='
