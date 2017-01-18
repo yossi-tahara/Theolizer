@@ -2,7 +2,10 @@
         Theolizer紹介用サンプルCMakeLists.txt
 ]]############################################################################
 
-cmake_minimum_required(VERSION 3.2.2)
+if("${CMAKE_VERSION}" STREQUAL "")
+    set(CMAKE_VERSION, 3.5.0)
+endif()
+cmake_minimum_required(VERSION ${CMAKE_VERSION})
 
 message(STATUS "BOOST_ROOT=${BOOST_ROOT}")
 

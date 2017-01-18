@@ -20,7 +20,10 @@
 #       Base
 #-----------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.2.2)
+if("${CMAKE_VERSION}" STREQUAL "")
+    set(CMAKE_VERSION, 3.5.0)
+endif()
+cmake_minimum_required(VERSION ${CMAKE_VERSION})
 
 # for MSVC
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)

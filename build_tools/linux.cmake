@@ -67,6 +67,9 @@ set(BOOST_PREFIX "$ENV{HOME}/install/boost")
 #   複数のLLVMがシステムにインストールされている時に指定する
 #set(LLVM_VERSION 3.9.0)
 
+# 必須CMakeバージョン
+set(CMAKE_VERSION 3.5.0)
+
 # MinGW/gccのbinフォルダのパス
 set(CC32 "/usr/bin")
 set(CC64 "/usr/bin")
@@ -84,7 +87,7 @@ set(SUMMARY linux-${PROC_ALL}.log)
 #       基本準備
 #-----------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.2.2)
+cmake_minimum_required(VERSION ${CMAKE_VERSION})
 
 include(tools/zz_prepare.cmake)
 

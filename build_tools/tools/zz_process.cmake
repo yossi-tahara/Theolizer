@@ -36,6 +36,7 @@ set(BUILD_DIR        "@BUILD_DIR@")
 set(BOOST_ROOT       "@BOOST_ROOT@")
 set(LLVM_ROOT        "@LLVM_ROOT@")
 set(LLVM_VERSION     "@LLVM_VERSION@")
+set(CMAKE_VERSION    "@CMAKE_VERSION@")
 set(MAKE             "@MAKE@")
 set(PARALLEL         "@PARALLEL@")
 set(MSVC_PATH        "@MSVC_PATH@")
@@ -59,6 +60,7 @@ if(FALSE)
     message(STATUS "BOOST_ROOT      =${BOOST_ROOT}")
     message(STATUS "LLVM_ROOT       =${LLVM_ROOT}")
     message(STATUS "LLVM_VERSION    =${LLVM_VERSION}")
+    message(STATUS "CMAKE_VERSION   =${CMAKE_VERSION}")
     message(STATUS "MAKE            =${MAKE}")
     message(STATUS "PARALLEL        =${PARALLEL}")
     message(STATUS "MSVC_PATH       =${MSVC_PATH}")
@@ -97,6 +99,7 @@ function(parameter_log LOG_FILE)
     file(APPEND ${LOG_FILE} "BOOST_ROOT      =${BOOST_ROOT}\n")
     file(APPEND ${LOG_FILE} "LLVM_ROOT       =${LLVM_ROOT}\n")
     file(APPEND ${LOG_FILE} "LLVM_VERSION    =${LLVM_VERSION}\n")
+    file(APPEND ${LOG_FILE} "CMAKE_VERSION   =${CMAKE_VERSION}")
     file(APPEND ${LOG_FILE} "MAKE            =${MAKE}\n")
     file(APPEND ${LOG_FILE} "PARALLEL        =${PARALLEL}\n")
     file(APPEND ${LOG_FILE} "MSVC_PATH       =${MSVC_PATH}\n")
@@ -413,6 +416,7 @@ if("${PROC}" STREQUAL "config")
                 "-DBUILD_DRIVER=${BUILD_DRIVER}"
                 "-DLLVM_ROOT=${LLVM_ROOT}"
                 "-DLLVM_VERSION=${LLVM_VERSION}"
+                "-DCMAKE_VERSION=${CMAKE_VERSION}"
                 "-DBUILD_DOCUMENT=${BUILD_DOCUMENT}"
                 "-DCI_SERVICE=${CI_SERVICE}"
                 ${BUILD_TYPE}

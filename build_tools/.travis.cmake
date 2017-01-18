@@ -67,8 +67,11 @@ set(THEOLIZER_PREFIX "$ENV{HOME}/install/Theolizer-")
 set(LLVM_ROOT "/usr/lib/llvm-3.9/")
 
 # LLVMのバージョン
-#   複数のLLVMがシステムにインストールされている時に指定する
+#	複数のLLVMがシステムにインストールされている時に指定する
 set(LLVM_VERSION 3.9.1)
+
+# 必須CMakeバージョン
+set(CMAKE_VERSION 3.2.2)
 
 # MinGW/gccのbinフォルダのパス
 set(CC32 "/usr/bin")
@@ -87,7 +90,7 @@ set(SUMMARY linux-${PROC_ALL}.log)
 #       基本準備
 #-----------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.2.2)
+cmake_minimum_required(VERSION ${CMAKE_VERSION})
 
 include(tools/zz_prepare.cmake)
 

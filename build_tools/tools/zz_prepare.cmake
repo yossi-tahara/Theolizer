@@ -78,6 +78,7 @@ if(FALSE)
     message(STATUS "BUILD_DOCUMENT  =${BUILD_DOCUMENT}")
     message(STATUS "PROC_ALL        =${PROC_ALL}")
     message(STATUS "CI_SERVICE      =${CI_SERVICE}")
+    message(STATUS "CMAKE_VERSION   =${CMAKE_VERSION}")
 endif()
 
     # パラメータ・チェック
