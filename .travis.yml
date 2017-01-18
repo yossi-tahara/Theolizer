@@ -29,7 +29,7 @@ install:
   - cd ..
   - cd ..
 
-script:
+script: travis_wait 30 cmake
   - cd build_tools
   - cmake -DPROC_ALL=middle_all -P .travis.cmake
 
