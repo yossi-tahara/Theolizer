@@ -10,8 +10,8 @@ addons:
     - cmake
     - cmake-data
     - g++-5
-    - libclang-3.9-dev
-    - llvm-3.9-dev
+    - libclang-3.8-dev
+    - llvm-3.8-dev
 
 language: cpp
 
