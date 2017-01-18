@@ -35,12 +35,12 @@ script:
 
 after_script:
     - echo '================================================================================='
-    - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/reference_and_test/version/ver1/main.cpp.theolizer.hpp
+    - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/reference_and_test/version/ver1/*.hpp
     - echo '---------------------------------------------------------------------------------'
     - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/*.log
-    - echo '---------------------------------------------------------------------------------'
-    - cat /home/travis/build/yossi-tahara/build/gcc540x64-Static-Release/*.log
-    - echo '---------------------------------------------------------------------------------'
-    - cat /home/travis/build/yossi-tahara/build/gcc540x64-Shared-Release/*.log
+#    - echo '---------------------------------------------------------------------------------'
+#    - cat /home/travis/build/yossi-tahara/build/gcc540x64-Static-Release/*.log
+#    - echo '---------------------------------------------------------------------------------'
+#    - cat /home/travis/build/yossi-tahara/build/gcc540x64-Shared-Release/*.log
 #    - echo '================================================================================='
 #    - cat /tmp/theolizer/Debug.log
