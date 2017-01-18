@@ -59,7 +59,7 @@ set(SUMMARY windows.log)
 #       基本準備
 #-----------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION 3.2.3)
+cmake_minimum_required(VERSION 3.2.2)
 
 set(SUMMARY ${SUMMARY})
 file(WRITE ${SUMMARY} "")
