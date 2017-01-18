@@ -154,7 +154,7 @@ endif()
     message(STATUS "BUILD_DIR   =${BUILD_DIR}")
 
     # boostのフォルダ・パス
-    if("${BOOST_ROOT}" STREQUAL "")
+    if(NOT "${BOOST_PREFIX}" STREQUAL "")
         set(BOOST_ROOT "${BOOST_PREFIX}${BIT_NUM}")
         if(NOT WIN32)
             if("${LIB_TYPE}" STREQUAL "Shared")
@@ -215,7 +215,9 @@ function(build_process COMPILER BIT_NUM LIB_TYPE CONFIG_TYPE BUILD_DRIVER BUILD_
     setup_build_folder("${COMPILER}" "${BIT_NUM}" "${LIB_TYPE}" "${CONFIG_TYPE}" "${BUILD_DRIVER}" "${BUILD_DOCUMENT}")
 
     execute_process(
-        COMMAND ${CMAKE_COMMAND} -DPROC=config -DPROC_ALL=${PROC_ALL} "-DSUMMARY=${SUMMARY}" -P zz_process.cmake
+        COMMAND ${CMAKE_COMMAND} "-DPROC=config" "-DPROC_ALL=${PROC_ALL}" "-DSUMMARY=${SUMMARY}"
+                "-DCI_SERVICE=${CI_SERVICE}" "-DPASS_LIST=${ARGN}"
+                -P zz_process.cmake
         WORKING_DIRECTORY "${BUILD_DIR}"
         RESULT_VARIABLE RETURN_CODE
     )
@@ -226,7 +228,7 @@ return()
 
     if(NOT "${PROC_ALL}" STREQUAL "config_all")
         execute_process(
-            COMMAND ${CMAKE_COMMAND} -DPROC=full   -DPROC_ALL=${PROC_ALL} "-DSUMMARY=${SUMMARY}"
+            COMMAND ${CMAKE_COMMAND} "-DPROC=full" "-DPROC_ALL=${PROC_ALL}" "-DSUMMARY=${SUMMARY}"
                 "-DCI_SERVICE=${CI_SERVICE}" "-DPASS_LIST=${ARGN}"
                 -P zz_process.cmake
             WORKING_DIRECTORY "${BUILD_DIR}"

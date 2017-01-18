@@ -54,7 +54,7 @@ set(THEOLIZER_PREFIX "$ENV{HOME}/install/Theolizer-")
 #   fPICは非WindowsにおいてSharedビルドする時自動的に付加する。
 #   これ以外のフォルダを指定する時は、BOOST_PREFIXを""にしてBOOST_ROOTを設定する
 
-#set(BOOST_PREFIX "$ENV{HOME}/install/boost")
+set(BOOST_PREFIX "$ENV{HOME}/install/boost")
 
 # llvmのルート・フォールダ(ドライバをビルドしない時は未指定でOK)
 #   msvc   : ${LLVM}/${COMPILER}x${BIT_NUM}
