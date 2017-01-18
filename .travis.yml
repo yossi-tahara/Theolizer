@@ -5,13 +5,12 @@ addons:
   apt:
     sources:
     - boost-latest
-    - llvm-toolchain-trusty-3.8
-    - george-edison55-trusty-backports
+    - llvm-toolchain-trusty-3.9
     - ubuntu-toolchain-r-test
     packages:
     - libboost-all-dev
-    - libclang-3.8-dev
-    - llvm-3.8-dev
+    - libclang-3.9-dev
+    - llvm-3.9-dev
     - cmake
     - cmake-data
     - g++-5
