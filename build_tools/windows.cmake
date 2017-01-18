@@ -63,6 +63,10 @@ set(BOOST_PREFIX "C:/Boost")
 
 set(LLVM "C:/llvm390")
 
+# LLVMのバージョン
+#   複数のLLVMがシステムにインストールされている時に指定する
+#set(LLVM_VERSION 3.9.0)
+
 # MinGW/gccのbinフォルダのパス
 set(CC32 "C:/mingw-w64/i686-5.4.0-posix-dwarf-rt_v5-rev0/mingw32/bin")
 set(CC64 "C:/mingw-w64/x86_64-5.4.0-posix-seh-rt_v5-rev0/mingw64/bin")

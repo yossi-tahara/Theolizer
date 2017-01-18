@@ -63,6 +63,10 @@ set(BOOST_PREFIX "$ENV{HOME}/install/boost")
 
 #set(LLVM "$ENV{HOME}/install/llvm390")
 
+# LLVMのバージョン
+#   複数のLLVMがシステムにインストールされている時に指定する
+#set(LLVM_VERSION 3.9.0)
+
 # MinGW/gccのbinフォルダのパス
 set(CC32 "/usr/bin")
 set(CC64 "/usr/bin")
