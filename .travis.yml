@@ -32,9 +32,9 @@ script:
 
 after_script:
     - # ---------------------------------------------------------------------------------
-    - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/*.log
+    - cat /home/travis/build/yossi-tahara/build/gcc540x64-Static-Release/*.log
     - # ---------------------------------------------------------------------------------
-    - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/reference_and_test/version/ver1/main.cpp.theolizer.hpp
+    - cat /home/travis/build/yossi-tahara/build/gcc540x64-Static-Release/reference_and_test/version/ver1/main.cpp.theolizer.hpp
     - # ---------------------------------------------------------------------------------
     - cat /tmp/theolizer/Debug.log
     - # ---------------------------------------------------------------------------------

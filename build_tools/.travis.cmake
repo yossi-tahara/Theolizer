@@ -67,7 +67,7 @@ set(THEOLIZER_PREFIX "$ENV{HOME}/install/Theolizer-")
 set(LLVM_ROOT "/usr/lib/llvm-3.9/")
 
 # LLVMのバージョン
-#	複数のLLVMがシステムにインストールされている時に指定する
+#   複数のLLVMがシステムにインストールされている時に指定する
 set(LLVM_VERSION 3.9.1)
 
 # 必須CMakeバージョン
@@ -112,9 +112,10 @@ set(ENV{LC_ALL} "C")
 #-----------------------------------------------------------------------------
 
 output_title("****** StaticWithBoost ******")
-build_by_gcc(gcc540 64 StaticWithBoost TRUE FALSE "13 1" "11 1")
+#build_by_gcc(gcc540 64 StaticWithBoost TRUE FALSE "13 1" "11 1")
 
 #output_title("****** Static ******")
+build_by_gcc(gcc540 64 Static TRUE FALSE "13 1" "11 1")
 #build_by_gcc(gcc540 64 Static FALSE FALSE "13 1" "11 1")
 
 #output_title("****** Shared ******")
