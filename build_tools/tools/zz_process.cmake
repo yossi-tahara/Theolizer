@@ -268,8 +268,8 @@ macro(build TARGET CONFIG_TYPE WORKING_DIR)
             RESULT_VARIABLE RETURN_CODE
         )
     endif()
-message(STATUS "build(${TARGET} ${CONFIG_TYPE} ${WORKING_DIR}) RETURN_CODE=${RETURN_CODE}")
-message(STATUS "OUTPUT_LOG=${OUTPUT_LOG}")
+#message(STATUS "build(${TARGET} ${CONFIG_TYPE} ${WORKING_DIR}) RETURN_CODE=${RETURN_CODE}")
+#message(STATUS "OUTPUT_LOG=${OUTPUT_LOG}")
 
 endmacro()
 

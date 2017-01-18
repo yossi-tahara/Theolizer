@@ -29,3 +29,10 @@ script:
   - cmake --version
   - cd build_tools
   - cmake -DPROC_ALL=full_all -P .travis.cmake
+
+after_script:
+    - echo '---------------------------------------------------------------------------------"
+    - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/z0_config.log
+    - echo '---------------------------------------------------------------------------------"
+    - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/z3_full_test-.log
+    - echo '---------------------------------------------------------------------------------"
