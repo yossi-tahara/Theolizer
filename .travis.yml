@@ -1,5 +1,6 @@
 dist: trusty
 sudo: false
+cache: apt
 language: cpp
 compiler: gcc
 
@@ -31,7 +32,7 @@ install:
 
 script:
   - cd build_tools
-  - travis_wait 30 cmake -DPROC_ALL=middle_all -P .travis.cmake
+  - travis_wait 40 cmake -DPROC_ALL=middle_all -P .travis.cmake
 
 after_script:
     - echo '================================================================================='
