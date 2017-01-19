@@ -7,15 +7,26 @@
 [6.Theolizerの開発状況について](#Status)  
 [7.不具合報告を頂く時のお願い](#DefectReport)  
 
-### -- 詳細ドキュメント --
-詳細なドキュメントを[http://doc.theolizer.com](http://doc.theolizer.com)に置いています。<br>
-また、Theolizerをインストールした時、インストール先のdocフォルダにもあります。
+### -- 自動テスト --
+Theolizerは信頼性を上げるために自動テストを実装しています。
+
+- CIサービスによるサブセット・テスト（masterブランチの最新版）の状態<br>
+Travis CIにてubuntu環境のサブセット・テストをpush毎に自動実行しています。<br>
+Travis CI result : [![Build Status](https://travis-ci.org/yossi-tahara/Theolizer.svg?branch=master)](https://travis-ci.org/yossi-tahara/Theolizer) "for StaticWithBoost without sudo on ubuntu 14.04 LTS"
+
+- ローカル環境によるフルセット・テストについて<br>
+バージョン番号に`-Prerelease`サフィックスのないものはフルセットのテストを完了しています。<br>
+フルセット・テストにより、プリビルド版を生成してvX.Y.Zのタグをつけて当リポジトリの[relases](https://github.com/yossi-tahara/Theolizer/releases)へ登録しています。
 
 ### -- プリビルド版 --
 Windowsとubuntu用のプリビルド版を用意しています。<br>
 当リポジトリの[relases](https://github.com/yossi-tahara/Theolizer/releases)からダウンロードして下さい。
 
-<br>
+### -- 詳細ドキュメント --
+詳細なドキュメントを[http://doc.theolizer.com](http://doc.theolizer.com)に置いています。<br>
+また、Theolizerをインストールした時、インストール先のdocフォルダにもあります。
+
+___
 <h1 id="About">1.Theolizerとは</h1>
 
 Theolizerは[C++11](https://ja.wikipedia.org/wiki/C%2B%2B11)で記述されたC++用のシリアライザです。<br>
@@ -247,7 +258,7 @@ STLコンテナ対応はまだ一部です。
 
 - テストついて<br>
 自動テストの実装を進めています。ライブラリは網羅的な自動テストをほぼ実装しています。
-ドライバの自動テストの実装に着手したばかりです。オープンβ期間中に実装予定です。
+ドライバの自動テストの実装を進めています。オープンβ期間中に実装予定です。
 
 - ドキュメントついて<br>
 基本部分についてのみ記述が終わっています。「使い方詳細」、および、「APIリファレンス」について未着手です。オープンβ期間中に記述予定です。
