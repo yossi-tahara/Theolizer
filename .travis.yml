@@ -3,6 +3,11 @@ sudo: false
 language: cpp
 compiler: gcc
 
+cache:
+  directories:
+  - $HOME/install/boost64
+# - $HOME/install/boost64-fPIC
+
 addons:
   apt:
     sources:
@@ -25,7 +30,7 @@ install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
   - cd build_tools
   - cd boost_build
-  - cmake -P .travis.cmake
+  - if [ ! -d "$HOME/install/boost64/lib" ]; then cmake -P .travis.cmake; fi
   - cd ..
   - cd ..
 
@@ -34,13 +39,13 @@ script:
   - travis_wait 40 cmake -DPROC_ALL=middle_all -P .travis.cmake
 
 after_script:
-    - echo '================================================================================='
-    - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/reference_and_test/version/ver1/*.hpp
-    - echo '---------------------------------------------------------------------------------'
-    - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/*.log
-#    - echo '---------------------------------------------------------------------------------'
-#    - cat /home/travis/build/yossi-tahara/build/gcc540x64-Static-Release/*.log
-#    - echo '---------------------------------------------------------------------------------'
-#    - cat /home/travis/build/yossi-tahara/build/gcc540x64-Shared-Release/*.log
-#    - echo '================================================================================='
-#    - cat /tmp/theolizer/Debug.log
+  - echo '================================================================================='
+  - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/reference_and_test/version/ver1/*.hpp
+  - echo '---------------------------------------------------------------------------------'
+  - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/*.log
+#  - echo '---------------------------------------------------------------------------------'
+#  - cat /home/travis/build/yossi-tahara/build/gcc540x64-Static-Release/*.log
+#  - echo '---------------------------------------------------------------------------------'
+#  - cat /home/travis/build/yossi-tahara/build/gcc540x64-Shared-Release/*.log
+#  - echo '================================================================================='
+#  - cat /tmp/theolizer/Debug.log

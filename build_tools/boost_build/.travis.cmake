@@ -71,6 +71,6 @@ file(WRITE ${SUMMARY} "")
 
 output_title("****** gcc540x64-Release ******")
 build_process(gcc540 64 "Release" FALSE)
-build_process(gcc540 64 "Release" TRUE)
+#build_process(gcc540 64 "Release" TRUE)
 
 output_summary()
