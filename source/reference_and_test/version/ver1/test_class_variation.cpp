@@ -334,7 +334,7 @@ void saveClassVariation(tSerializer& iSerializer)
 }
 //! [saveClassVariation]
 
-INSTANTIATION_ALL(void, saveClassVariation);
+INSTANTIATION_ALL(saveClassVariation);
 
 // ***************************************************************************
 //      回復
@@ -465,6 +465,6 @@ void loadClassVariation(tSerializer& iSerializer)
 }
 //! [loadClassVariation]
 
-INSTANTIATION_ALL(void, loadClassVariation);
+INSTANTIATION_ALL(loadClassVariation);
 
 #endif  // DISABLE_CLASS_VARIATION_TEST

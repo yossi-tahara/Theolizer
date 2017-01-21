@@ -171,7 +171,7 @@ void savePolymorphism(tSerializer& iSerializer)
     }
 }
 
-INSTANTIATION_ALL(void, savePolymorphism);
+INSTANTIATION_ALL(savePolymorphism);
 
 // ***************************************************************************
 //      回復
@@ -241,6 +241,6 @@ void loadPolymorphism(tSerializer& iSerializer)
     }
 }
 
-INSTANTIATION_ALL(void, loadPolymorphism);
+INSTANTIATION_ALL(loadPolymorphism);
 
 #endif  // DISABLE_POLYMORPHISM_TEST

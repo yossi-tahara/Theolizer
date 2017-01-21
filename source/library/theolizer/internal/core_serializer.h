@@ -1084,10 +1084,23 @@ private:
             break;
                 }
 
+                // 次処理
                 ++i;
-                if (tVersionType::getElementTheolizer(i).isSentinel()) i=0;
+                if (tVersionType::getElementTheolizer(i).isSentinel())
+                {
+                    // 名前対応なら先頭へ戻す
+                    if (!aElementName.empty())
+                    {
+                        i=0;
+                    }
+                    // 順序対応ならループ終了
+                    else
+                    {
+            break;
+                    }
+                }
             }
-            while(aIndex !=i);
+            while(aIndex != i);
 
             // 回復 or 破棄処理
             if (aDoLoad)
@@ -1105,11 +1118,18 @@ private:
                 aIndex++;
                 if (tVersionType::getElementTheolizer(aIndex).isSentinel())
                 {
+                    // FastSerializer(変更不可)の時は直ぐに終了
                     if (aReadStat == DontCare)
         break;
                     aIndex=0;
                 }
-            } else {
+            }
+            else
+            {
+                // FastSerializer(変更不可)の時は破棄しない
+                if (aReadStat == DontCare)
+        break;
+
                 // 破棄
                 disposeElement();
             }

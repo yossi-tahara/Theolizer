@@ -37,33 +37,69 @@
 //      テスト用関数テンプレート実体化マクロ
 // ***************************************************************************
 
-#if defined(__GNUC__)
+#define INSTANTIATION(dFunc, dSerializer)                                   \
+    template void dFunc<dSerializer>(dSerializer&)
 
-    #define INSTANTIATION(dType, dFunc, dSerializer, ...)                   \
-        template dType dFunc<dSerializer>(dSerializer&, ##__VA_ARGS__);
+#define INSTANTIATION_ALL(dFunc)                                            \
+    INSTANTIATION(dFunc, theolizer::JsonOSerializer<>);                     \
+    INSTANTIATION(dFunc, theolizer::JsonISerializer<>);                     \
+    INSTANTIATION(dFunc, theolizer::BinaryOSerializer<>);                   \
+    INSTANTIATION(dFunc, theolizer::BinaryISerializer<>);                   \
+    INSTANTIATION(dFunc, theolizer::FastOSerializer<>);                     \
+    INSTANTIATION(dFunc, theolizer::FastISerializer<>)
 
-    #define INSTANTIATION_ALL(dType, dFunc, ...)                            \
-        INSTANTIATION(dType, dFunc, theolizer::JsonOSerializer<>, ##__VA_ARGS__);\
-        INSTANTIATION(dType, dFunc, theolizer::JsonISerializer<>, ##__VA_ARGS__);\
-        INSTANTIATION(dType, dFunc, theolizer::BinaryOSerializer<>, ##__VA_ARGS__);\
-        INSTANTIATION(dType, dFunc, theolizer::BinaryISerializer<>, ##__VA_ARGS__);\
-        INSTANTIATION(dType, dFunc, theolizer::FastOSerializer<>, ##__VA_ARGS__);\
-        INSTANTIATION(dType, dFunc, theolizer::FastISerializer<>, ##__VA_ARGS__)
+// ***************************************************************************
+//      保存先指定の網羅テスト用
+//          コンストラクトに必要な処理はこちらで行う
+// ***************************************************************************
 
-#else
+//----------------------------------------------------------------------------
+//      保存先リスト（マスター・ファイルと取引ファイル）
+//----------------------------------------------------------------------------
 
-    #define INSTANTIATION(dType, dFunc, dSerializer, ...)                   \
-        template dType dFunc<dSerializer>(dSerializer&, __VA_ARGS__);
+THEOLIZER_DESTINATIONS
+(
+    All,
+    Master,
+    Trade
+);
 
-    #define INSTANTIATION_ALL(dType, dFunc, ...)                            \
-        INSTANTIATION(dType, dFunc, theolizer::JsonOSerializer<>, __VA_ARGS__);\
-        INSTANTIATION(dType, dFunc, theolizer::JsonISerializer<>, __VA_ARGS__);\
-        INSTANTIATION(dType, dFunc, theolizer::BinaryOSerializer<>, __VA_ARGS__);\
-        INSTANTIATION(dType, dFunc, theolizer::BinaryISerializer<>, __VA_ARGS__);\
-        INSTANTIATION(dType, dFunc, theolizer::FastOSerializer<>, __VA_ARGS__);\
-        INSTANTIATION(dType, dFunc, theolizer::FastISerializer<>, __VA_ARGS__)
+//----------------------------------------------------------------------------
+//      保存先リスト（組み合わせテスト用）
+//----------------------------------------------------------------------------
 
-#endif
+THEOLIZER_DESTINATIONS
+(
+    Trade,
+    DestA,
+    DestB,
+    DestC
+);
+
+//----------------------------------------------------------------------------
+//      テスト関数の実体化用マクロ
+//----------------------------------------------------------------------------
+
+#define INSTANTIATION_DEST(dFunc, dSerializer)                              \
+    template void dFunc                                                     \
+    <                                                                       \
+        dSerializer<theolizerD::DestA>,                                     \
+        dSerializer<theolizerD::DestB>,                                     \
+        dSerializer<theolizerD::DestA, theolizerD::DestB>                   \
+    >                                                                       \
+    (                                                                       \
+        dSerializer<theolizerD::DestA>&,                                    \
+        dSerializer<theolizerD::DestB>&,                                    \
+        dSerializer<theolizerD::DestA, theolizerD::DestB>&                  \
+    )
+
+#define INSTANTIATION_DESTINATIONS(dFunc)                                   \
+    INSTANTIATION_DEST(dFunc, theolizer::JsonOSerializer);                  \
+    INSTANTIATION_DEST(dFunc, theolizer::JsonISerializer);                  \
+    INSTANTIATION_DEST(dFunc, theolizer::BinaryOSerializer);                \
+    INSTANTIATION_DEST(dFunc, theolizer::BinaryISerializer);                \
+    INSTANTIATION_DEST(dFunc, theolizer::FastOSerializer);                  \
+    INSTANTIATION_DEST(dFunc, theolizer::FastISerializer)
 
 // ***************************************************************************
 //      テスト用補助ツール

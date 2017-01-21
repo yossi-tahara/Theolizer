@@ -83,7 +83,9 @@ struct TheolizerNonIntrusive<std::unique_ptr<T>>::
 
         typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
         typedef typename TheolizerTarget::element_type Type;
-        Type *aInstance=nullptr;
+
+        // ポイント先を解放して入れ替える可能性があるので一旦管理から外す
+        Type *aInstance=oInstance->release();
         THEOLIZER_PROCESS_OWNER(iSerializer, aInstance);
         oInstance->reset(aInstance);
     }

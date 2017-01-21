@@ -295,7 +295,7 @@ void saveObjectTracking(tSerializer& iSerializer)
     }
 }
 
-INSTANTIATION_ALL(void, saveObjectTracking);
+INSTANTIATION_ALL(saveObjectTracking);
 
 // ***************************************************************************
 //      回復
@@ -588,6 +588,6 @@ void loadObjectTracking(tSerializer& iSerializer)
     }
 }
 
-INSTANTIATION_ALL(void, loadObjectTracking);
+INSTANTIATION_ALL(loadObjectTracking);
 
 #endif  // DISABLE_OBJECT_TRACKING2_TEST

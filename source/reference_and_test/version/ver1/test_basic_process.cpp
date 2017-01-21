@@ -302,7 +302,7 @@ void saveBasicProcess(tSerializer& iSerializer)
 }
 //! [saveBasicProcess]
 
-INSTANTIATION_ALL(void, saveBasicProcess);
+INSTANTIATION_ALL(saveBasicProcess);
 
 // ***************************************************************************
 //      回復
@@ -613,6 +613,6 @@ void loadBasicProcess(tSerializer& iSerializer)
 }
 //! [loadBasicProcess]
 
-INSTANTIATION_ALL(void, loadBasicProcess);
+INSTANTIATION_ALL(loadBasicProcess);
 
 #endif  // DISABLE_BASIC_PROCESS_TEST

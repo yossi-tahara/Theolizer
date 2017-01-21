@@ -129,12 +129,6 @@ enum型は従来のenum型と、C++11で追加されたscoped enum型の２つ�
 */
 
 /*!
-    @page Destinations 保存先指定について
-ここでは、保存先指定について説明します。
-# T.B.D.
-*/
-
-/*!
     @page ChangingEnum enum型の変更方法、および、バージョン・アップ方法
 # T.B.D.
 */

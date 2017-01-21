@@ -127,6 +127,38 @@ void savePolymorphism(tSerializer& iSerializer);
 template<class tSerializer>
 void loadPolymorphism(tSerializer& iSerializer);
 
+//----------------------------------------------------------------------------
+//      保存の有無と保存先
+//----------------------------------------------------------------------------
+
+//      ---<<< 使い方のサンプル・コード >>>---
+
+void tutoriseDestinations();
+
+//      ---<<< 自動テスト >>>---
+
+template<class tSerializer>
+void saveSpecifySaving(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadSpecifySaving(tSerializer& iSerializer);
+
+template<class tSerializerA, class tSerializerB, class tSerializerAB>
+void saveDestinations
+(
+    tSerializerA&  iSerializerA,
+    tSerializerB&  iSerializerB,
+    tSerializerAB& iSerializerAB
+);
+
+template<class tSerializerA, class tSerializerB, class tSerializerAB>
+void loadDestinations
+(
+    tSerializerA&  iSerializerA,
+    tSerializerB&  iSerializerB,
+    tSerializerAB& iSerializerAB
+);
+
 // ***************************************************************************
 //      各テスト呼び出し
 // ***************************************************************************
@@ -152,6 +184,9 @@ void saveBasic(tSerializer& iSerializer)
 #ifndef DISABLE_POLYMORPHISM_TEST
     savePolymorphism(iSerializer);
 #endif
+#ifndef DISABLE_DESTINATIONS_TEST
+    saveSpecifySaving(iSerializer);
+#endif
 }
 
 template<class tSerializer>
@@ -175,11 +210,35 @@ void loadBasic(tSerializer& iSerializer)
 #ifndef DISABLE_POLYMORPHISM_TEST
     loadPolymorphism(iSerializer);
 #endif
+#ifndef DISABLE_DESTINATIONS_TEST
+    loadSpecifySaving(iSerializer);
+#endif
 }
 
 //############################################################################
 //      派生Serializerテスト
 //############################################################################
+
+// ***************************************************************************
+//      保存先指定の網羅テスト用
+//          コンストラクトに必要な処理はこちらで行う
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      ファイル名生成
+//          最後の.の直前に指定文字列を挿入する
+//----------------------------------------------------------------------------
+
+std::string makeDestFileName(std::string const& iFileName, char const* iDestName)
+{
+    std::string ret(iFileName);
+    std::size_t pos=ret.rfind('.');
+    if (pos != std::string::npos)
+    {
+        ret.insert(pos, iDestName);
+    }
+    return ret;
+}
 
 // ***************************************************************************
 //      CheckModeを振って呼ばれ、テスト基本部を呼ぶ
@@ -210,16 +269,42 @@ void varyCheckMode
         // 保存処理
         if (!iLoadOnly)
         {
-            std::ofstream   aStream(filename);
-            theolizer::JsonOSerializer<> jos(aStream);
-            saveBasic(jos);
+            {
+                std::ofstream   aStream(filename);
+                theolizer::JsonOSerializer<> jos(aStream);
+                saveBasic(jos);
+            }
+
+            // 保存先指定テスト
+            {
+                std::ofstream   aStreamA(makeDestFileName(filename, "A"));
+                theolizer::JsonOSerializer<theolizerD::DestA> josA(aStreamA);
+                std::ofstream   aStreamB(makeDestFileName(filename, "B"));
+                theolizer::JsonOSerializer<theolizerD::DestB> josB(aStreamB);
+                std::ofstream   aStreamAB(makeDestFileName(filename, "AB"));
+                theolizer::JsonOSerializer<theolizerD::DestA, theolizerD::DestB> josAB(aStreamAB);
+                saveDestinations(josA, josB, josAB);
+            }
         }
 
         // 回復処理
         {
-            std::ifstream   aStream(filename);
-            theolizer::JsonISerializer<> jis(aStream);
-            loadBasic(jis);
+            {
+                std::ifstream   aStream(filename);
+                theolizer::JsonISerializer<> jis(aStream);
+                loadBasic(jis);
+            }
+
+            // 保存先指定テスト
+            {
+                std::ifstream   aStreamA(makeDestFileName(filename, "A"));
+                theolizer::JsonISerializer<theolizerD::DestA> jisA(aStreamA);
+                std::ifstream   aStreamB(makeDestFileName(filename, "B"));
+                theolizer::JsonISerializer<theolizerD::DestB> jisB(aStreamB);
+                std::ifstream   aStreamAB(makeDestFileName(filename, "AB"));
+                theolizer::JsonISerializer<theolizerD::DestA, theolizerD::DestB> jisAB(aStreamAB);
+                loadDestinations(jisA, jisB, jisAB);
+            }
         }
     }
 
@@ -238,9 +323,25 @@ void varyCheckMode
         // 保存処理
         if (!iLoadOnly)
         {
-            std::ofstream   aStream(filename);
-            theolizer::JsonOSerializer<> jos(aStream, iGlobalVersionNo, iCheckMode);
-            saveBasic(jos);
+            {
+                std::ofstream   aStream(filename);
+                theolizer::JsonOSerializer<> jos(aStream, iGlobalVersionNo, iCheckMode);
+                saveBasic(jos);
+            }
+
+            // 保存先指定テスト
+            {
+                std::ofstream   aStreamA(makeDestFileName(filename, "A"));
+                theolizer::JsonOSerializer<theolizerD::DestA>
+                    josA(aStreamA, iGlobalVersionNo, iCheckMode);
+                std::ofstream   aStreamB(makeDestFileName(filename, "B"));
+                theolizer::JsonOSerializer<theolizerD::DestB>
+                    josB(aStreamB, iGlobalVersionNo, iCheckMode);
+                std::ofstream   aStreamAB(makeDestFileName(filename, "AB"));
+                theolizer::JsonOSerializer<theolizerD::DestA, theolizerD::DestB>
+                    josAB(aStreamAB, iGlobalVersionNo, iCheckMode);
+                saveDestinations(josA, josB, josAB);
+            }
         }
 
         // 回復処理
@@ -248,6 +349,17 @@ void varyCheckMode
             std::ifstream   aStream(filename);
             theolizer::JsonISerializer<> jis(aStream);
             loadBasic(jis);
+
+            // 保存先指定テスト
+            {
+                std::ifstream   aStreamA(makeDestFileName(filename, "A"));
+                theolizer::JsonISerializer<theolizerD::DestA> jisA(aStreamA);
+                std::ifstream   aStreamB(makeDestFileName(filename, "B"));
+                theolizer::JsonISerializer<theolizerD::DestB> jisB(aStreamB);
+                std::ifstream   aStreamAB(makeDestFileName(filename, "AB"));
+                theolizer::JsonISerializer<theolizerD::DestA, theolizerD::DestB> jisAB(aStreamAB);
+                loadDestinations(jisA, jisB, jisAB);
+            }
         }
 
 //      ---<<< 非PretyPrint >>>---
@@ -260,9 +372,25 @@ void varyCheckMode
         // 保存処理
         if (!iLoadOnly)
         {
-            std::ofstream   aStream(filename);
-            theolizer::JsonOSerializer<> jos(aStream, iGlobalVersionNo, iCheckMode, true);
-            saveBasic(jos);
+            {
+                std::ofstream   aStream(filename);
+                theolizer::JsonOSerializer<> jos(aStream, iGlobalVersionNo, iCheckMode, true);
+                saveBasic(jos);
+            }
+
+            // 保存先指定テスト
+            {
+                std::ofstream   aStreamA(makeDestFileName(filename, "A"));
+                theolizer::JsonOSerializer<theolizerD::DestA>
+                    josA(aStreamA, iGlobalVersionNo, iCheckMode, true);
+                std::ofstream   aStreamB(makeDestFileName(filename, "B"));
+                theolizer::JsonOSerializer<theolizerD::DestB>
+                    josB(aStreamB, iGlobalVersionNo, iCheckMode, true);
+                std::ofstream   aStreamAB(makeDestFileName(filename, "AB"));
+                theolizer::JsonOSerializer<theolizerD::DestA, theolizerD::DestB>
+                    josAB(aStreamAB, iGlobalVersionNo, iCheckMode, true);
+                saveDestinations(josA, josB, josAB);
+            }
         }
 
         // 回復処理
@@ -270,6 +398,17 @@ void varyCheckMode
             std::ifstream   aStream(filename);
             theolizer::JsonISerializer<> jis(aStream);
             loadBasic(jis);
+
+            // 保存先指定テスト
+            {
+                std::ifstream   aStreamA(makeDestFileName(filename, "A"));
+                theolizer::JsonISerializer<theolizerD::DestA> jisA(aStreamA);
+                std::ifstream   aStreamB(makeDestFileName(filename, "B"));
+                theolizer::JsonISerializer<theolizerD::DestB> jisB(aStreamB);
+                std::ifstream   aStreamAB(makeDestFileName(filename, "AB"));
+                theolizer::JsonISerializer<theolizerD::DestA, theolizerD::DestB> jisAB(aStreamAB);
+                loadDestinations(jisA, jisB, jisAB);
+            }
         }
     }
 
@@ -286,16 +425,44 @@ void varyCheckMode
         // 保存処理
         if (!iLoadOnly)
         {
-            std::ofstream   aStream(filename, std::ios_base::binary);
-            theolizer::BinaryOSerializer<> bos(aStream);
-            saveBasic(bos);
+            {
+                std::ofstream   aStream(filename, std::ios_base::binary);
+                theolizer::BinaryOSerializer<> bos(aStream);
+                saveBasic(bos);
+            }
+
+            // 保存先指定テスト
+            {
+                std::ofstream   aStreamA(makeDestFileName(filename, "A"), std::ios_base::binary);
+                theolizer::BinaryOSerializer<theolizerD::DestA> bosA(aStreamA);
+                std::ofstream   aStreamB(makeDestFileName(filename, "B"), std::ios_base::binary);
+                theolizer::BinaryOSerializer<theolizerD::DestB> bosB(aStreamB);
+                std::ofstream   aStreamAB(makeDestFileName(filename, "AB"), std::ios_base::binary);
+                theolizer::BinaryOSerializer<theolizerD::DestA, theolizerD::DestB>
+                    bosAB(aStreamAB);
+                saveDestinations(bosA, bosB, bosAB);
+            }
         }
 
         // 回復処理
         {
-            std::ifstream   aStream(filename, std::ios_base::binary);
-            theolizer::BinaryISerializer<> bis(aStream);
-            loadBasic(bis);
+            {
+                std::ifstream   aStream(filename, std::ios_base::binary);
+                theolizer::BinaryISerializer<> bis(aStream);
+                loadBasic(bis);
+            }
+
+            // 保存先指定テスト
+            {
+                std::ifstream   aStreamA(makeDestFileName(filename, "A"), std::ios_base::binary);
+                theolizer::BinaryISerializer<theolizerD::DestA> bisA(aStreamA);
+                std::ifstream   aStreamB(makeDestFileName(filename, "B"), std::ios_base::binary);
+                theolizer::BinaryISerializer<theolizerD::DestB> bisB(aStreamB);
+                std::ifstream   aStreamAB(makeDestFileName(filename, "AB"), std::ios_base::binary);
+                theolizer::BinaryISerializer<theolizerD::DestA, theolizerD::DestB>
+                    bisAB(aStreamAB);
+                loadDestinations(bisA, bisB, bisAB);
+            }
         }
     }
 
@@ -311,9 +478,25 @@ void varyCheckMode
         // 保存処理
         if (!iLoadOnly)
         {
-            std::ofstream   aStream(filename, std::ios_base::binary);
-            theolizer::BinaryOSerializer<> bos(aStream, iGlobalVersionNo, iCheckMode);
-            saveBasic(bos);
+            {
+                std::ofstream   aStream(filename, std::ios_base::binary);
+                theolizer::BinaryOSerializer<> bos(aStream, iGlobalVersionNo, iCheckMode);
+                saveBasic(bos);
+            }
+
+            // 保存先指定テスト
+            {
+                std::ofstream   aStreamA(makeDestFileName(filename, "A"), std::ios_base::binary);
+                theolizer::BinaryOSerializer<theolizerD::DestA>
+                    bosA(aStreamA, iGlobalVersionNo, iCheckMode);
+                std::ofstream   aStreamB(makeDestFileName(filename, "B"), std::ios_base::binary);
+                theolizer::BinaryOSerializer<theolizerD::DestB>
+                    bosB(aStreamB, iGlobalVersionNo, iCheckMode);
+                std::ofstream   aStreamAB(makeDestFileName(filename, "AB"), std::ios_base::binary);
+                theolizer::BinaryOSerializer<theolizerD::DestA, theolizerD::DestB>
+                    bosAB(aStreamAB, iGlobalVersionNo, iCheckMode);
+                saveDestinations(bosA, bosB, bosAB);
+            }
         }
 
         // 回復処理
@@ -321,6 +504,18 @@ void varyCheckMode
             std::ifstream   aStream(filename, std::ios_base::binary);
             theolizer::BinaryISerializer<> bis(aStream);
             loadBasic(bis);
+
+            // 保存先指定テスト
+            {
+                std::ifstream   aStreamA(makeDestFileName(filename, "A"), std::ios_base::binary);
+                theolizer::BinaryISerializer<theolizerD::DestA> bisA(aStreamA);
+                std::ifstream   aStreamB(makeDestFileName(filename, "B"), std::ios_base::binary);
+                theolizer::BinaryISerializer<theolizerD::DestB> bisB(aStreamB);
+                std::ifstream   aStreamAB(makeDestFileName(filename, "AB"), std::ios_base::binary);
+                theolizer::BinaryISerializer<theolizerD::DestA, theolizerD::DestB>
+                    bisAB(aStreamAB);
+                loadDestinations(bisA, bisB, bisAB);
+            }
         }
     }
 
@@ -337,16 +532,43 @@ void varyCheckMode
         // 保存処理
         if (!iLoadOnly)
         {
-            std::ofstream   aStream(filename, std::ios_base::binary);
-            theolizer::FastOSerializer<> fos(aStream);
-            saveBasic(fos);
+            {
+                std::ofstream   aStream(filename, std::ios_base::binary);
+                theolizer::FastOSerializer<> fos(aStream);
+                saveBasic(fos);
+            }
+
+            // 保存先指定テスト
+            {
+                std::ofstream   aStreamA(makeDestFileName(filename, "A"), std::ios_base::binary);
+                theolizer::FastOSerializer<theolizerD::DestA> fosA(aStreamA);
+                std::ofstream   aStreamB(makeDestFileName(filename, "B"), std::ios_base::binary);
+                theolizer::FastOSerializer<theolizerD::DestB> fosB(aStreamB);
+                std::ofstream   aStreamAB(makeDestFileName(filename, "AB"), std::ios_base::binary);
+                theolizer::FastOSerializer<theolizerD::DestA, theolizerD::DestB> fosAB(aStreamAB);
+                saveDestinations(fosA, fosB, fosAB);
+            }
         }
 
         // 回復処理
         {
-            std::ifstream   aStream(filename, std::ios_base::binary);
-            theolizer::FastISerializer<> fis(aStream);
-            loadBasic(fis);
+            {
+                std::ifstream   aStream(filename, std::ios_base::binary);
+                theolizer::FastISerializer<> fis(aStream);
+                loadBasic(fis);
+            }
+
+            // 保存先指定テスト
+            {
+                std::ifstream   aStreamA(makeDestFileName(filename, "A"), std::ios_base::binary);
+                theolizer::FastISerializer<theolizerD::DestA> fisA(aStreamA);
+                std::ifstream   aStreamB(makeDestFileName(filename, "B"), std::ios_base::binary);
+                theolizer::FastISerializer<theolizerD::DestB> fisB(aStreamB);
+                std::ifstream   aStreamAB(makeDestFileName(filename, "AB"), std::ios_base::binary);
+                theolizer::FastISerializer<theolizerD::DestA, theolizerD::DestB>
+                    fisAB(aStreamAB);
+                loadDestinations(fisA, fisB, fisAB);
+            }
         }
     }
 
@@ -419,18 +641,22 @@ return 1;
         // デフォルト起動時のみ呼び出す
         if (aGlobalVersionNo == 0)
         {
-#ifndef DISABLE_CLASS_VARIATION_TEST
-            tutoriseClassVariation();
-#endif
-#ifndef DISABLE_ENUM_VARIATION_TEST
-            tutoriseEnumVariation();
-#endif
-#ifndef DISABLE_OBJECT_TRACKING_TEST
-            tutoriseObjectTracking();
-#endif
-#ifndef DISABLE_POLYMORPHISM_TEST
-            tutorisePolymorphism();
-#endif
+            #ifndef DISABLE_CLASS_VARIATION_TEST
+                tutoriseClassVariation();
+            #endif
+            #ifndef DISABLE_ENUM_VARIATION_TEST
+                tutoriseEnumVariation();
+            #endif
+            #ifndef DISABLE_OBJECT_TRACKING_TEST
+                tutoriseObjectTracking();
+            #endif
+            #ifndef DISABLE_POLYMORPHISM_TEST
+                tutorisePolymorphism();
+            #endif
+            #ifndef DISABLE_DESTINATIONS_TEST
+                tutoriseDestinations();
+            #endif
+
             // ここまでの中間結果表示
             theolizer::printResult("------------- Result of tutorial samples ----------");
             std::cerr << "\n\n";

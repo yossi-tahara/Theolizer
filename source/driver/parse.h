@@ -1315,7 +1315,7 @@ ASTANALYZE_OUTPUT("Theolizer unkown pattern.", qt->getTypeClass());
 //      保存／回復しているクラスに含まれるclassとenum型を枚挙し、登録する
 //----------------------------------------------------------------------------
 
-    void enumerateClass(CXXRecordDecl const* iClass)
+    void enumerateClass(CXXRecordDecl const* iClass, AnnotationInfo const* iAnnotationInfo=nullptr)
     {
 ASTANALYZE_OUTPUT("++++++++++++ enumerateClass(", iClass->getQualifiedNameAsString(), ")");
 
@@ -1361,6 +1361,26 @@ ASTANALYZE_OUTPUT("          field : ", field->getType().getCanonicalType().getA
             switch(annotation.mAnnotate)
             {
             case AnnotationInfo::None:  // 指定無しなら、登録する
+                {
+                    AnnotationInfo::Annotate    aAnnotate;
+                    if (iAnnotationInfo)
+                    {
+                        aAnnotate=iAnnotationInfo->mAnnotate;
+                    }
+                    else
+                    {
+                        auto found=mAstInterface.mSerializeListClass.find(iClass);
+                        if (found)
+                        {
+                            aAnnotate=found->second.mAnnotationInfo.mAnnotate;
+                        }
+                    }
+                    // デフォルト非保存なら登録しない
+                    if (aAnnotate == AnnotationInfo::CN)
+        continue;
+                }
+                break;
+
             case AnnotationInfo::FS:    // 保存指定有りなら、登録する
                 break;
 
@@ -1389,7 +1409,11 @@ ASTANALYZE_OUTPUT("++++++++++++ enumerateNonFullAuto()");
             // 半自動なら、基底クラスを処理する。
             if (!aSerializeInfo.second.mIsFullAuto)
             {
-                enumerateClass(aSerializeInfo.second.mTheolizerTarget);
+                enumerateClass
+                (
+                    aSerializeInfo.second.mTheolizerTarget,
+                    &(aSerializeInfo.second.mAnnotationInfo)
+                );
             }
         }
 ASTANALYZE_OUTPUT("------------ enumerateNonFullAuto()");

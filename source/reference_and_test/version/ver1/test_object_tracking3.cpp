@@ -113,7 +113,7 @@ void saveObjectTracking3(tSerializer& iSerializer)
     }
 }
 
-INSTANTIATION_ALL(void, saveObjectTracking3);
+INSTANTIATION_ALL(saveObjectTracking3);
 
 // ***************************************************************************
 //      回復
@@ -194,6 +194,6 @@ void loadObjectTracking3(tSerializer& iSerializer)
     }
 }
 
-INSTANTIATION_ALL(void, loadObjectTracking3);
+INSTANTIATION_ALL(loadObjectTracking3);
 
 #endif  // DISABLE_OBJECT_TRACKING3_TEST

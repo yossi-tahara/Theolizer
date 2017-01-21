@@ -279,6 +279,16 @@ bool FastMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
         }                                                                   \
     }
 
+#define THEOLIZER_INTERNAL_DEF_SIGNED_INT(dType, dSimbol)
+
+    void FastMidISerializer::loadPrimitive(int& oPrimitive)
+    {
+        mIStream.read(reinterpret_cast<char*>(&oPrimitive), sizeof(oPrimitive));
+        if (!mIStream.good()) {
+            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");
+        }
+    }
+
 
 //      ---<<< 文字列型 >>>---
 

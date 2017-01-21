@@ -129,7 +129,7 @@ void saveEnumVariation(tSerializer& iSerializer)
     THEOLIZER_PROCESS(iSerializer, aFullAutoClass4EnumSymVal);
 }
 
-INSTANTIATION_ALL(void, saveEnumVariation);
+INSTANTIATION_ALL(saveEnumVariation);
 
 // ***************************************************************************
 //      回復
@@ -168,6 +168,6 @@ void loadEnumVariation(tSerializer& iSerializer)
 
 }
 
-INSTANTIATION_ALL(void, loadEnumVariation);
+INSTANTIATION_ALL(loadEnumVariation);
 
 #endif  // DISABLE_ENUM_VARIATION_TEST
