@@ -10,6 +10,7 @@ var files =
     [ "7a.class_variation.h", "7a_8class__variation_8h.html", null ],
     [ "7b.enum_variation.h", "7b_8enum__variation_8h.html", null ],
     [ "7c.object_tracking.h", "7c_8object__tracking_8h.html", null ],
+    [ "7d.destinations.h", "7d_8destinations_8h_source.html", null ],
     [ "8.reference.h", "8_8reference_8h.html", null ],
     [ "avoid-trouble.h", "avoid-trouble_8h_source.html", null ],
     [ "base.h", "base_8h_source.html", null ],

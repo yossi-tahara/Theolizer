@@ -61,7 +61,27 @@ var _usage_individual =
       ] ],
       [ "5.ポリモーフィズムの網羅的な使用例（自動テスト）の説明", "_object_tracking.html#TestPolymorphism", null ]
     ] ],
-    [ "保存先指定について", "_destinations.html", null ],
+    [ "保存先指定について", "_destinations.html", [
+      [ "1.指定方法", "_destinations.html#HowToSpecifySaving", [
+        [ "1-1.シリアライズの有無指定", "_destinations.html#HowToSpecifySaving11", null ],
+        [ "1-2.保存先指定", "_destinations.html#HowToSpecifySaving12", null ],
+        [ "1-3.指定方法", "_destinations.html#HowToSpecifySaving13", [
+          [ "1-3-1.保存先の定義方法", "_destinations.html#HowToSpecifySaving131", null ],
+          [ "1-3-2.デフォルト保存／非保存クラスの指定方法", "_destinations.html#HowToSpecifySaving132", null ],
+          [ "1-3-3.メンバ変数への指定方法", "_destinations.html#HowToSpecifySaving133", null ],
+          [ "1-3-4.シリアライザへの指定方法", "_destinations.html#HowToSpecifySaving134", null ]
+        ] ],
+        [ "1-4.サンプル・ソース", "_destinations.html#HowToSpecifySaving14", [
+          [ "1-4-1.保存の有無指定", "_destinations.html#HowToSpecifySaving141", null ],
+          [ "1-4-2.保存先指定", "_destinations.html#HowToSpecifySaving142", null ],
+          [ "1-4-3.間違い易い指定について", "_destinations.html#HowToSpecifySaving143", null ]
+        ] ]
+      ] ],
+      [ "2.保存先指定の網羅的な使用例（自動テスト）の説明", "_destinations.html#TestSpecifySaving", [
+        [ "2-1.保存の有無指定のテスト", "_destinations.html#TestSpecifySaving21", null ],
+        [ "2-2.保存先指定のテスト", "_destinations.html#TestSpecifySaving22", null ]
+      ] ]
+    ] ],
     [ "標準コンテナ（STL）の使い方", "_usage_s_t_l.html", null ],
     [ "enum型の変更方法、および、バージョン・アップ方法", "_changing_enum.html", null ],
     [ "クラス定義の変更方法、および、バージョン・アップ方法", "_changing_class.html", null ],

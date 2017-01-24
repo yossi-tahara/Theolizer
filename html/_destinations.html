@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.2</span>
+   &#160;<span id="projectnumber">Version.0.4.3-Prerelease.</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -86,7 +86,269 @@ $(document).ready(function(){initNavTree('_destinations.html','');});
 <div class="title">保存先指定について </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>ここでは、保存先指定について説明します。 </p><h1>T.B.D.</h1>
+<div class="textblock"><p>ここでは、保存先指定について説明します。</p>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="HowToSpecifySaving"></a>
+1.指定方法</h1>
+<h6></h6>
+<h2><a class="anchor" id="HowToSpecifySaving11"></a>
+1-1.シリアライズの有無指定</h2>
+<p>クラスや構造体に含まれるメンバ変数をシリアライズするかしないか指定できます。 指定方法は２種類あります。 侵入型半自動クラスについて指定可能です。(*1)</p>
+<ol type="1">
+<li>デフォルト保存クラス：メンバ変数をデフォルトでシリアライズするクラス<br />
+ シリアライズ指定していないメンバ変数はシリアライズ対象となります。<br />
+</li>
+<li>デフォルト非保存クラス：メンバ変数をデフォルトではシリアライズしないクラス シリアライズ指定していないメンバ変数はシリアライズ対象としません。</li>
+</ol>
+<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> <b>(*1)</b><br />
+ 非侵入型完全自動クラスのメンバ変数への指定も可能ですが、クラス定義ソースの修正が必要であるため、現状では意味がありません（侵入する必要がある）ので、非サポートとします。 </div><h2><a class="anchor" id="HowToSpecifySaving12"></a>
+1-2.保存先指定</h2>
+<p>Theolizerは、クラスを複数のファイルや通信先に分割して保存／回復できます。<br />
+ そのためには<br />
+</p>
+<ol type="1">
+<li>保存先を定義する<br />
+ 特殊なenum型を定義するイメージです。</li>
+<li>侵入型半自動クラスのメンバ変数に保存先を指定する。 複数の保存先を指定できます。</li>
+<li>シリアライザをコンストラクトする際に保存先を指定する。 通常は保存先を１つ指定しますが、複数指定することも可能です。</li>
+</ol>
+<p>これにより、2と3で指定された保存先集合間に共通な保存先がある場合、2のメンバ変数が3で生成したシリアライザに渡したstreamへ保存、streamから回復されます。</p>
+<p>なお、両者とも保存先を明示的に指定しなかった場合、「保存先無し」の意味ではなく「全ての保存先」の意味になります。2に保存先を明示的に指定していない場合、3でどの保存先を指定しても常にシリアライズされます。また、3で保存先を明示的に指定していない場合、2にどの保存先を指定していても常にシリアライズされます。</p>
+<h2><a class="anchor" id="HowToSpecifySaving13"></a>
+1-3.指定方法</h2>
+<h3><a class="anchor" id="HowToSpecifySaving131"></a>
+1-3-1.保存先の定義方法</h3>
+<p>THEOLIZER_DESTINATIONS()マクロで定義します。<br />
+ 通常のenum型の定義と同じく、保存先を用いる場所全てより前に定義して下さい。<br />
+ 構文は次の通りです。<br />
+</p>
+<p>THEOLIZER_DESTINATIONS(前THEOLIZER_DESTINATIONS()マクロ最後の保存先, 保存先0, 保存先1, ... );<br />
+</p>
+<p>マクロ展開の都合上、THEOLIZER_DESTINATIONS()１つで最大8つの保存先を定義できます。8つを超える保存先を定義したい場合、THEOLIZER_DESTINATIONS()を続けて記述して下さい。例えは保存先を12個定義したい場合は、下記のようになります。</p>
+<div class="fragment"><div class="line">THEOLIZER_DESTINATIONS(All,   Dest0, Dest1,  Dest2,  Dest3,  Dest4,  Dest5,  Dest6,  Dest7);</div><div class="line">THEOLIZER_DESTINATIONS(Dest7, Dest8, Dest9,  Dest10, Dest11);</div></div><!-- fragment --><p> シンボルはAll以外を自由に使って頂いて良いです。文字はenum型のシンボル名に使えるものを全て使えます。<br />
+ なお、Allは事前定義しています。「全ての保存先」の意味を持ち、内部的に使用しています。</p>
+<p>また、各保存先はtheolizer::destination名前空間に配置されます。また、この名前空間にはtheolizerDの別名を定義しています。例えばDest1はtheolizerD::Dest1として指定します。</p>
+<h3><a class="anchor" id="HowToSpecifySaving132"></a>
+1-3-2.デフォルト保存／非保存クラスの指定方法</h3>
+<p>「<a class="el" href="_class_variation.html#HalfAutoClass">2.侵入型半自動クラス</a> 」をTHEOLIZER_INTRUSIVE()マクロで指定しますが、その先頭パラメータで指定します。<br />
+ デフォルト保存クラス　：THEOLIZER_INTRUSIVE(<b>CS</b>, (クラス名), バージョン番号);<br />
+ デフォルト非保存クラス：THEOLIZER_INTRUSIVE(<b>CN</b>, (クラス名), バージョン番号);<br />
+</p>
+<h3><a class="anchor" id="HowToSpecifySaving133"></a>
+1-3-3.メンバ変数への指定方法</h3>
+<p>メンバ変数への指定にはTHEOLIZER_ANNOTATE()マクロをメンバ変数定義の最後、;の前に書きます。<br />
+ 保存しない：THEOLIZER_ANNOTATE(<b>FN</b>)<br />
+ 保存する　：THEOLIZER_ANNOTATE(<b>FS</b>)<br />
+ 保存し、保存先も指定する：THEOLIZER_ANNOTATE(FS:<code>&lt;保存先のリスト&gt;</code>))<br />
+</p>
+<h3><a class="anchor" id="HowToSpecifySaving134"></a>
+1-3-4.シリアライザへの指定方法</h3>
+<p><code>シリアライザ名&lt;保存先のリスト&gt; インスタンス名(パラメータ);</code>の構文で指定します。</p>
+<h2><a class="anchor" id="HowToSpecifySaving14"></a>
+1-4.サンプル・ソース</h2>
+<h3><a class="anchor" id="HowToSpecifySaving141"></a>
+1-4-1.保存の有無指定</h3>
+<p><br />
+ <b>デフォルト保存クラス例</b> (source/reference_and_test/version/ver1/test_destinations.h）<br />
+</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="keyword">class </span>DefaultSave</div><div class="line">{</div><div class="line">    <span class="keywordtype">int</span>     mNoAnnotate;</div><div class="line">    <span class="keywordtype">int</span>     mAnnotateSave       THEOLIZER_ANNOTATE(FS);</div><div class="line">    <span class="keywordtype">int</span>     mAnnotateNonSave    THEOLIZER_ANNOTATE(FN);</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    DefaultSave() : mNoAnnotate(0), mAnnotateSave(0), mAnnotateNonSave(0)</div><div class="line">    { }</div><div class="line">    DefaultSave(<span class="keywordtype">bool</span>) : mNoAnnotate(100), mAnnotateSave(200), mAnnotateNonSave(300)</div><div class="line">    { }</div><div class="line">    <span class="keywordtype">void</span> check()</div><div class="line">    {</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(mNoAnnotate, 100);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(mAnnotateSave, 200);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(mAnnotateNonSave, 0);</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// 侵入型半自動 指定</span></div><div class="line">    THEOLIZER_INTRUSIVE(CS, (DefaultSave), 1);</div><div class="line">};</div><div class="line"></div></div><!-- fragment --><p> <b>説明：</b> </p><table class="doxtable">
+<tr>
+<th>メンバ変数</th><th>指定</th><th>説明  </th></tr>
+<tr>
+<td>mNoAnnotate</td><td>指定無し</td><td>デフォルト保存クラスなので、シリアライズされます </td></tr>
+<tr>
+<td>mAnnotateSave</td><td>保存する</td><td>シリアライズされます </td></tr>
+<tr>
+<td>mAnnotateNonSave</td><td>保存しない</td><td>シリアライズされません </td></tr>
+</table>
+<p><b>デフォルト非保存クラス例</b> (source/reference_and_test/version/ver1/test_destinations.h）<br />
+</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="keyword">class </span>DefaultNonSave</div><div class="line">{</div><div class="line">    <span class="keywordtype">int</span>     mNoAnnotate;</div><div class="line">    <span class="keywordtype">int</span>     mAnnotateSave       THEOLIZER_ANNOTATE(FS);</div><div class="line">    <span class="keywordtype">int</span>     mAnnotateNonSave    THEOLIZER_ANNOTATE(FN);</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    DefaultNonSave() : mNoAnnotate(0), mAnnotateSave(0), mAnnotateNonSave(0)</div><div class="line">    { }</div><div class="line">    DefaultNonSave(<span class="keywordtype">bool</span>) : mNoAnnotate(1000), mAnnotateSave(2000), mAnnotateNonSave(3000)</div><div class="line">    { }</div><div class="line">    <span class="keywordtype">void</span> check()</div><div class="line">    {</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(mNoAnnotate, 0);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(mAnnotateSave, 2000);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(mAnnotateNonSave, 0);</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// 侵入型半自動 指定</span></div><div class="line">    THEOLIZER_INTRUSIVE(CN, (DefaultNonSave), 1);</div><div class="line">};</div><div class="line"></div></div><!-- fragment --><p> <b>説明：</b> </p><table class="doxtable">
+<tr>
+<th>メンバ変数</th><th>指定</th><th>説明  </th></tr>
+<tr>
+<td>mNoAnnotate</td><td>指定無し</td><td>デフォルト非保存クラスなので、シリアライズされません </td></tr>
+<tr>
+<td>mAnnotateSave</td><td>保存する</td><td>シリアライズされます </td></tr>
+<tr>
+<td>mAnnotateNonSave</td><td>保存しない</td><td>シリアライズされません </td></tr>
+</table>
+<p><br />
+ <b>保存と回復ソース：(source/reference_and_test/version/ver1/test_destinations.cpp）</b><br />
+</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 保存 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">    {</div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;tutorise_destinations.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="comment">// デフォルト保存</span></div><div class="line">        DefaultSave aDefaultSave(<span class="keyword">true</span>);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aDefaultSave);</div><div class="line"></div><div class="line">        <span class="comment">// デフォルト非保存</span></div><div class="line">        DefaultNonSave aDefaultNonSave(<span class="keyword">true</span>);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aDefaultNonSave);</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 回復 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">    {</div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;tutorise_destinations.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="comment">// デフォルト保存</span></div><div class="line">        DefaultSave aDefaultSave;</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aDefaultSave);</div><div class="line">        aDefaultSave.check();</div><div class="line"></div><div class="line">        <span class="comment">// デフォルト非保存</span></div><div class="line">        DefaultNonSave aDefaultNonSave;</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aDefaultNonSave);</div><div class="line">        aDefaultNonSave.check();</div><div class="line">    }</div><div class="line"></div></div><!-- fragment --><p> 以上の実行で保存されるファイルは次の通りです。 </p><div class="fragment"><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;SerialzierName&quot;</span>:<span class="stringliteral">&quot;JsonTheolizer&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;GlobalVersionNo&quot;</span>:1,</div><div class="line">    <span class="stringliteral">&quot;TypeInfoList&quot;</span>:[1]</div><div class="line">}</div><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;mNoAnnotate&quot;</span>:100,</div><div class="line">    <span class="stringliteral">&quot;mAnnotateSave&quot;</span>:200</div><div class="line">}</div><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;mAnnotateSave&quot;</span>:2000</div><div class="line">}</div></div><!-- fragment --><p><br />
+ </p>
+<h3><a class="anchor" id="HowToSpecifySaving142"></a>
+1-4-2.保存先指定</h3>
+<p>保存先を指定したクラスをポリモーフィックに保存／回復するサンプルを示します。保存先をマスター・ファイルと取引ファイルへ分割するケースを使います。できるだけ小さなサンプルにしていますので少し違和感があると思いますが、雰囲気は掴めると思います。</p>
+<p>なお、このように基底クラスへのポインタから保存／回復することもできますし、普通にクラス・インスタンスを直接保存／回復することもできます。</p>
+<p><b>保存先の定義</b> (source/reference_and_test/version/ver1/common.h）<br />
+</p>
+ <div class="fragment"><div class="line">THEOLIZER_DESTINATIONS</div><div class="line">(</div><div class="line">    All,</div><div class="line">    Master,</div><div class="line">    Trade</div><div class="line">);</div></div><!-- fragment --></p>
+<p><b>クラス例</b> (source/reference_and_test/version/ver1/test_destinations.h）<br />
+</p>
+<p>顧客管理を想定してます。BaseCustomerを基底クラスとし、法人の顧客をCorporateCustomer、個人の顧客をIndividualCustomerで管理する想定です。基底クラスで名前を記録し、派生クラスはそれぞれ、資本金と売掛金残高、誕生日と提供したポイント数を記録します。名前と資本金と誕生日はマスター・ファイル、売掛金とポイント数は取引ファイルへ保存します。</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 基底クラス &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line"><span class="keyword">struct </span>BaseCustomer</div><div class="line">{</div><div class="line">    std::string mName   THEOLIZER_ANNOTATE(FS:&lt;theolizerD::Master&gt;);    <span class="comment">// 名前</span></div><div class="line"></div><div class="line">    BaseCustomer() { }</div><div class="line">    BaseCustomer(std::string <span class="keyword">const</span>&amp; iName) :</div><div class="line">        mName(iName)</div><div class="line">    { }</div><div class="line">    <span class="keyword">virtual</span> ~BaseCustomer() { }</div><div class="line">    THEOLIZER_INTRUSIVE(CS, (BaseCustomer), 1);</div><div class="line">};</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 派生クラス１ &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line"><span class="keyword">struct </span>CorporateCustomer : <span class="keyword">public</span> BaseCustomer</div><div class="line">{</div><div class="line">    <span class="keywordtype">int</span> mCapitalStock   THEOLIZER_ANNOTATE(FS:&lt;theolizerD::Master&gt;);    <span class="comment">// 資本金</span></div><div class="line">    <span class="keywordtype">int</span> mTradeAccounts  THEOLIZER_ANNOTATE(FS:&lt;theolizerD::Trade&gt;);     <span class="comment">// 売掛金</span></div><div class="line"></div><div class="line">    CorporateCustomer() : mCapitalStock(0), mTradeAccounts(0) { }</div><div class="line">    CorporateCustomer(std::string <span class="keyword">const</span>&amp; iName, <span class="keywordtype">int</span> iCapitalStock, <span class="keywordtype">int</span> iTradeAccounts) :</div><div class="line">        BaseCustomer(iName),</div><div class="line">        mCapitalStock(iCapitalStock),</div><div class="line">        mTradeAccounts(iTradeAccounts)</div><div class="line">    { }</div><div class="line">    THEOLIZER_INTRUSIVE(CS, (CorporateCustomer), 1);</div><div class="line">};</div><div class="line">THEOLIZER_REGISTER_CLASS((CorporateCustomer));</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 派生クラス２ &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line"><span class="keyword">struct </span>IndividualCustomer : <span class="keyword">public</span> BaseCustomer</div><div class="line">{</div><div class="line">    std::string mBirthday   THEOLIZER_ANNOTATE(FS:&lt;theolizerD::Master&gt;);<span class="comment">// 誕生日</span></div><div class="line">    <span class="keywordtype">int</span>         mPoint      THEOLIZER_ANNOTATE(FS:&lt;theolizerD::Trade&gt;); <span class="comment">// ポイント数</span></div><div class="line"></div><div class="line">    IndividualCustomer() : mPoint(0) { }</div><div class="line">    IndividualCustomer(std::string <span class="keyword">const</span>&amp; iName, std::string iBirthday, <span class="keywordtype">int</span> iPoint) :</div><div class="line">        BaseCustomer(iName),</div><div class="line">        mBirthday(iBirthday),</div><div class="line">        mPoint(iPoint)</div><div class="line">    { }</div><div class="line">    THEOLIZER_INTRUSIVE(CS, (IndividualCustomer), 1);</div><div class="line">};</div><div class="line">THEOLIZER_REGISTER_CLASS((IndividualCustomer));</div><div class="line"></div></div><!-- fragment --><p> <b>保存ソース：(source/reference_and_test/version/ver1/test_destinations.cpp）</b><br />
+</p>
+<div class="fragment"><div class="line"></div><div class="line">    {</div><div class="line">        <span class="comment">// データ作成</span></div><div class="line">        std::list&lt;std::unique_ptr&lt;BaseCustomer&gt; &gt;   aList;</div><div class="line">        aList.emplace_back(<span class="keyword">new</span> CorporateCustomer(<span class="stringliteral">&quot;Theoride Technology&quot;</span>, 2000000, 500000));</div><div class="line">        aList.emplace_back(<span class="keyword">new</span> IndividualCustomer(<span class="stringliteral">&quot;Yossi Tahara&quot;</span>, <span class="stringliteral">&quot;1962/01/01&quot;</span>, 12000));</div><div class="line"></div><div class="line">        <span class="comment">// Master保存</span></div><div class="line">        std::ofstream   aStreamMaster(<span class="stringliteral">&quot;tutorise_destinationsMaster.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;theolizerD::Master&gt;</a> aSerializerMaster(aStreamMaster);</div><div class="line">        THEOLIZER_PROCESS(aSerializerMaster, aList);</div><div class="line">        aSerializerMaster.clearTracking();</div><div class="line"></div><div class="line">        <span class="comment">// Trade保存</span></div><div class="line">        std::ofstream   aStreamTrade(<span class="stringliteral">&quot;tutorise_destinationsTrade.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;theolizerD::Trade&gt;</a> aSerializerTrade(aStreamTrade);</div><div class="line">        THEOLIZER_PROCESS(aSerializerTrade, aList);</div><div class="line">        aSerializerTrade.clearTracking();</div><div class="line">    }</div><div class="line"></div></div><!-- fragment --><p> これにて次のように保存されます。</p>
+<p><b>tutorise_destinationsMaster.json:</b><br />
+ </p><div class="fragment"><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;SerialzierName&quot;</span>:<span class="stringliteral">&quot;JsonTheolizer&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;GlobalVersionNo&quot;</span>:1,</div><div class="line">    <span class="stringliteral">&quot;TypeInfoList&quot;</span>:[1]</div><div class="line">}</div><div class="line">[</div><div class="line">    2,</div><div class="line">    [</div><div class="line">        [1,<span class="stringliteral">&quot;CorporateCustomer&quot;</span>,{</div><div class="line">            <span class="stringliteral">&quot;(BaseCustomer)&quot;</span>:{</div><div class="line">                <span class="stringliteral">&quot;mName&quot;</span>:<span class="stringliteral">&quot;Theoride Technology&quot;</span></div><div class="line">            },</div><div class="line">            <span class="stringliteral">&quot;mCapitalStock&quot;</span>:2000000</div><div class="line">        }]</div><div class="line">    ],</div><div class="line">    [</div><div class="line">        [2,<span class="stringliteral">&quot;IndividualCustomer&quot;</span>,{</div><div class="line">            <span class="stringliteral">&quot;(BaseCustomer)&quot;</span>:{</div><div class="line">                <span class="stringliteral">&quot;mName&quot;</span>:<span class="stringliteral">&quot;Yossi Tahara&quot;</span></div><div class="line">            },</div><div class="line">            <span class="stringliteral">&quot;mBirthday&quot;</span>:<span class="stringliteral">&quot;1962\/01\/01&quot;</span></div><div class="line">        }]</div><div class="line">    ]</div><div class="line">]</div></div><!-- fragment --><p>誕生日が<code>\</code>でエスケープされているのは、Jsonの仕様によるものです。</p>
+<p><b>tutorise_destinationsTrade.json:</b><br />
+ </p><div class="fragment"><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;SerialzierName&quot;</span>:<span class="stringliteral">&quot;JsonTheolizer&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;GlobalVersionNo&quot;</span>:1,</div><div class="line">    <span class="stringliteral">&quot;TypeInfoList&quot;</span>:[1]</div><div class="line">}</div><div class="line">[</div><div class="line">    2,</div><div class="line">    [</div><div class="line">        [1,<span class="stringliteral">&quot;CorporateCustomer&quot;</span>,{</div><div class="line">            <span class="stringliteral">&quot;(BaseCustomer)&quot;</span>:{</div><div class="line">            },</div><div class="line">            <span class="stringliteral">&quot;mTradeAccounts&quot;</span>:500000</div><div class="line">        }]</div><div class="line">    ],</div><div class="line">    [</div><div class="line">        [2,<span class="stringliteral">&quot;IndividualCustomer&quot;</span>,{</div><div class="line">            <span class="stringliteral">&quot;(BaseCustomer)&quot;</span>:{</div><div class="line">            },</div><div class="line">            <span class="stringliteral">&quot;mPoint&quot;</span>:12000</div><div class="line">        }]</div><div class="line">    ]</div><div class="line">]</div></div><!-- fragment --><p><b>保存データのまとめ：</b><br />
+</p>
+<table class="doxtable">
+<tr>
+<th>クラス</th><th>メンバ変数</th><th>内容</th><th>保存先  </th></tr>
+<tr>
+<td>CorporateCustomer</td><td>mName</td><td>"Theoride Technology"</td><td>マスター・ファイル </td></tr>
+<tr>
+<td></td><td>mCapitalStock</td><td>2,000,000</td><td>マスター・ファイル </td></tr>
+<tr>
+<td></td><td>mTradeAccounts</td><td>500,000</td><td>取引ファイル </td></tr>
+<tr>
+<td>IndividualCustomer</td><td>mName</td><td>"Yossi Tahara"</td><td>マスター・ファイル </td></tr>
+<tr>
+<td></td><td>mBirthday</td><td>1962/01/01</td><td>マスター・ファイル </td></tr>
+<tr>
+<td></td><td>mPoint</td><td>12,000</td><td>取引ファイル </td></tr>
+</table>
+<p><br />
+ <b>回復ソース：(source/reference_and_test/version/ver1/test_destinations.cpp）</b><br />
+</p>
+<div class="fragment"><div class="line"></div><div class="line">    {</div><div class="line">        std::list&lt;std::unique_ptr&lt;BaseCustomer&gt; &gt;   aList;</div><div class="line"></div><div class="line">        <span class="comment">// Master回復</span></div><div class="line">        std::ifstream   aStreamMaster(<span class="stringliteral">&quot;tutorise_destinationsMaster.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;theolizerD::Master&gt;</a> aSerializerMaster(aStreamMaster);</div><div class="line">        THEOLIZER_PROCESS(aSerializerMaster, aList);</div><div class="line">        aSerializerMaster.clearTracking();</div><div class="line"></div><div class="line">        <span class="comment">// Tradeを合成回復</span></div><div class="line">        std::ifstream   aStreamTrade(<span class="stringliteral">&quot;tutorise_destinationsTrade.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;theolizerD::Trade&gt;</a> aSerializerTrade(aStreamTrade);</div><div class="line">        THEOLIZER_PROCESS(aSerializerTrade, aList);</div><div class="line">        aSerializerTrade.clearTracking();</div><div class="line"></div><div class="line">        <span class="comment">// 合成結果検証</span></div><div class="line">        <span class="keyword">auto</span> it = aList.begin();</div><div class="line">        CorporateCustomer* aCorporateCustomer=<span class="keyword">dynamic_cast&lt;</span>CorporateCustomer*<span class="keyword">&gt;</span>(it-&gt;get());</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aCorporateCustomer-&gt;mName,          <span class="stringliteral">&quot;Theoride Technology&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aCorporateCustomer-&gt;mCapitalStock,  2000000);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aCorporateCustomer-&gt;mTradeAccounts, 500000);</div><div class="line">        ++it;</div><div class="line">        IndividualCustomer* aIndividualCustomer=<span class="keyword">dynamic_cast&lt;</span>IndividualCustomer*<span class="keyword">&gt;</span>(it-&gt;get());</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aIndividualCustomer-&gt;mName,         <span class="stringliteral">&quot;Yossi Tahara&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aIndividualCustomer-&gt;mBirthday,     <span class="stringliteral">&quot;1962/01/01&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aIndividualCustomer-&gt;mPoint,        12000);</div><div class="line"></div><div class="line">        <span class="comment">// 結果表示</span></div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(std::cout);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aList);</div><div class="line">        aSerializer.clearTracking();</div><div class="line">    }</div><div class="line"></div></div><!-- fragment --><p> THEOLIZER_PROCESS(aSerializerMaster, aList);にてマスター・ファイルから回復してます。<br />
+ THEOLIZER_PROCESS(aSerializerTrade, aList);にて取引ファイルから同じインスタンスへ回復してます。<br />
+ これにより分割して保存したクラスを合成して回復します。<br />
+ 以上により回復したデータは次のようになります。</p>
+<div class="fragment"><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;SerialzierName&quot;</span>:<span class="stringliteral">&quot;JsonTheolizer&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;GlobalVersionNo&quot;</span>:1,</div><div class="line">    <span class="stringliteral">&quot;TypeInfoList&quot;</span>:[1]</div><div class="line">}</div><div class="line">[</div><div class="line">    2,</div><div class="line">    [</div><div class="line">        [1,<span class="stringliteral">&quot;CorporateCustomer&quot;</span>,{</div><div class="line">            <span class="stringliteral">&quot;(BaseCustomer)&quot;</span>:{</div><div class="line">                <span class="stringliteral">&quot;mName&quot;</span>:<span class="stringliteral">&quot;Theoride Technology&quot;</span></div><div class="line">            },</div><div class="line">            <span class="stringliteral">&quot;mCapitalStock&quot;</span>:2000000,</div><div class="line">            <span class="stringliteral">&quot;mTradeAccounts&quot;</span>:500000</div><div class="line">        }]</div><div class="line">    ],</div><div class="line">    [</div><div class="line">        [2,<span class="stringliteral">&quot;IndividualCustomer&quot;</span>,{</div><div class="line">            <span class="stringliteral">&quot;(BaseCustomer)&quot;</span>:{</div><div class="line">                <span class="stringliteral">&quot;mName&quot;</span>:<span class="stringliteral">&quot;Yossi Tahara&quot;</span></div><div class="line">            },</div><div class="line">            <span class="stringliteral">&quot;mBirthday&quot;</span>:<span class="stringliteral">&quot;1962\/01\/01&quot;</span>,</div><div class="line">            <span class="stringliteral">&quot;mPoint&quot;</span>:12000</div><div class="line">        }]</div><div class="line">    ]</div><div class="line">]</div></div><!-- fragment --><p><b>回復結果のまとめ：</b><br />
+</p>
+<table class="doxtable">
+<tr>
+<th>クラス</th><th>メンバ変数</th><th>内容  </th></tr>
+<tr>
+<td>CorporateCustomer</td><td>mName</td><td>"Theoride Technology" </td></tr>
+<tr>
+<td></td><td>mCapitalStock</td><td>2,000,000 </td></tr>
+<tr>
+<td></td><td>mTradeAccounts</td><td>500,000 </td></tr>
+<tr>
+<td>IndividualCustomer</td><td>mName</td><td>"Yossi Tahara" </td></tr>
+<tr>
+<td></td><td>mBirthday</td><td>1962/01/01 </td></tr>
+<tr>
+<td></td><td>mPoint</td><td>12,000 </td></tr>
+</table>
+<p><br />
+ </p>
+<h3><a class="anchor" id="HowToSpecifySaving143"></a>
+1-4-3.間違い易い指定について</h3>
+<p>クラス・インスタンスをメンバ変数として持つクラスについて、注意点があります。他のクラスを含むクラスを親クラス、他のクラスに含まれるクラスを子クラスとします。<br />
+ この時、親クラス側で子クラス型のメンバ変数に保存先をAと指定し、子クラスのメンバ変数xに保存先をBとしていた場合、親クラスをBへ保存した時にxが保存されません。これは仕様ですがミスし易い部分です。<br />
+</p>
+<p>以下具体例で説明します。<br />
+ 親クラスをDestinationParent、子クラスをDestinationChildとします。<br />
+ 親クラスはDestinationChild型のmDestinationChildメンバ変数を持っていて、これは保存先としてDestAを指定します。子クラスは２つのメンバ変数mAnnotateAとmAnnotateBを持ち、それぞれ保存先としてDestA、DestBを指定します。<br />
+</p>
+<p><b>保存先の定義</b> (source/reference_and_test/version/ver1/common.h）<br />
+</p>
+ <div class="fragment"><div class="line">THEOLIZER_DESTINATIONS</div><div class="line">(</div><div class="line">    Trade,</div><div class="line">    DestA,</div><div class="line">    DestB,</div><div class="line">    DestC</div><div class="line">);</div></div><!-- fragment --></p>
+<p><b>クラス例</b> (source/reference_and_test/version/ver1/test_destinations.h）<br />
+</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 子クラス &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line"><span class="keyword">struct </span>DestinationChild</div><div class="line">{</div><div class="line">    <span class="keywordtype">int</span>     mAnnotateA      THEOLIZER_ANNOTATE(FS:&lt;theolizerD::DestA&gt;);</div><div class="line">    <span class="keywordtype">int</span>     mAnnotateB      THEOLIZER_ANNOTATE(FS:&lt;theolizerD::DestB&gt;);</div><div class="line"></div><div class="line">    DestinationChild(<span class="keywordtype">int</span> iValueA, <span class="keywordtype">int</span> iValueB) :</div><div class="line">        mAnnotateA(iValueA),</div><div class="line">        mAnnotateB(iValueB)</div><div class="line">    { }</div><div class="line">};</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 親クラス &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line"><span class="keyword">struct </span>DestinationParent</div><div class="line">{</div><div class="line">    <span class="keywordtype">int</span>                 mAnnotateA          THEOLIZER_ANNOTATE(FS:&lt;theolizerD::DestA&gt;);</div><div class="line">    <span class="keywordtype">int</span>                 mAnnotateB          THEOLIZER_ANNOTATE(FS:&lt;theolizerD::DestB&gt;);</div><div class="line">    DestinationChild    mDestinationChild   THEOLIZER_ANNOTATE(FS:&lt;theolizerD::DestA&gt;);</div><div class="line"></div><div class="line">    DestinationParent(<span class="keywordtype">int</span> iValue=0) :</div><div class="line">        mAnnotateA(1*iValue),</div><div class="line">        mAnnotateB(2*iValue),</div><div class="line">        mDestinationChild(3*iValue, 4*iValue)</div><div class="line">    { }</div><div class="line">};</div><div class="line"></div></div><!-- fragment --><p> <b>保存ソース：(source/reference_and_test/version/ver1/test_destinations.cpp）</b><br />
+</p>
+<p>これにて次のように保存されます。</p>
+<p><b>tutorise_destinationsA.json:</b><br />
+ </p><div class="fragment"><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;SerialzierName&quot;</span>:<span class="stringliteral">&quot;JsonTheolizer&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;GlobalVersionNo&quot;</span>:1,</div><div class="line">    <span class="stringliteral">&quot;TypeInfoList&quot;</span>:[1]</div><div class="line">}</div><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;mAnnotateA&quot;</span>:100,</div><div class="line">    <span class="stringliteral">&quot;mDestinationChild&quot;</span>:{</div><div class="line">        <span class="stringliteral">&quot;mAnnotateA&quot;</span>:300</div><div class="line">    }</div><div class="line">}</div></div><!-- fragment --><p>mDestinationChildのmAnnotateBはDestBのみ保存なので、tutorise_destinationsA.jsonには保存されません。</p>
+<p><b>tutorise_destinationsB.json:</b><br />
+ </p><div class="fragment"><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;SerialzierName&quot;</span>:<span class="stringliteral">&quot;JsonTheolizer&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;GlobalVersionNo&quot;</span>:1,</div><div class="line">    <span class="stringliteral">&quot;TypeInfoList&quot;</span>:[1]</div><div class="line">}</div><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;mAnnotateB&quot;</span>:200</div><div class="line">}</div></div><!-- fragment --><p>tutorise_destinationsB.jsonには、指示通りmDestinationChildが含まれません。 上記のどちらにもmDestinationChildのmAnnotateBが保存されないことに注意して下さい。</p>
+<p><b>回復ソース：(source/reference_and_test/version/ver1/test_destinations.cpp）</b><br />
+</p>
+<div class="fragment"><div class="line"></div><div class="line">    {</div><div class="line">        DestinationParent aDestinationParent;</div><div class="line"></div><div class="line">        <span class="comment">// DestA回復</span></div><div class="line">        std::ifstream   aStreamA(<span class="stringliteral">&quot;tutorise_destinationsA.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;theolizerD::DestA&gt;</a> aSerializerA(aStreamA);</div><div class="line">        THEOLIZER_PROCESS(aSerializerA, aDestinationParent);</div><div class="line"></div><div class="line">        <span class="comment">// DestBを合成回復</span></div><div class="line">        std::ifstream   aStreamB(<span class="stringliteral">&quot;tutorise_destinationsB.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;theolizerD::DestB&gt;</a> aSerializerB(aStreamB);</div><div class="line">        THEOLIZER_PROCESS(aSerializerB, aDestinationParent);</div><div class="line"></div><div class="line">        <span class="comment">// 合成結果検証</span></div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aDestinationParent.mAnnotateA, 100);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aDestinationParent.mAnnotateB, 200);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aDestinationParent.mDestinationChild.mAnnotateA, 300);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aDestinationParent.mDestinationChild.mAnnotateB, 0);</div><div class="line"></div><div class="line">        <span class="comment">// 結果表示</span></div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(std::cout);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aDestinationParent);</div><div class="line">    }</div><div class="line"></div></div><!-- fragment --><p> 以上により回復したデータは次のようになります。<b>mDestinationChild.mAnnotateBが0のままです。</b> これはミスを誘発し易いですので、子クラスに保存先を指定する際は慎重に行って下さい。<br />
+ なお、基底クラスには親クラス側に保存先を指定できていため、同様のミスは発生しません。</p>
+<div class="fragment"><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;SerialzierName&quot;</span>:<span class="stringliteral">&quot;JsonTheolizer&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;GlobalVersionNo&quot;</span>:1,</div><div class="line">    <span class="stringliteral">&quot;TypeInfoList&quot;</span>:[1]</div><div class="line">}</div><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;mAnnotateA&quot;</span>:100,</div><div class="line">    <span class="stringliteral">&quot;mAnnotateB&quot;</span>:200,</div><div class="line">    <span class="stringliteral">&quot;mDestinationChild&quot;</span>:{</div><div class="line">        <span class="stringliteral">&quot;mAnnotateA&quot;</span>:300,</div><div class="line">        <span class="stringliteral">&quot;mAnnotateB&quot;</span>:0</div><div class="line">    }</div><div class="line">}</div></div><!-- fragment --><p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="TestSpecifySaving"></a>
+2.保存先指定の網羅的な使用例（自動テスト）の説明</h1>
+<h6></h6>
+<h2><a class="anchor" id="TestSpecifySaving21"></a>
+2-1.保存の有無指定のテスト</h2>
+<p>これは使い方説明で用いたDefaultSaveとDefaultNonSaveの保存／回復を、全てのシリアライザ、全ての書式でテストしています。</p>
+<p><b>source/reference_and_test/version/ver1/test_destinations.cpp</b>でテスト関数を定義してます。<br />
+</p>
+<ol type="1">
+<li>保存処理<br />
+ template&lt;class tSerializer&gt;<br />
+ void saveSpecifySaving(tSerializer&amp; iSerializer)の前2つ<br />
+ <br />
+</li>
+<li>回復処理<br />
+ template&lt;class tSerializer&gt;<br />
+ void loadSpecifySaving(tSerializer&amp; iSerializer)の前2つ<br />
+</li>
+</ol>
+<p><br />
+ </p>
+<h2><a class="anchor" id="TestSpecifySaving22"></a>
+2-2.保存先指定のテスト</h2>
+<p><b>source/reference_and_test/version/ver1/test_destinations.h</b>でテスト用のクラスを定義してます。<br />
+</p>
+<p>DestinationTestChildクラスとDestinationTestParentクラスを用います。両方ともデフォルト保存型です。<br />
+ 前者はint型、後者はDestinationTestChild型のメンバ変数を下記のように持ちます。</p>
+<table class="doxtable">
+<tr>
+<th>メンバ変数</th><th>保存先指定  </th></tr>
+<tr>
+<td>mNoAnnotate</td><td>保存先指定無し </td></tr>
+<tr>
+<td>mAnnotateA</td><td>DestAへ保存 </td></tr>
+<tr>
+<td>mAnnotateB</td><td>DestBへ保存 </td></tr>
+<tr>
+<td>mAnnotateAB</td><td>DestAとDestBの両方へ保存 </td></tr>
+<tr>
+<td>mAnnotateC</td><td>DestCへ保存 </td></tr>
+<tr>
+<td>mAnnotateN</td><td>非保存指定 </td></tr>
+</table>
+<p><b>source/reference_and_test/version/ver1/test_destinations.cpp</b>でテスト関数を定義してます。<br />
+ 下記組み合わせでテストしています。</p>
+<table class="doxtable">
+<tr>
+<th>シリアライザ</th><th>テストしている関数  </th></tr>
+<tr>
+<td>保存先指定無し</td><td>saveSpecifySaving()とloadSpecifySaving()内の最後の１つ </td></tr>
+<tr>
+<td>DestAのみ</td><td>saveDestinations()の先頭で保存し、loadDestinations()で単独回復 </td></tr>
+<tr>
+<td>DestBのみ</td><td>saveDestinations()の２番目で保存し、loadDestinations()で合成回復 </td></tr>
+<tr>
+<td>DestAとDestB</td><td>saveDestinations()とloadDestinations()の最後の１つ </td></tr>
+</table>
+<p>以上により、下記組み合わせのテストを行っています。</p>
+<table class="doxtable">
+<tr>
+<th>シリアライザ</th><th>メンバ変数</th><th>保存先指定されたメンバ変数内のメンバ変数  </th></tr>
+<tr>
+<td>指定無し</td><td>指定無し</td><td>指定無し(mNoAnnotate) </td></tr>
+<tr>
+<td></td><td>単独指定有り</td><td>親と同じ指定有り(mAnnotateA, mAnnotateB) </td></tr>
+<tr>
+<td></td><td></td><td>親と一部同じ複数指定有り(mAnnotateAB) </td></tr>
+<tr>
+<td></td><td></td><td>親と異なる指定有り(mAnnotateC) </td></tr>
+<tr>
+<td></td><td></td><td>保存無し指定(mAnnotateN) </td></tr>
+<tr>
+<td></td><td>複数指定有り</td><td>上記と同じセット </td></tr>
+<tr>
+<td></td><td>保存無し指定</td><td>上記と同じセット </td></tr>
+<tr>
+<td>単独指定有り(DestA)</td><td>上記と同じセット</td><td>上記と同じセット </td></tr>
+<tr>
+<td>単独指定有りで合成回復(DestB)</td><td>上記と同じセット</td><td>上記と同じセット </td></tr>
+<tr>
+<td>複数指定(DestA,DestB)</td><td>上記と同じセット</td><td>上記と同じセット </td></tr>
+</table>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
