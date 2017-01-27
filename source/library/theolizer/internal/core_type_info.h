@@ -1260,14 +1260,7 @@ std::cout << "RegisterType<" << THEOLIZER_INTERNAL_TYPE_NAME(tSerializer) << ",\
         }
 
         // ポリモーフィズム用派生クラスの登録なら、基底クラスのリストへ追加する
-#if 1
         RegisterToBaseClassEntrance<TypeInfo, uIsDerived>()(mBaseTypeInfo);
-#else
-        if (uIsDerived)
-        {
-            mBaseTypeInfo->registerToBaseClass();
-        }
-#endif
 
         // ポインタなら、その先の型を登録する
         // 配列なら、基本型を登録する
