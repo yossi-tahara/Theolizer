@@ -194,6 +194,58 @@ private:                                                                    \
     template<typename, bool> friend struct theolizer::internal::RegisterToBaseClassEntrance;\
     template<class> friend class theolizer::internal::ClassTypeInfo
 
+#define THEOLIZER_INTERNAL_TEMPLATE_PARAMETER(dClass, dName, dParam, dUniqueClass)\
+    typedef void NoGenerate; /* ドライバへの自動生成無し指示 */             \
+    typedef THEOLIZER_INTERNAL_UNPAREN dClass TheolizerTarget;              \
+    typedef TheolizerNonIntrusive<THEOLIZER_INTERNAL_UNPAREN dClass> TheolizerClass;\
+    struct Theolizer                                                        \
+    {                                                                       \
+        friend struct dUniqueClass;                                         \
+        static const bool kIsFullAuto=false;                                \
+        static const unsigned kLastVersionNo=1;                             \
+        static const theolizer::internal::ElementsMapping kElementsMapping= \
+            theolizer::internal::emOrder;                                   \
+        struct DefineUniqueName {typedef dUniqueClass UniqueClass;};        \
+        static const bool kIsNonIntrusive=true;                             \
+        static const bool kIsAuto=false;                                    \
+        static const bool kIsVersion=false;                                 \
+                                                                            \
+        static std::string getClassName(                                    \
+            theolizer::internal::VersionNoList const& iVersionNoList, unsigned)\
+        {return THEOLIZER_INTERNAL_MAKE_TEMPLATE_NAME(                      \
+            u8"" #dName,THEOLIZER_INTERNAL_UNPAREN dParam);}                \
+        static char const* getUniqueName() {return #dUniqueClass;}          \
+        static theolizer::internal::ElementsMapping getElementsMapping(unsigned)\
+        {return kElementsMapping;}                                          \
+        static theolizer::internal::ElementRange getElementRange(unsigned)  \
+        {return theolizer::internal::ElementRange();}                       \
+        static unsigned getTypeFlags(unsigned) {return 0;}                  \
+                                                                            \
+        static void saveClass(theolizer::internal::BaseSerializer&,TheolizerClass*&, unsigned)\
+        {THEOLIZER_INTERNAL_ABORT("use THEOLIZER_NON_INTRUSIVE_XXX, if serialize this class.");}\
+        static void loadClass(theolizer::internal::BaseSerializer&,TheolizerClass*&, unsigned)\
+        {THEOLIZER_INTERNAL_ABORT("use THEOLIZER_NON_INTRUSIVE_XXX, if serialize this class.");}\
+    };                                                                      \
+    template<class tBaseSerializer, class tTheolizerVersion, unsigned tVersionNo>\
+    struct TheolizerUserDefine                                              \
+    {                                                                       \
+        static const unsigned kTheolizerVersionNo=tVersionNo;               \
+        static void saveClassManual                                         \
+            (tBaseSerializer&, typename tTheolizerVersion::TheolizerTarget const*const&)\
+        { }                                                                 \
+        static void loadClassManual                                         \
+            (tBaseSerializer&, typename tTheolizerVersion::TheolizerClass*&)\
+        { }                                                                 \
+    };                                                                      \
+private:                                                                    \
+    static const bool kIsTheolizer=true;                                    \
+    template<class>         friend struct theolizer::internal::IsNonIntrusive;\
+    template<class, class>  friend struct theolizer::internal::IsNonIntrusiveImpl;\
+    template<class, typename, bool, theolizer::internal::TrackingMode, class>\
+        friend struct theolizer::internal::Switcher;                        \
+    template<typename, bool> friend struct theolizer::internal::RegisterToBaseClassEntrance;\
+    template<class> friend class theolizer::internal::ClassTypeInfo
+
 // ***************************************************************************
 //      enum型のシリアライズ指定
 // ***************************************************************************

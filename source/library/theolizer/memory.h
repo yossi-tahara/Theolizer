@@ -39,26 +39,30 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 //############################################################################
 
 // ***************************************************************************
+//      std::unique_ptr<>のデフォルト・パラメータ：std::default_delete<>
+// ***************************************************************************
+
+THEOLIZER_TEMPLATE_PARAMETER_TEMPLATE((template<class T>),
+                                      std::default_delete, (T),
+                                      default_deletePrimary);
+
+// ***************************************************************************
 //      シリアライズ指定
 // ***************************************************************************
 
-THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((template<class T>),
-                                        (std::unique_ptr<T>), 1,
+THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((template<class T, class D>),
+                                        (std::unique_ptr<T, D>), 1,
                                         unique_ptrPrimary);
 
 //----------------------------------------------------------------------------
 //      ユーザ定義
-//          回復処理の注意事項：
-//              余分なデータの破棄、および、ClassType終了処理のため、
-//              必ずiSerializer.readPreElement()がfalseを返却するまで
-//              処理しておくこと。
 //----------------------------------------------------------------------------
 
 //      ---<<< Version.1 >>>---
 
-template<class T>
+template<class T, class D>
 template<class tMidSerializer, class tTheolizerVersion>
-struct TheolizerNonIntrusive<std::unique_ptr<T>>::
+struct TheolizerNonIntrusive<std::unique_ptr<T, D>>::
     TheolizerUserDefine<tMidSerializer, tTheolizerVersion, 1>
 {
     // 保存
@@ -68,6 +72,8 @@ struct TheolizerNonIntrusive<std::unique_ptr<T>>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(D);
+
         THEOLIZER_PROCESS_OWNER(iSerializer, iInstance->get());
     }
 
@@ -78,6 +84,8 @@ struct TheolizerNonIntrusive<std::unique_ptr<T>>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(D);
+
         // もし、nullptrなら、インスタンス生成
         if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
@@ -95,22 +103,22 @@ struct TheolizerNonIntrusive<std::unique_ptr<T>>::
 //      自動生成
 //----------------------------------------------------------------------------
 
-#ifdef  THEOLIZER_WRITE_CODE // ###### std::unique_ptr<T> ######
+#ifdef  THEOLIZER_WRITE_CODE // ###### std::unique_ptr<T,D> ######
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::unique_ptr<T>
-#define THEOLIZER_GENERATED_PARAMETER_LIST template<class T>
+#define THEOLIZER_GENERATED_CLASS_TYPE std::unique_ptr<T, D>
+#define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class D>
 #define THEOLIZER_GENERATED_UNIQUE_NAME unique_ptrPrimary
 
 //      ---<<< Version.1 >>>---
 
 #define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
 #define THEOLIZER_GENERATED_CLASS_NAME()\
-    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"std::unique_ptr",T))
+    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"std::unique_ptr",T,D))
 #include <theolizer/internal/version_manual.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
-#endif//THEOLIZER_WRITE_CODE // ###### std::unique_ptr<T> ######
+#endif//THEOLIZER_WRITE_CODE // ###### std::unique_ptr<T,D> ######
 
 //############################################################################
 //      std::shared_ptr<>
@@ -126,10 +134,6 @@ THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((template<class T>),
 
 //----------------------------------------------------------------------------
 //      ユーザ定義
-//          回復処理の注意事項：
-//              余分なデータの破棄、および、ClassType終了処理のため、
-//              必ずiSerializer.readPreElement()がfalseを返却するまで
-//              処理しておくこと。
 //----------------------------------------------------------------------------
 
 struct shared_ptrPrimary;
@@ -219,6 +223,76 @@ struct TheolizerNonIntrusive<std::shared_ptr<T>>::
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 #endif//THEOLIZER_WRITE_CODE // ###### std::shared_ptr<T> ######
+
+//############################################################################
+//      std::weak_ptr<>
+//############################################################################
+
+// ***************************************************************************
+//      シリアライズ指定
+// ***************************************************************************
+
+THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((template<class T>),
+                                        (std::weak_ptr<T>), 1,
+                                        weak_ptrPrimary);
+
+//----------------------------------------------------------------------------
+//      ユーザ定義
+//----------------------------------------------------------------------------
+
+struct weak_ptrPrimary;
+
+//      ---<<< Version.1 >>>---
+
+template<class T>
+template<class tMidSerializer, class tTheolizerVersion>
+struct TheolizerNonIntrusive<std::weak_ptr<T>>::
+    TheolizerUserDefine<tMidSerializer, tTheolizerVersion, 1>
+{
+    // 保存
+    static void saveClassManual
+    (
+        tMidSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
+    )
+    {
+        THEOLIZER_PROCESS_OWNER(iSerializer, iInstance->lock());
+    }
+
+    // 回復
+    static void loadClassManual
+    (
+        tMidSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget*& oInstance
+    )
+    {
+        // もし、nullptrなら、インスタンス生成
+        if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
+
+        THEOLIZER_PROCESS_OWNER(iSerializer, oInstance->lock());
+    }
+};
+
+//----------------------------------------------------------------------------
+//      自動生成
+//----------------------------------------------------------------------------
+
+#ifdef  THEOLIZER_WRITE_CODE // ###### std::weak_ptr<T> ######
+
+#define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_TYPE std::weak_ptr<T>
+#define THEOLIZER_GENERATED_PARAMETER_LIST template<class T>
+#define THEOLIZER_GENERATED_UNIQUE_NAME weak_ptrPrimary
+
+//      ---<<< Version.1 >>>---
+
+#define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_NAME()\
+    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"std::weak_ptr",T))
+#include <theolizer/internal/version_manual.inc>
+#undef  THEOLIZER_GENERATED_VERSION_NO
+
+#endif//THEOLIZER_WRITE_CODE // ###### std::weak_ptr<T> ######
 
 //############################################################################
 //      End

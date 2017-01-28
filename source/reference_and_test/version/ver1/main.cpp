@@ -131,6 +131,8 @@ void loadPolymorphism(tSerializer& iSerializer);
 //      保存の有無と保存先
 //----------------------------------------------------------------------------
 
+#ifndef DISABLE_DESTINATIONS_TEST
+
 //      ---<<< 使い方のサンプル・コード >>>---
 
 void tutoriseDestinations();
@@ -158,6 +160,7 @@ void loadDestinations
     tSerializerB&  iSerializerB,
     tSerializerAB& iSerializerAB
 );
+#endif // DISABLE_DESTINATIONS_TEST
 
 // ***************************************************************************
 //      各テスト呼び出し
@@ -275,6 +278,7 @@ void varyCheckMode
                 saveBasic(jos);
             }
 
+#ifndef DISABLE_DESTINATIONS_TEST
             // 保存先指定テスト
             {
                 std::ofstream   aStreamA(makeDestFileName(filename, "A"));
@@ -285,6 +289,7 @@ void varyCheckMode
                 theolizer::JsonOSerializer<theolizerD::DestA, theolizerD::DestB> josAB(aStreamAB);
                 saveDestinations(josA, josB, josAB);
             }
+#endif
         }
 
         // 回復処理
@@ -295,6 +300,7 @@ void varyCheckMode
                 loadBasic(jis);
             }
 
+#ifndef DISABLE_DESTINATIONS_TEST
             // 保存先指定テスト
             {
                 std::ifstream   aStreamA(makeDestFileName(filename, "A"));
@@ -305,6 +311,7 @@ void varyCheckMode
                 theolizer::JsonISerializer<theolizerD::DestA, theolizerD::DestB> jisAB(aStreamAB);
                 loadDestinations(jisA, jisB, jisAB);
             }
+#endif
         }
     }
 
@@ -329,6 +336,7 @@ void varyCheckMode
                 saveBasic(jos);
             }
 
+#ifndef DISABLE_DESTINATIONS_TEST
             // 保存先指定テスト
             {
                 std::ofstream   aStreamA(makeDestFileName(filename, "A"));
@@ -342,6 +350,7 @@ void varyCheckMode
                     josAB(aStreamAB, iGlobalVersionNo, iCheckMode);
                 saveDestinations(josA, josB, josAB);
             }
+#endif
         }
 
         // 回復処理
@@ -350,6 +359,7 @@ void varyCheckMode
             theolizer::JsonISerializer<> jis(aStream);
             loadBasic(jis);
 
+#ifndef DISABLE_DESTINATIONS_TEST
             // 保存先指定テスト
             {
                 std::ifstream   aStreamA(makeDestFileName(filename, "A"));
@@ -360,6 +370,7 @@ void varyCheckMode
                 theolizer::JsonISerializer<theolizerD::DestA, theolizerD::DestB> jisAB(aStreamAB);
                 loadDestinations(jisA, jisB, jisAB);
             }
+#endif
         }
 
 //      ---<<< 非PretyPrint >>>---
@@ -378,6 +389,7 @@ void varyCheckMode
                 saveBasic(jos);
             }
 
+#ifndef DISABLE_DESTINATIONS_TEST
             // 保存先指定テスト
             {
                 std::ofstream   aStreamA(makeDestFileName(filename, "A"));
@@ -391,6 +403,7 @@ void varyCheckMode
                     josAB(aStreamAB, iGlobalVersionNo, iCheckMode, true);
                 saveDestinations(josA, josB, josAB);
             }
+#endif
         }
 
         // 回復処理
@@ -399,6 +412,7 @@ void varyCheckMode
             theolizer::JsonISerializer<> jis(aStream);
             loadBasic(jis);
 
+#ifndef DISABLE_DESTINATIONS_TEST
             // 保存先指定テスト
             {
                 std::ifstream   aStreamA(makeDestFileName(filename, "A"));
@@ -409,6 +423,7 @@ void varyCheckMode
                 theolizer::JsonISerializer<theolizerD::DestA, theolizerD::DestB> jisAB(aStreamAB);
                 loadDestinations(jisA, jisB, jisAB);
             }
+#endif
         }
     }
 
@@ -431,6 +446,7 @@ void varyCheckMode
                 saveBasic(bos);
             }
 
+#ifndef DISABLE_DESTINATIONS_TEST
             // 保存先指定テスト
             {
                 std::ofstream   aStreamA(makeDestFileName(filename, "A"), std::ios_base::binary);
@@ -442,6 +458,7 @@ void varyCheckMode
                     bosAB(aStreamAB);
                 saveDestinations(bosA, bosB, bosAB);
             }
+#endif
         }
 
         // 回復処理
@@ -452,6 +469,7 @@ void varyCheckMode
                 loadBasic(bis);
             }
 
+#ifndef DISABLE_DESTINATIONS_TEST
             // 保存先指定テスト
             {
                 std::ifstream   aStreamA(makeDestFileName(filename, "A"), std::ios_base::binary);
@@ -463,6 +481,7 @@ void varyCheckMode
                     bisAB(aStreamAB);
                 loadDestinations(bisA, bisB, bisAB);
             }
+#endif
         }
     }
 
@@ -484,6 +503,7 @@ void varyCheckMode
                 saveBasic(bos);
             }
 
+#ifndef DISABLE_DESTINATIONS_TEST
             // 保存先指定テスト
             {
                 std::ofstream   aStreamA(makeDestFileName(filename, "A"), std::ios_base::binary);
@@ -497,6 +517,7 @@ void varyCheckMode
                     bosAB(aStreamAB, iGlobalVersionNo, iCheckMode);
                 saveDestinations(bosA, bosB, bosAB);
             }
+#endif
         }
 
         // 回復処理
@@ -505,6 +526,7 @@ void varyCheckMode
             theolizer::BinaryISerializer<> bis(aStream);
             loadBasic(bis);
 
+#ifndef DISABLE_DESTINATIONS_TEST
             // 保存先指定テスト
             {
                 std::ifstream   aStreamA(makeDestFileName(filename, "A"), std::ios_base::binary);
@@ -516,6 +538,7 @@ void varyCheckMode
                     bisAB(aStreamAB);
                 loadDestinations(bisA, bisB, bisAB);
             }
+#endif
         }
     }
 
@@ -538,6 +561,7 @@ void varyCheckMode
                 saveBasic(fos);
             }
 
+#ifndef DISABLE_DESTINATIONS_TEST
             // 保存先指定テスト
             {
                 std::ofstream   aStreamA(makeDestFileName(filename, "A"), std::ios_base::binary);
@@ -548,6 +572,7 @@ void varyCheckMode
                 theolizer::FastOSerializer<theolizerD::DestA, theolizerD::DestB> fosAB(aStreamAB);
                 saveDestinations(fosA, fosB, fosAB);
             }
+#endif
         }
 
         // 回復処理
@@ -558,6 +583,7 @@ void varyCheckMode
                 loadBasic(fis);
             }
 
+#ifndef DISABLE_DESTINATIONS_TEST
             // 保存先指定テスト
             {
                 std::ifstream   aStreamA(makeDestFileName(filename, "A"), std::ios_base::binary);
@@ -569,6 +595,7 @@ void varyCheckMode
                     fisAB(aStreamAB);
                 loadDestinations(fisA, fisB, fisAB);
             }
+#endif
         }
     }
 

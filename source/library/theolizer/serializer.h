@@ -148,8 +148,7 @@ namespace theolizer
 
 //      ---<<<< 対応方法=順序(テンプレート) >>>---
 
-#define THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER(dList, dClass, dLastVersionNo,\
-                                              dUniqueClass)                 \
+#define THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER(dList, dClass, dLastVersionNo,dUniqueClass)\
     THEOLIZER_INTERNAL_UNPAREN dList                                        \
     struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_UNPAREN dClass> :       \
                                 public THEOLIZER_INTERNAL_UNPAREN dClass    \
@@ -191,6 +190,47 @@ namespace theolizer
 #else
     #define THEOLIZER_ANNOTATE(...)
 #endif
+
+// ***************************************************************************
+//      クラス・テンプレート対応時のクラス登録
+//          例えば、std::unique_ptr<>のパラメータであるstd::default_delete<T>
+//          が指定された時(第2パラメータを省略した時)、std::unique_ptr<>クラス名を
+//          ヘッダへ出力する際にstd::default_delete<T>の名前を生成する。
+//          そのためには、std::default_delete<T>が型テーブル(TypeInfoList)へ
+//          登録されている必要がある。
+//          しかし、std::default_delete<T>はシリアライズ対象ではないため、自動的には
+//          登録されないため、当マクロを用いて登録する。
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      クラス・テンプレートのパラメータのみのクラス
+//          std::unique_ptr<>のstd::default_delete<T>のように処理は行うが、
+//          データ保持しないようなクラスはシリアライズしない。
+//          そのようなクラスでも名前を取り出せるようにするために登録する。
+//----------------------------------------------------------------------------
+
+//      ---<<<< テンプレート >>>---
+
+#define THEOLIZER_TEMPLATE_PARAMETER_TEMPLATE(dList, dName, dParam, dUniqueClass)\
+    struct dUniqueClass {};                                                 \
+    THEOLIZER_INTERNAL_UNPAREN dList                                        \
+    struct TheolizerNonIntrusive<dName<THEOLIZER_INTERNAL_UNPAREN dParam> > :\
+        public dName<THEOLIZER_INTERNAL_UNPAREN dParam>                     \
+    {                                                                       \
+    private:                                                                \
+        THEOLIZER_ANNOTATE(                                                 \
+            TS:THEOLIZER_INTERNAL_UNPAREN dList;dName<THEOLIZER_INTERNAL_UNPAREN dParam>)\
+        THEOLIZER_INTERNAL_TEMPLATE_PARAMETER((dName<THEOLIZER_INTERNAL_UNPAREN dParam>),\
+            dName, dParam, dUniqueClass);                                   \
+    }
+
+//----------------------------------------------------------------------------
+//      上記で指定したクラスをテンプレート・パラメータとして持つクラスの
+//      TheolizerUserDefine<>::save/loadClassManual()で登録する。
+//----------------------------------------------------------------------------
+
+#define THEOLIZER_REGISTER_TEMPLATE_PARAMETER(dClass)                       \
+    theolizer::internal::RegisterType<tMidSerializer,dClass,tTheolizerVersion>::getInstance()
 
 //############################################################################
 //      オプション機能指定

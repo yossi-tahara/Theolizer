@@ -559,6 +559,11 @@ ASTANALYZE_OUTPUT("    aTheolizerTarget=", aLoc.printToString(*gSourceManager));
 ASTANALYZE_OUTPUT("    aAnnotationTS=", aAnnotationTS.mParameter);
         break;
             }
+            // 自動生成禁止なら処理中断
+            else if (td->getName().equals("NoGenerate"))
+            {
+        break;
+            }
         }
 ASTANALYZE_OUTPUT("    aIsSerialize=", aIsSerialize);
 
