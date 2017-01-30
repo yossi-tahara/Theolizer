@@ -40,7 +40,7 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 
 THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((template<class T>),
                                         (std::vector<T>), 1,
-                                        vectorPrimary);
+                                        vectorTheolizer);
 
 //----------------------------------------------------------------------------
 //      ユーザ定義
@@ -109,7 +109,7 @@ struct TheolizerNonIntrusive<std::vector<T>>::
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
 #define THEOLIZER_GENERATED_CLASS_TYPE std::vector<T>
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T>
-#define THEOLIZER_GENERATED_UNIQUE_NAME vectorPrimary
+#define THEOLIZER_GENERATED_UNIQUE_NAME vectorTheolizer
 
 //      ---<<< Version.1 >>>---
 

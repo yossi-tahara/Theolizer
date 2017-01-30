@@ -46,9 +46,9 @@ namespace global_table{
         add(typeid(NonIntrusiveDrived),                 1u,1u,1u,1u);
         add(typeid(ArrayClassTemplatePrimary),          1u,1u,1u,1u);
         add(typeid(Pointers),                           1u,1u,1u,1u);
-        add(typeid(vectorPrimary),                      1u,1u,1u,1u);
-        add(typeid(listPrimary),                        1u,1u,1u,1u);
-        add(typeid(unique_ptrPrimary),                  1u,1u,1u,1u);
+        add(typeid(vectorTheolizer),                    1u,1u,1u,1u);
+        add(typeid(listTheolizer),                      1u,1u,1u,1u);
+        add(typeid(unique_ptrTheolizer),                1u,1u,1u,1u);
     }
 }   // namespace global_table
 }}  // namespace theolizer

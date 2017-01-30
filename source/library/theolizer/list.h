@@ -40,7 +40,7 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 
 THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((template<class T>),
                                         (std::list<T>), 1,
-                                        listPrimary);
+                                        listTheolizer);
 
 //----------------------------------------------------------------------------
 //      ユーザ定義
@@ -116,7 +116,7 @@ struct TheolizerNonIntrusive<std::list<T>>::
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
 #define THEOLIZER_GENERATED_CLASS_TYPE std::list<T>
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T>
-#define THEOLIZER_GENERATED_UNIQUE_NAME listPrimary
+#define THEOLIZER_GENERATED_UNIQUE_NAME listTheolizer
 
 //      ---<<< Version.1 >>>---
 

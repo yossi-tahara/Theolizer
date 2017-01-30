@@ -44,7 +44,7 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 
 THEOLIZER_TEMPLATE_PARAMETER_TEMPLATE((template<class T>),
                                       std::default_delete, (T),
-                                      default_deletePrimary);
+                                      default_deleteTheolizer);
 
 // ***************************************************************************
 //      シリアライズ指定
@@ -52,7 +52,7 @@ THEOLIZER_TEMPLATE_PARAMETER_TEMPLATE((template<class T>),
 
 THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((template<class T, class D>),
                                         (std::unique_ptr<T, D>), 1,
-                                        unique_ptrPrimary);
+                                        unique_ptrTheolizer);
 
 //----------------------------------------------------------------------------
 //      ユーザ定義
@@ -108,7 +108,7 @@ struct TheolizerNonIntrusive<std::unique_ptr<T, D>>::
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
 #define THEOLIZER_GENERATED_CLASS_TYPE std::unique_ptr<T, D>
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class D>
-#define THEOLIZER_GENERATED_UNIQUE_NAME unique_ptrPrimary
+#define THEOLIZER_GENERATED_UNIQUE_NAME unique_ptrTheolizer
 
 //      ---<<< Version.1 >>>---
 
@@ -130,13 +130,13 @@ struct TheolizerNonIntrusive<std::unique_ptr<T, D>>::
 
 THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((template<class T>),
                                         (std::shared_ptr<T>), 1,
-                                        shared_ptrPrimary);
+                                        shared_ptrTheolizer);
 
 //----------------------------------------------------------------------------
 //      ユーザ定義
 //----------------------------------------------------------------------------
 
-struct shared_ptrPrimary;
+struct shared_ptrTheolizer;
 
 //      ---<<< Version.1 >>>---
 
@@ -181,7 +181,7 @@ struct TheolizerNonIntrusive<std::shared_ptr<T>>::
         // 登録リスト獲得
         typedef std::map<void const*, std::shared_ptr<void const> > SharedPtrMap;
         SharedPtrMap& aSharedPtrMap=
-            iSerializer.template getSharedPtrTable<SharedPtrMap>(typeid(shared_ptrPrimary));
+            iSerializer.template getSharedPtrTable<SharedPtrMap>(typeid(shared_ptrTheolizer));
 
         // 派生クラスのインタンスへのポインタ獲得
         void const* aDerivedPointer=theolizer::internal::getDerivedPointer(aInstance);
@@ -212,7 +212,7 @@ struct TheolizerNonIntrusive<std::shared_ptr<T>>::
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
 #define THEOLIZER_GENERATED_CLASS_TYPE std::shared_ptr<T>
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T>
-#define THEOLIZER_GENERATED_UNIQUE_NAME shared_ptrPrimary
+#define THEOLIZER_GENERATED_UNIQUE_NAME shared_ptrTheolizer
 
 //      ---<<< Version.1 >>>---
 
@@ -234,13 +234,13 @@ struct TheolizerNonIntrusive<std::shared_ptr<T>>::
 
 THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((template<class T>),
                                         (std::weak_ptr<T>), 1,
-                                        weak_ptrPrimary);
+                                        weak_ptrTheolizer);
 
 //----------------------------------------------------------------------------
 //      ユーザ定義
 //----------------------------------------------------------------------------
 
-struct weak_ptrPrimary;
+struct weak_ptrTheolizer;
 
 //      ---<<< Version.1 >>>---
 
@@ -282,7 +282,7 @@ struct TheolizerNonIntrusive<std::weak_ptr<T>>::
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
 #define THEOLIZER_GENERATED_CLASS_TYPE std::weak_ptr<T>
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T>
-#define THEOLIZER_GENERATED_UNIQUE_NAME weak_ptrPrimary
+#define THEOLIZER_GENERATED_UNIQUE_NAME weak_ptrTheolizer
 
 //      ---<<< Version.1 >>>---
 
