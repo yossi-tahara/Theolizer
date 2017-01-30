@@ -84,6 +84,7 @@ target_link_libraries(TheolizerDriver ${Boost_LIBRARIES})
 
 if (NOT IS_MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-comment")
 endif()
 
 # version.h生成

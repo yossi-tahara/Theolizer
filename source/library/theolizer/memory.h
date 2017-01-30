@@ -90,10 +90,10 @@ struct TheolizerNonIntrusive<std::unique_ptr<T, D>>::
         if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
         typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
-        typedef typename TheolizerTarget::element_type Type;
+        typedef typename TheolizerTarget::element_type ElementType;
 
         // ポイント先を解放して入れ替える可能性があるので一旦管理から外す
-        Type *aInstance=oInstance->release();
+        ElementType *aInstance=oInstance->release();
         THEOLIZER_PROCESS_OWNER(iSerializer, aInstance);
         oInstance->reset(aInstance);
     }
@@ -166,8 +166,8 @@ struct TheolizerNonIntrusive<std::shared_ptr<T>>::
         if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
         typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
-        typedef typename TheolizerTarget::element_type Type;
-        Type *aInstance=nullptr;
+        typedef typename TheolizerTarget::element_type ElementType;
+        ElementType *aInstance=nullptr;
         THEOLIZER_PROCESS_OWNER(iSerializer, aInstance);
 
         // nullptrなら追跡しない
@@ -190,7 +190,7 @@ struct TheolizerNonIntrusive<std::shared_ptr<T>>::
         auto aFound=aSharedPtrMap.find(aDerivedPointer);
         if (aFound != aSharedPtrMap.end())
         {
-            *oInstance=std::shared_ptr<Type>(aFound->second, aInstance);
+            *oInstance=std::shared_ptr<ElementType>(aFound->second, aInstance);
         }
 
         // 初めて

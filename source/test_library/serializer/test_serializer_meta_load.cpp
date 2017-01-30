@@ -30,6 +30,10 @@ using namespace std;
 #include <theolizer/serializer_json.h>
 using theolizer::u8string;
 
+#ifdef _MSC_VER
+    #pragma warning(disable:4100 4127)
+#endif
+
 //############################################################################
 //      テストのメイン関数
 //############################################################################

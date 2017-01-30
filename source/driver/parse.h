@@ -519,7 +519,6 @@ ASTANALYZE_OUTPUT("    GlobalVersionNoTable");
         EnumDecl const*         aTargetEnum=nullptr;
         FullSourceLoc           aLastVersionNoLoc;
         FullSourceLoc           aVersionNoLoc;
-        Decl const*             aTheolizerDecl;
 
 #if 0
 ASTANALYZE_OUTPUT("-------- decl list start");
@@ -642,7 +641,6 @@ ASTANALYZE_OUTPUT("    aAnnotation=", aAnnotation.c_str());
             continue;
 
                 if (crd->getName().equals("Theolizer")) {
-                    aTheolizerDecl=
                     aTheolizer=crd;
             break;
                 }
@@ -1367,7 +1365,7 @@ ASTANALYZE_OUTPUT("          field : ", field->getType().getCanonicalType().getA
             {
             case AnnotationInfo::None:  // 指定無しなら、登録する
                 {
-                    AnnotationInfo::Annotate    aAnnotate;
+                    AnnotationInfo::Annotate    aAnnotate=AnnotationInfo::None;
                     if (iAnnotationInfo)
                     {
                         aAnnotate=iAnnotationInfo->mAnnotate;

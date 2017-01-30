@@ -207,13 +207,13 @@ public:
     /* 文字型 */                                                                        \
     DEFINE(char,                mChar,          0,       110)                           \
     DEFINE(signed char,         mSChar,         0,      -111)                           \
-    DEFINE(unsigned char,       mUChar,         0,       112)                           \
+    DEFINE(unsigned char,       mUChar,         0U,      112U)                          \
     DEFINE(wchar_t,             mWchar,         0,       1100)                          \
-    DEFINE(char16_t,            mChar16,        0,       1101)                          \
-    DEFINE(char32_t,            mChar32,        0,       1102)                          \
+    DEFINE(char16_t,            mChar16,        0U,      1101U)                         \
+    DEFINE(char32_t,            mChar32,        0U,      1102U)                         \
     /* 整数型 */                                                                        \
     DEFINE(short,               mShort,         0,      -2100)                          \
-    DEFINE(unsigned short,      mUShort,        0,       2100)                          \
+    DEFINE(unsigned short,      mUShort,        0U,      2100U)                         \
     DEFINE(int,                 mInt,           0,      -3100)                          \
     DEFINE(unsigned int,        mUInt,          0U,      3100U)                         \
     DEFINE(long,                mLong,          0L,     -4100L)                         \
@@ -239,13 +239,13 @@ public:
     /* 文字型 */                                                                        \
     ARRAY(char,                 mChar,      5,  0,       120)                           \
     ARRAY(signed char,          mSChar,     6,  0,      -121)                           \
-    ARRAY(unsigned char,        mUChar,     7,  0,       112)                           \
+    ARRAY(unsigned char,        mUChar,     7,  0U,      112U)                          \
     ARRAY(wchar_t,              mWchar,     8,  0,       1100)                          \
-    ARRAY(char16_t,             mChar16,    9,  0,       1101)                          \
-    ARRAY(char32_t,             mChar32,    10, 0,       1102)                          \
+    ARRAY(char16_t,             mChar16,    9,  0U,      1101U)                         \
+    ARRAY(char32_t,             mChar32,    10, 0U,      1102U)                         \
     /* 整数型 */                                                                        \
     ARRAY(short,                mShort,     5,  0,      -2200)                          \
-    ARRAY(unsigned short,       mUShort,    6,  0,       2200)                          \
+    ARRAY(unsigned short,       mUShort,    6,  0U,      2200U)                         \
     ARRAY(int,                  mInt,       7,  0,      -3200)                          \
     ARRAY(unsigned int,         mUInt,      8,  0U,      3200U)                         \
     ARRAY(long,                 mLong,      9,  0L,     -4200L)                         \
@@ -274,10 +274,10 @@ public:
     /* 文字型 */                                                                        \
     DEFINE(char,                mChar,          0,       110)                           \
     DEFINE(signed char,         mSChar,         0,      -111)                           \
-    DEFINE(unsigned char,       mUChar,         0,       112)                           \
+    DEFINE(unsigned char,       mUChar,         0U,      112U)                          \
     /* 整数型 */                                                                        \
     DEFINE(short,               mShort,         0,      -2100)                          \
-    DEFINE(unsigned short,      mUShort,        0,       2100)                          \
+    DEFINE(unsigned short,      mUShort,        0U,      2100U)                         \
     DEFINE(int,                 mInt,           0,      -3100)                          \
     DEFINE(unsigned int,        mUInt,          0U,      3100U)                         \
     /* 浮動小数点型 */                                                                  \
@@ -294,8 +294,8 @@ public:
     /* --- 配列 --- */                                                                  \
     /* 文字型 */                                                                        \
     ARRAY(wchar_t,              mWchar,     8,  0,       1100)                          \
-    ARRAY(char16_t,             mChar16,    9,  0,       1101)                          \
-    ARRAY(char32_t,             mChar32,    10, 0,       1102)                          \
+    ARRAY(char16_t,             mChar16,    9,  0U,      1101U)                         \
+    ARRAY(char32_t,             mChar32,    10, 0U,      1102U)                         \
     /* 整数型 */                                                                        \
     ARRAY(long,                 mLong,      9,  0L,     -4200L)                         \
     ARRAY(unsigned long,        mULong,     10, 0UL,     4200UL)                        \

@@ -19,6 +19,14 @@
 #define THEOLIZER_INTERNAL_EXCLUDE_VERSION_H
 
 // ***************************************************************************
+//          警告抑止
+// ***************************************************************************
+
+#if defined(_MSC_VER)
+    #pragma warning(disable:4100)
+#endif
+
+// ***************************************************************************
 //      通常のインクルード
 // ***************************************************************************
 
@@ -379,7 +387,7 @@ int main(int argc, char** argv)
         bool        aResult;
         theolizer::WorkingLog::LineHeader aLineHeader;
         size_t      aPos;
-        std::stringstream ss;
+        std::stringstream ss2;
 
         // 先頭行チェック
         unsigned    aNumber;
@@ -395,45 +403,45 @@ int main(int argc, char** argv)
         THEOLIZER_REQUIRE(aResult, aResult);
         aResult=theolizer::WorkingLog::getLineHeader(aString, aLineHeader, &aPos);
         THEOLIZER_REQUIRE(aResult, aResult);
-        ss.str("");
-        ss << "Error(IOError), : IO_ERROR{test_report5.cpp(" << line0 << ")}";
-        THEOLIZER_EQUAL(aString.substr(aPos), ss.str());
+        ss2.str("");
+        ss2 << "Error(IOError), : IO_ERROR{test_report5.cpp(" << line0 << ")}";
+        THEOLIZER_EQUAL(aString.substr(aPos), ss2.str());
 
         // メッセージ取り出しと確認
         aResult = static_cast<bool>(getline(ifs, aString));
         THEOLIZER_REQUIRE(aResult, aResult);
         aResult=theolizer::WorkingLog::getLineHeader(aString, aLineHeader, &aPos);
         THEOLIZER_REQUIRE(aResult, aResult);
-        ss.str("");
-        ss << "Error(WrongUsing), : WRONG_USING{test_report5.cpp(" << line1 << ")}";
-        THEOLIZER_EQUAL(aString.substr(aPos), ss.str());
+        ss2.str("");
+        ss2 << "Error(WrongUsing), : WRONG_USING{test_report5.cpp(" << line1 << ")}";
+        THEOLIZER_EQUAL(aString.substr(aPos), ss2.str());
 
         // メッセージ取り出しと確認
         aResult = static_cast<bool>(getline(ifs, aString));
         THEOLIZER_REQUIRE(aResult, aResult);
         aResult=theolizer::WorkingLog::getLineHeader(aString, aLineHeader, &aPos);
         THEOLIZER_REQUIRE(aResult, aResult);
-        ss.str("");
-        ss << "Error(UnknownData), : DATA_ERROR{test_report5.cpp(" << line2 << ")}";
-        THEOLIZER_EQUAL(aString.substr(aPos), ss.str());
+        ss2.str("");
+        ss2 << "Error(UnknownData), : DATA_ERROR{test_report5.cpp(" << line2 << ")}";
+        THEOLIZER_EQUAL(aString.substr(aPos), ss2.str());
 
         // メッセージ取り出しと確認
         aResult = static_cast<bool>(getline(ifs, aString));
         THEOLIZER_REQUIRE(aResult, aResult);
         aResult=theolizer::WorkingLog::getLineHeader(aString, aLineHeader, &aPos);
         THEOLIZER_REQUIRE(aResult, aResult);
-        ss.str("");
-        ss << "Error(UnknownVerson), : VERSION_ERROR{test_report5.cpp(" << line3 << ")}";
-        THEOLIZER_EQUAL(aString.substr(aPos), ss.str());
+        ss2.str("");
+        ss2 << "Error(UnknownVerson), : VERSION_ERROR{test_report5.cpp(" << line3 << ")}";
+        THEOLIZER_EQUAL(aString.substr(aPos), ss2.str());
 
         // メッセージ取り出しと確認
         aResult = static_cast<bool>(getline(ifs, aString));
         THEOLIZER_REQUIRE(aResult, aResult);
         aResult=theolizer::WorkingLog::getLineHeader(aString, aLineHeader, &aPos);
         THEOLIZER_REQUIRE(aResult, aResult);
-        ss.str("");
-        ss << "Error(Unclassified), : ERROR{test_report5.cpp(" << line4 << ")}";
-        THEOLIZER_EQUAL(aString.substr(aPos), ss.str());
+        ss2.str("");
+        ss2 << "Error(Unclassified), : ERROR{test_report5.cpp(" << line4 << ")}";
+        THEOLIZER_EQUAL(aString.substr(aPos), ss2.str());
     }
 
 // ***************************************************************************

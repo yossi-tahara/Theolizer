@@ -27,6 +27,15 @@
 //      Begin
 //############################################################################
 
+// ***************************************************************************
+//          警告抑止
+// ***************************************************************************
+
+#ifdef _MSC_VER
+    #pragma warning(push)
+    #pragma warning(disable:4100 4127 4189)
+#endif
+
 namespace theolizer
 {
 namespace internal
@@ -1368,5 +1377,13 @@ void process
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
 }   // namespace theolizer
+
+// ***************************************************************************
+//          警告抑止解除
+// ***************************************************************************
+
+#ifdef _MSC_VER
+  #pragma warning(pop)
+#endif
 
 #endif  // THEOLIZER_INTERNAL_CORE_SWITCHER_H

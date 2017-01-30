@@ -26,12 +26,12 @@
 //############################################################################
 
 // ***************************************************************************
-//          DLL用の警告禁止
+//          警告抑止
 // ***************************************************************************
 
 #ifdef _MSC_VER
   #pragma warning(push)
-  #pragma warning(disable:4251)
+  #pragma warning(disable:4100 4251)
 #endif
 
 namespace theolizer
@@ -208,7 +208,7 @@ class THEOLIZER_INTERNAL_DLL TypeInfoList
 private:
     template<class, class, class, bool, bool> friend class RegisterType;
 
-    TypeInfoList() : mPrimitiveTypeIndex(-1)    // 無効値
+    TypeInfoList() : mPrimitiveTypeIndex(static_cast<std::size_t>(-1))  // 無効値
     { }
 
     // 型のリスト
@@ -375,7 +375,7 @@ protected:
         mIsManual(false),
         mIsPointee(false),
         mTypeCategory(iTypeCategory),
-        mTypeIndex(-1), // Max値設定
+        mTypeIndex(static_cast<std::size_t>(-1)),   // 無効値設定
         mIsRegistered(false)
     { }
 
@@ -1969,7 +1969,7 @@ return gStaticString.c_str();
 }   // namespace theolizer
 
 // ***************************************************************************
-//          DLL用の警告禁止解除
+//          警告抑止解除
 // ***************************************************************************
 
 #ifdef _MSC_VER

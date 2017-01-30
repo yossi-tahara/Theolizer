@@ -698,18 +698,18 @@ struct WorkingLog::Impl
         mNowNumber=0;
         for (unsigned i=0; i < mFileCount; ++i)
         {
-            u8string aFileName=std::move((boost::format(mPath.str())%i).str());
+            u8string aFileName2=std::move((boost::format(mPath.str())%i).str());
             // 通常のファイルであることを確認
-            boostF::path temp(aFileName.get_bstring()); 
+            boostF::path temp(aFileName2.get_bstring()); 
             if (!boostF::exists(temp))
         continue;
             THEOLIZER_INTERNAL_ASSERT
             (
                 (boostF::is_regular_file(temp)),
-                u8"WorkingLog : %1%がファイルではありません。取り除いて下さい。", aFileName
+                u8"WorkingLog : %1%がファイルではありません。取り除いて下さい。", aFileName2
             );
             // オープンして先頭行チェック
-            std::ifstream ifs(aFileName.get_fstring());
+            std::ifstream ifs(aFileName2.get_fstring());
             unsigned    aNowNumber;
             ifs >> aNowNumber;
             if (aIsFirst

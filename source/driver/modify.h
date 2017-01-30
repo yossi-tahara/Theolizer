@@ -266,11 +266,11 @@ ASTANALYZE_OUTPUT("  Array : ", iType.getDesugaredType(*gASTContext).getAsString
 
         // 基本型を見つける
         QualType aUnderlyingType;
-        clang::ArrayType const* aType;
-        for (aUnderlyingType=iArray->getElementType();
-             aType=dyn_cast<clang::ArrayType const>(aUnderlyingType.getTypePtr());
-             aUnderlyingType=aType->getElementType())
+        aUnderlyingType=iArray->getElementType();
+        while(clang::ArrayType const* aType
+            =dyn_cast<clang::ArrayType const>(aUnderlyingType.getTypePtr()))
         {
+            aUnderlyingType=aType->getElementType();
         }
 
         // 不完全型([])やCの可変長配列はサポートしない
@@ -796,7 +796,7 @@ ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsSt
                     APValue* apvalue = vd->getEvaluatedValue();
                     if (!apvalue)  apvalue=vd->evaluateValue();
                     ERROR(!apvalue, vd, eAborted);
-                    int64_t aDefaultValue=apvalue->getInt().getExtValue();
+                    int64_t aDefaultValue2=apvalue->getInt().getExtValue();
 
                     mPrevVersion << "#define THEOLIZER_GENERATED_ENUM_LIST()";
                     AnnotationInfo aAnnotation=getAnnotationInfo(vd, AnnotateType::TS);
@@ -811,7 +811,7 @@ ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsSt
                     mPrevVersion << "\n";
 
                     mPrevVersion << "#define THEOLIZER_GENERATED_DEFAULT_VALUE "
-                                 << aDefaultValue << "\n";
+                                 << aDefaultValue2 << "\n";
             break;
                 }
             }
@@ -1586,7 +1586,7 @@ ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsSt
             }
 
             // 基底クラス情報取り出し
-            bool aIsFirst=true;
+            aIsFirst=true;
             for (auto&& aDecl : aDecls)
             {
                 clang::CXXMethodDecl const* cmd = 
@@ -1633,16 +1633,16 @@ ASTANALYZE_OUTPUT("    Base = ", found->first, " : ", found->second.mType == qt,
                 break;
 
                     // クラス情報取り出し
-                    auto found = mAstInterface.mSerializeListClass.find(crd);
-                    if (!found)
+                    auto found2 = mAstInterface.mSerializeListClass.find(crd);
+                    if (!found2)
                 break;
 
                     // 手動型はNOP
-                    if (found->second.mIsManual)
+                    if (found2->second.mIsManual)
                 break;
 
                     // 侵入型(KIへ変更する)
-                    if (!found->second.mNonIntrusive)
+                    if (!found2->second.mNonIntrusive)
                     {
                         aDoModify=true;
                     }
@@ -1667,7 +1667,8 @@ ASTANALYZE_OUTPUT("    Base = ", found->first, " : ", found->second.mType == qt,
                     mPrevVersion << aAnnotation.mParameter.substr(pos);
                 }
             }
-            if (!aIsFirst) {
+            if (!aIsFirst)
+            {
                 mPrevVersion << "\n";
             }
 
@@ -1730,16 +1731,16 @@ ASTANALYZE_OUTPUT("    Element = ", found->first,
                 break;
 
                     // クラス情報取り出し
-                    auto found = mAstInterface.mSerializeListClass.find(crd);
-                    if (!found)
+                    auto found2 = mAstInterface.mSerializeListClass.find(crd);
+                    if (!found2)
                 break;
 
                     // 手動型はNOP
-                    if (found->second.mIsManual)
+                    if (found2->second.mIsManual)
                 break;
 
                     // 侵入型(KIへ変更する)
-                    if (!found->second.mNonIntrusive)
+                    if (!found2->second.mNonIntrusive)
                     {
                         aDoModify=true;
                     }
@@ -2411,13 +2412,13 @@ ASTANALYZE_OUTPUT("post lock_try");
         // 他のプロセスのファイル開放待ち
         boostI::scoped_lock<ExclusiveControl> lock(gExclusiveControl);
 
-        for (auto aFileId : mModifiedFiles)
+        for (auto aFileId2 : mModifiedFiles)
         {
-            const FileEntry* file = gSourceManager->getFileEntryForID(aFileId);
+            const FileEntry* file = gSourceManager->getFileEntryForID(aFileId2);
 ASTANALYZE_OUTPUT(file->getName(), " ==============================================\n");
             string  file_data;
             llvm::raw_string_ostream ss(file_data);
-            mRewriter.getEditBuffer(aFileId).write(ss);
+            mRewriter.getEditBuffer(aFileId2).write(ss);
             ss.flush();
             string file_body=normalizeLF(std::move(file_data));
 ASTANALYZE_OUTPUT(file_body);

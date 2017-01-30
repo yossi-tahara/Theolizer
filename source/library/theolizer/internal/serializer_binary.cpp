@@ -33,6 +33,8 @@
 //      Begin
 //############################################################################
 
+#pragma warning(disable:4127)
+
 namespace theolizer
 {
 namespace internal

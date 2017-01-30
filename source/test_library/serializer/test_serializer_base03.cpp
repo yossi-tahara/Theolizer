@@ -24,6 +24,10 @@
 
 #include "test_serializer_base03.h"
 
+#ifdef _MSC_VER
+    #pragma warning(disable:4100 4127)
+#endif
+
 #include <sstream>
 #include <fstream>
 #include <typeindex>

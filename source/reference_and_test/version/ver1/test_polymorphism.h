@@ -114,7 +114,7 @@ struct PolyBaseManual
     std::string mBaseData;
     PolyBaseManual(char const* iBaseData="") : mBaseData(iBaseData) { }
     virtual ~PolyBaseManual() { }
-    virtual void check(bool iIsNonDefault) { }  // 手動型は抽象クラス非サポート
+    virtual void check(bool) { }    // 手動型は抽象クラス非サポート
     void check(char const* iBaseData)
     {
         THEOLIZER_EQUAL(mBaseData, iBaseData);

@@ -29,6 +29,10 @@ using namespace std;
 
 #include <theolizer/test_tool.h>
 
+#ifdef _MSC_VER
+    #pragma warning(disable:4100 4127)
+#endif
+
 #include "test_serializer_base.h"
 #include "test_serializer_base_version.h"
 #include "test_serializer_base01.cpp.theolizer.hpp"

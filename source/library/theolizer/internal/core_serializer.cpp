@@ -18,6 +18,14 @@
 
 #define THEOLIZER_INTERNAL_EXCLUDE_VERSION_H
 
+// ***************************************************************************
+//          警告抑止
+// ***************************************************************************
+
+#if defined(_MSC_VER)
+    #pragma warning(disable:4100)
+#endif
+
 //############################################################################
 //      インクルード
 //############################################################################
@@ -287,7 +295,7 @@ return;
 
             // 開始マーク
             writePreElement();
-            AutoRestoreSave aAutoRestoreSave(*this, emOrder, true);
+            AutoRestoreSave aAutoRestoreSave2(*this, emOrder, true);
 
             // TypeIndex
             if (mCheckMode == CheckMode::TypeCheckByIndex) {
@@ -333,7 +341,7 @@ return;
 
             // ElementListを出力
             writePreElement();
-            AutoRestoreSave aAutoRestoreSave2(*this, aElementsMapping);
+            AutoRestoreSave aAutoRestoreSave3(*this, aElementsMapping);
 
             for (auto&& aElement : aTypeInfo->getElementRange(aVersionNo))
             {
@@ -1280,7 +1288,7 @@ return;
     while (readPreElement())
     {
         // 開始マーク
-        AutoRestoreLoad aAutoRestoreLoad(*this);
+        AutoRestoreLoad aAutoRestoreLoad2(*this);
 
         // TypeIndex取出し
         size_t aDataTypeIndex=0;
@@ -1331,7 +1339,7 @@ return;
       continue;
 
             // 開始マーク
-            AutoRestoreLoad aAutoRestoreLoad2(*this, aElementsMapping);
+            AutoRestoreLoad aAutoRestoreLoad3(*this, aElementsMapping);
 
             // 要素の型取出し
             while(readPreElement())
@@ -1470,7 +1478,7 @@ return;
                 // 対応する要素の型が一致しない時、エラー
                     if (aSerializedElement.mTypeName != aProgramElement.second)
                     {
-                        AutoRestoreSerializeInfo aAutoRestoreSerializeInfo
+                        AutoRestoreSerializeInfo aAutoRestoreSerializeInfo2
                             (*this, aProgramElement.first);
                         THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.");
                     }
@@ -1482,7 +1490,7 @@ return;
             {
                 if (aSerializedElement.mTypeName != aProgramElementItr->second)
                 {
-                    AutoRestoreSerializeInfo aAutoRestoreSerializeInfo
+                    AutoRestoreSerializeInfo aAutoRestoreSerializeInfo2
                         (*this, aProgramElementItr->first);
                     THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.");
                 }
@@ -1554,7 +1562,7 @@ return;
 
                     if (!isMatchTypeIndex(aSerializedElement.mTypeIndex, aProgramElement.second))
                     {
-                        AutoRestoreSerializeInfo aAutoRestoreSerializeInfo
+                        AutoRestoreSerializeInfo aAutoRestoreSerializeInfo2
                             (*this, aProgramElement.first);
                         THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.");
                     }
@@ -1566,7 +1574,7 @@ return;
             {
                 if (!isMatchTypeIndex(aSerializedElement.mTypeIndex, aProgramElementItr->second))
                 {
-                    AutoRestoreSerializeInfo aAutoRestoreSerializeInfo
+                    AutoRestoreSerializeInfo aAutoRestoreSerializeInfo2
                             (*this, aProgramElementItr->first);
                     THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.");
                 }
@@ -1818,7 +1826,7 @@ void BaseSerializer::writeMetaPrimitive()
     {
         // ローカル・バージョン毎の塊
         writePreElement();
-        AutoRestoreSave aAutoRestoreSave(*this, emOrder);
+        AutoRestoreSave aAutoRestoreSave2(*this, emOrder);
 
         // ローカル・バージョン番号
         writePreElement();
@@ -1875,7 +1883,7 @@ void BaseSerializer::writeMetaEnum
         {
             // ローカル・バージョン毎の塊
             writePreElement();
-            AutoRestoreSave aAutoRestoreSave(*this, emOrder);
+            AutoRestoreSave aAutoRestoreSave2(*this, emOrder);
 
             // ローカル・バージョン番号
             writePreElement();
@@ -1993,7 +2001,7 @@ void BaseSerializer::writeMetaClass
             {
                 // ローカル・バージョン毎の塊
                 writePreElement();
-                AutoRestoreSave aAutoRestoreSave(*this, emOrder);
+                AutoRestoreSave aAutoRestoreSave2(*this, emOrder);
 
                 // ローカル・バージョン番号
                 writePreElement();
@@ -2202,7 +2210,7 @@ struct MetaDeserializer : public MetaDeserializerBase
             unsigned aPrevGlobalVersionNo=0;
             while(mSerializer.readPreElement())
             {
-                BaseSerializer::AutoRestoreLoad aAutoRestoreLoad(mSerializer, emOrder);
+                BaseSerializer::AutoRestoreLoad aAutoRestoreLoad2(mSerializer, emOrder);
 
                 // ローカル・バージョン番号
                 mSerializer.readPreElement();
@@ -2600,11 +2608,11 @@ private:
 
         // 生配列処理
         std::size_t aExtentStart=iTypeName.find('[', pos);
-        for (std::size_t pos=aExtentStart;
-             pos != std::string::npos;
-             pos=iTypeName.find('[', pos+1))
+        for (std::size_t pos2=aExtentStart;
+             pos2 != std::string::npos;
+             pos2=iTypeName.find('[', pos2+1))
         {
-            std::size_t extent=static_cast<std::size_t>(std::stoull(iTypeName.substr(pos+1)));
+            std::size_t extent=static_cast<std::size_t>(std::stoull(iTypeName.substr(pos2+1)));
             oArrayExtents.emplace_back(extent);
         }
         oIsArrayPointer=(oArrayExtents.size() != 0) && (iTypeName.back() == '*');

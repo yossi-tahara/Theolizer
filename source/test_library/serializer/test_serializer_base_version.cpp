@@ -31,5 +31,9 @@
 //      グローバル・バージョン管理対象クラス定義のインクルード
 // ***************************************************************************
 
+#ifdef _MSC_VER
+    #pragma warning(disable:4100 4127)
+#endif
+
 #include "test_serializer_base.h"
 #include "test_serializer_base_version.cpp.theolizer.hpp"

@@ -18,6 +18,14 @@
 
 #define THEOLIZER_INTERNAL_EXCLUDE_VERSION_H
 
+// ***************************************************************************
+//          警告抑止
+// ***************************************************************************
+
+#if defined(_MSC_VER)
+    #pragma warning(disable:4100)
+#endif
+
 //############################################################################
 //      インクルード
 //############################################################################
@@ -782,7 +790,7 @@ void JsonMidISerializer::decodeJsonString(std::string& iString)
 
     iString.clear();
     while(1) {
-        char in=getChar();
+        in=getChar();
 
         // Escape文字
         if (in == '\\') {

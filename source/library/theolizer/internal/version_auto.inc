@@ -38,6 +38,15 @@
 */
 //############################################################################
 
+// ***************************************************************************
+//          警告抑止
+// ***************************************************************************
+
+#ifdef _MSC_VER
+    #pragma warning(push)
+    #pragma warning(disable:4100 4127)
+#endif
+
 #if defined(__GNUC__)
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Wreorder"
@@ -1490,6 +1499,14 @@ inline void THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::registerToBaseClass
 #undef THEOLIZER_GENERATED_ELEMENT_MAP
 #undef THEOLIZER_GENERATED_BASE_LIST
 #undef THEOLIZER_GENERATED_ELEMENT_LIST
+
+// ***************************************************************************
+//          警告抑止解除
+// ***************************************************************************
+
+#ifdef _MSC_VER
+  #pragma warning(pop)
+#endif
 
 #if defined(__GNUC__)
     #pragma GCC diagnostic pop

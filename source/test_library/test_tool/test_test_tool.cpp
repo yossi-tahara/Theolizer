@@ -19,6 +19,14 @@
 #define THEOLIZER_INTERNAL_EXCLUDE_VERSION_H
 
 // ***************************************************************************
+//          警告抑止
+// ***************************************************************************
+
+#if defined(_MSC_VER)
+    #pragma warning(disable:4100 4127 4702)
+#endif
+
+// ***************************************************************************
 //      通常のインクルード
 // ***************************************************************************
 
@@ -132,7 +140,7 @@ int main(int argc, char** argv)
 
         // DisplayPassのデストラクトで回復することをチェック
         {
-            theolizer::DisplayPass aDisplayPass;
+            theolizer::DisplayPass aDisplayPass2;
 
             // {}の中でtheolizer::DisplayPass::on()がtrueであることをチェック
             ++aTestCounter;

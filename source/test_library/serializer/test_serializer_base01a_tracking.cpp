@@ -22,6 +22,10 @@
 //      通常のインクルード
 //############################################################################
 
+#ifdef _MSC_VER
+    #pragma warning(disable:4100 4127)
+#endif
+
 #include "test_serializer_base.h"
 #include "test_serializer_base_version.h"
 
@@ -331,7 +335,7 @@ std::cout << "TestISerializerTracking(" << iFileName << ", "
 
 //      ---<<< 多重指定動的生成領域のポインタ処理(基本) >>>---
 
-    unsigned*       mUInt       =new unsigned(-100);
+    unsigned*       mUInt       =new unsigned(0);
     THEOLIZER_PROCESS_OWNER(aSerializer, mUInt);
     THEOLIZER_EQUAL(mUInt, aDynamic->mUInt);
 
@@ -362,7 +366,7 @@ std::cout << "TestISerializerTracking(" << iFileName << ", "
     Dynamic*    aDynamic2=new Dynamic();
     auto aAutoDeleter2=theolizer::makeScopeExit([&]{delete aDynamic2;});
 
-    aDynamic2->mUInt = new unsigned int(-500);
+    aDynamic2->mUInt = new unsigned int(0);
     aDynamic2->mEnum = new EnumTest(EnumTest::zero);
     aDynamic2->mIncluded1 = new Included1(-502);
     aDynamic2->mString = new string("-503");

@@ -32,6 +32,15 @@
 //############################################################################
 
 // ***************************************************************************
+//          警告抑止
+// ***************************************************************************
+
+#ifdef _MSC_VER
+    #pragma warning(push)
+    #pragma warning(disable:4100)
+#endif
+
+// ***************************************************************************
 //      save/loadPrimitive宣言用マクロ
 //          THEOLIZER_INTERNAL_DEF_SAVE : savePrimitive()宣言
 //          THEOLIZER_INTERNAL_DEF_LOAD : loadPrimitive()宣言
@@ -312,3 +321,11 @@ THEOLIZER_INTERNAL_DEF_CHAR32_STRING(std::u32string,          U32string)
 #undef  THEOLIZER_INTERNAL_DEF_WSTRING
 #undef  THEOLIZER_INTERNAL_DEF_CHAR16_STRING
 #undef  THEOLIZER_INTERNAL_DEF_CHAR32_STRING
+
+// ***************************************************************************
+//          警告抑止解除
+// ***************************************************************************
+
+#ifdef _MSC_VER
+    #pragma warning(pop)
+#endif

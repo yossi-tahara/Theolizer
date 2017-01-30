@@ -19,6 +19,14 @@
 #define THEOLIZER_INTERNAL_EXCLUDE_VERSION_H
 
 // ***************************************************************************
+//          警告抑止
+// ***************************************************************************
+
+#if defined(_MSC_VER)
+    #pragma warning(disable:4100 4996)
+#endif
+
+// ***************************************************************************
 //      通常のインクルード
 // ***************************************************************************
 
@@ -38,10 +46,6 @@ using namespace std;
 
 #include <theolizer/test_tool.h>
 #include <theolizer/report.h>
-
-#if defined(_MSC_VER)
-    #pragma warning(disable:4996)
-#endif
 
 // ***************************************************************************
 //      子プロセス呼び出しと結果取り出し
@@ -272,7 +276,7 @@ int main(int argc, char** argv)
         // 不正なファイル有り(不正なフォルダでテストする)
         {
             theolizer::u8string aIllFile = aFolder + u8"/Test1.log";
-            theolizer::PrepareDir AutoDelete(aIllFile.str());
+            theolizer::PrepareDir AutoDelete2(aIllFile.str());
 
             // 不正なファイルを検知することを確認する
             expected=theolizer::print

@@ -25,14 +25,14 @@
 */
 //############################################################################
 
+#if defined(_MSC_VER)   // disabling MSVC warnings
+    #pragma warning(disable:4100 4127 4714 4996)
+#endif
+
 #include "header_includes.h"    // 必要な外部ヘッダのインクルード
 #include "utility.h"            // ユーティリティ
 #include "modify.h"             // ソース修正
 #include "parse.h"              // AST解析と必要情報収集
-
-#if defined(_MSC_VER)   // disabling MSVC warnings
-    #pragma warning(disable:4996)
-#endif
 
 // ***************************************************************************
 //      ドライバー・モード
@@ -178,7 +178,7 @@ public:
             remove(mTempFilePath.begin());
 
         // カレント・フォルダを元に戻しておく
-        int ret=chdir(mCurrentDir);
+        chdir(mCurrentDir);
         free(mCurrentDir);
     }
 
@@ -508,7 +508,7 @@ int main(int iArgc, const char **iArgv)
         char* aCurrentDir = GetCurrentDirName();
         PARAMETER_OUTPUT("Current Dir : ", aCurrentDir);
         free(aCurrentDir);
-        for (int i=0; i < iArgc; ++i)
+        for (i=0; i < iArgc; ++i)
         {
             std::stringstream ss;
             ss << "    iArgv[" << i << "] = ";
@@ -757,7 +757,8 @@ return TheolizerProc(aExePath, arg);
 
             PARAMETER_OUTPUT("BuildCompilation");
             i=0;
-            for(auto arg : aArgv ){
+            for(auto arg : aArgv )
+            {
                 if (arg != nullptr) PARAMETER_OUTPUT("    aArgv[", i, "] = ", arg);
                 i++;
             }
@@ -833,7 +834,7 @@ return aRet;
 
     llvm::opt::ArgStringList   aArgvForCall;
     aArgvForCall.push_back(aOriginalPath.c_str());
-    for (int i=1; i < iArgc; ++i)
+    for (i=1; i < iArgc; ++i)
     {
         if (StringRef(iArgv[i]).startswith(ARG_THEOLIZER))
     continue;
@@ -848,7 +849,7 @@ return aRet;
     aArgvForCall.push_back(nullptr);
 
     PARAMETER_OUTPUT("----- Calling original compiler -----");
-    for (int i=0; aArgvForCall[i] != nullptr; ++i)
+    for (i=0; aArgvForCall[i] != nullptr; ++i)
     {
         PARAMETER_OUTPUT("    aArgvForCall[", i, "] = ", aArgvForCall[i]);
     }

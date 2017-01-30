@@ -22,6 +22,10 @@
 //      通常のインクルード
 //############################################################################
 
+#ifdef _MSC_VER
+    #pragma warning(disable:4100 4127)
+#endif
+
 #include "test_serializer_base02.h"
 #include "test_serializer_base_version.h"
 
