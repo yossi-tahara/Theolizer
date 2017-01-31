@@ -41,7 +41,7 @@ namespace std
 #include <theolizer/serializer_json.h>
 
 #include <theolizer/memory.h>   // std::unique_ptrのシリアライズ化
-#include <theolizer/vector.h>   // std::vectorのシリアライス化
+#include <theolizer/vector.h>   // std::vectorのシリアライズ化
 
 // プロジェクト・ヘッダ
 #include "common.h"

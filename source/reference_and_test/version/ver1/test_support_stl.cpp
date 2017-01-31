@@ -105,8 +105,56 @@ void tutoriseSupportStl()
 }
 
 //############################################################################
-//      組み合わせテスト
+//      網羅テスト
 //############################################################################
+
+// ***************************************************************************
+//      サブ処理
+// ***************************************************************************
+
+template<class tSerializer, class tContainer, typename tType>
+void saveContainer0(tSerializer& iSerializer, tContainer& iContainer, tType const& iFirst)
+{
+    // 保存データ生成
+    tType   *aPtr0;
+    tType   *aPtr1;
+    tType   *aPtr2;
+    iContainer.emplace(iContainer.end(), iFirst+0);
+    iContainer.emplace(iContainer.end(), iFirst+1);
+    iContainer.emplace(iContainer.end(), iFirst+2);
+    aPtr0=&iContainer[0];
+    aPtr1=&iContainer[1];
+    aPtr2=&iContainer[2];
+
+    // 保存
+    THEOLIZER_PROCESS(iSerializer, aPtr0);
+    THEOLIZER_PROCESS(iSerializer, aPtr1);
+    THEOLIZER_PROCESS(iSerializer, aPtr2);
+    THEOLIZER_PROCESS(iSerializer, iContainer);
+}
+
+template<class tSerializer, class tContainer, typename tType>
+void loadContainer0(tSerializer& iSerializer, tContainer& iContainer, tType const& iFirst)
+{
+    // 回復先生成
+    tType   *aPtr0=nullptr;
+    tType   *aPtr1=nullptr;
+    tType   *aPtr2=nullptr;
+
+    // 回復
+    THEOLIZER_PROCESS(iSerializer, aPtr0);
+    THEOLIZER_PROCESS(iSerializer, aPtr1);
+    THEOLIZER_PROCESS(iSerializer, aPtr2);
+    THEOLIZER_PROCESS(iSerializer, iContainer);
+
+    // チェック
+    THEOLIZER_EQUAL_PTR(aPtr0, &iContainer[0]);
+    THEOLIZER_EQUAL_PTR(aPtr1, &iContainer[1]);
+    THEOLIZER_EQUAL_PTR(aPtr2, &iContainer[2]);
+    THEOLIZER_EQUAL(*aPtr0, iFirst+0);
+    THEOLIZER_EQUAL(*aPtr1, iFirst+1);
+    THEOLIZER_EQUAL(*aPtr2, iFirst+2);
+}
 
 // ***************************************************************************
 //      保存
@@ -115,8 +163,6 @@ void tutoriseSupportStl()
 template<class tSerializer>
 void saveSupportStl(tSerializer& iSerializer)
 {
-iSerializer;
-
 //----------------------------------------------------------------------------
 //      スマート・ポインタ対応
 //----------------------------------------------------------------------------
@@ -213,6 +259,24 @@ iSerializer;
 
         iSerializer.clearTracking();
     }
+
+//----------------------------------------------------------------------------
+//      コンテナ対応
+//----------------------------------------------------------------------------
+
+//      ---<<< std::vector >>>---
+
+    {
+        std::cout << "        saveContainer0() : std::vector<TestStl>" << std::endl;
+        std::vector<TestStl>    aVectorTestStl;
+        saveContainer0(iSerializer, aVectorTestStl, TestStl(100));
+
+        std::cout << "        saveContainer0() : theolizer::VectorPointee<int>" << std::endl;
+        theolizer::VectorPointee<int>  aVectorInt;
+        saveContainer0(iSerializer, aVectorInt, 200);
+
+        iSerializer.clearTracking();
+    }
 }
 
 INSTANTIATION_ALL(saveSupportStl);
@@ -224,8 +288,6 @@ INSTANTIATION_ALL(saveSupportStl);
 template<class tSerializer>
 void loadSupportStl(tSerializer& iSerializer)
 {
-iSerializer;
-
 //----------------------------------------------------------------------------
 //      スマート・ポインタ対応
 //----------------------------------------------------------------------------
@@ -348,6 +410,24 @@ iSerializer;
         aSmartTestManual0.check(320, aShared, aForWeak);
         aSmartTestManual1.check(330, aShared, aForWeak);
         aSmartTestManual2.check(340, aShared, aForWeak);
+    }
+
+//----------------------------------------------------------------------------
+//      コンテナ対応
+//----------------------------------------------------------------------------
+
+//      ---<<< std::vector >>>---
+
+    {
+        std::cout << "        loadContainer0() : std::vector<TestStl>" << std::endl;
+        std::vector<TestStl>    aVectorTestStl;
+        loadContainer0(iSerializer, aVectorTestStl, TestStl(100));
+
+        std::cout << "        loadContainer0() : theolizer::VectorPointee<int>" << std::endl;
+        theolizer::VectorPointee<int>  aVectorInt;
+        loadContainer0(iSerializer, aVectorInt, 200);
+
+        iSerializer.clearTracking();
     }
 }
 

@@ -21,7 +21,12 @@
 #if !defined(TEST_SUPPORT_STL_H)
 #define TEST_SUPPORT_STL_H
 
+// スマート・ポインタ
 #include <theolizer/memory.h>
+
+// 標準コンテナ
+#include <theolizer/vector.h>
+#include <theolizer/list.h>
 
 // ***************************************************************************
 //      使い方の説明
@@ -41,7 +46,7 @@
 //############################################################################
 
 // ***************************************************************************
-//      シリアライズ対象クラス
+//      スマート・ポインタのシリアライズ対象クラス
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
@@ -77,7 +82,7 @@ public:
 THEOLIZER_REGISTER_CLASS((SmartDerived));
 
 // ***************************************************************************
-//      シリアライズ処理クラス
+//      スマート・ポインタのシリアライズ処理クラス
 //          自動と手動（非トップ・レベル）のテスト用
 // ***************************************************************************
 
@@ -224,6 +229,32 @@ struct TheolizerNonIntrusive<SmartTestManual>::
         THEOLIZER_PROCESS(iSerializer, oInstance->mSharedPtr);
         THEOLIZER_PROCESS(iSerializer, oInstance->mWeakPtr);
     }
+};
+
+// ***************************************************************************
+//      標準コンテナのシリアライズ対象クラス
+// ***************************************************************************
+
+class TestStl
+{
+    int     mData;
+public:
+    TestStl(int iData=0) : mData(iData) { }
+    TestStl operator+(int iRhs) const
+    {
+        return TestStl(mData+iRhs);
+    }
+    bool operator==(TestStl const& iRhs)
+    {
+        return mData == iRhs.mData;
+    }
+    friend std::ostream& operator<<(std::ostream& os, TestStl const& iRhs)
+    {
+        os << iRhs.mData;
+        return os;
+    }
+
+    THEOLIZER_INTRUSIVE(CS, (TestStl), 1);
 };
 
 #endif  // TEST_SUPPORT_STL_H

@@ -881,6 +881,16 @@ ASTANALYZE_OUTPUT("VisitClassTemplateDecl(", iClassTemplateDecl->getQualifiedNam
             {
                 mAstInterface.mMidSerializerDecl = iClassTemplateDecl;
             }
+
+            else
+            {
+                CXXRecordDecl* crd=iClassTemplateDecl->getTemplatedDecl();
+                AnnotationInfo ret=getAnnotationInfo(crd, AnnotateType::Class);
+                if (ret.mAnnotate == AnnotationInfo::CS)
+                {
+                    mAstInterface.mSerializeListClass.addCandidate(crd);
+                }
+            }
 return true;
         }
 
@@ -1283,7 +1293,8 @@ ASTANALYZE_OUTPUT("          aTargetEnum=", aTargetEnum->getQualifiedNameAsStrin
 
                 CXXRecordDecl const* aTargetClass=
                     aInstanciatedClass->getTemplateInstantiationPattern();
-                if (!aTargetClass) {
+                if (!aTargetClass)
+                {
                     aTargetClass=aInstanciatedClass;
                 }
 ASTANALYZE_OUTPUT("          aTargetClass=", aTargetClass->getQualifiedNameAsString(),

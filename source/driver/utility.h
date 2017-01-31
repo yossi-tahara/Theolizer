@@ -1395,6 +1395,8 @@ ASTANALYZE_OUTPUT("SerializeList::addSerializable(",
                   ", ", iAnnotationInfo.c_str(),
                   ", ", iAnnotationInfoTS.c_str(),
                   ", ", (iNonIntrusive)?iNonIntrusive->getQualifiedNameAsString():"<NULL>",
+                  ", iIsManual=", iIsManual,
+                  ", iIsFullAuto=", iIsFullAuto,
                   ");");
 
         mMap.emplace_hint
