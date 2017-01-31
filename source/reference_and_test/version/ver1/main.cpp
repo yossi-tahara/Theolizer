@@ -162,6 +162,26 @@ void loadDestinations
 );
 #endif // DISABLE_DESTINATIONS_TEST
 
+//----------------------------------------------------------------------------
+//      標準コンテナ
+//----------------------------------------------------------------------------
+
+#ifndef DISABLE_SUPPORT_STL_TEST
+
+//      ---<<< 使い方のサンプル・コード >>>---
+
+void tutoriseSupportStl();
+
+//      ---<<< 自動テスト >>>---
+
+template<class tSerializer>
+void saveSupportStl(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadSupportStl(tSerializer& iSerializer);
+
+#endif // DISABLE_SUPPORT_STL_TEST
+
 // ***************************************************************************
 //      各テスト呼び出し
 // ***************************************************************************
@@ -190,6 +210,9 @@ void saveBasic(tSerializer& iSerializer)
 #ifndef DISABLE_DESTINATIONS_TEST
     saveSpecifySaving(iSerializer);
 #endif
+#ifndef DISABLE_SUPPORT_STL_TEST
+    saveSupportStl(iSerializer);
+#endif
 }
 
 template<class tSerializer>
@@ -215,6 +238,9 @@ void loadBasic(tSerializer& iSerializer)
 #endif
 #ifndef DISABLE_DESTINATIONS_TEST
     loadSpecifySaving(iSerializer);
+#endif
+#ifndef DISABLE_SUPPORT_STL_TEST
+    loadSupportStl(iSerializer);
 #endif
 }
 
@@ -682,6 +708,9 @@ return 1;
             #endif
             #ifndef DISABLE_DESTINATIONS_TEST
                 tutoriseDestinations();
+            #endif
+            #ifndef DISABLE_SUPPORT_STL_TEST
+                tutoriseSupportStl();
             #endif
 
             // ここまでの中間結果表示

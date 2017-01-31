@@ -32,6 +32,7 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_objec
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_object_tracking3.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_polymorphism.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_destinations.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_support_stl.cpp)
 
 message(STATUS "start of add_build_and_test(${TARGET_NAME}${VERSION})")
 add_build_and_test(${TARGET_NAME} ${VERSION} "" ${SOURCE_LIST})

@@ -256,7 +256,7 @@ struct TheolizerNonIntrusive<std::weak_ptr<T>>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
-        THEOLIZER_PROCESS_OWNER(iSerializer, iInstance->lock());
+        THEOLIZER_PROCESS(iSerializer, iInstance->lock());
     }
 
     // 回復
@@ -269,7 +269,12 @@ struct TheolizerNonIntrusive<std::weak_ptr<T>>::
         // もし、nullptrなら、インスタンス生成
         if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
-        THEOLIZER_PROCESS_OWNER(iSerializer, oInstance->lock());
+        typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
+        typedef typename TheolizerTarget::element_type ElementType;
+
+        std::shared_ptr<ElementType> aShared(oInstance->lock());
+        THEOLIZER_PROCESS(iSerializer, aShared);
+        *oInstance=aShared;
     }
 };
 

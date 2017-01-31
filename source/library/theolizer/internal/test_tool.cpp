@@ -340,13 +340,9 @@ void initResult()
     internal::gFailCount=0;
 }
 
-void incrementTotalCount()
-{
-    ++internal::gFailCount;
-}
-
 void incrementFailCount()
 {
+    ++internal::gTotal;
     ++internal::gFailCount;
 }
 

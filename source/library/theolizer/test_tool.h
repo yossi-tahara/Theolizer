@@ -267,11 +267,6 @@ THEOLIZER_INTERNAL_DLL void initResult();
 /*!
     @todo   T.B.D.
 */
-THEOLIZER_INTERNAL_DLL void incrementTotalCount();
-
-/*!
-    @todo   T.B.D.
-*/
 THEOLIZER_INTERNAL_DLL void incrementFailCount();
 
 /*!

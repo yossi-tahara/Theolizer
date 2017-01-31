@@ -65,6 +65,10 @@ public:
     THEOLIZER_INTRUSIVE(CS, (ObjectTrackingClass), 1);
 };
 
+//############################################################################
+//      網羅テスト
+//############################################################################
+
 // ***************************************************************************
 //      各種メモリへのポインタのテスト
 //          2番目以降の基底クラス・ポインタからのオブジェクト追跡テスト含む
@@ -482,7 +486,7 @@ inline void savePointee(tSerializer& iSerializer, PointeeList& iPointeeList)
 {
     // ポインタ変数を保存する
     #define DEFINE(dType, dVar, dVal0, dVal1, dVal2)                                \
-      THEOLIZER_PROCESS_POINTEE(iSerializer, iPointeeList.m##dVar);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, iPointeeList.m##dVar);
     #define ARRAY(dType, dVar, dNum, dVal0, dVal1, dVal2)                           \
         THEOLIZER_PROCESS_POINTEE(iSerializer, iPointeeList.m##dVar##Array1);       \
         THEOLIZER_PROCESS_POINTEE(iSerializer, iPointeeList.m##dVar##Array2);       \
