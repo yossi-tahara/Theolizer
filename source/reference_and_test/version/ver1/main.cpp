@@ -169,7 +169,6 @@ void loadDestinations
 template<class tSerializer>
 void saveBasic(tSerializer& iSerializer)
 {
-    iSerializer;
 #ifndef DISABLE_BASIC_PROCESS_TEST
     saveBasicProcess(iSerializer);
 #endif
@@ -196,7 +195,6 @@ void saveBasic(tSerializer& iSerializer)
 template<class tSerializer>
 void loadBasic(tSerializer& iSerializer)
 {
-    iSerializer;
 #ifndef DISABLE_BASIC_PROCESS_TEST
     loadBasicProcess(iSerializer);
 #endif

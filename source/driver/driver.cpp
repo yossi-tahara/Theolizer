@@ -29,6 +29,10 @@
     #pragma warning(disable:4100 4127 4714 4996)
 #endif
 
+#if defined(__GNUC__)
+    #pragma GCC diagnostic ignored "-Wunused-result"    // chdirのため
+#endif
+
 #include "header_includes.h"    // 必要な外部ヘッダのインクルード
 #include "utility.h"            // ユーティリティ
 #include "modify.h"             // ソース修正
