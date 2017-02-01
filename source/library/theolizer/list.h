@@ -27,6 +27,7 @@
 
 #include <list>
 #include "serializer.h"
+#include "internal/containers.h"
 
 THEOLIZER_PROVIDED_BY("Theoride Technology");
 
@@ -35,102 +36,96 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 //############################################################################
 
 // ***************************************************************************
-//      シリアライズ指定
+//      theolizer::ListPointee<>
+//          std::list<>の単純な派生クラス
+//          要素をPointeeとして処理する
 // ***************************************************************************
 
-THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((template<class T>),
-                                        (std::list<T>), 1,
-                                        listTheolizer);
-
-//----------------------------------------------------------------------------
-//      ユーザ定義
-//          回復処理の注意事項：
-//              余分なデータの破棄、および、ClassType終了処理のため、
-//              必ずiSerializer.readPreElement()がfalseを返却するまで
-//              処理しておくこと。
-//----------------------------------------------------------------------------
-
-//      ---<<< Version.1 >>>---
-
-template<class T>
-template<class tMidSerializer, class tTheolizerVersion>
-struct TheolizerNonIntrusive<std::list<T>>::
-    TheolizerUserDefine<tMidSerializer, tTheolizerVersion, 1>
+namespace theolizer
 {
-    // 保存
-    static void saveClassManual
-    (
-        tMidSerializer& iSerializer,
-        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
-    )
-    {
-        THEOLIZER_PROCESS(iSerializer, iInstance->size());
-        for (auto& aElement : *iInstance)
-        {
-            THEOLIZER_PROCESS(iSerializer, aElement);
-        }
-    }
 
-    // 回復
-    static void loadClassManual
-    (
-        tMidSerializer& iSerializer,
-        typename tTheolizerVersion::TheolizerTarget*& oInstance
-    )
-    {
-        // もし、nullptrなら、インスタンス生成
-        if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
-
-        std::size_t aSize;
-        THEOLIZER_PROCESS(iSerializer, aSize);
-
-        // 先に領域をlist内部に生成してから、そこへ回復する。
-        //  これにより、要素のコピーやムーブが発生しないようにすることで、
-        //  「親」へのポインタが壊れないようにしている。
-        auto itr=oInstance->begin();
-        for (std::size_t i=0; i < aSize; ++i)
-        {
-            if (itr == oInstance->end())
-            {
-                oInstance->resize(oInstance->size()+1);
-                itr=oInstance->end();
-                --itr;
-            }
-            T& aElement=*itr++;
-            THEOLIZER_PROCESS(iSerializer, aElement);
-            theolizer::internal::checkDataShort
-            (
-                !iSerializer.isTerminated(),
-                "std::list<T>"
-            );
-        }
-    }
+template<class T, class Alloc=std::allocator<T> >
+class THEOLIZER_ANNOTATE(CS) ListPointee : public std::list<T, Alloc>
+{
+public:
+    using std::list<T, Alloc>::list;
 };
 
+}   // namespace theolizer
+
+// ***************************************************************************
+//      手動コード展開
+// ***************************************************************************
+
+#define THEOLZIER_INTERNAL_CONTAINER_PARAMETER          template<class T, class Alloc>
+#define THEOLZIER_INTERNAL_CONTAINER_NAME               std::list
+#define THEOLZIER_INTERNAL_CONTAINER_NAME_POINTEE       theolizer::ListPointee
+#define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           T, Alloc
+#define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             listTheolizer
+#define THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE     ListPointeeTheolizer
+#include "internal/container_no_key.h"
+
+// ***************************************************************************
+//      自動生成コードの雛形
+// ***************************************************************************
+
 //----------------------------------------------------------------------------
-//      自動生成
+//      通常用
 //----------------------------------------------------------------------------
 
-#ifdef  THEOLIZER_WRITE_CODE // ###### std::list<T> ######
+#ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::list<T>
-#define THEOLIZER_GENERATED_PARAMETER_LIST template<class T>
+#define THEOLIZER_GENERATED_CLASS_TYPE std::list<T, Alloc>
+#define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class Alloc>
 #define THEOLIZER_GENERATED_UNIQUE_NAME listTheolizer
 
 //      ---<<< Version.1 >>>---
 
 #define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
 #define THEOLIZER_GENERATED_CLASS_NAME()\
-    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"std::list",T))
+    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"std::list",T,Alloc))
 #include <theolizer/internal/version_manual.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
-#endif//THEOLIZER_WRITE_CODE // ###### std::list<T> ######
+#endif//THEOLIZER_WRITE_CODE
+
+//----------------------------------------------------------------------------
+//      被ポインタ用
+//----------------------------------------------------------------------------
+
+#ifdef  THEOLIZER_WRITE_CODE
+
+#define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_TYPE theolizer::ListPointee<T, Alloc>
+#define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class Alloc>
+#define THEOLIZER_GENERATED_UNIQUE_NAME ListPointeeTheolizer
+
+//      ---<<< Version.1 >>>---
+
+#define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_NAME()\
+    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"theolizer::ListPointee",T,Alloc))
+#include <theolizer/internal/version_manual.inc>
+#undef  THEOLIZER_GENERATED_VERSION_NO
+
+#endif//THEOLIZER_WRITE_CODE
+
+// ***************************************************************************
+//      定義したマクロの解放
+// ***************************************************************************
+
+#undef  THEOLZIER_INTERNAL_CONTAINER_PARAMETER
+#undef  THEOLZIER_INTERNAL_CONTAINER_NAME
+#undef  THEOLZIER_INTERNAL_CONTAINER_NAME_POINTEE
+#undef  THEOLZIER_INTERNAL_CONTAINER_ARGUMENT
+#undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE
+#undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE
 
 //############################################################################
 //      End
 //############################################################################
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
-#endif  // THEOLIZER_INTERNAL_VECTOR_H
+
+#endif  // THEOLIZER_INTERNAL_LIST_H

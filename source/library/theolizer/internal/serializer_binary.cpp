@@ -733,10 +733,13 @@ template void BinaryMidISerializer::loadFloat<long double>(long double& oFloat);
 
 ReadStat BinaryMidISerializer::readPreElement(bool iDoProcess)
 {
-    if (iDoProcess)
-return Continue;
-
     bool aContinue=readNext();
+
+    // 継続する時は再処理のため戻しておく
+    if (aContinue && iDoProcess)
+    {
+        mIStream.unget();
+    }
 
     return (aContinue && !ErrorReporter::getError())?Continue:Terminated;
 }
@@ -754,7 +757,8 @@ std::string BinaryMidISerializer::loadElementName(ElementsMapping iElementsMappi
 
         // 次の準備
         mBinaryTag = readByte();
-        if (mBinaryTag.isClassEnd()) {
+        if (mBinaryTag.isClassEnd())
+        {
             THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
         }
     }

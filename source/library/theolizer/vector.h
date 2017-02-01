@@ -19,6 +19,8 @@
 #if !defined(THEOLIZER_INTERNAL_VECTOR_H)
 #define THEOLIZER_INTERNAL_VECTOR_H
 
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+
 //############################################################################
 //      Begin
 //############################################################################
@@ -109,8 +111,21 @@ public:
 
 #endif//THEOLIZER_WRITE_CODE
 
+// ***************************************************************************
+//      定義したマクロの解放
+// ***************************************************************************
+
+#undef  THEOLZIER_INTERNAL_CONTAINER_PARAMETER
+#undef  THEOLZIER_INTERNAL_CONTAINER_NAME
+#undef  THEOLZIER_INTERNAL_CONTAINER_NAME_POINTEE
+#undef  THEOLZIER_INTERNAL_CONTAINER_ARGUMENT
+#undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE
+#undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE
+
 //############################################################################
 //      End
 //############################################################################
+
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 #endif  // THEOLIZER_INTERNAL_VECTOR_H

@@ -1,12 +1,5 @@
 ﻿//############################################################################
-//      
-/*!
-@brief      Theolizerライブラリの標準コンテナ・サポート
-@ingroup    TheolizerLib
-@file       containers.h
-@author     Yoshinori Tahara(Theoride Technology)
-@date       2017/02/01 Created
-*/
+//      std::deque<>のシリアライズ
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
 
@@ -23,46 +16,57 @@
 */
 //############################################################################
 
-#if !defined(THEOLIZER_INTERNAL_CONTAINERS_H)
-#define THEOLIZER_INTERNAL_CONTAINERS_H
+#if !defined(THEOLIZER_INTERNAL_DEQUE_H)
+#define THEOLIZER_INTERNAL_DEQUE_H
 
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 //############################################################################
 //      Begin
 //############################################################################
 
-// ***************************************************************************
-//          DLL用の警告禁止
-// ***************************************************************************
+#include <deque>
+#include "serializer.h"
+#include "internal/containers.h"
 
-#ifdef _MSC_VER
-  #pragma warning(push)
-//#pragma warning(disable:4100 4251)
-#endif
+THEOLIZER_PROVIDED_BY("Theoride Technology");
 
 //############################################################################
-//      グローバル名前空間
+//      std::deque<>対応
 //############################################################################
 
 // ***************************************************************************
-//      標準コンテナのデフォルト・パラメータ
+//      theolizer::ListPointee<>
+//          std::deque<>の単純な派生クラス
+//          要素をPointeeとして処理する
 // ***************************************************************************
 
-//----------------------------------------------------------------------------
-//      allocator<T>
-//----------------------------------------------------------------------------
+namespace theolizer
+{
 
-THEOLIZER_TEMPLATE_PARAMETER_TEMPLATE((template<class T>),
-                                      std::allocator, (T),
-                                      allocatorTheolizer);
+template<class T, class Alloc=std::allocator<T> >
+class THEOLIZER_ANNOTATE(CS) DequePointee : public std::deque<T, Alloc>
+{
+public:
+    using std::deque<T, Alloc>::deque;
+};
 
-#if 0
+}   // namespace theolizer
+
+// ***************************************************************************
+//      手動コード展開
+// ***************************************************************************
+
+#define THEOLZIER_INTERNAL_CONTAINER_PARAMETER          template<class T, class Alloc>
+#define THEOLZIER_INTERNAL_CONTAINER_NAME               std::deque
+#define THEOLZIER_INTERNAL_CONTAINER_NAME_POINTEE       theolizer::DequePointee
+#define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           T, Alloc
+#define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             dequeTheolizer
+#define THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE     DequePointeeTheolizer
+#include "internal/container_no_key.h"
 
 // ***************************************************************************
 //      自動生成コードの雛形
-//          これを各コンテナ用ヘッダ・ファイルの後半へコピーし、
-//          THEOLIZER_PROVIDED_BY("Theoride Technology");をコメント・アウトして
-//          ビルドすることで、Theolizerドライバにより適切な定義へ自動修正される。
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
@@ -72,16 +76,15 @@ THEOLIZER_TEMPLATE_PARAMETER_TEMPLATE((template<class T>),
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE      THEOLIZER_INTERNAL_FULL_NAME
-#define THEOLIZER_GENERATED_PARAMETER_LIST  THEOLZIER_INTERNAL_CONTAINER_PARAMETER
-#define THEOLIZER_GENERATED_UNIQUE_NAME     THEOLZIER_INTERNAL_CONTAINER_UNIQUE
+#define THEOLIZER_GENERATED_CLASS_TYPE std::deque<T, Alloc>
+#define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class Alloc>
+#define THEOLIZER_GENERATED_UNIQUE_NAME dequeTheolizer
 
 //      ---<<< Version.1 >>>---
 
-#define THEOLIZER_GENERATED_VERSION_NO  THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_NAME()    THEOLIZER_INTERNAL_TEMPLATE_NAME(\
-    (u8"" THEOLIZER_INTERNAL_STRINGIZE(THEOLZIER_INTERNAL_CONTAINER_NAME),  \
-    THEOLZIER_INTERNAL_CONTAINER_ARGUMENT))
+#define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_NAME()\
+    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"std::deque",T,Alloc))
 #include <theolizer/internal/version_manual.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
@@ -94,33 +97,35 @@ THEOLIZER_TEMPLATE_PARAMETER_TEMPLATE((template<class T>),
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_FULL_NAME_POINTEE
+#define THEOLIZER_GENERATED_CLASS_TYPE theolizer::DequePointee<T, Alloc>
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class Alloc>
-#define THEOLIZER_GENERATED_UNIQUE_NAME THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE
+#define THEOLIZER_GENERATED_UNIQUE_NAME DequePointeeTheolizer
 
 //      ---<<< Version.1 >>>---
 
 #define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_NAME()    THEOLIZER_INTERNAL_TEMPLATE_NAME(\
-    (u8"" THEOLIZER_INTERNAL_STRINGIZE(THEOLZIER_INTERNAL_CONTAINER_NAME_POINTEE),\
-    THEOLZIER_INTERNAL_CONTAINER_ARGUMENT))
+#define THEOLIZER_GENERATED_CLASS_NAME()\
+    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"theolizer::DequePointee",T,Alloc))
 #include <theolizer/internal/version_manual.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
 #endif//THEOLIZER_WRITE_CODE
 
-#endif
+// ***************************************************************************
+//      定義したマクロの解放
+// ***************************************************************************
+
+#undef  THEOLZIER_INTERNAL_CONTAINER_PARAMETER
+#undef  THEOLZIER_INTERNAL_CONTAINER_NAME
+#undef  THEOLZIER_INTERNAL_CONTAINER_NAME_POINTEE
+#undef  THEOLZIER_INTERNAL_CONTAINER_ARGUMENT
+#undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE
+#undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE
 
 //############################################################################
 //      End
 //############################################################################
 
-// ***************************************************************************
-//          警告抑止解除
-// ***************************************************************************
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
 
-#ifdef _MSC_VER
-  #pragma warning(pop)
-#endif
-
-#endif  // THEOLIZER_INTERNAL_CONTAINERS_H
+#endif  // THEOLIZER_INTERNAL_DEQUE_H

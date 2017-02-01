@@ -122,9 +122,10 @@ void saveContainer3(tSerializer& iSerializer, tContainer& iContainer, tType cons
     iContainer.emplace(iContainer.end(), iFirst+0);
     iContainer.emplace(iContainer.end(), iFirst+1);
     iContainer.emplace(iContainer.end(), iFirst+2);
-    aPtr0=&iContainer[0];
-    aPtr1=&iContainer[1];
-    aPtr2=&iContainer[2];
+    auto it=iContainer.begin();
+    aPtr0=&*(it++);
+    aPtr1=&*(it++);
+    aPtr2=&*(it++);
 
     // 保存
     THEOLIZER_PROCESS(iSerializer, aPtr0);
@@ -150,12 +151,14 @@ void loadContainer0(tSerializer& iSerializer, tContainer& iContainer, tType cons
     THEOLIZER_PROCESS(iSerializer, iContainer);
 
     // チェック
-    THEOLIZER_EQUAL_PTR(aPtr0, &iContainer[0]);
-    THEOLIZER_EQUAL_PTR(aPtr1, &iContainer[1]);
-    THEOLIZER_EQUAL_PTR(aPtr2, &iContainer[2]);
-    THEOLIZER_EQUAL(iContainer[0], iFirst+0);
-    THEOLIZER_EQUAL(iContainer[1], iFirst+1);
-    THEOLIZER_EQUAL(iContainer[2], iFirst+2);
+    auto itr=iContainer.begin();
+    THEOLIZER_EQUAL_PTR(aPtr0, &*itr);  ++itr;
+    THEOLIZER_EQUAL_PTR(aPtr1, &*itr);  ++itr;
+    THEOLIZER_EQUAL_PTR(aPtr2, &*itr);  ++itr;
+    itr=iContainer.begin();
+    THEOLIZER_EQUAL(*itr, iFirst+0);    ++itr;
+    THEOLIZER_EQUAL(*itr, iFirst+1);    ++itr;
+    THEOLIZER_EQUAL(*itr, iFirst+2);    ++itr;
 }
 
 // 事前準備要素数=2
@@ -175,12 +178,14 @@ void loadContainer2(tSerializer& iSerializer, tContainer& iContainer, tType cons
     THEOLIZER_PROCESS(iSerializer, iContainer);
 
     // チェック
-    THEOLIZER_EQUAL_PTR(aPtr0, &iContainer[0]);
-    THEOLIZER_EQUAL_PTR(aPtr1, &iContainer[1]);
-    THEOLIZER_EQUAL_PTR(aPtr2, &iContainer[2]);
-    THEOLIZER_EQUAL(iContainer[0], iFirst+0);
-    THEOLIZER_EQUAL(iContainer[1], iFirst+1);
-    THEOLIZER_EQUAL(iContainer[2], iFirst+2);
+    auto itr=iContainer.begin();
+    THEOLIZER_EQUAL_PTR(aPtr0, &*itr);  ++itr;
+    THEOLIZER_EQUAL_PTR(aPtr1, &*itr);  ++itr;
+    THEOLIZER_EQUAL_PTR(aPtr2, &*itr);  ++itr;
+    itr=iContainer.begin();
+    THEOLIZER_EQUAL(*itr, iFirst+0);    ++itr;
+    THEOLIZER_EQUAL(*itr, iFirst+1);    ++itr;
+    THEOLIZER_EQUAL(*itr, iFirst+2);    ++itr;
 }
 
 // 事前準備要素数=4
@@ -200,13 +205,15 @@ void loadContainer4(tSerializer& iSerializer, tContainer& iContainer, tType cons
     THEOLIZER_PROCESS(iSerializer, iContainer);
 
     // チェック
-    THEOLIZER_EQUAL_PTR(aPtr0, &iContainer[0]);
-    THEOLIZER_EQUAL_PTR(aPtr1, &iContainer[1]);
-    THEOLIZER_EQUAL_PTR(aPtr2, &iContainer[2]);
-    THEOLIZER_EQUAL(iContainer[0], iFirst+0);
-    THEOLIZER_EQUAL(iContainer[1], iFirst+1);
-    THEOLIZER_EQUAL(iContainer[2], iFirst+2);
-    THEOLIZER_EQUAL(iContainer[3], iFirst+3);
+    auto itr=iContainer.begin();
+    THEOLIZER_EQUAL_PTR(aPtr0, &*itr);  ++itr;
+    THEOLIZER_EQUAL_PTR(aPtr1, &*itr);  ++itr;
+    THEOLIZER_EQUAL_PTR(aPtr2, &*itr);  ++itr;
+    itr=iContainer.begin();
+    THEOLIZER_EQUAL(*itr, iFirst+0);    ++itr;
+    THEOLIZER_EQUAL(*itr, iFirst+1);    ++itr;
+    THEOLIZER_EQUAL(*itr, iFirst+2);    ++itr;
+    THEOLIZER_EQUAL(*itr, iFirst+3);    ++itr;
 }
 
 // ***************************************************************************
@@ -324,15 +331,85 @@ void saveSupportStl(tSerializer& iSerializer)
         std::vector<TestStl>    aVectorTestStl0;
         saveContainer3(iSerializer, aVectorTestStl0, TestStl(100));
 
+        std::cout << "        saveContainer3() : std::vector<TestStl>" << std::endl;
         std::vector<TestStl>    aVectorTestStl1;
         saveContainer3(iSerializer, aVectorTestStl1, TestStl(200));
 
+        std::cout << "        saveContainer3() : std::vector<TestStl>" << std::endl;
         std::vector<TestStl>    aVectorTestStl2;
         saveContainer3(iSerializer, aVectorTestStl2, TestStl(300));
 
         std::cout << "        saveContainer3() : theolizer::VectorPointee<int>" << std::endl;
-        theolizer::VectorPointee<int>  aVectorInt;
-        saveContainer3(iSerializer, aVectorInt, 500);
+        theolizer::VectorPointee<int>  aVectorInt0;
+        saveContainer3(iSerializer, aVectorInt0, 500);
+
+        std::cout << "        saveContainer3() : theolizer::VectorPointee<int>" << std::endl;
+        theolizer::VectorPointee<int>  aVectorInt1;
+        saveContainer3(iSerializer, aVectorInt1, 600);
+
+        std::cout << "        saveContainer3() : theolizer::VectorPointee<int>" << std::endl;
+        theolizer::VectorPointee<int>  aVectorInt2;
+        saveContainer3(iSerializer, aVectorInt2, 700);
+
+        iSerializer.clearTracking();
+    }
+
+//      ---<<< std::deque >>>---
+
+    {
+        std::cout << "        saveContainer3() : std::deque<TestStl>" << std::endl;
+        std::deque<TestStl> aDequeTestStl0;
+        saveContainer3(iSerializer, aDequeTestStl0, TestStl(100));
+
+        std::cout << "        saveContainer3() : std::deque<TestStl>" << std::endl;
+        std::deque<TestStl> aDequeTestStl1;
+        saveContainer3(iSerializer, aDequeTestStl1, TestStl(200));
+
+        std::cout << "        saveContainer3() : std::deque<TestStl>" << std::endl;
+        std::deque<TestStl> aDequeTestStl2;
+        saveContainer3(iSerializer, aDequeTestStl2, TestStl(300));
+
+        std::cout << "        saveContainer3() : theolizer::DequePointee<int>" << std::endl;
+        theolizer::DequePointee<int>    aDequeInt0;
+        saveContainer3(iSerializer, aDequeInt0, 500);
+
+        std::cout << "        saveContainer3() : theolizer::DequePointee<int>" << std::endl;
+        theolizer::DequePointee<int>    aDequeInt1;
+        saveContainer3(iSerializer, aDequeInt1, 600);
+
+        std::cout << "        saveContainer3() : theolizer::DequePointee<int>" << std::endl;
+        theolizer::DequePointee<int>    aDequeInt2;
+        saveContainer3(iSerializer, aDequeInt2, 700);
+
+        iSerializer.clearTracking();
+    }
+
+//      ---<<< std::list >>>---
+
+    {
+        std::cout << "        saveContainer3() : std::list<TestStl>" << std::endl;
+        std::list<TestStl>  aListTestStl0;
+        saveContainer3(iSerializer, aListTestStl0, TestStl(100));
+
+        std::cout << "        saveContainer3() : std::list<TestStl>" << std::endl;
+        std::list<TestStl>  aListTestStl1;
+        saveContainer3(iSerializer, aListTestStl1, TestStl(200));
+
+        std::cout << "        saveContainer3() : std::list<TestStl>" << std::endl;
+        std::list<TestStl>  aListTestStl2;
+        saveContainer3(iSerializer, aListTestStl2, TestStl(300));
+
+        std::cout << "        saveContainer3() : theolizer::ListPointee<int>" << std::endl;
+        theolizer::ListPointee<int> aListInt0;
+        saveContainer3(iSerializer, aListInt0, 500);
+
+        std::cout << "        saveContainer3() : theolizer::ListPointee<int>" << std::endl;
+        theolizer::ListPointee<int> aListInt1;
+        saveContainer3(iSerializer, aListInt1, 600);
+
+        std::cout << "        saveContainer3() : theolizer::ListPointee<int>" << std::endl;
+        theolizer::ListPointee<int> aListInt2;
+        saveContainer3(iSerializer, aListInt2, 700);
 
         iSerializer.clearTracking();
     }
@@ -481,14 +558,86 @@ void loadSupportStl(tSerializer& iSerializer)
         std::cout << "        loadContainer0() : std::vector<TestStl>" << std::endl;
         std::vector<TestStl>    aVectorTestStl0;
         loadContainer0(iSerializer, aVectorTestStl0, TestStl(100));
+
+        std::cout << "        loadContainer2() : std::vector<TestStl>" << std::endl;
         std::vector<TestStl>    aVectorTestStl1;
         loadContainer2(iSerializer, aVectorTestStl1, TestStl(200));
+
+        std::cout << "        loadContainer4() : std::vector<TestStl>" << std::endl;
         std::vector<TestStl>    aVectorTestStl2;
         loadContainer4(iSerializer, aVectorTestStl2, TestStl(300));
 
         std::cout << "        loadContainer0() : theolizer::VectorPointee<int>" << std::endl;
-        theolizer::VectorPointee<int>  aVectorInt;
-        loadContainer0(iSerializer, aVectorInt, 500);
+        theolizer::VectorPointee<int>  aVectorInt0;
+        loadContainer0(iSerializer, aVectorInt0, 500);
+
+        std::cout << "        loadContainer2() : theolizer::VectorPointee<int>" << std::endl;
+        theolizer::VectorPointee<int>  aVectorInt1;
+        loadContainer2(iSerializer, aVectorInt1, 600);
+
+        std::cout << "        loadContainer4() : theolizer::VectorPointee<int>" << std::endl;
+        theolizer::VectorPointee<int>  aVectorInt2;
+        loadContainer4(iSerializer, aVectorInt2, 700);
+
+        iSerializer.clearTracking();
+    }
+
+//      ---<<< std::deque >>>---
+
+    {
+        std::cout << "        loadContainer0() : std::deque<TestStl>" << std::endl;
+        std::deque<TestStl> aDequeTestStl0;
+        loadContainer0(iSerializer, aDequeTestStl0, TestStl(100));
+
+        std::cout << "        loadContainer2() : std::deque<TestStl>" << std::endl;
+        std::deque<TestStl> aDequeTestStl1;
+        loadContainer2(iSerializer, aDequeTestStl1, TestStl(200));
+
+        std::cout << "        loadContainer4() : std::deque<TestStl>" << std::endl;
+        std::deque<TestStl> aDequeTestStl2;
+        loadContainer4(iSerializer, aDequeTestStl2, TestStl(300));
+
+        std::cout << "        loadContainer0() : theolizer::DequePointee<int>" << std::endl;
+        theolizer::DequePointee<int>    aDequeInt0;
+        loadContainer0(iSerializer, aDequeInt0, 500);
+
+        std::cout << "        loadContainer2() : theolizer::DequePointee<int>" << std::endl;
+        theolizer::DequePointee<int>    aDequeInt1;
+        loadContainer2(iSerializer, aDequeInt1, 600);
+
+        std::cout << "        loadContainer4() : theolizer::DequePointee<int>" << std::endl;
+        theolizer::DequePointee<int>    aDequeInt2;
+        loadContainer4(iSerializer, aDequeInt2, 700);
+
+        iSerializer.clearTracking();
+    }
+
+//      ---<<< std::list >>>---
+
+    {
+        std::cout << "        loadContainer0() : std::list<TestStl>" << std::endl;
+        std::list<TestStl>  aListTestStl0;
+        loadContainer0(iSerializer, aListTestStl0, TestStl(100));
+
+        std::cout << "        loadContainer2() : std::list<TestStl>" << std::endl;
+        std::list<TestStl>  aListTestStl1;
+        loadContainer2(iSerializer, aListTestStl1, TestStl(200));
+
+        std::cout << "        loadContainer4() : std::list<TestStl>" << std::endl;
+        std::list<TestStl>  aListTestStl2;
+        loadContainer4(iSerializer, aListTestStl2, TestStl(300));
+
+        std::cout << "        loadContainer0() : theolizer::ListPointee<int>" << std::endl;
+        theolizer::ListPointee<int> aListInt0;
+        loadContainer0(iSerializer, aListInt0, 500);
+
+        std::cout << "        loadContainer2() : theolizer::ListPointee<int>" << std::endl;
+        theolizer::ListPointee<int> aListInt1;
+        loadContainer2(iSerializer, aListInt1, 600);
+
+        std::cout << "        loadContainer4() : theolizer::ListPointee<int>" << std::endl;
+        theolizer::ListPointee<int> aListInt2;
+        loadContainer4(iSerializer, aListInt2, 700);
 
         iSerializer.clearTracking();
     }

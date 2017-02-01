@@ -556,7 +556,8 @@ void BaseSerializer::loadProcessStart(std::size_t iTypeIndex)
         break;
     }
 
-    if (!readPreElement()) {
+    if (!readPreElement())
+    {
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
     }
 }

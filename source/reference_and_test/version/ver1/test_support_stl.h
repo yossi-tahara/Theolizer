@@ -26,6 +26,7 @@
 
 // 標準コンテナ
 #include <theolizer/vector.h>
+#include <theolizer/deque.h>
 #include <theolizer/list.h>
 
 // ***************************************************************************
