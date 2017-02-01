@@ -1,9 +1,9 @@
 ﻿//############################################################################
 //      
 /*!
-@brief      Theolizerライブラリの標準コンテナ・サポート(キー無しresize有り用)
+@brief      Theolizerライブラリの標準コンテナ・サポート(固定長用)
 @ingroup    TheolizerLib
-@file       container_no_key.h
+@file       container_fixed.h
 @author     Yoshinori Tahara(Theoride Technology)
 @date       2017/02/31 Created
 */
@@ -23,8 +23,8 @@
 */
 //############################################################################
 
-#if !defined(THEOLIZER_INTERNAL_CONTAINER_NO_KEY_H)
-#define THEOLIZER_INTERNAL_CONTAINERS_H
+#if !defined(THEOLIZER_INTERNAL_CONTAINER_FIXED_H)
+#define THEOLIZER_INTERNAL_CONTAINER_FIXED_H
 
 //############################################################################
 //      Begin
@@ -85,8 +85,6 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
-        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
-
         THEOLIZER_PROCESS(iSerializer, iInstance->size());
         auto itr=iInstance->begin();
         for (std::size_t i=0; i < iInstance->size(); ++i, ++itr)
@@ -102,8 +100,6 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
-        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
-
         // もし、nullptrなら、インスタンス生成
         if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
@@ -113,11 +109,20 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         // 先に領域をvector内部に生成してから、そこへ回復する。
         //  これにより、要素のコピーやムーブが発生しないようにすることで、
         //  「親」へのポインタが壊れないようにしている。
-        if (oInstance->size() < aSize) oInstance->resize(aSize);
         auto itr=oInstance->begin();
         for (std::size_t i=0; i < aSize; ++i, ++itr)
         {
-            THEOLIZER_PROCESS(iSerializer, *itr);
+            if (i < oInstance->size())
+            {
+                THEOLIZER_PROCESS(iSerializer, *itr);
+            }
+            // 破棄
+            else
+            {
+                typedef typename TheolizerTarget::element_type ElementType;
+                ElementType aInstance;
+                THEOLIZER_PROCESS(iSerializer, aInstance);
+            }
         }
     }
 };
@@ -156,8 +161,6 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME_POINTEE>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
-        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
-
         THEOLIZER_PROCESS(iSerializer, iInstance->size());
         auto itr=iInstance->begin();
         for (std::size_t i=0; i < iInstance->size(); ++i, ++itr)
@@ -173,8 +176,6 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME_POINTEE>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
-        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
-
         // もし、nullptrなら、インスタンス生成
         if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
@@ -188,7 +189,17 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME_POINTEE>::
         auto itr=oInstance->begin();
         for (std::size_t i=0; i < aSize; ++i, ++itr)
         {
-            THEOLIZER_PROCESS_POINTEE(iSerializer, *itr);
+            if (i < oInstance->size())
+            {
+                THEOLIZER_PROCESS_POINTEE(iSerializer, *itr);
+            }
+            // 破棄(なので、POINTEEを使わない)
+            else
+            {
+                typedef typename TheolizerTarget::element_type ElementType;
+                ElementType aInstance;
+                THEOLIZER_PROCESS(iSerializer, aInstance);
+            }
         }
     }
 };
@@ -207,4 +218,4 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME_POINTEE>::
   #pragma warning(pop)
 #endif
 
-#endif  // THEOLIZER_INTERNAL_CONTAINERS_H
+#endif  // THEOLIZER_INTERNAL_CONTAINER_FIXED_H

@@ -25,6 +25,7 @@
 #include <theolizer/memory.h>
 
 // 標準コンテナ
+#include <theolizer/array.h>
 #include <theolizer/vector.h>
 #include <theolizer/deque.h>
 #include <theolizer/list.h>

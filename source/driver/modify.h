@@ -1094,9 +1094,10 @@ ASTANALYZE_OUTPUT("    Theolizer does not modify source "
                 aParameterList=temp.first;
                 aParameterList.append("\n");
 
-                temp=temp.second.split('<');
+                temp=temp.first.split('<');
                 temp=temp.second.rsplit('>');
                 temp=temp.first.split(',');
+ASTANALYZE_OUTPUT("    temp=[", temp.first, "],[", temp.second, "]");
             }
             else
             {
@@ -1111,12 +1112,18 @@ ASTANALYZE_OUTPUT("    Theolizer does not modify source "
                 if (!nd || !nd->getIdentifier())
             continue;
 
+                StringRef aType;
                 StringRef aName;
                 if (!iSerializeInfo.mIsFullAuto)
                 {
                     if (temp.first.empty())
             break;
-                    aName=temp.first.trim();
+                    StringRef temp2=temp.first.trim();
+                    std::size_t pos=temp2.find_first_of(" \t\n\v\f\r");
+                    aType=temp2.substr(0, pos).trim();
+                    aName=temp2.substr(pos+1).trim();
+ASTANALYZE_OUTPUT("    aType=", aType);
+ASTANALYZE_OUTPUT("    aName=", aName);
                     temp=temp.second.split(',');
                 }
                 else
@@ -1158,17 +1165,19 @@ ASTANALYZE_OUTPUT("    Theolizer does not modify source "
                 else if (clang::NonTypeTemplateParmDecl* nttpd=
                     dyn_cast<clang::NonTypeTemplateParmDecl>(nd))
                 {
-                    aArgumentList << "\\\n        theolizer::internal::NonType<"
-                                  << nttpd->getType().getAsString()
-                                  << "," << aName.str()
-                                  << ">";
+                    std::string aTypeName=aType;
                     if (iSerializeInfo.mIsFullAuto)
                     {
                         aParameterList.append(nttpd->getType().getAsString());
                         aParameterList.append(" ");
                         aParameterList.append(nd->getName());
                         aAddClassName.append(nd->getName());
+                        aTypeName=nttpd->getType().getAsString();
                     }
+                    aArgumentList << "\\\n        theolizer::internal::NonType<"
+                                  << aTypeName
+                                  << "," << aName.str()
+                                  << ">";
                 }
             }
             if (iSerializeInfo.mIsFullAuto)

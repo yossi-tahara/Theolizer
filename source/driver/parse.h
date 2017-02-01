@@ -1225,7 +1225,8 @@ ASTANALYZE_OUTPUT("      ", qt->getTypeClass(),
                   ", ", Type::Record,
                   ", ", Type::Enum,
                   ", ", Type::TemplateTypeParm,
-                  ", ", Type::InjectedClassName);
+                  ", ", Type::InjectedClassName,
+                  ", ", Type::DependentName);
 
         switch (qt->getTypeClass())
         {
@@ -1357,6 +1358,11 @@ ASTANALYZE_OUTPUT("          base : ", aBaseDecl->getQualifiedNameAsString());
 
 //      ---<<< フィールド処理 >>>---
 
+        // 手動型ならメンバは処理しない
+        auto found=mAstInterface.mSerializeListClass.find(iClass);
+        if ((found) && (found->second.mIsManual))
+    return;
+
         for (auto field : iClass->fields())
         {
             if (!field->getIdentifier())
@@ -1381,13 +1387,9 @@ ASTANALYZE_OUTPUT("          field : ", field->getType().getCanonicalType().getA
                     {
                         aAnnotate=iAnnotationInfo->mAnnotate;
                     }
-                    else
+                    else if (found)
                     {
-                        auto found=mAstInterface.mSerializeListClass.find(iClass);
-                        if (found)
-                        {
-                            aAnnotate=found->second.mAnnotationInfo.mAnnotate;
-                        }
+                        aAnnotate=found->second.mAnnotationInfo.mAnnotate;
                     }
                     // デフォルト非保存なら登録しない
                     if (aAnnotate == AnnotationInfo::CN)
@@ -1420,7 +1422,6 @@ ASTANALYZE_OUTPUT("------------ enumerateClass(", iClass->getQualifiedNameAsStri
 ASTANALYZE_OUTPUT("++++++++++++ enumerateNonFullAuto()");
         for (auto&& aSerializeInfo : mAstInterface.mSerializeListClass.getList())
         {
-            // 半自動なら、基底クラスを処理する。
             if (!aSerializeInfo.second.mIsFullAuto)
             {
                 enumerateClass
