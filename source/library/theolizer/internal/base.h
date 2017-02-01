@@ -80,12 +80,8 @@ namespace internal
 //      シンボルの結合
 // ***************************************************************************
 
-#define THEOLIZER_INTERNAL_CAT(a, b)   THEOLIZER_INTERNAL_CAT_I(a, b)
+#define THEOLIZER_INTERNAL_CAT(a, b)    THEOLIZER_INTERNAL_CAT_I(a, b)
 #define THEOLIZER_INTERNAL_CAT_I(a, b) a ## b
-
-// THEOLIZER_INTERNAL_CAT2(文字列, (文字列))のような時に用いる
-#define THEOLIZER_INTERNAL_CAT2(a, b)   \
-    THEOLIZER_INTERNAL_CAT(a, THEOLIZER_INTERNAL_UNPAREN b)
 
 // ***************************************************************************
 //      マクロ展開処理

@@ -113,7 +113,7 @@ void tutoriseSupportStl()
 // ***************************************************************************
 
 template<class tSerializer, class tContainer, typename tType>
-void saveContainer0(tSerializer& iSerializer, tContainer& iContainer, tType const& iFirst)
+void saveContainer3(tSerializer& iSerializer, tContainer& iContainer, tType const& iFirst)
 {
     // 保存データ生成
     tType   *aPtr0;
@@ -133,6 +133,7 @@ void saveContainer0(tSerializer& iSerializer, tContainer& iContainer, tType cons
     THEOLIZER_PROCESS(iSerializer, iContainer);
 }
 
+// 事前準備要素数=0
 template<class tSerializer, class tContainer, typename tType>
 void loadContainer0(tSerializer& iSerializer, tContainer& iContainer, tType const& iFirst)
 {
@@ -140,6 +141,7 @@ void loadContainer0(tSerializer& iSerializer, tContainer& iContainer, tType cons
     tType   *aPtr0=nullptr;
     tType   *aPtr1=nullptr;
     tType   *aPtr2=nullptr;
+    iContainer.clear();
 
     // 回復
     THEOLIZER_PROCESS(iSerializer, aPtr0);
@@ -151,9 +153,60 @@ void loadContainer0(tSerializer& iSerializer, tContainer& iContainer, tType cons
     THEOLIZER_EQUAL_PTR(aPtr0, &iContainer[0]);
     THEOLIZER_EQUAL_PTR(aPtr1, &iContainer[1]);
     THEOLIZER_EQUAL_PTR(aPtr2, &iContainer[2]);
-    THEOLIZER_EQUAL(*aPtr0, iFirst+0);
-    THEOLIZER_EQUAL(*aPtr1, iFirst+1);
-    THEOLIZER_EQUAL(*aPtr2, iFirst+2);
+    THEOLIZER_EQUAL(iContainer[0], iFirst+0);
+    THEOLIZER_EQUAL(iContainer[1], iFirst+1);
+    THEOLIZER_EQUAL(iContainer[2], iFirst+2);
+}
+
+// 事前準備要素数=2
+template<class tSerializer, class tContainer, typename tType>
+void loadContainer2(tSerializer& iSerializer, tContainer& iContainer, tType const& iFirst)
+{
+    // 回復先生成
+    tType   *aPtr0=nullptr;
+    tType   *aPtr1=nullptr;
+    tType   *aPtr2=nullptr;
+    iContainer.resize(2);
+
+    // 回復
+    THEOLIZER_PROCESS(iSerializer, aPtr0);
+    THEOLIZER_PROCESS(iSerializer, aPtr1);
+    THEOLIZER_PROCESS(iSerializer, aPtr2);
+    THEOLIZER_PROCESS(iSerializer, iContainer);
+
+    // チェック
+    THEOLIZER_EQUAL_PTR(aPtr0, &iContainer[0]);
+    THEOLIZER_EQUAL_PTR(aPtr1, &iContainer[1]);
+    THEOLIZER_EQUAL_PTR(aPtr2, &iContainer[2]);
+    THEOLIZER_EQUAL(iContainer[0], iFirst+0);
+    THEOLIZER_EQUAL(iContainer[1], iFirst+1);
+    THEOLIZER_EQUAL(iContainer[2], iFirst+2);
+}
+
+// 事前準備要素数=4
+template<class tSerializer, class tContainer, typename tType>
+void loadContainer4(tSerializer& iSerializer, tContainer& iContainer, tType const& iFirst)
+{
+    // 回復先生成
+    tType   *aPtr0=nullptr;
+    tType   *aPtr1=nullptr;
+    tType   *aPtr2=nullptr;
+    iContainer.resize(4, iFirst+3);
+
+    // 回復
+    THEOLIZER_PROCESS(iSerializer, aPtr0);
+    THEOLIZER_PROCESS(iSerializer, aPtr1);
+    THEOLIZER_PROCESS(iSerializer, aPtr2);
+    THEOLIZER_PROCESS(iSerializer, iContainer);
+
+    // チェック
+    THEOLIZER_EQUAL_PTR(aPtr0, &iContainer[0]);
+    THEOLIZER_EQUAL_PTR(aPtr1, &iContainer[1]);
+    THEOLIZER_EQUAL_PTR(aPtr2, &iContainer[2]);
+    THEOLIZER_EQUAL(iContainer[0], iFirst+0);
+    THEOLIZER_EQUAL(iContainer[1], iFirst+1);
+    THEOLIZER_EQUAL(iContainer[2], iFirst+2);
+    THEOLIZER_EQUAL(iContainer[3], iFirst+3);
 }
 
 // ***************************************************************************
@@ -267,13 +320,19 @@ void saveSupportStl(tSerializer& iSerializer)
 //      ---<<< std::vector >>>---
 
     {
-        std::cout << "        saveContainer0() : std::vector<TestStl>" << std::endl;
-        std::vector<TestStl>    aVectorTestStl;
-        saveContainer0(iSerializer, aVectorTestStl, TestStl(100));
+        std::cout << "        saveContainer3() : std::vector<TestStl>" << std::endl;
+        std::vector<TestStl>    aVectorTestStl0;
+        saveContainer3(iSerializer, aVectorTestStl0, TestStl(100));
 
-        std::cout << "        saveContainer0() : theolizer::VectorPointee<int>" << std::endl;
+        std::vector<TestStl>    aVectorTestStl1;
+        saveContainer3(iSerializer, aVectorTestStl1, TestStl(200));
+
+        std::vector<TestStl>    aVectorTestStl2;
+        saveContainer3(iSerializer, aVectorTestStl2, TestStl(300));
+
+        std::cout << "        saveContainer3() : theolizer::VectorPointee<int>" << std::endl;
         theolizer::VectorPointee<int>  aVectorInt;
-        saveContainer0(iSerializer, aVectorInt, 200);
+        saveContainer3(iSerializer, aVectorInt, 500);
 
         iSerializer.clearTracking();
     }
@@ -420,12 +479,16 @@ void loadSupportStl(tSerializer& iSerializer)
 
     {
         std::cout << "        loadContainer0() : std::vector<TestStl>" << std::endl;
-        std::vector<TestStl>    aVectorTestStl;
-        loadContainer0(iSerializer, aVectorTestStl, TestStl(100));
+        std::vector<TestStl>    aVectorTestStl0;
+        loadContainer0(iSerializer, aVectorTestStl0, TestStl(100));
+        std::vector<TestStl>    aVectorTestStl1;
+        loadContainer2(iSerializer, aVectorTestStl1, TestStl(200));
+        std::vector<TestStl>    aVectorTestStl2;
+        loadContainer4(iSerializer, aVectorTestStl2, TestStl(300));
 
         std::cout << "        loadContainer0() : theolizer::VectorPointee<int>" << std::endl;
         theolizer::VectorPointee<int>  aVectorInt;
-        loadContainer0(iSerializer, aVectorInt, 200);
+        loadContainer0(iSerializer, aVectorInt, 500);
 
         iSerializer.clearTracking();
     }

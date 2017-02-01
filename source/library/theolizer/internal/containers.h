@@ -5,7 +5,7 @@
 @ingroup    TheolizerLib
 @file       containers.h
 @author     Yoshinori Tahara(Theoride Technology)
-@date       2016/07/18 Created
+@date       2017/02/01 Created
 */
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
@@ -55,6 +55,57 @@
 THEOLIZER_TEMPLATE_PARAMETER_TEMPLATE((template<class T>),
                                       std::allocator, (T),
                                       allocatorTheolizer);
+
+#if 0
+
+// ***************************************************************************
+//      自動生成コードの雛形
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      通常用
+//----------------------------------------------------------------------------
+
+#ifdef  THEOLIZER_WRITE_CODE
+
+#define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_TYPE      THEOLIZER_INTERNAL_FULL_NAME
+#define THEOLIZER_GENERATED_PARAMETER_LIST  THEOLZIER_INTERNAL_CONTAINER_PARAMETER
+#define THEOLIZER_GENERATED_UNIQUE_NAME     THEOLZIER_INTERNAL_CONTAINER_UNIQUE
+
+//      ---<<< Version.1 >>>---
+
+#define THEOLIZER_GENERATED_VERSION_NO  THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_NAME()    THEOLIZER_INTERNAL_TEMPLATE_NAME(\
+    (u8"" THEOLIZER_INTERNAL_STRINGIZE(THEOLZIER_INTERNAL_CONTAINER_NAME),  \
+    THEOLZIER_INTERNAL_CONTAINER_ARGUMENT))
+#include <theolizer/internal/version_manual.inc>
+#undef  THEOLIZER_GENERATED_VERSION_NO
+
+#endif//THEOLIZER_WRITE_CODE
+
+//----------------------------------------------------------------------------
+//      被ポインタ用
+//----------------------------------------------------------------------------
+
+#ifdef  THEOLIZER_WRITE_CODE
+
+#define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_TYPE theolizer::VectorPointee<T, Alloc>
+#define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class Alloc>
+#define THEOLIZER_GENERATED_UNIQUE_NAME VectorPointeeTheolizer
+
+//      ---<<< Version.1 >>>---
+
+#define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_NAME()\
+    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"theolizer::VectorPointee",T,Alloc))
+#include <theolizer/internal/version_manual.inc>
+#undef  THEOLIZER_GENERATED_VERSION_NO
+
+#endif//THEOLIZER_WRITE_CODE
+
+#endif
 
 //############################################################################
 //      End
