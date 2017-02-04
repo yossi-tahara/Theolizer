@@ -106,23 +106,18 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         std::size_t aSize;
         THEOLIZER_PROCESS(iSerializer, aSize);
 
+        // 同じサイズのみ許可する
+        THEOLIZER_INTERNAL_ASSERT(aSize == oInstance->size(),
+            theolizer::print("Can't support changing size(%1% != %2%).",
+            aSize, oInstance->size()));
+
         // 先に領域をvector内部に生成してから、そこへ回復する。
         //  これにより、要素のコピーやムーブが発生しないようにすることで、
         //  「親」へのポインタが壊れないようにしている。
         auto itr=oInstance->begin();
-        for (std::size_t i=0; i < aSize; ++i, ++itr)
+        for (std::size_t i=0; i < aSize; ++i)
         {
-            if (i < oInstance->size())
-            {
-                THEOLIZER_PROCESS(iSerializer, *itr);
-            }
-            // 破棄
-            else
-            {
-                typedef typename TheolizerTarget::element_type ElementType;
-                ElementType aInstance;
-                THEOLIZER_PROCESS(iSerializer, aInstance);
-            }
+            THEOLIZER_PROCESS(iSerializer, *itr++);
         }
     }
 };
@@ -182,24 +177,18 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME_POINTEE>::
         std::size_t aSize;
         THEOLIZER_PROCESS(iSerializer, aSize);
 
+        // 同じサイズのみ許可する
+        THEOLIZER_INTERNAL_ASSERT(aSize == oInstance->size(),
+            theolizer::print("Can't support changing size(%1% != %2%).",
+            aSize, oInstance->size()));
+
         // 先に領域をvector内部に生成してから、そこへ回復する。
         //  これにより、要素のコピーやムーブが発生しないようにすることで、
         //  「親」へのポインタが壊れないようにしている。
-        if (oInstance->size() < aSize) oInstance->resize(aSize);
         auto itr=oInstance->begin();
-        for (std::size_t i=0; i < aSize; ++i, ++itr)
+        for (std::size_t i=0; i < aSize; ++i)
         {
-            if (i < oInstance->size())
-            {
-                THEOLIZER_PROCESS_POINTEE(iSerializer, *itr);
-            }
-            // 破棄(なので、POINTEEを使わない)
-            else
-            {
-                typedef typename TheolizerTarget::element_type ElementType;
-                ElementType aInstance;
-                THEOLIZER_PROCESS(iSerializer, aInstance);
-            }
+            THEOLIZER_PROCESS_POINTEE(iSerializer, *itr++);
         }
     }
 };

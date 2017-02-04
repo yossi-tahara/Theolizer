@@ -112,6 +112,56 @@ void tutoriseSupportStl()
 //      サブ処理
 // ***************************************************************************
 
+//      ---<<< 固定長のもののテスト >>>---
+
+template<class tSerializer, class tContainer, typename tType>
+void saveContainerFixed(tSerializer& iSerializer, tContainer& iContainer, tType const& iFirst)
+{
+    // 保存データ生成
+    std::vector<tType*> aPtr;
+    aPtr.resize(iContainer.size());
+    for (int i=0; i < iContainer.size(); ++i)
+    {
+        iContainer[i]=iFirst+i;
+        aPtr[i]=&iContainer[i];
+    }
+
+    // 保存
+    for (int i=0; i < iContainer.size(); ++i)
+    {
+        THEOLIZER_PROCESS(iSerializer, aPtr[i]);
+    }
+    THEOLIZER_PROCESS(iSerializer, iContainer);
+}
+
+template<class tSerializer, class tContainer, typename tType>
+void loadContainerFixed(tSerializer& iSerializer, tContainer& iContainer, tType const& iFirst)
+{
+    // 回復先生成
+    std::vector<tType*> aPtr;
+    aPtr.resize(iContainer.size());
+    for (int i=0; i < iContainer.size(); ++i)
+    {
+        aPtr[i]=nullptr;
+    }
+
+    // 回復
+    for (int i=0; i < iContainer.size(); ++i)
+    {
+        THEOLIZER_PROCESS(iSerializer, aPtr[i]);
+    }
+    THEOLIZER_PROCESS(iSerializer, iContainer);
+
+    // チェック
+    for (int i=0; i < iContainer.size(); ++i)
+    {
+        THEOLIZER_EQUAL_PTR(aPtr[i], &iContainer[i]);
+        THEOLIZER_EQUAL(iContainer[i], iFirst+i);
+    }
+}
+
+//      ---<<< キーがないもののテスト >>>---
+
 template<class tSerializer, class tContainer, typename tType>
 void saveContainer3(tSerializer& iSerializer, tContainer& iContainer, tType const& iFirst)
 {
@@ -229,6 +279,7 @@ void saveSupportStl(tSerializer& iSerializer)
 
 //      ---<<< 手動(トップ・レベル)による保存 >>>---
 
+#if 1
     {
         std::cout << "        saveSupportStl() : Manual(Top Level)" << std::endl;
 
@@ -319,10 +370,33 @@ void saveSupportStl(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
+#endif
 
 //----------------------------------------------------------------------------
 //      コンテナ対応
 //----------------------------------------------------------------------------
+
+//      ---<<< std::array >>>---
+
+    {
+        std::cout << "        saveContainerFixed() : std::array<TestStl, 3>" << std::endl;
+        std::array<TestStl, 3>  aArrayTestStl0;
+        saveContainerFixed(iSerializer, aArrayTestStl0, TestStl(100));
+
+        std::cout << "        saveContainerFixed() : std::array<TestStl, 4>" << std::endl;
+        std::array<TestStl, 4>  aArrayTestStl1;
+        saveContainerFixed(iSerializer, aArrayTestStl1, TestStl(200));
+
+        std::cout << "        saveContainerFixed() : theolizer::ArrayPointee<int, 3>" << std::endl;
+        theolizer::ArrayPointee<int, 3> aArrayInt0;
+        saveContainerFixed(iSerializer, aArrayInt0, 500);
+
+        std::cout << "        saveContainerFixed() : theolizer::ArrayPointee<int, 4>" << std::endl;
+        theolizer::ArrayPointee<int, 4> aArrayInt1;
+        saveContainerFixed(iSerializer, aArrayInt1, 600);
+
+        iSerializer.clearTracking();
+    }
 
 //      ---<<< std::vector >>>---
 
@@ -430,6 +504,7 @@ void loadSupportStl(tSerializer& iSerializer)
 
 //      ---<<< 手動(トップ・レベル)による回復 >>>---
 
+#if 1
     {
         std::cout << "        loadSupportStl() : Manual(Top Level)" << std::endl;
 
@@ -547,10 +622,33 @@ void loadSupportStl(tSerializer& iSerializer)
         aSmartTestManual1.check(330, aShared, aForWeak);
         aSmartTestManual2.check(340, aShared, aForWeak);
     }
+#endif
 
 //----------------------------------------------------------------------------
 //      コンテナ対応
 //----------------------------------------------------------------------------
+
+//      ---<<< std::array >>>---
+
+    {
+        std::cout << "        loadContainerFixed() : std::array<TestStl, 3>" << std::endl;
+        std::array<TestStl, 3>  aArrayTestStl0;
+        loadContainerFixed(iSerializer, aArrayTestStl0, TestStl(100));
+
+        std::cout << "        loadContainerFixed() : std::array<TestStl, 4>" << std::endl;
+        std::array<TestStl, 4>  aArrayTestStl1;
+        loadContainerFixed(iSerializer, aArrayTestStl1, TestStl(200));
+
+        std::cout << "        loadContainerFixed() : theolizer::ArrayPointee<int, 3>" << std::endl;
+        theolizer::ArrayPointee<int, 3> aArrayInt0;
+        loadContainerFixed(iSerializer, aArrayInt0, 500);
+
+        std::cout << "        loadContainerFixed() : theolizer::ArrayPointee<int, 4>" << std::endl;
+        theolizer::ArrayPointee<int, 4> aArrayInt1;
+        loadContainerFixed(iSerializer, aArrayInt1, 600);
+
+        iSerializer.clearTracking();
+    }
 
 //      ---<<< std::vector >>>---
 
