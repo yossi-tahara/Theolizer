@@ -112,6 +112,89 @@ THEOLIZER_TEMPLATE_PARAMETER_TEMPLATE((template<class T>),
 #endif
 
 //############################################################################
+//      std::vector<bool>対応
+//############################################################################
+
+// ***************************************************************************
+//      標準型
+// ***************************************************************************
+
+namespace theolizer
+{
+namespace internal
+{
+
+template<class tVector, typename tType, class tTheolizerVersion>
+struct SupportVector
+{
+    template<class tSerializer>
+    static void save(tSerializer& iSerializer, typename tVector::const_reference iValue)
+    {
+        THEOLIZER_PROCESS(iSerializer, iValue);
+    }
+    template<class tSerializer>
+    static void load(tSerializer& iSerializer, typename tVector::reference oValue)
+    {
+        THEOLIZER_PROCESS(iSerializer, oValue);
+    }
+};
+
+template<class tVector, class tTheolizerVersion>
+struct SupportVector<tVector, bool, tTheolizerVersion>
+{
+    template<class tSerializer>
+    static void save(tSerializer& iSerializer, typename tVector::const_reference iValue)
+    {
+        bool temp=iValue;
+        THEOLIZER_PROCESS(iSerializer, temp);
+    }
+    template<class tSerializer>
+    static void load(tSerializer& iSerializer, typename tVector::reference oValue)
+    {
+        bool temp;
+        THEOLIZER_PROCESS(iSerializer, temp);
+        oValue=temp;
+    }
+};
+
+// ***************************************************************************
+//      被ポインタ型
+// ***************************************************************************
+
+template<class tVector, typename tType, class tTheolizerVersion>
+struct SupportVectorPointee
+{
+    template<class tSerializer>
+    static void save(tSerializer& iSerializer, typename tVector::const_reference iValue)
+    {
+        THEOLIZER_PROCESS_POINTEE(iSerializer, iValue);
+    }
+    template<class tSerializer>
+    static void load(tSerializer& iSerializer, typename tVector::reference oValue)
+    {
+        THEOLIZER_PROCESS_POINTEE(iSerializer, oValue);
+    }
+};
+
+template<class tVector, class tTheolizerVersion>
+struct SupportVectorPointee<tVector, bool, tTheolizerVersion>
+{
+    template<class tSerializer>
+    static void save(tSerializer& iSerializer, typename tVector::const_reference iValue)
+    {
+        THEOLIZER_INTERNAL_ABORT("Can't support VectorPointee<bool>.");
+    }
+    template<class tSerializer>
+    static void load(tSerializer& iSerializer, typename tVector::reference oValue)
+    {
+        THEOLIZER_INTERNAL_ABORT("Can't support VectorPointee<bool>.");
+    }
+};
+
+}   // namespace internal
+}   // namespace theolizer
+
+//############################################################################
 //      End
 //############################################################################
 

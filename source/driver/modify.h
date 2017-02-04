@@ -1276,7 +1276,7 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
             }
             else
             {
-                mLastVersion << aClassName << "Primary\n";
+                mLastVersion << iSerializeInfo.mTheolizerTarget->getName().str() << "Primary\n";
             }
         }
 
@@ -1324,43 +1324,48 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
 
         bool aIsFirst=true;
         unsigned aId=0;     // 基底クラスのバックアップ領域と引き継ぎフラグに付けるID
-        for (auto&& base : iSerializeInfo.mTheolizerTarget->bases())
-        {
-            QualType qt = base.getType().getCanonicalType();
-            CXXRecordDecl const* aBase = qt->getAsCXXRecordDecl();
-            if (!aBase)
-        continue;
 
-            std::string aBaseName = qt.getCanonicalType().getAsString(mPrintingPolicy);
+        // 手動型はTHEOLIZER_REGISTER_CLASS()で指定されている時のみ生成する
+        if (!iSerializeInfo.mIsManual || iSerializeInfo.mIsRegisteredClass)
+        {
+            for (auto&& base : iSerializeInfo.mTheolizerTarget->bases())
+            {
+                QualType qt = base.getType().getCanonicalType();
+                CXXRecordDecl const* aBase = qt->getAsCXXRecordDecl();
+                if (!aBase)
+            continue;
+
+                std::string aBaseName = qt.getCanonicalType().getAsString(mPrintingPolicy);
 ASTANALYZE_OUTPUT("    Base : ", aBaseName, " hasDefinition()=", aBase->hasDefinition());
 
-            // 完全自動型のprivateなら、スキップする
-            if ((iSerializeInfo.mIsFullAuto) && (base.getAccessSpecifier() == clang::AS_private))
-            {
-                ASTANALYZE_OUTPUT("    Skip because FullAuto & private base class.");
-        continue;
-            }
+                // 完全自動型のprivateなら、スキップする
+                if ((iSerializeInfo.mIsFullAuto) && (base.getAccessSpecifier()==clang::AS_private))
+                {
+                    ASTANALYZE_OUTPUT("    Skip because FullAuto & private base class.");
+            continue;
+                }
 
-            if (aIsFirst)
-            {
-                aIsFirst=false;
-                mLastVersion << "#define THEOLIZER_GENERATED_BASE_LIST()\\\n";
-            }
-            else
-            {
-                mLastVersion << " THEOLIZER_GENERATED_SEP\\\n";
-            }
+                if (aIsFirst)
+                {
+                    aIsFirst=false;
+                    mLastVersion << "#define THEOLIZER_GENERATED_BASE_LIST()\\\n";
+                }
+                else
+                {
+                    mLastVersion << " THEOLIZER_GENERATED_SEP\\\n";
+                }
 
-            createBaseClass
-            (
-                base.getAccessSpecifier(),
-                aBase,
-                aBaseName,
-                aId++,
-                iSerializeInfo.mIsManual
-            );
-            // 要素リストへ登録
-            aElementList.emplace(string("@")+aBase->getName().str(), ElementInfo(qt));
+                createBaseClass
+                (
+                    base.getAccessSpecifier(),
+                    aBase,
+                    aBaseName,
+                    aId++,
+                    iSerializeInfo.mIsManual
+                );
+                // 要素リストへ登録
+                aElementList.emplace(string("@")+aBase->getName().str(), ElementInfo(qt));
+            }
         }
         if (!aIsFirst)
         {

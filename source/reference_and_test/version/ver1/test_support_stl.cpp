@@ -120,14 +120,14 @@ void saveContainerFixed(tSerializer& iSerializer, tContainer& iContainer, tType 
     // 保存データ生成
     std::vector<tType*> aPtr;
     aPtr.resize(iContainer.size());
-    for (int i=0; i < iContainer.size(); ++i)
+    for (std::size_t i=0; i < iContainer.size(); ++i)
     {
-        iContainer[i]=iFirst+i;
+        iContainer[i]=iFirst+static_cast<int>(i);
         aPtr[i]=&iContainer[i];
     }
 
     // 保存
-    for (int i=0; i < iContainer.size(); ++i)
+    for (std::size_t i=0; i < iContainer.size(); ++i)
     {
         THEOLIZER_PROCESS(iSerializer, aPtr[i]);
     }
@@ -140,23 +140,23 @@ void loadContainerFixed(tSerializer& iSerializer, tContainer& iContainer, tType 
     // 回復先生成
     std::vector<tType*> aPtr;
     aPtr.resize(iContainer.size());
-    for (int i=0; i < iContainer.size(); ++i)
+    for (std::size_t i=0; i < iContainer.size(); ++i)
     {
         aPtr[i]=nullptr;
     }
 
     // 回復
-    for (int i=0; i < iContainer.size(); ++i)
+    for (std::size_t i=0; i < iContainer.size(); ++i)
     {
         THEOLIZER_PROCESS(iSerializer, aPtr[i]);
     }
     THEOLIZER_PROCESS(iSerializer, iContainer);
 
     // チェック
-    for (int i=0; i < iContainer.size(); ++i)
+    for (std::size_t i=0; i < iContainer.size(); ++i)
     {
         THEOLIZER_EQUAL_PTR(aPtr[i], &iContainer[i]);
-        THEOLIZER_EQUAL(iContainer[i], iFirst+i);
+        THEOLIZER_EQUAL(iContainer[i], iFirst+static_cast<int>(i));
     }
 }
 
@@ -378,6 +378,7 @@ void saveSupportStl(tSerializer& iSerializer)
 
 //      ---<<< std::array >>>---
 
+#if 1
     {
         std::cout << "        saveContainerFixed() : std::array<TestStl, 3>" << std::endl;
         std::array<TestStl, 3>  aArrayTestStl0;
@@ -427,9 +428,24 @@ void saveSupportStl(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
+#endif
+
+//      ---<<< std::vector<bool> >>>---
+
+#if 1
+    {
+        std::cout << "        save : std::vector<bool>" << std::endl;
+        std::vector<bool>   aVectorBool;
+        aVectorBool.resize(3, true);
+        THEOLIZER_PROCESS(iSerializer, aVectorBool);
+        THEOLIZER_PROCESS(iSerializer, aVectorBool);
+        THEOLIZER_PROCESS(iSerializer, aVectorBool);
+    }
+#endif
 
 //      ---<<< std::deque >>>---
 
+#if 1
     {
         std::cout << "        saveContainer3() : std::deque<TestStl>" << std::endl;
         std::deque<TestStl> aDequeTestStl0;
@@ -487,6 +503,7 @@ void saveSupportStl(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
+#endif
 }
 
 INSTANTIATION_ALL(saveSupportStl);
@@ -630,6 +647,7 @@ void loadSupportStl(tSerializer& iSerializer)
 
 //      ---<<< std::array >>>---
 
+#if 1
     {
         std::cout << "        loadContainerFixed() : std::array<TestStl, 3>" << std::endl;
         std::array<TestStl, 3>  aArrayTestStl0;
@@ -679,9 +697,28 @@ void loadSupportStl(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
+#endif
+
+//      ---<<< std::vector<bool> >>>---
+
+#if 1
+    {
+        std::cout << "        load : std::vector<bool>" << std::endl;
+        std::vector<bool>   aVectorBool;
+        aVectorBool.resize(3, false);
+        THEOLIZER_PROCESS(iSerializer, aVectorBool);
+        THEOLIZER_PROCESS(iSerializer, aVectorBool);
+        THEOLIZER_PROCESS(iSerializer, aVectorBool);
+
+        iSerializer.clearTracking();
+
+
+    }
+#endif
 
 //      ---<<< std::deque >>>---
 
+#if 1
     {
         std::cout << "        loadContainer0() : std::deque<TestStl>" << std::endl;
         std::deque<TestStl> aDequeTestStl0;
@@ -739,6 +776,7 @@ void loadSupportStl(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
+#endif
 }
 
 INSTANTIATION_ALL(loadSupportStl);

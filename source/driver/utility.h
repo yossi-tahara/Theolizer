@@ -1247,6 +1247,7 @@ struct SerializeInfo
     CXXRecordDecl const*    mNonIntrusive;          // TheolizerNonIntrusive<>のDecl(非侵入型手動)
     bool                    mIsManual;              // 手動型
     bool                    mIsFullAuto;            // 完全自動型
+    bool                    mIsRegisteredClass;     // THEOLIZER_REGISTER_CLASS()指定クラス
     CXXRecordDecl const*    mTheolizerVersionLast;  // 最新版のTheolizerVersion<>
     CXXRecordDecl const*    mTheolizerVersionPrev;  // １つ前のTheolizerVersion<>
     string const            mClassName;             // クラス名
@@ -1274,6 +1275,7 @@ struct SerializeInfo
             mNonIntrusive(iNonIntrusive),
             mIsManual(iIsManual),
             mIsFullAuto(iIsFullAuto),
+            mIsRegisteredClass(false),
             mTheolizerVersionLast(nullptr),
             mTheolizerVersionPrev(nullptr),
             mClassName(getQualifiedName(iTheolizerTarget)),
@@ -1422,7 +1424,7 @@ ASTANALYZE_OUTPUT("SerializeList::addSerializable(",
     // save/loadクラス登録
     //  重複の場合、登録しない。
     //  登録したクラスの内容を追跡処理するならtrue返却。(esSerializeOnly、かつ、手動型でない)
-    bool addSaveLoad(tDecl const* iTheolizerTarget)
+    bool addSaveLoad(tDecl const* iTheolizerTarget, bool iIsRegisteredClass=false)
     {
         auto pos = mMap.lower_bound(iTheolizerTarget);
         // 見つからなかった時、プライマリーを取り出して再トライ
@@ -1442,6 +1444,7 @@ ASTANALYZE_OUTPUT("SerializeList::addSerializable(",
 ASTANALYZE_OUTPUT("      SerializeList::addSaveLoad(",iTheolizerTarget->getQualifiedNameAsString(),
                   " ", (void*)iTheolizerTarget,
                   ") : alreay registered. Stat=", static_cast<int>(pos->second.mSerializeStat));
+            pos->second.mIsRegisteredClass=iIsRegisteredClass;
             if (pos->second.mSerializeStat == esSerializeOnly)
             {
 ASTANALYZE_OUTPUT("      set esBoth");
@@ -1477,7 +1480,7 @@ ASTANALYZE_OUTPUT("      SerializeList::addSaveLoad(",iTheolizerTarget->getQuali
                     esSaveLoadOnly
                 )
             );
-
+        pos->second.mIsRegisteredClass=iIsRegisteredClass;
         return !pos->second.mIsManual;
     }
 

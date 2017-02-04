@@ -1215,7 +1215,7 @@ ASTANALYZE_OUTPUT("          This is primitive.(", qt.getAsString(), ")");
 //          Recordの登録と枚挙
 //----------------------------------------------------------------------------
 
-    void processElement(QualType iQualType, Decl const* iErrorPos)
+    void processElement(QualType iQualType, Decl const* iErrorPos, bool iIsRegisterdClass=false)
     {
         QualType qt=iQualType.getDesugaredType(*gASTContext);
 ASTANALYZE_OUTPUT("    processElement() ", qt.getAsString());
@@ -1301,7 +1301,7 @@ ASTANALYZE_OUTPUT("          aTargetEnum=", aTargetEnum->getQualifiedNameAsStrin
 ASTANALYZE_OUTPUT("          aTargetClass=", aTargetClass->getQualifiedNameAsString(),
                   " ", aTargetClass);
 
-                if (mAstInterface.mSerializeListClass.addSaveLoad(aTargetClass))
+                if (mAstInterface.mSerializeListClass.addSaveLoad(aTargetClass, iIsRegisterdClass))
                 {
                     // 初めてのsave/loadなら、枚挙する
                     enumerateClass(aInstanciatedClass);
@@ -1422,7 +1422,8 @@ ASTANALYZE_OUTPUT("------------ enumerateClass(", iClass->getQualifiedNameAsStri
 ASTANALYZE_OUTPUT("++++++++++++ enumerateNonFullAuto()");
         for (auto&& aSerializeInfo : mAstInterface.mSerializeListClass.getList())
         {
-            if (!aSerializeInfo.second.mIsFullAuto)
+            if ((!aSerializeInfo.second.mIsFullAuto)
+             && (!aSerializeInfo.second.mIsManual))
             {
                 enumerateClass
                 (
@@ -1454,7 +1455,7 @@ ASTANALYZE_OUTPUT("============ RegisterToBaseClass ==========================="
             QualType qt = ta.getAsType();
 ASTANALYZE_OUTPUT("$$$$ RegisterToBaseClass() : ", qt.getAsString());
 
-            processElement(qt, iRegisterToBaseClass);
+            processElement(qt, iRegisterToBaseClass, true);
         }
     }
 

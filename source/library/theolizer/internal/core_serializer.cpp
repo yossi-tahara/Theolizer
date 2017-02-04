@@ -515,7 +515,8 @@ void BaseSerializer::loadProcessStart(std::size_t iTypeIndex)
 
     case CheckMode::TypeCheck:
         {
-            if (!readPreElement()) {
+            if (!readPreElement())
+            {
                 THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
             }
 
@@ -533,20 +534,23 @@ void BaseSerializer::loadProcessStart(std::size_t iTypeIndex)
             break;
                 }
             }
-            if (!aIsMatch) {
+            if (!aIsMatch)
+            {
                 THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.");
             }
         }
         break;
 
     case CheckMode::TypeCheckByIndex:
-        if (!readPreElement()) {
+        if (!readPreElement())
+        {
             THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
         }
 
         size_t aTypeIndex;
         loadControl(aTypeIndex);
-        if (!isMatchTypeIndex(aTypeIndex, iTypeIndex)) {
+        if (!isMatchTypeIndex(aTypeIndex, iTypeIndex))
+        {
             THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.");
         }
         break;

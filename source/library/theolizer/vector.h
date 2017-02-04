@@ -63,6 +63,7 @@ public:
 #define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           T, Alloc
 #define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             vectorTheolizer
 #define THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE     VectorPointeeTheolizer
+#define THEOLIZER_INTERNAL_IS_VECTOR
 #include "internal/container_no_key.h"
 
 // ***************************************************************************

@@ -91,7 +91,14 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         auto itr=iInstance->begin();
         for (std::size_t i=0; i < iInstance->size(); ++i, ++itr)
         {
+#ifndef THEOLIZER_INTERNAL_IS_VECTOR
             THEOLIZER_PROCESS(iSerializer, *itr);
+#else
+            typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
+            typedef typename TheolizerTarget::value_type        ValueType;
+            theolizer::internal::SupportVector<TheolizerTarget,ValueType, tTheolizerVersion>::
+                save(iSerializer,*itr);
+#endif
         }
     }
 
@@ -117,7 +124,14 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         auto itr=oInstance->begin();
         for (std::size_t i=0; i < aSize; ++i, ++itr)
         {
+#ifndef THEOLIZER_INTERNAL_IS_VECTOR
             THEOLIZER_PROCESS(iSerializer, *itr);
+#else
+            typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
+            typedef typename TheolizerTarget::value_type        ValueType;
+            theolizer::internal::SupportVector<TheolizerTarget,ValueType, tTheolizerVersion>::
+                load(iSerializer,*itr);
+#endif
         }
     }
 };
@@ -162,7 +176,18 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME_POINTEE>::
         auto itr=iInstance->begin();
         for (std::size_t i=0; i < iInstance->size(); ++i, ++itr)
         {
+#ifndef THEOLIZER_INTERNAL_IS_VECTOR
             THEOLIZER_PROCESS_POINTEE(iSerializer, *itr);
+#else
+            typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
+            typedef typename TheolizerTarget::value_type        ValueType;
+            theolizer::internal::SupportVectorPointee
+            <
+                TheolizerTarget,
+                ValueType,
+                tTheolizerVersion
+            >::save(iSerializer, *itr);
+#endif
         }
     }
 
@@ -188,7 +213,18 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME_POINTEE>::
         auto itr=oInstance->begin();
         for (std::size_t i=0; i < aSize; ++i, ++itr)
         {
+#ifndef THEOLIZER_INTERNAL_IS_VECTOR
             THEOLIZER_PROCESS_POINTEE(iSerializer, *itr);
+#else
+            typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
+            typedef typename TheolizerTarget::value_type        ValueType;
+            theolizer::internal::SupportVectorPointee
+            <
+                TheolizerTarget,
+                ValueType,
+                tTheolizerVersion
+            >::load(iSerializer, *itr);
+#endif
         }
     }
 };
