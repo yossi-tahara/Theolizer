@@ -28,8 +28,9 @@
 #include <theolizer/array.h>
 #include <theolizer/vector.h>
 #include <theolizer/deque.h>
-#include <theolizer/forward_list.h>
 #include <theolizer/list.h>
+#include <theolizer/forward_list.h>
+#include <theolizer/set.h>
 
 // ***************************************************************************
 //      使い方の説明
@@ -246,6 +247,10 @@ public:
     TestStl operator+(int iRhs) const
     {
         return TestStl(mData+iRhs);
+    }
+    bool operator<(TestStl const& iRhs) const
+    {
+        return mData < iRhs.mData;
     }
     bool operator==(TestStl const& iRhs)
     {

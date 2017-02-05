@@ -63,7 +63,7 @@ public:
 #define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           T, Alloc
 #define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             listTheolizer
 #define THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE     ListPointeeTheolizer
-#include "internal/container_no_key.h"
+#include "internal/container_no_key.inc"
 
 // ***************************************************************************
 //      自動生成コードの雛形

@@ -31,7 +31,7 @@
 
 #ifdef _MSC_VER
   #pragma warning(push)
-  #pragma warning(disable:4100 4251)
+  #pragma warning(disable:4100 4127 4251)
 #endif
 
 namespace theolizer
@@ -694,6 +694,8 @@ public:
     // 型名返却
     std::string getTypeName(VersionNoList const& iVersionNoList)
     {
+        THEOLIZER_INTERNAL_ASSERT(BaseTypeInfo::mTypeIndex != kInvalidSize,
+            "Not registered class %1%.", getCName());
         return tClassType::Theolizer::getClassName
                 (
                     iVersionNoList,

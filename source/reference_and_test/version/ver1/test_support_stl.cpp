@@ -297,6 +297,60 @@ void loadContainer4(tSerializer& iSerializer, tContainer& iContainer, tType cons
     THEOLIZER_EQUAL(*itr, iFirst+3);    ++itr;
 }
 
+//      ---<<< std::setのテスト >>>---
+
+template<class tSerializer, class tContainer, typename tType>
+void saveContainerSet3(tSerializer& iSerializer, tType const& iFirst)
+{
+    for (int i=0; i < 2; ++i)
+    {
+        // 保存データ生成
+        tContainer  aContainer;
+        aContainer.insert(iFirst+i*100+0);
+        aContainer.insert(iFirst+i*100+1);
+        aContainer.insert(iFirst+i*100+2);
+
+        // 保存
+        THEOLIZER_PROCESS(iSerializer, aContainer);
+    }
+}
+
+template<class tSerializer, class tContainer, typename tType>
+void loadContainerSet3(tSerializer& iSerializer, tType const& iFirst)
+{
+    {
+        // 回復領域生成
+        tContainer  aContainer;
+
+        // 回復
+        THEOLIZER_PROCESS(iSerializer, aContainer);
+
+        // チェック
+        THEOLIZER_EQUAL(aContainer.size(), 3);
+        THEOLIZER_CHECK(aContainer.find(iFirst+0) != aContainer.end(), iFirst+0);
+        THEOLIZER_CHECK(aContainer.find(iFirst+1) != aContainer.end(), iFirst+1);
+        THEOLIZER_CHECK(aContainer.find(iFirst+2) != aContainer.end(), iFirst+2);
+    }
+    {
+        // 回復領域生成
+        tContainer  aContainer;
+        aContainer.insert(iFirst+100+0);
+        aContainer.insert(iFirst+100+1);
+        aContainer.insert(iFirst+100+2);
+        aContainer.insert(iFirst+100+3);
+
+        // 回復
+        THEOLIZER_PROCESS(iSerializer, aContainer);
+
+        // チェック
+        THEOLIZER_EQUAL(aContainer.size(), 4);
+        THEOLIZER_CHECK(aContainer.find(iFirst+100+0) != aContainer.end(), iFirst+100+0);
+        THEOLIZER_CHECK(aContainer.find(iFirst+100+1) != aContainer.end(), iFirst+100+1);
+        THEOLIZER_CHECK(aContainer.find(iFirst+100+2) != aContainer.end(), iFirst+100+2);
+        THEOLIZER_CHECK(aContainer.find(iFirst+100+3) != aContainer.end(), iFirst+100+3);
+    }
+}
+
 // ***************************************************************************
 //      保存
 // ***************************************************************************
@@ -459,11 +513,9 @@ void saveSupportStl(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
-#endif
 
 //      ---<<< std::vector<bool> >>>---
 
-#if 1
     {
         std::cout << "        save : std::vector<bool>" << std::endl;
         std::vector<bool>   aVectorBool;
@@ -472,11 +524,9 @@ void saveSupportStl(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aVectorBool);
         THEOLIZER_PROCESS(iSerializer, aVectorBool);
     }
-#endif
 
 //      ---<<< std::deque >>>---
 
-#if 1
     {
         std::cout << "        saveContainer3() : std::deque<TestStl>" << std::endl;
         std::deque<TestStl> aDequeTestStl0;
@@ -565,6 +615,21 @@ void saveSupportStl(tSerializer& iSerializer)
         iSerializer.clearTracking();
     }
 #endif
+
+//      ---<<< std::set >>>---
+
+    {
+        std::cout << "        saveContainerSet3() : int" << std::endl;
+        saveContainerSet3<tSerializer, std::set<int>, int>
+        (
+            iSerializer, 100
+        );
+
+        saveContainerSet3<tSerializer, std::set<TestStl>, TestStl>
+        (
+            iSerializer, 500
+        );
+    }
 }
 
 INSTANTIATION_ALL(saveSupportStl);
@@ -758,11 +823,9 @@ void loadSupportStl(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
-#endif
 
 //      ---<<< std::vector<bool> >>>---
 
-#if 1
     {
         std::cout << "        load : std::vector<bool>" << std::endl;
         std::vector<bool>   aVectorBool0;
@@ -784,11 +847,9 @@ void loadSupportStl(tSerializer& iSerializer)
         }
         THEOLIZER_EQUAL(aVectorBool2[3], false);
     }
-#endif
 
 //      ---<<< std::deque >>>---
 
-#if 1
     {
         std::cout << "        loadContainer0() : std::deque<TestStl>" << std::endl;
         std::deque<TestStl> aDequeTestStl0;
@@ -877,6 +938,16 @@ void loadSupportStl(tSerializer& iSerializer)
         iSerializer.clearTracking();
     }
 #endif
+
+//      ---<<< std::set >>>---
+
+    {
+        std::cout << "        loadContainerSet3() : int" << std::endl;
+        loadContainerSet3<tSerializer, std::set<int>, int>
+        (
+            iSerializer, 100
+        );
+    }
 }
 
 INSTANTIATION_ALL(loadSupportStl);

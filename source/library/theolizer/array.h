@@ -63,7 +63,7 @@ public:
 #define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           T, N
 #define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             arrayTheolizer
 #define THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE     ArrayPointeeTheolizer
-#include "internal/container_fixed.h"
+#include "internal/container_fixed.inc"
 
 // ***************************************************************************
 //      自動生成コードの雛形

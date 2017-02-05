@@ -63,7 +63,7 @@ public:
 #define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           T, Alloc
 #define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             forward_listTheolizer
 #define THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE     ForwardListPointeeTheolizer
-#include "internal/container_no_size.h"
+#include "internal/container_no_size.inc"
 
 // ***************************************************************************
 //      自動生成コードの雛形

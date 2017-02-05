@@ -3,7 +3,7 @@
 /*!
 @brief      Theolizerライブラリの標準コンテナ・サポート(キー無しresize有り用)
 @ingroup    TheolizerLib
-@file       container_no_key.h
+@file       container_no_key.inc
 @author     Yoshinori Tahara(Theoride Technology)
 @date       2017/02/01 Created
 */
@@ -23,21 +23,9 @@
 */
 //############################################################################
 
-#if !defined(THEOLIZER_INTERNAL_CONTAINER_NO_KEY_H)
-#define THEOLIZER_INTERNAL_CONTAINERS_H
-
 //############################################################################
 //      Begin
 //############################################################################
-
-// ***************************************************************************
-//          DLL用の警告禁止
-// ***************************************************************************
-
-#ifdef _MSC_VER
-  #pragma warning(push)
-//#pragma warning(disable:4100 4251)
-#endif
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
@@ -229,18 +217,8 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME_POINTEE>::
     }
 };
 
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
-
 //############################################################################
 //      End
 //############################################################################
 
-// ***************************************************************************
-//          警告抑止解除
-// ***************************************************************************
-
-#ifdef _MSC_VER
-  #pragma warning(pop)
-#endif
-
-#endif  // THEOLIZER_INTERNAL_CONTAINERS_H
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
