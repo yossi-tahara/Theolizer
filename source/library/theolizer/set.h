@@ -36,37 +36,14 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 //############################################################################
 
 // ***************************************************************************
-//      theolizer::SetPointee<T>
-//          std::set<std::unique_ptr<T> >の単純な派生クラス
-// ***************************************************************************
-
-#if 0
-
-namespace theolizer
-{
-
-template<class T, class Alloc=std::allocator<T> >
-class THEOLIZER_ANNOTATE(CS) ListPointee : public std::list<T, Alloc>
-{
-public:
-    using std::list<T, Alloc>::list;
-};
-
-}   // namespace theolizer
-
-#endif
-
-// ***************************************************************************
 //      手動コード展開
 // ***************************************************************************
 
 #define THEOLZIER_INTERNAL_CONTAINER_PARAMETER          \
     template<class T, class Compare, class Alloc>
 #define THEOLZIER_INTERNAL_CONTAINER_NAME               std::set
-//#define THEOLZIER_INTERNAL_CONTAINER_NAME_POINTEE       theolizer::ListPointee
 #define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           T, Compare, Alloc
 #define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             setTheolizer
-//#define THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE     ListPointeeTheolizer
 #include "internal/container_key.inc"
 
 // ***************************************************************************
@@ -94,41 +71,16 @@ public:
 
 #endif//THEOLIZER_WRITE_CODE
 
-//----------------------------------------------------------------------------
-//      被ポインタ用
-//----------------------------------------------------------------------------
-
-#if 0
-
-#ifdef  THEOLIZER_WRITE_CODE
-
-#define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE theolizer::ListPointee<T, Alloc>
-#define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class Alloc>
-#define THEOLIZER_GENERATED_UNIQUE_NAME ListPointeeTheolizer
-
-//      ---<<< Version.1 >>>---
-
-#define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_NAME()\
-    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"theolizer::ListPointee",T,Alloc))
-#include <theolizer/internal/version_manual.inc>
-#undef  THEOLIZER_GENERATED_VERSION_NO
-
-#endif
-
-#endif//THEOLIZER_WRITE_CODE
-
 // ***************************************************************************
 //      定義したマクロの解放
 // ***************************************************************************
 
 #undef  THEOLZIER_INTERNAL_CONTAINER_PARAMETER
 #undef  THEOLZIER_INTERNAL_CONTAINER_NAME
-#undef  THEOLZIER_INTERNAL_CONTAINER_NAME_POINTEE
 #undef  THEOLZIER_INTERNAL_CONTAINER_ARGUMENT
 #undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE
-#undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE
+
+#undef  THEOLIZER_INTERNAL_FULL_NAME
 
 //############################################################################
 //      End

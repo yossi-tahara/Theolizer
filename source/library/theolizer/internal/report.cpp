@@ -197,6 +197,8 @@ Format& Format::operator%(u8string const& iValue) {mIndep->mFormat % iValue;retu
 #define THEOLIZER_INTERNAL_DEF_CHAR32(dType, dSymbol)
 #include "primitive.inc"
 
+Format& Format::operator%(void* iValue) {mIndep->mFormat % iValue;return *this;}
+
 // ---------------------------------------------------------------------------
 //      文字列で取出し
 // ---------------------------------------------------------------------------

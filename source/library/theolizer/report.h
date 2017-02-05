@@ -131,6 +131,8 @@ public:
     #define THEOLIZER_INTERNAL_DEF_CHAR32(dType, dSymbol)
     #include "internal/primitive.inc"
 
+    Format& operator%(void* iValue);
+
     // theolizer::u8stringで取出す
     u8string str();
     operator u8string();

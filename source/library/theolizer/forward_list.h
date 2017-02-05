@@ -122,6 +122,9 @@ public:
 #undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE
 #undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE
 
+#undef  THEOLIZER_INTERNAL_FULL_NAME
+#undef  THEOLIZER_INTERNAL_FULL_NAME_POINTEE
+
 //############################################################################
 //      End
 //############################################################################

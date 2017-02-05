@@ -65,6 +65,7 @@ public:
 #define THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE     VectorPointeeTheolizer
 #define THEOLIZER_INTERNAL_IS_VECTOR
 #include "internal/container_no_key.inc"
+#undef  THEOLIZER_INTERNAL_IS_VECTOR
 
 // ***************************************************************************
 //      自動生成コード部
@@ -122,6 +123,9 @@ public:
 #undef  THEOLZIER_INTERNAL_CONTAINER_ARGUMENT
 #undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE
 #undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE
+
+#undef  THEOLIZER_INTERNAL_FULL_NAME
+#undef  THEOLIZER_INTERNAL_FULL_NAME_POINTEE
 
 //############################################################################
 //      End
