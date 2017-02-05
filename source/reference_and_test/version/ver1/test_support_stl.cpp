@@ -162,6 +162,38 @@ void loadContainerFixed(tSerializer& iSerializer, tContainer& iContainer, tType 
 
 //      ---<<< キーがないもののテスト >>>---
 
+// プライマリ
+template<class tContainer, typename tType, class tEnable=void>
+struct Emplace
+{
+    void operator()(tContainer& iContainer, tType const& iFirst, std::size_t iCount)
+    {
+        for (std::size_t i=0; i < iCount; ++i)
+        {
+            iContainer.emplace(iContainer.end(), iFirst+static_cast<int>(i));
+        }
+    }
+};
+
+// forward_list用(先頭への追加が自然なので、逆順で追加する)
+template<class tContainer, typename tType>
+struct Emplace
+<
+    tContainer,
+    tType,
+    typename std::enable_if<std::is_convertible<tContainer,std::forward_list<tType>>::value>::type
+>
+{
+    void operator()(tContainer& iContainer, tType const& iFirst, std::size_t iCount)
+    {
+        for (std::size_t i=iCount; 0 < i; --i)
+        {
+            iContainer.emplace_front(iFirst+static_cast<int>(i-1));
+        }
+    }
+};
+
+// 本体
 template<class tSerializer, class tContainer, typename tType>
 void saveContainer3(tSerializer& iSerializer, tContainer& iContainer, tType const& iFirst)
 {
@@ -169,9 +201,8 @@ void saveContainer3(tSerializer& iSerializer, tContainer& iContainer, tType cons
     tType   *aPtr0;
     tType   *aPtr1;
     tType   *aPtr2;
-    iContainer.emplace(iContainer.end(), iFirst+0);
-    iContainer.emplace(iContainer.end(), iFirst+1);
-    iContainer.emplace(iContainer.end(), iFirst+2);
+    Emplace<tContainer, tType> emplace;
+    emplace(iContainer, iFirst, 3);
     auto it=iContainer.begin();
     aPtr0=&*(it++);
     aPtr1=&*(it++);
@@ -503,6 +534,36 @@ void saveSupportStl(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
+
+//      ---<<< std::forward_list >>>---
+
+    {
+        std::cout << "        saveContainer3() : std::forward_list<TestStl>" << std::endl;
+        std::forward_list<TestStl>  aForwardListTestStl0;
+        saveContainer3(iSerializer, aForwardListTestStl0, TestStl(100));
+
+        std::cout << "        saveContainer3() : std::forward_list<TestStl>" << std::endl;
+        std::forward_list<TestStl>  aForwardListTestStl1;
+        saveContainer3(iSerializer, aForwardListTestStl1, TestStl(200));
+
+        std::cout << "        saveContainer3() : std::forward_list<TestStl>" << std::endl;
+        std::forward_list<TestStl>  aForwardListTestStl2;
+        saveContainer3(iSerializer, aForwardListTestStl2, TestStl(300));
+
+        std::cout << "        saveContainer3() : theolizer::ForwardListPointee<int>" << std::endl;
+        theolizer::ForwardListPointee<int> aForwardListInt0;
+        saveContainer3(iSerializer, aForwardListInt0, 500);
+
+        std::cout << "        saveContainer3() : theolizer::ForwardListPointee<int>" << std::endl;
+        theolizer::ForwardListPointee<int> aForwardListInt1;
+        saveContainer3(iSerializer, aForwardListInt1, 600);
+
+        std::cout << "        saveContainer3() : theolizer::ForwardListPointee<int>" << std::endl;
+        theolizer::ForwardListPointee<int> aForwardListInt2;
+        saveContainer3(iSerializer, aForwardListInt2, 700);
+
+        iSerializer.clearTracking();
+    }
 #endif
 }
 
@@ -704,15 +765,24 @@ void loadSupportStl(tSerializer& iSerializer)
 #if 1
     {
         std::cout << "        load : std::vector<bool>" << std::endl;
-        std::vector<bool>   aVectorBool;
-        aVectorBool.resize(3, false);
-        THEOLIZER_PROCESS(iSerializer, aVectorBool);
-        THEOLIZER_PROCESS(iSerializer, aVectorBool);
-        THEOLIZER_PROCESS(iSerializer, aVectorBool);
+        std::vector<bool>   aVectorBool0;
+        THEOLIZER_PROCESS(iSerializer, aVectorBool0);
+        std::vector<bool>   aVectorBool1;
+        aVectorBool1.resize(2, false);
+        THEOLIZER_PROCESS(iSerializer, aVectorBool1);
+        std::vector<bool>   aVectorBool2;
+        aVectorBool2.resize(4, false);
+        THEOLIZER_PROCESS(iSerializer, aVectorBool2);
 
         iSerializer.clearTracking();
 
-
+        for (std::size_t i=0; i < 3; ++i)
+        {
+            THEOLIZER_EQUAL(aVectorBool0[i], true);
+            THEOLIZER_EQUAL(aVectorBool1[i], true);
+            THEOLIZER_EQUAL(aVectorBool2[i], true);
+        }
+        THEOLIZER_EQUAL(aVectorBool2[3], false);
     }
 #endif
 
@@ -773,6 +843,36 @@ void loadSupportStl(tSerializer& iSerializer)
         std::cout << "        loadContainer4() : theolizer::ListPointee<int>" << std::endl;
         theolizer::ListPointee<int> aListInt2;
         loadContainer4(iSerializer, aListInt2, 700);
+
+        iSerializer.clearTracking();
+    }
+
+//      ---<<< std::forward_list >>>---
+
+    {
+        std::cout << "        loadContainer0() : std::forward_list<TestStl>" << std::endl;
+        std::forward_list<TestStl>  aForwardListTestStl0;
+        loadContainer0(iSerializer, aForwardListTestStl0, TestStl(100));
+
+        std::cout << "        loadContainer2() : std::forward_list<TestStl>" << std::endl;
+        std::forward_list<TestStl>  aForwardListTestStl1;
+        loadContainer2(iSerializer, aForwardListTestStl1, TestStl(200));
+
+        std::cout << "        loadContainer4() : std::forward_list<TestStl>" << std::endl;
+        std::forward_list<TestStl>  aForwardListTestStl2;
+        loadContainer4(iSerializer, aForwardListTestStl2, TestStl(300));
+
+        std::cout << "        loadContainer0() : theolizer::ForwardListPointee<int>" << std::endl;
+        theolizer::ForwardListPointee<int>  aForwardListInt0;
+        loadContainer0(iSerializer, aForwardListInt0, 500);
+
+        std::cout << "        loadContainer2() : theolizer::ForwardListPointee<int>" << std::endl;
+        theolizer::ForwardListPointee<int>  aForwardListInt1;
+        loadContainer2(iSerializer, aForwardListInt1, 600);
+
+        std::cout << "        loadContainer4() : theolizer::ForwardListPointee<int>" << std::endl;
+        theolizer::ForwardListPointee<int>  aForwardListInt2;
+        loadContainer4(iSerializer, aForwardListInt2, 700);
 
         iSerializer.clearTracking();
     }

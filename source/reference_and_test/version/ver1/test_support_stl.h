@@ -28,6 +28,7 @@
 #include <theolizer/array.h>
 #include <theolizer/vector.h>
 #include <theolizer/deque.h>
+#include <theolizer/forward_list.h>
 #include <theolizer/list.h>
 
 // ***************************************************************************

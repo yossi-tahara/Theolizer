@@ -1,5 +1,5 @@
 ﻿//############################################################################
-//      std::deque<>のシリアライズ
+//      std::forward_list<>のシリアライズ
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
 
@@ -16,8 +16,8 @@
 */
 //############################################################################
 
-#if !defined(THEOLIZER_INTERNAL_DEQUE_H)
-#define THEOLIZER_INTERNAL_DEQUE_H
+#if !defined(THEOLIZER_INTERNAL_FORWARD_LIST_H)
+#define THEOLIZER_INTERNAL_FORWARD_LIST_H
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
@@ -25,7 +25,7 @@
 //      Begin
 //############################################################################
 
-#include <deque>
+#include <forward_list>
 #include "serializer.h"
 #include "internal/containers.h"
 
@@ -36,8 +36,8 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 //############################################################################
 
 // ***************************************************************************
-//      theolizer::DequePointee<>
-//          std::deque<>の単純な派生クラス
+//      theolizer::ForwardListPointee<>
+//          std::forward_list<>の単純な派生クラス
 //          要素をPointeeとして処理する
 // ***************************************************************************
 
@@ -45,10 +45,10 @@ namespace theolizer
 {
 
 template<class T, class Alloc=std::allocator<T> >
-class THEOLIZER_ANNOTATE(CS) DequePointee : public std::deque<T, Alloc>
+class THEOLIZER_ANNOTATE(CS) ForwardListPointee : public std::forward_list<T, Alloc>
 {
 public:
-    using std::deque<T, Alloc>::deque;
+    using std::forward_list<T, Alloc>::forward_list;
 };
 
 }   // namespace theolizer
@@ -58,12 +58,12 @@ public:
 // ***************************************************************************
 
 #define THEOLZIER_INTERNAL_CONTAINER_PARAMETER          template<class T, class Alloc>
-#define THEOLZIER_INTERNAL_CONTAINER_NAME               std::deque
-#define THEOLZIER_INTERNAL_CONTAINER_NAME_POINTEE       theolizer::DequePointee
+#define THEOLZIER_INTERNAL_CONTAINER_NAME               std::forward_list
+#define THEOLZIER_INTERNAL_CONTAINER_NAME_POINTEE       theolizer::ForwardListPointee
 #define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           T, Alloc
-#define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             dequeTheolizer
-#define THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE     DequePointeeTheolizer
-#include "internal/container_no_key.h"
+#define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             forward_listTheolizer
+#define THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE     ForwardListPointeeTheolizer
+#include "internal/container_no_size.h"
 
 // ***************************************************************************
 //      自動生成コードの雛形
@@ -76,15 +76,15 @@ public:
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::deque<T, Alloc>
+#define THEOLIZER_GENERATED_CLASS_TYPE std::forward_list<T, Alloc>
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class Alloc>
-#define THEOLIZER_GENERATED_UNIQUE_NAME dequeTheolizer
+#define THEOLIZER_GENERATED_UNIQUE_NAME forward_listTheolizer
 
 //      ---<<< Version.1 >>>---
 
 #define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
 #define THEOLIZER_GENERATED_CLASS_NAME()\
-    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"std::deque",T,Alloc))
+    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"std::forward_list",T,Alloc))
 #include <theolizer/internal/version_manual.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
@@ -97,15 +97,15 @@ public:
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE theolizer::DequePointee<T, Alloc>
+#define THEOLIZER_GENERATED_CLASS_TYPE theolizer::ForwardListPointee<T, Alloc>
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class Alloc>
-#define THEOLIZER_GENERATED_UNIQUE_NAME DequePointeeTheolizer
+#define THEOLIZER_GENERATED_UNIQUE_NAME ForwardListPointeeTheolizer
 
 //      ---<<< Version.1 >>>---
 
 #define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
 #define THEOLIZER_GENERATED_CLASS_NAME()\
-    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"theolizer::DequePointee",T,Alloc))
+    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"theolizer::ForwardListPointee",T,Alloc))
 #include <theolizer/internal/version_manual.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
@@ -128,4 +128,4 @@ public:
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
-#endif  // THEOLIZER_INTERNAL_DEQUE_H
+#endif  // THEOLIZER_INTERNAL_FORWARD_LIST_H

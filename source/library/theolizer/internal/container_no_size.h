@@ -1,11 +1,11 @@
 ﻿//############################################################################
 //      
 /*!
-@brief      Theolizerライブラリの標準コンテナ・サポート(キー無しresize有り用)
+@brief      Theolizerライブラリの標準コンテナ・サポート(size()無し用)
 @ingroup    TheolizerLib
-@file       container_no_key.h
+@file       container_no-size.h
 @author     Yoshinori Tahara(Theoride Technology)
-@date       2017/02/01 Created
+@date       2017/02/05 Created
 */
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
@@ -23,8 +23,8 @@
 */
 //############################################################################
 
-#if !defined(THEOLIZER_INTERNAL_CONTAINER_NO_KEY_H)
-#define THEOLIZER_INTERNAL_CONTAINERS_H
+#if !defined(THEOLIZER_INTERNAL_CONTAINER_NO_SIZE_H)
+#define THEOLIZER_INTERNAL_CONTAINER_NO_SIZE_H
 
 //############################################################################
 //      Begin
@@ -85,20 +85,14 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
-        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
-
-        THEOLIZER_PROCESS(iSerializer, iInstance->size());
+        std::size_t aSize=0;
+        for (auto it=iInstance->begin(); it != iInstance->end(); ++it)
+            ++aSize;
+        THEOLIZER_PROCESS(iSerializer, aSize);
         auto itr=iInstance->begin();
-        for (std::size_t i=0; i < iInstance->size(); ++i, ++itr)
+        for (std::size_t i=0; i < aSize; ++i, ++itr)
         {
-#ifndef THEOLIZER_INTERNAL_IS_VECTOR
             THEOLIZER_PROCESS(iSerializer, *itr);
-#else
-            typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
-            typedef typename TheolizerTarget::value_type        ValueType;
-            theolizer::internal::SupportVector<TheolizerTarget,ValueType, tTheolizerVersion>::
-                save(iSerializer,*itr);
-#endif
         }
     }
 
@@ -109,29 +103,22 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
-        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
-
         // もし、nullptrなら、インスタンス生成
         if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
         std::size_t aSize;
         THEOLIZER_PROCESS(iSerializer, aSize);
 
-        // 先に領域をvector内部に生成してから、そこへ回復する。
-        //  これにより、要素のコピーやムーブが発生しないようにすることで、
-        //  「親」へのポインタが壊れないようにしている。
-        if (oInstance->size() < aSize) oInstance->resize(aSize);
         auto itr=oInstance->begin();
-        for (std::size_t i=0; i < aSize; ++i, ++itr)
+        auto before=oInstance->before_begin();
+        for (std::size_t i=0; i < aSize; ++i)
         {
-#ifndef THEOLIZER_INTERNAL_IS_VECTOR
-            THEOLIZER_PROCESS(iSerializer, *itr);
-#else
-            typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
-            typedef typename TheolizerTarget::value_type        ValueType;
-            theolizer::internal::SupportVector<TheolizerTarget,ValueType, tTheolizerVersion>::
-                load(iSerializer,*itr);
-#endif
+            if (itr == oInstance->end())
+            {
+                itr=oInstance->emplace_after(before);
+            }
+            before=itr;
+            THEOLIZER_PROCESS(iSerializer, *itr++);
         }
     }
 };
@@ -170,24 +157,14 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME_POINTEE>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
-        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
-
-        THEOLIZER_PROCESS(iSerializer, iInstance->size());
+        std::size_t aSize=0;
+        for (auto it=iInstance->begin(); it != iInstance->end(); ++it)
+            ++aSize;
+        THEOLIZER_PROCESS(iSerializer, aSize);
         auto itr=iInstance->begin();
-        for (std::size_t i=0; i < iInstance->size(); ++i, ++itr)
+        for (std::size_t i=0; i < aSize; ++i, ++itr)
         {
-#ifndef THEOLIZER_INTERNAL_IS_VECTOR
             THEOLIZER_PROCESS_POINTEE(iSerializer, *itr);
-#else
-            typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
-            typedef typename TheolizerTarget::value_type        ValueType;
-            theolizer::internal::SupportVectorPointee
-            <
-                TheolizerTarget,
-                ValueType,
-                tTheolizerVersion
-            >::save(iSerializer, *itr);
-#endif
         }
     }
 
@@ -198,33 +175,22 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME_POINTEE>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
-        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
-
         // もし、nullptrなら、インスタンス生成
         if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
         std::size_t aSize;
         THEOLIZER_PROCESS(iSerializer, aSize);
 
-        // 先に領域をvector内部に生成してから、そこへ回復する。
-        //  これにより、要素のコピーやムーブが発生しないようにすることで、
-        //  「親」へのポインタが壊れないようにしている。
-        if (oInstance->size() < aSize) oInstance->resize(aSize);
         auto itr=oInstance->begin();
-        for (std::size_t i=0; i < aSize; ++i, ++itr)
+        auto before=oInstance->before_begin();
+        for (std::size_t i=0; i < aSize; ++i)
         {
-#ifndef THEOLIZER_INTERNAL_IS_VECTOR
-            THEOLIZER_PROCESS_POINTEE(iSerializer, *itr);
-#else
-            typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
-            typedef typename TheolizerTarget::value_type        ValueType;
-            theolizer::internal::SupportVectorPointee
-            <
-                TheolizerTarget,
-                ValueType,
-                tTheolizerVersion
-            >::load(iSerializer, *itr);
-#endif
+            if (itr == oInstance->end())
+            {
+                itr=oInstance->emplace_after(before);
+            }
+            before=itr;
+            THEOLIZER_PROCESS_POINTEE(iSerializer, *itr++);
         }
     }
 };
@@ -243,4 +209,4 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME_POINTEE>::
   #pragma warning(pop)
 #endif
 
-#endif  // THEOLIZER_INTERNAL_CONTAINERS_H
+#endif  // THEOLIZER_INTERNAL_CONTAINER_NO_SIZE_H
