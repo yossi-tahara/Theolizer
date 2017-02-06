@@ -103,7 +103,7 @@ void tutoriseObjectTracking()
         THEOLIZER_PROCESS_POINTEE(aSerializer, aLong);
 
         // 静的定義領域(クラス)、動的生成領域(メンバ変数mShort)を保存
-        THEOLIZER_PROCESS(aSerializer, aObjectTrackingClass);
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aObjectTrackingClass);
 
         // 動的生成領域を指すオーナー・ポインタを保存
         THEOLIZER_PROCESS_OWNER(aSerializer, aLongOwner);
@@ -120,6 +120,7 @@ void tutoriseObjectTracking()
         // オブジェクトIDテーブルのクリア
         aSerializer.clearTracking();
     }
+    std::cout << "tutoriseObjectTracking() processing\n" << std::endl;
 
 //----------------------------------------------------------------------------
 //      回復
@@ -169,7 +170,7 @@ void tutoriseObjectTracking()
         THEOLIZER_PROCESS_POINTEE(aSerializer, aLong);
 
         // 静的定義領域(クラス)、動的生成領域(メンバ変数mShort)を回復
-        THEOLIZER_PROCESS(aSerializer, aObjectTrackingClass);
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aObjectTrackingClass);
 
         // 動的生成領域を指すオーナー・ポインタを回復
         THEOLIZER_PROCESS_OWNER(aSerializer, aLongOwner);

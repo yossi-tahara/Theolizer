@@ -653,27 +653,27 @@ protected:
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
-//      OWNERポインタ処理中の管理
-//          OWNER処理中はターゲットをトラッキング処理しない。
+//      クラス・インスンタスについてオブジェクト追跡中の管理
+//          そのクラスの基底クラスについてもオブジェクト追跡を行うために用いる
 //----------------------------------------------------------------------------
 
 private:
-    bool    mProcessingOwner;
-    void clearProcessingOwner() {mProcessingOwner=false;}
+    bool    mClassTracking;
+    void clearClassTracking() {mClassTracking=false;}
 
-    struct AutoOwner
+    struct AutoClassTracking
     {
-        bool    mProcessingOwnerBack;
-        bool&   mProcessingOwner;
-        AutoOwner(BaseSerializer& iSerializer) :
-            mProcessingOwnerBack(iSerializer.mProcessingOwner),
-            mProcessingOwner(iSerializer.mProcessingOwner)
+        bool    mClassTrackingBack;
+        bool&   mClassTracking;
+        AutoClassTracking(BaseSerializer& iSerializer) :
+            mClassTrackingBack(iSerializer.mClassTracking),
+            mClassTracking(iSerializer.mClassTracking)
         {
-            mProcessingOwner=true;
+            mClassTracking=true;
         }
-        ~AutoOwner()
+        ~AutoClassTracking()
         {
-            mProcessingOwner=mProcessingOwnerBack;
+            mClassTracking=mClassTrackingBack;
         }
     };
 
@@ -893,7 +893,7 @@ private:
             // 基底クラスの処理が終わったら、オーナー処理中をクリアする
             if (!tVersionType::getElementTheolizer(i).isBaseClass())
             {
-                clearProcessingOwner();
+                clearClassTracking();
             }
 
             char const* aElementName=tVersionType::getElementTheolizer(i).getName();
@@ -1160,7 +1160,7 @@ private:
                 // 基底クラスの処理が終わったら、オーナー処理中をクリアする
                 if (!tVersionType::getElementTheolizer(aIndex).isBaseClass())
                 {
-                    clearProcessingOwner();
+                    clearClassTracking();
                 }
 
                 // 回復

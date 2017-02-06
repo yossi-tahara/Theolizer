@@ -118,7 +118,7 @@ struct ObjectTrackingDerived : public ObjectTrackingBase0, public ObjectTracking
 THEOLIZER_REGISTER_CLASS((ObjectTrackingDerived));
 
 //----------------------------------------------------------------------------
-//      Pointee指定なし用
+//      Pointee指定なし用(THEOLIZER_INTERNAL_DISABLE_AUTO_POINTEE未定義時用)
 //----------------------------------------------------------------------------
 
 struct ObjectTracking0
@@ -144,7 +144,11 @@ struct ObjectTracking1
 struct StaticDefinition
 {
     long                mLong               THEOLIZER_ANNOTATE(FS:<>Pointee);
+#ifndef THEOLIZER_INTERNAL_DISABLE_AUTO_POINTEE
     ObjectTracking0     mObjectTracking0;
+#else
+    ObjectTracking0     mObjectTracking0    THEOLIZER_ANNOTATE(FS:<>Pointee);
+#endif
     ObjectTracking1     mObjectTracking1    THEOLIZER_ANNOTATE(FS:<>Pointee);
     StaticDefinition() :
         mLong{0},

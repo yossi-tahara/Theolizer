@@ -54,6 +54,8 @@
 template<class tSerializer>
 void saveObjectTracking3(tSerializer& iSerializer)
 {
+    std::cout << "        saveObjectTracking3() start" << std::endl;
+
 //----------------------------------------------------------------------------
 //      オーナー・ポインタのテスト
 //----------------------------------------------------------------------------
@@ -111,6 +113,7 @@ void saveObjectTracking3(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
+    std::cout << "        saveObjectTracking3() end" << std::endl;
 }
 
 INSTANTIATION_ALL(saveObjectTracking3);
@@ -122,6 +125,8 @@ INSTANTIATION_ALL(saveObjectTracking3);
 template<class tSerializer>
 void loadObjectTracking3(tSerializer& iSerializer)
 {
+    std::cout << "        loadObjectTracking3() start" << std::endl;
+
 //----------------------------------------------------------------------------
 //      オーナー・ポインタのテスト
 //----------------------------------------------------------------------------
@@ -192,6 +197,7 @@ void loadObjectTracking3(tSerializer& iSerializer)
         aManualClass4OwnerListNull.check();
         aManualClass4OwnerList.check(true);
     }
+    std::cout << "        loadObjectTracking3() end" << std::endl;
 }
 
 INSTANTIATION_ALL(loadObjectTracking3);

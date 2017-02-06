@@ -71,6 +71,8 @@ ObjectTracking1 gObjectTracking1Load;   // Pointeeありクラス
 template<class tSerializer>
 void saveObjectTracking(tSerializer& iSerializer)
 {
+    std::cout << "        saveObjectTracking() start" << std::endl;
+
     // オブジェクト追跡前準備
     //  ここに来るまでにオブジェクト追跡テーブルに登録され、その領域が開放されるので必要。
     //  (オブジェクト追跡単位内でシリアライズした領域を開放してはいけない。)
@@ -149,12 +151,12 @@ void saveObjectTracking(tSerializer& iSerializer)
 
         // インスタンス保存
         THEOLIZER_PROCESS_POINTEE(iSerializer, gLongSave);
-        THEOLIZER_PROCESS(iSerializer, gObjectTracking0Save);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, gObjectTracking0Save);
         THEOLIZER_PROCESS_POINTEE(iSerializer, gObjectTracking1Save);
         THEOLIZER_PROCESS_POINTEE(iSerializer, aLong);
-        THEOLIZER_PROCESS(iSerializer, aObjectTracking0);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aObjectTracking0);
         THEOLIZER_PROCESS_POINTEE(iSerializer, aObjectTracking1);
-        THEOLIZER_PROCESS(iSerializer, aStaticDefinition);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aStaticDefinition);
 
         // ポインタ(自動シリアライズ用)保存
         THEOLIZER_PROCESS(iSerializer, aPointers);
@@ -162,13 +164,14 @@ void saveObjectTracking(tSerializer& iSerializer)
 //      ---<<< 2番目以降の基底クラス・ポインタ(静的定義領域) >>>---
 
         ObjectTrackingDerived   aObjectTrackingDerived;
-        THEOLIZER_PROCESS(iSerializer, aObjectTrackingDerived);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aObjectTrackingDerived);
 
         ObjectTrackingBase1* aObjectTrackingBase1 = &aObjectTrackingDerived;
         THEOLIZER_PROCESS(iSerializer, aObjectTrackingBase1);
 
         iSerializer.clearTracking();
     }
+    std::cout << "        saveObjectTracking(1)" << std::endl;
 
 //----------------------------------------------------------------------------
 //      ポインタのテスト
@@ -213,6 +216,7 @@ void saveObjectTracking(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
+    std::cout << "        saveObjectTracking(2)" << std::endl;
 
 //      ---<<< 自動メンバ・リスト生成によるポインタの保存 >>>---
 
@@ -253,6 +257,7 @@ void saveObjectTracking(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
+    std::cout << "        saveObjectTracking(3)" << std::endl;
 
 //      ---<<< 手動(非トップ・レベル)によるポインタの保存 >>>---
 
@@ -293,6 +298,8 @@ void saveObjectTracking(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
+
+    std::cout << "        saveObjectTracking() end" << std::endl;
 }
 
 INSTANTIATION_ALL(saveObjectTracking);
@@ -304,6 +311,8 @@ INSTANTIATION_ALL(saveObjectTracking);
 template<class tSerializer>
 void loadObjectTracking(tSerializer& iSerializer)
 {
+    std::cout << "        loadObjectTracking() start" << std::endl;
+
     // オブジェクト追跡前準備
     //  ここに来るまでにオブジェクト追跡テーブルに登録され、その領域が開放されるので必要。
     //  (オブジェクト追跡単位内でシリアライズした領域を開放してはいけない。)
@@ -371,12 +380,12 @@ void loadObjectTracking(tSerializer& iSerializer)
 
         // インスタンス回復
         THEOLIZER_PROCESS_POINTEE(iSerializer, gLongLoad);
-        THEOLIZER_PROCESS(iSerializer, gObjectTracking0Load);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, gObjectTracking0Load);
         THEOLIZER_PROCESS_POINTEE(iSerializer, gObjectTracking1Load);
         THEOLIZER_PROCESS_POINTEE(iSerializer, aLong);
-        THEOLIZER_PROCESS(iSerializer, aObjectTracking0);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aObjectTracking0);
         THEOLIZER_PROCESS_POINTEE(iSerializer, aObjectTracking1);
-        THEOLIZER_PROCESS(iSerializer, aStaticDefinition);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aStaticDefinition);
 
         // ポインタ(自動シリアライズ用)回復
         THEOLIZER_PROCESS(iSerializer, aPointers);
@@ -426,7 +435,7 @@ void loadObjectTracking(tSerializer& iSerializer)
 //      ---<<< 2番目以降の基底クラス・ポインタ(静的定義領域) >>>---
 
         ObjectTrackingDerived   aObjectTrackingDerived;
-        THEOLIZER_PROCESS(iSerializer, aObjectTrackingDerived);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aObjectTrackingDerived);
 
         ObjectTrackingBase1* aObjectTrackingBase1 = nullptr;
         THEOLIZER_PROCESS(iSerializer, aObjectTrackingBase1);
@@ -435,6 +444,7 @@ void loadObjectTracking(tSerializer& iSerializer)
 
         THEOLIZER_EQUAL_PTR(&aObjectTrackingDerived, aObjectTrackingBase1);
     }
+    std::cout << "        loadObjectTracking(1)" << std::endl;
 
 //----------------------------------------------------------------------------
 //      ポインタのテスト
@@ -488,6 +498,7 @@ void loadObjectTracking(tSerializer& iSerializer)
         aPointerListB.check(aPointeeList,  aPointeeListManual);
         aPointerListC.check(aPointeeList2, aPointeeListManual);
     }
+    std::cout << "        loadObjectTracking(2)" << std::endl;
 
 //      ---<<< 自動メンバ・リスト生成によるポインタの回復 >>>---
 
@@ -537,6 +548,7 @@ void loadObjectTracking(tSerializer& iSerializer)
         aPointerListB.check(aPointeeList,  aPointeeListManual);
         aPointerListC.check(aPointeeList2, aPointeeListManual);
     }
+    std::cout << "        loadObjectTracking(3)" << std::endl;
 
 //      ---<<< 手動(非トップ・レベル)によるポインタの回復 >>>---
 
@@ -586,6 +598,7 @@ void loadObjectTracking(tSerializer& iSerializer)
         aManualClass4PointerListB.check(aPointeeList,  aPointeeListManual);
         aManualClass4PointerListC.check(aPointeeList2, aPointeeListManual);
     }
+    std::cout << "        loadObjectTracking() end" << std::endl;
 }
 
 INSTANTIATION_ALL(loadObjectTracking);

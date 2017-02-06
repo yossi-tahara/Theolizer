@@ -634,7 +634,7 @@ BaseSerializer::BaseSerializer
     mTypeIndexCount(mTypeInfoList.size()),
     mRequireCheckTracking(false),
     mAdditionalInfo(*this),
-    mProcessingOwner(false),
+    mClassTracking(false),
     mCheckMode(iCheckMode),
     mElementsMapping(emOrder),
     mIndent(0),

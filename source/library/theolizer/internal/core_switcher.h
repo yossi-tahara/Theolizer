@@ -317,8 +317,9 @@ struct Switcher
         {
             // 開始／終了マーク処理
             BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
-            // オーナー処理中
-            BaseSerializer::AutoOwner aAutoOwner(iSerializer);
+
+            // クラス・インスタンスのオブジェクト追跡中
+            BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
 
             // オブジェクトIDを保存
             iSerializer.writePreElement();
@@ -361,8 +362,9 @@ struct Switcher
         {
             // 開始／終了マーク処理
             BaseSerializer::AutoRestoreLoad aAutoRestoreLoad(iSerializer);
-            // オーナー処理中
-            BaseSerializer::AutoOwner aAutoOwner(iSerializer);
+
+            // クラス・インスタンスのオブジェクト追跡中
+            BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
 
             // オブジェクトID回復
             size_t aObjectId;
@@ -527,18 +529,20 @@ struct Switcher
 
         // 追跡モード修正(クラスは被ポインタなら自動的に追跡する)
         TrackingMode aTrackingMode=tTrackingMode;
+#ifndef THEOLIZER_INTERNAL_DISABLE_AUTO_POINTEE
         if ((aTrackingMode == etmDefault)
          && (aClassTypeInfo.isPointee())
-         && (!iSerializer.mProcessingOwner))
+         && (!iSerializer.mClassTracking))
         {
             aTrackingMode=etmPointee;
         }
-        // 手動型は、オーナー処理中をクリアする
-        if (!IntrusiveType::Theolizer::kIsAuto)
+#else
+        if ((aTrackingMode == etmDefault)
+         && (iSerializer.mClassTracking))
         {
-            iSerializer.clearProcessingOwner();
+            aTrackingMode=etmPointee;
         }
-
+#endif
         if (aTrackingMode == etmDefault)
         {
             IntrusiveType::Theolizer::saveClass(iSerializer, aInstancePtr, aVersionNo);
@@ -575,18 +579,20 @@ struct Switcher
 
         // 追跡モード修正(クラスは被ポインタなら自動的に追跡する)
         TrackingMode aTrackingMode=tTrackingMode;
+#ifndef THEOLIZER_INTERNAL_DISABLE_AUTO_POINTEE
         if ((aTrackingMode == etmDefault)
          && (aClassTypeInfo.isPointee())
-         && (!iSerializer.mProcessingOwner))
+         && (!iSerializer.mClassTracking))
         {
             aTrackingMode=etmPointee;
         }
-        // 手動型は、オーナー処理中をクリアする
-        if (!IntrusiveType::Theolizer::kIsAuto)
+#else
+        if ((aTrackingMode == etmDefault)
+         && (iSerializer.mClassTracking))
         {
-            iSerializer.clearProcessingOwner();
+            aTrackingMode=etmPointee;
         }
-
+#endif
         if (aTrackingMode == etmDefault)
         {
             IntrusiveType::Theolizer::loadClass(iSerializer, aInstancePtr, aVersionNo);
@@ -651,18 +657,20 @@ struct Switcher
 
         // 追跡モード修正(クラスは被ポインタなら自動的に追跡する)
         TrackingMode aTrackingMode=tTrackingMode;
+#ifndef THEOLIZER_INTERNAL_DISABLE_AUTO_POINTEE
         if ((aTrackingMode == etmDefault)
          && (aClassTypeInfo.isPointee())
-         && (!iSerializer.mProcessingOwner))
+         && (!iSerializer.mClassTracking))
         {
             aTrackingMode=etmPointee;
         }
-        // 手動型は、オーナー処理中をクリアする
-        if (!NonIntrusiveType::Theolizer::kIsAuto)
+#else
+        if ((aTrackingMode == etmDefault)
+         && (iSerializer.mClassTracking))
         {
-            iSerializer.clearProcessingOwner();
+            aTrackingMode=etmPointee;
         }
-
+#endif
         if (aTrackingMode == etmDefault)
         {
             NonIntrusiveType::Theolizer::saveClass(iSerializer, aInstancePtr, aVersionNo);
@@ -670,6 +678,10 @@ struct Switcher
         else
         {
             BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+
+            // クラス・インスタンスのオブジェクト追跡中
+            BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
+
             bool aIsSaved;
 //std::cout << "Switcher(NonIntrusive) "<<THEOLIZER_INTERNAL_TYPE_NAME(NonIntrusiveType) << "\n";
             SerializeInfo& aSerializeInfo=
@@ -699,18 +711,20 @@ struct Switcher
 
         // 追跡モード修正(クラスは被ポインタなら自動的に追跡する)
         TrackingMode aTrackingMode=tTrackingMode;
+#ifndef THEOLIZER_INTERNAL_DISABLE_AUTO_POINTEE
         if ((aTrackingMode == etmDefault)
          && (aClassTypeInfo.isPointee())
-         && (!iSerializer.mProcessingOwner))
+         && (!iSerializer.mClassTracking))
         {
             aTrackingMode=etmPointee;
         }
-        // 手動型は、オーナー処理中をクリアする
-        if (!NonIntrusiveType::Theolizer::kIsAuto)
+#else
+        if ((aTrackingMode == etmDefault)
+         && (iSerializer.mClassTracking))
         {
-            iSerializer.clearProcessingOwner();
+            aTrackingMode=etmPointee;
         }
-
+#endif
         if (aTrackingMode == etmDefault)
         {
             NonIntrusiveType::Theolizer::loadClass(iSerializer, aInstancePtr, aVersionNo);
@@ -718,6 +732,10 @@ struct Switcher
         else
         {
             BaseSerializer::AutoRestoreLoad aAutoRestoreLoad(iSerializer);
+
+            // クラス・インスタンスのオブジェクト追跡中
+            BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
+
             size_t aObjectId;
             iSerializer.readPreElement();
             iSerializer.loadControl(aObjectId);
@@ -769,18 +787,20 @@ struct Switcher
 
         // 追跡モード修正(クラスは被ポインタなら自動的に追跡する)
         TrackingMode aTrackingMode=tTrackingMode;
+#ifndef THEOLIZER_INTERNAL_DISABLE_AUTO_POINTEE
         if ((aTrackingMode == etmDefault)
          && (aClassTypeInfo.isPointee())
-         && (!iSerializer.mProcessingOwner))
+         && (!iSerializer.mClassTracking))
         {
             aTrackingMode=etmPointee;
         }
-        // 手動型は、オーナー処理中をクリアする
-        if (!TheolizerClass::Theolizer::kIsAuto)
+#else
+        if ((aTrackingMode == etmDefault)
+         && (iSerializer.mClassTracking))
         {
-            iSerializer.clearProcessingOwner();
+            aTrackingMode=etmPointee;
         }
-
+#endif
         if (aTrackingMode == etmDefault)
         {
             iInstance.saveClass(iSerializer, tVersionType::Theolizer::kVersionNo);
@@ -788,6 +808,10 @@ struct Switcher
         else
         {
             BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+
+            // クラス・インスタンスのオブジェクト追跡中
+            BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
+
             bool aIsSaved;
 //std::cout << "Switcher(TheolizerVersion) "<<THEOLIZER_INTERNAL_TYPE_NAME(tVersionType) << "\n";
             SerializeInfo& aSerializeInfo=
@@ -815,18 +839,20 @@ struct Switcher
 
         // 追跡モード修正(クラスは被ポインタなら自動的に追跡する)
         TrackingMode aTrackingMode=tTrackingMode;
+#ifndef THEOLIZER_INTERNAL_DISABLE_AUTO_POINTEE
         if ((aTrackingMode == etmDefault)
          && (aClassTypeInfo.isPointee())
-         && (!iSerializer.mProcessingOwner))
+         && (!iSerializer.mClassTracking))
         {
             aTrackingMode=etmPointee;
         }
-        // 手動型は、オーナー処理中をクリアする
-        if (!TheolizerClass::Theolizer::kIsAuto)
+#else
+        if ((aTrackingMode == etmDefault)
+         && (iSerializer.mClassTracking))
         {
-            iSerializer.clearProcessingOwner();
+            aTrackingMode=etmPointee;
         }
-
+#endif
         if (aTrackingMode == etmDefault)
         {
             oInstance.loadClass(iSerializer, tVersionType::Theolizer::kVersionNo);
@@ -834,6 +860,10 @@ struct Switcher
         else
         {
             BaseSerializer::AutoRestoreLoad aAutoRestoreLoad(iSerializer);
+
+            // クラス・インスタンスのオブジェクト追跡中
+            BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
+
             size_t aObjectId;
             if (!iSerializer.readPreElement()) {
                 THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
