@@ -31,6 +31,7 @@
 #include <theolizer/list.h>
 #include <theolizer/forward_list.h>
 #include <theolizer/set.h>
+#include <theolizer/map.h>
 
 // ***************************************************************************
 //      使い方の説明

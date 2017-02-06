@@ -100,10 +100,18 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         for (std::size_t i=0; i < aSize; ++i)
         {
             typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
+#ifdef THEOLIZER_INTERNAL_IS_MAP
+            typedef std::pair
+            <
+                typename TheolizerTarget::key_type,
+                typename TheolizerTarget::mapped_type
+            > ValueType;
+#else
             typedef typename TheolizerTarget::value_type        ValueType;
+#endif
             ValueType aElement;
             THEOLIZER_PROCESS(iSerializer, aElement);
-            oInstance->insert(aElement);
+            oInstance->emplace(aElement);
         }
     }
 };

@@ -783,11 +783,10 @@ struct Switcher
     // 保存
     static void save(tBaseSerializer& iSerializer, tVersionType& iInstance)
     {
-        auto& aClassTypeInfo = ClassTypeInfo<TheolizerClass>::getInstance();
-
         // 追跡モード修正(クラスは被ポインタなら自動的に追跡する)
         TrackingMode aTrackingMode=tTrackingMode;
 #ifndef THEOLIZER_INTERNAL_DISABLE_AUTO_POINTEE
+        auto& aClassTypeInfo = ClassTypeInfo<TheolizerClass>::getInstance();
         if ((aTrackingMode == etmDefault)
          && (aClassTypeInfo.isPointee())
          && (!iSerializer.mClassTracking))
@@ -835,11 +834,10 @@ struct Switcher
     // 回復
     static void load(tBaseSerializer& iSerializer, tVersionType& oInstance)
     {
-        auto& aClassTypeInfo = ClassTypeInfo<TheolizerClass>::getInstance();
-
         // 追跡モード修正(クラスは被ポインタなら自動的に追跡する)
         TrackingMode aTrackingMode=tTrackingMode;
 #ifndef THEOLIZER_INTERNAL_DISABLE_AUTO_POINTEE
+        auto& aClassTypeInfo = ClassTypeInfo<TheolizerClass>::getInstance();
         if ((aTrackingMode == etmDefault)
          && (aClassTypeInfo.isPointee())
          && (!iSerializer.mClassTracking))

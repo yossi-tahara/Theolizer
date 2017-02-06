@@ -77,7 +77,7 @@ ObjectTrackingClass全体はオブジェクト追跡するクラスのサンプ�
 
 <div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
 <b>makeAutoRelease()</b><br>
-これはnewで獲得した領域を自動的にdeleteするためのヘルパー関数です。source/reference_and_test/version/ver1/common.hで定義しています。たいへん小さいですので、興味のある方は覗いてみて下さい。
+これはnewで獲得した領域を自動的にdeleteするためのヘルパー関数です。戻り値のインスタンスが解放されるタイミングでdeleteします。source/reference_and_test/version/ver1/common.hで定義しています。たいへん小さいですので、興味のある方は覗いてみて下さい。
 </div>
 
 これにより、下図のようなデータ構造が生成され、図の順序でデータが保存されます。

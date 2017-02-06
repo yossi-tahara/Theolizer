@@ -202,6 +202,76 @@ struct SupportVectorPointee<tVector, bool, tTheolizerVersion>
 }   // namespace theolizer
 
 //############################################################################
+//      std::pair<>対応(std::mapシリーズ対応のため)
+//############################################################################
+
+// ***************************************************************************
+//      シリアライズ指定
+// ***************************************************************************
+
+THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((template<class T1, class T2>),
+                                        (std::pair<T1, T2>), 1,
+                                        pairTheolizer);
+
+//----------------------------------------------------------------------------
+//      ユーザ定義
+//----------------------------------------------------------------------------
+
+//      ---<<< Version.1 >>>---
+
+template<class T1, class T2>
+template<class tMidSerializer, class tTheolizerVersion>
+struct TheolizerNonIntrusive<std::pair<T1, T2>>::
+    TheolizerUserDefine<tMidSerializer, tTheolizerVersion, 1>
+{
+    // 保存
+    static void saveClassManual
+    (
+        tMidSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
+    )
+    {
+        THEOLIZER_PROCESS(iSerializer, iInstance->first);
+        THEOLIZER_PROCESS(iSerializer, iInstance->second);
+    }
+
+    // 回復
+    static void loadClassManual
+    (
+        tMidSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget*& oInstance
+    )
+    {
+        // もし、nullptrなら、インスタンス生成
+        if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
+
+        THEOLIZER_PROCESS(iSerializer, oInstance->first);
+        THEOLIZER_PROCESS(iSerializer, oInstance->second);
+    }
+};
+
+//----------------------------------------------------------------------------
+//      自動生成
+//----------------------------------------------------------------------------
+
+#ifdef  THEOLIZER_WRITE_CODE // ###### std::pair<T1,T2> ######
+
+#define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_TYPE std::pair<T1, T2>
+#define THEOLIZER_GENERATED_PARAMETER_LIST template<class T1, class T2>
+#define THEOLIZER_GENERATED_UNIQUE_NAME pairTheolizer
+
+//      ---<<< Version.1 >>>---
+
+#define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_NAME()\
+    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"std::pair",T1,T2))
+#include <theolizer/internal/version_manual.inc>
+#undef  THEOLIZER_GENERATED_VERSION_NO
+
+#endif//THEOLIZER_WRITE_CODE // ###### std::pair<T1,T2> ######
+
+//############################################################################
 //      End
 //############################################################################
 
