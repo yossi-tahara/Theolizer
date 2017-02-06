@@ -36,6 +36,52 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 //############################################################################
 
 // ***************************************************************************
+//      手動コード展開
+// ***************************************************************************
+
+#define THEOLZIER_INTERNAL_CONTAINER_PARAMETER          template<class T, class Alloc>
+#define THEOLZIER_INTERNAL_CONTAINER_NAME               std::list
+#define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           T, Alloc
+#define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             listTheolizer
+#include "internal/container_no_key.inc"
+
+// ***************************************************************************
+//      自動生成コード
+// ***************************************************************************
+
+#ifdef  THEOLIZER_WRITE_CODE
+
+#define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_TYPE std::list<T, Alloc>
+#define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class Alloc>
+#define THEOLIZER_GENERATED_UNIQUE_NAME listTheolizer
+
+//      ---<<< Version.1 >>>---
+
+#define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_NAME()\
+    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"std::list",T,Alloc))
+#include <theolizer/internal/version_manual.inc>
+#undef  THEOLIZER_GENERATED_VERSION_NO
+
+#endif//THEOLIZER_WRITE_CODE
+
+// ***************************************************************************
+//      定義したマクロの解放
+// ***************************************************************************
+
+#undef  THEOLZIER_INTERNAL_CONTAINER_PARAMETER
+#undef  THEOLZIER_INTERNAL_CONTAINER_NAME
+#undef  THEOLZIER_INTERNAL_CONTAINER_ARGUMENT
+#undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE
+
+#undef  THEOLIZER_INTERNAL_FULL_NAME
+
+//############################################################################
+//      被ポインタ用(theolizer::ListPointee<>)
+//############################################################################
+
+// ***************************************************************************
 //      theolizer::ListPointee<>
 //          std::list<>の単純な派生クラス
 //          要素をPointeeとして処理する
@@ -58,41 +104,16 @@ public:
 // ***************************************************************************
 
 #define THEOLZIER_INTERNAL_CONTAINER_PARAMETER          template<class T, class Alloc>
-#define THEOLZIER_INTERNAL_CONTAINER_NAME               std::list
-#define THEOLZIER_INTERNAL_CONTAINER_NAME_POINTEE       theolizer::ListPointee
+#define THEOLZIER_INTERNAL_CONTAINER_NAME               theolizer::ListPointee
 #define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           T, Alloc
-#define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             listTheolizer
-#define THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE     ListPointeeTheolizer
+#define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             ListPointeeTheolizer
+#define THEOLIZER_INTERNAL_POINTEE
 #include "internal/container_no_key.inc"
+#undef  THEOLIZER_INTERNAL_POINTEE
 
 // ***************************************************************************
-//      自動生成コードの雛形
+//      自動生成コード
 // ***************************************************************************
-
-//----------------------------------------------------------------------------
-//      通常用
-//----------------------------------------------------------------------------
-
-#ifdef  THEOLIZER_WRITE_CODE
-
-#define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::list<T, Alloc>
-#define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class Alloc>
-#define THEOLIZER_GENERATED_UNIQUE_NAME listTheolizer
-
-//      ---<<< Version.1 >>>---
-
-#define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_NAME()\
-    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"std::list",T,Alloc))
-#include <theolizer/internal/version_manual.inc>
-#undef  THEOLIZER_GENERATED_VERSION_NO
-
-#endif//THEOLIZER_WRITE_CODE
-
-//----------------------------------------------------------------------------
-//      被ポインタ用
-//----------------------------------------------------------------------------
 
 #ifdef  THEOLIZER_WRITE_CODE
 
@@ -117,13 +138,10 @@ public:
 
 #undef  THEOLZIER_INTERNAL_CONTAINER_PARAMETER
 #undef  THEOLZIER_INTERNAL_CONTAINER_NAME
-#undef  THEOLZIER_INTERNAL_CONTAINER_NAME_POINTEE
 #undef  THEOLZIER_INTERNAL_CONTAINER_ARGUMENT
 #undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE
-#undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE
 
 #undef  THEOLIZER_INTERNAL_FULL_NAME
-#undef  THEOLIZER_INTERNAL_FULL_NAME_POINTEE
 
 //############################################################################
 //      End

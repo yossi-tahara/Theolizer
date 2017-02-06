@@ -44,15 +44,11 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 #define THEOLZIER_INTERNAL_CONTAINER_NAME               std::set
 #define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           T, Compare, Alloc
 #define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             setTheolizer
-#include "internal/container_key.inc"
+#include "internal/container_set.inc"
 
 // ***************************************************************************
-//      自動生成コードの雛形
+//      自動生成コード
 // ***************************************************************************
-
-//----------------------------------------------------------------------------
-//      通常用
-//----------------------------------------------------------------------------
 
 #ifdef  THEOLIZER_WRITE_CODE
 
@@ -96,7 +92,7 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 #define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           T, Compare, Alloc
 #define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             multisetTheolizer
 #define THEOLIZER_INTERNAL_IS_MULTI
-#include "internal/container_key.inc"
+#include "internal/container_set.inc"
 #undef  THEOLIZER_INTERNAL_IS_MULTI
 
 // ***************************************************************************

@@ -44,17 +44,11 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 #define THEOLZIER_INTERNAL_CONTAINER_NAME               std::map
 #define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           Key, T, Compare, Alloc
 #define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             mapTheolizer
-#define THEOLIZER_INTERNAL_IS_MAP
-#include "internal/container_key.inc"
-#undef  THEOLIZER_INTERNAL_IS_MAP
+#include "internal/container_map.inc"
 
 // ***************************************************************************
-//      自動生成コードの雛形
+//      自動生成コード
 // ***************************************************************************
-
-//----------------------------------------------------------------------------
-//      通常用
-//----------------------------------------------------------------------------
 
 #ifdef  THEOLIZER_WRITE_CODE
 
@@ -97,10 +91,8 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 #define THEOLZIER_INTERNAL_CONTAINER_NAME               std::multimap
 #define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           Key, T, Compare, Alloc
 #define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             multimapTheolizer
-#define THEOLIZER_INTERNAL_IS_MAP
 #define THEOLIZER_INTERNAL_IS_MULTI
-#include "internal/container_key.inc"
-#undef  THEOLIZER_INTERNAL_IS_MAP
+#include "internal/container_map.inc"
 #undef  THEOLIZER_INTERNAL_IS_MULTI
 
 // ***************************************************************************

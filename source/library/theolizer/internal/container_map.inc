@@ -70,6 +70,8 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
+        typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(typename TheolizerTarget::value_type);
         THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Compare);
         THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
 
@@ -77,7 +79,8 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         auto itr=iInstance->begin();
         for (std::size_t i=0; i < iInstance->size(); ++i, ++itr)
         {
-            THEOLIZER_PROCESS(iSerializer, *itr);
+            THEOLIZER_PROCESS(iSerializer, itr->first);
+            THEOLIZER_PROCESS(iSerializer, itr->second);
         }
     }
 
@@ -88,6 +91,8 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
+        typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(typename TheolizerTarget::value_type);
         THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Compare);
         THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
 
@@ -103,19 +108,25 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
 
         for (std::size_t i=0; i < aSize; ++i)
         {
-            typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
-#ifdef THEOLIZER_INTERNAL_IS_MAP
-            typedef std::pair
-            <
-                typename TheolizerTarget::key_type,
-                typename TheolizerTarget::mapped_type
-            > ValueType;
+            typename TheolizerTarget::key_type  aKey;
+            THEOLIZER_PROCESS(iSerializer, aKey);
+            auto found=oInstance->find(aKey);
+            // 新規
+            if (found == oInstance->end())
+            {
+                typename TheolizerTarget::mapped_type   aData;
+                auto temp=oInstance->emplace(aKey, aData);
+#ifdef THEOLIZER_INTERNAL_IS_MULTI
+                THEOLIZER_PROCESS(iSerializer, temp->second);
 #else
-            typedef typename TheolizerTarget::value_type        ValueType;
+                THEOLIZER_PROCESS(iSerializer, temp.first->second);
 #endif
-            ValueType aElement;
-            THEOLIZER_PROCESS(iSerializer, aElement);
-            oInstance->emplace(aElement);
+            }
+            // 既存
+            else
+            {
+                THEOLIZER_PROCESS(iSerializer, found->second);
+            }
         }
     }
 };

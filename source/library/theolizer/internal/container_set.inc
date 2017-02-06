@@ -1,11 +1,11 @@
 ﻿//############################################################################
 //      
 /*!
-@brief      Theolizerライブラリの標準コンテナ・サポート(固定長用)
+@brief      Theolizerライブラリの標準コンテナ・サポート(キー有り用)
 @ingroup    TheolizerLib
-@file       container_fixed.inc
+@file       container_key.inc
 @author     Yoshinori Tahara(Theoride Technology)
-@date       2017/02/02 Created
+@date       2017/02/05 Created
 */
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
@@ -70,15 +70,14 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Compare);
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
+
         THEOLIZER_PROCESS(iSerializer, iInstance->size());
         auto itr=iInstance->begin();
         for (std::size_t i=0; i < iInstance->size(); ++i, ++itr)
         {
-#ifndef THEOLIZER_INTERNAL_POINTEE
             THEOLIZER_PROCESS(iSerializer, *itr);
-#else
-            THEOLIZER_PROCESS_POINTEE(iSerializer, *itr);
-#endif
         }
     }
 
@@ -89,28 +88,26 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Compare);
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
+
         // もし、nullptrなら、インスタンス生成
         if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
         std::size_t aSize;
         THEOLIZER_PROCESS(iSerializer, aSize);
 
-        // 同じサイズのみ許可する
-        THEOLIZER_INTERNAL_ASSERT(aSize == oInstance->size(),
-            theolizer::print("Can't support changing size(%1% != %2%).",
-            aSize, oInstance->size()));
+#ifdef THEOLIZER_INTERNAL_IS_MULTI  // キーの重複を許す場合、一旦クリアする
+        oInstance->clear();
+#endif
 
-        // 先に領域をvector内部に生成してから、そこへ回復する。
-        //  これにより、要素のコピーやムーブが発生しないようにすることで、
-        //  「親」へのポインタが壊れないようにしている。
-        auto itr=oInstance->begin();
         for (std::size_t i=0; i < aSize; ++i)
         {
-#ifndef THEOLIZER_INTERNAL_POINTEE
-            THEOLIZER_PROCESS(iSerializer, *itr++);
-#else
-            THEOLIZER_PROCESS_POINTEE(iSerializer, *itr++);
-#endif
+            typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
+            typedef typename TheolizerTarget::value_type        ValueType;
+            ValueType aElement;
+            THEOLIZER_PROCESS(iSerializer, aElement);
+            oInstance->emplace(aElement);
         }
     }
 };

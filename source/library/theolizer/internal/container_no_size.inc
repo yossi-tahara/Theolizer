@@ -36,9 +36,6 @@
 #define THEOLIZER_INTERNAL_FULL_NAME                                        \
     THEOLZIER_INTERNAL_CONTAINER_NAME<THEOLZIER_INTERNAL_CONTAINER_ARGUMENT>
 
-#define THEOLIZER_INTERNAL_FULL_NAME_POINTEE                                \
-    THEOLZIER_INTERNAL_CONTAINER_NAME_POINTEE<THEOLZIER_INTERNAL_CONTAINER_ARGUMENT>
-
 //############################################################################
 //      標準型
 //############################################################################
@@ -73,6 +70,8 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
+
         std::size_t aSize=0;
         for (auto it=iInstance->begin(); it != iInstance->end(); ++it)
             ++aSize;
@@ -80,79 +79,11 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         auto itr=iInstance->begin();
         for (std::size_t i=0; i < aSize; ++i, ++itr)
         {
+#ifndef THEOLIZER_INTERNAL_POINTEE
             THEOLIZER_PROCESS(iSerializer, *itr);
-        }
-    }
-
-    // 回復
-    static void loadClassManual
-    (
-        tMidSerializer& iSerializer,
-        typename tTheolizerVersion::TheolizerTarget*& oInstance
-    )
-    {
-        // もし、nullptrなら、インスタンス生成
-        if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
-
-        std::size_t aSize;
-        THEOLIZER_PROCESS(iSerializer, aSize);
-
-        auto itr=oInstance->begin();
-        auto before=oInstance->before_begin();
-        for (std::size_t i=0; i < aSize; ++i)
-        {
-            if (itr == oInstance->end())
-            {
-                itr=oInstance->emplace_after(before);
-            }
-            before=itr;
-            THEOLIZER_PROCESS(iSerializer, *itr++);
-        }
-    }
-};
-
-//############################################################################
-//      被ポインタ型
-//############################################################################
-
-// ***************************************************************************
-//      シリアライズ指定
-// ***************************************************************************
-
-THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((THEOLZIER_INTERNAL_CONTAINER_PARAMETER),
-                                        (THEOLIZER_INTERNAL_FULL_NAME_POINTEE), 1,
-                                        THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE);
-
-//----------------------------------------------------------------------------
-//      ユーザ定義
-//          回復処理の注意事項：
-//              余分なデータの破棄、および、ClassType終了処理のため、
-//              必ずiSerializer.readPreElement()がfalseを返却するまで
-//              処理しておくこと。
-//----------------------------------------------------------------------------
-
-//      ---<<< Version.1 >>>---
-
-THEOLZIER_INTERNAL_CONTAINER_PARAMETER
-template<class tMidSerializer, class tTheolizerVersion>
-struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME_POINTEE>::
-    TheolizerUserDefine<tMidSerializer, tTheolizerVersion, 1>
-{
-    // 保存
-    static void saveClassManual
-    (
-        tMidSerializer& iSerializer,
-        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
-    )
-    {
-        std::size_t aSize=0;
-        for (auto it=iInstance->begin(); it != iInstance->end(); ++it)
-            ++aSize;
-        THEOLIZER_PROCESS(iSerializer, aSize);
-        auto itr=iInstance->begin();
-        for (std::size_t i=0; i < aSize; ++i, ++itr)
-        {
+#else
             THEOLIZER_PROCESS_POINTEE(iSerializer, *itr);
+#endif
         }
     }
 
@@ -163,6 +94,8 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME_POINTEE>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
+
         // もし、nullptrなら、インスタンス生成
         if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
@@ -178,7 +111,11 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME_POINTEE>::
                 itr=oInstance->emplace_after(before);
             }
             before=itr;
+#ifndef THEOLIZER_INTERNAL_POINTEE
+            THEOLIZER_PROCESS(iSerializer, *itr++);
+#else
             THEOLIZER_PROCESS_POINTEE(iSerializer, *itr++);
+#endif
         }
     }
 };
