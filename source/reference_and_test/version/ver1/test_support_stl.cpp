@@ -478,7 +478,7 @@ void saveContainerSet(tSerializer& iSerializer, tType const& iFirst)
 }
 
 template<class tSerializer, class tContainer, typename tType>
-void loadContainerSet(tSerializer& iSerializer, tType const& iFirst)
+void loadContainerSet(tSerializer& iSerializer, tType const& iFirst, bool iIsMulti)
 {
     {
         // 回復領域生成
@@ -505,11 +505,18 @@ void loadContainerSet(tSerializer& iSerializer, tType const& iFirst)
         THEOLIZER_PROCESS(iSerializer, aContainer);
 
         // チェック
-        THEOLIZER_EQUAL(aContainer.size(), 4);
         THEOLIZER_CHECK(aContainer.find(iFirst+100+0) != aContainer.end(), iFirst+100+0);
         THEOLIZER_CHECK(aContainer.find(iFirst+100+1) != aContainer.end(), iFirst+100+1);
         THEOLIZER_CHECK(aContainer.find(iFirst+100+2) != aContainer.end(), iFirst+100+2);
-        THEOLIZER_CHECK(aContainer.find(iFirst+100+3) != aContainer.end(), iFirst+100+3);
+        if (!iIsMulti)
+        {
+            THEOLIZER_EQUAL(aContainer.size(), 4);
+            THEOLIZER_CHECK(aContainer.find(iFirst+100+3) != aContainer.end(), iFirst+100+3);
+        }
+        else
+        {
+            THEOLIZER_EQUAL(aContainer.size(), 3);
+        }
     }
 }
 
@@ -532,7 +539,7 @@ void saveContainerMap(tSerializer& iSerializer, tType const& iFirst)
 }
 
 template<class tSerializer, class tContainer, typename tType>
-void loadContainerMap(tSerializer& iSerializer, tType const& iFirst)
+void loadContainerMap(tSerializer& iSerializer, tType const& iFirst, bool iIsMulti)
 {
     {
         // 回復領域生成
@@ -568,23 +575,25 @@ void loadContainerMap(tSerializer& iSerializer, tType const& iFirst)
         THEOLIZER_PROCESS(iSerializer, aContainer);
 
         // チェック
-        THEOLIZER_EQUAL(aContainer.size(), 4);
-
         auto it=aContainer.find(iFirst+100+0);
         THEOLIZER_CHECK(it != aContainer.end(), iFirst+100+0);
         THEOLIZER_EQUAL(it->second, iFirst+100+10);
-
         it=aContainer.find(iFirst+100+1);
         THEOLIZER_CHECK(it != aContainer.end(), iFirst+100+1);
         THEOLIZER_EQUAL(it->second, iFirst+100+11);
-
         it=aContainer.find(iFirst+100+2);
         THEOLIZER_CHECK(it != aContainer.end(), iFirst+100+2);
         THEOLIZER_EQUAL(it->second, iFirst+100+12);
-
-        it=aContainer.find(iFirst+100+3);
-        THEOLIZER_CHECK(it != aContainer.end(), iFirst+100+3);
-        THEOLIZER_EQUAL(it->second, iFirst+100+13);
+        if (!iIsMulti)
+        {
+            THEOLIZER_EQUAL(aContainer.size(), 4);
+            it=aContainer.find(iFirst+100+3);
+            THEOLIZER_CHECK(it != aContainer.end(), iFirst+100+3);
+            THEOLIZER_EQUAL(it->second, iFirst+100+13);
+        }
+        else
+        {
+        }
     }
 }
 
@@ -810,14 +819,30 @@ void saveSupportStl(tSerializer& iSerializer)
 //      ---<<< std::set >>>---
 
     {
-        std::cout << "        saveContainerSet() : int" << std::endl;
+        std::cout << "        saveContainerSet() : std::set<int>" << std::endl;
         saveContainerSet<tSerializer, std::set<int>, int>
         (
             iSerializer, 100
         );
 
-        std::cout << "        saveContainerSet() : TestStl" << std::endl;
+        std::cout << "        saveContainerSet() : std::set<TestStl>" << std::endl;
         saveContainerSet<tSerializer, std::set<TestStl>, TestStl>
+        (
+            iSerializer, 500
+        );
+    }
+
+//      ---<<< std::multiset >>>---
+
+    {
+        std::cout << "        saveContainerSet() : std::multiset<int>" << std::endl;
+        saveContainerSet<tSerializer, std::multiset<int>, int>
+        (
+            iSerializer, 100
+        );
+
+        std::cout << "        saveContainerSet() : std::multiset<TestStl>" << std::endl;
+        saveContainerSet<tSerializer, std::multiset<TestStl>, TestStl>
         (
             iSerializer, 500
         );
@@ -826,14 +851,30 @@ void saveSupportStl(tSerializer& iSerializer)
 //      ---<<< std::map >>>---
 
     {
-        std::cout << "        saveContainerMap() : int" << std::endl;
+        std::cout << "        saveContainerMap() : std::map<int, int>" << std::endl;
         saveContainerMap<tSerializer, std::map<int, int>, int>
         (
             iSerializer, 100
         );
 
-        std::cout << "        saveContainerMap() : TestStl" << std::endl;
+        std::cout << "        saveContainerMap() : std::map<TestStl, TestStl>" << std::endl;
         saveContainerMap<tSerializer, std::map<TestStl, TestStl>, TestStl>
+        (
+            iSerializer, 500
+        );
+    }
+
+//      ---<<< std::multimap >>>---
+
+    {
+        std::cout << "        saveContainerMap() : std::multimap<int, int>" << std::endl;
+        saveContainerMap<tSerializer, std::multimap<int, int>, int>
+        (
+            iSerializer, 100
+        );
+
+        std::cout << "        saveContainerMap() : std::multimap<TestStl, TestStl>" << std::endl;
+        saveContainerMap<tSerializer, std::multimap<TestStl, TestStl>, TestStl>
         (
             iSerializer, 500
         );
@@ -1101,36 +1142,67 @@ void loadSupportStl(tSerializer& iSerializer)
             (iSerializer, TestStl(4000), true);
     }
 
-
 //      ---<<< std::set >>>---
 
     {
-        std::cout << "        loadContainerSet() : int" << std::endl;
+        std::cout << "        loadContainerSet() : std::set<int>" << std::endl;
         loadContainerSet<tSerializer, std::set<int>, int>
         (
-            iSerializer, 100
+            iSerializer, 100, false
         );
 
-        std::cout << "        loadContainerSet() : TestStl" << std::endl;
+        std::cout << "        loadContainerSet() : std::set<TestStl>" << std::endl;
         loadContainerSet<tSerializer, std::set<TestStl>, TestStl>
         (
-            iSerializer, 500
+            iSerializer, 500, false
+        );
+    }
+
+//      ---<<< std::multiset >>>---
+
+    {
+        std::cout << "        loadContainerSet() : std::multiset<int>" << std::endl;
+        loadContainerSet<tSerializer, std::multiset<int>, int>
+        (
+            iSerializer, 100, true
+        );
+
+        std::cout << "        loadContainerSet() : std::multiset<TestStl>" << std::endl;
+        loadContainerSet<tSerializer, std::multiset<TestStl>, TestStl>
+        (
+            iSerializer, 500, true
         );
     }
 
 //      ---<<< std::map >>>---
 
     {
-        std::cout << "        loadContainerMap() : int" << std::endl;
+        std::cout << "        loadContainerMap() : std::map<int, int>" << std::endl;
         loadContainerMap<tSerializer, std::map<int, int>, int>
         (
-            iSerializer, 100
+            iSerializer, 100, false
         );
 
-        std::cout << "        loadContainerMap() : TestStl" << std::endl;
+        std::cout << "        loadContainerMap() : std::map<TestStl, TestStl>" << std::endl;
         loadContainerMap<tSerializer, std::map<TestStl, TestStl>, TestStl>
         (
-            iSerializer, 500
+            iSerializer, 500, false
+        );
+    }
+
+//      ---<<< std::multimap >>>---
+
+    {
+        std::cout << "        loadContainerMap() : std::multimap<int, int>" << std::endl;
+        loadContainerMap<tSerializer, std::multimap<int, int>, int>
+        (
+            iSerializer, 100, true
+        );
+
+        std::cout << "        loadContainerMap() : std::multimap<TestStl, TestStl>" << std::endl;
+        loadContainerMap<tSerializer, std::multimap<TestStl, TestStl>, TestStl>
+        (
+            iSerializer, 500, true
         );
     }
 }

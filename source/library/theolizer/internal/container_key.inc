@@ -1,7 +1,7 @@
 ﻿//############################################################################
 //      
 /*!
-@brief      Theolizerライブラリの標準コンテナ・サポート(キー有り重複禁止用)
+@brief      Theolizerライブラリの標準コンテナ・サポート(キー有り用)
 @ingroup    TheolizerLib
 @file       container_key.inc
 @author     Yoshinori Tahara(Theoride Technology)
@@ -96,6 +96,10 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
 
         std::size_t aSize;
         THEOLIZER_PROCESS(iSerializer, aSize);
+
+#ifdef THEOLIZER_INTERNAL_IS_MULTI  // キーの重複を許す場合、一旦クリアする
+        oInstance->clear();
+#endif
 
         for (std::size_t i=0; i < aSize; ++i)
         {
