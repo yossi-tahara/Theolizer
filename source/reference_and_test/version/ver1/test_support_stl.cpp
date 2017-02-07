@@ -60,45 +60,182 @@ void tutoriseSupportStl()
     std::cout << "tutoriseSupportStl() start" << std::endl;
 
 //----------------------------------------------------------------------------
-//      保存
+//      通常
 //----------------------------------------------------------------------------
 
+//      ---<<< 保存 >>>---
+
     {
-//      ---<<< シリアライズ対象変数定義 >>>---
+        // 保存データ生成
+        std::list<int>  aList;
+        aList.emplace_back(100);
+        aList.emplace_back(200);
+        aList.emplace_back(300);
 
-
-//      ---<<< 保存処理 >>>---
-
-        std::ofstream   aStream("tutorise_support_stl.json");
+        // 保存
+        std::ofstream   aStream("tutorise_support_stl_0.json");
         theolizer::JsonOSerializer<> aSerializer(aStream);
 
-        // オーナーとして保存／回復する
+        THEOLIZER_PROCESS(aSerializer, aList);
+    }
 
-        // オブジェクトIDテーブルのクリア
+//      ---<<< 回復 >>>---
+
+    {
+        // 回復先データ生成
+        std::list<int>  aList;
+
+        // 回復
+        std::ifstream   aStream("tutorise_support_stl_0.json");
+        theolizer::JsonISerializer<> aSerializer(aStream);
+
+        THEOLIZER_PROCESS(aSerializer, aList);
+
+        // チェック
+        auto itr=aList.begin();
+        THEOLIZER_EQUAL(*itr, 100);     ++itr;
+        THEOLIZER_EQUAL(*itr, 200);     ++itr;
+        THEOLIZER_EQUAL(*itr, 300);     ++itr;
+    }
+
+//----------------------------------------------------------------------------
+//      被ポインタ
+//----------------------------------------------------------------------------
+
+//      ---<<< 保存 >>>---
+
+    {
+        // 保存データ生成
+        theolizer::VectorPointee<int>   aVectorPointee;
+        aVectorPointee.emplace_back(400);
+        aVectorPointee.emplace_back(500);
+        aVectorPointee.emplace_back(600);
+
+        auto itr=aVectorPointee.begin();
+        int*    aPtr0=&*itr++;
+        int*    aPtr1=&*itr++;
+        int*    aPtr2=&*itr++;
+
+        // 保存
+        std::ofstream   aStream("tutorise_support_stl_1.json");
+        theolizer::JsonOSerializer<> aSerializer(aStream);
+
+        THEOLIZER_PROCESS(aSerializer, aVectorPointee);
+        THEOLIZER_PROCESS(aSerializer, aPtr0);
+        THEOLIZER_PROCESS(aSerializer, aPtr1);
+        THEOLIZER_PROCESS(aSerializer, aPtr2);
+
+        aSerializer.clearTracking();
+    }
+
+//      ---<<< 回復 >>>---
+
+    {
+        // 回復先データ生成
+        theolizer::VectorPointee<int>   aVectorPointee;
+        int*    aPtr0=nullptr;
+        int*    aPtr1=nullptr;
+        int*    aPtr2=nullptr;
+
+        // 回復
+        std::ifstream   aStream("tutorise_support_stl_1.json");
+        theolizer::JsonISerializer<> aSerializer(aStream);
+
+        THEOLIZER_PROCESS(aSerializer, aVectorPointee);
+        THEOLIZER_PROCESS(aSerializer, aPtr0);
+        THEOLIZER_PROCESS(aSerializer, aPtr1);
+        THEOLIZER_PROCESS(aSerializer, aPtr2);
+
+        // チェック
+        auto itr=aVectorPointee.begin();
+        THEOLIZER_EQUAL_PTR(&*itr, aPtr0);
+        THEOLIZER_EQUAL(*itr, 400);     ++itr;
+        THEOLIZER_EQUAL_PTR(&*itr, aPtr1);
+        THEOLIZER_EQUAL(*itr, 500);     ++itr;
+        THEOLIZER_EQUAL_PTR(&*itr, aPtr2);
+        THEOLIZER_EQUAL(*itr, 600);     ++itr;
+
         aSerializer.clearTracking();
     }
 
 //----------------------------------------------------------------------------
-//      回復
+//      保存先指定による分割保存と回復
 //----------------------------------------------------------------------------
 
+//      ---<<< 保存 >>>---
+
     {
+        // 保存データ生成
+        std::map<std::string, StlTutorial>  aMap;
+        aMap.emplace("first",  StlTutorial(100, 200));
+        aMap.emplace("second", StlTutorial(101, 201));
+        aMap.emplace("third",  StlTutorial(102, 202));
 
-//      ---<<< 回復先変数定義 >>>---
+        // 保存
+        std::ofstream   aStreamA("tutorise_support_stl_a.json");
+        theolizer::JsonOSerializer<theolizerD::DestA> aSerializerA(aStreamA);
+        std::ofstream   aStreamB("tutorise_support_stl_b.json");
+        theolizer::JsonOSerializer<theolizerD::DestB> aSerializerB(aStreamB);
 
+        THEOLIZER_PROCESS(aSerializerA, aMap);
+        THEOLIZER_PROCESS(aSerializerB, aMap);
 
-//      ---<<< 回復処理 >>>---
+        aSerializerA.clearTracking();
+        aSerializerB.clearTracking();
+    }
 
-        std::ifstream   aStream("tutorise_support_stl.json");
-        theolizer::JsonISerializer<> aSerializer(aStream);
+//      ---<<< 回復 >>>---
 
-        // オーナーとして保存／回復する
+    {
+        // 回復先データ生成
+        std::map<std::string, StlTutorial>  aMap;
 
-        // オブジェクトIDテーブルのクリア
-        aSerializer.clearTracking();
+        // 回復準備
+        std::ifstream   aStreamA("tutorise_support_stl_a.json");
+        theolizer::JsonISerializer<> aSerializerA(aStreamA);
+        std::ifstream   aStreamB("tutorise_support_stl_b.json");
+        theolizer::JsonISerializer<> aSerializerB(aStreamB);
 
-//      ---<<< 結果のチェック >>>---
+        // 回復(DestA)
+        THEOLIZER_PROCESS(aSerializerA, aMap);
 
+        // チェックA(DestBは回復されていない)
+        auto itr=aMap.find("first");
+        THEOLIZER_CHECK(itr != aMap.end(), "first");
+        THEOLIZER_EQUAL(itr->second.mDataA, 100);
+        THEOLIZER_EQUAL(itr->second.mDataB, 0);
+
+        itr=aMap.find("second");
+        THEOLIZER_CHECK(itr != aMap.end(), "second");
+        THEOLIZER_EQUAL(itr->second.mDataA, 101);
+        THEOLIZER_EQUAL(itr->second.mDataB, 0);
+
+        itr=aMap.find("third");
+        THEOLIZER_CHECK(itr != aMap.end(), "third");
+        THEOLIZER_EQUAL(itr->second.mDataA, 102);
+        THEOLIZER_EQUAL(itr->second.mDataB, 0);
+
+        // 回復(DestB)
+        THEOLIZER_PROCESS(aSerializerB, aMap);
+
+        // チェックB
+        itr=aMap.find("first");
+        THEOLIZER_CHECK(itr != aMap.end(), "first");
+        THEOLIZER_EQUAL(itr->second.mDataA, 100);
+        THEOLIZER_EQUAL(itr->second.mDataB, 200);
+
+        itr=aMap.find("second");
+        THEOLIZER_CHECK(itr != aMap.end(), "second");
+        THEOLIZER_EQUAL(itr->second.mDataA, 101);
+        THEOLIZER_EQUAL(itr->second.mDataB, 201);
+
+        itr=aMap.find("third");
+        THEOLIZER_CHECK(itr != aMap.end(), "third");
+        THEOLIZER_EQUAL(itr->second.mDataA, 102);
+        THEOLIZER_EQUAL(itr->second.mDataB, 202);
+
+        aSerializerA.clearTracking();
+        aSerializerB.clearTracking();
     }
 
     std::cout << "tutoriseSupportStl() end\n" << std::endl;
@@ -860,7 +997,7 @@ void saveSupportStl(tSerializer& iSerializer)
 
 //      ---<<< 手動(トップ・レベル)による保存 >>>---
 
-#if 1
+#if 0
     {
         std::cout << "        saveSupportStl() : Manual(Top Level)" << std::endl;
 
@@ -1239,7 +1376,7 @@ void loadSupportStl(tSerializer& iSerializer)
 
 //      ---<<< 手動(トップ・レベル)による回復 >>>---
 
-#if 1
+#if 0
     {
         std::cout << "        loadSupportStl() : Manual(Top Level)" << std::endl;
 
