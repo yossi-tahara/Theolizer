@@ -63,18 +63,34 @@ THEOLIZER_TEMPLATE_PARAMETER_TEMPLATE((template<class T>),
                                       std::less, (T),
                                       lessTheolizer);
 
-#if 0
+//----------------------------------------------------------------------------
+//      std::hash<Key>
+//----------------------------------------------------------------------------
 
-// ***************************************************************************
+THEOLIZER_TEMPLATE_PARAMETER_TEMPLATE((template<class Key>),
+                                      std::hash, (Key),
+                                      hashTheolizer);
+
+//----------------------------------------------------------------------------
+//      std::equal_to<Key>
+//----------------------------------------------------------------------------
+
+THEOLIZER_TEMPLATE_PARAMETER_TEMPLATE((template<class Key>),
+                                      std::equal_to, (Key),
+                                      equal_toTheolizer);
+
+//############################################################################
 //      自動生成コードの雛形
 //          これを各コンテナ用ヘッダ・ファイルの後半へコピーし、
 //          THEOLIZER_PROVIDED_BY("Theoride Technology");をコメント・アウトして
 //          ビルドすることで、Theolizerドライバにより適切な定義へ自動修正される。
-// ***************************************************************************
+//############################################################################
 
-//----------------------------------------------------------------------------
-//      通常用
-//----------------------------------------------------------------------------
+#if 0
+
+// ***************************************************************************
+//      自動生成コード
+// ***************************************************************************
 
 #ifdef  THEOLIZER_WRITE_CODE
 
@@ -88,28 +104,6 @@ THEOLIZER_TEMPLATE_PARAMETER_TEMPLATE((template<class T>),
 #define THEOLIZER_GENERATED_VERSION_NO  THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
 #define THEOLIZER_GENERATED_CLASS_NAME()    THEOLIZER_INTERNAL_TEMPLATE_NAME(\
     (u8"" THEOLIZER_INTERNAL_STRINGIZE(THEOLZIER_INTERNAL_CONTAINER_NAME),  \
-    THEOLZIER_INTERNAL_CONTAINER_ARGUMENT))
-#include <theolizer/internal/version_manual.inc>
-#undef  THEOLIZER_GENERATED_VERSION_NO
-
-#endif//THEOLIZER_WRITE_CODE
-
-//----------------------------------------------------------------------------
-//      被ポインタ用
-//----------------------------------------------------------------------------
-
-#ifdef  THEOLIZER_WRITE_CODE
-
-#define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE      THEOLIZER_INTERNAL_FULL_NAME_POINTEE
-#define THEOLIZER_GENERATED_PARAMETER_LIST  THEOLZIER_INTERNAL_CONTAINER_PARAMETER
-#define THEOLIZER_GENERATED_UNIQUE_NAME     THEOLZIER_INTERNAL_CONTAINER_UNIQUE_POINTEE
-
-//      ---<<< Version.1 >>>---
-
-#define THEOLIZER_GENERATED_VERSION_NO      THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_NAME()    THEOLIZER_INTERNAL_TEMPLATE_NAME(\
-    (u8"" THEOLIZER_INTERNAL_STRINGIZE(THEOLZIER_INTERNAL_CONTAINER_NAME_POINTEE),\
     THEOLZIER_INTERNAL_CONTAINER_ARGUMENT))
 #include <theolizer/internal/version_manual.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO

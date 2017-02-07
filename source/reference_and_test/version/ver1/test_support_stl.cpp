@@ -593,6 +593,7 @@ void loadContainerMap(tSerializer& iSerializer, tType const& iFirst, bool iIsMul
         }
         else
         {
+            THEOLIZER_EQUAL(aContainer.size(), 3);
         }
     }
 }
@@ -875,6 +876,72 @@ void saveSupportStl(tSerializer& iSerializer)
 
         std::cout << "        saveContainerMap() : std::multimap<TestStl, TestStl>" << std::endl;
         saveContainerMap<tSerializer, std::multimap<TestStl, TestStl>, TestStl>
+        (
+            iSerializer, 500
+        );
+    }
+
+//      ---<<< std::unordered_set >>>---
+
+    {
+        std::cout << "        saveContainerSet() : std::unordered_set<int>" << std::endl;
+        saveContainerSet<tSerializer, std::unordered_set<int>, int>
+        (
+            iSerializer, 100
+        );
+
+        std::cout << "        saveContainerSet() : std::unordered_set<TestStl>" << std::endl;
+        saveContainerSet<tSerializer, std::unordered_set<TestStl>, TestStl>
+        (
+            iSerializer, 500
+        );
+    }
+
+//      ---<<< std::unordered_multiset >>>---
+
+    {
+        std::cout << "        saveContainerSet() : std::unordered_multiset<int>" << std::endl;
+        saveContainerSet<tSerializer, std::unordered_multiset<int>, int>
+        (
+            iSerializer, 100
+        );
+
+        std::cout << "        saveContainerSet() : std::unordered_multiset<TestStl>" << std::endl;
+        saveContainerSet<tSerializer, std::unordered_multiset<TestStl>, TestStl>
+        (
+            iSerializer, 500
+        );
+    }
+
+//      ---<<< std::unordered_map >>>---
+
+    {
+        std::cout << "        saveContainerMap() : std::unordered_map<int, int>" << std::endl;
+        saveContainerMap<tSerializer, std::unordered_map<int, int>, int>
+        (
+            iSerializer, 100
+        );
+
+        std::cout << "        saveContainerMap() : std::unordered_map<TestStl, TestStl>"
+            << std::endl;
+        saveContainerMap<tSerializer, std::unordered_map<TestStl, TestStl>, TestStl>
+        (
+            iSerializer, 500
+        );
+    }
+
+//      ---<<< std::unordered_multimap >>>---
+
+    {
+        std::cout << "        saveContainerMap() : std::unordered_multimap<int, int>" << std::endl;
+        saveContainerMap<tSerializer, std::unordered_multimap<int, int>, int>
+        (
+            iSerializer, 100
+        );
+
+        std::cout << "        saveContainerMap() : std::unordered_multimap<TestStl, TestStl>"
+            << std::endl;
+        saveContainerMap<tSerializer, std::unordered_multimap<TestStl, TestStl>, TestStl>
         (
             iSerializer, 500
         );
@@ -1201,6 +1268,72 @@ void loadSupportStl(tSerializer& iSerializer)
 
         std::cout << "        loadContainerMap() : std::multimap<TestStl, TestStl>" << std::endl;
         loadContainerMap<tSerializer, std::multimap<TestStl, TestStl>, TestStl>
+        (
+            iSerializer, 500, true
+        );
+    }
+
+//      ---<<< std::unordered_set >>>---
+
+    {
+        std::cout << "        loadContainerSet() : std::unordered_set<int>" << std::endl;
+        loadContainerSet<tSerializer, std::unordered_set<int>, int>
+        (
+            iSerializer, 100, false
+        );
+
+        std::cout << "        loadContainerSet() : std::unordered_set<TestStl>" << std::endl;
+        loadContainerSet<tSerializer, std::unordered_set<TestStl>, TestStl>
+        (
+            iSerializer, 500, false
+        );
+    }
+
+//      ---<<< std::unordered_multiset >>>---
+
+    {
+        std::cout << "        loadContainerSet() : std::unordered_multiset<int>" << std::endl;
+        loadContainerSet<tSerializer, std::unordered_multiset<int>, int>
+        (
+            iSerializer, 100, true
+        );
+
+        std::cout << "        loadContainerSet() : std::unordered_multiset<TestStl>" << std::endl;
+        loadContainerSet<tSerializer, std::unordered_multiset<TestStl>, TestStl>
+        (
+            iSerializer, 500, true
+        );
+    }
+
+//      ---<<< std::unordered_map >>>---
+
+    {
+        std::cout << "        loadContainerMap() : std::unordered_map<int, int>" << std::endl;
+        loadContainerMap<tSerializer, std::unordered_map<int, int>, int>
+        (
+            iSerializer, 100, false
+        );
+
+        std::cout << "        loadContainerMap() : std::unordered_map<TestStl, TestStl>"
+            << std::endl;
+        loadContainerMap<tSerializer, std::unordered_map<TestStl, TestStl>, TestStl>
+        (
+            iSerializer, 500, false
+        );
+    }
+
+//      ---<<< std::unordered_multimap >>>---
+
+    {
+        std::cout << "        loadContainerMap() : std::unordered_multimap<int, int>" << std::endl;
+        loadContainerMap<tSerializer, std::unordered_multimap<int, int>, int>
+        (
+            iSerializer, 100, true
+        );
+
+        std::cout << "        loadContainerMap() : std::unordered_multimap<TestStl, TestStl>"
+            << std::endl;
+        loadContainerMap<tSerializer, std::unordered_multimap<TestStl, TestStl>, TestStl>
         (
             iSerializer, 500, true
         );

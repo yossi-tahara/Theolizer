@@ -70,8 +70,14 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
+#ifndef THEOLIZER_INTERNAL_IS_UNORDERED
         THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Compare);
         THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
+#else
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Hash);
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Pred);
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
+#endif
 
         THEOLIZER_PROCESS(iSerializer, iInstance->size());
         auto itr=iInstance->begin();
@@ -88,8 +94,14 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
+#ifndef THEOLIZER_INTERNAL_IS_UNORDERED
         THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Compare);
         THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
+#else
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Hash);
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Pred);
+        THEOLIZER_REGISTER_TEMPLATE_PARAMETER(Alloc);
+#endif
 
         // もし、nullptrなら、インスタンス生成
         if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();

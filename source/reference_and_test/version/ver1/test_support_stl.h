@@ -32,6 +32,8 @@
 #include <theolizer/forward_list.h>
 #include <theolizer/set.h>
 #include <theolizer/map.h>
+#include <theolizer/unordered_set.h>
+#include <theolizer/unordered_map.h>
 
 // ***************************************************************************
 //      使い方の説明
@@ -253,10 +255,11 @@ public:
     {
         return mData < iRhs.mData;
     }
-    bool operator==(TestStl const& iRhs)
+    bool operator==(TestStl const& iRhs) const
     {
         return mData == iRhs.mData;
     }
+    int get() const {return mData;}
     friend std::ostream& operator<<(std::ostream& os, TestStl const& iRhs)
     {
         os << iRhs.mData;
@@ -266,4 +269,15 @@ public:
     THEOLIZER_INTRUSIVE(CS, (TestStl), 1);
 };
 
+namespace std
+{
+    template <>
+    struct hash<TestStl>
+    {
+        std::size_t operator()(TestStl const& key) const
+        {
+            return hash<int>()(key.get());
+        }
+    };
+}
 #endif  // TEST_SUPPORT_STL_H
