@@ -293,10 +293,10 @@ void saveContainerSub
     emplace(iContainer, iFirst, 3);
     if (iIsPointee)
     {
-        auto it=iContainer.begin();
-        aPtr0=&*(it++);
-        aPtr1=&*(it++);
-        aPtr2=&*(it++);
+        auto itr=iContainer.begin();
+        aPtr0=&*(itr++);
+        aPtr1=&*(itr++);
+        aPtr2=&*(itr++);
     }
 
     // 保存
@@ -459,7 +459,7 @@ void loadContainer(tSerializer& iSerializer, tType const& iFirst, bool iIsPointe
     iSerializer.clearTracking();
 }
 
-//      ---<<< std::setのテスト >>>---
+//      ---<<< std::setシリーズのテスト >>>---
 
 template<class tSerializer, class tContainer, typename tType>
 void saveContainerSet(tSerializer& iSerializer, tType const& iFirst)
@@ -520,48 +520,121 @@ void loadContainerSet(tSerializer& iSerializer, tType const& iFirst, bool iIsMul
     }
 }
 
-//      ---<<< std::mapのテスト >>>---
+//      ---<<< std::mapシリーズのテスト >>>---
 
+// emplaceの戻り値の分岐
+template<class tIterator>
+tIterator getIterator(tIterator iIterator)
+{
+    return iIterator;
+}
+
+template<class tIterator>
+tIterator getIterator(std::pair<tIterator, bool>& iPair)
+{
+    return iPair.first;
+}
+
+// 本体
 template<class tSerializer, class tContainer, typename tType>
-void saveContainerMap(tSerializer& iSerializer, tType const& iFirst)
+void saveContainerMap(tSerializer& iSerializer, tType const& iFirst, bool iIsPointee)
 {
     for (int i=0; i < 2; ++i)
     {
         // 保存データ生成
+        tType   *aPtr0;
+        tType   *aPtr1;
+        tType   *aPtr2;
         tContainer  aContainer;
+#if 0
         aContainer.insert(typename tContainer::value_type(iFirst+i*100+0, iFirst+i*100+10));
         aContainer.insert(typename tContainer::value_type(iFirst+i*100+1, iFirst+i*100+11));
         aContainer.insert(typename tContainer::value_type(iFirst+i*100+2, iFirst+i*100+12));
+        if (iIsPointee)
+        {
+            auto itr=aContainer.begin();
+            aPtr0=&(itr->second);   itr++;
+            aPtr1=&(itr->second);   itr++;
+            aPtr2=&(itr->second);   itr++;
+        }
+#else
+        auto temp0=aContainer.emplace(iFirst+i*100+0, iFirst+i*100+10);
+        if (iIsPointee)
+        {
+            aPtr0=&(getIterator(temp0)->second);
+        }
+        auto temp1=aContainer.emplace(iFirst+i*100+1, iFirst+i*100+11);
+        if (iIsPointee)
+        {
+            aPtr1=&(getIterator(temp1)->second);
+        }
+        auto temp2=aContainer.emplace(iFirst+i*100+2, iFirst+i*100+12);
+        if (iIsPointee)
+        {
+            aPtr2=&(getIterator(temp2)->second);
+        }
+#endif
 
         // 保存
+        if (iIsPointee)
+        {
+            THEOLIZER_PROCESS(iSerializer, aPtr0);
+            THEOLIZER_PROCESS(iSerializer, aPtr1);
+            THEOLIZER_PROCESS(iSerializer, aPtr2);
+        }
         THEOLIZER_PROCESS(iSerializer, aContainer);
+
+        iSerializer.clearTracking();
     }
 }
 
 template<class tSerializer, class tContainer, typename tType>
-void loadContainerMap(tSerializer& iSerializer, tType const& iFirst, bool iIsMulti)
+void loadContainerMap(tSerializer& iSerializer,tType const& iFirst,bool iIsMulti,bool iIsPointee)
 {
     {
         // 回復領域生成
         tContainer  aContainer;
+        tType   *aPtr0=nullptr;
+        tType   *aPtr1=nullptr;
+        tType   *aPtr2=nullptr;
 
         // 回復
+        if (iIsPointee)
+        {
+            THEOLIZER_PROCESS(iSerializer, aPtr0);
+            THEOLIZER_PROCESS(iSerializer, aPtr1);
+            THEOLIZER_PROCESS(iSerializer, aPtr2);
+        }
         THEOLIZER_PROCESS(iSerializer, aContainer);
 
         // チェック
         THEOLIZER_EQUAL(aContainer.size(), 3);
 
-        auto it=aContainer.find(iFirst+0);
-        THEOLIZER_CHECK(it != aContainer.end(), iFirst+0);
-        THEOLIZER_EQUAL(it->second, iFirst+10);
+        auto itr=aContainer.find(iFirst+0);
+        THEOLIZER_CHECK(itr != aContainer.end(), iFirst+0);
+        THEOLIZER_EQUAL(itr->second, iFirst+10);
+        if (iIsPointee && (itr != aContainer.end()))
+        {
+            THEOLIZER_EQUAL_PTR(aPtr0, &(itr->second));
+        }
 
-        it=aContainer.find(iFirst+1);
-        THEOLIZER_CHECK(it != aContainer.end(), iFirst+1);
-        THEOLIZER_EQUAL(it->second, iFirst+11);
+        itr=aContainer.find(iFirst+1);
+        THEOLIZER_CHECK(itr != aContainer.end(), iFirst+1);
+        THEOLIZER_EQUAL(itr->second, iFirst+11);
+        if (iIsPointee && (itr != aContainer.end()))
+        {
+            THEOLIZER_EQUAL_PTR(aPtr1, &(itr->second));
+        }
 
-        it=aContainer.find(iFirst+2);
-        THEOLIZER_CHECK(it != aContainer.end(), iFirst+2);
-        THEOLIZER_EQUAL(it->second, iFirst+12);
+        itr=aContainer.find(iFirst+2);
+        THEOLIZER_CHECK(itr != aContainer.end(), iFirst+2);
+        THEOLIZER_EQUAL(itr->second, iFirst+12);
+        if (iIsPointee && (itr != aContainer.end()))
+        {
+            THEOLIZER_EQUAL_PTR(aPtr2, &(itr->second));
+        }
+
+        iSerializer.clearTracking();
     }
     {
         // 回復領域生成
@@ -570,31 +643,57 @@ void loadContainerMap(tSerializer& iSerializer, tType const& iFirst, bool iIsMul
         aContainer.insert(typename tContainer::value_type(iFirst+100+1, iFirst+100+11));
         aContainer.insert(typename tContainer::value_type(iFirst+100+2, iFirst+100+12));
         aContainer.insert(typename tContainer::value_type(iFirst+100+3, iFirst+100+13));
+        tType   *aPtr0=nullptr;
+        tType   *aPtr1=nullptr;
+        tType   *aPtr2=nullptr;
 
         // 回復
+        if (iIsPointee)
+        {
+            THEOLIZER_PROCESS(iSerializer, aPtr0);
+            THEOLIZER_PROCESS(iSerializer, aPtr1);
+            THEOLIZER_PROCESS(iSerializer, aPtr2);
+        }
         THEOLIZER_PROCESS(iSerializer, aContainer);
 
         // チェック
-        auto it=aContainer.find(iFirst+100+0);
-        THEOLIZER_CHECK(it != aContainer.end(), iFirst+100+0);
-        THEOLIZER_EQUAL(it->second, iFirst+100+10);
-        it=aContainer.find(iFirst+100+1);
-        THEOLIZER_CHECK(it != aContainer.end(), iFirst+100+1);
-        THEOLIZER_EQUAL(it->second, iFirst+100+11);
-        it=aContainer.find(iFirst+100+2);
-        THEOLIZER_CHECK(it != aContainer.end(), iFirst+100+2);
-        THEOLIZER_EQUAL(it->second, iFirst+100+12);
+        auto itr=aContainer.find(iFirst+100+0);
+        THEOLIZER_CHECK(itr != aContainer.end(), iFirst+100+0);
+        THEOLIZER_EQUAL(itr->second, iFirst+100+10);
+        if (iIsPointee && (itr != aContainer.end()))
+        {
+            THEOLIZER_EQUAL_PTR(aPtr0, &(itr->second));
+        }
+
+        itr=aContainer.find(iFirst+100+1);
+        THEOLIZER_CHECK(itr != aContainer.end(), iFirst+100+1);
+        THEOLIZER_EQUAL(itr->second, iFirst+100+11);
+        if (iIsPointee && (itr != aContainer.end()))
+        {
+            THEOLIZER_EQUAL_PTR(aPtr1, &(itr->second));
+        }
+
+        itr=aContainer.find(iFirst+100+2);
+        THEOLIZER_CHECK(itr != aContainer.end(), iFirst+100+2);
+        THEOLIZER_EQUAL(itr->second, iFirst+100+12);
+        if (iIsPointee && (itr != aContainer.end()))
+        {
+            THEOLIZER_EQUAL_PTR(aPtr2, &(itr->second));
+        }
+
         if (!iIsMulti)
         {
             THEOLIZER_EQUAL(aContainer.size(), 4);
-            it=aContainer.find(iFirst+100+3);
-            THEOLIZER_CHECK(it != aContainer.end(), iFirst+100+3);
-            THEOLIZER_EQUAL(it->second, iFirst+100+13);
+            itr=aContainer.find(iFirst+100+3);
+            THEOLIZER_CHECK(itr != aContainer.end(), iFirst+100+3);
+            THEOLIZER_EQUAL(itr->second, iFirst+100+13);
         }
         else
         {
             THEOLIZER_EQUAL(aContainer.size(), 3);
         }
+
+        iSerializer.clearTracking();
     }
 }
 
@@ -855,13 +954,27 @@ void saveSupportStl(tSerializer& iSerializer)
         std::cout << "        saveContainerMap() : std::map<int, int>" << std::endl;
         saveContainerMap<tSerializer, std::map<int, int>, int>
         (
-            iSerializer, 100
+            iSerializer, 100, false
         );
 
         std::cout << "        saveContainerMap() : std::map<TestStl, TestStl>" << std::endl;
         saveContainerMap<tSerializer, std::map<TestStl, TestStl>, TestStl>
         (
-            iSerializer, 500
+            iSerializer, 500, false
+        );
+
+        // 被ポインタのテスト
+        std::cout << "        saveContainerMap() : theolizer::MapPointee<int, int>" << std::endl;
+        saveContainerMap<tSerializer, theolizer::MapPointee<int, int>, int>
+        (
+            iSerializer, 100, true
+        );
+
+        std::cout << "        saveContainerMap() : theolizer::MapPointee<TestStl, TestStl>"
+            << std::endl;
+        saveContainerMap<tSerializer, theolizer::MapPointee<TestStl, TestStl>, TestStl>
+        (
+            iSerializer, 500, true
         );
     }
 
@@ -871,13 +984,13 @@ void saveSupportStl(tSerializer& iSerializer)
         std::cout << "        saveContainerMap() : std::multimap<int, int>" << std::endl;
         saveContainerMap<tSerializer, std::multimap<int, int>, int>
         (
-            iSerializer, 100
+            iSerializer, 100, false
         );
 
         std::cout << "        saveContainerMap() : std::multimap<TestStl, TestStl>" << std::endl;
         saveContainerMap<tSerializer, std::multimap<TestStl, TestStl>, TestStl>
         (
-            iSerializer, 500
+            iSerializer, 500, false
         );
     }
 
@@ -919,14 +1032,29 @@ void saveSupportStl(tSerializer& iSerializer)
         std::cout << "        saveContainerMap() : std::unordered_map<int, int>" << std::endl;
         saveContainerMap<tSerializer, std::unordered_map<int, int>, int>
         (
-            iSerializer, 100
+            iSerializer, 100, false
         );
 
         std::cout << "        saveContainerMap() : std::unordered_map<TestStl, TestStl>"
             << std::endl;
         saveContainerMap<tSerializer, std::unordered_map<TestStl, TestStl>, TestStl>
         (
-            iSerializer, 500
+            iSerializer, 500, false
+        );
+
+        // 被ポインタのテスト
+        std::cout << "        saveContainerMap() : theolizer::UnorderedMapPointee<int, int>"
+            << std::endl;
+        saveContainerMap<tSerializer, theolizer::UnorderedMapPointee<int, int>, int>
+        (
+            iSerializer, 100, true
+        );
+
+        std::cout << "        saveContainerMap() : theolizer::UnorderedMapPointee<TestStl,TestStl>"
+            << std::endl;
+        saveContainerMap<tSerializer, theolizer::UnorderedMapPointee<TestStl, TestStl>, TestStl>
+        (
+            iSerializer, 500, true
         );
     }
 
@@ -936,14 +1064,14 @@ void saveSupportStl(tSerializer& iSerializer)
         std::cout << "        saveContainerMap() : std::unordered_multimap<int, int>" << std::endl;
         saveContainerMap<tSerializer, std::unordered_multimap<int, int>, int>
         (
-            iSerializer, 100
+            iSerializer, 100, false
         );
 
         std::cout << "        saveContainerMap() : std::unordered_multimap<TestStl, TestStl>"
             << std::endl;
         saveContainerMap<tSerializer, std::unordered_multimap<TestStl, TestStl>, TestStl>
         (
-            iSerializer, 500
+            iSerializer, 500, false
         );
     }
 }
@@ -1247,13 +1375,27 @@ void loadSupportStl(tSerializer& iSerializer)
         std::cout << "        loadContainerMap() : std::map<int, int>" << std::endl;
         loadContainerMap<tSerializer, std::map<int, int>, int>
         (
-            iSerializer, 100, false
+            iSerializer, 100, false, false
         );
 
         std::cout << "        loadContainerMap() : std::map<TestStl, TestStl>" << std::endl;
         loadContainerMap<tSerializer, std::map<TestStl, TestStl>, TestStl>
         (
-            iSerializer, 500, false
+            iSerializer, 500, false, false
+        );
+
+        // 被ポインタのテスト
+        std::cout << "        loadContainerMap() : theolizer::MapPointee<int, int>" << std::endl;
+        loadContainerMap<tSerializer, theolizer::MapPointee<int, int>, int>
+        (
+            iSerializer, 100, false, true
+        );
+
+        std::cout << "        loadContainerMap() : theolizer::MapPointee<TestStl, TestStl>"
+            << std::endl;
+        loadContainerMap<tSerializer, theolizer::MapPointee<TestStl, TestStl>, TestStl>
+        (
+            iSerializer, 500, false, true
         );
     }
 
@@ -1263,13 +1405,13 @@ void loadSupportStl(tSerializer& iSerializer)
         std::cout << "        loadContainerMap() : std::multimap<int, int>" << std::endl;
         loadContainerMap<tSerializer, std::multimap<int, int>, int>
         (
-            iSerializer, 100, true
+            iSerializer, 100, true, false
         );
 
         std::cout << "        loadContainerMap() : std::multimap<TestStl, TestStl>" << std::endl;
         loadContainerMap<tSerializer, std::multimap<TestStl, TestStl>, TestStl>
         (
-            iSerializer, 500, true
+            iSerializer, 500, true, false
         );
     }
 
@@ -1311,14 +1453,29 @@ void loadSupportStl(tSerializer& iSerializer)
         std::cout << "        loadContainerMap() : std::unordered_map<int, int>" << std::endl;
         loadContainerMap<tSerializer, std::unordered_map<int, int>, int>
         (
-            iSerializer, 100, false
+            iSerializer, 100, false, false
         );
 
         std::cout << "        loadContainerMap() : std::unordered_map<TestStl, TestStl>"
             << std::endl;
         loadContainerMap<tSerializer, std::unordered_map<TestStl, TestStl>, TestStl>
         (
-            iSerializer, 500, false
+            iSerializer, 500, false, false
+        );
+
+        // 被ポインタのテスト
+        std::cout << "        loadContainerMap() : theolizer::UnorderedMapPointee<int, int>"
+            << std::endl;
+        loadContainerMap<tSerializer, theolizer::UnorderedMapPointee<int, int>, int>
+        (
+            iSerializer, 100, false, true
+        );
+
+        std::cout << "        loadContainerMap() : theolizer::UnorderedMapPointee<TestStl,TestStl>"
+            << std::endl;
+        loadContainerMap<tSerializer, theolizer::UnorderedMapPointee<TestStl, TestStl>, TestStl>
+        (
+            iSerializer, 500, false, true
         );
     }
 
@@ -1328,14 +1485,14 @@ void loadSupportStl(tSerializer& iSerializer)
         std::cout << "        loadContainerMap() : std::unordered_multimap<int, int>" << std::endl;
         loadContainerMap<tSerializer, std::unordered_multimap<int, int>, int>
         (
-            iSerializer, 100, true
+            iSerializer, 100, true, false
         );
 
         std::cout << "        loadContainerMap() : std::unordered_multimap<TestStl, TestStl>"
             << std::endl;
         loadContainerMap<tSerializer, std::unordered_multimap<TestStl, TestStl>, TestStl>
         (
-            iSerializer, 500, true
+            iSerializer, 500, true, false
         );
     }
 }

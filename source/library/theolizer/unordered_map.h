@@ -81,6 +81,83 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 #undef  THEOLIZER_INTERNAL_FULL_NAME
 
 //############################################################################
+//      被ポインタ用(theolizer::MapPointee<>)
+//############################################################################
+
+// ***************************************************************************
+//      theolizer::UnorderedMapPointee<>
+//          std::unordered_map<>の単純な派生クラス
+//          要素をPointeeとして処理する
+// ***************************************************************************
+
+namespace theolizer
+{
+
+template
+<
+    class Key,
+    class T,
+    class Hash=std::hash<Key>,
+    class Pred=std::equal_to<Key>,
+    class Alloc=std::allocator<std::pair<const Key,T> >
+>
+class THEOLIZER_ANNOTATE(CS) UnorderedMapPointee : 
+    public std::unordered_map<Key, T, Hash, Pred, Alloc>
+{
+public:
+    using std::unordered_map<Key, T, Hash, Pred, Alloc>::unordered_map;
+};
+
+}   // namespace theolizer
+
+// ***************************************************************************
+//      手動コード展開
+// ***************************************************************************
+
+#define THEOLZIER_INTERNAL_CONTAINER_PARAMETER          \
+    template<class Key, class T, class Hash, class Pred, class Alloc>
+#define THEOLZIER_INTERNAL_CONTAINER_NAME               theolizer::UnorderedMapPointee
+#define THEOLZIER_INTERNAL_CONTAINER_ARGUMENT           Key, T, Hash, Pred, Alloc
+#define THEOLZIER_INTERNAL_CONTAINER_UNIQUE             UnorderedMapPointeeTheolizer
+#define THEOLIZER_INTERNAL_IS_UNORDERED
+#define THEOLIZER_INTERNAL_POINTEE
+#include "internal/container_map.inc"
+#undef  THEOLIZER_INTERNAL_POINTEE
+#undef  THEOLIZER_INTERNAL_IS_UNORDERED
+
+// ***************************************************************************
+//      自動生成コード
+// ***************************************************************************
+
+#ifdef  THEOLIZER_WRITE_CODE
+
+#define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_TYPE theolizer::UnorderedMapPointee<Key, T, Hash, Pred, Alloc>
+#define THEOLIZER_GENERATED_PARAMETER_LIST template<class Key, class T, class Hash, class Pred, class Alloc>
+#define THEOLIZER_GENERATED_UNIQUE_NAME UnorderedMapPointeeTheolizer
+
+//      ---<<< Version.1 >>>---
+
+#define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_NAME()\
+    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"theolizer::UnorderedMapPointee",Key,T,Hash,Pred,Alloc))
+#include <theolizer/internal/version_manual.inc>
+#undef  THEOLIZER_GENERATED_VERSION_NO
+
+#endif//THEOLIZER_WRITE_CODE
+
+// ***************************************************************************
+//      定義したマクロの解放
+// ***************************************************************************
+
+#undef  THEOLZIER_INTERNAL_CONTAINER_PARAMETER
+#undef  THEOLZIER_INTERNAL_CONTAINER_NAME
+#undef  THEOLZIER_INTERNAL_CONTAINER_ARGUMENT
+#undef  THEOLZIER_INTERNAL_CONTAINER_UNIQUE
+
+#undef  THEOLIZER_INTERNAL_FULL_NAME
+
+//############################################################################
 //      std::unordered_multimap<>対応
 //############################################################################
 

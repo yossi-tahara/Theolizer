@@ -85,7 +85,11 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
         for (std::size_t i=0; i < iInstance->size(); ++i, ++itr)
         {
             THEOLIZER_PROCESS(iSerializer, itr->first);
+#ifndef THEOLIZER_INTERNAL_POINTEE
             THEOLIZER_PROCESS(iSerializer, itr->second);
+#else
+            THEOLIZER_PROCESS_POINTEE(iSerializer, itr->second);
+#endif
         }
     }
 
@@ -128,15 +132,27 @@ struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_FULL_NAME>::
                 typename TheolizerTarget::mapped_type   aData;
                 auto temp=oInstance->emplace(aKey, aData);
 #ifdef THEOLIZER_INTERNAL_IS_MULTI
+    #ifndef THEOLIZER_INTERNAL_POINTEE
                 THEOLIZER_PROCESS(iSerializer, temp->second);
+    #else
+                #error "multiMap does not support Pointee type."
+    #endif
 #else
+    #ifndef THEOLIZER_INTERNAL_POINTEE
                 THEOLIZER_PROCESS(iSerializer, temp.first->second);
+    #else
+                THEOLIZER_PROCESS_POINTEE(iSerializer, temp.first->second);
+    #endif
 #endif
             }
             // 既存
             else
             {
+#ifndef THEOLIZER_INTERNAL_POINTEE
                 THEOLIZER_PROCESS(iSerializer, found->second);
+#else
+                THEOLIZER_PROCESS_POINTEE(iSerializer, found->second);
+#endif
             }
         }
     }
