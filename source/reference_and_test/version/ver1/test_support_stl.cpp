@@ -108,6 +108,41 @@ void tutoriseSupportStl()
 //      網羅テスト
 //############################################################################
 
+//----------------------------------------------------------------------------
+//      キー無しコンテナ設定用
+//----------------------------------------------------------------------------
+
+// プライマリ
+template<class tContainer, typename tType, class tEnable=void>
+struct Emplace
+{
+    void operator()(tContainer& iContainer, tType const& iFirst, std::size_t iCount)
+    {
+        for (std::size_t i=0; i < iCount; ++i)
+        {
+            iContainer.emplace(iContainer.end(), iFirst+static_cast<int>(i));
+        }
+    }
+};
+
+// forward_list用(先頭への追加が自然なので、逆順で追加する)
+template<class tContainer, typename tType>
+struct Emplace
+<
+    tContainer,
+    tType,
+    typename std::enable_if<std::is_convertible<tContainer,std::forward_list<tType>>::value>::type
+>
+{
+    void operator()(tContainer& iContainer, tType const& iFirst, std::size_t iCount)
+    {
+        for (std::size_t i=iCount; 0 < i; --i)
+        {
+            iContainer.emplace_front(iFirst+static_cast<int>(i-1));
+        }
+    }
+};
+
 // ***************************************************************************
 //      サブ処理
 // ***************************************************************************
@@ -240,39 +275,6 @@ void loadContainerFixed
 //----------------------------------------------------------------------------
 //      キー無しコンテナのテスト
 //----------------------------------------------------------------------------
-
-//      ---<<< 保存処理 >>>---
-
-// プライマリ
-template<class tContainer, typename tType, class tEnable=void>
-struct Emplace
-{
-    void operator()(tContainer& iContainer, tType const& iFirst, std::size_t iCount)
-    {
-        for (std::size_t i=0; i < iCount; ++i)
-        {
-            iContainer.emplace(iContainer.end(), iFirst+static_cast<int>(i));
-        }
-    }
-};
-
-// forward_list用(先頭への追加が自然なので、逆順で追加する)
-template<class tContainer, typename tType>
-struct Emplace
-<
-    tContainer,
-    tType,
-    typename std::enable_if<std::is_convertible<tContainer,std::forward_list<tType>>::value>::type
->
-{
-    void operator()(tContainer& iContainer, tType const& iFirst, std::size_t iCount)
-    {
-        for (std::size_t i=iCount; 0 < i; --i)
-        {
-            iContainer.emplace_front(iFirst+static_cast<int>(i-1));
-        }
-    }
-};
 
 //      ---<<< 保存処理 >>>---
 
@@ -522,7 +524,7 @@ void loadContainerSet(tSerializer& iSerializer, tType const& iFirst, bool iIsMul
 
 //      ---<<< std::mapシリーズのテスト >>>---
 
-// emplaceの戻り値の分岐
+// emplaceの戻り値の分岐(std::mapとstd::unordered_mapでemplaceの戻り値が異なる)
 template<class tIterator>
 tIterator getIterator(tIterator iIterator)
 {
@@ -546,18 +548,6 @@ void saveContainerMap(tSerializer& iSerializer, tType const& iFirst, bool iIsPoi
         tType   *aPtr1;
         tType   *aPtr2;
         tContainer  aContainer;
-#if 0
-        aContainer.insert(typename tContainer::value_type(iFirst+i*100+0, iFirst+i*100+10));
-        aContainer.insert(typename tContainer::value_type(iFirst+i*100+1, iFirst+i*100+11));
-        aContainer.insert(typename tContainer::value_type(iFirst+i*100+2, iFirst+i*100+12));
-        if (iIsPointee)
-        {
-            auto itr=aContainer.begin();
-            aPtr0=&(itr->second);   itr++;
-            aPtr1=&(itr->second);   itr++;
-            aPtr2=&(itr->second);   itr++;
-        }
-#else
         auto temp0=aContainer.emplace(iFirst+i*100+0, iFirst+i*100+10);
         if (iIsPointee)
         {
@@ -573,7 +563,6 @@ void saveContainerMap(tSerializer& iSerializer, tType const& iFirst, bool iIsPoi
         {
             aPtr2=&(getIterator(temp2)->second);
         }
-#endif
 
         // 保存
         if (iIsPointee)
@@ -698,6 +687,167 @@ void loadContainerMap(tSerializer& iSerializer,tType const& iFirst,bool iIsMulti
 }
 
 // ***************************************************************************
+//      保存先指定の合成テスト用
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      固定長コンテナ
+//----------------------------------------------------------------------------
+
+template<class tContainer, class tSerializerA, class tSerializerB>
+void saveFixed
+(
+    tSerializerA&   iSerializerA,
+    tSerializerB&   iSerializerB,
+    int             iFirst
+)
+{
+    tContainer  aContainer;
+    for (std::size_t i=0; i < aContainer.size(); ++i)
+    {
+        aContainer[i]=TestStlDestinations(iFirst+static_cast<int>(i));
+    }
+    THEOLIZER_PROCESS(iSerializerA, aContainer);
+    THEOLIZER_PROCESS(iSerializerB, aContainer);
+
+    iSerializerA.clearTracking();
+    iSerializerB.clearTracking();
+}
+
+template<class tContainer, class tSerializerA, class tSerializerB>
+void loadFixed
+(
+    tSerializerA&   iSerializerA,
+    tSerializerB&   iSerializerB,
+    int             iFirst
+)
+{
+    tContainer  aContainer;
+    THEOLIZER_PROCESS(iSerializerA, aContainer);
+    for (std::size_t i=0; i < aContainer.size(); ++i)
+    {
+        THEOLIZER_EQUAL(aContainer[i], TestStlDestinations(iFirst+static_cast<int>(i), 0));
+    }
+    THEOLIZER_PROCESS(iSerializerB, aContainer);
+    for (std::size_t i=0; i < aContainer.size(); ++i)
+    {
+        THEOLIZER_EQUAL(aContainer[i], TestStlDestinations(iFirst+static_cast<int>(i)));
+    }
+
+    iSerializerA.clearTracking();
+    iSerializerB.clearTracking();
+}
+
+//----------------------------------------------------------------------------
+//      キー無しコンテナ
+//----------------------------------------------------------------------------
+
+template<class tContainer, class tSerializerA, class tSerializerB>
+void saveNoKey
+(
+    tSerializerA&   iSerializerA,
+    tSerializerB&   iSerializerB,
+    int             iFirst
+)
+{
+    tContainer  aContainer;
+    Emplace<tContainer, TestStlDestinations> emplace;
+    emplace(aContainer, TestStlDestinations(iFirst), 3);
+    THEOLIZER_PROCESS(iSerializerA, aContainer);
+    THEOLIZER_PROCESS(iSerializerB, aContainer);
+
+    iSerializerA.clearTracking();
+    iSerializerB.clearTracking();
+}
+
+template<class tContainer, class tSerializerA, class tSerializerB>
+void loadNoKey
+(
+    tSerializerA&   iSerializerA,
+    tSerializerB&   iSerializerB,
+    int             iFirst
+)
+{
+    tContainer  aContainer;
+    THEOLIZER_PROCESS(iSerializerA, aContainer);
+    int i=0;
+    for (auto&& itr : aContainer)
+    {
+        THEOLIZER_EQUAL(itr, TestStlDestinations(iFirst+i, 0));
+        ++i;
+    }
+    THEOLIZER_PROCESS(iSerializerB, aContainer);
+    i=0;
+    for (auto&& itr : aContainer)
+    {
+        THEOLIZER_EQUAL(itr, TestStlDestinations(iFirst+i));
+        ++i;
+    }
+
+    iSerializerA.clearTracking();
+    iSerializerB.clearTracking();
+}
+
+//----------------------------------------------------------------------------
+//      キー有りコンテナ
+//----------------------------------------------------------------------------
+
+template<class tContainer, class tSerializerA, class tSerializerB>
+void saveKey
+(
+    tSerializerA&   iSerializerA,
+    tSerializerB&   iSerializerB,
+    int             iFirst
+)
+{
+    tContainer  aContainer;
+    aContainer.emplace("start",  TestStlDestinations(iFirst+0));
+    aContainer.emplace("center", TestStlDestinations(iFirst+1));
+    aContainer.emplace("end",    TestStlDestinations(iFirst+2));
+    THEOLIZER_PROCESS(iSerializerA, aContainer);
+    THEOLIZER_PROCESS(iSerializerB, aContainer);
+
+    iSerializerA.clearTracking();
+    iSerializerB.clearTracking();
+}
+
+template<class tContainer, class tSerializerA, class tSerializerB>
+void loadKey
+(
+    tSerializerA&   iSerializerA,
+    tSerializerB&   iSerializerB,
+    int             iFirst
+)
+{
+    tContainer  aContainer;
+
+    THEOLIZER_PROCESS(iSerializerA, aContainer);
+    auto itr=aContainer.find("start");
+    THEOLIZER_CHECK(itr != aContainer.end(), "start");
+    THEOLIZER_EQUAL(itr->second, TestStlDestinations(iFirst+0, 0));
+    itr=aContainer.find("center");
+    THEOLIZER_CHECK(itr != aContainer.end(), "center");
+    THEOLIZER_EQUAL(itr->second, TestStlDestinations(iFirst+1, 0));
+    itr=aContainer.find("end");
+    THEOLIZER_CHECK(itr != aContainer.end(), "end");
+    THEOLIZER_EQUAL(itr->second, TestStlDestinations(iFirst+2, 0));
+
+    THEOLIZER_PROCESS(iSerializerB, aContainer);
+    itr=aContainer.find("start");
+    THEOLIZER_CHECK(itr != aContainer.end(), "start");
+    THEOLIZER_EQUAL(itr->second, TestStlDestinations(iFirst+0));
+    itr=aContainer.find("center");
+    THEOLIZER_CHECK(itr != aContainer.end(), "center");
+    THEOLIZER_EQUAL(itr->second, TestStlDestinations(iFirst+1));
+    itr=aContainer.find("end");
+    THEOLIZER_CHECK(itr != aContainer.end(), "end");
+    THEOLIZER_EQUAL(itr->second, TestStlDestinations(iFirst+2));
+
+    iSerializerA.clearTracking();
+    iSerializerB.clearTracking();
+}
+
+// ***************************************************************************
 //      保存
 // ***************************************************************************
 
@@ -801,7 +951,6 @@ void saveSupportStl(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
-#endif
 
 //----------------------------------------------------------------------------
 //      コンテナ対応
@@ -809,7 +958,6 @@ void saveSupportStl(tSerializer& iSerializer)
 
 //      ---<<< std::array >>>---
 
-#if 1
     {
         std::cout << "        saveContainerFixed() : array<int, *>" << std::endl;
         saveContainerFixed<tSerializer, std::array, int>(iSerializer, 1000, false);
@@ -823,7 +971,6 @@ void saveSupportStl(tSerializer& iSerializer)
         std::cout << "        saveContainerFixed() : ArrayPointee<TestStl, *>" << std::endl;
         saveContainerFixed<tSerializer, theolizer::ArrayPointee, TestStl>(iSerializer, 4000, true);
     }
-#endif
 
 //      ---<<< std::vector >>>---
 
@@ -1074,6 +1221,7 @@ void saveSupportStl(tSerializer& iSerializer)
             iSerializer, 500, false
         );
     }
+#endif
 }
 
 INSTANTIATION_ALL(saveSupportStl);
@@ -1209,7 +1357,6 @@ void loadSupportStl(tSerializer& iSerializer)
         aSmartTestManual1.check(330, aShared, aForWeak);
         aSmartTestManual2.check(340, aShared, aForWeak);
     }
-#endif
 
 //----------------------------------------------------------------------------
 //      コンテナ対応
@@ -1217,7 +1364,6 @@ void loadSupportStl(tSerializer& iSerializer)
 
 //      ---<<< std::array >>>---
 
-#if 1
     {
         std::cout << "        loadContainerFixed() : array<int, *>" << std::endl;
         loadContainerFixed<tSerializer, std::array, int>(iSerializer, 1000, false);
@@ -1231,7 +1377,6 @@ void loadSupportStl(tSerializer& iSerializer)
         std::cout << "        loadContainerFixed() : ArrayPointee<TestStl, *>" << std::endl;
         loadContainerFixed<tSerializer, theolizer::ArrayPointee, TestStl>(iSerializer, 4000, true);
     }
-#endif
 
 //      ---<<< std::vector >>>---
 
@@ -1495,8 +1640,85 @@ void loadSupportStl(tSerializer& iSerializer)
             iSerializer, 500, true, false
         );
     }
+#endif
 }
 
 INSTANTIATION_ALL(loadSupportStl);
+
+// ***************************************************************************
+//      保存（保存先指定の合成テスト）
+// ***************************************************************************
+
+template<class tSerializerA, class tSerializerB, class tSerializerAB>
+void saveSupportStlDestinations
+(
+    tSerializerA&  iSerializerA,
+    tSerializerB&  iSerializerB,
+    tSerializerAB&
+)
+{
+    std::cout << "        saveSupportStlDestinations() : Fixed" << std::endl;
+    saveFixed<std::array<TestStlDestinations, 3> >(iSerializerA, iSerializerB, 100);
+    saveFixed<theolizer::ArrayPointee<TestStlDestinations, 3> >(iSerializerA, iSerializerB, 110);
+
+    std::cout << "        saveSupportStlDestinations() : NoKey" << std::endl;
+    saveNoKey<std::vector<TestStlDestinations> >(iSerializerA, iSerializerB, 200);
+    saveNoKey<theolizer::VectorPointee<TestStlDestinations> >(iSerializerA, iSerializerB, 210);
+    saveNoKey<std::deque<TestStlDestinations> >(iSerializerA, iSerializerB, 300);
+    saveNoKey<theolizer::DequePointee<TestStlDestinations> >(iSerializerA, iSerializerB, 310);
+    saveNoKey<std::forward_list<TestStlDestinations> >(iSerializerA, iSerializerB, 400);
+    saveNoKey<theolizer::ForwardListPointee<TestStlDestinations> >(iSerializerA,iSerializerB,410);
+    saveNoKey<std::list<TestStlDestinations> >(iSerializerA, iSerializerB, 500);
+    saveNoKey<theolizer::ListPointee<TestStlDestinations> >(iSerializerA, iSerializerB, 510);
+
+    std::cout << "        saveSupportStlDestinations() : Key" << std::endl;
+    saveKey<std::map<std::string, TestStlDestinations> >(iSerializerA, iSerializerB, 600);
+    saveKey<theolizer::MapPointee<std::string, TestStlDestinations> >
+        (iSerializerA, iSerializerB, 610);
+
+    saveKey<std::unordered_map<std::string, TestStlDestinations> >(iSerializerA,iSerializerB,700);
+    saveKey<theolizer::UnorderedMapPointee<std::string, TestStlDestinations> >
+        (iSerializerA, iSerializerB, 710);
+}
+
+INSTANTIATION_DESTINATIONS(saveSupportStlDestinations);
+
+// ***************************************************************************
+//      回復（保存先指定の合成テスト）
+// ***************************************************************************
+
+template<class tSerializerA, class tSerializerB, class tSerializerAB>
+void loadSupportStlDestinations
+(
+    tSerializerA&  iSerializerA,
+    tSerializerB&  iSerializerB,
+    tSerializerAB&
+)
+{
+    std::cout << "        loadSupportStlDestinations() : Fixed" << std::endl;
+    loadFixed<std::array<TestStlDestinations, 3> >(iSerializerA, iSerializerB, 100);
+    loadFixed<theolizer::ArrayPointee<TestStlDestinations, 3> >(iSerializerA, iSerializerB, 110);
+
+    std::cout << "        loadSupportStlDestinations() : NoKey" << std::endl;
+    loadNoKey<std::vector<TestStlDestinations> >(iSerializerA, iSerializerB, 200);
+    loadNoKey<theolizer::VectorPointee<TestStlDestinations> >(iSerializerA, iSerializerB, 210);
+    loadNoKey<std::deque<TestStlDestinations> >(iSerializerA, iSerializerB, 300);
+    loadNoKey<theolizer::DequePointee<TestStlDestinations> >(iSerializerA, iSerializerB, 310);
+    loadNoKey<std::forward_list<TestStlDestinations> >(iSerializerA, iSerializerB, 400);
+    loadNoKey<theolizer::ForwardListPointee<TestStlDestinations> >(iSerializerA,iSerializerB,410);
+    loadNoKey<std::list<TestStlDestinations> >(iSerializerA, iSerializerB, 500);
+    loadNoKey<theolizer::ListPointee<TestStlDestinations> >(iSerializerA, iSerializerB, 510);
+
+    std::cout << "        loadSupportStlDestinations() : Key" << std::endl;
+    loadKey<std::map<std::string, TestStlDestinations> >(iSerializerA, iSerializerB, 600);
+    loadKey<theolizer::MapPointee<std::string, TestStlDestinations> >
+        (iSerializerA, iSerializerB, 610);
+
+    loadKey<std::unordered_map<std::string, TestStlDestinations> >(iSerializerA,iSerializerB,700);
+    loadKey<theolizer::UnorderedMapPointee<std::string, TestStlDestinations> >
+        (iSerializerA, iSerializerB, 710);
+}
+
+INSTANTIATION_DESTINATIONS(loadSupportStlDestinations);
 
 #endif  // DISABLE_SUPPORT_STL_TEST

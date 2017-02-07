@@ -1914,6 +1914,25 @@ struct ParameterName<NonType<tType, tValue>, tRest...>
     };
 #include "primitive.inc"
 
+#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                    \
+    template<typename... tRest>                                             \
+    struct ParameterName<dType const, tRest...>                             \
+    {                                                                       \
+        static std::string get(VersionNoList const& iVersionNoList)         \
+        {                                                                   \
+            std::size_t aTypeIndex=PrimitiveTypeInfo<dType>::getInstance().mTypeIndex;\
+            unsigned aSerializerVersionNo=iVersionNoList.at(aTypeIndex);    \
+            static dType aType;                                             \
+            std::string aName=BaseTypeFunctions::getInstance().             \
+                getPrimitiveName(aSerializerVersionNo, aType);              \
+            if (sizeof...(tRest)) {                                         \
+                aName = aName+","+ParameterName<tRest...>::get(iVersionNoList);\
+            }                                                               \
+            return aName;                                                   \
+        }                                                                   \
+    };
+#include "primitive.inc"
+
 //      ---<<< void用特殊化 >>>---
 
 /*!

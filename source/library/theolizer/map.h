@@ -91,7 +91,13 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 namespace theolizer
 {
 
-template<class Key, class T, class Compare=std::less<T>, class Alloc=std::allocator<T> >
+template
+<
+    class Key,
+    class T,
+    class Compare=std::less<Key>,
+    class Alloc=std::allocator<std::pair<const Key,T> >
+>
 class THEOLIZER_ANNOTATE(CS) MapPointee : public std::map<Key, T, Compare, Alloc>
 {
 public:

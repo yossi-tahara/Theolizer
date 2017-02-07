@@ -280,4 +280,35 @@ namespace std
         }
     };
 }
+
+// ***************************************************************************
+//      標準コンテナの保存先指定の合成テスト用
+// ***************************************************************************
+
+class TestStlDestinations
+{
+    int     mDataA  THEOLIZER_ANNOTATE(FS:<theolizerD::DestA>);
+    int     mDataB  THEOLIZER_ANNOTATE(FS:<theolizerD::DestB>);
+public:
+    // 保存前のデータ設定用
+    TestStlDestinations(int iData=0) : mDataA(iData), mDataB(-iData) { }
+    TestStlDestinations operator+(int iRhs) const
+    {
+        return TestStlDestinations(mDataA+iRhs);
+    }
+    // 回復後のチェック用
+    TestStlDestinations(int iDataA, int iDataB) : mDataA(iDataA), mDataB(iDataB) { }
+    bool operator==(TestStlDestinations const& iRhs) const
+    {
+        return (mDataA == iRhs.mDataA) && (mDataB == iRhs.mDataB);
+    }
+    friend std::ostream& operator<<(std::ostream& os, TestStlDestinations const& iRhs)
+    {
+        os << "(" << iRhs.mDataA << ", " << iRhs.mDataB << ")";
+        return os;
+    }
+
+    THEOLIZER_INTRUSIVE(CS, (TestStlDestinations), 1);
+};
+
 #endif  // TEST_SUPPORT_STL_H
