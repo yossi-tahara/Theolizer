@@ -804,7 +804,13 @@ bool ClassTypeInfo<tClassType>::loadTypeInstance
     {
         if (aDoRelease)
         {
-            delete iPointer;        // 元の型へ戻しているものを開放する
+            // シリアライズ・データとポインタ指す先の型が異なる場合、解放する
+            //  ただし、std::shared_ptrが管理する領域の場合は、std::shared_ptr側で解放するので
+            //  ここでは解放しない。
+            if (!iSerializer.mIsShared)
+            {
+                delete iPointer;
+            }
             iPointer=nullptr;
         }
 
@@ -820,12 +826,18 @@ bool ClassTypeInfo<tClassType>::loadTypeInstance
             THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
         }
 
-        tClassType::Theolizer::loadClass
-        (
-            iSerializer,
-            iPointer,
-            iSerializer.mVersionNoList.at(aFoundTypeIndex)
-        );
+        {
+            // shared_ptr処理クリア
+            AutoRestoreIsShared aAutoRestoreIsShared(iSerializer, false);
+
+            // クラス・インスタンス回復
+            tClassType::Theolizer::loadClass
+            (
+                iSerializer,
+                iPointer,
+                iSerializer.mVersionNoList.at(aFoundTypeIndex)
+            );
+        }
 return true;
     }
 

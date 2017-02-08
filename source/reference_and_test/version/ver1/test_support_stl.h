@@ -66,7 +66,7 @@ protected:
 public:
     SmartBase(int iBaseData=0) : mBaseData(iBaseData) { }
     virtual ~SmartBase() { }
-    virtual void check(int iValue)=0;
+    virtual void check(int /*iValue*/) { };
 };
 
 //----------------------------------------------------------------------------
@@ -109,8 +109,8 @@ struct SmartTestAuto
         std::shared_ptr<SmartBase>& iShared,
         std::shared_ptr<SmartBase>& iForWeak
     ) : mUniquePtr(std::unique_ptr<SmartBase>((iUnique)?new SmartDerived{iUnique}:nullptr)),
-        mSharedPtr(std::shared_ptr<SmartBase>(iShared)),
-        mWeakPtr(std::weak_ptr<SmartBase>(iForWeak))
+        mSharedPtr(iShared),
+        mWeakPtr(iForWeak)
     { }
 
     // iUnique == 0の時は全てnullptrと比較する
@@ -170,8 +170,8 @@ struct SmartTestManual
         std::shared_ptr<SmartBase>& iShared,
         std::shared_ptr<SmartBase>& iForWeak
     ) : mUniquePtr(std::unique_ptr<SmartBase>((iUnique)?new SmartDerived{iUnique}:nullptr)),
-        mSharedPtr(std::shared_ptr<SmartBase>(iShared)),
-        mWeakPtr(std::weak_ptr<SmartBase>(iForWeak))
+        mSharedPtr(iShared),
+        mWeakPtr(iForWeak)
     { }
 
     // iUnique == 0の時は全てnullptrと比較する

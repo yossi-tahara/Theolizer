@@ -60,7 +60,59 @@ void tutoriseSupportStl()
     std::cout << "tutoriseSupportStl() start" << std::endl;
 
 //----------------------------------------------------------------------------
-//      通常
+//      スマート・ポインタ
+//----------------------------------------------------------------------------
+
+//      ---<<< 保存 >>>---
+
+    {
+        // 保存データ生成
+        std::unique_ptr<int>    aUnique{new int{100}};
+        std::shared_ptr<int>    aShared{new int{200}};
+        std::shared_ptr<int>    aSharedForWeak{new int{300}};
+        std::weak_ptr<int>      aWeak{aSharedForWeak};
+
+        // 保存
+        std::ofstream   aStream("tutorise_support_stl.json");
+        theolizer::JsonOSerializer<> aSerializer(aStream);
+
+        THEOLIZER_PROCESS(aSerializer, aUnique);
+        THEOLIZER_PROCESS(aSerializer, aShared);
+        THEOLIZER_PROCESS(aSerializer, aSharedForWeak);
+        THEOLIZER_PROCESS(aSerializer, aWeak);
+
+        aSerializer.clearTracking();
+    }
+
+//      ---<<< 回復 >>>---
+
+    {
+        // 回復先データ生成
+        std::unique_ptr<int>    aUnique{};
+        std::shared_ptr<int>    aShared{};
+        std::shared_ptr<int>    aSharedForWeak{};
+        std::weak_ptr<int>      aWeak{};
+
+        // 回復
+        std::ifstream   aStream("tutorise_support_stl.json");
+        theolizer::JsonISerializer<> aSerializer(aStream);
+
+        THEOLIZER_PROCESS(aSerializer, aUnique);
+        THEOLIZER_PROCESS(aSerializer, aShared);
+        THEOLIZER_PROCESS(aSerializer, aSharedForWeak);
+        THEOLIZER_PROCESS(aSerializer, aWeak);
+
+        // チェック
+        THEOLIZER_EQUAL(*(aUnique.get()), 100);
+        THEOLIZER_EQUAL(*(aShared.get()), 200);
+        THEOLIZER_EQUAL(*(aSharedForWeak.get()), 300);
+        THEOLIZER_EQUAL_PTR(aWeak.lock().get(), aSharedForWeak.get());
+
+        aSerializer.clearTracking();
+    }
+
+//----------------------------------------------------------------------------
+//      標準コンテナの通常使用
 //----------------------------------------------------------------------------
 
 //      ---<<< 保存 >>>---
@@ -99,7 +151,7 @@ void tutoriseSupportStl()
     }
 
 //----------------------------------------------------------------------------
-//      被ポインタ
+//      標準コンテナの被ポインタ使用
 //----------------------------------------------------------------------------
 
 //      ---<<< 保存 >>>---
@@ -159,7 +211,7 @@ void tutoriseSupportStl()
     }
 
 //----------------------------------------------------------------------------
-//      保存先指定による分割保存と回復
+//      標準コンテナの保存先指定による分割保存と回復
 //----------------------------------------------------------------------------
 
 //      ---<<< 保存 >>>---
@@ -997,31 +1049,44 @@ void saveSupportStl(tSerializer& iSerializer)
 
 //      ---<<< 手動(トップ・レベル)による保存 >>>---
 
-#if 0
     {
         std::cout << "        saveSupportStl() : Manual(Top Level)" << std::endl;
 
         // 保存情報生成
         std::shared_ptr<SmartBase>  aSharedNull{};
         std::shared_ptr<SmartBase>  aForWeakNull{};
-        std::shared_ptr<SmartBase>  aShared{new SmartDerived{100}};
-        std::shared_ptr<SmartBase>  aForWeak{new SmartDerived{110}};
+
+        std::shared_ptr<SmartBase>  aShared0{new SmartDerived{100}};
+        std::shared_ptr<SmartBase>  aForWeak0{new SmartDerived{110}};
+
+        std::shared_ptr<SmartBase>  aShared1{new SmartDerived{200}};
+        std::shared_ptr<SmartBase>  aForWeak1{new SmartDerived{210}};
+
+        std::shared_ptr<SmartBase>  aShared2{new SmartDerived{300}};
+        std::shared_ptr<SmartBase>  aForWeak2{new SmartDerived{310}};
 
         // nullptrチェック用
         SmartTestAuto               aSmartTestAutoNull{0, aSharedNull, aForWeakNull};
         // nullptrへの回復チェック用
-        SmartTestAuto               aSmartTestAuto0{120, aShared, aForWeak};
+        SmartTestAuto               aSmartTestAuto0{120, aShared0, aForWeak0};
         // 同じ型ポインタへの回復チェック用
-        SmartTestAuto               aSmartTestAuto1{130, aShared, aForWeak};
+        SmartTestAuto               aSmartTestAuto1{220, aShared1, aForWeak1};
         // 異なる型ポインタへの回復チェック用
-        SmartTestAuto               aSmartTestAuto2{140, aShared, aForWeak};
+        SmartTestAuto               aSmartTestAuto2{320, aShared2, aForWeak2};
 
         // 保存
-        THEOLIZER_PROCESS(iSerializer, aShared);
-        THEOLIZER_PROCESS(iSerializer, aForWeak);
         processSmart(iSerializer, aSmartTestAutoNull);
+
+        THEOLIZER_PROCESS(iSerializer, aShared0);
+        THEOLIZER_PROCESS(iSerializer, aForWeak0);
         processSmart(iSerializer, aSmartTestAuto0);
+
+        THEOLIZER_PROCESS(iSerializer, aShared1);
+        THEOLIZER_PROCESS(iSerializer, aForWeak1);
         processSmart(iSerializer, aSmartTestAuto1);
+
+        THEOLIZER_PROCESS(iSerializer, aShared2);
+        THEOLIZER_PROCESS(iSerializer, aForWeak2);
         processSmart(iSerializer, aSmartTestAuto2);
 
         iSerializer.clearTracking();
@@ -1095,6 +1160,7 @@ void saveSupportStl(tSerializer& iSerializer)
 
 //      ---<<< std::array >>>---
 
+#if 1
     {
         std::cout << "        saveContainerFixed() : array<int, *>" << std::endl;
         saveContainerFixed<tSerializer, std::array, int>(iSerializer, 1000, false);
@@ -1376,15 +1442,21 @@ void loadSupportStl(tSerializer& iSerializer)
 
 //      ---<<< 手動(トップ・レベル)による回復 >>>---
 
-#if 0
     {
         std::cout << "        loadSupportStl() : Manual(Top Level)" << std::endl;
 
         // 回復先生成
         std::shared_ptr<SmartBase>  aSharedNull{};
         std::shared_ptr<SmartBase>  aForWeakNull{};
-        std::shared_ptr<SmartBase>  aShared{new SmartDerived{}};
-        std::shared_ptr<SmartBase>  aForWeak{new SmartDerived{}};
+
+        std::shared_ptr<SmartBase>  aShared0{};
+        std::shared_ptr<SmartBase>  aForWeak0{};
+
+        std::shared_ptr<SmartBase>  aShared1{new SmartDerived{}};
+        std::shared_ptr<SmartBase>  aForWeak1{new SmartDerived{}};
+
+        std::shared_ptr<SmartBase>  aShared2{new SmartBase{}};
+        std::shared_ptr<SmartBase>  aForWeak2{new SmartBase{}};
 
         // nullptrチェック用
         SmartTestAuto               aSmartTestAutoNull{};
@@ -1396,23 +1468,36 @@ void loadSupportStl(tSerializer& iSerializer)
         SmartTestAuto               aSmartTestAuto2{};
 
         // 回復
-        THEOLIZER_PROCESS(iSerializer, aShared);
-        THEOLIZER_PROCESS(iSerializer, aForWeak);
         processSmart(iSerializer, aSmartTestAutoNull);
+
+        THEOLIZER_PROCESS(iSerializer, aShared0);
+        THEOLIZER_PROCESS(iSerializer, aForWeak0);
         processSmart(iSerializer, aSmartTestAuto0);
+
+        THEOLIZER_PROCESS(iSerializer, aShared1);
+        THEOLIZER_PROCESS(iSerializer, aForWeak1);
         processSmart(iSerializer, aSmartTestAuto1);
+
+        THEOLIZER_PROCESS(iSerializer, aShared2);
+        THEOLIZER_PROCESS(iSerializer, aForWeak2);
         processSmart(iSerializer, aSmartTestAuto2);
 
         iSerializer.clearTracking();
 
         // チェック
-        aShared.get()->check(100);
-        aForWeak.get()->check(110);
         THEOLIZER_EQUAL(aSharedNull, false);
         THEOLIZER_EQUAL(aForWeakNull, false);
-        aSmartTestAuto0.check(120, aShared, aForWeak);
-        aSmartTestAuto1.check(130, aShared, aForWeak);
-        aSmartTestAuto2.check(140, aShared, aForWeak);
+        aShared0.get()->check(100);
+        aForWeak0.get()->check(110);
+        aSmartTestAuto0.check(120, aShared0, aForWeak0);
+
+        aShared1.get()->check(200);
+        aForWeak1.get()->check(210);
+        aSmartTestAuto1.check(220, aShared1, aForWeak1);
+
+        aShared2.get()->check(300);
+        aForWeak2.get()->check(310);
+        aSmartTestAuto2.check(320, aShared2, aForWeak2);
     }
 
 //      ---<<< 自動メンバ・リスト生成による回復 >>>---
@@ -1501,6 +1586,7 @@ void loadSupportStl(tSerializer& iSerializer)
 
 //      ---<<< std::array >>>---
 
+#if 1
     {
         std::cout << "        loadContainerFixed() : array<int, *>" << std::endl;
         loadContainerFixed<tSerializer, std::array, int>(iSerializer, 1000, false);
@@ -1794,28 +1880,61 @@ void saveSupportStlDestinations
     tSerializerAB&
 )
 {
-    std::cout << "        saveSupportStlDestinations() : Fixed" << std::endl;
-    saveFixed<std::array<TestStlDestinations, 3> >(iSerializerA, iSerializerB, 100);
-    saveFixed<theolizer::ArrayPointee<TestStlDestinations, 3> >(iSerializerA, iSerializerB, 110);
+//----------------------------------------------------------------------------
+//      スマート・ポインタ
+//----------------------------------------------------------------------------
 
-    std::cout << "        saveSupportStlDestinations() : NoKey" << std::endl;
-    saveNoKey<std::vector<TestStlDestinations> >(iSerializerA, iSerializerB, 200);
-    saveNoKey<theolizer::VectorPointee<TestStlDestinations> >(iSerializerA, iSerializerB, 210);
-    saveNoKey<std::deque<TestStlDestinations> >(iSerializerA, iSerializerB, 300);
-    saveNoKey<theolizer::DequePointee<TestStlDestinations> >(iSerializerA, iSerializerB, 310);
-    saveNoKey<std::forward_list<TestStlDestinations> >(iSerializerA, iSerializerB, 400);
-    saveNoKey<theolizer::ForwardListPointee<TestStlDestinations> >(iSerializerA,iSerializerB,410);
-    saveNoKey<std::list<TestStlDestinations> >(iSerializerA, iSerializerB, 500);
-    saveNoKey<theolizer::ListPointee<TestStlDestinations> >(iSerializerA, iSerializerB, 510);
+    {
+        std::cout << "        saveSupportStlDestinations() : std::unique_ptr" << std::endl;
+        std::unique_ptr<TestStlDestinations>    aUnique{new TestStlDestinations{100}};
+        THEOLIZER_PROCESS(iSerializerA, aUnique);
+        THEOLIZER_PROCESS(iSerializerB, aUnique);
 
-    std::cout << "        saveSupportStlDestinations() : Key" << std::endl;
-    saveKey<std::map<std::string, TestStlDestinations> >(iSerializerA, iSerializerB, 600);
-    saveKey<theolizer::MapPointee<std::string, TestStlDestinations> >
-        (iSerializerA, iSerializerB, 610);
+        std::cout << "        saveSupportStlDestinations() : std::shared_ptr" << std::endl;
+        std::shared_ptr<TestStlDestinations>    aShared{new TestStlDestinations{200}};
+        std::shared_ptr<TestStlDestinations>    aShared2{aShared};
+        THEOLIZER_PROCESS(iSerializerA, aShared);
+        THEOLIZER_PROCESS(iSerializerA, aShared2);
+        THEOLIZER_PROCESS(iSerializerB, aShared);
+        THEOLIZER_PROCESS(iSerializerB, aShared2);
 
-    saveKey<std::unordered_map<std::string, TestStlDestinations> >(iSerializerA,iSerializerB,700);
-    saveKey<theolizer::UnorderedMapPointee<std::string, TestStlDestinations> >
-        (iSerializerA, iSerializerB, 710);
+        iSerializerA.clearTracking();
+        iSerializerB.clearTracking();
+    }
+
+//----------------------------------------------------------------------------
+//      コンテナ
+//----------------------------------------------------------------------------
+
+    {
+        std::cout << "        saveSupportStlDestinations() : Container Fixed" << std::endl;
+        saveFixed<std::array<TestStlDestinations, 3> >      (iSerializerA, iSerializerB, 100);
+        saveFixed<theolizer::ArrayPointee<TestStlDestinations, 3> >
+                                                            (iSerializerA, iSerializerB, 110);
+
+        std::cout << "        saveSupportStlDestinations() : Container NoKey" << std::endl;
+        saveNoKey<std::vector<TestStlDestinations> >        (iSerializerA, iSerializerB, 200);
+        saveNoKey<theolizer::VectorPointee<TestStlDestinations> >(iSerializerA, iSerializerB, 210);
+        saveNoKey<std::deque<TestStlDestinations> >         (iSerializerA, iSerializerB, 300);
+        saveNoKey<theolizer::DequePointee<TestStlDestinations> >
+                                                            (iSerializerA, iSerializerB, 310);
+        saveNoKey<std::forward_list<TestStlDestinations> >  (iSerializerA, iSerializerB, 400);
+        saveNoKey<theolizer::ForwardListPointee<TestStlDestinations> >
+                                                            (iSerializerA,iSerializerB,410);
+        saveNoKey<std::list<TestStlDestinations> >          (iSerializerA, iSerializerB, 500);
+        saveNoKey<theolizer::ListPointee<TestStlDestinations> >
+                                                            (iSerializerA, iSerializerB, 510);
+
+        std::cout << "        saveSupportStlDestinations() : Container Key" << std::endl;
+        saveKey<std::map<std::string, TestStlDestinations> >(iSerializerA, iSerializerB, 600);
+        saveKey<theolizer::MapPointee<std::string, TestStlDestinations> >
+                                                            (iSerializerA, iSerializerB, 610);
+
+        saveKey<std::unordered_map<std::string, TestStlDestinations> >
+                                                            (iSerializerA,iSerializerB,700);
+        saveKey<theolizer::UnorderedMapPointee<std::string, TestStlDestinations> >
+                                                            (iSerializerA, iSerializerB, 710);
+    }
 }
 
 INSTANTIATION_DESTINATIONS(saveSupportStlDestinations);
@@ -1832,28 +1951,70 @@ void loadSupportStlDestinations
     tSerializerAB&
 )
 {
-    std::cout << "        loadSupportStlDestinations() : Fixed" << std::endl;
-    loadFixed<std::array<TestStlDestinations, 3> >(iSerializerA, iSerializerB, 100);
-    loadFixed<theolizer::ArrayPointee<TestStlDestinations, 3> >(iSerializerA, iSerializerB, 110);
+//----------------------------------------------------------------------------
+//      スマート・ポインタ
+//----------------------------------------------------------------------------
 
-    std::cout << "        loadSupportStlDestinations() : NoKey" << std::endl;
-    loadNoKey<std::vector<TestStlDestinations> >(iSerializerA, iSerializerB, 200);
-    loadNoKey<theolizer::VectorPointee<TestStlDestinations> >(iSerializerA, iSerializerB, 210);
-    loadNoKey<std::deque<TestStlDestinations> >(iSerializerA, iSerializerB, 300);
-    loadNoKey<theolizer::DequePointee<TestStlDestinations> >(iSerializerA, iSerializerB, 310);
-    loadNoKey<std::forward_list<TestStlDestinations> >(iSerializerA, iSerializerB, 400);
-    loadNoKey<theolizer::ForwardListPointee<TestStlDestinations> >(iSerializerA,iSerializerB,410);
-    loadNoKey<std::list<TestStlDestinations> >(iSerializerA, iSerializerB, 500);
-    loadNoKey<theolizer::ListPointee<TestStlDestinations> >(iSerializerA, iSerializerB, 510);
+    {
+        std::cout << "        loadSupportStlDestinations() : std::unique_ptr" << std::endl;
+        std::unique_ptr<TestStlDestinations>    aUnique{};
 
-    std::cout << "        loadSupportStlDestinations() : Key" << std::endl;
-    loadKey<std::map<std::string, TestStlDestinations> >(iSerializerA, iSerializerB, 600);
-    loadKey<theolizer::MapPointee<std::string, TestStlDestinations> >
-        (iSerializerA, iSerializerB, 610);
+        THEOLIZER_PROCESS(iSerializerA, aUnique);
+        THEOLIZER_EQUAL(*(aUnique.get()), TestStlDestinations(100, 0));
+        THEOLIZER_PROCESS(iSerializerB, aUnique);
+        THEOLIZER_EQUAL(*(aUnique.get()), TestStlDestinations(100));
 
-    loadKey<std::unordered_map<std::string, TestStlDestinations> >(iSerializerA,iSerializerB,700);
-    loadKey<theolizer::UnorderedMapPointee<std::string, TestStlDestinations> >
-        (iSerializerA, iSerializerB, 710);
+        std::cout << "        loadSupportStlDestinations() : std::shared_ptr" << std::endl;
+        std::shared_ptr<TestStlDestinations>    aShared{};
+        std::shared_ptr<TestStlDestinations>    aShared2{};
+        THEOLIZER_PROCESS(iSerializerA, aShared);
+        THEOLIZER_EQUAL(*(aShared.get()), TestStlDestinations(200, 0));
+        THEOLIZER_PROCESS(iSerializerB, aShared);
+        THEOLIZER_EQUAL(*(aShared.get()), TestStlDestinations(200));
+
+        THEOLIZER_PROCESS(iSerializerA, aShared2);
+        THEOLIZER_EQUAL_PTR(aShared.get(), aShared2.get());
+        THEOLIZER_PROCESS(iSerializerB, aShared2);
+        THEOLIZER_EQUAL_PTR(aShared.get(), aShared2.get());
+
+        iSerializerA.clearTracking();
+        iSerializerB.clearTracking();
+    }
+
+//----------------------------------------------------------------------------
+//      コンテナ
+//----------------------------------------------------------------------------
+
+    {
+        std::cout << "        loadSupportStlDestinations() : Container Fixed" << std::endl;
+        loadFixed<std::array<TestStlDestinations, 3> >      (iSerializerA, iSerializerB, 100);
+        loadFixed<theolizer::ArrayPointee<TestStlDestinations, 3> >
+                                                            (iSerializerA, iSerializerB, 110);
+
+        std::cout << "        loadSupportStlDestinations() : Container NoKey" << std::endl;
+        loadNoKey<std::vector<TestStlDestinations> >        (iSerializerA, iSerializerB, 200);
+        loadNoKey<theolizer::VectorPointee<TestStlDestinations> >
+                                                            (iSerializerA, iSerializerB, 210);
+        loadNoKey<std::deque<TestStlDestinations> >         (iSerializerA, iSerializerB, 300);
+        loadNoKey<theolizer::DequePointee<TestStlDestinations> >
+                                                            (iSerializerA, iSerializerB, 310);
+        loadNoKey<std::forward_list<TestStlDestinations> >  (iSerializerA, iSerializerB, 400);
+        loadNoKey<theolizer::ForwardListPointee<TestStlDestinations> >
+                                                            (iSerializerA,iSerializerB,410);
+        loadNoKey<std::list<TestStlDestinations> >          (iSerializerA, iSerializerB, 500);
+        loadNoKey<theolizer::ListPointee<TestStlDestinations> >
+                                                            (iSerializerA, iSerializerB, 510);
+
+        std::cout << "        loadSupportStlDestinations() : Container Key" << std::endl;
+        loadKey<std::map<std::string, TestStlDestinations> >(iSerializerA, iSerializerB, 600);
+        loadKey<theolizer::MapPointee<std::string, TestStlDestinations> >
+                                                            (iSerializerA, iSerializerB, 610);
+
+        loadKey<std::unordered_map<std::string, TestStlDestinations> >
+                                                            (iSerializerA,iSerializerB,700);
+        loadKey<theolizer::UnorderedMapPointee<std::string, TestStlDestinations> >
+                                                            (iSerializerA, iSerializerB, 710);
+    }
 }
 
 INSTANTIATION_DESTINATIONS(loadSupportStlDestinations);

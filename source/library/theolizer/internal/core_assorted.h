@@ -56,7 +56,11 @@
 //          当面機能をディセーブルするが、復活する可能性を考慮して残すもの
 // ***************************************************************************
 
-#define THEOLIZER_INTERNAL_DISABLE_AUTO_POINTEE
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+
+    #define THEOLIZER_INTERNAL_DISABLE_AUTO_POINTEE
+
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
 //      THEOLIZER_WRITE_CODE付随処理

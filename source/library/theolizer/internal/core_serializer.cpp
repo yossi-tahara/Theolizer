@@ -637,6 +637,7 @@ BaseSerializer::BaseSerializer
     mClassTracking(false),
     mCheckMode(iCheckMode),
     mElementsMapping(emOrder),
+    mIsShared(false),
     mIndent(0),
     mCancelPrettyPrint(false),
     mSerializerVersionNo(0),
@@ -849,8 +850,8 @@ BaseSerializer::AutoRestoreLoadProcess::~AutoRestoreLoadProcess() noexcept
 BaseSerializer::AutoRestoreLoad::AutoRestoreLoad(
             BaseSerializer& iSerializer,
             ElementsMapping iElementsMapping) :
-                    mSerializer(iSerializer),
-                    mElementsMapping(iSerializer.mElementsMapping)
+                mSerializer(iSerializer),
+                mElementsMapping(iSerializer.mElementsMapping)
 {
     mSerializer.mElementsMapping=iElementsMapping;
     mSerializer.loadClassStart();

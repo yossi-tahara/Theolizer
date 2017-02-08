@@ -2,7 +2,7 @@
 /*!
     @brief      ドキュメント・ファイル－使用方法（個別）
     @ingroup    Documents
-    @file       7c.object_tracking.h
+    @file       7d.destinations.h
     @author     Yoshinori Tahara
     @date       2017/01/23 Created
 */

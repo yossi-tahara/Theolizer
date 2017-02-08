@@ -520,7 +520,8 @@ struct SharedPtrTable
     template<typename>                          friend class Element;                       \
     template<typename>                          friend struct EnumElement;                  \
                                                 friend struct MetaDeserializer;             \
-                                                friend class AdditionalInfo
+                                                friend class AdditionalInfo;                \
+                                                friend class AutoRestoreIsShared
 
 // theolizer名前空間のクラスにて使用する
 #define THEOLIZER_INTERNAL_FRIENDS                                                          \
@@ -745,6 +746,7 @@ private:
 protected:
     CheckMode               mCheckMode;
     ElementsMapping         mElementsMapping;
+    bool                    mIsShared;
     int                     mIndent;
     bool                    mCancelPrettyPrint;
 
@@ -752,6 +754,7 @@ protected:
 //      トップ・レベル処理補助クラス
 //----------------------------------------------------------------------------
 
+protected:
     struct THEOLIZER_INTERNAL_DLL AutoRestoreSaveProcess
     {
         BaseSerializer&     mSerializer;
@@ -771,6 +774,7 @@ protected:
     {
         BaseSerializer&     mSerializer;
         ElementsMapping     mElementsMapping;
+        bool                mIsShared;
         int                 mIndent;
         bool                mCancelPrettyPrint;
 
@@ -1351,6 +1355,34 @@ void loadClass(BaseSerializer& iBaseSerializer, tVersionType& iVersion)
 THEOLIZER_INTERNAL_DLL bool isLastVersion();
 THEOLIZER_INTERNAL_DLL bool isSaver();
 THEOLIZER_INTERNAL_DLL bool duringBackup();
+
+//############################################################################
+//      std::shared_ptrサポート
+//############################################################################
+
+// ***************************************************************************
+//      mIsShared管理
+// ***************************************************************************
+
+class AutoRestoreIsShared
+{
+    BaseSerializer&     mSerializer;
+    bool                mIsShared;
+
+public:
+    explicit AutoRestoreIsShared(BaseSerializer& iSerializer, bool iIsShared) :
+                    mSerializer(iSerializer),
+                    mIsShared(iSerializer.mIsShared)
+    {
+        mSerializer.mIsShared=iIsShared;
+    }
+    ~AutoRestoreIsShared()
+    {
+        mSerializer.mIsShared=mIsShared;
+    }
+    AutoRestoreIsShared(AutoRestoreIsShared const&) = delete;
+    AutoRestoreIsShared& operator=(AutoRestoreIsShared const&) = delete;
+};
 
 //############################################################################
 //      End

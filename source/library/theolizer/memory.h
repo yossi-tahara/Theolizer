@@ -72,6 +72,8 @@ struct TheolizerNonIntrusive<std::unique_ptr<T, D>>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
+        static_assert(!std::is_array<T>::value,
+            "[Theolizer] Can not support array type for std::unique_ptr<>.");
         THEOLIZER_REGISTER_TEMPLATE_PARAMETER(D);
 
         THEOLIZER_PROCESS_OWNER(iSerializer, iInstance->get());
@@ -84,6 +86,9 @@ struct TheolizerNonIntrusive<std::unique_ptr<T, D>>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
+        static_assert(!std::is_array<T>::value,
+            "[Theolizer] Can not support array type for std::unique_ptr<>.");
+
         THEOLIZER_REGISTER_TEMPLATE_PARAMETER(D);
 
         // もし、nullptrなら、インスタンス生成
@@ -167,8 +172,11 @@ struct TheolizerNonIntrusive<std::shared_ptr<T>>::
 
         typedef typename tTheolizerVersion::TheolizerTarget TheolizerTarget;
         typedef typename TheolizerTarget::element_type ElementType;
-        ElementType *aInstance=nullptr;
-        THEOLIZER_PROCESS_OWNER(iSerializer, aInstance);
+        ElementType* aInstance=oInstance->get();
+        {
+            theolizer::internal::AutoRestoreIsShared aAutoRestoreIsShared(iSerializer, true);
+            THEOLIZER_PROCESS_OWNER(iSerializer, aInstance);
+        }
 
         // nullptrなら追跡しない
         if (!aInstance)
@@ -196,7 +204,10 @@ struct TheolizerNonIntrusive<std::shared_ptr<T>>::
         // 初めて
         else
         {
-            oInstance->reset(aInstance);
+            if (aInstance != oInstance->get())
+            {
+                oInstance->reset(aInstance);
+            }
             std::shared_ptr<void const> temp(*oInstance, aDerivedPointer);
             aSharedPtrMap.insert(aFound, std::make_pair(aDerivedPointer, temp));
         }

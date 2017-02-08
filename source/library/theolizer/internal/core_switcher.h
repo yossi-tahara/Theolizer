@@ -241,38 +241,6 @@ struct LoadPointer<tBaseSerializer, tClassType, EnableIf<IsNonIntrusive<tClassTy
     }
 };
 
-//      ---<<< delete補助 >>>---
-
-// 配列へのポインタ削除
-template
-<
-    typename tType,
-    THEOLIZER_INTERNAL_OVERLOAD
-    (
-        (std::is_array<typename std::remove_pointer<tType>::type>::value)
-    )
->
-void deletePointer(tType& oPointer)
-{
-    delete[] oPointer;
-    oPointer=nullptr;
-}
-
-// それ以外へのポインタ削除
-template
-<
-    typename tType,
-    THEOLIZER_INTERNAL_OVERLOAD
-    (
-        (!std::is_array<typename std::remove_pointer<tType>::type>::value)
-    )
->
-void deletePointer(tType& oPointer)
-{
-    delete oPointer;
-    oPointer=nullptr;
-}
-
 //----------------------------------------------------------------------------
 //      ポインタ型用Switcher本体
 //----------------------------------------------------------------------------
@@ -386,14 +354,6 @@ struct Switcher
                     tBaseSerializer,
                     typename std::remove_pointer<PointerType>::type
                 >::load(iSerializer, const_cast<PointerType&>(oPointer));
-            }
-            else
-            {
-                // 回復済の時、異なる領域が割り当て済だったら、それを解放
-                if (oPointer != aPointer)
-                {
-                    deletePointer(oPointer);
-                }
             }
             // オブジェクトのアドレス回復
             iSerializer.recoverObject

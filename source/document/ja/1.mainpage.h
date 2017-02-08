@@ -78,7 +78,7 @@
         @ref EnumVariation \n
         @ref ObjectTracking \n
         @ref Destinations \n
-        @ref UsageSTL \n
+        @ref SupportSTL \n
         @ref ChangingClass \n
         @ref ChangingEnum \n
         @par ""

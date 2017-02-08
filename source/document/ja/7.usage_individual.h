@@ -33,7 +33,7 @@
 @subpage EnumVariation \n
 @subpage ObjectTracking \n
 @subpage Destinations \n
-@subpage UsageSTL \n
+@subpage SupportSTL \n
 @subpage ChangingEnum \n
 @subpage ChangingClass \n
 @subpage ErrorReport \n
@@ -130,12 +130,6 @@ enum型は従来のenum型と、C++11で追加されたscoped enum型の２つ�
 
 /*!
     @page ChangingEnum enum型の変更方法、および、バージョン・アップ方法
-# T.B.D.
-*/
-
-/*!
-    @page UsageSTL 標準コンテナ（STL）の使い方
-ここでは、標準コンテナ（STL）の使い方を説明します。
 # T.B.D.
 */
 
