@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.12"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Theolizer: スマート・ポインタ、および、標準コンテナ・サポートの使い方</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+  $(document).ready(initResizable);
+</script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="my_style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">Theolizer
+   &#160;<span id="projectnumber">Version.0.4.3</span>
+   </div>
+   <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 構築: Doxygen 1.8.12 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'検索');
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','検索');
+  $(document).ready(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('_support_s_t_l.html','');});
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">スマート・ポインタ、および、標準コンテナ・サポートの使い方 </div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p>ここでは、スマート・ポイントと標準コンテナをシリアライズするための機能について説明します。</p>
+<p>基本は単にシリアライズするだけです。特別な操作は必要ありませんが、コンテナについては２つ応用的な使い方があります。</p>
+<ul>
+<li>コンテナへ保存する要素をオブジェクト追跡する場合</li>
+<li>保存先指定機能(<a class="el" href="_destinations.html">保存先指定について</a> )により分割保存したコンテナのデータを合成する場合</li>
+</ul>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="HowToUseSmartPointer"></a>
+1.スマート・ポインタのシリアライズ方法</h1>
+<h6></h6>
+<p>Theolizerはスマート・ポインタが管理するポインタをオーナー指定ポインタとしてシリアライズします。シリアライズする手順は通常のクラスと同じですが、少し注意事項があります。</p>
+<p>スマート・ポインタをシリアライズするために、theolizer/memory.hをインクルードして下さい。</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;theolizer/memory.h&gt;</span></div></div><!-- fragment --><ul>
+<li>unique_ptr<br />
+ unique_ptrは通常通りシリアライズ可能です。<br />
+ なお、<code>std::unique_ptr&lt;T[]&gt;</code>はサポートしていません。T[]をシリアライズするためには、その要素数が必要ですが管理されていないため、対応できないのです。<br />
+</li>
+<li>shared_ptr<br />
+ 同じインスタンスを管理するshared_ptrを保存し回復すると、その状況を回復します。<br />
+ なお、同じインスタンスを管理するshared_ptrは同じオジェクト追跡単位内でシリアライズするようにして下さい。ポリモーフィズムにより回復処理中にポインタが置き換わった場合、シリアライズされていなかったshared_ptrとの共有状態が解除されます。<br />
+</li>
+<li>weak_ptr<br />
+ バインドしているshared_ptrをシリアライズします。ですので、shared_ptrと同様同じインスタンスを管理するものは同じオブジェクト追跡単位内でシリアライズして下さい。</li>
+</ul>
+<p><b>スマート・ポインタの保存と回復処理（source/reference_and_test/version/ver1/test_support_stl.cpp）</b><br />
+ unique_ptr、shared_ptr、weak_ptrの保存／回復のサンプル・ソースです。</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 保存 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">    {</div><div class="line">        <span class="comment">// 保存データ生成</span></div><div class="line">        std::unique_ptr&lt;int&gt;    aUnique{<span class="keyword">new</span> <span class="keywordtype">int</span>{100}};</div><div class="line">        std::shared_ptr&lt;int&gt;    aShared0{<span class="keyword">new</span> <span class="keywordtype">int</span>{200}};</div><div class="line">        std::shared_ptr&lt;int&gt;    aShared1{aShared0};</div><div class="line">        std::shared_ptr&lt;int&gt;    aSharedForWeak{<span class="keyword">new</span> <span class="keywordtype">int</span>{300}};</div><div class="line">        std::weak_ptr&lt;int&gt;      aWeak{aSharedForWeak};</div><div class="line"></div><div class="line">        <span class="comment">// 保存</span></div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;tutorise_support_stl.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        THEOLIZER_PROCESS(aSerializer, aUnique);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aShared0);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aShared1);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aSharedForWeak);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aWeak);</div><div class="line"></div><div class="line">        aSerializer.clearTracking();</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 回復 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">    {</div><div class="line">        <span class="comment">// 回復先データ生成</span></div><div class="line">        std::unique_ptr&lt;int&gt;    aUnique{};</div><div class="line">        std::shared_ptr&lt;int&gt;    aShared0{};</div><div class="line">        std::shared_ptr&lt;int&gt;    aShared1{};</div><div class="line">        std::shared_ptr&lt;int&gt;    aSharedForWeak{};</div><div class="line">        std::weak_ptr&lt;int&gt;      aWeak{};</div><div class="line"></div><div class="line">        <span class="comment">// 回復</span></div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;tutorise_support_stl.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        THEOLIZER_PROCESS(aSerializer, aUnique);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aShared0);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aShared1);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aSharedForWeak);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aWeak);</div><div class="line"></div><div class="line">        <span class="comment">// チェック</span></div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(*(aUnique.get()), 100);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(*(aShared0.get()), 200);</div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(aShared1.get(), aShared0.get());</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(*(aSharedForWeak.get()), 300);</div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(aWeak.lock().get(), aSharedForWeak.get());</div><div class="line"></div><div class="line">        aSerializer.clearTracking();</div><div class="line">    }</div><div class="line"></div></div><!-- fragment --> <h6></h6>
+<h1><a class="anchor" id="HowToUseContainer"></a>
+2.標準コンテナのシリアライズ方法</h1>
+<h6></h6>
+<p>Theolizerは各種標準コンテナのシリアライズにも対応しています。<br />
+</p>
+<ul>
+<li>それぞれ対応するインクルードが必要です。</li>
+<li>一部の標準コンテナについて<br />
+ 保存先指定による合成回復、および、各要素を被ポインタとすること（他のシリアライズ対象のポインタから指す）に対応しています。</li>
+</ul>
+<p>下記にその対応表を示します。</p>
+<table class="doxtable">
+<tr>
+<th>標準コンテナ</th><th>ヘッダ</th><th>被ポインタ対応</th><th>合成回復  </th></tr>
+<tr>
+<td><code>array</code></td><td><code>&lt;<a class="el" href="array_8h_source.html">theolizer/array.h</a>&gt;</code></td><td>YES</td><td>YES </td></tr>
+<tr>
+<td><code>vector</code></td><td>同上</td><td>YES</td><td>YES </td></tr>
+<tr>
+<td><code>vector&lt;bool&gt;</code></td><td><code>&lt;<a class="el" href="vector_8h_source.html">theolizer/vector.h</a>&gt;</code></td><td>NO</td><td>NO </td></tr>
+<tr>
+<td><code>deque</code></td><td><code>&lt;<a class="el" href="deque_8h_source.html">theolizer/deque.h</a>&gt;</code></td><td>YES</td><td>YES </td></tr>
+<tr>
+<td><code>forward_list</code></td><td><code>&lt;<a class="el" href="forward__list_8h_source.html">theolizer/forward_list.h</a>&gt;</code></td><td>YES</td><td>YES </td></tr>
+<tr>
+<td><code>list</code></td><td><code>&lt;<a class="el" href="list_8h_source.html">theolizer/list.h</a>&gt;</code></td><td>YES</td><td>YES </td></tr>
+<tr>
+<td><code>set</code></td><td><code>&lt;<a class="el" href="set_8h_source.html">theolizer/set.h</a>&gt;</code></td><td>NO</td><td>NO </td></tr>
+<tr>
+<td><code>multiset</code></td><td>同上</td><td>NO</td><td>NO </td></tr>
+<tr>
+<td><code>map</code></td><td><code>&lt;<a class="el" href="map_8h_source.html">theolizer/map.h</a>&gt;</code></td><td>YES</td><td>YES </td></tr>
+<tr>
+<td><code>multimap</code></td><td>同上</td><td>NO</td><td>NO </td></tr>
+<tr>
+<td><code>unordered_set</code></td><td><code>&lt;<a class="el" href="unordered__set_8h_source.html">theolizer/unordered_set.h</a>&gt;</code></td><td>NO</td><td>NO </td></tr>
+<tr>
+<td><code>unordered_multiset</code></td><td>同上</td><td>NO</td><td>NO </td></tr>
+<tr>
+<td><code>unordered_map</code></td><td><code>&lt;<a class="el" href="unordered__map_8h_source.html">theolizer/unordered_map.h</a>&gt;</code></td><td>YES</td><td>YES </td></tr>
+<tr>
+<td><code>unordered_multimap</code></td><td>同上</td><td>NO</td><td>NO </td></tr>
+</table>
+<p>特記事項が幾つかあります。</p>
+<ul>
+<li>キー無しコンテナは先頭から順番にデータを回復します。<br />
+ arrayはコンテナを拡張できないので、余分なシリアライス・データは破棄されます。<br />
+ それ以外のキー無しコンテナ（vector, deque, forward_list, list）はシリアライズ・データの方が多い場合、コンテナを拡張して回復します。<br />
+ 両者ともシリアライズ・データの方が少ない場合、コンテナの余分な要素はそのまま保持されます。<br />
+ <br />
+</li>
+<li>mapとunordered_mapは合成回復に対応しています。<br />
+ これらはキー基準で回復しますので、保存先指定機能で分割したファイルを別々に編集した場合でも、同じキーのデータを同じインスタンスへ合成回復できます。<br />
+ <br />
+</li>
+<li>setとunordered_setについて<br />
+ これらは回復する際、シリアライズ・データを新規にコンストラクトしたインスタンスへ回復してからコンテナへ追加します。ですので、対応するシリアライズ・データがあった要素は単純回復（非合成回復）します。対応するシリアライズ・データがなかったコンテナの要素はそのまま維持されます。<br />
+ <br />
+</li>
+<li>キーの重複を許すコンテナについて<br />
+ multiset, multimap, unordered_multiset, unordered_multimapは、回復する際、一旦コンテナをクリアしてから、シリアライズ・データを回復します。これはキーの重複を許すため、シリアライズ・データと対応するコンテナの要素を特定できないためです。<br />
+</li>
+</ul>
+<h2><a class="anchor" id="HowToUseContainer21"></a>
+2-1.標準コンテナを通常の使い方で保存／回復するサンプル・ソース</h2>
+<p><b>サンプル・ソース（source/reference_and_test/version/ver1/test_support_stl.cpp）</b><br />
+</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 保存 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">    {</div><div class="line">        <span class="comment">// 保存データ生成</span></div><div class="line">        std::list&lt;int&gt;  aList;</div><div class="line">        aList.emplace_back(100);</div><div class="line">        aList.emplace_back(200);</div><div class="line">        aList.emplace_back(300);</div><div class="line"></div><div class="line">        <span class="comment">// 保存</span></div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;tutorise_support_stl_0.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        THEOLIZER_PROCESS(aSerializer, aList);</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 回復 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">    {</div><div class="line">        <span class="comment">// 回復先データ生成</span></div><div class="line">        std::list&lt;int&gt;  aList;</div><div class="line"></div><div class="line">        <span class="comment">// 回復</span></div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;tutorise_support_stl_0.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        THEOLIZER_PROCESS(aSerializer, aList);</div><div class="line"></div><div class="line">        <span class="comment">// チェック</span></div><div class="line">        <span class="keyword">auto</span> itr=aList.begin();</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(*itr, 100);     ++itr;</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(*itr, 200);     ++itr;</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(*itr, 300);     ++itr;</div><div class="line">    }</div><div class="line"></div></div><!-- fragment --> <h2><a class="anchor" id="HowToUseContainer22"></a>
+2-2.標準コンテナの要素を被ポインタとする保存／回復するサンプル・ソース</h2>
+<p><b>サンプル・ソース（source/reference_and_test/version/ver1/test_support_stl.cpp）</b><br />
+</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 保存 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">    {</div><div class="line">        <span class="comment">// 保存データ生成</span></div><div class="line">        theolizer::VectorPointee&lt;int&gt;   aVectorPointee;</div><div class="line">        aVectorPointee.emplace_back(400);</div><div class="line">        aVectorPointee.emplace_back(500);</div><div class="line">        aVectorPointee.emplace_back(600);</div><div class="line"></div><div class="line">        <span class="keyword">auto</span> itr=aVectorPointee.begin();</div><div class="line">        <span class="keywordtype">int</span>*    aPtr0=&amp;*itr++;</div><div class="line">        <span class="keywordtype">int</span>*    aPtr1=&amp;*itr++;</div><div class="line">        <span class="keywordtype">int</span>*    aPtr2=&amp;*itr++;</div><div class="line"></div><div class="line">        <span class="comment">// 保存</span></div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;tutorise_support_stl_1.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        THEOLIZER_PROCESS(aSerializer, aVectorPointee);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aPtr0);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aPtr1);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aPtr2);</div><div class="line"></div><div class="line">        aSerializer.clearTracking();</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 回復 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">    {</div><div class="line">        <span class="comment">// 回復先データ生成</span></div><div class="line">        theolizer::VectorPointee&lt;int&gt;   aVectorPointee;</div><div class="line">        <span class="keywordtype">int</span>*    aPtr0=<span class="keyword">nullptr</span>;</div><div class="line">        <span class="keywordtype">int</span>*    aPtr1=<span class="keyword">nullptr</span>;</div><div class="line">        <span class="keywordtype">int</span>*    aPtr2=<span class="keyword">nullptr</span>;</div><div class="line"></div><div class="line">        <span class="comment">// 回復</span></div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;tutorise_support_stl_1.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        THEOLIZER_PROCESS(aSerializer, aVectorPointee);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aPtr0);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aPtr1);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aPtr2);</div><div class="line"></div><div class="line">        <span class="comment">// チェック</span></div><div class="line">        <span class="keyword">auto</span> itr=aVectorPointee.begin();</div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(&amp;*itr, aPtr0);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(*itr, 400);     ++itr;</div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(&amp;*itr, aPtr1);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(*itr, 500);     ++itr;</div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(&amp;*itr, aPtr2);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(*itr, 600);     ++itr;</div><div class="line"></div><div class="line">        aSerializer.clearTracking();</div><div class="line">    }</div><div class="line"></div></div><!-- fragment --> <h2><a class="anchor" id="HowToUseContainer23"></a>
+2-3.標準コンテナの要素を合成回復サンプル・ソース</h2>
+<p><b>サンプル・ソースsource/reference_and_test/version/ver1/test_support_stl.cpp）</b><br />
+</p>
+<div class="fragment"><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 保存 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">    {</div><div class="line">        <span class="comment">// 保存データ生成</span></div><div class="line">        std::map&lt;std::string, StlTutorial&gt;  aMap;</div><div class="line">        aMap.emplace(<span class="stringliteral">&quot;first&quot;</span>,  StlTutorial(100, 200));</div><div class="line">        aMap.emplace(<span class="stringliteral">&quot;second&quot;</span>, StlTutorial(101, 201));</div><div class="line">        aMap.emplace(<span class="stringliteral">&quot;third&quot;</span>,  StlTutorial(102, 202));</div><div class="line"></div><div class="line">        <span class="comment">// 保存</span></div><div class="line">        std::ofstream   aStreamA(<span class="stringliteral">&quot;tutorise_support_stl_a.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;theolizerD::DestA&gt;</a> aSerializerA(aStreamA);</div><div class="line">        std::ofstream   aStreamB(<span class="stringliteral">&quot;tutorise_support_stl_b.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;theolizerD::DestB&gt;</a> aSerializerB(aStreamB);</div><div class="line"></div><div class="line">        THEOLIZER_PROCESS(aSerializerA, aMap);</div><div class="line">        THEOLIZER_PROCESS(aSerializerB, aMap);</div><div class="line"></div><div class="line">        aSerializerA.clearTracking();</div><div class="line">        aSerializerB.clearTracking();</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 回復 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">    {</div><div class="line">        <span class="comment">// 回復先データ生成</span></div><div class="line">        std::map&lt;std::string, StlTutorial&gt;  aMap;</div><div class="line"></div><div class="line">        <span class="comment">// 回復準備</span></div><div class="line">        std::ifstream   aStreamA(<span class="stringliteral">&quot;tutorise_support_stl_a.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializerA(aStreamA);</div><div class="line">        std::ifstream   aStreamB(<span class="stringliteral">&quot;tutorise_support_stl_b.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializerB(aStreamB);</div><div class="line"></div><div class="line">        <span class="comment">// 回復(DestA)</span></div><div class="line">        THEOLIZER_PROCESS(aSerializerA, aMap);</div><div class="line"></div><div class="line">        <span class="comment">// チェックA(DestBは回復されていない)</span></div><div class="line">        <span class="keyword">auto</span> itr=aMap.find(<span class="stringliteral">&quot;first&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#aba002d66ceb5ce60d8bef47524337664">THEOLIZER_CHECK</a>(itr != aMap.end(), <span class="stringliteral">&quot;first&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(itr-&gt;second.mDataA, 100);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(itr-&gt;second.mDataB, 0);</div><div class="line"></div><div class="line">        itr=aMap.find(<span class="stringliteral">&quot;second&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#aba002d66ceb5ce60d8bef47524337664">THEOLIZER_CHECK</a>(itr != aMap.end(), <span class="stringliteral">&quot;second&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(itr-&gt;second.mDataA, 101);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(itr-&gt;second.mDataB, 0);</div><div class="line"></div><div class="line">        itr=aMap.find(<span class="stringliteral">&quot;third&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#aba002d66ceb5ce60d8bef47524337664">THEOLIZER_CHECK</a>(itr != aMap.end(), <span class="stringliteral">&quot;third&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(itr-&gt;second.mDataA, 102);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(itr-&gt;second.mDataB, 0);</div><div class="line"></div><div class="line">        <span class="comment">// 回復(DestB)</span></div><div class="line">        THEOLIZER_PROCESS(aSerializerB, aMap);</div><div class="line"></div><div class="line">        <span class="comment">// チェックB</span></div><div class="line">        itr=aMap.find(<span class="stringliteral">&quot;first&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#aba002d66ceb5ce60d8bef47524337664">THEOLIZER_CHECK</a>(itr != aMap.end(), <span class="stringliteral">&quot;first&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(itr-&gt;second.mDataA, 100);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(itr-&gt;second.mDataB, 200);</div><div class="line"></div><div class="line">        itr=aMap.find(<span class="stringliteral">&quot;second&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#aba002d66ceb5ce60d8bef47524337664">THEOLIZER_CHECK</a>(itr != aMap.end(), <span class="stringliteral">&quot;second&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(itr-&gt;second.mDataA, 101);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(itr-&gt;second.mDataB, 201);</div><div class="line"></div><div class="line">        itr=aMap.find(<span class="stringliteral">&quot;third&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#aba002d66ceb5ce60d8bef47524337664">THEOLIZER_CHECK</a>(itr != aMap.end(), <span class="stringliteral">&quot;third&quot;</span>);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(itr-&gt;second.mDataA, 102);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(itr-&gt;second.mDataB, 202);</div><div class="line"></div><div class="line">        aSerializerA.clearTracking();</div><div class="line">        aSerializerB.clearTracking();</div><div class="line">    }</div><div class="line"></div></div><!-- fragment --><p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="TestContainer"></a>
+3.スマート・ポインタと標準コンテナ網羅的な使用例（自動テスト）の説明</h1>
+<h6></h6>
+<p>スマート・ポインタと標準コンテナのサポートについて、全てのシリアライザ、全ての書式でテストしています。 また、保存先指定で分割保存後、合成回復のテストも同様に全てのシリアライザ、全ての書式でテストしています。</p>
+<h2><a class="anchor" id="TestContainer31"></a>
+3-1.スマート・ポインタ</h2>
+<h3><a class="anchor" id="TestContainer311"></a>
+3-1-1.通常</h3>
+<p>unique_ptrとweak_ptrについては、使い方説明にて保存／回復テストしています。</p>
+<p>オーナー指定ポインタを回復する時、例えばある派生クラスAのインスタンスを指しているポインタへ異なる派生クラスBを回復する場合があります。その時、元の派生クラスAのインスタンスは解放し、派生クラスBのインスタンスをコンストラクトして回復します。 しかし、shared_ptrは他のshared_ptrとポイント先を共有しているため元のインスタンスを解放できません。そのための対策を実装していいます。（shared_ptr回復中フラグを設け、元のインスタンスはshared_ptr処理側で管理しています。) その機能のテストのため、回復先のポインタが下記の３種類についてテストします。</p><ul>
+<li>nullptrの時</li>
+<li>回復するものと同じインスタンスを指している時</li>
+<li>回復するものと異なるインスタンスを指している時</li>
+</ul>
+<p>この時のシリアライズ対象クラスはSmartBaseとそれを派生したSmartDerivedです。</p>
+<p>そして、それぞれについて、手動(トップ・レベル)、自動、手動(非トップ・レベル)による保存／回復をテストしています。 そのための補助クラスとして、SmartTestAutoとSmartTestManualを使っています。</p>
+<p><b>source/reference_and_test/version/ver1/test_support_stl.cpp</b>でテスト関数を定義してます。<br />
+</p>
+<ol type="1">
+<li>保存処理<br />
+ template&lt;class tSerializer&gt;<br />
+ void saveSupportStl(tSerializer&amp; iSerializer)の前半<br />
+ <br />
+</li>
+<li>回復処理<br />
+ template&lt;class tSerializer&gt;<br />
+ void loadSupportStl(tSerializer&amp; iSerializer)の前半<br />
+</li>
+</ol>
+<h3><a class="anchor" id="TestContainer312"></a>
+3-1-2.合成回復</h3>
+<p>unique_ptrとshared_ptrについて、それが管理するクラスをDestAとDestBに分割して保存し合成回復できることを確認しています。 <b>source/reference_and_test/version/ver1/test_support_stl.cpp</b>でテスト関数を定義してます。<br />
+</p>
+<ol type="1">
+<li>保存処理<br />
+ template&lt;class tSerializer&gt;<br />
+ void saveSupportStlDestinations(tSerializer&amp; iSerializer)の前半<br />
+ <br />
+</li>
+<li>回復処理<br />
+ template&lt;class tSerializer&gt;<br />
+ void saveSupportStlDestinations(tSerializer&amp; iSerializer)の前半<br />
+</li>
+</ol>
+<h2><a class="anchor" id="TestContainer32"></a>
+3-2.標準コンテナのテスト</h2>
+<h3><a class="anchor" id="TestContainer321"></a>
+3-2-1.通常</h3>
+<p>サポートしている全てのコンテナについて、下記について正しく保存／回復できることをテストしています。</p>
+<ul>
+<li>要素の型はint型とクラス（TestStl）</li>
+<li>被ポインタをサポートしているコンテナについてはオブジェクト追跡</li>
+</ul>
+<p>unorderedコンテナに対応するため、TestStlはstd::hashクラスを特殊化しています。</p>
+<p>下記関数テンプレートを使っています。</p>
+<table class="doxtable">
+<tr>
+<th>対象コンテナ</th><th>関数テンプレート  </th></tr>
+<tr>
+<td>array</td><td>saveContainerFixed, loadContainerFixed </td></tr>
+<tr>
+<td>vector(bool以外), deque, list, forward_list</td><td>saveContainer, loadContainer </td></tr>
+<tr>
+<td>set, multiset, unordered_set, unordered_multiset</td><td>saveContainerSet, loadContainerSet </td></tr>
+<tr>
+<td>map, multimap, unordered_map, unordered_multimap</td><td>saveContainerMap, loadContainerMap </td></tr>
+</table>
+<p><b>source/reference_and_test/version/ver1/test_support_stl.cpp</b>でテスト関数を定義してます。<br />
+</p>
+<ol type="1">
+<li>保存処理<br />
+ template&lt;class tSerializer&gt;<br />
+ void saveSupportStl(tSerializer&amp; iSerializer)の後半<br />
+ <br />
+</li>
+<li>回復処理<br />
+ template&lt;class tSerializer&gt;<br />
+ void loadSupportStl(tSerializer&amp; iSerializer)の後半<br />
+</li>
+</ol>
+<h3><a class="anchor" id="TestContainer322"></a>
+3-2-2.合成回復</h3>
+<p>合成回復をサポートしている全てのコンテナについて、下記について正しく保存／回復できることをテストしています。</p>
+<ul>
+<li>要素の型はクラス（TestStlDestinations）<br />
+ TestStlDestinationsは保存先としてDestAとDestBを指定したメンバを定義しています。</li>
+</ul>
+<p>下記関数テンプレートを使っています。</p>
+<table class="doxtable">
+<tr>
+<th>対象コンテナ</th><th>関数テンプレート  </th></tr>
+<tr>
+<td>array</td><td>saveFixed, loadFixed </td></tr>
+<tr>
+<td>vector(bool以外), deque, list, forward_list</td><td>saveNoKey, loadNoKey </td></tr>
+<tr>
+<td>map, unordered_map</td><td>saveKey, loadeKey </td></tr>
+</table>
+<p><b>source/reference_and_test/version/ver1/test_support_stl.cpp</b>でテスト関数を定義してます。<br />
+</p>
+<ol type="1">
+<li>保存処理<br />
+ template&lt;class tSerializer&gt;<br />
+ void saveSupportStlDestinations(tSerializer&amp; iSerializer)の後半<br />
+ <br />
+</li>
+<li>回復処理<br />
+ template&lt;class tSerializer&gt;<br />
+ void loadSupportStlDestinations(tSerializer&amp; iSerializer)の後半<br />
+ </li>
+</ol>
+</div></div><!-- contents -->
+</div><!-- doc-content -->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="index.html">--目次--</a></li><li class="navelem"><a class="el" href="_usage_individual.html">使用方法（個別）</a></li>
+    <li class="footer">構築:
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.12 </li>
+  </ul>
+</div>
+</body>
+</html>

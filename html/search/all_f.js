@@ -1,7 +1,6 @@
 var searchData=
 [
   ['incrementfailcount',['incrementFailCount',['../namespacetheolizer.html#a14d2adb80938d7b505f46dc748185bdd',1,'theolizer']]],
-  ['incrementtotalcount',['incrementTotalCount',['../namespacetheolizer.html#ab0351218010f5c83be657d189ad8f0c3',1,'theolizer']]],
   ['initresult',['initResult',['../namespacetheolizer.html#a290ebcb767f872f31fdd0ad389660358',1,'theolizer']]],
   ['ioerror',['IOError',['../namespacetheolizer.html#a64f24f288f49b55ce44b7b1438bf7789a5206bd7472156351d2d9a99633ac9580',1,'theolizer']]],
   ['isexist',['isExist',['../namespacetheolizer.html#a76fa98fd253b8ae810a51d0d132b67f4',1,'theolizer']]],

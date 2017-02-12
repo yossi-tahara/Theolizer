@@ -82,7 +82,24 @@ var _usage_individual =
         [ "2-2.保存先指定のテスト", "_destinations.html#TestSpecifySaving22", null ]
       ] ]
     ] ],
-    [ "標準コンテナ（STL）の使い方", "_usage_s_t_l.html", null ],
+    [ "スマート・ポインタ、および、標準コンテナ・サポートの使い方", "_support_s_t_l.html", [
+      [ "1.スマート・ポインタのシリアライズ方法", "_support_s_t_l.html#HowToUseSmartPointer", null ],
+      [ "2.標準コンテナのシリアライズ方法", "_support_s_t_l.html#HowToUseContainer", [
+        [ "2-1.標準コンテナを通常の使い方で保存／回復するサンプル・ソース", "_support_s_t_l.html#HowToUseContainer21", null ],
+        [ "2-2.標準コンテナの要素を被ポインタとする保存／回復するサンプル・ソース", "_support_s_t_l.html#HowToUseContainer22", null ],
+        [ "2-3.標準コンテナの要素を合成回復サンプル・ソース", "_support_s_t_l.html#HowToUseContainer23", null ]
+      ] ],
+      [ "3.スマート・ポインタと標準コンテナ網羅的な使用例（自動テスト）の説明", "_support_s_t_l.html#TestContainer", [
+        [ "3-1.スマート・ポインタ", "_support_s_t_l.html#TestContainer31", [
+          [ "3-1-1.通常", "_support_s_t_l.html#TestContainer311", null ],
+          [ "3-1-2.合成回復", "_support_s_t_l.html#TestContainer312", null ]
+        ] ],
+        [ "3-2.標準コンテナのテスト", "_support_s_t_l.html#TestContainer32", [
+          [ "3-2-1.通常", "_support_s_t_l.html#TestContainer321", null ],
+          [ "3-2-2.合成回復", "_support_s_t_l.html#TestContainer322", null ]
+        ] ]
+      ] ]
+    ] ],
     [ "enum型の変更方法、および、バージョン・アップ方法", "_changing_enum.html", null ],
     [ "クラス定義の変更方法、および、バージョン・アップ方法", "_changing_class.html", null ],
     [ "エラー処理", "_error_report.html", null ]

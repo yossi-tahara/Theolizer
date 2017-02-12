@@ -10,6 +10,7 @@ var group___documents =
     [ "7a.class_variation.h", "7a_8class__variation_8h.html", null ],
     [ "7b.enum_variation.h", "7b_8enum__variation_8h.html", null ],
     [ "7c.object_tracking.h", "7c_8object__tracking_8h.html", null ],
-    [ "7c.object_tracking.h", "7c_8object__tracking_8h.html", null ],
+    [ "7d.destinations.h", "7d_8destinations_8h.html", null ],
+    [ "7e.support_stl.h", "7e_8support__stl_8h.html", null ],
     [ "8.reference.h", "8_8reference_8h.html", null ]
 ];

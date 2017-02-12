@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.3-Prerelease.</span>
+   &#160;<span id="projectnumber">Version.0.4.3</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -288,10 +288,8 @@ $(document).ready(function(){initNavTree('_specification.html','');});
 <h2><a class="anchor" id="Basic21"></a>
 2-1.オブジェクト追跡する領域について</h2>
 <p>全ての変数についてオブジェクト追跡すれば確実にアドレス解決できるのですが、ポイントされていないものまで追跡するのは無駄です。<br />
- そこで、原則としてポインタ経由でシリアライズされた「型」についてオブジェクト追跡しています。ただし、int型等のプリミティブについて1つのint型変数がポイントされただけで全てのint型を追跡するのは無駄が多いです。そこで、プリミティブについては追跡する変数自体に追跡指定するようにしました。</p>
-<p>そこで、下記についてオブジェクト追跡を行ようにしました。</p>
+ そこで、下記のように追跡するインスタンスに追跡指定するようにしました。</p>
 <ul>
-<li>ポインタ型からポイントされたクラス型の全てのインスタンス</li>
 <li>被ポインタ(THEOLIZER_ANNOTATE(FS:...&lt;...&gt;Pointee))指定されたメンバ変数</li>
 <li>被ポインタ(THEOLIZER_PROCESS_POINTEE)として保存指定された変数</li>
 </ul>

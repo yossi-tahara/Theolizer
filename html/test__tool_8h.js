@@ -14,7 +14,6 @@ var test__tool_8h =
     [ "cutOptimize", "test__tool_8h.html#a796e09d6ba16820902a6ec9688f053e8", null ],
     [ "getFileList", "test__tool_8h.html#adb2175efed45f231dbcee22704842e86", null ],
     [ "incrementFailCount", "test__tool_8h.html#a14d2adb80938d7b505f46dc748185bdd", null ],
-    [ "incrementTotalCount", "test__tool_8h.html#ab0351218010f5c83be657d189ad8f0c3", null ],
     [ "initResult", "test__tool_8h.html#a290ebcb767f872f31fdd0ad389660358", null ],
     [ "isExist", "test__tool_8h.html#a76fa98fd253b8ae810a51d0d132b67f4", null ],
     [ "makeScopeExit", "test__tool_8h.html#ac82b5fe5fee0645c7d4a9e53e7da1756", null ],
