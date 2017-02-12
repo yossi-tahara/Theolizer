@@ -98,9 +98,20 @@ struct TheolizerNonIntrusive<std::unique_ptr<T, D>>::
         typedef typename TheolizerTarget::element_type ElementType;
 
         // ポイント先を解放して入れ替える可能性があるので一旦管理から外す
-        ElementType *aInstance=oInstance->release();
-        THEOLIZER_PROCESS_OWNER(iSerializer, aInstance);
-        oInstance->reset(aInstance);
+        struct AuteRestore
+        {
+            TheolizerTarget&    mUniquePtr;
+            ElementType*        mInstance;
+            AuteRestore(TheolizerTarget& iUniquePtr) :
+                mUniquePtr(iUniquePtr),
+                mInstance(mUniquePtr.release())
+            { }
+            ~AuteRestore()
+            {
+                mUniquePtr.reset(mInstance);
+            }
+        } aAutoRestore(*oInstance);
+        THEOLIZER_PROCESS_OWNER(iSerializer, aAutoRestore.mInstance);
     }
 };
 

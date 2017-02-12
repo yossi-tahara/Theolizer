@@ -28,8 +28,8 @@
 #include <theolizer/array.h>
 #include <theolizer/vector.h>
 #include <theolizer/deque.h>
-#include <theolizer/list.h>
 #include <theolizer/forward_list.h>
+#include <theolizer/list.h>
 #include <theolizer/set.h>
 #include <theolizer/map.h>
 #include <theolizer/unordered_set.h>

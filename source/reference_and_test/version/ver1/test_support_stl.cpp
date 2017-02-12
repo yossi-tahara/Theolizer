@@ -21,12 +21,6 @@
 #include "disable_test.h"
 #ifndef DISABLE_SUPPORT_STL_TEST
 
-namespace std
-{
-    template<class _Ty>
-    struct default_delete;
-}
-
 // ***************************************************************************
 //      インクルード
 // ***************************************************************************
@@ -63,12 +57,15 @@ void tutoriseSupportStl()
 //      スマート・ポインタ
 //----------------------------------------------------------------------------
 
+//![SmartPtr]
+
 //      ---<<< 保存 >>>---
 
     {
         // 保存データ生成
         std::unique_ptr<int>    aUnique{new int{100}};
-        std::shared_ptr<int>    aShared{new int{200}};
+        std::shared_ptr<int>    aShared0{new int{200}};
+        std::shared_ptr<int>    aShared1{aShared0};
         std::shared_ptr<int>    aSharedForWeak{new int{300}};
         std::weak_ptr<int>      aWeak{aSharedForWeak};
 
@@ -77,7 +74,8 @@ void tutoriseSupportStl()
         theolizer::JsonOSerializer<> aSerializer(aStream);
 
         THEOLIZER_PROCESS(aSerializer, aUnique);
-        THEOLIZER_PROCESS(aSerializer, aShared);
+        THEOLIZER_PROCESS(aSerializer, aShared0);
+        THEOLIZER_PROCESS(aSerializer, aShared1);
         THEOLIZER_PROCESS(aSerializer, aSharedForWeak);
         THEOLIZER_PROCESS(aSerializer, aWeak);
 
@@ -89,7 +87,8 @@ void tutoriseSupportStl()
     {
         // 回復先データ生成
         std::unique_ptr<int>    aUnique{};
-        std::shared_ptr<int>    aShared{};
+        std::shared_ptr<int>    aShared0{};
+        std::shared_ptr<int>    aShared1{};
         std::shared_ptr<int>    aSharedForWeak{};
         std::weak_ptr<int>      aWeak{};
 
@@ -98,22 +97,28 @@ void tutoriseSupportStl()
         theolizer::JsonISerializer<> aSerializer(aStream);
 
         THEOLIZER_PROCESS(aSerializer, aUnique);
-        THEOLIZER_PROCESS(aSerializer, aShared);
+        THEOLIZER_PROCESS(aSerializer, aShared0);
+        THEOLIZER_PROCESS(aSerializer, aShared1);
         THEOLIZER_PROCESS(aSerializer, aSharedForWeak);
         THEOLIZER_PROCESS(aSerializer, aWeak);
 
         // チェック
         THEOLIZER_EQUAL(*(aUnique.get()), 100);
-        THEOLIZER_EQUAL(*(aShared.get()), 200);
+        THEOLIZER_EQUAL(*(aShared0.get()), 200);
+        THEOLIZER_EQUAL_PTR(aShared1.get(), aShared0.get());
         THEOLIZER_EQUAL(*(aSharedForWeak.get()), 300);
         THEOLIZER_EQUAL_PTR(aWeak.lock().get(), aSharedForWeak.get());
 
         aSerializer.clearTracking();
     }
 
+//![SmartPtr]
+
 //----------------------------------------------------------------------------
 //      標準コンテナの通常使用
 //----------------------------------------------------------------------------
+
+//![ContaierNomal]
 
 //      ---<<< 保存 >>>---
 
@@ -150,9 +155,13 @@ void tutoriseSupportStl()
         THEOLIZER_EQUAL(*itr, 300);     ++itr;
     }
 
+//![ContaierNomal]
+
 //----------------------------------------------------------------------------
 //      標準コンテナの被ポインタ使用
 //----------------------------------------------------------------------------
+
+//![ContaierPointee]
 
 //      ---<<< 保存 >>>---
 
@@ -210,9 +219,13 @@ void tutoriseSupportStl()
         aSerializer.clearTracking();
     }
 
+//![ContaierPointee]
+
 //----------------------------------------------------------------------------
 //      標準コンテナの保存先指定による分割保存と回復
 //----------------------------------------------------------------------------
+
+//![ContaierDestinations]
 
 //      ---<<< 保存 >>>---
 
@@ -289,6 +302,8 @@ void tutoriseSupportStl()
         aSerializerA.clearTracking();
         aSerializerB.clearTracking();
     }
+
+//![ContaierDestinations]
 
     std::cout << "tutoriseSupportStl() end\n" << std::endl;
 }
@@ -1160,7 +1175,6 @@ void saveSupportStl(tSerializer& iSerializer)
 
 //      ---<<< std::array >>>---
 
-#if 1
     {
         std::cout << "        saveContainerFixed() : array<int, *>" << std::endl;
         saveContainerFixed<tSerializer, std::array, int>(iSerializer, 1000, false);
@@ -1424,7 +1438,6 @@ void saveSupportStl(tSerializer& iSerializer)
             iSerializer, 500, false
         );
     }
-#endif
 }
 
 INSTANTIATION_ALL(saveSupportStl);
@@ -1586,7 +1599,6 @@ void loadSupportStl(tSerializer& iSerializer)
 
 //      ---<<< std::array >>>---
 
-#if 1
     {
         std::cout << "        loadContainerFixed() : array<int, *>" << std::endl;
         loadContainerFixed<tSerializer, std::array, int>(iSerializer, 1000, false);
@@ -1863,7 +1875,6 @@ void loadSupportStl(tSerializer& iSerializer)
             iSerializer, 500, true, false
         );
     }
-#endif
 }
 
 INSTANTIATION_ALL(loadSupportStl);
@@ -1915,6 +1926,7 @@ void saveSupportStlDestinations
         std::cout << "        saveSupportStlDestinations() : Container NoKey" << std::endl;
         saveNoKey<std::vector<TestStlDestinations> >        (iSerializerA, iSerializerB, 200);
         saveNoKey<theolizer::VectorPointee<TestStlDestinations> >(iSerializerA, iSerializerB, 210);
+
         saveNoKey<std::deque<TestStlDestinations> >         (iSerializerA, iSerializerB, 300);
         saveNoKey<theolizer::DequePointee<TestStlDestinations> >
                                                             (iSerializerA, iSerializerB, 310);
