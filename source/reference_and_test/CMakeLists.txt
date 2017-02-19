@@ -24,6 +24,8 @@
 #       VERSION : バージョン指定
 macro(add_build_and_test TARGET_NAME VERSION ERROR_CHECK)
     set(TEST_NAME ${TARGET_NAME}${VERSION})
+    set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${VERSION}")
+    set(BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/${VERSION}")
 
     # ビルド・パラメータ生成
     if (${IS_MSVC})
@@ -142,21 +144,19 @@ macro(add_build_and_test TARGET_NAME VERSION ERROR_CHECK)
     set(PARAMETERS ${PARAMETERS} "--theolizer-debug=${CMAKE_CXX_COMPILER}")
     if(BUILD_DRIVER)
         add_custom_target(${TEST_NAME}
-            COMMAND ${CMAKE_COMMAND} -E echo "${TARGET_NAME}${VERSION}"
+            COMMAND ${CMAKE_COMMAND} -E echo "${TEST_NAME}"
             COMMAND ${CMAKE_COMMAND} -E echo "CONFIG=$<CONFIG>"
             COMMAND ${CMAKE_COMMAND} -E echo "PARAMETERS=\"${PARAMETERS}\""
-            COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}
-            COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_CURRENT_SOURCE_DIR}/${VERSION} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}
+            COMMAND ${CMAKE_COMMAND} -E remove_directory ${BINARY_DIR}
+            COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_DIR} ${BINARY_DIR}
             COMMAND $<TARGET_FILE:TheolizerDriver> ${PARAMETERS})
     else()
         add_custom_target(${TEST_NAME}
-            COMMAND ${CMAKE_COMMAND} -E echo "${TARGET_NAME}${VERSION}"
+            COMMAND ${CMAKE_COMMAND} -E echo "${TEST_NAME}"
             COMMAND ${CMAKE_COMMAND} -E echo "CONFIG=$<CONFIG>"
             COMMAND ${CMAKE_COMMAND} -E echo "PARAMETERS=\"${PARAMETERS}\""
-            COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}
-            COMMAND ${CMAKE_COMMAND} -E copy_directory
-                ${CMAKE_CURRENT_SOURCE_DIR}/${VERSION} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}
+            COMMAND ${CMAKE_COMMAND} -E remove_directory ${BINARY_DIR}
+            COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_DIR} ${BINARY_DIR}
             COMMAND ${CMAKE_INSTALL_PREFIX}/bin/TheolizerDriver ${PARAMETERS})
     endif()
     set_target_properties(${TEST_NAME} PROPERTIES FOLDER "TestPrograms")
@@ -196,4 +196,32 @@ if(CMAKE_COMPILER_IS_MINGW)
 ##  message(STATUS "add(CMAKE_CXX_FLAGS -O3 -Wa,-mbig-obj)")
 endif()
 
-add_subdirectory(version)
+set(TARGET_NAME external_test_)
+
+#-----------------------------------------------------------------------------
+#       基本的網羅テスト
+#-----------------------------------------------------------------------------
+
+set(VERSION basic)
+set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/main.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_basic_process.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_class_variation.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_enum_variation.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_object_tracking.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_object_tracking2.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_object_tracking3.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_polymorphism.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_destinations.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_support_stl.cpp)
+
+message(STATUS "start of add_build_and_test(${TARGET_NAME}${VERSION})")
+add_build_and_test(${TARGET_NAME} ${VERSION} "" ${SOURCE_LIST})
+
+#-----------------------------------------------------------------------------
+#       バージョン変更テスト
+#-----------------------------------------------------------------------------
+
+set(VERSION basic)
+set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/main.cpp)
+message(STATUS "start of add_build_and_test(${TARGET_NAME}${VERSION})")
+#add_build_and_test(${TARGET_NAME} ${VERSION} "" ${SOURCE_LIST})
