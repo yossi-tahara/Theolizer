@@ -21,11 +21,19 @@
 #-----------------------------------------------------------------------------
 
 # 準備：フォルダ削除→フォルダ生成→コピー
-#       VERSION : バージョン指定
-macro(add_build_and_test TARGET_NAME VERSION ERROR_CHECK)
-    set(TEST_NAME ${TARGET_NAME}${VERSION})
-    set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${VERSION}")
-    set(BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/${VERSION}")
+#       NOW_VERSION  : 現バージョン指定
+#       PREV_VERSION : 前バージョン指定  (先頭バージョンは"")
+#       LAST_VERSION : 最終バージョン指定(バージョン処理無しなら"")
+macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR_CHECK)
+    set(TEST_NAME ${TARGET_NAME}${NOW_VERSION})
+    set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${NOW_VERSION}")
+    set(BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}")
+    if("${PREV_VERSION}" STREQUAL "")
+        set(PREV_DIR "${SOURCE_DIR}")
+    else()
+        set(PREV_NAME ${TARGET_NAME}${PREV_VERSION})
+        set(PREV_DIR "${CMAKE_CURRENT_BINARY_DIR}/${PREV_VERSION}")
+    endif()
 
     # ビルド・パラメータ生成
     if (${IS_MSVC})
@@ -137,8 +145,14 @@ macro(add_build_and_test TARGET_NAME VERSION ERROR_CHECK)
     foreach(PARAM IN LISTS PARAMETERS)
         message(STATUS "${PARAM}")
     endforeach()
+    message(STATUS "BINARY_DIR=${BINARY_DIR}")
+    message(STATUS "PREV_DIR=${PREV_DIR}")
     message(STATUS "----------------------------------------------------")
     endif()
+
+    # 共通ファイル群
+    file(GLOB COMMON_LIST *.h *.inc)
+    message(STATUS "COMMON_LIST=${COMMON_LIST}")
 
     # ビルド準備とビルド実行(custom_target)
     set(PARAMETERS ${PARAMETERS} "--theolizer-debug=${CMAKE_CXX_COMPILER}")
@@ -149,6 +163,11 @@ macro(add_build_and_test TARGET_NAME VERSION ERROR_CHECK)
             COMMAND ${CMAKE_COMMAND} -E echo "PARAMETERS=\"${PARAMETERS}\""
             COMMAND ${CMAKE_COMMAND} -E remove_directory ${BINARY_DIR}
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_DIR} ${BINARY_DIR}
+            COMMAND ${CMAKE_COMMAND}
+                "-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
+                "-DPREV_DIR=${PREV_DIR}"
+                "-DBINARY_DIR=${BINARY_DIR}"
+                -P "${CMAKE_CURRENT_SOURCE_DIR}/copy.cmake"
             COMMAND $<TARGET_FILE:TheolizerDriver> ${PARAMETERS})
     else()
         add_custom_target(${TEST_NAME}
@@ -157,28 +176,51 @@ macro(add_build_and_test TARGET_NAME VERSION ERROR_CHECK)
             COMMAND ${CMAKE_COMMAND} -E echo "PARAMETERS=\"${PARAMETERS}\""
             COMMAND ${CMAKE_COMMAND} -E remove_directory ${BINARY_DIR}
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_DIR} ${BINARY_DIR}
+            COMMAND ${CMAKE_COMMAND}
+                "-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
+                "-DPREV_DIR=${PREV_DIR}"
+                "-DBINARY_DIR=${BINARY_DIR}"
+                -P "${CMAKE_CURRENT_SOURCE_DIR}/copy.cmake"
             COMMAND ${CMAKE_INSTALL_PREFIX}/bin/TheolizerDriver ${PARAMETERS})
     endif()
     set_target_properties(${TEST_NAME} PROPERTIES FOLDER "TestPrograms")
     #exclude_all_target(${TEST_NAME})
 
-    # テスト
-    add_test_sub_base(${TEST_NAME}Test ${CMAKE_COMMAND}
+    # ビルド
+    add_test_sub_base(${TEST_NAME}Build ${CMAKE_COMMAND}
         --build ${CMAKE_BINARY_DIR} --config $<CONFIG> --target ${TEST_NAME})
-    set_tests_properties(${TEST_NAME}Test PROPERTIES LABELS TestFL)
+    set_tests_properties(${TEST_NAME}Build PROPERTIES LABELS TestFL)
+
+    # 前バージョンがあるなら、前バージョンのビルドへ依存
+    if(NOT "${PREV_VERSION}" STREQUAL "")
+        set_tests_properties(${TEST_NAME}Build PROPERTIES DEPENDS ${PREV_NAME}Build)
+        message(STATUS "DEPENDS : ${TEST_NAME}Build depends to ${PREV_NAME}Build")
+    endif()
 
     # 追加パラメータがある時、ビルド・エラーが発生することをテストする
     if (NOT "${ERROR_CHECK}" STREQUAL "")
-        set_tests_properties(${TEST_NAME}Test PROPERTIES WILL_FAIL TRUE)
-        set_tests_properties(${TEST_NAME}Test PROPERTIES
+        set_tests_properties(${TEST_NAME}Build PROPERTIES WILL_FAIL TRUE)
+        set_tests_properties(${TEST_NAME}Build PROPERTIES
                              FAIL_REGULAR_EXPRESSION ${ERROR_CHECK})
 
     # 追加パラメータがない時、実行する(test)
     else()
+        # 1回目の実行
         add_test_sub_base(${TEST_NAME}Exec ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME})
         set_tests_properties(${TEST_NAME}Exec PROPERTIES LABELS TestFL)
         set_tests_properties(${TEST_NAME}Exec PROPERTIES FOLDER "TestTargets")
-        set_tests_properties(${TEST_NAME}Exec PROPERTIES DEPENDS ${TEST_NAME}Test)
+        set_tests_properties(${TEST_NAME}Exec PROPERTIES DEPENDS ${TEST_NAME}Build)
+        message(STATUS "DEPENDS : ${TEST_NAME}Exec depends to ${TEST_NAME}Build")
+
+        # 2回目実行
+        add_test_sub_base(${TEST_NAME}Exec2 ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME} Exec2)
+        set_tests_properties(${TEST_NAME}Exec2 PROPERTIES LABELS TestFL)
+        set_tests_properties(${TEST_NAME}Exec2 PROPERTIES FOLDER "TestTargets")
+        # 前バージョンがあるなら、2回目実行の前バージョンへ依存
+        if(NOT "${PREV_VERSION}" STREQUAL "")
+            set_tests_properties(${TEST_NAME}Exec2 PROPERTIES DEPENDS ${PREV_NAME}Exec2)
+            message(STATUS "DEPENDS : ${TEST_NAME}Exec2 depends to ${PREV_NAME}Exec2")
+        endif()
     endif()
 endmacro(add_build_and_test)
 
@@ -202,26 +244,62 @@ set(TARGET_NAME external_test_)
 #       基本的網羅テスト
 #-----------------------------------------------------------------------------
 
-set(VERSION basic)
-set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/main.cpp)
-set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_basic_process.cpp)
-set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_class_variation.cpp)
-set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_enum_variation.cpp)
-set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_object_tracking.cpp)
-set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_object_tracking2.cpp)
-set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_object_tracking3.cpp)
-set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_polymorphism.cpp)
-set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_destinations.cpp)
-set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/test_support_stl.cpp)
+if(TRUE)
 
-message(STATUS "start of add_build_and_test(${TARGET_NAME}${VERSION})")
-add_build_and_test(${TARGET_NAME} ${VERSION} "" ${SOURCE_LIST})
+set(FIRST_VERSION "")
+set(LAST_VERSION  "")
+set(PREV_VERSION  "")
+
+set(NOW_VERSION basic)
+set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_basic_process.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_class_variation.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_enum_variation.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_object_tracking.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_object_tracking2.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_object_tracking3.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_polymorphism.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_destinations.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_support_stl.cpp)
+
+message(STATUS "start of add_build_and_test("
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${SOURCE_LIST})
+
+endif()
 
 #-----------------------------------------------------------------------------
 #       バージョン変更テスト
 #-----------------------------------------------------------------------------
 
-set(VERSION basic)
-set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${VERSION}/main.cpp)
-message(STATUS "start of add_build_and_test(${TARGET_NAME}${VERSION})")
-#add_build_and_test(${TARGET_NAME} ${VERSION} "" ${SOURCE_LIST})
+set(FIRST_VERSION "ver1a")
+set(LAST_VERSION  "ver1b")
+
+#       ---<<< ver1a >>>---
+
+set(PREV_VERSION "")
+set(NOW_VERSION  "ver1a")
+set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.cpp)
+
+message(STATUS "start of add_build_and_test("
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${SOURCE_LIST})
+
+#       ---<<< ver1b >>>---
+
+set(PREV_VERSION "${NOW_VERSION}")
+set(NOW_VERSION ver1b)
+set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.cpp)
+
+message(STATUS "start of add_build_and_test("
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${SOURCE_LIST})
+
+#-----------------------------------------------------------------------------
+#       最初のバージョンの2回目実行を最後のバージョンの1回目実行へ依存させる
+#-----------------------------------------------------------------------------
+
+set_tests_properties(${TARGET_NAME}${FIRST_VERSION}Exec2
+    PROPERTIES DEPENDS ${TARGET_NAME}${LAST_VERSION}Exec)
+message(STATUS "DEPENDS : ${TARGET_NAME}${FIRST_VERSION}Exec2 depends to ${TARGET_NAME}${LAST_VERSION}Exec")
+

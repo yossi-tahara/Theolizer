@@ -25,7 +25,6 @@
 //      共通のインクルード
 // ***************************************************************************
 
-#include <string>
 #include <theolizer/test_tool.h>
 
 #include "all_common.h"
@@ -86,110 +85,5 @@ THEOLIZER_DESTINATIONS
     INSTANTIATION_DEST(dFunc, theolizer::BinaryISerializer);                \
     INSTANTIATION_DEST(dFunc, theolizer::FastOSerializer);                  \
     INSTANTIATION_DEST(dFunc, theolizer::FastISerializer)
-
-//############################################################################
-//      配列テスト用関数テンプレート
-//############################################################################
-
-// ***************************************************************************
-//      保存
-// ***************************************************************************
-
-//! [saveTestArray]
-template<typename tType, std::size_t N, class tSerializer, typename tFunc>
-void saveTestArray(tSerializer& iSerializer, tFunc iFunc)
-{
-    std::cout << "        saveTestArray<"
-              << THEOLIZER_INTERNAL_TYPE_NAME(tType) << ", " << N << ">\n";
-
-    // 1次元配列
-    tType aArray1[N];
-    for (std::size_t i=0; i < N; ++i)
-    {
-        theolizer::cutOptimize();
-        aArray1[i]=iFunc(i);
-    }
-    THEOLIZER_PROCESS(iSerializer, aArray1);
-
-    // 2次元配列
-    tType aArray2[2][N];
-    for (std::size_t j=0; j < 2; ++j)
-    {
-        for (std::size_t i=0; i < N; ++i)
-        {
-            theolizer::cutOptimize();
-            aArray2[j][i]=iFunc(i+j);
-        }
-    }
-    THEOLIZER_PROCESS(iSerializer, aArray2);
-
-    // 3次元配列
-    tType aArray3[3][2][N];
-    for (std::size_t k=0; k < 3; ++k)
-    {
-        for (std::size_t j=0; j < 2; ++j)
-        {
-            for (std::size_t i=0; i < N; ++i)
-            {
-                theolizer::cutOptimize();
-               aArray3[k][j][i]=iFunc(i+j+k);
-            }
-        }
-    }
-    THEOLIZER_PROCESS(iSerializer, aArray3);
-}
-//! [saveTestArray]
-
-// ***************************************************************************
-//      回復
-// ***************************************************************************
-
-//! [loadTestArray]
-template<typename tType, std::size_t N, class tSerializer, typename tFunc>
-void loadTestArray(tSerializer& iSerializer, tFunc iFunc)
-{
-    std::cout << "        loadTestArray<"
-              << THEOLIZER_INTERNAL_TYPE_NAME(tType) << ", " << N << ">\n";
-
-    // 1次元配列
-    tType aArray1[N];
-    THEOLIZER_PROCESS(iSerializer, aArray1);
-    for (std::size_t i=0; i < N; ++i)
-    {
-        tType aTemp=iFunc(i);
-        theolizer::cutOptimize();
-        THEOLIZER_EQUAL(aArray1[i], aTemp, i);
-    }
-
-    // 2次元配列
-    tType aArray2[2][N];
-    THEOLIZER_PROCESS(iSerializer, aArray2);
-    for (std::size_t j=0; j < 2; ++j)
-    {
-        for (std::size_t i=0; i < N; ++i)
-        {
-            tType aTemp=iFunc(i+j);
-            theolizer::cutOptimize();
-            THEOLIZER_EQUAL(aArray2[j][i], aTemp, i, j);
-        }
-    }
-
-    // 3次元配列
-    tType aArray3[3][2][N];
-    THEOLIZER_PROCESS(iSerializer, aArray3);
-    for (std::size_t k=0; k < 3; ++k)
-    {
-        for (std::size_t j=0; j < 2; ++j)
-        {
-            for (std::size_t i=0; i < N; ++i)
-            {
-                tType aTemp=iFunc(i+j+k);
-                theolizer::cutOptimize();
-                THEOLIZER_EQUAL(aArray3[k][j][i], aTemp, i, j, k);
-            }
-        }
-    }
-}
-//! [loadTestArray]
 
 #endif  // COMMON_H
