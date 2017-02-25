@@ -217,7 +217,7 @@ void loadSupportStlDestinations
 
 void callTutorial()
 {
-    std::cout << "    callTutorial();\n";
+    std::cout << "callTutorial();\n";
 
     #ifndef DISABLE_CLASS_VARIATION_TEST
         tutoriseClassVariation();
@@ -250,6 +250,8 @@ void callTutorial()
 template<class tSerializer>
 void saveBasic(tSerializer& iSerializer)
 {
+    std::cout << "saveBasic();\n";
+
 #ifndef DISABLE_BASIC_PROCESS_TEST
     saveBasicProcess(iSerializer);
 #endif
@@ -279,6 +281,8 @@ void saveBasic(tSerializer& iSerializer)
 template<class tSerializer>
 void loadBasic(tSerializer& iSerializer)
 {
+    std::cout << "loadBasic();\n";
+
 #ifndef DISABLE_BASIC_PROCESS_TEST
     loadBasicProcess(iSerializer);
 #endif

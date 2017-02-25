@@ -55,8 +55,21 @@
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
-//      
+//      enum型変更テスト
 //----------------------------------------------------------------------------
+
+//      ---<<< 使い方のサンプル・コード >>>---
+
+//void tutoriseModifyEnum();
+
+//      ---<<< 自動テスト >>>---
+
+template<class tSerializer>
+void saveModifyEnum(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadModifyEnum(tSerializer& iSerializer);
+
 
 // ***************************************************************************
 //      各テスト呼び出し
@@ -83,12 +96,20 @@ template<class tSerializer>
 void saveBasic(tSerializer& iSerializer)
 {
     std::cout << "    saveBasic();\n";
+
+#ifndef DISABLE_MODIFY_ENUM_TEST
+    saveModifyEnum(iSerializer);
+#endif
 }
 
 template<class tSerializer>
 void loadBasic(tSerializer& iSerializer)
 {
     std::cout << "    loadBasic();\n";
+
+#ifndef DISABLE_MODIFY_ENUM_TEST
+    loadModifyEnum(iSerializer);
+#endif
 }
 
 //----------------------------------------------------------------------------

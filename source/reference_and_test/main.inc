@@ -32,6 +32,14 @@ using theolizer::CheckMode;
 //############################################################################
 
 // ***************************************************************************
+//      処理中データのバージョン・テーブル・インデックス
+// ***************************************************************************
+
+std::size_t gMyIndex;           // 自分自身のバージョン・インデックス
+std::size_t gIndex;             // データのバージョン・インデックス
+std::size_t gProgramIndex;      // 保存したプログラムのバージョン・インデックス
+
+// ***************************************************************************
 //      保存先指定の網羅テスト用
 //          コンストラクトに必要な処理はこちらで行う
 // ***************************************************************************
@@ -59,22 +67,21 @@ std::string makeDestFileName(std::string const& iFileName, char const* iDestName
 void callTests
 (
     bool                    iDoSave,
-    std::size_t             iIndex,
-    std::size_t             iProgramIndex,
     theolizer::CheckMode    iCheckMode
 )
 {
     std::cout << "---------- callTests("
               << ((iDoSave)?"save":"load") << ", ";
-    if (iIndex == kDefaultIndex)
+    std::cout << "gMyIndex=" << gMyIndex << ", gIndex=";
+    if (gIndex == kDefaultIndex)
     {
         std::cout << "<Default>, ";
     }
     else
     {
-        std::cout << iIndex << ", ";
+        std::cout << gIndex << ", ";
     }
-    std::cout << iProgramIndex << ", "
+    std::cout << "gProgramIndex=" << gProgramIndex << ", "
               << iCheckMode << ");" << std::endl;
 
 //----------------------------------------------------------------------------
@@ -85,16 +92,16 @@ void callTests
     unsigned    aGlobalVersionNo=0;
 
     // デフォルト処理
-    if (iIndex == kDefaultIndex)
+    if (gIndex == kDefaultIndex)
     {
-        aVersionName=gVersionList[iProgramIndex].mName;
+        aVersionName=gVersionList[gProgramIndex].mName;
     }
 
     // バージョン指定
     else
     {
-        aVersionName=gVersionList[iIndex].mName+"-"+gVersionList[iProgramIndex].mName;
-        aGlobalVersionNo=gVersionList[iIndex].mVersionNo;
+        aVersionName=gVersionList[gIndex].mName+"-"+gVersionList[gProgramIndex].mName;
+        aGlobalVersionNo=gVersionList[gIndex].mVersionNo;
 
         // 変更テスト対象外の時は0なので、初期バージョンの1を設定する
         if (aGlobalVersionNo == 0)
@@ -111,7 +118,7 @@ void callTests
     prefix="json-";
 
     // デフォルト処理
-    if (iIndex == kDefaultIndex)
+    if (gIndex == kDefaultIndex)
     {
         std::string filename = prefix + aVersionName + ".json";
         std::cout << "  JsonSerializer(" << filename << ")\n";
@@ -272,7 +279,7 @@ void callTests
     prefix="binary-";
 
     // デフォルト処理
-    if (iIndex == kDefaultIndex)
+    if (gIndex == kDefaultIndex)
     {
         std::string filename = prefix + aVersionName + ".bin";
         std::cout << "  BinarySerializer(" << filename << ")\n";
@@ -384,7 +391,7 @@ void callTests
     prefix="fast-";
 
     // デフォルト処理
-    if (iIndex == kDefaultIndex)
+    if (gIndex == kDefaultIndex)
     {
         std::string filename = prefix + aVersionName + ".bin";
         std::cout << "  FastSerializer(" << filename << ")\n";
@@ -468,15 +475,15 @@ return 2;
     std::size_t len=aMyVersionName.rfind('.')-pos;
     aMyVersionName=aMyVersionName.substr(pos, len);
 
-    std::size_t aMyIndex=kDefaultIndex;
+    gMyIndex=kDefaultIndex;
     for (std::size_t i=0; i < std::extent<decltype(gVersionList)>::value; ++i)
     {
         if (gVersionList[i].mName == aMyVersionName)
         {
-            aMyIndex=i;
+            gMyIndex=i;
         }
     }
-    if (aMyIndex == kDefaultIndex)
+    if (gMyIndex == kDefaultIndex)
     {
         std::cerr << "Not found VersionName.(" << aMyVersionName << ")\n";
 return 2;
@@ -494,7 +501,7 @@ return 2;
     }
 
     std::cout << theolizer::print("VersionName:%s MyIndex:%u aDoSave:%u\n",
-        aMyVersionName, aMyIndex, aDoSave);
+        aMyVersionName, gMyIndex, aDoSave);
 
 // ***************************************************************************
 //      IndexとCheckModeを振って処理を呼び出す
@@ -508,59 +515,73 @@ return 2;
             callTutorial();
         }
 
-        // デフォルト呼び出し
-        callTests(aDoSave, kDefaultIndex, aMyIndex, CheckMode::NoTypeCheck);
-
-        // バラメータ指定呼び出し
         // 保存時は同じグローバルバージョン番号の最新版のみ保存する
         if (aDoSave)
         {
-            for (std::size_t aIndex=0; aIndex <= aMyIndex; ++aIndex)
+            // デフォルト出力
+            gIndex=kDefaultIndex;
+            gProgramIndex=gMyIndex;
+            callTests(aDoSave, CheckMode::NoTypeCheck);
+
+            // バラメータ指定出力
+            for (gIndex=0; gIndex <= gMyIndex; ++gIndex)
             {
                 // 自身未満の時は、
                 //  変更テストしないならcontinue
                 //  次のグローバル・バージョン番号が同じならcontinue
-                if (aIndex < aMyIndex)
+                if (gIndex < gMyIndex)
                 {
-                    if (gVersionList[aIndex].mVersionNo == 0)
+                    if (gVersionList[gIndex].mVersionNo == 0)
         continue;
-                    if (gVersionList[aIndex].mVersionNo == 
-                        gVersionList[aIndex+1].mVersionNo)
+                    if (gVersionList[gIndex].mVersionNo == 
+                        gVersionList[gIndex+1].mVersionNo)
         continue;
                 }
 
-                callTests(aDoSave, aIndex, aMyIndex, CheckMode::NoTypeCheck);
-                callTests(aDoSave, aIndex, aMyIndex, CheckMode::TypeCheck);
-                callTests(aDoSave, aIndex, aMyIndex, CheckMode::TypeCheckByIndex);
+                callTests(aDoSave, CheckMode::NoTypeCheck);
+                callTests(aDoSave, CheckMode::TypeCheck);
+                callTests(aDoSave, CheckMode::TypeCheckByIndex);
             }
         }
 
         // 回復時はプログラムIndexも振る
         else
         {
-            for (std::size_t aIndex=0; aIndex <= aMyIndex; ++aIndex)
+            // 各プログラムのデフォルト出力データから回復する
+            gIndex=kDefaultIndex;
+            for (gProgramIndex=0; gProgramIndex <= gMyIndex; ++gProgramIndex)
+            {
+                // 変更テストしないバージョンのプログラムはスキップする
+                if (gVersionList[gProgramIndex].mVersionNo == 0)
+            continue;
+
+                callTests(aDoSave, CheckMode::NoTypeCheck);
+            }
+
+            // 各プログラムのバラメータ指定出力データから回復する
+            for (gIndex=0; gIndex <= gMyIndex; ++gIndex)
             {
                 // 自身未満の時は、
                 //  変更テストしないならcontinue
-                if (aIndex < aMyIndex)
+                if (gIndex < gMyIndex)
                 {
-                    if (gVersionList[aIndex].mVersionNo == 0)
+                    if (gVersionList[gIndex].mVersionNo == 0)
         continue;
                 }
 
-                for (std::size_t aProgramIndex=aIndex; aProgramIndex <= aMyIndex; ++aProgramIndex)
+                for (gProgramIndex=gIndex; gProgramIndex <= gMyIndex; ++gProgramIndex)
                 {
                     // 対象プログラム未満の時は、次のグローバル・バージョン番号が同じならcontinue
-                    if (aIndex < aProgramIndex)
+                    if (gIndex < gProgramIndex)
                     {
-                        if (gVersionList[aIndex].mVersionNo == 
-                            gVersionList[aIndex+1].mVersionNo)
+                        if (gVersionList[gIndex].mVersionNo == 
+                            gVersionList[gIndex+1].mVersionNo)
         continue;
                     }
 
-                    callTests(aDoSave, aIndex, aProgramIndex, CheckMode::NoTypeCheck);
-                    callTests(aDoSave, aIndex, aProgramIndex, CheckMode::TypeCheck);
-                    callTests(aDoSave, aIndex, aProgramIndex, CheckMode::TypeCheckByIndex);
+                    callTests(aDoSave, CheckMode::NoTypeCheck);
+                    callTests(aDoSave, CheckMode::TypeCheck);
+                    callTests(aDoSave, CheckMode::TypeCheckByIndex);
                 }
             }
         }
