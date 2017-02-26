@@ -37,19 +37,46 @@
 //      バージョン名のリスト
 // ***************************************************************************
 
-namespace
+//----------------------------------------------------------------------------
+//      定義
+//          VERSION_DEF(バージョン名, グローバル・バージョン番号)
+//          グローバル・バージョン番号は、
+//              単調増加すること。
+//              0の時は変更テストを行わない。
+//----------------------------------------------------------------------------
+
+#define VERSION_INDEX()                                                     \
+    VERSION_DEF(basic, 0),                                                  \
+    VERSION_DEF(ver1a, 1),                                                  \
+    VERSION_DEF(ver1b, 1),                                                  \
+    VERSION_DEF(ver1c, 1)
+
+//----------------------------------------------------------------------------
+//      実体
+//----------------------------------------------------------------------------
+
+enum class VersionEnum
 {
+    #define VERSION_DEF(dName, dVersionNo)  dName
+    VERSION_INDEX()
+    #undef  VERSION_DEF
+};
 
 struct VersionList
 {
-    std::string mName;
-    unsigned    mVersionNo; // 単調増加すること。また、0の時は変更テストを行わない
+    std::string     mName;
+    VersionEnum    	mVersionEnum;
+    unsigned        mVersionNo;
 };
+
+namespace
+{
+
 VersionList const gVersionList[]=
 {
-    {"basic", 0},
-    {"ver1a", 1},
-    {"ver1b", 1}
+    #define VERSION_DEF(dName, dVersionNo)  {#dName, VersionEnum::dName, dVersionNo}
+    VERSION_INDEX()
+    #undef  VERSION_DEF
 };
 
 }
@@ -57,6 +84,9 @@ VersionList const gVersionList[]=
 // ***************************************************************************
 //      処理中データのバージョン・テーブル・インデックス
 // ***************************************************************************
+
+// デフォルト指定用インデックス番号
+const std::size_t   kDefaultIndex=std::numeric_limits<std::size_t>::max();
 
 extern std::size_t gMyIndex;        // 自分自身のバージョン・インデックス
 extern std::size_t gIndex;          // データのバージョン・インデックス

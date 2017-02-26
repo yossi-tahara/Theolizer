@@ -522,10 +522,10 @@ THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     THEOLIZER_GENERATED_VERSION_NO
 >::kEnumElementList[]=
 {
-    #define THEOLIZER_GENERATED_ELEMENT(dSymbols, dValues, dNextValue)      \
+    #define THEOLIZER_GENERATED_ELEMENT(dSymbols, dValues, dPrevValue)      \
         theolizer::internal::EnumElement<BaseType>(                         \
             {THEOLIZER_INTERNAL_UNPAREN dSymbols},                          \
-            {THEOLIZER_INTERNAL_UNPAREN dValues}, dNextValue),
+            {THEOLIZER_INTERNAL_UNPAREN dValues}, dPrevValue),
     THEOLIZER_GENERATED_ENUM_LIST()
     theolizer::internal::EnumElement<BaseType>({""}, {0}, 0)
     #undef  THEOLIZER_GENERATED_ELEMENT
