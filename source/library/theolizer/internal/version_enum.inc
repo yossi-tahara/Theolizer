@@ -337,10 +337,10 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         }
 
         THEOLIZER_INTERNAL_ERROR("Can not transform Version.%1%'s value(%2%) to "
-                                  "Version.%2%'s value. Check your THEOLIZER_ANNOTATE().",
-                                  THEOLIZER_GENERATED_VERSION_NO+1,
-                                  mParentVersion->mValueRef,
-                                  THEOLIZER_GENERATED_VERSION_NO);
+            "Version.%2%'s value. Check your THEOLIZER_ANNOTATE().",
+            THEOLIZER_GENERATED_VERSION_NO+1,
+            mParentVersion->mValueRef,
+            THEOLIZER_GENERATED_VERSION_NO);
     }
     #endif
 
@@ -361,10 +361,10 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         }
 
         THEOLIZER_INTERNAL_ERROR("Can not transform Version.%1%'s value(%2%) to "
-                                  "Version.%2%'s value. Check your THEOLIZER_ANNOTATE().",
-                                  THEOLIZER_GENERATED_VERSION_NO,
-                                  mValueRef,
-                                  (THEOLIZER_GENERATED_VERSION_NO+1));
+            "Version.%2%'s value. Check your THEOLIZER_ANNOTATE().",
+            THEOLIZER_GENERATED_VERSION_NO,
+            mValueRef,
+            (THEOLIZER_GENERATED_VERSION_NO+1));
     }
     #endif
 
@@ -392,9 +392,9 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
             }
         }
         THEOLIZER_INTERNAL_ERROR("Can not find enum symbol's value(%1%) at Version.%2%. "
-                                  "This may be trouble of Theolizer.",
-                                  mValueRef,
-                                  THEOLIZER_GENERATED_VERSION_NO);
+            "This may be trouble of Theolizer.",
+            mValueRef,
+            THEOLIZER_GENERATED_VERSION_NO);
     }
 
 //----------------------------------------------------------------------------
@@ -403,7 +403,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
     void loadEnumImpl(tBaseSerializer& iSerializer)
     {
-        // 値で回復する時の処理
+        // 値で回復する時の処理(見つからない時はエラー)
         if (Theolizer::kEnumSaveType == theolizer::internal::estValue)
         {
             THEOLIZER_INTERNAL_LOAD(iSerializer, mValueRef, etmDefault);
@@ -441,8 +441,8 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
         THEOLIZER_INTERNAL_ERROR(u8"Can not find loaded symbol(%1%) in Version.%2%'s symbols. "
                                   "This data may be broken.",
-                                  aName,
-                                  THEOLIZER_GENERATED_VERSION_NO);
+            aName,
+            THEOLIZER_GENERATED_VERSION_NO);
     }
 
 //----------------------------------------------------------------------------

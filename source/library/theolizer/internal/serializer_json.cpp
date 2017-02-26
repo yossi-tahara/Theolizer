@@ -683,14 +683,16 @@ void JsonMidISerializer::loadClassStart(bool iIsTop)
         switch (mElementsMapping)
         {
         case emName:
-            if (in != '{') {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+            if (in != '{')
+            {
+                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)", in);
             }
             break;
 
         case emOrder:
-            if (in != '[') {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+            if (in != '[')
+            {
+                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)", in);
             }
             break;
         }
@@ -825,10 +827,14 @@ char JsonMidISerializer::getChar()
 {
     char    in;
     mIStream.get(in);
-    if ((!mIStream.good()) || (mIStream.gcount() != 1)) {
-        if ((mIStream.rdstate() & std::istream::eofbit)) {
+    if ((!mIStream.good()) || (mIStream.gcount() != 1))
+    {
+        if ((mIStream.rdstate() & std::istream::eofbit))
+        {
             THEOLIZER_INTERNAL_DATA_ERROR(u8"EOF occured.");
-        } else {
+        }
+        else
+        {
             THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");
         }
     }
@@ -843,7 +849,8 @@ char JsonMidISerializer::getChar()
 char JsonMidISerializer::find_not_of(std::string const& iSkipChars)
 {
     char    in;
-    while(1) {
+    while(1)
+    {
         in=getChar();
         // エラーが発生していたら、終了する
         if (ErrorReporter::getError())
