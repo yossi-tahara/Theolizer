@@ -91,7 +91,7 @@ int main(int argc, char** argv)
             THEOLIZER_PROCESS(js, mIntrusiveBase2); line0=__LINE__;
             u8string aAdditionalInfo=string("mIntrusiveBase2{test_serializer_base02.cpp(")
                                     +std::to_string(line0)+")}";
-            auto aError=theolizer::ErrorReporter::getError();
+            auto aError=js.getErrorInfo();
             THEOLIZER_CHECK(aError, aError.getErrorType());
             THEOLIZER_EQUAL(aError.getMessage(), theolizer::print(u8"Unmatch type."));
             THEOLIZER_EQUAL(aError.getAdditionalInfo(), aAdditionalInfo);

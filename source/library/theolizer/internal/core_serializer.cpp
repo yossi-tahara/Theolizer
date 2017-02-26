@@ -684,11 +684,12 @@ BaseSerializer::~BaseSerializer() noexcept
     // エラー情報登録準備
     theolizer::internal::ApiBoundary aApiBoundary(&mAdditionalInfo);
 
-    // エラーが残っていたら、プロセス停止する。
+    // エラー／警告が残っていたら、プロセス停止する。
     //  ただし、コンストラクト中と例外有りの時を除く
-    if (!mConstructorError && mNoThrowException && getError())
+    auto&& aErrorInfo=getErrorInfo();
+    if (!mConstructorError && mNoThrowException && aErrorInfo)
     {
-        std::cout << getError().getMessage() << "\n";
+        std::cout << aErrorInfo.getMessage() << "\n";
         THEOLIZER_INTERNAL_ABORT
             (u8"Error occured, please call resetError() before destructing serializer.");
     }

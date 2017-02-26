@@ -42,6 +42,9 @@ enum EnumFullAuto
     eefaName31,             // 3つのシンボルを別の1つへ統合する
     eefaName32,
     eefaName33,
+
+    // 削除するもの（回復できないのでエラーになることをチェックする）
+    eefaDelete
 };
 
 enum class ScopedEnumFullAuto : long
@@ -59,6 +62,9 @@ enum class ScopedEnumFullAuto : long
     Name31,                 // 3つのシンボルを別の1つへ統合する
     Name32,
     Name33,
+
+    // 削除するもの（回復できないのでエラーになることをチェックする）
+    Delete
 };
 
 // ***************************************************************************
@@ -84,6 +90,9 @@ enum EnumSymName
     eesnName31,             // 3つのシンボルを別の1つへ統合する
     eesnName32,
     eesnName33,
+
+    // 削除するもの（回復できないのでエラーになることをチェックする）
+    eesnDelete
 };
 THEOLIZER_ENUM(EnumSymName, 1);
 
@@ -102,6 +111,9 @@ enum class ScopedEnumSymName
     Name31,                 // 3つのシンボルを別の1つへ統合する
     Name32,
     Name33,
+
+    // 削除するもの（回復できないのでエラーになることをチェックする）
+    Delete
 };
 THEOLIZER_ENUM(ScopedEnumSymName, 1);
 
@@ -123,7 +135,10 @@ enum EnumSymVal
     eesvValue22=22,
     eesvValue31=31,         // 3つのシンボルを別の1つへ統合する
     eesvValue32=32,
-    eesvValue33=33
+    eesvValue33=33,
+
+    // 削除するもの（回復できないのでエラーになることをチェックする）
+    eesvDelete =60
 };
 THEOLIZER_ENUM_VALUE(EnumSymVal, 1);
 
@@ -141,7 +156,10 @@ enum class ScopedEnumSymVal
     Value22=220,
     Value31=310,                // 3つのシンボルを別の1つへ統合する
     Value32=320,
-    Value33=330
+    Value33=330,
+
+    // 削除するもの（回復できないのでエラーになることをチェックする）
+    Delete =600
 };
 THEOLIZER_ENUM_VALUE(ScopedEnumSymVal, 1);
 

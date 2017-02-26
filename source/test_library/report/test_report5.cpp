@@ -466,14 +466,14 @@ int main(int argc, char** argv)
         // エラー取り出し(ErrorReporter)
         THEOLIZER_EQUAL
         (
-            theolizer::ErrorReporter::getError().getAdditionalInfo(),
+            theolizer::ErrorReporter::getErrorInfo().getAdditionalInfo(),
             "2"
         );
 
         // エラー取り出し(aAPISimulator)
         THEOLIZER_EQUAL
         (
-            aAPISimulator.getError().getAdditionalInfo(),
+            aAPISimulator.getErrorInfo().getAdditionalInfo(),
             "2"
         );
 
@@ -490,12 +490,12 @@ int main(int argc, char** argv)
         aAPISimulator.resetError();
         THEOLIZER_CHECK
         (
-            !aAPISimulator.getError(),
-            aAPISimulator.getError().getString()
+            !aAPISimulator.getErrorInfo(),
+            aAPISimulator.getErrorInfo().getString()
         );
         THEOLIZER_EQUAL     // ErrorReporterのエラーはクリアされない
         (
-            theolizer::ErrorReporter::getError().getErrorKind(),
+            theolizer::ErrorReporter::getErrorInfo().getErrorKind(),
             ErrorKind::WrongUsing
         );
 
@@ -503,8 +503,8 @@ int main(int argc, char** argv)
         aAPISimulator.stubAPI(APISimulator::NoError);
         THEOLIZER_CHECK
         (
-            !theolizer::ErrorReporter::getError(),
-            theolizer::ErrorReporter::getError().getString()
+            !theolizer::ErrorReporter::getErrorInfo(),
+            theolizer::ErrorReporter::getErrorInfo().getString()
         );
 
         // second関数で例外
@@ -589,7 +589,7 @@ int main(int argc, char** argv)
 
                 THEOLIZER_EQUAL
                 (
-                    theolizer::ErrorReporter::getError().getErrorKind(),
+                    theolizer::ErrorReporter::getErrorInfo().getErrorKind(),
                     iErrorKind
                 );
             }

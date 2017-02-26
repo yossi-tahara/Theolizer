@@ -683,7 +683,7 @@ class THEOLIZER_INTERNAL_DLL ErrorReporter
 public:
     // エラー情報獲得
     //! @todo   T.B.D.
-    static ErrorInfo const& getError() noexcept
+    static ErrorInfo const& getErrorInfo() noexcept
     {
         return getInstance().mErrorInfo;
     }
@@ -828,9 +828,18 @@ protected:
     void checkError();
 
 public:
-    // エラー返却
+    // エラー／警告情報返却
     //! @todo   T.B.D.
-    ErrorInfo const& getError() {return mErrorInfo;}
+    ErrorInfo const& getErrorInfo() {return mErrorInfo;}
+
+    // エラー発生
+    //! @todo   T.B.D.
+    bool isError()
+    {
+        if (!mErrorInfo)
+    return false;
+        return mErrorInfo.getErrorType() != ErrorType::Warning;
+    }
 
     /*!
         エラー状態を解除する

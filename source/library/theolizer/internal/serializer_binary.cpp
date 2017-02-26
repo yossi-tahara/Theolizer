@@ -741,7 +741,7 @@ ReadStat BinaryMidISerializer::readPreElement(bool iDoProcess)
         mIStream.unget();
     }
 
-    return (aContinue && !ErrorReporter::getError())?Continue:Terminated;
+    return (aContinue && !isError())?Continue:Terminated;
 }
 
 //----------------------------------------------------------------------------
@@ -866,7 +866,7 @@ void BinaryMidISerializer::loadClassEnd(bool iIsTop)
             }
 
             // エラーが発生していたら、抜ける
-            if (ErrorReporter::getError())
+            if (isError())
         break;
 
             disposeElement();

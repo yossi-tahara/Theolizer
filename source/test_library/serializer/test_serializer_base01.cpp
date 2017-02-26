@@ -325,7 +325,7 @@ int main(int argc, char** argv)
             THEOLIZER_PROCESS(aSerializer, aUInt); unsigned line=__LINE__;
             u8string aAdditionalInfo=string("aUInt{test_serializer_base01.cpp(")
                                     +std::to_string(line)+")}";
-            auto aError=theolizer::ErrorReporter::getError();
+            auto aError=aSerializer.getErrorInfo();
             THEOLIZER_CHECK(aError, aError.getErrorType());
             THEOLIZER_EQUAL(aError.getMessage(), aMessage);
             THEOLIZER_EQUAL(aError.getAdditionalInfo(), aAdditionalInfo);
@@ -370,7 +370,7 @@ int main(int argc, char** argv)
             THEOLIZER_PROCESS(aSerializer, aUInt); unsigned line=__LINE__;
             u8string aAdditionalInfo=string("aUInt{test_serializer_base01.cpp(")
                                     +std::to_string(line)+")}";
-            auto aError=theolizer::ErrorReporter::getError();
+            auto aError=aSerializer.getErrorInfo();
             THEOLIZER_CHECK(aError, aError.getErrorType());
             THEOLIZER_EQUAL(aError.getMessage(), aMessage);
             THEOLIZER_EQUAL(aError.getAdditionalInfo(), aAdditionalInfo);

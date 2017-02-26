@@ -10,7 +10,7 @@
 //              THEOLIZER_GENERATED_LAST_VERSION_NO  最新版のバージョン番号
 //
 //              THEOLIZER_GENERATED_VERSION_NO       EnumVersion<>のバージョン番号
-//              THEOLIZER_GENERATED_ENUM_NAME       このバージョン時のEnumType名
+//              THEOLIZER_GENERATED_ENUM_NAME        このバージョン時のEnumType名
 //              THEOLIZER_GENERATED_BASE_TYPE        このバージョン時の基底型
 //              THEOLIZER_GENERATED_DEFAULT_VALUE    デフォルト値
 //              THEOLIZER_GENERATED_SAVE_TYPE        保存方法指定
@@ -327,6 +327,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     #if (THEOLIZER_GENERATED_VERSION_NO != THEOLIZER_GENERATED_LAST_VERSION_NO)
     void downVersion()
     {
+        // 見つからない時はユーザの定義ミス→保存時なのでエラーとする
         for (size_t i=0; !kEnumElementList[i].isSentinel(); ++i)
         {
             if (mParentVersion->kEnumElementList[i].mValues[0] == mParentVersion->mValueRef)
@@ -336,7 +337,9 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
             }
         }
 
-        THEOLIZER_INTERNAL_ERROR("Can not transform Version.%1%'s value(%2%) to "
+        mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
+        THEOLIZER_INTERNAL_WRONG_USING(
+            "Can not transform Version.%1%'s value(%2%) to "
             "Version.%2%'s value. Check your THEOLIZER_ANNOTATE().",
             THEOLIZER_GENERATED_VERSION_NO+1,
             mParentVersion->mValueRef,
@@ -351,6 +354,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     #if (THEOLIZER_GENERATED_VERSION_NO != THEOLIZER_GENERATED_LAST_VERSION_NO)
     void upVersion()
     {
+        // 見つからない時はユーザの定義ミス→できるだけ回復したいので警告とする
         for (size_t i=0; !mParentVersion->kEnumElementList[i].isSentinel(); ++i)
         {
             if (mValueRef == mParentVersion->kEnumElementList[i].mPrevValue)
@@ -360,11 +364,14 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
             }
         }
 
-        THEOLIZER_INTERNAL_ERROR("Can not transform Version.%1%'s value(%2%) to "
-            "Version.%2%'s value. Check your THEOLIZER_ANNOTATE().",
+        mParentVersion->mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
+        THEOLIZER_INTERNAL_WARNING(
+            "Can not transform Version.%1%'s value(%2%) to Version.%2%'s value. "
+            "Please check THEOLIZER_ANNOTATE() for %3%.",
             THEOLIZER_GENERATED_VERSION_NO,
             mValueRef,
-            (THEOLIZER_GENERATED_VERSION_NO+1));
+            (THEOLIZER_GENERATED_VERSION_NO+1),
+            THEOLIZER_GENERATED_ENUM_NAME);
     }
     #endif
 
@@ -391,7 +398,9 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     return;
             }
         }
-        THEOLIZER_INTERNAL_ERROR("Can not find enum symbol's value(%1%) at Version.%2%. "
+
+        THEOLIZER_INTERNAL_ERROR(
+            "Can not find enum symbol's value(%1%) at Version.%2%. "
             "This may be trouble of Theolizer.",
             mValueRef,
             THEOLIZER_GENERATED_VERSION_NO);
@@ -403,7 +412,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
     void loadEnumImpl(tBaseSerializer& iSerializer)
     {
-        // 値で回復する時の処理(見つからない時はエラー)
+        // 値で回復する時の処理(見つからない時はユーザの定義ミス)
         if (Theolizer::kEnumSaveType == theolizer::internal::estValue)
         {
             THEOLIZER_INTERNAL_LOAD(iSerializer, mValueRef, etmDefault);
@@ -418,6 +427,14 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
                     }
                 }
             }
+
+        mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
+        THEOLIZER_INTERNAL_WARNING(
+            u8"Can not find loaded value(%1%) in Version.%2%'s symbol. "
+            "Please check THEOLIZER_ANNOTATE() for %3%.",
+            mValueRef,
+            THEOLIZER_GENERATED_VERSION_NO,
+            THEOLIZER_GENERATED_ENUM_NAME);
     return;
         }
 
@@ -439,10 +456,12 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
             }
         }
 
-        THEOLIZER_INTERNAL_ERROR(u8"Can not find loaded symbol(%1%) in Version.%2%'s symbols. "
-                                  "This data may be broken.",
+        THEOLIZER_INTERNAL_WARNING(
+            u8"Can not find loaded symbol(%1%) in Version.%2%'s symbol. "
+            "Please check THEOLIZER_ANNOTATE() for %3%.",
             aName,
-            THEOLIZER_GENERATED_VERSION_NO);
+            THEOLIZER_GENERATED_VERSION_NO,
+            THEOLIZER_GENERATED_ENUM_NAME);
     }
 
 //----------------------------------------------------------------------------
