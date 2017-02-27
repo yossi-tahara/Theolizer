@@ -67,6 +67,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         EnumFullAuto    aEnumFullAuto6(eefaName32);
         EnumFullAuto    aEnumFullAuto7(eefaName33);
         EnumFullAuto    aEnumFullAuto8(eefaDelete);
+        EnumFullAuto    aEnumFullAuto9(eefaDefault);
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto0);
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto1);
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto2);
@@ -76,6 +77,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto6);
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto7);
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto8);
+        THEOLIZER_PROCESS(iSerializer, aEnumFullAuto9);
 
         ScopedEnumFullAuto  aScopedEnumFullAuto0(ScopedEnumFullAuto::Value1);
         ScopedEnumFullAuto  aScopedEnumFullAuto1(ScopedEnumFullAuto::Name11);
@@ -86,6 +88,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         ScopedEnumFullAuto  aScopedEnumFullAuto6(ScopedEnumFullAuto::Name32);
         ScopedEnumFullAuto  aScopedEnumFullAuto7(ScopedEnumFullAuto::Name33);
         ScopedEnumFullAuto  aScopedEnumFullAuto8(ScopedEnumFullAuto::Delete);
+        ScopedEnumFullAuto  aScopedEnumFullAuto9(ScopedEnumFullAuto::Default);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto0);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto1);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto2);
@@ -95,6 +98,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto6);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto7);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto8);
+        THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto9);
     }
 
 //      ---<<< enum型(半自動型－シンボル名対応) >>>---
@@ -109,6 +113,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         EnumSymName aEnumSymName6(eesnName32);
         EnumSymName aEnumSymName7(eesnName33);
         EnumSymName aEnumSymName8(eesnDelete);
+        EnumSymName aEnumSymName9(eesnDefault);
         THEOLIZER_PROCESS(iSerializer, aEnumSymName0);
         THEOLIZER_PROCESS(iSerializer, aEnumSymName1);
         THEOLIZER_PROCESS(iSerializer, aEnumSymName2);
@@ -118,6 +123,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aEnumSymName6);
         THEOLIZER_PROCESS(iSerializer, aEnumSymName7);
         THEOLIZER_PROCESS(iSerializer, aEnumSymName8);
+        THEOLIZER_PROCESS(iSerializer, aEnumSymName9);
 
         ScopedEnumSymName   aScopedEnumSymName0(ScopedEnumSymName::Value1);
         ScopedEnumSymName   aScopedEnumSymName1(ScopedEnumSymName::Name11);
@@ -128,6 +134,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         ScopedEnumSymName   aScopedEnumSymName6(ScopedEnumSymName::Name32);
         ScopedEnumSymName   aScopedEnumSymName7(ScopedEnumSymName::Name33);
         ScopedEnumSymName   aScopedEnumSymName8(ScopedEnumSymName::Delete);
+        ScopedEnumSymName   aScopedEnumSymName9(ScopedEnumSymName::Default);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName0);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName1);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName2);
@@ -137,6 +144,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName6);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName7);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName8);
+        THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName9);
     }
 
 //      ---<<< enum型(半自動型－シンボル値対応) >>>---
@@ -151,6 +159,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         EnumSymVal  aEnumSymVal6(eesvValue32);
         EnumSymVal  aEnumSymVal7(eesvValue33);
         EnumSymVal  aEnumSymVal8(eesvDelete);
+        EnumSymVal  aEnumSymVal9(eesvDefault);
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal0);
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal1);
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal2);
@@ -160,6 +169,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal6);
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal7);
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal8);
+        THEOLIZER_PROCESS(iSerializer, aEnumSymVal9);
 
         ScopedEnumSymVal    aScopedEnumSymVal0(ScopedEnumSymVal::Name1);
         ScopedEnumSymVal    aScopedEnumSymVal1(ScopedEnumSymVal::Value11);
@@ -170,6 +180,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         ScopedEnumSymVal    aScopedEnumSymVal6(ScopedEnumSymVal::Value32);
         ScopedEnumSymVal    aScopedEnumSymVal7(ScopedEnumSymVal::Value33);
         ScopedEnumSymVal    aScopedEnumSymVal8(ScopedEnumSymVal::Delete);
+        ScopedEnumSymVal    aScopedEnumSymVal9(ScopedEnumSymVal::Default);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal0);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal1);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal2);
@@ -179,6 +190,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal6);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal7);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal8);
+        THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal9);
     }
 }
 //! [saveModifyEnum]
@@ -208,6 +220,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         EnumFullAuto    aEnumFullAuto6(eefaDefault);
         EnumFullAuto    aEnumFullAuto7(eefaDefault);
         EnumFullAuto    aEnumFullAuto8(eefaDefault);
+        EnumFullAuto    aEnumFullAuto9(eefaValue1);     // eefaDefaultになることを確認するため
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto0);
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto1);
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto2);
@@ -237,6 +250,8 @@ void loadModifyEnum(tSerializer& iSerializer)
             std::cout << "Not support newer version.\n";
             exit(1);
         }
+        THEOLIZER_PROCESS(iSerializer, aEnumFullAuto9);
+        THEOLIZER_EQUAL(aEnumFullAuto9, eefaDefault);
 
         ScopedEnumFullAuto  aScopedEnumFullAuto0(ScopedEnumFullAuto::Default);
         ScopedEnumFullAuto  aScopedEnumFullAuto1(ScopedEnumFullAuto::Default);
@@ -247,6 +262,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         ScopedEnumFullAuto  aScopedEnumFullAuto6(ScopedEnumFullAuto::Default);
         ScopedEnumFullAuto  aScopedEnumFullAuto7(ScopedEnumFullAuto::Default);
         ScopedEnumFullAuto  aScopedEnumFullAuto8(ScopedEnumFullAuto::Default);
+        ScopedEnumFullAuto  aScopedEnumFullAuto9(ScopedEnumFullAuto::Value1);   // Default確認用
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto0);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto1);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto2);
@@ -276,6 +292,8 @@ void loadModifyEnum(tSerializer& iSerializer)
             std::cout << "Not support newer version.\n";
             exit(1);
         }
+        THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto9);
+        THEOLIZER_EQUAL(aScopedEnumFullAuto9, ScopedEnumFullAuto::Default);
     }
 
 //      ---<<< enum型(半自動型－シンボル名対応) >>>---
@@ -290,6 +308,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         EnumSymName aEnumSymName6(eesnDefault);
         EnumSymName aEnumSymName7(eesnDefault);
         EnumSymName aEnumSymName8(eesnDefault);
+        EnumSymName aEnumSymName9(eesnValue1);  // Default確認用
         THEOLIZER_PROCESS(iSerializer, aEnumSymName0);
         THEOLIZER_PROCESS(iSerializer, aEnumSymName1);
         THEOLIZER_PROCESS(iSerializer, aEnumSymName2);
@@ -319,6 +338,8 @@ void loadModifyEnum(tSerializer& iSerializer)
             std::cout << "Not support newer version.\n";
             exit(1);
         }
+        THEOLIZER_PROCESS(iSerializer, aEnumSymName9);
+        THEOLIZER_EQUAL(aEnumSymName9, eesnDefault);
 
         ScopedEnumSymName   aScopedEnumSymName0(ScopedEnumSymName::Default);
         ScopedEnumSymName   aScopedEnumSymName1(ScopedEnumSymName::Default);
@@ -329,6 +350,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         ScopedEnumSymName   aScopedEnumSymName6(ScopedEnumSymName::Default);
         ScopedEnumSymName   aScopedEnumSymName7(ScopedEnumSymName::Default);
         ScopedEnumSymName   aScopedEnumSymName8(ScopedEnumSymName::Default);
+        ScopedEnumSymName   aScopedEnumSymName9(ScopedEnumSymName::Value1); // Default確認用
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName0);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName1);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName2);
@@ -358,6 +380,8 @@ void loadModifyEnum(tSerializer& iSerializer)
             std::cout << "Not support newer version.\n";
             exit(1);
         }
+        THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName9);
+        THEOLIZER_EQUAL(aScopedEnumSymName9, ScopedEnumSymName::Default);
     }
 
 //      ---<<< enum型(半自動型－シンボル値対応) >>>---
@@ -372,6 +396,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         EnumSymVal  aEnumSymVal6(eesvDefault);
         EnumSymVal  aEnumSymVal7(eesvDefault);
         EnumSymVal  aEnumSymVal8(eesvDefault);
+        EnumSymVal  aEnumSymVal9(eesvName1);    // Default確認用
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal0);
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal1);
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal2);
@@ -401,6 +426,8 @@ void loadModifyEnum(tSerializer& iSerializer)
             std::cout << "Not support newer version.\n";
             exit(1);
         }
+        THEOLIZER_PROCESS(iSerializer, aEnumSymVal9);
+        THEOLIZER_EQUAL(aEnumSymVal9, eesvDefault);
 
         ScopedEnumSymVal    aScopedEnumSymVal0(ScopedEnumSymVal::Default);
         ScopedEnumSymVal    aScopedEnumSymVal1(ScopedEnumSymVal::Default);
@@ -411,6 +438,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         ScopedEnumSymVal    aScopedEnumSymVal6(ScopedEnumSymVal::Default);
         ScopedEnumSymVal    aScopedEnumSymVal7(ScopedEnumSymVal::Default);
         ScopedEnumSymVal    aScopedEnumSymVal8(ScopedEnumSymVal::Default);
+        ScopedEnumSymVal    aScopedEnumSymVal9(ScopedEnumSymVal::Name1);    // Default確認用
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal0);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal1);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal2);
@@ -440,6 +468,8 @@ void loadModifyEnum(tSerializer& iSerializer)
             std::cout << "Not support newer version.\n";
             exit(1);
         }
+        THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal9);
+        THEOLIZER_EQUAL(aScopedEnumSymVal9, ScopedEnumSymVal::Default);
     }
 }
 //! [loadModifyEnum]

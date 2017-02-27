@@ -328,7 +328,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     void downVersion()
     {
         // 見つからない時はユーザの定義ミス→保存時なのでエラーとする
-        for (size_t i=0; !kEnumElementList[i].isSentinel(); ++i)
+        for (size_t i=0; !mParentVersion->kEnumElementList[i].isSentinel(); ++i)
         {
             if (mParentVersion->kEnumElementList[i].mValues[0] == mParentVersion->mValueRef)
             {
@@ -339,11 +339,12 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
         mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
         THEOLIZER_INTERNAL_WRONG_USING(
-            "Can not transform Version.%1%'s value(%2%) to "
-            "Version.%2%'s value. Check your THEOLIZER_ANNOTATE().",
+            "Can not transform Version.%1%'s value(%2%) to Version.%3%'s value. "
+            "Please check THEOLIZER_ANNOTATE() for %4%.",
             THEOLIZER_GENERATED_VERSION_NO+1,
             mParentVersion->mValueRef,
-            THEOLIZER_GENERATED_VERSION_NO);
+            THEOLIZER_GENERATED_VERSION_NO,
+            THEOLIZER_GENERATED_ENUM_NAME);
     }
     #endif
 
@@ -366,8 +367,8 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
         mParentVersion->mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
         THEOLIZER_INTERNAL_WARNING(
-            "Can not transform Version.%1%'s value(%2%) to Version.%2%'s value. "
-            "Please check THEOLIZER_ANNOTATE() for %3%.",
+            "Can not transform Version.%1%'s value(%2%) to Version.%3%'s value. "
+            "Please check THEOLIZER_ANNOTATE() for %4%.",
             THEOLIZER_GENERATED_VERSION_NO,
             mValueRef,
             (THEOLIZER_GENERATED_VERSION_NO+1),
@@ -388,7 +389,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     return;
         }
 
-        // 名前を保存する時の処理(見つからない場合はバグ)
+        // 名前を保存する時の処理
         for (size_t i=0; !kEnumElementList[i].isSentinel(); ++i)
         {
             if (kEnumElementList[i].mValues[0] == mValueRef)
@@ -401,9 +402,10 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
         THEOLIZER_INTERNAL_ERROR(
             "Can not find enum symbol's value(%1%) at Version.%2%. "
-            "This may be trouble of Theolizer.",
+            "Please check THEOLIZER_ANNOTATE() for %3%.",
             mValueRef,
-            THEOLIZER_GENERATED_VERSION_NO);
+            THEOLIZER_GENERATED_VERSION_NO,
+            THEOLIZER_GENERATED_ENUM_NAME);
     }
 
 //----------------------------------------------------------------------------
@@ -412,7 +414,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
     void loadEnumImpl(tBaseSerializer& iSerializer)
     {
-        // 値で回復する時の処理(見つからない時はユーザの定義ミス)
+        // 値で回復する時の処理
         if (Theolizer::kEnumSaveType == theolizer::internal::estValue)
         {
             THEOLIZER_INTERNAL_LOAD(iSerializer, mValueRef, etmDefault);
@@ -441,7 +443,6 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         // 名前で回復する時の処理(見つからない時はエラー)
         std::string  aName;
         THEOLIZER_INTERNAL_LOAD(iSerializer, aName, etmDefault);
-//std::cout << "loadEnumImpl() : " << aName << "\n";
 
         mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
         for (size_t i=0; !kEnumElementList[i].isSentinel(); ++i)

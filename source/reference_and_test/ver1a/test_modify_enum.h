@@ -18,8 +18,8 @@
 */
 //############################################################################
 
-#if !defined(DISABLE_MODIFY_ENUM_TEST)
-#define DISABLE_MODIFY_ENUM_TEST
+#if !defined(TEST_MODIFY_ENUM_H)
+#define TEST_MODIFY_ENUM_H
 
 #include <string>
 
@@ -150,7 +150,7 @@ enum class ScopedEnumSymVal
     Name1  =101,
 
     // シンボル値を変更するもの
-    Value11=110,                // 単にシンボル変更
+    Value11=111,                // 単にシンボル変更
     Value20=200,                // 3つのシンボルを先頭の1つへ統合する
     Value21=210,
     Value22=220,
@@ -163,4 +163,4 @@ enum class ScopedEnumSymVal
 };
 THEOLIZER_ENUM_VALUE(ScopedEnumSymVal, 1);
 
-#endif  // DISABLE_MODIFY_ENUM_TEST
+#endif  // TEST_MODIFY_ENUM_H

@@ -383,8 +383,8 @@ void callTests
 
     prefix="fast-";
 
-    // デフォルト処理
-    if (gIndex == kDefaultIndex)
+    // 全く同じ者同士のデフォルトのみサポート
+    if ((gMyIndex == gProgramIndex) && (gIndex == kDefaultIndex))
     {
         std::string filename = prefix + aVersionName + ".bin";
         std::cout << "  FastSerializer(" << filename << ")\n";
