@@ -1149,6 +1149,17 @@ struct MidSerializer
     }
 };
 
+template<class tSerializer>
+int registerMidSerializer()
+{
+    theolizer::internal::MidSerializer<typename tSerializer::MidSerializer>::getInstance();
+    return 0;
+}
+
+#define THEOLIZER_INTERNAL_REGISTER_MID_SERIALIZER(dSerializer)             \
+    static int k##dSerializer THEOLIZER_INTERNAL_UNUSED=                    \
+        theolizer::internal::registerMidSerializer<dSerializer<> >()
+
 //----------------------------------------------------------------------------
 //      トップ・レベル／非トップ・レベル分岐と処理
 //          既にconstは外れていること
@@ -1193,9 +1204,6 @@ struct BranchedProcess
         size_t          iLineNo
     )
     {
-        // Theolizerドライバが派生シリアライザを補足するため
-        MidSerializer<typename tSerializer::MidSerializer>::getInstance();
-
         // 型情報取得中継クラス登録
         TypeFunctions<tSerializer>  aTypeFunctions;
 

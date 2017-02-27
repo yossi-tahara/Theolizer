@@ -531,7 +531,8 @@ struct SharedPtrTable
         friend void process(tSerializer&, tType const&, char const*, char const*, size_t);  \
     template<internal::TrackingMode, class, class tSerializer, typename tType>              \
         friend void process(tSerializer&, tType&, char const*, char const*, size_t);        \
-    template<class, class, class, bool, bool>   friend class internal::RegisterType
+    template<class, class, class, bool, bool>   friend class internal::RegisterType;        \
+    template<class>                             friend int internal::registerMidSerializer()
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 //############################################################################

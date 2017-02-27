@@ -705,6 +705,9 @@ public:
 template<Destination uDefault, Destination... uDestinations>
 internal::Destinations const BinaryOSerializer<uDefault, uDestinations...>::
     kDestinations=internal::Destinations{uDefault, uDestinations...};
+
+// MidSerializer登録(トライバ処理用)
+THEOLIZER_INTERNAL_REGISTER_MID_SERIALIZER(BinaryOSerializer);
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
@@ -778,6 +781,9 @@ public:
 template<Destination uDefault, Destination... uDestinations>
 internal::Destinations const BinaryISerializer<uDefault, uDestinations...>::
     kDestinations=internal::Destinations{uDefault, uDestinations...};
+
+// MidSerializer登録(トライバ処理用)
+THEOLIZER_INTERNAL_REGISTER_MID_SERIALIZER(BinaryISerializer);
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 //############################################################################

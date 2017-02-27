@@ -2206,9 +2206,8 @@ ASTANALYZE_OUTPUT("aLastVersionNo=", aLastVersionNo);
         // enum型
         for (auto&& aSerializeInfo : mAstInterface.mSerializeListEnum.getList())
         {
-            // 完全自動、もしくは、save/load無しなら、登録しない
-            if (aSerializeInfo.second.mIsFullAuto
-             || (aSerializeInfo.second.mSerializeStat == esSerializeOnly))
+            // 完全自動なら、登録しない
+            if (aSerializeInfo.second.mIsFullAuto)
         continue;
 
             addAddFunc

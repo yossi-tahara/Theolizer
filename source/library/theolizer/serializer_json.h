@@ -626,6 +626,9 @@ public:
 template<Destination uDefault, Destination... uDestinations>
 internal::Destinations const JsonOSerializer<uDefault, uDestinations...>::
     kDestinations=internal::Destinations{uDefault, uDestinations...};
+
+// MidSerializer登録(トライバ処理用)
+THEOLIZER_INTERNAL_REGISTER_MID_SERIALIZER(JsonOSerializer);
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
@@ -700,6 +703,9 @@ public:
 template<Destination uDefault, Destination... uDestinations>
 internal::Destinations const JsonISerializer<uDefault, uDestinations...>::
     kDestinations=internal::Destinations{uDefault, uDestinations...};
+
+// MidSerializer登録(トライバ処理用)
+THEOLIZER_INTERNAL_REGISTER_MID_SERIALIZER(JsonISerializer);
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 //############################################################################
