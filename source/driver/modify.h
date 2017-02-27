@@ -729,6 +729,8 @@ ASTANALYZE_OUTPUT("--------mLastVersion\n", mLastVersion.str(), "\n----------");
 //      １つ前の版生成
 //----------------------------------------------------------------------------
 
+        mPrevVersion.str("");
+
         CXXRecordDecl const* aTheolizerVersionPrev = iSerializeInfo.mTheolizerVersionPrev;
         if (aTheolizerVersionPrev)
         {
