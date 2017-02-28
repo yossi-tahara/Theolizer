@@ -337,7 +337,6 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
             }
         }
 
-        mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
         THEOLIZER_INTERNAL_WRONG_USING(
             "Can not transform Version.%1%'s value(%2%) to Version.%3%'s value. "
             "Please check THEOLIZER_ANNOTATE() for %4%.",
@@ -457,6 +456,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
             }
         }
 
+        mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
         THEOLIZER_INTERNAL_WARNING(
             u8"Can not find loaded symbol(%1%) in Version.%2%'s symbol. "
             "Please check THEOLIZER_ANNOTATE() for %3%.",

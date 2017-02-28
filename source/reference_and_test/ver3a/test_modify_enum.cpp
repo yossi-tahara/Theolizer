@@ -42,6 +42,58 @@
 #include "test_modify_enum.cpp.theolizer.hpp"
 
 //############################################################################
+//      使い方説明
+//############################################################################
+
+// ***************************************************************************
+//      関数本体
+// ***************************************************************************
+
+void tutoriseModifyEnum()
+{
+
+
+
+//----------------------------------------------------------------------------
+//      網羅テスト処理（エラー・ケース）
+//          対応ミスしているenumシンボルをGlobalVersionNo=2へ保存する
+//          version_enum.incのsaveEnumImpl()内エラー検出テスト
+//----------------------------------------------------------------------------
+
+    {
+        std::ofstream   aStream("test_modify_enum.json");
+        theolizer::JsonOSerializer<> aSerializer(aStream, 2);
+
+        EnumSymName aEnumSymName(eesnDeleted);
+
+        THEOLIZER_CHECK_EXCEPTION2(
+            THEOLIZER_PROCESS(aSerializer, aEnumSymName);,          // dStatements
+            theolizer::ErrorInfo& e,                                // dException
+            e.getErrorKind() == theolizer::ErrorKind::WrongUsing,   // dJudge
+            e.getMessage());                                        // dResult
+    }
+
+//----------------------------------------------------------------------------
+//      網羅テスト処理（エラー・ケース）
+//          対応ミスしているenumシンボルをGlobalVersionNo=1へ保存する
+//          version_enum.incのsaveEnumImpl()内エラー検出テスト
+//----------------------------------------------------------------------------
+
+    {
+        std::ofstream   aStream("test_modify_enum.json");
+        theolizer::JsonOSerializer<> aSerializer(aStream, 1);
+
+        EnumSymName aEnumSymName(eesnDeleted);
+
+        THEOLIZER_CHECK_EXCEPTION2(
+            THEOLIZER_PROCESS(aSerializer, aEnumSymName);,          // dStatements
+            theolizer::ErrorInfo& e,                                // dException
+            e.getErrorKind() == theolizer::ErrorKind::WrongUsing,   // dJudge
+            e.getMessage());                                        // dResult
+    }
+}
+
+//############################################################################
 //      組み合わせテスト
 //############################################################################
 
@@ -439,6 +491,7 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                 aErrorInfo);
             iSerializer.resetError();
+            THEOLIZER_EQUAL(aEnumSymName8, eesnDefault);
         }
         else
         {
@@ -522,6 +575,7 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                 aErrorInfo);
             iSerializer.resetError();
+            THEOLIZER_EQUAL(aScopedEnumSymName8, ScopedEnumSymName::Default);
         }
         else
         {
@@ -611,6 +665,7 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                 aErrorInfo);
             iSerializer.resetError();
+            THEOLIZER_EQUAL(aEnumSymVal8, eesvDefault);
         }
         else
         {
@@ -694,6 +749,7 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                 aErrorInfo);
             iSerializer.resetError();
+            THEOLIZER_EQUAL(aScopedEnumSymVal8, ScopedEnumSymVal::Default);
         }
         else
         {

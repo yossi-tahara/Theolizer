@@ -444,12 +444,12 @@ int main(int argc, char* argv[])
 {
     theolizer::initResult();
 
-for (std::size_t i=0; i < std::extent<decltype(gVersionList)>::value; ++i)
-{
-    std::cout << "gVersionList[" << i << "]="
-        << gVersionList[i].mName << ", "
-        << gVersionList[i].mVersionNo << "\n";
-}
+    for (std::size_t i=0; i < std::extent<decltype(gVersionList)>::value; ++i)
+    {
+        std::cout << "gVersionList[" << i << "]="
+            << gVersionList[i].mName << ", "
+            << gVersionList[i].mVersionNo << "\n";
+    }
 
 // ***************************************************************************
 //      自身のインデックス番号獲得

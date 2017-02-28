@@ -64,7 +64,7 @@
 
 //      ---<<< 使い方のサンプル・コード >>>---
 
-//void tutoriseModifyEnum();
+void tutoriseModifyEnum();
 
 //      ---<<< 自動テスト >>>---
 
@@ -73,7 +73,6 @@ void saveModifyEnum(tSerializer& iSerializer);
 
 template<class tSerializer>
 void loadModifyEnum(tSerializer& iSerializer);
-
 
 // ***************************************************************************
 //      各テスト呼び出し
@@ -86,6 +85,10 @@ void loadModifyEnum(tSerializer& iSerializer);
 void callTutorial()
 {
     std::cout << "    callTutorial();\n";
+
+    #ifndef DISABLE_MODIFY_ENUM_TEST
+        tutoriseModifyEnum();
+    #endif
 
     // ここまでの中間結果表示
     theolizer::printResult("------------- Result of tutorial samples ----------");

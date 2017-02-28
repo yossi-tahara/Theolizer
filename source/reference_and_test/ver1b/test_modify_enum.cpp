@@ -266,6 +266,7 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                     aErrorInfo);
                 iSerializer.resetError();
+                THEOLIZER_EQUAL(aEnumFullAuto8, eefaDefault);
             }
             break;
 
@@ -329,6 +330,7 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                     aErrorInfo);
                 iSerializer.resetError();
+                THEOLIZER_EQUAL(aScopedEnumFullAuto8, ScopedEnumFullAuto::Default);
             }
             break;
 
@@ -398,6 +400,7 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                     aErrorInfo);
                 iSerializer.resetError();
+                THEOLIZER_EQUAL(aEnumSymName8, eesnDefault);
             }
             break;
 
@@ -461,6 +464,7 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                     aErrorInfo);
                 iSerializer.resetError();
+                THEOLIZER_EQUAL(aScopedEnumSymName8, ScopedEnumSymName::Default);
             }
             break;
 
@@ -530,6 +534,7 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                     aErrorInfo);
                 iSerializer.resetError();
+                THEOLIZER_EQUAL(aEnumSymVal8, eesvDefault);
             }
             break;
 
@@ -593,6 +598,7 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                     aErrorInfo);
                 iSerializer.resetError();
+                THEOLIZER_EQUAL(aScopedEnumSymVal8, ScopedEnumSymVal::Default);
             }
             break;
 
