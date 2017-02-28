@@ -48,8 +48,8 @@ enum EnumFullAuto
     eefaName51,
     eefaName52,
 
-    // 削除されたものの代わり（回復できないのでエラーになることをチェックする）
-    eefaDeleted
+    // 削除されたものを指定し、回復できることを確認する
+    eefaDeleted THEOLIZER_ANNOTATE(ES:eefaDelete)
 };
 THEOLIZER_ENUM(EnumFullAuto, 1);            // バージョン・アップに備え半自動型へ変更
 
@@ -74,8 +74,8 @@ enum class ScopedEnumFullAuto : long
     Name51,
     Name52,
 
-    // 削除されたものの代わり（回復できないのでエラーになることをチェックする）
-    Deleted
+    // 削除されたものを指定し、回復できることを確認する
+    Deleted THEOLIZER_ANNOTATE(ES:Delete)
 };
 THEOLIZER_ENUM(ScopedEnumFullAuto, 1);  // バージョン・アップに備え半自動型へ変更
 
@@ -108,8 +108,8 @@ enum EnumSymName
     eesnName51,
     eesnName52,
 
-    // 削除されたものの代わり（回復できないのでエラーになることをチェックする）
-    eesnDeleted
+    // 削除されたものを指定し、回復できることを確認する
+    eesnDeleted THEOLIZER_ANNOTATE(ES:eesnDelete)
 };
 THEOLIZER_ENUM(EnumSymName, 1);
 
@@ -134,8 +134,8 @@ enum class ScopedEnumSymName
     Name51,
     Name52,
 
-    // 削除されたものの代わり（回復できないのでエラーになることをチェックする）
-    Deleted
+    // 削除されたものを指定し、回復できることを確認する
+    Deleted THEOLIZER_ANNOTATE(ES:Delete)
 };
 THEOLIZER_ENUM(ScopedEnumSymName, 1);
 
@@ -164,8 +164,8 @@ enum EnumSymVal
     eesvValue51=51,
     eesvValue52=52,
 
-    // 削除されたものの代わり（回復できないのでエラーになることをチェックする）
-    eesvDeleted=99
+    // 削除されたものを指定し、回復できることを確認する
+    eesvDeleted     THEOLIZER_ANNOTATE(ES::60)=99
 };
 THEOLIZER_ENUM_VALUE(EnumSymVal, 1);
 
@@ -190,8 +190,8 @@ enum class ScopedEnumSymVal
     Value51=510,
     Value52=520,
 
-    // 削除されたものの代わり（回復できないのでエラーになることをチェックする）
-    Deleted=999
+    // 削除されたものを指定し、回復できることを確認する
+    Deleted     THEOLIZER_ANNOTATE(ES::600)=999
 };
 THEOLIZER_ENUM_VALUE(ScopedEnumSymVal, 1);
 

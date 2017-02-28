@@ -400,7 +400,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
             }
         }
 
-        THEOLIZER_INTERNAL_ERROR(
+        THEOLIZER_INTERNAL_WRONG_USING(
             "Can not find enum symbol's value(%1%) at Version.%2%. "
             "Please check THEOLIZER_ANNOTATE() for %3%.",
             mValueRef,

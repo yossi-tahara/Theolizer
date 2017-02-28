@@ -252,11 +252,7 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumFullAuto5, eefaName30);
                 THEOLIZER_EQUAL(aEnumFullAuto6, eefaName30);
                 THEOLIZER_EQUAL(aEnumFullAuto7, eefaName30);
-
-                theolizer::ErrorInfo aErrorInfo=iSerializer.getErrorInfo();
-                THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
-                    aErrorInfo);
-                iSerializer.resetError();
+                THEOLIZER_EQUAL(aEnumFullAuto8, eefaDeleted);
             }
             break;
 
@@ -272,7 +268,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumFullAuto5, eefaName30);
                 THEOLIZER_EQUAL(aEnumFullAuto6, eefaName51);
                 THEOLIZER_EQUAL(aEnumFullAuto7, eefaName52);
-
                 THEOLIZER_EQUAL(aEnumFullAuto8, eefaDeleted);
             }
             break;
@@ -326,11 +321,7 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumFullAuto5, ScopedEnumFullAuto::Name30);
                 THEOLIZER_EQUAL(aScopedEnumFullAuto6, ScopedEnumFullAuto::Name30);
                 THEOLIZER_EQUAL(aScopedEnumFullAuto7, ScopedEnumFullAuto::Name30);
-
-                theolizer::ErrorInfo aErrorInfo=iSerializer.getErrorInfo();
-                THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
-                    aErrorInfo);
-                iSerializer.resetError();
+                THEOLIZER_EQUAL(aScopedEnumFullAuto8, ScopedEnumFullAuto::Deleted);
             }
             break;
 
@@ -346,7 +337,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumFullAuto5, ScopedEnumFullAuto::Name30);
                 THEOLIZER_EQUAL(aScopedEnumFullAuto6, ScopedEnumFullAuto::Name51);
                 THEOLIZER_EQUAL(aScopedEnumFullAuto7, ScopedEnumFullAuto::Name52);
-
                 THEOLIZER_EQUAL(aScopedEnumFullAuto8, ScopedEnumFullAuto::Deleted);
             }
             break;
@@ -404,11 +394,7 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumSymName5, eesnName30);
                 THEOLIZER_EQUAL(aEnumSymName6, eesnName30);
                 THEOLIZER_EQUAL(aEnumSymName7, eesnName30);
-
-                theolizer::ErrorInfo aErrorInfo=iSerializer.getErrorInfo();
-                THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
-                    aErrorInfo);
-                iSerializer.resetError();
+                THEOLIZER_EQUAL(aEnumSymName8, eesnDeleted);
             }
             break;
 
@@ -424,7 +410,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumSymName5, eesnName30);
                 THEOLIZER_EQUAL(aEnumSymName6, eesnName51);
                 THEOLIZER_EQUAL(aEnumSymName7, eesnName52);
-
                 THEOLIZER_EQUAL(aEnumSymName8, eesnDeleted);
             }
             break;
@@ -478,11 +463,7 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumSymName5, ScopedEnumSymName::Name30);
                 THEOLIZER_EQUAL(aScopedEnumSymName6, ScopedEnumSymName::Name30);
                 THEOLIZER_EQUAL(aScopedEnumSymName7, ScopedEnumSymName::Name30);
-
-                theolizer::ErrorInfo aErrorInfo=iSerializer.getErrorInfo();
-                THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
-                    aErrorInfo);
-                iSerializer.resetError();
+                THEOLIZER_EQUAL(aScopedEnumSymName8, ScopedEnumSymName::Deleted);
             }
             break;
 
@@ -498,7 +479,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumSymName5, ScopedEnumSymName::Name30);
                 THEOLIZER_EQUAL(aScopedEnumSymName6, ScopedEnumSymName::Name51);
                 THEOLIZER_EQUAL(aScopedEnumSymName7, ScopedEnumSymName::Name52);
-
                 THEOLIZER_EQUAL(aScopedEnumSymName8, ScopedEnumSymName::Deleted);
             }
             break;
@@ -556,11 +536,7 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumSymVal5, eesvValue30);
                 THEOLIZER_EQUAL(aEnumSymVal6, eesvValue30);
                 THEOLIZER_EQUAL(aEnumSymVal7, eesvValue30);
-
-                theolizer::ErrorInfo aErrorInfo=iSerializer.getErrorInfo();
-                THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
-                    aErrorInfo);
-                iSerializer.resetError();
+                THEOLIZER_EQUAL(aEnumSymVal8, eesvDeleted);
             }
             break;
 
@@ -576,7 +552,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumSymVal5, eesvValue30);
                 THEOLIZER_EQUAL(aEnumSymVal6, eesvValue51);
                 THEOLIZER_EQUAL(aEnumSymVal7, eesvValue52);
-
                 THEOLIZER_EQUAL(aEnumSymVal8, eesvDeleted);
             }
             break;
@@ -630,11 +605,7 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumSymVal5, ScopedEnumSymVal::Value30);
                 THEOLIZER_EQUAL(aScopedEnumSymVal6, ScopedEnumSymVal::Value30);
                 THEOLIZER_EQUAL(aScopedEnumSymVal7, ScopedEnumSymVal::Value30);
-
-                theolizer::ErrorInfo aErrorInfo=iSerializer.getErrorInfo();
-                THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
-                    aErrorInfo);
-                iSerializer.resetError();
+                THEOLIZER_EQUAL(aScopedEnumSymVal8, ScopedEnumSymVal::Deleted);
             }
             break;
 
@@ -650,7 +621,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumSymVal5, ScopedEnumSymVal::Value30);
                 THEOLIZER_EQUAL(aScopedEnumSymVal6, ScopedEnumSymVal::Value51);
                 THEOLIZER_EQUAL(aScopedEnumSymVal7, ScopedEnumSymVal::Value52);
-
                 THEOLIZER_EQUAL(aScopedEnumSymVal8, ScopedEnumSymVal::Deleted);
             }
             break;
