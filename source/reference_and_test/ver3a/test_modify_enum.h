@@ -27,7 +27,7 @@
 //      enum型(完全自動型)
 // ***************************************************************************
 
-enum EnumFullAuto
+enum EnumFullAuto                       // Version.2のままなので注意
 {
     // 変更無し
     eefaDefault,
@@ -51,7 +51,7 @@ enum EnumFullAuto
 };
 THEOLIZER_ENUM(EnumFullAuto, 2);
 
-enum class ScopedEnumFullAuto : long
+enum class ScopedEnumFullAuto : long    // Version.2のままなので注意
 {
     // 変更無し
     Default,
@@ -95,8 +95,12 @@ enum EnumSymName
     eesnName30,
     eesnName51,
     eesnName52,
-    eesnDeleted,
-    eesnAdd
+
+    // 「値変更ミス」テストのため、不正値へ変更しておく
+    eesnDeleted=99,
+
+    // 変更無し(元々19)
+    eesnAdd=19
 };
 THEOLIZER_ENUM_VALUE(EnumSymName, 3);
 
@@ -112,8 +116,12 @@ enum class ScopedEnumSymName
     Name30,
     Name51,
     Name52,
-    Deleted,
-    Add
+
+    // 「値変更ミス」テストのため、不正値へ変更しておく
+    Deleted=99,
+
+    // 変更無し(元々19)
+    Add=19
 };
 THEOLIZER_ENUM_VALUE(ScopedEnumSymName, 3);
 
@@ -133,8 +141,12 @@ enum EnumSymVal
     eesvValue30=30,
     eesvValue51=51,
     eesvValue52=52,
-    eesvDeleted=99,
-    eesvAdd    =60
+
+    // 「値変更ミス」テストのため、不正値へ変更しておく
+    eesvDeleted=18,
+
+    // 変更無し
+    eesvAdd    =70
 };
 THEOLIZER_ENUM(EnumSymVal, 3);
 
@@ -150,8 +162,12 @@ enum class ScopedEnumSymVal
     Value30=300,
     Value51=510,
     Value52=520,
-    Deleted=999,
-    Add    =600
+
+    // 「値変更ミス」テストのため、不正値へ変更しておく
+    Deleted=18,
+
+    // 変更無し
+    Add    =700
 };
 THEOLIZER_ENUM(ScopedEnumSymVal, 3);
 

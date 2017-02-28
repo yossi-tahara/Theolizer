@@ -53,8 +53,11 @@
 template<class tSerializer>
 void saveModifyEnum(tSerializer& iSerializer)
 {
+    std::cout << "    saveModifyEnum();\n";
 
-//      ---<<< enum型(完全自動型) >>>---
+//----------------------------------------------------------------------------
+//      enum型(完全自動型)
+//----------------------------------------------------------------------------
 
     {
         EnumFullAuto    aEnumFullAuto0(eefaValue1);
@@ -100,7 +103,9 @@ void saveModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto9);
     }
 
-//      ---<<< enum型(半自動型－シンボル名対応) >>>---
+//----------------------------------------------------------------------------
+//      enum型(半自動型－シンボル名対応)
+//----------------------------------------------------------------------------
 
     {
         EnumSymName aEnumSymName0(eesnValue1);
@@ -146,7 +151,9 @@ void saveModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName9);
     }
 
-//      ---<<< enum型(半自動型－シンボル値対応) >>>---
+//----------------------------------------------------------------------------
+//      enum型(半自動型－シンボル値対応)
+//----------------------------------------------------------------------------
 
     {
         EnumSymVal  aEnumSymVal0(eesvName10);
@@ -215,7 +222,9 @@ void loadModifyEnum(tSerializer& iSerializer)
     VersionEnum aVersionEnum=gVersionList[aIndex].mVersionEnum;
     std::cout << "    loadModifyEnum(" << aVersionEnum << ");\n";
 
-//      ---<<< enum型(完全自動型) >>>---
+//----------------------------------------------------------------------------
+//      enum型(完全自動型)
+//----------------------------------------------------------------------------
 
     {
         EnumFullAuto    aEnumFullAuto0(eefaDefault);
@@ -345,7 +354,9 @@ void loadModifyEnum(tSerializer& iSerializer)
         THEOLIZER_EQUAL(aScopedEnumFullAuto9, ScopedEnumFullAuto::Default);
     }
 
-//      ---<<< enum型(半自動型－シンボル名対応) >>>---
+//----------------------------------------------------------------------------
+//      enum型(半自動型－シンボル名対応)
+//----------------------------------------------------------------------------
 
     {
         EnumSymName aEnumSymName0(eesnDefault);
@@ -475,7 +486,9 @@ void loadModifyEnum(tSerializer& iSerializer)
         THEOLIZER_EQUAL(aScopedEnumSymName9, ScopedEnumSymName::Default);
     }
 
-//      ---<<< enum型(半自動型－シンボル値対応) >>>---
+//----------------------------------------------------------------------------
+//      enum型(半自動型－シンボル値対応)
+//----------------------------------------------------------------------------
 
     {
         EnumSymVal  aEnumSymVal0(eesvDefault);

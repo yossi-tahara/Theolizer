@@ -44,6 +44,8 @@ enum EnumFullAuto
     eefaName30,
     eefaName51,
     eefaName52,
+
+    // 「次のバージョン・アップで名前変更ミス」のテストを行う
     eefaDeleted,
 
     // 追加(前バージョンのeefaDefaultに対応させる)
@@ -155,7 +157,7 @@ enum EnumSymVal
     eesvDeleted=99,
 
     // 追加(前バージョンのeesnDefaultに対応させる)
-    eesvAdd THEOLIZER_ANNOTATE(ES:::0)=60
+    eesvAdd THEOLIZER_ANNOTATE(ES:::0)=70
 };
 THEOLIZER_ENUM_VALUE(EnumSymVal, 2);
 
@@ -179,7 +181,7 @@ enum class ScopedEnumSymVal
     Deleted=999,
 
     // 追加(前バージョンのeesnDefaultに対応させる)
-    Add THEOLIZER_ANNOTATE(ES:::0)=600
+    Add THEOLIZER_ANNOTATE(ES:::0)=700
 };
 THEOLIZER_ENUM_VALUE(ScopedEnumSymVal, 2);
 
