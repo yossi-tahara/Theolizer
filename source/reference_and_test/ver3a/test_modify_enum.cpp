@@ -263,6 +263,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver1b:   // 変更後のバージョン
         case VersionEnum::ver1c:
         case VersionEnum::ver2a:
+        case VersionEnum::ver3a:
             {
                 THEOLIZER_EQUAL(aEnumFullAuto0, eefaValue1);
                 THEOLIZER_EQUAL(aEnumFullAuto1, eefaName11);
@@ -337,6 +338,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver1b:   // 変更後のバージョン
         case VersionEnum::ver1c:
         case VersionEnum::ver2a:
+        case VersionEnum::ver3a:
             {
                 THEOLIZER_EQUAL(aScopedEnumFullAuto0, ScopedEnumFullAuto::Value1);
                 THEOLIZER_EQUAL(aScopedEnumFullAuto1, ScopedEnumFullAuto::Name11);
@@ -415,6 +417,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver1b:   // 変更後のバージョン
         case VersionEnum::ver1c:
         case VersionEnum::ver2a:
+        case VersionEnum::ver3a:
             {
                 THEOLIZER_EQUAL(aEnumSymName0, eesnValue1);
                 THEOLIZER_EQUAL(aEnumSymName1, eesnName11);
@@ -489,6 +492,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver1b:   // 変更後のバージョン
         case VersionEnum::ver1c:
         case VersionEnum::ver2a:
+        case VersionEnum::ver3a:
             {
                 THEOLIZER_EQUAL(aScopedEnumSymName0, ScopedEnumSymName::Value1);
                 THEOLIZER_EQUAL(aScopedEnumSymName1, ScopedEnumSymName::Name11);
@@ -567,6 +571,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver1b:   // 変更後のバージョン
         case VersionEnum::ver1c:
         case VersionEnum::ver2a:
+        case VersionEnum::ver3a:
             {
                 THEOLIZER_EQUAL(aEnumSymVal0, eesvName10);
                 THEOLIZER_EQUAL(aEnumSymVal1, eesvValue11);
@@ -641,6 +646,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver1b:   // 変更後のバージョン
         case VersionEnum::ver1c:
         case VersionEnum::ver2a:
+        case VersionEnum::ver3a:
             {
                 THEOLIZER_EQUAL(aScopedEnumSymVal0, ScopedEnumSymVal::Name10);
                 THEOLIZER_EQUAL(aScopedEnumSymVal1, ScopedEnumSymVal::Value11);

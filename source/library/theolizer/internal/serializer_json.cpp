@@ -605,7 +605,8 @@ ReadStat JsonMidISerializer::readPreElement(bool iDoProcess)
     bool aContinue=readComma(mReadComma);
     mReadComma=true;
 
-    return (aContinue && !isError())?Continue:Terminated;
+    // isError()はErrorReporterを使う。(シリアライザへ伝達されていない場合があるため)
+    return (aContinue && !ErrorReporter::isError())?Continue:Terminated;
 }
 
 //----------------------------------------------------------------------------
@@ -712,7 +713,7 @@ void JsonMidISerializer::loadClassEnd(bool iIsTop)
             while (readPreElement())
             {
                 // エラーが発生していたら、抜ける
-                if (isError())
+                if (ErrorReporter::isError())
             break;
 
                 disposeElement();
@@ -853,7 +854,7 @@ char JsonMidISerializer::find_not_of(std::string const& iSkipChars)
     {
         in=getChar();
         // エラーが発生していたら、終了する
-        if (isError())
+        if (ErrorReporter::isError())
 return 0;
 
         std::string::size_type pos = iSkipChars.find(in);

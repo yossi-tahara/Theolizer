@@ -554,11 +554,19 @@ public:
     //! @todo   T.B.D.
     std::string getString() const;
 
-    // boolへ変換(エラーが発生していたらtrue)
+    // boolへ変換(エラーか警告があったらtrue)
     //! @todo   T.B.D.
     operator bool() const  { return mErrorType != ErrorType::None; }
     //! @todo   T.B.D.
     bool operator!() const { return mErrorType == ErrorType::None; }
+    // エラー発生
+    //! @todo   T.B.D.
+    bool isError() const
+    {
+        if (!*this)
+    return false;
+        return mErrorType != ErrorType::Warning;
+    }
 
 private:
 #if defined(__MINGW32__)
@@ -686,6 +694,12 @@ public:
     static ErrorInfo const& getErrorInfo() noexcept
     {
         return getInstance().mErrorInfo;
+    }
+    // エラー発生
+    //! @todo   T.B.D.
+    static bool isError()
+    {
+        return getInstance().mErrorInfo.isError();
     }
 };
 
@@ -836,9 +850,8 @@ public:
     //! @todo   T.B.D.
     bool isError()
     {
-        if (!mErrorInfo)
-    return false;
-        return mErrorInfo.getErrorType() != ErrorType::Warning;
+        return mErrorInfo.isError();
+
     }
 
     /*!

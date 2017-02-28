@@ -236,6 +236,8 @@ void loadModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto5);
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto6);
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto7);
+        THEOLIZER_PROCESS(iSerializer, aEnumFullAuto8);
+        THEOLIZER_PROCESS(iSerializer, aEnumFullAuto9);
 
         // データのバージョンにより切り替え
         switch(aVersionEnum)
@@ -251,7 +253,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumFullAuto6, eefaName30);
                 THEOLIZER_EQUAL(aEnumFullAuto7, eefaName30);
 
-                THEOLIZER_PROCESS(iSerializer, aEnumFullAuto8);
                 theolizer::ErrorInfo aErrorInfo=iSerializer.getErrorInfo();
                 THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                     aErrorInfo);
@@ -271,7 +272,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumFullAuto6, eefaName51);
                 THEOLIZER_EQUAL(aEnumFullAuto7, eefaName52);
 
-                THEOLIZER_PROCESS(iSerializer, aEnumFullAuto8);
                 THEOLIZER_EQUAL(aEnumFullAuto8, eefaDeleted);
             }
             break;
@@ -280,7 +280,6 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
                 gVersionList[aIndex].mName);
         }
-        THEOLIZER_PROCESS(iSerializer, aEnumFullAuto9);
         THEOLIZER_EQUAL(aEnumFullAuto9, eefaDefault);
 
         ScopedEnumFullAuto  aScopedEnumFullAuto0(ScopedEnumFullAuto::Default);
@@ -301,6 +300,8 @@ void loadModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto5);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto6);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto7);
+        THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto8);
+        THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto9);
 
         // データのバージョンにより切り替え
         switch(aVersionEnum)
@@ -316,7 +317,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumFullAuto6, ScopedEnumFullAuto::Name30);
                 THEOLIZER_EQUAL(aScopedEnumFullAuto7, ScopedEnumFullAuto::Name30);
 
-                THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto8);
                 theolizer::ErrorInfo aErrorInfo=iSerializer.getErrorInfo();
                 THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                     aErrorInfo);
@@ -336,7 +336,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumFullAuto6, ScopedEnumFullAuto::Name51);
                 THEOLIZER_EQUAL(aScopedEnumFullAuto7, ScopedEnumFullAuto::Name52);
 
-                THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto8);
                 THEOLIZER_EQUAL(aScopedEnumFullAuto8, ScopedEnumFullAuto::Deleted);
             }
             break;
@@ -345,7 +344,6 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
                 gVersionList[aIndex].mName);
         }
-        THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto9);
         THEOLIZER_EQUAL(aScopedEnumFullAuto9, ScopedEnumFullAuto::Default);
     }
 
@@ -370,6 +368,8 @@ void loadModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aEnumSymName5);
         THEOLIZER_PROCESS(iSerializer, aEnumSymName6);
         THEOLIZER_PROCESS(iSerializer, aEnumSymName7);
+        THEOLIZER_PROCESS(iSerializer, aEnumSymName8);
+        THEOLIZER_PROCESS(iSerializer, aEnumSymName9);
 
         // データのバージョンにより切り替え
         switch(aVersionEnum)
@@ -385,7 +385,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumSymName6, eesnName30);
                 THEOLIZER_EQUAL(aEnumSymName7, eesnName30);
 
-                THEOLIZER_PROCESS(iSerializer, aEnumSymName8);
                 theolizer::ErrorInfo aErrorInfo=iSerializer.getErrorInfo();
                 THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                     aErrorInfo);
@@ -405,7 +404,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumSymName6, eesnName51);
                 THEOLIZER_EQUAL(aEnumSymName7, eesnName52);
 
-                THEOLIZER_PROCESS(iSerializer, aEnumSymName8);
                 THEOLIZER_EQUAL(aEnumSymName8, eesnDeleted);
             }
             break;
@@ -414,7 +412,6 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
                 gVersionList[aIndex].mName);
         }
-        THEOLIZER_PROCESS(iSerializer, aEnumSymName9);
         THEOLIZER_EQUAL(aEnumSymName9, eesnDefault);
 
         ScopedEnumSymName   aScopedEnumSymName0(ScopedEnumSymName::Default);
@@ -435,6 +432,8 @@ void loadModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName5);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName6);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName7);
+        THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName8);
+        THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName9);
 
         // データのバージョンにより切り替え
         switch(aVersionEnum)
@@ -450,7 +449,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumSymName6, ScopedEnumSymName::Name30);
                 THEOLIZER_EQUAL(aScopedEnumSymName7, ScopedEnumSymName::Name30);
 
-                THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName8);
                 theolizer::ErrorInfo aErrorInfo=iSerializer.getErrorInfo();
                 THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                     aErrorInfo);
@@ -470,7 +468,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumSymName6, ScopedEnumSymName::Name51);
                 THEOLIZER_EQUAL(aScopedEnumSymName7, ScopedEnumSymName::Name52);
 
-                THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName8);
                 THEOLIZER_EQUAL(aScopedEnumSymName8, ScopedEnumSymName::Deleted);
             }
             break;
@@ -479,7 +476,6 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
                 gVersionList[aIndex].mName);
         }
-        THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName9);
         THEOLIZER_EQUAL(aScopedEnumSymName9, ScopedEnumSymName::Default);
     }
 
@@ -504,6 +500,8 @@ void loadModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal5);
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal6);
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal7);
+        THEOLIZER_PROCESS(iSerializer, aEnumSymVal8);
+        THEOLIZER_PROCESS(iSerializer, aEnumSymVal9);
 
         // データのバージョンにより切り替え
         switch(aVersionEnum)
@@ -519,7 +517,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumSymVal6, eesvValue30);
                 THEOLIZER_EQUAL(aEnumSymVal7, eesvValue30);
 
-                THEOLIZER_PROCESS(iSerializer, aEnumSymVal8);
                 theolizer::ErrorInfo aErrorInfo=iSerializer.getErrorInfo();
                 THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                     aErrorInfo);
@@ -539,7 +536,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumSymVal6, eesvValue51);
                 THEOLIZER_EQUAL(aEnumSymVal7, eesvValue52);
 
-                THEOLIZER_PROCESS(iSerializer, aEnumSymVal8);
                 THEOLIZER_EQUAL(aEnumSymVal8, eesvDeleted);
             }
             break;
@@ -548,7 +544,6 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
                 gVersionList[aIndex].mName);
         }
-        THEOLIZER_PROCESS(iSerializer, aEnumSymVal9);
         THEOLIZER_EQUAL(aEnumSymVal9, eesvDefault);
 
         ScopedEnumSymVal    aScopedEnumSymVal0(ScopedEnumSymVal::Default);
@@ -569,6 +564,8 @@ void loadModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal5);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal6);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal7);
+        THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal8);
+        THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal9);
 
         // データのバージョンにより切り替え
         switch(aVersionEnum)
@@ -584,7 +581,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumSymVal6, ScopedEnumSymVal::Value30);
                 THEOLIZER_EQUAL(aScopedEnumSymVal7, ScopedEnumSymVal::Value30);
 
-                THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal8);
                 theolizer::ErrorInfo aErrorInfo=iSerializer.getErrorInfo();
                 THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                     aErrorInfo);
@@ -604,7 +600,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumSymVal6, ScopedEnumSymVal::Value51);
                 THEOLIZER_EQUAL(aScopedEnumSymVal7, ScopedEnumSymVal::Value52);
 
-                THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal8);
                 THEOLIZER_EQUAL(aScopedEnumSymVal8, ScopedEnumSymVal::Deleted);
             }
             break;
@@ -613,7 +608,6 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
                 gVersionList[aIndex].mName);
         }
-        THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal9);
         THEOLIZER_EQUAL(aScopedEnumSymVal9, ScopedEnumSymVal::Default);
     }
 }

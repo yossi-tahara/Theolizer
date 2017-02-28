@@ -50,7 +50,8 @@
     VERSION_DEF(ver1a, 1),                                                  \
     VERSION_DEF(ver1b, 1),                                                  \
     VERSION_DEF(ver1c, 1),                                                  \
-    VERSION_DEF(ver2a, 2)
+    VERSION_DEF(ver2a, 2),                                                  \
+    VERSION_DEF(ver3a, 3)
 
 //----------------------------------------------------------------------------
 //      実体

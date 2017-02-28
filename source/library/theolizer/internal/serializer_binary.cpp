@@ -741,7 +741,8 @@ ReadStat BinaryMidISerializer::readPreElement(bool iDoProcess)
         mIStream.unget();
     }
 
-    return (aContinue && !isError())?Continue:Terminated;
+    // isError()はErrorReporterを使う。(シリアライザへ伝達されていない場合があるため)
+    return (aContinue && !ErrorReporter::isError())?Continue:Terminated;
 }
 
 //----------------------------------------------------------------------------
@@ -866,7 +867,7 @@ void BinaryMidISerializer::loadClassEnd(bool iIsTop)
             }
 
             // エラーが発生していたら、抜ける
-            if (isError())
+            if (ErrorReporter::isError())
         break;
 
             disposeElement();

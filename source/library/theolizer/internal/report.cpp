@@ -525,14 +525,18 @@ ErrorBase::~ErrorBase() noexcept
 
 //----------------------------------------------------------------------------
 //      エラー情報受領(排他制御する)
+//          エラー／警告が発生していないなら受け取らない
 //----------------------------------------------------------------------------
 
 void ErrorBase::setError(ErrorInfo const& iErrorInfo, bool iConstructor) noexcept
 {
     std::unique_lock<std::mutex> aLock(mImpl->mMutex);
 
-    mConstructorError=iConstructor;
-    mErrorInfo=iErrorInfo;
+    if (iErrorInfo)
+    {
+        mConstructorError=iConstructor;
+        mErrorInfo=iErrorInfo;
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -557,7 +561,7 @@ void ErrorBase::resetError()
 
 void ErrorBase::checkError()
 {
-    if (mErrorInfo)
+    if (isError())
     {
         theolizer::internal::throwDeferred
         (
