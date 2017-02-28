@@ -696,7 +696,7 @@ ASTANALYZE_OUTPUT("    aNowValue=", aNowValue, " aIsFirst=", aIsFirst);
                 }
                 mLastVersion << "," << value;
             }
-            mLastVersion << "),";
+            mLastVersion << "),(";
 
             // 前バージョンの値出力(無指定なら、変更無し)
             if (param.second.empty())
@@ -707,7 +707,7 @@ ASTANALYZE_OUTPUT("    aNowValue=", aNowValue, " aIsFirst=", aIsFirst);
             {
                 mLastVersion << param.second.str();
             }
-            mLastVersion << ")";
+            mLastVersion << "))";
         }
         mLastVersion << "\n";
         mLastVersion << "#define THEOLIZER_GENERATED_DEFAULT_VALUE " << aDefaultValue << "\n";

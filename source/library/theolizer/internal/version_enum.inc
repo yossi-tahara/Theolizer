@@ -526,7 +526,7 @@ THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     #define THEOLIZER_GENERATED_ELEMENT(dSymbols, dValues, dPrevValue)      \
         theolizer::internal::EnumElement<BaseType>(                         \
             {THEOLIZER_INTERNAL_UNPAREN dSymbols},                          \
-            {THEOLIZER_INTERNAL_UNPAREN dValues}, dPrevValue),
+            {THEOLIZER_INTERNAL_UNPAREN dValues}, THEOLIZER_INTERNAL_UNPAREN dPrevValue),
     THEOLIZER_GENERATED_ENUM_LIST()
     theolizer::internal::EnumElement<BaseType>({""}, {0}, 0)
     #undef  THEOLIZER_GENERATED_ELEMENT
