@@ -104,9 +104,9 @@ THEOLIZER_DESTINATIONS(Dest7, Dest8, Dest9,  Dest10, Dest11);
 @subsubsection HowToSpecifySaving141 1-4-1.保存の有無指定
 
 <br>
-<b>デフォルト保存クラス例</b> (source/reference_and_test/version/ver1/test_destinations.h）<br>
+<b>デフォルト保存クラス例</b> (source/reference_and_test/basic/test_destinations.h）<br>
 
-@snippet  test_destinations.h DefaultSave
+@snippet  basic/test_destinations.h DefaultSave
 
 <b>説明：</b>
 |メンバ変数|指定|説明|
@@ -116,9 +116,9 @@ THEOLIZER_DESTINATIONS(Dest7, Dest8, Dest9,  Dest10, Dest11);
 |mAnnotateNonSave|保存しない|シリアライズされません|
 
 
-<b>デフォルト非保存クラス例</b> (source/reference_and_test/version/ver1/test_destinations.h）<br>
+<b>デフォルト非保存クラス例</b> (source/reference_and_test/basic/test_destinations.h）<br>
 
-@snippet  test_destinations.h DefaultNonSave
+@snippet  basic/test_destinations.h DefaultNonSave
 
 <b>説明：</b>
 |メンバ変数|指定|説明|
@@ -128,9 +128,9 @@ THEOLIZER_DESTINATIONS(Dest7, Dest8, Dest9,  Dest10, Dest11);
 |mAnnotateNonSave|保存しない|シリアライズされません|
 
 <br>
-<b>保存と回復ソース：(source/reference_and_test/version/ver1/test_destinations.cpp）</b><br>
+<b>保存と回復ソース：(source/reference_and_test/basic/test_destinations.cpp）</b><br>
 
-@snippet  test_destinations.cpp DefaultSave
+@snippet  basic/test_destinations.cpp DefaultSave
 
 以上の実行で保存されるファイルは次の通りです。
 @code
@@ -157,21 +157,21 @@ THEOLIZER_DESTINATIONS(Dest7, Dest8, Dest9,  Dest10, Dest11);
 
 なお、このように基底クラスへのポインタから保存／回復することもできますし、普通にクラス・インスタンスを直接保存／回復することもできます。
 
-<b>保存先の定義</b> (source/reference_and_test/version/ver1/common.h）<br>
+<b>保存先の定義</b> (source/reference_and_test/basic/common.h）<br>
 
-@dontinclude common.h
+@dontinclude basic/common.h
 @skip THEOLIZER_DESTINATIONS
 @until );
 
-<b>クラス例</b> (source/reference_and_test/version/ver1/test_destinations.h）<br>
+<b>クラス例</b> (source/reference_and_test/basic/test_destinations.h）<br>
 
 顧客管理を想定してます。BaseCustomerを基底クラスとし、法人の顧客をCorporateCustomer、個人の顧客をIndividualCustomerで管理する想定です。基底クラスで名前を記録し、派生クラスはそれぞれ、資本金と売掛金残高、誕生日と提供したポイント数を記録します。名前と資本金と誕生日はマスター・ファイル、売掛金とポイント数は取引ファイルへ保存します。
 
-@snippet  test_destinations.h DestinationPoly
+@snippet  basic/test_destinations.h DestinationPoly
 
-<b>保存ソース：(source/reference_and_test/version/ver1/test_destinations.cpp）</b><br>
+<b>保存ソース：(source/reference_and_test/basic/test_destinations.cpp）</b><br>
 
-@snippet  test_destinations.cpp save DestinationPoly
+@snippet  basic/test_destinations.cpp save DestinationPoly
 
 これにて次のように保存されます。
 
@@ -247,9 +247,9 @@ THEOLIZER_DESTINATIONS(Dest7, Dest8, Dest9,  Dest10, Dest11);
 ||mPoint|12,000|取引ファイル|
 
 <br>
-<b>回復ソース：(source/reference_and_test/version/ver1/test_destinations.cpp）</b><br>
+<b>回復ソース：(source/reference_and_test/basic/test_destinations.cpp）</b><br>
 
-@snippet  test_destinations.cpp load DestinationPoly
+@snippet  basic/test_destinations.cpp load DestinationPoly
 
 THEOLIZER_PROCESS(aSerializerMaster, aList);にてマスター・ファイルから回復してます。<br>
 THEOLIZER_PROCESS(aSerializerTrade, aList);にて取引ファイルから同じインスタンスへ回復してます。<br>
@@ -307,19 +307,19 @@ THEOLIZER_PROCESS(aSerializerTrade, aList);にて取引ファイルから同じ�
 親クラスをDestinationParent、子クラスをDestinationChildとします。<br>
 親クラスはDestinationChild型のmDestinationChildメンバ変数を持っていて、これは保存先としてDestAを指定します。子クラスは２つのメンバ変数mAnnotateAとmAnnotateBを持ち、それぞれ保存先としてDestA、DestBを指定します。<br>
 
-<b>保存先の定義</b> (source/reference_and_test/version/ver1/common.h）<br>
+<b>保存先の定義</b> (source/reference_and_test/basic/common.h）<br>
 
-@dontinclude common.h
+@dontinclude basic/common.h
 @skip THEOLIZER_DESTINATIONS
 @skip );
 @skip THEOLIZER_DESTINATIONS
 @until );
 
-<b>クラス例</b> (source/reference_and_test/version/ver1/test_destinations.h）<br>
+<b>クラス例</b> (source/reference_and_test/basic/test_destinations.h）<br>
 
-@snippet  test_destinations.h DestinationChild/Parent
+@snippet  basic/test_destinations.h DestinationChild/Parent
 
-<b>保存ソース：(source/reference_and_test/version/ver1/test_destinations.cpp）</b><br>
+<b>保存ソース：(source/reference_and_test/basic/test_destinations.cpp）</b><br>
 
 これにて次のように保存されます。
 
@@ -359,9 +359,9 @@ mDestinationChildのmAnnotateBはDestBのみ保存なので、tutorise_destinati
 tutorise_destinationsB.jsonには、指示通りmDestinationChildが含まれません。
 上記のどちらにもmDestinationChildのmAnnotateBが保存されないことに注意して下さい。
 
-<b>回復ソース：(source/reference_and_test/version/ver1/test_destinations.cpp）</b><br>
+<b>回復ソース：(source/reference_and_test/basic/test_destinations.cpp）</b><br>
 
-@snippet  test_destinations.cpp load DestinationChild/Parent
+@snippet  basic/test_destinations.cpp load DestinationChild/Parent
 
 以上により回復したデータは次のようになります。<b>mDestinationChild.mAnnotateBが0のままです。</b>
 これはミスを誘発し易いですので、子クラスに保存先を指定する際は慎重に行って下さい。<br>
@@ -393,7 +393,7 @@ tutorise_destinationsB.jsonには、指示通りmDestinationChildが含まれま
 @subsection TestSpecifySaving21 2-1.保存の有無指定のテスト
 これは使い方説明で用いたDefaultSaveとDefaultNonSaveの保存／回復を、全てのシリアライザ、全ての書式でテストしています。
 
-<b>source/reference_and_test/version/ver1/test_destinations.cpp</b>でテスト関数を定義してます。<br>
+<b>source/reference_and_test/basic/test_destinations.cpp</b>でテスト関数を定義してます。<br>
 
 1. 保存処理<br>
 template<class tSerializer><br>
@@ -406,7 +406,7 @@ void loadSpecifySaving(tSerializer& iSerializer)の前2つ<br>
 
 <br>
 @subsection TestSpecifySaving22 2-2.保存先指定のテスト
-<b>source/reference_and_test/version/ver1/test_destinations.h</b>でテスト用のクラスを定義してます。<br>
+<b>source/reference_and_test/basic/test_destinations.h</b>でテスト用のクラスを定義してます。<br>
 
 DestinationTestChildクラスとDestinationTestParentクラスを用います。両方ともデフォルト保存型です。<br>
 前者はint型、後者はDestinationTestChild型のメンバ変数を下記のように持ちます。
@@ -420,7 +420,7 @@ DestinationTestChildクラスとDestinationTestParentクラスを用います。
 |mAnnotateC|DestCへ保存|
 |mAnnotateN|非保存指定|
 
-<b>source/reference_and_test/version/ver1/test_destinations.cpp</b>でテスト関数を定義してます。<br>
+<b>source/reference_and_test/basic/test_destinations.cpp</b>でテスト関数を定義してます。<br>
 下記組み合わせでテストしています。
 
 |シリアライザ|テストしている関数|

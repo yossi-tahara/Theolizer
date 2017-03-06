@@ -52,11 +52,11 @@
 @section DefinitionEnumClass 1.クラスとenum型の定義
 //############################################################################
 
-<b>source/reference_and_test/version/ver1/test_basic_process.h</b> で、次のようなクラスとenum型を定義しています。
+<b>source/reference_and_test/basic/test_basic_process.h</b> で、次のようなクラスとenum型を定義しています。
 
 enum型は従来のenum型と、C++11で追加されたscoped enum型の２つをテストします。
 
-@dontinclude test_basic_process.h
+@dontinclude basic/test_basic_process.h
 @skip NormalEnum
 @until };
 @until };
@@ -114,17 +114,17 @@ enum型は従来のenum型と、C++11で追加されたscoped enum型の２つ�
     型と最下位次元の要素数を指定すると、その型の1次元、2次元、3次元配列を生成して保存し、回復後の値をチェックします。
     設定する値とチェックする値は、それぞれの関数呼び出し時にラムダ式で与えています。
 
-<b>保存処理（source/reference_and_test/version/ver1/test_basic_process.cpp）</b><br>
-@snippet  test_basic_process.cpp saveBasicProcess
+<b>保存処理（source/reference_and_test/basic/test_basic_process.cpp）</b><br>
+@snippet  basic/test_basic_process.cpp saveBasicProcess
 
-<b>多次元配列の保存処理（source/reference_and_test/version/ver1/common.h）</b><br>
-@snippet  common.h saveTestArray
+<b>多次元配列の保存処理（source/reference_and_test/basic/common.h）</b><br>
+@snippet  basic/common.h saveTestArray
 
-<b>回復処理（source/reference_and_test/version/ver1/test_basic_process.cpp）</b><br>
-@snippet  test_basic_process.cpp loadBasicProcess
+<b>回復処理（source/reference_and_test/basic/test_basic_process.cpp）</b><br>
+@snippet  basic/test_basic_process.cpp loadBasicProcess
 
-<b>多次元配列の回復処理（source/reference_and_test/version/ver1/common.h）</b><br>
-@snippet  common.h loadTestArray
+<b>多次元配列の回復処理（source/reference_and_test/basic/common.h）</b><br>
+@snippet  basic/common.h loadTestArray
 
 */
 

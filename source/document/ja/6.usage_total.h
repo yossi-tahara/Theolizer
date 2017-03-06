@@ -463,38 +463,131 @@ iSourceをFastSerializerでメモリ・ストリームへシリアライズし�
 //############################################################################
 @section TestProgram 4.テスト・プログラムの構造
 //############################################################################
-主な機能テスト・プログラムは、 <b>source/reference_and_test</b> 以下にテストの分類に応じてフォルダを分けて入れています。
 
 <br>
 // ***************************************************************************
-@subsection TestProgramStructure 4-1.構造について
+@subsection TestProgramTotal 4-1.テスト・プログラムの全体構造
 // ***************************************************************************
-定義変更するということはプログラム自体が異なります。それをテストするため、変更したプログラム毎に異なるフォルダへテスト・プログラムを入れています。<br>
-保存先は、 <b>source/reference_and_test/version/ver*</b> です。
-<b>ver*</b> はバージョン番号、及び、バージョン番号を変更せずにプログラム変更したもの用のフォルダ名です。<br>
-例えば、<b>ver1</b>はバージョン1用、<b>ver1a</b>はそれを少し変更したものを入れてます。
 
-これらのテスト・プログラムの構造は共通です。現在は下記のような構造になっています。（機能テストの追加に伴い、ファイルと関数を追加します。）
+主な機能テスト・プログラムは、 <b>source/reference_and_test</b> 以下に実行形式単位でフォルダを分けて保存しています。
+
+Theolizerはenum型とclass/struct型について定義変更に対応しています。そのテストも行うため、以下のように分類してテストを行います。
+
+1. 基本的なシリアライズ機能の定義変更を除く様々なバリエーションのテスト
+
+2. バージョン番号を更新しない定義変更のテスト
+
+3. バージョン番号を更新する定義変更のテスト
+
+現時点では下記実行形式を実装しています。
+
+|フォルダ名|バージョン番号|説明|
+|----------|--------------|----|
+|basic|無し|基本的なシリアライズ機能の定義変更を除く様々なバリエーションのテスト|
+|ver1a|1|最初のバージョン|
+|ver1b|1|バージョン番号を変えずに可能な定義変更|
+|ver1c|1|バージョン番号を変えるための準備のテスト|
+|ver2a|2|バージョン番号を変更した時の定義変更|
+|ver3a|3|更にバージョン番号を変更|
+|ver3b|3|そしてバージョン番号を変えずに定義変更|
+
+class/structでメンバ変数を削除した場合、１つ前のバージョンの自動生成ソースに削除されたことを反映します。なので、最新版と１つ前のバージョンと、更にもう１つ前に問題が出ないかテストするため、３つのバージョンでテストします。
+
+各変更テスト・プログラムは他の変更テスト・プログラムが出力したデータを読み込んで回復できることやエラーを検出できることをテストします。
+
+下記組み合わせとなります。左側がデータを出力するプログラムを出力するデータ毎に１行使ってます。
+それを各バージョンのプログラムが読み込むかどうかについて列に◯印で記載しています。
+
+|プログラム|バージョン指定|ファイル名|basic|ver1a|ver1b|ver1c|ver2a|ver3a|ver3b|
+|----------|--------------|----------|-----|-----|-----|-----|-----|-----|-----|
+|basic|指定無し |(pre)-basic-(post)  |◯   |     |     |     |     |     |     |
+|basic|1 |(pre)-basic-basic-(post)   |◯   |     |     |     |     |     |     |
+|ver1a|指定無し |(pre)-ver1a-(post)  |     |◯   |◯   |◯   |◯   |◯   |◯   |
+|ver1a|1 |(pre)-ver1a-ver1a-(post)   |     |◯   |◯   |◯   |◯   |◯   |◯   |
+|ver1b|指定無し |(pre)-ver1b-(post)  |     |     |◯   |◯   |◯   |◯   |◯   |
+|ver1b|1 |(pre)-ver1b-ver1b-(post)   |     |     |◯   |◯   |◯   |◯   |◯   |
+|ver1c|指定無し |(pre)-ver1c-(post)  |     |     |     |◯   |◯   |◯   |◯   |
+|ver1c|1 |(pre)-ver1c-ver1c-(post)   |     |     |     |◯   |◯   |◯   |◯   |
+|ver2a|指定無し |(pre)-ver2a-(post)  |     |     |     |     |◯   |◯   |◯   |
+|ver2a|1 |(pre)-ver1c-ver2a-(post)   |     |     |     |◯   |◯   |◯   |◯   |
+|ver2a|2 |(pre)-ver2a-ver2a-(post)   |     |     |     |     |◯   |◯   |◯   |
+|ver3a|指定無し |(pre)-ver3a-(post)  |     |     |     |     |     |◯   |◯   |
+|ver3a|1 |(pre)-ver1c-ver3a-(post)   |     |     |     |◯   |◯   |◯   |◯   |
+|ver3a|2 |(pre)-ver2a-ver3a-(post)   |     |     |     |     |◯   |◯   |◯   |
+|ver3a|3 |(pre)-ver3a-ver3a-(post)   |     |     |     |     |     |◯   |◯   |
+|ver3b|指定無し |(pre)-ver3b-(post)  |     |     |     |     |     |     |◯   |
+|ver3b|1 |(pre)-ver1c-ver3b-(post)   |     |     |     |◯   |◯   |◯   |◯   |
+|ver3b|2 |(pre)-ver2a-ver3b-(post)   |     |     |     |     |◯   |◯   |◯   |
+|ver3b|3 |(pre)-ver3b-ver3b-(post)   |     |     |     |     |     |     |◯   |
+
+(pre)にはシリアライザ名と一部のオプションが入ります。
+
+- json-np (非整形出力)
+- json-pp (整形出力)
+- binary
+- fast
+
+(post)は以下の通りです。
+
+- 残りのオプション指定
+  - jsonとbinaryの場合
+    - NoTypeCheck
+    - TypeCheck
+    - TypeCheckByIndex
+  - fastの場合は、最新版のみ対応でオプションもないため、上記表の「指定無し」のみです。
+<br><br>
+
+- 保存先指定用のサフィックス
+  - 無印
+  - A(保存先DestA)
+  - B(保存先DestB)
+  - AB(保存先DestA | DestB)
+<br><br>
+
+- 拡張子
+  - jsonの拡張子はjson
+  - binaryとfastの拡張子はbin
+
+例えば、json整形出力で、ver3aのプログラムがver1cデータを型チェック無し、保存先指定無しで出力したファイル名は、"json-pp-ver1c-ver3a-NoTypeCheck.json"となります。
+
+<br>
+// ***************************************************************************
+@subsection TestProgramStructure 4-2.テスト・プログラムの構造
+// ***************************************************************************
+
+basic、および、各変更テスト用プログラムは共通部分があります。それらはreference_and_testフォルダ直下にいれ、ビルドする時に各サブ・フォルダへコピーしています。
+
+### 共通部
 
 |ファイル|関数|概要|
 |--------|----|----|
-|main.cpp |main()|パラメータ解析<br>GlobalVersionNoを振ってvaryGlobalVersionNo()呼び出し|
-|↑|varyGlobalVersionNo()|CheckModeを振ってvaryCheckMode()呼び出し|
-|↑|varyCheckMode()|必要なシリアライザのインスタンスを生成し、saveBasic(), loadBasic()呼び出し|
-|↑|saveBasic()|自動テスト基本部の保存処理。個別テストを呼び出す|
-|↑|loadBasic()|自動テスト基本部の回復処理。個別テストを呼び出す|
-|test_basic_process.cpp ||THEOLIZER_PROCESS()の網羅的な使用例（自動テスト）|
-|↑|saveBasicProcess()|保存|
-|↑|loadBasicProcess()|回復|
+|disable_test.h ||各個別テストをディセーブルするシンボル定義。<br>デバッグ時の便利のために用意。|
+|all_common.h ||テスト用の全バージョン共通定義。<br>アップデートとバージョン名とバージョン番号対応表のgVersionListを定義。|
+|main.inc |main() |各サブ・フォルダ内のmain.cppから#includeされる。<br>コマンドライン解析を行い、パラメータが無い時は保存処理、ある時は回復処理を実行する。<br>4-1節 表の全組み合わせを生成し、callTests()を呼び出す。|
+|↑|callTests()|各シリアライザのパラメータを振ってインスタンスを生成し、<br>saveBasic(), loadBasic(),callSaveDestinations(),callLoadDestinations()を呼び出す。|
+
+### 各サブフォルダ部
+
+|ファイル|関数|概要|
+|--------|----|----|
+|main.cpp ||各個別フォルダ内テスト関数を呼び出す。|
+|↑|saveBasic()|自動テスト基本部の保存処理。個別テストを呼び出す。|
+|↑|loadBasic()|自動テスト基本部の回復処理。個別テストを呼び出す。|
+|↑|callSaveDestinations()|自動テスト保存先指定部の保存処理。個別テストを呼び出す。|
+|↑|callLoadDestinations()|自動テスト保存先指定部の回復処理。個別テストを呼び出す。|
+
+各個別テストは別途*.cppファイルを用意し、その中で定義しています。<br>
+それぞれについては @ref UsageIndividual にて解説します。
 
 <br>
 // ***************************************************************************
-@subsection MacroForDescription 4-2.説明で用いるマクロについて
+@subsection MacroForDescription 4-3.説明で用いるマクロについて
 // ***************************************************************************
 テスト用のマクロはtest_tool.hで定義しています。<br>
 その内、使い方の説明（兼 自動テスト）で用いるマクロについてここで簡単に説明します。
 
-### THEOLIZER_EQUAL(dLhs, dRhs, ...)
+1.@ref THEOLIZER_EQUAL(dLhs, dRhs, ...)
+
 (dLhs == dRhs) ならばPASS、そうでないならFAILと判定します。<br>
 PASSならば、テストの数とPASS数をインクリメントします。<br>
 FAILならば、テストの数とFAIL数をインクリメントし、テストを失敗させます。<br>
@@ -502,33 +595,19 @@ FAILならば、テストの数とFAIL数をインクリメントし、テスト
 
 下記はシリアライザを使って回復したint型のaIntの値が-3000であることをチェックしています。
 
-@dontinclude test_basic_process.cpp
+@dontinclude basic/test_basic_process.cpp
 @skip aInt=0;
 @until THEOLIZER_EQUAL
 
-<br>
-// ***************************************************************************
-@subsection MadeTestFiles 4-3.自動テストで生成されるファイルについて
-// ***************************************************************************
-自動テストで多数のファイルが<b>ビルド・フォルダ/Testing</b>配下に生成されます。<br>
-生成されるファイルは以下の通りです。<br>
+2.@ref #THEOLIZER_CHECK_EXCEPTION2(dStatement, dException, dJudge, dResult)
 
-|シリアライザ|iGlobalVersionNo|iCheckMode|iNoPrettyPrint|ファイル名|
-|------------|----------------|----------|--------------|----------|
-|Json        |省略            |省略      |省略          |json-default.json|
-|↑          |N         |NoTypeCheck     |false         |json-pp-verN-NoTypeCheck.json|
-|↑          |N         |TypeCheck       |false         |json-pp-verN-TypeCheck.json|
-|↑          |N         |TypeCheckByIndex|false         |json-pp-verN-TypeCheckByIndex.json|
-|↑          |N         |NoTypeCheck     |true          |json-np-verN-NoTypeCheck.json|
-|↑          |N         |TypeCheck       |true          |json-np-ver1-TypeCheck.json|
-|↑          |N         |TypeCheckByIndex|true          |json-np-ver1-TypeCheckByIndex.json|
-|Binary      |省略            |省略      |無し          |binary-default.bin|
-|↑          |N         |NoTypeCheck     |無し          |binary-verN-NoTypeCheck.bin|
-|↑          |N         |TypeCheck       |無し          |binary-verN-TypeCheck.bin|
-|↑          |N         |TypeCheckByIndex|無し          |binary-verN-TypeCheckByIndex.bin|
-|Fast        |無し            |無し      |無し          |fast-default.bin|
+dStatementがdException型の例外を発生し、かつ、dJudgeの記述がtrueであればPASS、そうでない時はFAILします。<br>
+FAILした時はdResultを表示します。
 
-Nは当該テスト・プログラムの最新のグローバル・バージョン番号となります。<br>
-1～Nについてテストします。
+下記はシリアライザでaEnumSymNameを回復しようとした時、エラー種別WrongUsingのErrorInfo例外が発生した時のみPASSします。
+
+@dontinclude ver3a/test_modify_enum.cpp
+@skip std::ofstream
+@until e.getMessage
 
 */

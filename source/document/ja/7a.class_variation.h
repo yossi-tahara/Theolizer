@@ -36,17 +36,17 @@
 
 使い方は簡単で、シリアライズしたい構造体のインスタンスをいきなりTHEOLIZER_PROCESS()マクロに与えるだけです。
 
-<b>定義例</b> (source/reference_and_test/version/ver1/test_class_variation.h)<br>
+<b>定義例</b> (source/reference_and_test/basic/test_class_variation.h)<br>
 非侵入型完全自動クラスの定義例です。
 
-@dontinclude test_class_variation.h
+@dontinclude basic/test_class_variation.h
 @skip FullAutoTutorial
 @until };
 
-<b>保存処理例</b> (source/reference_and_test/version/ver1/test_class_variation.cpp の <b>tutoriseClassVariation()</b> 関数)<br>
+<b>保存処理例</b> (source/reference_and_test/basic/test_class_variation.cpp の <b>tutoriseClassVariation()</b> 関数)<br>
 上記のFullAutoTutorialを保存するコード例です。
 
-@dontinclude test_class_variation.cpp
+@dontinclude basic/test_class_variation.cpp
 @skip void tutoriseClassVariation()
 @skip "tutoriseClassVariation() start"
 @skip {
@@ -65,7 +65,7 @@ privateメンバ以外のメンバが保存されています。
 }
 @endcode
 
-<b>回復処理例</b> (source/reference_and_test/version/ver1/test_class_variation.cpp の <b>tutoriseClassVariation()</b> 関数)<br>
+<b>回復処理例</b> (source/reference_and_test/basic/test_class_variation.cpp の <b>tutoriseClassVariation()</b> 関数)<br>
 上記のFullAutoTutorialを回復して値をチェックするコード例です。
 
 @skip {
@@ -94,14 +94,14 @@ privateメンバをシリアライズするためには、対象構造体の内�
 
 「@ref Basic121 」で説明したように、シリアライズ・データとプログラム間でメンバ変数を対応する方法として２種類サポートしています。
 
-<b>名前対応の定義例</b> (source/reference_and_test/version/ver1/test_class_variation.h)<br>
+<b>名前対応の定義例</b> (source/reference_and_test/basic/test_class_variation.h)<br>
 侵入型半自動クラスを「名前対応」で定義する時はTHEOLIZER_INTRUSIVE()マクロを使います。
 
-@dontinclude test_class_variation.h
+@dontinclude basic/test_class_variation.h
 @skip HalfAutoNameTutorial
 @until };
 
-<b>順序対応の定義例</b> (source/reference_and_test/version/ver1/test_class_variation.h)<br>
+<b>順序対応の定義例</b> (source/reference_and_test/basic/test_class_variation.h)<br>
 侵入型半自動クラスを「名前対応」で定義する時はTHEOLIZER_INTRUSIVE_ORDER()マクロを使います。
 
 @skip HalfAutoOrderTutorial
@@ -174,7 +174,7 @@ privateメンバも含めて保存されています。
 6. @link SaveLoadManualClass 後は通常通りTHEOLIZER_PROCESS()シリーズ・マクロでシリアライズ処理します。@endlink<br>
 
 @subsection DefineManualClass 3-1.非侵入型手動クラスの定義例
-サンプル・ソースは source/reference_and_test/version/ver1/test_class_variation.h です。<br>
+サンプル・ソースは source/reference_and_test/basic/test_class_variation.h です。<br>
 非侵入型手動クラスの定義例です。
 
 @skip ManualTutorial
@@ -201,7 +201,7 @@ THEOLIZER_NON_INTRUSIVE_ORDER()マクロは次のように使います。
 <br>
 
 @subsection TemplateManualClass 3-3.自動生成される保存／回復処理用関数の雛形例 
-サンプルは `<ビルド・フォルダ>/reference_and_test/version/ver1/test_class_variation.cpp.theolizer.hpp` に生成されます。<br>
+サンプルは `<ビルド・フォルダ>/reference_and_test/basic/test_class_variation.cpp.theolizer.hpp` に生成されます。<br>
 ManualTutorialクラスに対する部分は下記です。<br>
 
 @code
@@ -256,7 +256,7 @@ struct TheolizerNonIntrusive<ManualTutorial>::TheolizerUserDefine<tBaseSerialize
 @subsection WriteManualClass 3-5.保存／回復処理関数の記述例 
 下記はTHEOLIZER_NON_INTRUSIVE_ORDER()マクロによるシリアライズ指定から、コピーした雛形に保存／回復処理を記述したサンプルです。
 
-@dontinclude test_class_variation.h
+@dontinclude basic/test_class_variation.h
 @skip ManualTutorial
 @skip <<<
 @until };
@@ -289,17 +289,17 @@ oInstanceにnullptrが設定されていた場合は、領域を獲得して下�
 //############################################################################
 各種クラスの派生、および、包含（メンバ変数として他のクラス型を用いる)は、通常通りです。
 
-<b>各種クラスを派生／包含した例</b> (source/reference_and_test/version/ver1/test_class_variation.h)<br>
+<b>各種クラスを派生／包含した例</b> (source/reference_and_test/basic/test_class_variation.h)<br>
 FullAutoTutorialをpublic継承、HalfAutoNameTutorialをprivate継承、HalfAutoOrderTutorialをprivateメンバ、ManualTutorialをpublicメンバとした非侵入型完全自動クラスです。<br>
 protectedを定義していませんが、protected継承、protectedメンバの両方とも使えます。
 
 @skip DerivedClass
 @until };
 
-<b>保存処理例</b> (source/reference_and_test/version/ver1/test_class_variation.cpp の <b>tutoriseClassVariation()</b> 関数)<br>
+<b>保存処理例</b> (source/reference_and_test/basic/test_class_variation.cpp の <b>tutoriseClassVariation()</b> 関数)<br>
 上記のDerivedClassを保存するコード例です。
 
-@dontinclude test_class_variation.cpp
+@dontinclude basic/test_class_variation.cpp
 @skip void tutoriseClassVariation()
 @skip "tutoriseClassVariation() start"
 @skip {
@@ -324,7 +324,7 @@ protectedを定義していませんが、protected継承、protectedメンバ�
 }
 @endcode
 
-<b>回復処理例</b> (source/reference_and_test/version/ver1/test_class_variation.cpp の <b>tutoriseClassVariation()</b> 関数)<br>
+<b>回復処理例</b> (source/reference_and_test/basic/test_class_variation.cpp の <b>tutoriseClassVariation()</b> 関数)<br>
 上記のFullAutoTutorialを回復して値をチェックするコード例です。
 
 @skip {
@@ -339,15 +339,15 @@ private継承したクラス、およひ、privateメンバは保存されない
 @section TestClassVariation 5.網羅的な使用例（自動テスト）の説明
 //############################################################################
 
-網羅的な自動テスト用のクラスは<b>source/reference_and_test/version/ver1/test_class_variation.h</b> ファイルの「単独テスト」以降で定義しています。<br>
-また、テスト処理は<b>source/reference_and_test/version/ver1/test_class_variation.cpp</b> ファイルで定義しており、saveClassVariation()関数で保存処理、loadClassVariation()関数で回復処理と値の検証を行っています。
+網羅的な自動テスト用のクラスは<b>source/reference_and_test/basic/test_class_variation.h</b> ファイルの「単独テスト」以降で定義しています。<br>
+また、テスト処理は<b>source/reference_and_test/basic/test_class_variation.cpp</b> ファイルで定義しており、saveClassVariation()関数で保存処理、loadClassVariation()関数で回復処理と値の検証を行っています。
 
 @subsection SingleTest 5-1.単独テスト
 単独テストの先頭で<b>DEFINE_MEMBERS()マクロ</b>を定義しています。<br>
 
 これは、全てのプリミティブ型、幾つかの基本的なenum型とクラスについて、単独、および、配列を定義するためのマクロです。このマクロを展開する直前でDEFINE()とARRAY()マクロを定義することで各々について、メンバ変数の定義、初期化、保存、回復、値チェックするコードを生成しています。
 
-@dontinclude test_class_variation.h
+@dontinclude basic/test_class_variation.h
 @skip DEFINE_MEMBERS
 @until ARRAY(ClassBasicTest
 @until ClassBasicTest()

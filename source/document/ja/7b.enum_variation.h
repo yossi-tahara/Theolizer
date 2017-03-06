@@ -66,7 +66,7 @@ enum型をシリアライズ対象であることを明示的に指定する際�
     そのバージョン番号を指定します。詳しくは@ref ChangingEnum を参照下さい。<br>
 <br>
 
-@dontinclude test_enum_variation.h
+@dontinclude basic/test_enum_variation.h
 @skip EnumSymName
 @until };
 
@@ -77,7 +77,7 @@ enum型をシリアライズ対象であることを明示的に指定する際�
 
 保存／回復処理は従来通りです。
 
-@dontinclude test_enum_variation.cpp
+@dontinclude basic/test_enum_variation.cpp
 @skip tutoriseEnumVariation()
 @skip //
 @until THEOLIZER_EQUAL(aEnumSymVal, eesvVal);
@@ -101,12 +101,12 @@ enum型をシリアライズ対象であることを明示的に指定する際�
 @section TestEnumVariation 3.網羅的な使用例（自動テスト）の説明
 //############################################################################
 
-網羅的な自動テスト用のクラスは<b>source/reference_and_test/version/ver1/test_enum_variation.h</b> ファイルで定義しています。<br>
-また、テスト処理は<b>source/reference_and_test/version/ver1/test_enum_variation.cpp</b> ファイルで定義しており、saveEnumVariation()関数で保存処理、loadEnumVariation()関数で回復処理と値の検証を行っています。
+網羅的な自動テスト用のクラスは<b>source/reference_and_test/basic/test_enum_variation.h</b> ファイルで定義しています。<br>
+また、テスト処理は<b>source/reference_and_test/basic/test_enum_variation.cpp</b> ファイルで定義しており、saveEnumVariation()関数で保存処理、loadEnumVariation()関数で回復処理と値の検証を行っています。
 
 <b>test_enum_variation.h</b> ファイル先頭で<b>DEFINE_ENUM()マクロ</b>を定義しています。<br>
 
-@dontinclude test_enum_variation.h
+@dontinclude basic/test_enum_variation.h
 @skip DEFINE_ENUM
 @until unsigned long long
 

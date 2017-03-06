@@ -56,10 +56,10 @@
 
 @subsection HowToObjectTracking12 1-2.サンプル・ソース
 
-<b>サンプル用のクラス定義：(source/reference_and_test/version/ver1/test_object_tracking.h）</b><br>
+<b>サンプル用のクラス定義：(source/reference_and_test/basic/test_object_tracking.h）</b><br>
 （静的定義領域、動的生成領域については「@ref HowToObjectTracking33 」を参照下さい。）
 
-@dontinclude test_object_tracking.h
+@dontinclude basic/test_object_tracking.h
 @skip ObjectTrackingClass
 @until };
 
@@ -67,9 +67,9 @@ ObjectTrackingClass全体はオブジェクト追跡するクラスのサンプ�
 - mIntメンバ変数はオブジェクト追跡するよう指定されたメンバ変数です。
 - mShortメンバ変数はオーナー指定されたメンバ変数です。
 
-<b>保存処理：(source/reference_and_test/version/ver1/test_object_tracking.cpp）</b>
+<b>保存処理：(source/reference_and_test/basic/test_object_tracking.cpp）</b>
 
-@dontinclude test_object_tracking.cpp
+@dontinclude basic/test_object_tracking.cpp
 @skip "tutoriseObjectTracking() start"
 @skip {
 @until aSerializer.clearTracking();
@@ -77,7 +77,7 @@ ObjectTrackingClass全体はオブジェクト追跡するクラスのサンプ�
 
 <div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
 <b>makeAutoRelease()</b><br>
-これはnewで獲得した領域を自動的にdeleteするためのヘルパー関数です。戻り値のインスタンスが解放されるタイミングでdeleteします。source/reference_and_test/version/ver1/common.hで定義しています。たいへん小さいですので、興味のある方は覗いてみて下さい。
+これはnewで獲得した領域を自動的にdeleteするためのヘルパー関数です。戻り値のインスタンスが解放されるタイミングでdeleteします。source/reference_and_test/basic/common.hで定義しています。たいへん小さいですので、興味のある方は覗いてみて下さい。
 </div>
 
 これにより、下図のようなデータ構造が生成され、図の順序でデータが保存されます。
@@ -109,7 +109,7 @@ ObjectTrackingClass全体はオブジェクト追跡するクラスのサンプ�
     7                           // オブジェクトID=7へのポインタ(aIntPtr)
     8                           // オブジェクトID=8へのポインタ(aShortPtr)
 
-<b>回復処理：(source/reference_and_test/version/ver1/test_object_tracking.cpp）</b><br>
+<b>回復処理：(source/reference_and_test/basic/test_object_tracking.cpp）</b><br>
 元のデータ構造を回復できていることをチェックしています。
 
 @skip 回復
@@ -139,24 +139,24 @@ ObjectTrackingClass全体はオブジェクト追跡するクラスのサンプ�
 
 また、「@ref Basic164 」も参照下さい。
 
-<b>サンプル用のクラス定義：(source/reference_and_test/version/ver1/test_polymorphism.h）</b>
+<b>サンプル用のクラス定義：(source/reference_and_test/basic/test_polymorphism.h）</b>
 
-@dontinclude test_polymorphism.h
+@dontinclude basic/test_polymorphism.h
 @skip //-
 @until THEOLIZER_REGISTER_CLASS((PolyDerived1));
 
 <b>THEOLIZER_REGISTER_CLASS()</b>による派生クラスの指定を忘れないようにお願いします。<br>
 また、クラス名を()で囲って指定する必要が有りますのでご注意下さい。
 
-<b>保存処理：(source/reference_and_test/version/ver1/test_polymorphism.cpp）</b>
+<b>保存処理：(source/reference_and_test/basic/test_polymorphism.cpp）</b>
 
-@dontinclude test_polymorphism.cpp
+@dontinclude basic/test_polymorphism.cpp
 @skip "tutorisePolymorphism() start"
 @skip {
 @until aSerializer.clearTracking();
 @until }
 
-<b>回復処理：(source/reference_and_test/version/ver1/test_polymorphism.cpp）</b><br>
+<b>回復処理：(source/reference_and_test/basic/test_polymorphism.cpp）</b><br>
 元のデータ構造を回復できていることをチェックしています。
 
 @skip 回復
@@ -339,7 +339,7 @@ newやnew[]で獲得するインスタンスです。
 
 @subsubsection TestObjectTracking412 4-1-2.ソース・コード
 
-<b>source/reference_and_test/version/ver1/test_object_tracking.h</b>でテスト用のクラスを定義してます。<br>
+<b>source/reference_and_test/basic/test_object_tracking.h</b>でテスト用のクラスを定義してます。<br>
 
 1. ２番目以降の基底クラスへのポインタの回復テスト用
   - ObjectTrackingBase0             １番目の基底クラス
@@ -354,7 +354,7 @@ newやnew[]で獲得するインスタンスです。
   - Pointers                        自動シリアライズするポインタの定義<br>
 <br>
 
-<b>source/reference_and_test/version/ver1/test_object_tracking2.cpp</b>でテスト関数を定義してます。<br>
+<b>source/reference_and_test/basic/test_object_tracking2.cpp</b>でテスト関数を定義してます。<br>
 
 1. 保存処理<br>
 template<class tSerializer><br>
@@ -382,7 +382,7 @@ void loadObjectTracking(tSerializer& iSerializer)の前半<br>
 
 @subsubsection TestObjectTracking422 4-2-2.ソース・コード
 
-<b>source/reference_and_test/version/ver1/test_object_tracking.h</b>でテスト用のクラスとマクロを定義してます。<br>
+<b>source/reference_and_test/basic/test_object_tracking.h</b>でテスト用のクラスとマクロを定義してます。<br>
 
 1. DEFINE_MEMBERS()マクロ<br>
 各種の型に対応する、変数宣言や初期化を定義するためのマクロです。「@ref SingleTest 」と同じ名前ですが、少し異なるマクロです。定義している変数の型は同じですが、初期化値が異なります。<br>
@@ -404,7 +404,7 @@ void loadObjectTracking(tSerializer& iSerializer)の前半<br>
 ポインタ(非オーナー)の定義です。各型のポインタについて、手動(非トップ・レベル)を担います。回復処理を行わない手動型の実装は想定不要と考えますので、constポインタを定義していません。<br>
 <br>
 
-<b>source/reference_and_test/version/ver1/test_object_tracking2.cpp</b>でテスト関数を定義してます。<br>
+<b>source/reference_and_test/basic/test_object_tracking2.cpp</b>でテスト関数を定義してます。<br>
 
 1. 保存処理<br>
 template<class tSerializer><br>
@@ -428,7 +428,7 @@ void loadObjectTracking(tSerializer& iSerializer)の後半<br>
 
 @subsubsection TestObjectTracking432 4-3-2.ソース・コード
 
-<b>source/reference_and_test/version/ver1/test_object_tracking.h</b>でテスト用のクラスとマクロを定義してます。<br>
+<b>source/reference_and_test/basic/test_object_tracking.h</b>でテスト用のクラスとマクロを定義してます。<br>
 
 1. DEFINE_MEMBERS()マクロ<br>
 ポインタ(非オーナー)と共通です。<br>
@@ -452,7 +452,7 @@ C++は、配列型(Type[N])をnewした結果は残念なことに配列型へ�
 遠いところからですが、raccyさん、ありがとうございました。
 </div>
 
-<b>source/reference_and_test/version/ver1/test_object_tracking3.cpp</b>でテスト関数を定義してます。<br>
+<b>source/reference_and_test/basic/test_object_tracking3.cpp</b>でテスト関数を定義してます。<br>
 
 1. 保存処理<br>
 template<class tSerializer><br>
@@ -472,7 +472,7 @@ void loadObjectTracking3(tSerializer& iSerializer)<br>
 ここでは、基底クラスへのポインタでポイントされる異なる派生クラスを適切に回復できることを確認します。<br>
 非侵入型完全自動、侵入型半自動、非侵入型手動の３種類の基底クラスと派生クラスを用意し、派生クラスは３種類の基底クラスを全て継承しました。
 
-<b>source/reference_and_test/version/ver1/test_polymorphism.h</b>でテスト用のクラスを定義してます。<br>
+<b>source/reference_and_test/basic/test_polymorphism.h</b>でテスト用のクラスを定義してます。<br>
 
 1. 基底クラス
   - PolyBaseFullAuto        非侵入型完全自動
@@ -485,7 +485,7 @@ void loadObjectTracking3(tSerializer& iSerializer)<br>
   - PolyDerivedHalfAuto     侵入型半自動
   - PolyDerivedManual       非侵入型手動
 
-<b>source/reference_and_test/version/ver1/test_polymorphism.cpp</b>でテスト関数を定義してます。<br>
+<b>source/reference_and_test/basic/test_polymorphism.cpp</b>でテスト関数を定義してます。<br>
 
 1. 保存処理<br>
 template<class tSerializer><br>

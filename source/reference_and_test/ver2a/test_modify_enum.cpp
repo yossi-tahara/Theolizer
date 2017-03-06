@@ -405,7 +405,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumSymName5, eesnName30);
                 THEOLIZER_EQUAL(aEnumSymName6, eesnName30);
                 THEOLIZER_EQUAL(aEnumSymName7, eesnName30);
-                THEOLIZER_EQUAL(aEnumSymName8, eesnDeleted);
             }
             break;
 
@@ -421,13 +420,21 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumSymName5, eesnName30);
                 THEOLIZER_EQUAL(aEnumSymName6, eesnName51);
                 THEOLIZER_EQUAL(aEnumSymName7, eesnName52);
-                THEOLIZER_EQUAL(aEnumSymName8, eesnDeleted);
             }
             break;
 
         default:
             THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
                 gVersionList[aIndex].mName);
+        }
+        // 保存したプログラムのグローバル・バージョン番号が3未満なら
+        if (gVersionList[gProgramIndex].mVersionNo < 3)
+        {
+            THEOLIZER_EQUAL(aEnumSymName8, eesnDeleted);
+        }
+        else
+        {
+            THEOLIZER_EQUAL(aEnumSymName8, eesnValue1);
         }
         // グローバル・バージョン番号が1なら
         if (gVersionList[aIndex].mVersionNo == 1)
@@ -474,7 +481,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumSymName5, ScopedEnumSymName::Name30);
                 THEOLIZER_EQUAL(aScopedEnumSymName6, ScopedEnumSymName::Name30);
                 THEOLIZER_EQUAL(aScopedEnumSymName7, ScopedEnumSymName::Name30);
-                THEOLIZER_EQUAL(aScopedEnumSymName8, ScopedEnumSymName::Deleted);
             }
             break;
 
@@ -490,13 +496,21 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumSymName5, ScopedEnumSymName::Name30);
                 THEOLIZER_EQUAL(aScopedEnumSymName6, ScopedEnumSymName::Name51);
                 THEOLIZER_EQUAL(aScopedEnumSymName7, ScopedEnumSymName::Name52);
-                THEOLIZER_EQUAL(aScopedEnumSymName8, ScopedEnumSymName::Deleted);
             }
             break;
 
         default:
             THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
                 gVersionList[aIndex].mName);
+        }
+        // 保存したプログラムのグローバル・バージョン番号が3未満なら
+        if (gVersionList[gProgramIndex].mVersionNo < 3)
+        {
+            THEOLIZER_EQUAL(aScopedEnumSymName8, ScopedEnumSymName::Deleted);
+        }
+        else
+        {
+            THEOLIZER_EQUAL(aScopedEnumSymName8, ScopedEnumSymName::Value1);
         }
         // グローバル・バージョン番号が1なら
         if (gVersionList[aIndex].mVersionNo == 1)
@@ -549,7 +563,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumSymVal5, eesvValue30);
                 THEOLIZER_EQUAL(aEnumSymVal6, eesvValue30);
                 THEOLIZER_EQUAL(aEnumSymVal7, eesvValue30);
-                THEOLIZER_EQUAL(aEnumSymVal8, eesvDeleted);
             }
             break;
 
@@ -565,13 +578,21 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aEnumSymVal5, eesvValue30);
                 THEOLIZER_EQUAL(aEnumSymVal6, eesvValue51);
                 THEOLIZER_EQUAL(aEnumSymVal7, eesvValue52);
-                THEOLIZER_EQUAL(aEnumSymVal8, eesvDeleted);
             }
             break;
 
         default:
             THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
                 gVersionList[aIndex].mName);
+        }
+        // 保存したプログラムのグローバル・バージョン番号が3未満なら
+        if (gVersionList[gProgramIndex].mVersionNo < 3)
+        {
+            THEOLIZER_EQUAL(aEnumSymVal8, eesvDeleted);
+        }
+        else
+        {
+            THEOLIZER_EQUAL(aEnumSymVal8, eesvValue11);
         }
         // グローバル・バージョン番号が1なら
         if (gVersionList[aIndex].mVersionNo == 1)
@@ -618,7 +639,6 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumSymVal5, ScopedEnumSymVal::Value30);
                 THEOLIZER_EQUAL(aScopedEnumSymVal6, ScopedEnumSymVal::Value30);
                 THEOLIZER_EQUAL(aScopedEnumSymVal7, ScopedEnumSymVal::Value30);
-                THEOLIZER_EQUAL(aScopedEnumSymVal8, ScopedEnumSymVal::Deleted);
             }
             break;
 
@@ -634,13 +654,21 @@ void loadModifyEnum(tSerializer& iSerializer)
                 THEOLIZER_EQUAL(aScopedEnumSymVal5, ScopedEnumSymVal::Value30);
                 THEOLIZER_EQUAL(aScopedEnumSymVal6, ScopedEnumSymVal::Value51);
                 THEOLIZER_EQUAL(aScopedEnumSymVal7, ScopedEnumSymVal::Value52);
-                THEOLIZER_EQUAL(aScopedEnumSymVal8, ScopedEnumSymVal::Deleted);
             }
             break;
 
         default:
             THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
                 gVersionList[aIndex].mName);
+        }
+        // 保存したプログラムのグローバル・バージョン番号が3未満なら
+        if (gVersionList[gProgramIndex].mVersionNo < 3)
+        {
+            THEOLIZER_EQUAL(aScopedEnumSymVal8, ScopedEnumSymVal::Deleted);
+        }
+        else
+        {
+            THEOLIZER_EQUAL(aScopedEnumSymVal8, ScopedEnumSymVal::Value11);
         }
         // グローバル・バージョン番号が1なら
         if (gVersionList[aIndex].mVersionNo == 1)

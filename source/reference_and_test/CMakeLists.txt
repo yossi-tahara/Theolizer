@@ -209,8 +209,13 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR
         add_test_sub_base(${TEST_NAME}Exec ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME})
         set_tests_properties(${TEST_NAME}Exec PROPERTIES LABELS TestFL)
         set_tests_properties(${TEST_NAME}Exec PROPERTIES FOLDER "TestTargets")
-        set_tests_properties(${TEST_NAME}Exec PROPERTIES DEPENDS ${TEST_NAME}Build)
-        message(STATUS "DEPENDS : ${TEST_NAME}Exec depends to ${TEST_NAME}Build")
+##        set_tests_properties(${TEST_NAME}Exec PROPERTIES DEPENDS ${TEST_NAME}Build)
+##        message(STATUS "DEPENDS : ${TEST_NAME}Exec depends to ${TEST_NAME}Build")
+        # 前バージョンがあるなら、1回目実行の前バージョンへ依存
+        if(NOT "${PREV_VERSION}" STREQUAL "")
+            set_tests_properties(${TEST_NAME}Exec PROPERTIES DEPENDS ${PREV_NAME}Exec)
+            message(STATUS "DEPENDS : ${TEST_NAME}Exec depends to ${PREV_NAME}Exec")
+        endif()
 
         # 2回目実行
         add_test_sub_base(${TEST_NAME}Exec2 ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME} Exec2)
@@ -342,10 +347,14 @@ message(STATUS "start of add_build_and_test("
 add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${SOURCE_LIST})
 
 #-----------------------------------------------------------------------------
+#       最初のバージョンの1回目実行を最後のバージョンのビルドへ依存させる
 #       最初のバージョンの2回目実行を最後のバージョンの1回目実行へ依存させる
 #-----------------------------------------------------------------------------
+
+set_tests_properties(${TARGET_NAME}${FIRST_VERSION}Exec
+    PROPERTIES DEPENDS ${TARGET_NAME}${LAST_VERSION}Build)
+message(STATUS "DEPENDS : ${TARGET_NAME}${FIRST_VERSION}Exec depends to ${TARGET_NAME}${LAST_VERSION}Build")
 
 set_tests_properties(${TARGET_NAME}${FIRST_VERSION}Exec2
     PROPERTIES DEPENDS ${TARGET_NAME}${LAST_VERSION}Exec)
 message(STATUS "DEPENDS : ${TARGET_NAME}${FIRST_VERSION}Exec2 depends to ${TARGET_NAME}${LAST_VERSION}Exec")
-
