@@ -89,7 +89,7 @@ Theolizerをインストールした後、あなたのデータをTheolizerで�
 @until };
 
 <div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
-(*1) 例外：<b>非侵入型</b>(@ref Basic12)のクラスやenum型については、<b>シリアライザのヘッダをインクルード</b>する前でも定義できます。<br>
+(*1) 例外：<b>非侵入型</b>(@ref Basic12)のクラスやenum型の<b>非侵入型完全自動</b>については、<b>シリアライザのヘッダをインクルード</b>する前でも定義できます。<br>
 </div>
 
 現在、サポートしているシリアライザはJson形式、独自Binary形式、メモリ内専用のFast形式の3種類です。

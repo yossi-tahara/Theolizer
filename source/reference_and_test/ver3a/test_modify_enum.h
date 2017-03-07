@@ -32,22 +32,19 @@ enum EnumFullAuto                       // Version.2のままなので注意
     // 変更無し
     eefaDefault,
     eefaValue1=10,
-
-    // シンボル名を以前使ったものへ変更
-    // 単にシンボル変更(シンボル値は変えないのでTHEOLIZER_ANNOTATE省略可)
-    eefaName11,
-
-    // 変更無し
+    eefaName10,
     eefaName20,
     eefaName41,
     eefaName42,
     eefaName30,
     eefaName51,
     eefaName52,
+
+    // 「次のバージョン・アップで名前変更ミス」のテストを行う
     eefaDeleted,
 
-    // 追加(前バージョンのeefaDefaultに対応させる)
-    eefaAdd THEOLIZER_ANNOTATE(ES:::0)
+    // 以前使ったシンボルを追加(前バージョンのeefaDefaultに対応させる)
+    eefaName11  THEOLIZER_ANNOTATE(ES:::0)
 };
 THEOLIZER_ENUM(EnumFullAuto, 2);
 
@@ -56,12 +53,7 @@ enum class ScopedEnumFullAuto : long    // Version.2のままなので注意
     // 変更無し
     Default,
     Value1=10,
-
-    // シンボル名を以前使ったものへ変更
-    // 単にシンボル変更(THEOLIZER_ANNOTATEしても良い。指定ミスするとNGなのでしない方が好ましい。)
-    Name11  THEOLIZER_ANNOTATE(ES:::11),
-
-    // 変更無し
+    Name10,
     Name20,
     Name41,
     Name42,
@@ -71,7 +63,7 @@ enum class ScopedEnumFullAuto : long    // Version.2のままなので注意
     Deleted,
 
     // 追加(前バージョンのDefaultに対応させる)
-    Add THEOLIZER_ANNOTATE(ES:::0)
+    Name11  THEOLIZER_ANNOTATE(ES:::0)
 };
 THEOLIZER_ENUM(ScopedEnumFullAuto, 2);
 
@@ -88,7 +80,7 @@ enum EnumSymName
     // 変更無し
     eesnDefault,
     eesnValue1=10,
-    eesnName11,
+    eesnName10,
     eesnName20,
     eesnName41,
     eesnName42,
@@ -100,7 +92,7 @@ enum EnumSymName
     eesnDeleted=99,
 
     // 変更無し(元々19)
-    eesnAdd=19
+    eesnName11=19
 };
 THEOLIZER_ENUM_VALUE(EnumSymName, 3);
 
@@ -109,7 +101,7 @@ enum class ScopedEnumSymName
     // 変更無し
     Default,
     Value1=10,
-    Name11,
+    Name10,
     Name20,
     Name41,
     Name42,
@@ -121,7 +113,7 @@ enum class ScopedEnumSymName
     Deleted=99,
 
     // 変更無し(元々19)
-    Add=19
+    Name11=19
 };
 THEOLIZER_ENUM_VALUE(ScopedEnumSymName, 3);
 
@@ -134,7 +126,7 @@ enum EnumSymVal
     // 変更無し
     eesvDefault,
     eesvName10,
-    eesvValue11=11,
+    eesvValue10=10,
     eesvValue20=20,
     eesvValue41=41,
     eesvValue42=42,
@@ -146,7 +138,7 @@ enum EnumSymVal
     eesvDeleted=18,
 
     // 変更無し
-    eesvAdd    =70
+    eesvValue11=70
 };
 THEOLIZER_ENUM(EnumSymVal, 3);
 
@@ -155,7 +147,7 @@ enum class ScopedEnumSymVal
     // 変更無し
     Default=100,
     Name10 =101,
-    Value11=111,
+    Value10=110,
     Value20=200,
     Value41=410,
     Value42=420,
@@ -167,7 +159,7 @@ enum class ScopedEnumSymVal
     Deleted=18,
 
     // 変更無し
-    Add    =700
+    Value11=700
 };
 THEOLIZER_ENUM(ScopedEnumSymVal, 3);
 

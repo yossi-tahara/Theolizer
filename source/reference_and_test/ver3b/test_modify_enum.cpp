@@ -60,7 +60,7 @@ void saveModifyEnum(tSerializer& iSerializer)
 
     {
         EnumFullAuto    aEnumFullAuto0(eefaValue1);
-        EnumFullAuto    aEnumFullAuto1(eefaName11);
+        EnumFullAuto    aEnumFullAuto1(eefaName10);
         EnumFullAuto    aEnumFullAuto2(eefaName20);
         EnumFullAuto    aEnumFullAuto3(eefaName41);
         EnumFullAuto    aEnumFullAuto4(eefaName42);
@@ -68,7 +68,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         EnumFullAuto    aEnumFullAuto6(eefaName51);
         EnumFullAuto    aEnumFullAuto7(eefaName52);
         EnumFullAuto    aEnumFullAuto8(eefaDeleted);
-        EnumFullAuto    aEnumFullAuto9(eefaAdd);
+        EnumFullAuto    aEnumFullAuto9(eefaName11);
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto0);
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto1);
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto2);
@@ -81,7 +81,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aEnumFullAuto9);
 
         ScopedEnumFullAuto  aScopedEnumFullAuto0(ScopedEnumFullAuto::Value1);
-        ScopedEnumFullAuto  aScopedEnumFullAuto1(ScopedEnumFullAuto::Name11);
+        ScopedEnumFullAuto  aScopedEnumFullAuto1(ScopedEnumFullAuto::Name10);
         ScopedEnumFullAuto  aScopedEnumFullAuto2(ScopedEnumFullAuto::Name20);
         ScopedEnumFullAuto  aScopedEnumFullAuto3(ScopedEnumFullAuto::Name41);
         ScopedEnumFullAuto  aScopedEnumFullAuto4(ScopedEnumFullAuto::Name42);
@@ -89,7 +89,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         ScopedEnumFullAuto  aScopedEnumFullAuto6(ScopedEnumFullAuto::Name51);
         ScopedEnumFullAuto  aScopedEnumFullAuto7(ScopedEnumFullAuto::Name52);
         ScopedEnumFullAuto  aScopedEnumFullAuto8(ScopedEnumFullAuto::Deleted);
-        ScopedEnumFullAuto  aScopedEnumFullAuto9(ScopedEnumFullAuto::Add);
+        ScopedEnumFullAuto  aScopedEnumFullAuto9(ScopedEnumFullAuto::Name11);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto0);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto1);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumFullAuto2);
@@ -108,7 +108,7 @@ void saveModifyEnum(tSerializer& iSerializer)
 
     {
         EnumSymName aEnumSymName0(eesnValue1);
-        EnumSymName aEnumSymName1(eesnName11);
+        EnumSymName aEnumSymName1(eesnName10);
         EnumSymName aEnumSymName2(eesnName20);
         EnumSymName aEnumSymName3(eesnName21);
         EnumSymName aEnumSymName4(eesnName22);
@@ -116,7 +116,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         EnumSymName aEnumSymName6(eesnName31);
         EnumSymName aEnumSymName7(eesnName32);
         EnumSymName aEnumSymName8(eesnValue1);
-        EnumSymName aEnumSymName9(eesnAdd);
+        EnumSymName aEnumSymName9(eesnName11);
         THEOLIZER_PROCESS(iSerializer, aEnumSymName0);
         THEOLIZER_PROCESS(iSerializer, aEnumSymName1);
         THEOLIZER_PROCESS(iSerializer, aEnumSymName2);
@@ -129,7 +129,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aEnumSymName9);
 
         ScopedEnumSymName   aScopedEnumSymName0(ScopedEnumSymName::Value1);
-        ScopedEnumSymName   aScopedEnumSymName1(ScopedEnumSymName::Name11);
+        ScopedEnumSymName   aScopedEnumSymName1(ScopedEnumSymName::Name10);
         ScopedEnumSymName   aScopedEnumSymName2(ScopedEnumSymName::Name20);
         ScopedEnumSymName   aScopedEnumSymName3(ScopedEnumSymName::Name21);
         ScopedEnumSymName   aScopedEnumSymName4(ScopedEnumSymName::Name22);
@@ -137,7 +137,7 @@ void saveModifyEnum(tSerializer& iSerializer)
         ScopedEnumSymName   aScopedEnumSymName6(ScopedEnumSymName::Name31);
         ScopedEnumSymName   aScopedEnumSymName7(ScopedEnumSymName::Name32);
         ScopedEnumSymName   aScopedEnumSymName8(ScopedEnumSymName::Value1);
-        ScopedEnumSymName   aScopedEnumSymName9(ScopedEnumSymName::Add);
+        ScopedEnumSymName   aScopedEnumSymName9(ScopedEnumSymName::Name11);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName0);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName1);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymName2);
@@ -156,15 +156,15 @@ void saveModifyEnum(tSerializer& iSerializer)
 
     {
         EnumSymVal  aEnumSymVal0(eesvName10);
-        EnumSymVal  aEnumSymVal1(eesvValue11);
+        EnumSymVal  aEnumSymVal1(eesvValue10);
         EnumSymVal  aEnumSymVal2(eesvValue20);
         EnumSymVal  aEnumSymVal3(eesvValue21);
         EnumSymVal  aEnumSymVal4(eesvValue22);
         EnumSymVal  aEnumSymVal5(eesvValue30);
         EnumSymVal  aEnumSymVal6(eesvValue31);
         EnumSymVal  aEnumSymVal7(eesvValue32);
-        EnumSymVal  aEnumSymVal8(eesvValue11);
-        EnumSymVal  aEnumSymVal9(eesvAdd);
+        EnumSymVal  aEnumSymVal8(eesvValue10);
+        EnumSymVal  aEnumSymVal9(eesvValue11);
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal0);
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal1);
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal2);
@@ -177,15 +177,15 @@ void saveModifyEnum(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aEnumSymVal9);
 
         ScopedEnumSymVal    aScopedEnumSymVal0(ScopedEnumSymVal::Name10);
-        ScopedEnumSymVal    aScopedEnumSymVal1(ScopedEnumSymVal::Value11);
+        ScopedEnumSymVal    aScopedEnumSymVal1(ScopedEnumSymVal::Value10);
         ScopedEnumSymVal    aScopedEnumSymVal2(ScopedEnumSymVal::Value20);
         ScopedEnumSymVal    aScopedEnumSymVal3(ScopedEnumSymVal::Value21);
         ScopedEnumSymVal    aScopedEnumSymVal4(ScopedEnumSymVal::Value22);
         ScopedEnumSymVal    aScopedEnumSymVal5(ScopedEnumSymVal::Value30);
         ScopedEnumSymVal    aScopedEnumSymVal6(ScopedEnumSymVal::Value31);
         ScopedEnumSymVal    aScopedEnumSymVal7(ScopedEnumSymVal::Value32);
-        ScopedEnumSymVal    aScopedEnumSymVal8(ScopedEnumSymVal::Value11);
-        ScopedEnumSymVal    aScopedEnumSymVal9(ScopedEnumSymVal::Add);
+        ScopedEnumSymVal    aScopedEnumSymVal8(ScopedEnumSymVal::Value10);
+        ScopedEnumSymVal    aScopedEnumSymVal9(ScopedEnumSymVal::Value11);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal0);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal1);
         THEOLIZER_PROCESS(iSerializer, aScopedEnumSymVal2);
@@ -253,7 +253,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver1a:    // 変更前のバージョン
             {
                 THEOLIZER_EQUAL(aEnumFullAuto0, eefaValue1);
-                THEOLIZER_EQUAL(aEnumFullAuto1, eefaName11);
+                THEOLIZER_EQUAL(aEnumFullAuto1, eefaName10);
                 THEOLIZER_EQUAL(aEnumFullAuto2, eefaName20);
                 THEOLIZER_EQUAL(aEnumFullAuto3, eefaName20);
                 THEOLIZER_EQUAL(aEnumFullAuto4, eefaName20);
@@ -271,7 +271,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver3b:
             {
                 THEOLIZER_EQUAL(aEnumFullAuto0, eefaValue1);
-                THEOLIZER_EQUAL(aEnumFullAuto1, eefaName11);
+                THEOLIZER_EQUAL(aEnumFullAuto1, eefaName10);
                 THEOLIZER_EQUAL(aEnumFullAuto2, eefaName20);
                 THEOLIZER_EQUAL(aEnumFullAuto3, eefaName41);
                 THEOLIZER_EQUAL(aEnumFullAuto4, eefaName42);
@@ -294,7 +294,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         // 2以上なら
         else
         {
-            THEOLIZER_EQUAL(aEnumFullAuto9, eefaAdd);
+            THEOLIZER_EQUAL(aEnumFullAuto9, eefaName11);
         }
 
         ScopedEnumFullAuto  aScopedEnumFullAuto0(ScopedEnumFullAuto::Default);
@@ -324,7 +324,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver1a:   // 変更前のバージョン
             {
                 THEOLIZER_EQUAL(aScopedEnumFullAuto0, ScopedEnumFullAuto::Value1);
-                THEOLIZER_EQUAL(aScopedEnumFullAuto1, ScopedEnumFullAuto::Name11);
+                THEOLIZER_EQUAL(aScopedEnumFullAuto1, ScopedEnumFullAuto::Name10);
                 THEOLIZER_EQUAL(aScopedEnumFullAuto2, ScopedEnumFullAuto::Name20);
                 THEOLIZER_EQUAL(aScopedEnumFullAuto3, ScopedEnumFullAuto::Name20);
                 THEOLIZER_EQUAL(aScopedEnumFullAuto4, ScopedEnumFullAuto::Name20);
@@ -342,7 +342,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver3b:
             {
                 THEOLIZER_EQUAL(aScopedEnumFullAuto0, ScopedEnumFullAuto::Value1);
-                THEOLIZER_EQUAL(aScopedEnumFullAuto1, ScopedEnumFullAuto::Name11);
+                THEOLIZER_EQUAL(aScopedEnumFullAuto1, ScopedEnumFullAuto::Name10);
                 THEOLIZER_EQUAL(aScopedEnumFullAuto2, ScopedEnumFullAuto::Name20);
                 THEOLIZER_EQUAL(aScopedEnumFullAuto3, ScopedEnumFullAuto::Name41);
                 THEOLIZER_EQUAL(aScopedEnumFullAuto4, ScopedEnumFullAuto::Name42);
@@ -365,7 +365,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         // 2以上なら
         else
         {
-            THEOLIZER_EQUAL(aScopedEnumFullAuto9, ScopedEnumFullAuto::Add);
+            THEOLIZER_EQUAL(aScopedEnumFullAuto9, ScopedEnumFullAuto::Name11);
         }
     }
 
@@ -401,7 +401,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver1a:   // 変更前のバージョン
             {
                 THEOLIZER_EQUAL(aEnumSymName0, eesnValue1);
-                THEOLIZER_EQUAL(aEnumSymName1, eesnName11);
+                THEOLIZER_EQUAL(aEnumSymName1, eesnName10);
                 THEOLIZER_EQUAL(aEnumSymName2, eesnName20);
                 THEOLIZER_EQUAL(aEnumSymName3, eesnName20);
                 THEOLIZER_EQUAL(aEnumSymName4, eesnName20);
@@ -418,7 +418,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver3b:
             {
                 THEOLIZER_EQUAL(aEnumSymName0, eesnValue1);
-                THEOLIZER_EQUAL(aEnumSymName1, eesnName11);
+                THEOLIZER_EQUAL(aEnumSymName1, eesnName10);
                 THEOLIZER_EQUAL(aEnumSymName2, eesnName20);
                 THEOLIZER_EQUAL(aEnumSymName3, eesnName21);
                 THEOLIZER_EQUAL(aEnumSymName4, eesnName22);
@@ -451,7 +451,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         // 2以上なら
         else
         {
-            THEOLIZER_EQUAL(aEnumSymName9, eesnAdd);
+            THEOLIZER_EQUAL(aEnumSymName9, eesnName11);
         }
 
         ScopedEnumSymName   aScopedEnumSymName0(ScopedEnumSymName::Default);
@@ -481,7 +481,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver1a:   // 変更前のバージョン
             {
                 THEOLIZER_EQUAL(aScopedEnumSymName0, ScopedEnumSymName::Value1);
-                THEOLIZER_EQUAL(aScopedEnumSymName1, ScopedEnumSymName::Name11);
+                THEOLIZER_EQUAL(aScopedEnumSymName1, ScopedEnumSymName::Name10);
                 THEOLIZER_EQUAL(aScopedEnumSymName2, ScopedEnumSymName::Name20);
                 THEOLIZER_EQUAL(aScopedEnumSymName3, ScopedEnumSymName::Name20);
                 THEOLIZER_EQUAL(aScopedEnumSymName4, ScopedEnumSymName::Name20);
@@ -498,7 +498,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver3b:
             {
                 THEOLIZER_EQUAL(aScopedEnumSymName0, ScopedEnumSymName::Value1);
-                THEOLIZER_EQUAL(aScopedEnumSymName1, ScopedEnumSymName::Name11);
+                THEOLIZER_EQUAL(aScopedEnumSymName1, ScopedEnumSymName::Name10);
                 THEOLIZER_EQUAL(aScopedEnumSymName2, ScopedEnumSymName::Name20);
                 THEOLIZER_EQUAL(aScopedEnumSymName3, ScopedEnumSymName::Name21);
                 THEOLIZER_EQUAL(aScopedEnumSymName4, ScopedEnumSymName::Name22);
@@ -531,7 +531,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         // 2以上なら
         else
         {
-            THEOLIZER_EQUAL(aScopedEnumSymName9, ScopedEnumSymName::Add);
+            THEOLIZER_EQUAL(aScopedEnumSymName9, ScopedEnumSymName::Name11);
         }
     }
 
@@ -567,7 +567,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver1a:   // 変更前のバージョン
             {
                 THEOLIZER_EQUAL(aEnumSymVal0, eesvName10);
-                THEOLIZER_EQUAL(aEnumSymVal1, eesvValue11);
+                THEOLIZER_EQUAL(aEnumSymVal1, eesvValue10);
                 THEOLIZER_EQUAL(aEnumSymVal2, eesvValue20);
                 THEOLIZER_EQUAL(aEnumSymVal3, eesvValue20);
                 THEOLIZER_EQUAL(aEnumSymVal4, eesvValue20);
@@ -584,7 +584,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver3b:
             {
                 THEOLIZER_EQUAL(aEnumSymVal0, eesvName10);
-                THEOLIZER_EQUAL(aEnumSymVal1, eesvValue11);
+                THEOLIZER_EQUAL(aEnumSymVal1, eesvValue10);
                 THEOLIZER_EQUAL(aEnumSymVal2, eesvValue20);
                 THEOLIZER_EQUAL(aEnumSymVal3, eesvValue21);
                 THEOLIZER_EQUAL(aEnumSymVal4, eesvValue22);
@@ -606,7 +606,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         }
         else
         {
-            THEOLIZER_EQUAL(aEnumSymVal8, eesvValue11);
+            THEOLIZER_EQUAL(aEnumSymVal8, eesvValue10);
         }
 
         // データのグローバル・バージョン番号が1なら
@@ -617,7 +617,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         // 自分のデータなら
         else
         {
-            THEOLIZER_EQUAL(aEnumSymVal9, eesvAdd);
+            THEOLIZER_EQUAL(aEnumSymVal9, eesvValue11);
         }
 
         ScopedEnumSymVal    aScopedEnumSymVal0(ScopedEnumSymVal::Default);
@@ -647,7 +647,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver1a:   // 変更前のバージョン
             {
                 THEOLIZER_EQUAL(aScopedEnumSymVal0, ScopedEnumSymVal::Name10);
-                THEOLIZER_EQUAL(aScopedEnumSymVal1, ScopedEnumSymVal::Value11);
+                THEOLIZER_EQUAL(aScopedEnumSymVal1, ScopedEnumSymVal::Value10);
                 THEOLIZER_EQUAL(aScopedEnumSymVal2, ScopedEnumSymVal::Value20);
                 THEOLIZER_EQUAL(aScopedEnumSymVal3, ScopedEnumSymVal::Value20);
                 THEOLIZER_EQUAL(aScopedEnumSymVal4, ScopedEnumSymVal::Value20);
@@ -664,7 +664,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         case VersionEnum::ver3b:
             {
                 THEOLIZER_EQUAL(aScopedEnumSymVal0, ScopedEnumSymVal::Name10);
-                THEOLIZER_EQUAL(aScopedEnumSymVal1, ScopedEnumSymVal::Value11);
+                THEOLIZER_EQUAL(aScopedEnumSymVal1, ScopedEnumSymVal::Value10);
                 THEOLIZER_EQUAL(aScopedEnumSymVal2, ScopedEnumSymVal::Value20);
                 THEOLIZER_EQUAL(aScopedEnumSymVal3, ScopedEnumSymVal::Value21);
                 THEOLIZER_EQUAL(aScopedEnumSymVal4, ScopedEnumSymVal::Value22);
@@ -686,7 +686,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         }
         else
         {
-            THEOLIZER_EQUAL(aScopedEnumSymVal8, ScopedEnumSymVal::Value11);
+            THEOLIZER_EQUAL(aScopedEnumSymVal8, ScopedEnumSymVal::Value10);
         }
 
         // データのグローバル・バージョン番号が1なら
@@ -697,7 +697,7 @@ void loadModifyEnum(tSerializer& iSerializer)
         // 2以上なら
         else
         {
-            THEOLIZER_EQUAL(aScopedEnumSymVal9, ScopedEnumSymVal::Add);
+            THEOLIZER_EQUAL(aScopedEnumSymVal9, ScopedEnumSymVal::Value11);
         }
     }
 }

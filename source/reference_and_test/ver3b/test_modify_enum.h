@@ -32,7 +32,7 @@ enum EnumFullAuto
     // 変更無し
     eefaDefault,
     eefaValue1=10,
-    eefaName11,
+    eefaName10,
     eefaName20,
     eefaName41,
     eefaName42,
@@ -40,7 +40,7 @@ enum EnumFullAuto
     eefaName51,
     eefaName52,
     eefaDeleted,
-    eefaAdd THEOLIZER_ANNOTATE(ES:::0)
+    eefaName11  THEOLIZER_ANNOTATE(ES:::0)
 };
 THEOLIZER_ENUM(EnumFullAuto, 2);
 
@@ -49,7 +49,7 @@ enum class ScopedEnumFullAuto : long
     // 変更無し
     Default,
     Value1=10,
-    Name11  THEOLIZER_ANNOTATE(ES:::11),
+    Name10,
     Name20,
     Name41,
     Name42,
@@ -57,7 +57,7 @@ enum class ScopedEnumFullAuto : long
     Name51,
     Name52,
     Deleted,
-    Add THEOLIZER_ANNOTATE(ES:::0)
+    Name11  THEOLIZER_ANNOTATE(ES:::0)
 };
 THEOLIZER_ENUM(ScopedEnumFullAuto, 2);
 
@@ -74,7 +74,7 @@ enum EnumSymName
     // 変更無し
     eesnDefault,
     eesnValue1=10,
-    eesnName11,
+    eesnName10,
     eesnName20,
     eesnName21, // シンボル名変更(値を変えないので特別な操作は不要)
     eesnName22, // シンボル名変更(値を変えないので特別な操作は不要)
@@ -82,7 +82,7 @@ enum EnumSymName
     eesnName31, // シンボル名変更(値を変えないので特別な操作は不要)
     eesnName32, // シンボル名変更(値を変えないので特別な操作は不要)
     eesnDeleted THEOLIZER_ANNOTATE(ES:::18)  =99,   // 前バージョンは18
-    eesnAdd     THEOLIZER_ANNOTATE(ES::19:19)=70    // 変更前と前バージョンの両方が19
+    eesnName11  THEOLIZER_ANNOTATE(ES::19:19)=70    // 変更前と前バージョンの両方が19
 };
 THEOLIZER_ENUM_VALUE(EnumSymName, 3);
 
@@ -91,7 +91,7 @@ enum class ScopedEnumSymName
     // 変更無し
     Default,
     Value1=10,
-    Name11,
+    Name10,
     Name20,
     Name21,     // シンボル名変更(値を変えないので特別な操作は不要)
     Name22,     // シンボル名変更(値を変えないので特別な操作は不要)
@@ -99,7 +99,7 @@ enum class ScopedEnumSymName
     Name31,     // シンボル名変更(値を変えないので特別な操作は不要)
     Name32,     // シンボル名変更(値を変えないので特別な操作は不要)
     Deleted     THEOLIZER_ANNOTATE(ES:::18)  =99,   // 前バージョンは18
-    Add         THEOLIZER_ANNOTATE(ES::19:19)=70    // 変更前と前バージョンの両方が19
+    Name11      THEOLIZER_ANNOTATE(ES::19:19)=70    // 変更前と前バージョンの両方が19
 };
 THEOLIZER_ENUM_VALUE(ScopedEnumSymName, 3);
 
@@ -112,7 +112,7 @@ enum EnumSymVal
     // 変更無し
     eesvDefault,
     eesvName10,
-    eesvValue11=11,
+    eesvValue10=10,
     eesvValue20=20,
     eesvValue21     THEOLIZER_ANNOTATE(ES:eesvValue41:)=41,
     eesvValue22     THEOLIZER_ANNOTATE(ES:eesvValue42:)=42,
@@ -120,7 +120,7 @@ enum EnumSymVal
     eesvValue31     THEOLIZER_ANNOTATE(ES:eesvValue51:)=51,
     eesvValue32     THEOLIZER_ANNOTATE(ES:eesvValue52:)=52,
     eesvDeleted     THEOLIZER_ANNOTATE(ES:::99)        =18, // 値で前バージョン対応するので要指定
-    eesvAdd         THEOLIZER_ANNOTATE(ES:::70)        =19  // 値で前バージョン対応するので要指定
+    eesvValue11     THEOLIZER_ANNOTATE(ES:::70)        =19  // 値で前バージョン対応するので要指定
 };
 THEOLIZER_ENUM(EnumSymVal, 3);
 
@@ -129,7 +129,7 @@ enum class ScopedEnumSymVal
     // 変更無し
     Default=100,
     Name10 =101,
-    Value11=111,
+    Value10=110,
     Value20=200,
     Value21         THEOLIZER_ANNOTATE(ES:Value41:)=410,
     Value22         THEOLIZER_ANNOTATE(ES:Value42:)=420,
@@ -137,7 +137,7 @@ enum class ScopedEnumSymVal
     Value31         THEOLIZER_ANNOTATE(ES:Value51:)=510,
     Value32         THEOLIZER_ANNOTATE(ES:Value52:)=520,
     Deleted         THEOLIZER_ANNOTATE(ES:::999)   =18,     // 値で前バージョン対応するので要指定
-    Add             THEOLIZER_ANNOTATE(ES:::700)   =19      // 値で前バージョン対応するので要指定
+    Value11         THEOLIZER_ANNOTATE(ES:::700)   =19      // 値で前バージョン対応するので要指定
 };
 THEOLIZER_ENUM(ScopedEnumSymVal, 3);
 
