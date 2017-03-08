@@ -28,7 +28,7 @@ message(STATUS "CI_SERVICE    =${CI_SERVICE}")
 #-----------------------------------------------------------------------------
 
 project(Theolizer VERSION 0.4.4)
-set(TEMPORARY_VERSION "-Prerelease.")
+#set(TEMPORARY_VERSION "-Prerelease.")
 
 message(STATUS "PROJECT_VERSION=${PROJECT_VERSION}${TEMPORARY_VERSION}")
 

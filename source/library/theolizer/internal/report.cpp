@@ -801,7 +801,8 @@ WorkingLog::LogStream::LogStream(WorkingLog::LogStream&& iRhs) :
 
 WorkingLog::LogStream::~LogStream() noexcept
 {
-    if (mWorkingLog) {
+    if (mWorkingLog)
+    {
         mWorkingLog->getOStream() << std::endl;
 
         // ロック開放
@@ -812,6 +813,23 @@ WorkingLog::LogStream::~LogStream() noexcept
 // ***************************************************************************
 //      Theolizerログ
 // ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      現在時刻獲得(ログ・システムと同じ時間計測方法で獲得する)
+//----------------------------------------------------------------------------
+
+time_t WorkingLog::getTime(bool iIsUTC)
+{
+    // 現在時刻獲得
+    stdC::system_clock::time_point aNowDateTime = stdC::system_clock::now();
+    time_t aTime = stdC::system_clock::to_time_t(aNowDateTime);
+    if (iIsUTC)
+    {
+        struct tm  aTm=internal::getGmTime(aTime);
+        aTime=mktime(&aTm);
+    }
+    return aTime;
+}
 
 //----------------------------------------------------------------------------
 //      コンストラクタ

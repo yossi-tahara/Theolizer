@@ -152,9 +152,9 @@ int main(int argc, char** argv)
 
 //      ---<<< ログ出力 >>>---
 
-        time_t  aDateTime;      time(&aDateTime);       // localtimeで返却される
+        time_t  aDateTime    =theolizer::WorkingLog::getTime();
         THEOLIZER_INTERNAL_WARNING("Error Message"); unsigned line=__LINE__;
-        time_t  aLastDateTime;  time(&aLastDateTime);   // localtimeで返却される
+        time_t  aLastDateTime=theolizer::WorkingLog::getTime();
 
 //      ---<<< 確認 >>>---
 
@@ -386,8 +386,7 @@ int main(int argc, char** argv)
         int aLogNo=0;
 
         // 現在時刻設定
-        time_t      aDateTime;  time(&aDateTime);   // localtimeで返却される
-        aDateTime = mktime(gmtime(&aDateTime));     // UTC(GMT)へ変換
+        time_t      aDateTime=theolizer::WorkingLog::getTime(true);
         uint32_t    aMilliseconds=0;
 
         for (int aSetNo=0; aSetNo < kSetCount; ++aSetNo) 
@@ -418,8 +417,7 @@ int main(int argc, char** argv)
 //std::cout << "--- output log ended\n";
 
             // 終了時刻設定
-            time_t      aLastDateTime;  time(&aLastDateTime);   // localtimeで返却される
-            aLastDateTime = mktime(gmtime(&aLastDateTime));     // UTC(GMT)へ変換
+            time_t      aLastDateTime=theolizer::WorkingLog::getTime(true);
 
             //結果確認
             for (int no=0; no < 2; ++no)
