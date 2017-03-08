@@ -327,7 +327,6 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     #if (THEOLIZER_GENERATED_VERSION_NO != THEOLIZER_GENERATED_LAST_VERSION_NO)
     void downVersion()
     {
-        // 見つからない時はユーザの定義ミス→保存時なのでエラーとする
         for (size_t i=0; !mParentVersion->kEnumElementList[i].isSentinel(); ++i)
         {
             if (mParentVersion->kEnumElementList[i].mValues[0] == mParentVersion->mValueRef)
@@ -337,7 +336,9 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
             }
         }
 
-        THEOLIZER_INTERNAL_WRONG_USING(
+        // 見つからなければ、警告しデフォルト値へ変換する。
+        mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
+        THEOLIZER_INTERNAL_WARNING(
             "Can not transform Version.%1%'s value(%2%) to Version.%3%'s value. "
             "Please check THEOLIZER_ANNOTATE() for %4%.",
             THEOLIZER_GENERATED_VERSION_NO+1,
@@ -354,7 +355,6 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     #if (THEOLIZER_GENERATED_VERSION_NO != THEOLIZER_GENERATED_LAST_VERSION_NO)
     void upVersion()
     {
-        // 見つからない時はユーザの定義ミス→できるだけ回復したいので警告とする
         for (size_t i=0; !mParentVersion->kEnumElementList[i].isSentinel(); ++i)
         {
             if (mValueRef == mParentVersion->kEnumElementList[i].mPrevValue)
@@ -364,6 +364,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
             }
         }
 
+        // 見つからなければ、警告しデフォルト値へ変換する。
         mParentVersion->mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
         THEOLIZER_INTERNAL_WARNING(
             "Can not transform Version.%1%'s value(%2%) to Version.%3%'s value. "
@@ -399,7 +400,10 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
             }
         }
 
-        THEOLIZER_INTERNAL_WRONG_USING(
+        // 見つからなければ、警告しデフォルト値を保存する
+        std::string aEnumSymbol(kEnumElementList[0].mSymbols[0]);
+        THEOLIZER_INTERNAL_SAVE(iSerializer, aEnumSymbol, etmDefault);
+        THEOLIZER_INTERNAL_WARNING(
             "Can not find enum symbol's value(%1%) at Version.%2%. "
             "Please check THEOLIZER_ANNOTATE() for %3%.",
             mValueRef,
@@ -413,7 +417,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
     void loadEnumImpl(tBaseSerializer& iSerializer)
     {
-        // 値で回復する時の処理
+        // 値で回復する時の処理（既知の値であることをチェックする）
         if (Theolizer::kEnumSaveType == theolizer::internal::estValue)
         {
             THEOLIZER_INTERNAL_LOAD(iSerializer, mValueRef, etmDefault);
@@ -439,7 +443,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     return;
         }
 
-        // 名前で回復する時の処理(見つからない時はエラー)
+        // 名前で回復する時の処理
         std::string  aName;
         THEOLIZER_INTERNAL_LOAD(iSerializer, aName, etmDefault);
 
@@ -456,6 +460,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
             }
         }
 
+        // 見つからなければ、警告しデフォルト値として回復する。
         mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
         THEOLIZER_INTERNAL_WARNING(
             u8"Can not find loaded symbol(%1%) in Version.%2%'s symbol. "

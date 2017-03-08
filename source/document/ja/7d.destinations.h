@@ -387,7 +387,7 @@ tutorise_destinationsB.jsonには、指示通りmDestinationChildが含まれま
 
 <br>
 //############################################################################
-@section TestSpecifySaving 2.保存先指定の網羅的な使用例（自動テスト）の説明
+@section TestSpecifySaving 2.網羅的な使用例（自動テスト）の説明
 //############################################################################
 
 @subsection TestSpecifySaving21 2-1.保存の有無指定のテスト

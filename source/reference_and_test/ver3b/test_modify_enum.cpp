@@ -42,6 +42,54 @@
 #include "test_modify_enum.cpp.theolizer.hpp"
 
 //############################################################################
+//      使い方説明
+//############################################################################
+
+// ***************************************************************************
+//      関数本体
+// ***************************************************************************
+
+void tutoriseModifyEnum()
+{
+
+
+
+//----------------------------------------------------------------------------
+//      網羅テスト処理（エラー・ケース）
+//          対応ミス修正により警告がでなくなったことのテスト
+//----------------------------------------------------------------------------
+
+    {
+        std::ofstream   aStream("test_modify_enum-ver2a-ver3b.json");
+        theolizer::JsonOSerializer<> aSerializer(aStream, 2);
+
+        EnumSymName aEnumSymName(eesnDeleted);
+
+        THEOLIZER_PROCESS(aSerializer, aEnumSymName);
+        theolizer::ErrorInfo aErrorInfo=aSerializer.getErrorInfo();
+        THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::None,
+            aErrorInfo);
+    }
+
+//----------------------------------------------------------------------------
+//      網羅テスト処理（エラー・ケース）
+//          対応ミス修正により警告がでなくなったことのテスト
+//----------------------------------------------------------------------------
+
+    {
+        std::ofstream   aStream("test_modify_enum-ver1c-ver3b.json");
+        theolizer::JsonOSerializer<> aSerializer(aStream, 1);
+
+        EnumSymName aEnumSymName(eesnDeleted);
+
+        THEOLIZER_PROCESS(aSerializer, aEnumSymName);
+        theolizer::ErrorInfo aErrorInfo=aSerializer.getErrorInfo();
+        THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::None,
+            aErrorInfo);
+    }
+}
+
+//############################################################################
 //      組み合わせテスト
 //############################################################################
 

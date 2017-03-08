@@ -57,39 +57,39 @@ void tutoriseModifyEnum()
 //----------------------------------------------------------------------------
 //      網羅テスト処理（エラー・ケース）
 //          対応ミスしているenumシンボルをGlobalVersionNo=2へ保存する
-//          version_enum.incのsaveEnumImpl()内エラー検出テスト
+//          version_enum.incのsaveEnumImpl()内警告検出テスト
 //----------------------------------------------------------------------------
 
     {
-        std::ofstream   aStream("test_modify_enum.json");
+        std::ofstream   aStream("test_modify_enum-ver2a-ver3a.json");
         theolizer::JsonOSerializer<> aSerializer(aStream, 2);
 
         EnumSymName aEnumSymName(eesnDeleted);
 
-        THEOLIZER_CHECK_EXCEPTION2(
-            THEOLIZER_PROCESS(aSerializer, aEnumSymName);,          // dStatements
-            theolizer::ErrorInfo& e,                                // dException
-            e.getErrorKind() == theolizer::ErrorKind::WrongUsing,   // dJudge
-            e.getMessage());                                        // dResult
+        THEOLIZER_PROCESS(aSerializer, aEnumSymName);
+        theolizer::ErrorInfo aErrorInfo=aSerializer.getErrorInfo();
+        THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
+            aErrorInfo);
+        aSerializer.resetError();
     }
 
 //----------------------------------------------------------------------------
 //      網羅テスト処理（エラー・ケース）
 //          対応ミスしているenumシンボルをGlobalVersionNo=1へ保存する
-//          version_enum.incのsaveEnumImpl()内エラー検出テスト
+//          version_enum.incのdownVersion()内警告検出テスト
 //----------------------------------------------------------------------------
 
     {
-        std::ofstream   aStream("test_modify_enum.json");
+        std::ofstream   aStream("test_modify_enum-ver1c-ver3a.json");
         theolizer::JsonOSerializer<> aSerializer(aStream, 1);
 
         EnumSymName aEnumSymName(eesnDeleted);
 
-        THEOLIZER_CHECK_EXCEPTION2(
-            THEOLIZER_PROCESS(aSerializer, aEnumSymName);,          // dStatements
-            theolizer::ErrorInfo& e,                                // dException
-            e.getErrorKind() == theolizer::ErrorKind::WrongUsing,   // dJudge
-            e.getMessage());                                        // dResult
+        THEOLIZER_PROCESS(aSerializer, aEnumSymName);
+        theolizer::ErrorInfo aErrorInfo=aSerializer.getErrorInfo();
+        THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
+            aErrorInfo);
+        aSerializer.resetError();
     }
 }
 
