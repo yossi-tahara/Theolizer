@@ -42,9 +42,12 @@ var index =
         [ "2-2.オブジェクト追跡単位について", "_specification.html#Basic22", null ],
         [ "2-3.ポリモーフィズム対応", "_specification.html#Basic23", null ]
       ] ],
-      [ "3.バージョン変更", "_specification.html#Modifying", [
-        [ "3-1.クラス定義とenum定義の変更", "_specification.html#Basic31", null ],
-        [ "3-2.バージョン番号管理について", "_specification.html#Basic32", null ],
+      [ "3.クラスとenum型の変更対応について", "_specification.html#Modifying", [
+        [ "3-1.クラスとenum型のアップデート", "_specification.html#Basic31", null ],
+        [ "3-2.バージョン番号管理について", "_specification.html#Basic32", [
+          [ "3-1-1.ローカル・バージョン番号", "_specification.html#Basic321", null ],
+          [ "3-1-2.グローバル・バージョン番号", "_specification.html#Basic322", null ]
+        ] ],
         [ "3-3.クラス・メンバ変数のキープ・ステップ", "_specification.html#Basic33", null ],
         [ "3-4.保存先指定等の要因で一部のメンバが回復されていない時", "_specification.html#Basic34", null ],
         [ "3-5.旧バージョン処理時、メンバが回復されなかった時に発生する問題点対応", "_specification.html#Basic35", null ],
@@ -129,9 +132,12 @@ var index =
         ] ]
       ] ],
       [ "4.テスト・プログラムの構造", "_usage_total.html#TestProgram", [
-        [ "4-1.構造について", "_usage_total.html#TestProgramStructure", null ],
-        [ "4-2.説明で用いるマクロについて", "_usage_total.html#MacroForDescription", null ],
-        [ "4-3.自動テストで生成されるファイルについて", "_usage_total.html#MadeTestFiles", null ]
+        [ "4-1.テスト・プログラムの全体構造", "_usage_total.html#TestProgram41", [
+          [ "4-1-1.アップデートとバージョンのバリエーション", "_usage_total.html#TestProgram411", null ],
+          [ "4-1-2.テストの組み合わせ", "_usage_total.html#TestProgram412", null ]
+        ] ],
+        [ "4-2.テスト・プログラムの構造", "_usage_total.html#TestProgram42", null ],
+        [ "4-3.説明で用いるマクロについて", "_usage_total.html#TestProgram43", null ]
       ] ]
     ] ],
     [ "使用方法（個別）", "_usage_individual.html", "_usage_individual" ],

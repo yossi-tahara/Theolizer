@@ -2,7 +2,7 @@ var searchData=
 [
   ['getacp',['getACP',['../namespacetheolizer.html#aaff928d5b9f4d2b1be1206edc8119a2d',1,'theolizer']]],
   ['getadditionalinfo',['getAdditionalInfo',['../classtheolizer_1_1_error_info.html#a066e67fa783a7a65d32b1bf39223a463',1,'theolizer::ErrorInfo']]],
-  ['geterror',['getError',['../classtheolizer_1_1_error_reporter.html#aeff4946c1f3ac1c9867b69aab63b4fe8',1,'theolizer::ErrorReporter::getError()'],['../classtheolizer_1_1internal_1_1_error_base.html#ae37a9338635ba88e7cd4232678ec0b23',1,'theolizer::internal::ErrorBase::getError()']]],
+  ['geterrorinfo',['getErrorInfo',['../classtheolizer_1_1_error_reporter.html#a5c8e30bfa0697fb332bf2c0bcaec73c1',1,'theolizer::ErrorReporter::getErrorInfo()'],['../classtheolizer_1_1internal_1_1_error_base.html#a67c72a9a3643fd60b916a1bcffd45025',1,'theolizer::internal::ErrorBase::getErrorInfo()']]],
   ['geterrorkind',['getErrorKind',['../classtheolizer_1_1_error_info.html#a8eccd26f5b2dab0572fa67bf90cf41cb',1,'theolizer::ErrorInfo']]],
   ['geterrortype',['getErrorType',['../classtheolizer_1_1_error_info.html#afb0e092aba721f29bea0e1f7559d9f43',1,'theolizer::ErrorInfo']]],
   ['getfilelist',['getFileList',['../namespacetheolizer.html#adb2175efed45f231dbcee22704842e86',1,'theolizer']]],
@@ -19,6 +19,7 @@ var searchData=
   ['getsourceshash',['getSourcesHash',['../namespacetheolizer.html#a2a32c180b64431f2d0a538255aa9b82b',1,'theolizer']]],
   ['getstring',['getString',['../classtheolizer_1_1_error_info.html#ae6d35783fff94d91b1e62b461cfdca12',1,'theolizer::ErrorInfo']]],
   ['getthreadid',['getThreadId',['../classtheolizer_1_1_thread_guard.html#aefbb0efd018bfefde67a61b5b27cfd41',1,'theolizer::ThreadGuard']]],
+  ['gettime',['getTime',['../classtheolizer_1_1_working_log.html#ab82c3f455a516d0ee6f49fc8a4b1e6be',1,'theolizer::WorkingLog']]],
   ['getversionno',['getVersionNo',['../namespacetheolizer.html#a8befb633c2327a637c7e5860c1aa99b9',1,'theolizer']]],
   ['getversionstring',['getVersionString',['../namespacetheolizer.html#a3d6a1789d20a7e609a019b6d71cd7c3c',1,'theolizer']]]
 ];

@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.3</span>
+   &#160;<span id="projectnumber">Version.0.4.4</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -128,7 +128,7 @@ $(document).ready(function(){initNavTree('_usage_total.html','');});
 </p>
 <p><b>Json形式シリアライザ・ヘッダのインクルードと型定義の例：(source/samples/example/example.h）</b></p>
  <div class="fragment"><div class="line"><span class="comment">// ***************************************************************************</span></div><div class="line"><span class="comment">//      インクルード</span></div><div class="line"><span class="comment">// ***************************************************************************</span></div><div class="line"></div><div class="line"><span class="preprocessor">#include &lt;string&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="serializer__json_8h.html">theolizer/serializer_json.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">// ***************************************************************************</span></div><div class="line"><span class="comment">//      型定義</span></div><div class="line"><span class="comment">// ***************************************************************************</span></div><div class="line"></div><div class="line"><span class="keyword">enum</span> EnumType</div><div class="line">{</div><div class="line">    <a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba6adf97f83acf6453d4a6a4b1070f3754">None</a>,</div><div class="line">    EnumA,</div><div class="line">    EnumB,</div><div class="line">    EnumC</div><div class="line">};</div><div class="line"></div><div class="line"><span class="keyword">struct </span>StructType</div><div class="line">{</div><div class="line">    EnumType    mEnum;</div><div class="line">    <span class="keywordtype">int</span>         mInt;</div><div class="line">    std::string mString;</div><div class="line">    StructType() : mEnum(<a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba6adf97f83acf6453d4a6a4b1070f3754">None</a>), mInt(0), mString(<span class="stringliteral">&quot;&quot;</span>) { }</div><div class="line">};</div></div><!-- fragment --></p>
-<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> (*1) 例外：<b>非侵入型</b>(<a class="el" href="_specification.html#Basic12">1-2.シリアライズ可能な型についての補足事項</a>)のクラスやenum型については、<b>シリアライザのヘッダをインクルード</b>する前でも定義できます。<br />
+<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> (*1) 例外：<b>非侵入型</b>(<a class="el" href="_specification.html#Basic12">1-2.シリアライズ可能な型についての補足事項</a>)のクラスやenum型の<b>非侵入型完全自動</b>については、<b>シリアライザのヘッダをインクルード</b>する前でも定義できます。<br />
  </div><p>現在、サポートしているシリアライザはJson形式、独自Binary形式、メモリ内専用のFast形式の3種類です。 それぞれ、下記ヘッダをインクールドして下さい。</p>
 <table class="doxtable">
 <tr>
@@ -401,86 +401,176 @@ $(document).ready(function(){initNavTree('_usage_total.html','');});
 <h1><a class="anchor" id="TestProgram"></a>
 4.テスト・プログラムの構造</h1>
 <h6></h6>
-<p>主な機能テスト・プログラムは、 <b>source/reference_and_test</b> 以下にテストの分類に応じてフォルダを分けて入れています。</p>
 <p><br />
 </p>
-<h2><a class="anchor" id="TestProgramStructure"></a>
-4-1.構造について</h2>
-<p>定義変更するということはプログラム自体が異なります。それをテストするため、変更したプログラム毎に異なるフォルダへテスト・プログラムを入れています。<br />
- 保存先は、 <b>source/reference_and_test/version/ver*</b> です。 <b>ver*</b> はバージョン番号、及び、バージョン番号を変更せずにプログラム変更したもの用のフォルダ名です。<br />
- 例えば、<b>ver1</b>はバージョン1用、<b>ver1a</b>はそれを少し変更したものを入れてます。</p>
-<p>これらのテスト・プログラムの構造は共通です。現在は下記のような構造になっています。（機能テストの追加に伴い、ファイルと関数を追加します。）</p>
+<h2><a class="anchor" id="TestProgram41"></a>
+4-1.テスト・プログラムの全体構造</h2>
+<h3><a class="anchor" id="TestProgram411"></a>
+4-1-1.アップデートとバージョンのバリエーション</h3>
+<p>主な機能テスト・プログラムは、 <b>source/reference_and_test</b> 以下にアップデート／バージョン・アップによる変更（修正版）毎にフォルダを分けて保存しています。</p>
+<p>Theolizerはenum型とclass/struct型について定義変更に対応しています。そのテストも行うため、以下のように分類してテストを行います。</p>
+<ol type="1">
+<li>基本的なシリアライズ機能の定義変更を除く様々なバリエーションのテスト</li>
+<li>バージョン番号を更新しない定義変更のテスト</li>
+<li>バージョン番号を更新する定義変更のテスト</li>
+</ol>
+<p>現時点では下記修正版を用意しています。</p>
+<table class="doxtable">
+<tr>
+<th>フォルダ名</th><th>バージョン番号</th><th>説明  </th></tr>
+<tr>
+<td>basic</td><td>無し</td><td>基本的なシリアライズ機能の定義変更を除く様々なバリエーションのテスト </td></tr>
+<tr>
+<td>ver1a</td><td>1</td><td>最初のバージョン </td></tr>
+<tr>
+<td>ver1b</td><td>1</td><td>バージョン番号を変えずに可能な定義変更のテスト </td></tr>
+<tr>
+<td>ver1c</td><td>1</td><td>バージョン番号を変えるための準備のテスト </td></tr>
+<tr>
+<td>ver2a</td><td>2</td><td>バージョン番号を変更した時の定義変更のテスト </td></tr>
+<tr>
+<td>ver3a</td><td>3</td><td>更にバージョン番号を変更のテスト </td></tr>
+<tr>
+<td>ver3b</td><td>3</td><td>そしてバージョン番号を変えずに定義変更のテスト </td></tr>
+</table>
+<p>class/structでメンバ変数を削除した場合、１つ前のバージョンの自動生成ソースに削除されたことを反映します。なので、最新版と１つ前のバージョンと、更にもう１つ前に問題が出ないかテストするため、３つのバージョンでテストします。</p>
+<p>各変更テスト・プログラムは他の変更テスト・プログラムが出力したデータを読み込んで回復できることやエラーを検出できることをテストします。</p>
+<h3><a class="anchor" id="TestProgram412"></a>
+4-1-2.テストの組み合わせ</h3>
+<p>下記組み合わせとなります。１行毎に各修正版プログラムが出力するデータ概要を記述しています。<br />
+ 列に記載した各バージョンのプログラムが当該データの回復テストをする時◯印を付けています。</p>
+<table class="doxtable">
+<tr>
+<th>プログラム</th><th>バージョン指定</th><th>ファイル名</th><th>basic</th><th>ver1a</th><th>ver1b</th><th>ver1c</th><th>ver2a</th><th>ver3a</th><th>ver3b  </th></tr>
+<tr>
+<td>basic</td><td>指定無し </td><td>(pre)-basic-(post) </td><td>◯ </td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr>
+<td>basic</td><td>1 </td><td>(pre)-basic-basic-(post) </td><td>◯ </td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+<tr>
+<td>ver1a</td><td>指定無し </td><td>(pre)-ver1a-(post) </td><td></td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver1a</td><td>1 </td><td>(pre)-ver1a-ver1a-(post) </td><td></td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver1b</td><td>指定無し </td><td>(pre)-ver1b-(post) </td><td></td><td></td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver1b</td><td>1 </td><td>(pre)-ver1b-ver1b-(post) </td><td></td><td></td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver1c</td><td>指定無し </td><td>(pre)-ver1c-(post) </td><td></td><td></td><td></td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver1c</td><td>1 </td><td>(pre)-ver1c-ver1c-(post) </td><td></td><td></td><td></td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver2a</td><td>指定無し </td><td>(pre)-ver2a-(post) </td><td></td><td></td><td></td><td></td><td>◯ </td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver2a</td><td>1 </td><td>(pre)-ver1c-ver2a-(post) </td><td></td><td></td><td></td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver2a</td><td>2 </td><td>(pre)-ver2a-ver2a-(post) </td><td></td><td></td><td></td><td></td><td>◯ </td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver3a</td><td>指定無し </td><td>(pre)-ver3a-(post) </td><td></td><td></td><td></td><td></td><td></td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver3a</td><td>1 </td><td>(pre)-ver1c-ver3a-(post) </td><td></td><td></td><td></td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver3a</td><td>2 </td><td>(pre)-ver2a-ver3a-(post) </td><td></td><td></td><td></td><td></td><td>◯ </td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver3a</td><td>3 </td><td>(pre)-ver3a-ver3a-(post) </td><td></td><td></td><td></td><td></td><td></td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver3b</td><td>指定無し </td><td>(pre)-ver3b-(post) </td><td></td><td></td><td></td><td></td><td></td><td></td><td>◯ </td></tr>
+<tr>
+<td>ver3b</td><td>1 </td><td>(pre)-ver1c-ver3b-(post) </td><td></td><td></td><td></td><td>◯ </td><td>◯ </td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver3b</td><td>2 </td><td>(pre)-ver2a-ver3b-(post) </td><td></td><td></td><td></td><td></td><td>◯ </td><td>◯ </td><td>◯ </td></tr>
+<tr>
+<td>ver3b</td><td>3 </td><td>(pre)-ver3b-ver3b-(post) </td><td></td><td></td><td></td><td></td><td></td><td></td><td>◯ </td></tr>
+</table>
+<p>(pre)にはシリアライザ名と一部のオプションが入ります。</p>
+<ul>
+<li>json-np (非整形出力)</li>
+<li>json-pp (整形出力)</li>
+<li>binary</li>
+<li>fast</li>
+</ul>
+<p>(post)は以下の通りです。</p>
+<ul>
+<li>残りのオプション指定<ul>
+<li>jsonとbinaryの場合<ul>
+<li>NoTypeCheck</li>
+<li>TypeCheck</li>
+<li>TypeCheckByIndex</li>
+</ul>
+</li>
+<li>fastの場合は、最新版のみ対応でオプションもないため、上記表の「指定無し」のみです。 <br />
+<br />
+</li>
+</ul>
+</li>
+<li>保存先指定用のサフィックス<ul>
+<li>無印</li>
+<li>A(保存先DestA)</li>
+<li>B(保存先DestB)</li>
+<li>AB(保存先DestA | DestB) <br />
+<br />
+</li>
+</ul>
+</li>
+<li>拡張子<ul>
+<li>jsonの拡張子はjson</li>
+<li>binaryとfastの拡張子はbin</li>
+</ul>
+</li>
+</ul>
+<p>例えば、json整形出力で、ver3aのプログラムがver1cデータを型チェック無し、保存先指定無しで出力したファイル名は、"json-pp-ver1c-ver3a-NoTypeCheck.json"となります。</p>
+<p><br />
+</p>
+<h2><a class="anchor" id="TestProgram42"></a>
+4-2.テスト・プログラムの構造</h2>
+<p>basic、および、各変更テスト用プログラムは共通部分があります。それらはreference_and_testフォルダ直下に配置し、ビルドする時に各サブ・フォルダへコピーしています。</p>
+<h3>共通部</h3>
 <table class="doxtable">
 <tr>
 <th>ファイル</th><th>関数</th><th>概要  </th></tr>
 <tr>
-<td>main.cpp </td><td>main()</td><td>パラメータ解析<br />
-GlobalVersionNoを振ってvaryGlobalVersionNo()呼び出し </td></tr>
+<td>disable_test.h </td><td></td><td>各個別テストをディセーブルするシンボル定義。<br />
+デバッグ時の便利のために用意。 </td></tr>
 <tr>
-<td>↑</td><td>varyGlobalVersionNo()</td><td>CheckModeを振ってvaryCheckMode()呼び出し </td></tr>
+<td>all_common.h </td><td></td><td>テスト用の全バージョン共通定義。<br />
+アップデートとバージョン名とバージョン番号対応表のgVersionListを定義。 </td></tr>
 <tr>
-<td>↑</td><td>varyCheckMode()</td><td>必要なシリアライザのインスタンスを生成し、saveBasic(), loadBasic()呼び出し </td></tr>
+<td>main.inc </td><td>main() </td><td>各サブ・フォルダ内のmain.cppから::includeされる。<br />
+コマンドライン解析を行い、パラメータが無い時は保存処理、ある時は回復処理を実行する。<br />
+4-1節 表の全組み合わせを生成し、callTests()を呼び出す。 </td></tr>
 <tr>
-<td>↑</td><td>saveBasic()</td><td>自動テスト基本部の保存処理。個別テストを呼び出す </td></tr>
-<tr>
-<td>↑</td><td>loadBasic()</td><td>自動テスト基本部の回復処理。個別テストを呼び出す </td></tr>
-<tr>
-<td>test_basic_process.cpp </td><td></td><td>THEOLIZER_PROCESS()の網羅的な使用例（自動テスト） </td></tr>
-<tr>
-<td>↑</td><td>saveBasicProcess()</td><td>保存 </td></tr>
-<tr>
-<td>↑</td><td>loadBasicProcess()</td><td>回復 </td></tr>
+<td>↑</td><td>callTests()</td><td>各シリアライザのパラメータを振ってインスタンスを生成し、<br />
+saveBasic(), loadBasic(),callSaveDestinations(),callLoadDestinations()を呼び出す。 </td></tr>
 </table>
+<h3>各サブフォルダ部</h3>
+<table class="doxtable">
+<tr>
+<th>ファイル</th><th>関数</th><th>概要  </th></tr>
+<tr>
+<td>main.cpp </td><td></td><td>各個別フォルダ内テスト関数を呼び出す。 </td></tr>
+<tr>
+<td>↑</td><td>saveBasic()</td><td>自動テスト基本部の保存処理。個別テストを呼び出す。 </td></tr>
+<tr>
+<td>↑</td><td>loadBasic()</td><td>自動テスト基本部の回復処理。個別テストを呼び出す。 </td></tr>
+<tr>
+<td>↑</td><td>callSaveDestinations()</td><td>自動テスト保存先指定部の保存処理。個別テストを呼び出す。 </td></tr>
+<tr>
+<td>↑</td><td>callLoadDestinations()</td><td>自動テスト保存先指定部の回復処理。個別テストを呼び出す。 </td></tr>
+</table>
+<p>各個別テストは別途*.cppファイルを用意し、その中で定義しています。<br />
+ それぞれについては <a class="el" href="_usage_individual.html">使用方法（個別）</a> にて解説します。</p>
 <p><br />
 </p>
-<h2><a class="anchor" id="MacroForDescription"></a>
-4-2.説明で用いるマクロについて</h2>
+<h2><a class="anchor" id="TestProgram43"></a>
+4-3.説明で用いるマクロについて</h2>
 <p>テスト用のマクロはtest_tool.hで定義しています。<br />
  その内、使い方の説明（兼 自動テスト）で用いるマクロについてここで簡単に説明します。</p>
-<h3>THEOLIZER_EQUAL(dLhs, dRhs, ...)</h3>
+<p>1.<a class="el" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(dLhs, dRhs, ...)</p>
 <p>(dLhs == dRhs) ならばPASS、そうでないならFAILと判定します。<br />
  PASSならば、テストの数とPASS数をインクリメントします。<br />
  FAILならば、テストの数とFAIL数をインクリメントし、テストを失敗させます。<br />
  また、dRhsとそれ以降のアイテム（1個以上7個まで）を標準出力へ出力します。</p>
 <p>下記はシリアライザを使って回復したint型のaIntの値が-3000であることをチェックしています。</p>
- <div class="fragment"><div class="line">    <span class="keywordtype">int</span>             aInt=0;</div><div class="line">    THEOLIZER_PROCESS(iSerializer, aInt);</div><div class="line">    <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aInt, -3000);</div></div><!-- fragment --></p>
-<p><br />
-</p>
-<h2><a class="anchor" id="MadeTestFiles"></a>
-4-3.自動テストで生成されるファイルについて</h2>
-<p>自動テストで多数のファイルが<b>ビルド・フォルダ/Testing</b>配下に生成されます。<br />
- 生成されるファイルは以下の通りです。<br />
-</p>
-<table class="doxtable">
-<tr>
-<th>シリアライザ</th><th>iGlobalVersionNo</th><th>iCheckMode</th><th>iNoPrettyPrint</th><th>ファイル名  </th></tr>
-<tr>
-<td>Json </td><td>省略 </td><td>省略 </td><td>省略 </td><td>json-default.json </td></tr>
-<tr>
-<td>↑ </td><td>N </td><td>NoTypeCheck </td><td>false </td><td>json-pp-verN-NoTypeCheck.json </td></tr>
-<tr>
-<td>↑ </td><td>N </td><td>TypeCheck </td><td>false </td><td>json-pp-verN-TypeCheck.json </td></tr>
-<tr>
-<td>↑ </td><td>N </td><td>TypeCheckByIndex</td><td>false </td><td>json-pp-verN-TypeCheckByIndex.json </td></tr>
-<tr>
-<td>↑ </td><td>N </td><td>NoTypeCheck </td><td>true </td><td>json-np-verN-NoTypeCheck.json </td></tr>
-<tr>
-<td>↑ </td><td>N </td><td>TypeCheck </td><td>true </td><td>json-np-ver1-TypeCheck.json </td></tr>
-<tr>
-<td>↑ </td><td>N </td><td>TypeCheckByIndex</td><td>true </td><td>json-np-ver1-TypeCheckByIndex.json </td></tr>
-<tr>
-<td>Binary </td><td>省略 </td><td>省略 </td><td>無し </td><td>binary-default.bin </td></tr>
-<tr>
-<td>↑ </td><td>N </td><td>NoTypeCheck </td><td>無し </td><td>binary-verN-NoTypeCheck.bin </td></tr>
-<tr>
-<td>↑ </td><td>N </td><td>TypeCheck </td><td>無し </td><td>binary-verN-TypeCheck.bin </td></tr>
-<tr>
-<td>↑ </td><td>N </td><td>TypeCheckByIndex</td><td>無し </td><td>binary-verN-TypeCheckByIndex.bin </td></tr>
-<tr>
-<td>Fast </td><td>無し </td><td>無し </td><td>無し </td><td>fast-default.bin </td></tr>
-</table>
-<p>Nは当該テスト・プログラムの最新のグローバル・バージョン番号となります。<br />
- 1～Nについてテストします。 </p>
+ <div class="fragment"><div class="line">    <span class="keywordtype">int</span>             aInt=0;</div><div class="line">    THEOLIZER_PROCESS(iSerializer, aInt);</div><div class="line">    <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aInt, -3000);</div></div><!-- fragment --> </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

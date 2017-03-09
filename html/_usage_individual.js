@@ -45,7 +45,7 @@ var _usage_individual =
         [ "3-4.オブジェクト追跡対象について", "_object_tracking.html#HowToObjectTracking34", null ],
         [ "3-5.オブジェクト追跡単位について", "_object_tracking.html#HowToObjectTracking35", null ]
       ] ],
-      [ "4.オブジェクト追跡の網羅的な使用例（自動テスト）の説明", "_object_tracking.html#TestObjectTracking", [
+      [ "4.網羅的な使用例（自動テスト）の説明", "_object_tracking.html#TestObjectTracking", [
         [ "4-1.各種メモリへのポインタのテスト", "_object_tracking.html#TestObjectTracking41", [
           [ "4-1-1.概要", "_object_tracking.html#TestObjectTracking411", null ],
           [ "4-1-2.ソース・コード", "_object_tracking.html#TestObjectTracking412", null ]
@@ -59,7 +59,7 @@ var _usage_individual =
           [ "4-3-2.ソース・コード", "_object_tracking.html#TestObjectTracking432", null ]
         ] ]
       ] ],
-      [ "5.ポリモーフィズムの網羅的な使用例（自動テスト）の説明", "_object_tracking.html#TestPolymorphism", null ]
+      [ "5.網羅的な使用例（自動テスト）の説明", "_object_tracking.html#TestPolymorphism", null ]
     ] ],
     [ "保存先指定について", "_destinations.html", [
       [ "1.指定方法", "_destinations.html#HowToSpecifySaving", [
@@ -77,7 +77,7 @@ var _usage_individual =
           [ "1-4-3.間違い易い指定について", "_destinations.html#HowToSpecifySaving143", null ]
         ] ]
       ] ],
-      [ "2.保存先指定の網羅的な使用例（自動テスト）の説明", "_destinations.html#TestSpecifySaving", [
+      [ "2.網羅的な使用例（自動テスト）の説明", "_destinations.html#TestSpecifySaving", [
         [ "2-1.保存の有無指定のテスト", "_destinations.html#TestSpecifySaving21", null ],
         [ "2-2.保存先指定のテスト", "_destinations.html#TestSpecifySaving22", null ]
       ] ]
@@ -89,7 +89,7 @@ var _usage_individual =
         [ "2-2.標準コンテナの要素を被ポインタとする保存／回復するサンプル・ソース", "_support_s_t_l.html#HowToUseContainer22", null ],
         [ "2-3.標準コンテナの要素を合成回復サンプル・ソース", "_support_s_t_l.html#HowToUseContainer23", null ]
       ] ],
-      [ "3.スマート・ポインタと標準コンテナ網羅的な使用例（自動テスト）の説明", "_support_s_t_l.html#TestContainer", [
+      [ "3.網羅的な使用例（自動テスト）の説明", "_support_s_t_l.html#TestContainer", [
         [ "3-1.スマート・ポインタ", "_support_s_t_l.html#TestContainer31", [
           [ "3-1-1.通常", "_support_s_t_l.html#TestContainer311", null ],
           [ "3-1-2.合成回復", "_support_s_t_l.html#TestContainer312", null ]
@@ -100,7 +100,26 @@ var _usage_individual =
         ] ]
       ] ]
     ] ],
-    [ "enum型の変更方法、および、バージョン・アップ方法", "_changing_enum.html", null ],
+    [ "enum型のアップデート／バージョン・アップ方法", "_changing_enum.html", [
+      [ "1.バージョン番号を変えないでenum型を修正", "_changing_enum.html#HowToModifyEnum1", [
+        [ "1-1.シンボル名保存の変更サンプル", "_changing_enum.html#HowToModifyEnum11", null ],
+        [ "1-2.シンボル値保存の変更サンプル", "_changing_enum.html#HowToModifyEnum12", null ]
+      ] ],
+      [ "2.グローバル・バージョン番号テーブル生成", "_changing_enum.html#HowToMakeGlobalVersionNoTable2", [
+        [ "2-1.グローバル・バージョン番号テーブルの宣言", "_changing_enum.html#HowToMakeGlobalVersionNoTable21", null ],
+        [ "2-2.グローバル・バージョン番号テーブル実体定義", "_changing_enum.html#HowToMakeGlobalVersionNoTable22", null ]
+      ] ],
+      [ "3.バージョン番号を変えてenum型を修正", "_changing_enum.html#HowToModifyEnum3", [
+        [ "3-1.バージョン・アップ手順", "_changing_enum.html#HowToModifyEnum31", null ],
+        [ "3-2.非侵入型半自動への変更方法", "_changing_enum.html#HowToModifyEnum32", null ],
+        [ "3-3.バージョン・アップ時のシンボル対応", "_changing_enum.html#HowToModifyEnum33", [
+          [ "3-3-1.内部処理概要", "_changing_enum.html#HowToModifyEnum331", null ],
+          [ "3-3-2.以前使用したシンボルの再割当て", "_changing_enum.html#HowToModifyEnum332", null ],
+          [ "3-4.シンボル名保存とシンボル値保存の切り替え", "_changing_enum.html#HowToModifyEnum34", null ]
+        ] ]
+      ] ],
+      [ "4.網羅的な使用例（自動テスト）の説明", "_changing_enum.html#HowToModifyEnum4", null ]
+    ] ],
     [ "クラス定義の変更方法、および、バージョン・アップ方法", "_changing_class.html", null ],
     [ "エラー処理", "_error_report.html", null ]
 ];

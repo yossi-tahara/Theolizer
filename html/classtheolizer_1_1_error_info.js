@@ -8,6 +8,7 @@ var classtheolizer_1_1_error_info =
     [ "getLineNo", "classtheolizer_1_1_error_info.html#a1c646444613a61bccf5370acaf744af7", null ],
     [ "getMessage", "classtheolizer_1_1_error_info.html#a23aad5c4f46ae4d6aa55d3320ef68a7f", null ],
     [ "getString", "classtheolizer_1_1_error_info.html#ae6d35783fff94d91b1e62b461cfdca12", null ],
+    [ "isError", "classtheolizer_1_1_error_info.html#a802d732ff467ca5694c7dcc03a1dfc97", null ],
     [ "operator bool", "classtheolizer_1_1_error_info.html#ad3f36e7995e6aec6567d89f74c72dd5c", null ],
     [ "operator!", "classtheolizer_1_1_error_info.html#a0414669f83de5fb34d07c8800d8a4c19", null ],
     [ "setAdditionalInfo", "classtheolizer_1_1_error_info.html#a4887e21addd903dd7128b2b8517a0622", null ],

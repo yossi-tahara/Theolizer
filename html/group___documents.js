@@ -12,5 +12,6 @@ var group___documents =
     [ "7c.object_tracking.h", "7c_8object__tracking_8h.html", null ],
     [ "7d.destinations.h", "7d_8destinations_8h.html", null ],
     [ "7e.support_stl.h", "7e_8support__stl_8h.html", null ],
+    [ "7f.modify_enum.h", "7f_8modify__enum_8h.html", null ],
     [ "8.reference.h", "8_8reference_8h.html", null ]
 ];
