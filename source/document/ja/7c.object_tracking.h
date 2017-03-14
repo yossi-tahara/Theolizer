@@ -52,8 +52,6 @@
 1. メンバ変数の場合は、THEOLIZER_ANNOTATE(FS:...<...>Pointee)
 2. THEOLIZER_PROCESS_POINTEE()マクロ
 
-クラスに対してこれらの指定は不要です。（指定しても問題はありません。）
-
 @subsection HowToObjectTracking12 1-2.サンプル・ソース
 
 <b>サンプル用のクラス定義：(source/reference_and_test/basic/test_object_tracking.h）</b><br>
@@ -302,7 +300,7 @@ newやnew[]で獲得するインスタンスです。
 
 <br>
 //############################################################################
-@section TestObjectTracking 4.網羅的な使用例（自動テスト）の説明
+@section TestObjectTracking 4.オブジェクト追跡の網羅的な使用例（自動テスト）の説明
 //############################################################################
 
 @subsection TestObjectTracking41 4-1.各種メモリへのポインタのテスト
@@ -353,6 +351,9 @@ newやnew[]で獲得するインスタンスです。
   - StaticDefinition                メンバ変数静的定義領域用
   - Pointers                        自動シリアライズするポインタの定義<br>
 <br>
+
+3. 同じインスタンスを複数回シリアライズした時のテスト用
+上記で定義したObjectTrackingDerivedを用います。
 
 <b>source/reference_and_test/basic/test_object_tracking2.cpp</b>でテスト関数を定義してます。<br>
 
@@ -456,17 +457,37 @@ C++は、配列型(Type[N])をnewした結果は残念なことに配列型へ�
 
 1. 保存処理<br>
 template<class tSerializer><br>
-void saveObjectTracking3(tSerializer& iSerializer)<br>
+void saveObjectTracking3(tSerializer& iSerializer)の前半<br>
 <br>
 
 2. 回復処理<br>
 template<class tSerializer><br>
-void loadObjectTracking3(tSerializer& iSerializer)<br>
+void loadObjectTracking3(tSerializer& iSerializer)の前半<br>
 
+@subsection TestObjectTracking44 4-4.同じインスタンスを複数回シリアライズするテスト
+
+ObjectTrackingDerivedのインスタンスに対して、被ポインタ指定したものとしていないものについて保存／回復テストを行います。
+
+<b>source/reference_and_test/basic/test_object_tracking3.cpp</b>でテスト関数を定義してます。<br>
+
+1. 保存処理<br>
+template<class tSerializer><br>
+void saveObjectTracking3(tSerializer& iSerializer)の後半<br>
+<br>
+
+2. 回復処理<br>
+template<class tSerializer><br>
+void loadObjectTracking3(tSerializer& iSerializer)の後半<br>
+
+また、同じインスタンスを複数回保存し、それを異なるインスタンスへ回復しようとした時、WrongUsing例外が発生することのテストを行います。
+
+<b>source/reference_and_test/basic/test_object_tracking.cpp</b>でテスト関数を定義してます。<br>
+
+tutoriseObjectTracking()関数の最後の方、「複数回シリアライズ・データの回復エラーテスト」で行っています。<br>
 
 <br>
 //############################################################################
-@section TestPolymorphism 5.網羅的な使用例（自動テスト）の説明
+@section TestPolymorphism 5.ポリモーフィズムの網羅的な使用例（自動テスト）の説明
 //############################################################################
 
 ここでは、基底クラスへのポインタでポイントされる異なる派生クラスを適切に回復できることを確認します。<br>
