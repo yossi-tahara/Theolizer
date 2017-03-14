@@ -350,10 +350,10 @@ struct TypeNameImpl
     theolizer::internal::TypeNameImpl<decltype(dVar)>::get(true)
 
 // ***************************************************************************
-//      型情報取得(getNameByTypeId)
+//      型情報取得(getNameByTypeInfo)
 // ***************************************************************************
 
-THEOLIZER_INTERNAL_DLL std::string getNameByTypeId(std::type_index aTypeIndex);
+THEOLIZER_INTERNAL_DLL std::string getNameByTypeInfo(std::type_index aTypeIndex);
 
 // ***************************************************************************
 //      ドライバ向けダミー定義
@@ -365,7 +365,7 @@ THEOLIZER_INTERNAL_DLL std::string getNameByTypeId(std::type_index aTypeIndex);
 #define THEOLIZER_INTERNAL_TYPE_NAME_VAR(dVar)          ""
 #define THEOLIZER_INTERNAL_TYPE_NAME_ROUGH(dType)       ""
 #define THEOLIZER_INTERNAL_TYPE_NAME_VAR_ROUGH(dVar)    ""
-inline std::string getNameByTypeId(std::type_index aTypeIndex) {return "";}
+inline std::string getNameByTypeInfo(std::type_index aTypeIndex) {return "";}
 
 #endif  // THEOLIZER_INTERNAL_DRIVER
 

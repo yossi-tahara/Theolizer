@@ -93,7 +93,7 @@ std::ostream& operator<<(std::ostream& iOStream, unsigned char iUChar)
 
 std::ostream& operator<<(std::ostream& iOStream, std::type_info const& iTypeInfo)
 {
-    iOStream << theolizer::internal::getNameByTypeId(iTypeInfo);
+    iOStream << theolizer::internal::getNameByTypeInfo(iTypeInfo);
     return iOStream;
 }
 

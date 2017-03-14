@@ -650,7 +650,7 @@ public:
         {
             THEOLIZER_INTERNAL_DATA_ERROR(
                 u8"Can not process <%1%> for Global VersionNo.%2%",
-                getNameByTypeId(iStdTypeIndex),
+                getNameByTypeInfo(iStdTypeIndex),
                 iGlobalVersionNo
             );
         }

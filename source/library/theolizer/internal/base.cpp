@@ -35,7 +35,7 @@ namespace internal
 {
 
 // ***************************************************************************
-//      型情報取得(getNameByTypeId)
+//      型情報取得(getNameByTypeInfo)
 // ***************************************************************************
 
 // ---------------------------------------------------------------------------
@@ -44,7 +44,7 @@ namespace internal
 
 #if defined(__GNUC__)
 
-std::string getNameByTypeId(std::type_index aTypeIndex)
+std::string getNameByTypeInfo(std::type_index aTypeIndex)
 {
     char*   aName;
     int status = 0;
@@ -59,7 +59,7 @@ std::string getNameByTypeId(std::type_index aTypeIndex)
 
 #else
 
-std::string getNameByTypeId(std::type_index aTypeIndex)
+std::string getNameByTypeInfo(std::type_index aTypeIndex)
 {
     return aTypeIndex.name();
 }

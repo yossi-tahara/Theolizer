@@ -1094,7 +1094,7 @@ void BaseSerializer::recoverObject
             {
                 THEOLIZER_INTERNAL_WRONG_USING(
                     "This instance(%1%) is different from saved.",
-                    getNameByTypeId(iTypeInfo));
+                    getNameByTypeInfo(iTypeInfo));
             }
         }
         else
@@ -1135,7 +1135,7 @@ void BaseSerializer::clearTrackingImpl()
                         THEOLIZER_INTERNAL_ERROR
                         (
                             u8"Some pointed data does not save.(%1%)",
-                            getNameByTypeId(element.first.mStdTypeIndex)
+                            getNameByTypeInfo(element.first.mStdTypeIndex)
                         );
                     }
                     else
