@@ -604,7 +604,31 @@ bool duringBackup()
 //      オブジェクト追跡用オブジェクト管理テーブル
 // ***************************************************************************
 
-struct BaseSerializer::SerializeList : public std::vector<SerializeInfo> { };
+struct SerializeKey
+{
+    void*           mAddress;
+    std::type_index mStdTypeIndex;
+
+    SerializeKey() :
+        mAddress(nullptr),
+        mStdTypeIndex(typeid(nullptr))
+    { }
+
+    SerializeKey
+    (
+        void* iAddress,
+        std::type_info const& iTypeInfo
+    ) : mAddress(iAddress),
+        mStdTypeIndex(iTypeInfo)
+    { }
+
+    bool operator<(SerializeKey const& iRhs) const
+    {
+        return std::tie(mAddress, mStdTypeIndex) < std::tie(iRhs.mAddress, iRhs.mStdTypeIndex);
+    }
+};
+
+struct BaseSerializer::SerializeList : public std::map<SerializeKey, SerializeInfo> { };
 struct BaseSerializer::DeserializeList : public std::vector<DeserializeInfo> { };
 
 // ***************************************************************************
@@ -658,7 +682,7 @@ BaseSerializer::BaseSerializer
     if (mIsSaver)
     {
         mSerializeList=std::unique_ptr<SerializeList>(new SerializeList);
-        mSerializeList->emplace_back(nullptr, typeid(nullptr), mObjectId++, etsNullPtr);
+        initSerializeList();
     }
     else
     {
@@ -671,6 +695,22 @@ BaseSerializer::BaseSerializer
     //  例外が怖いので最後で設定
     mSerializerBack=xNowSerializer;
     xNowSerializer=this;
+}
+
+//----------------------------------------------------------------------------
+//      補助関数
+//----------------------------------------------------------------------------
+
+void BaseSerializer::initSerializeList()
+{
+    mObjectId=0;
+    mSerializeList->emplace
+    (
+        std::piecewise_construct,
+        std::forward_as_tuple(nullptr, typeid(nullptr)),
+        std::forward_as_tuple(mObjectId, etsNullPtr)
+    );
+    mObjectId++;
 }
 
 // ***************************************************************************
@@ -886,15 +926,13 @@ BaseSerializer::AutoRestoreLoad::~AutoRestoreLoad() noexcept
 
 SerializeInfo& BaseSerializer::registerObject
 (
-    void* iAddress,
-    std::type_info const& iTypeInfo,
-    TrackingMode iTrackingMode,
-    bool* oIsSaved
+    void*                   iAddress,
+    std::type_info const&   iTypeInfo,
+    TrackingMode            iTrackingMode,
+    bool*                   oIsSaved
 )
 {
 //std::cout << "registerObject(" << iTypeInfo.name() << ")" << std::endl;
-    std::type_index aTypeIndex((iAddress)?iTypeInfo:typeid(nullptr));
-    typedef std::tuple<void*&, std::type_index&>    Key;
 
     if (oIsSaved) *oIsSaved=false;
 
@@ -903,48 +941,41 @@ SerializeInfo& BaseSerializer::registerObject
     {
     case etmDefault:    aTrackingStatus=etsPointed;     break;
     case etmPointee:    aTrackingStatus=etsProcessed;   break;
-    case etmOwner:      aTrackingStatus=etsProcessed;   break;
+    case etmOwner:      aTrackingStatus=etsPointed;     break;
     }
 
-    auto found = lower_bound(mSerializeList->begin(),
-                             mSerializeList->end(),
-                             std::tie(iAddress, aTypeIndex),
-                             [](SerializeInfo const& iLhs, Key const& iRhs)
-                             {
-                                return std::tie(iLhs.mAddress, iLhs.mStdTypeIndex) < iRhs;
-                             });
+    // テーブルにあるか探す
+    SerializeKey aSerializeKey(iAddress, (iAddress)?iTypeInfo:typeid(nullptr));
+    auto found = mSerializeList->find(aSerializeKey);
+
     // 見つかった時
     if ((found != mSerializeList->end())
-     && (found->mAddress == iAddress)
-     && (found->mStdTypeIndex == aTypeIndex)
      && (!(mDuringBackup && (iTrackingMode == etmPointee)))) // バックアップ中のPointeeは強制不一致
     {
         // 既にターゲット保存(etsProcessed)済みなら状態を更新しない
-        if (found->mStatus != etsPointed)
+        if (found->second.mStatus != etsPointed)
         {
-            // 静的領域保存でない時のみ、保存済み返却（呼び出し元で保存しない）
-            if (iTrackingMode != etmPointee)
-            {
-                if (oIsSaved) *oIsSaved=true;
-            }
-//std::cout << "    saved : mObjectId=" << found->mObjectId << " mStatus=" << found->mStatus
-//          << " " << iAddress << "\n";
+            if (oIsSaved) *oIsSaved=true;
+//std::cout << "    saved : mObjectId=" << found->second.mObjectId 
+//          << " mStatus=" << found->second.mStatus << " " << iAddress << "\n";
         }
 
         // ポインタからの参照有り
         else
         {
-            found->mStatus=aTrackingStatus;
-//std::cout << "    found : mObjectId=" << found->mObjectId << " mStatus=" << found->mStatus
-//          << " " << iAddress << "\n";
+            found->second.mStatus=aTrackingStatus;
+//std::cout << "    found : mObjectId=" << found->second.mObjectId
+//        << " mStatus=" << found->second.mStatus << " " << iAddress << "\n";
         }
-return *found;
+return found->second;
     }
 
 //std::cout << "    mObjectId=" << mObjectId << " aTrackingStatus=" << aTrackingStatus 
-//          << " " << iAddress << "\n";
-    return *mSerializeList->
-        insert(found, SerializeInfo(iAddress, iTypeInfo, mObjectId++, aTrackingStatus));
+//          << " " << iAddress << std::endl;
+
+    auto inserted = mSerializeList->
+        emplace(std::move(aSerializeKey), SerializeInfo(mObjectId++, aTrackingStatus));
+    return inserted.first->second;
 }
 
 //----------------------------------------------------------------------------
@@ -981,6 +1012,10 @@ void BaseSerializer::recoverObject
 //std::cout << "    oPointer=" << oPointer << std::endl;
     if (oIsLoaded) *oIsLoaded=false;
 
+    if (mDeserializeList->capacity() <= iObjectId)
+    {
+        mDeserializeList->reserve(iObjectId+16);
+    }
     if (mDeserializeList->size() <= iObjectId)
     {
         mDeserializeList->resize(iObjectId+1);
@@ -1045,11 +1080,7 @@ void BaseSerializer::recoverObject
 
     case etsProcessed:      // アドレス登録済／オブジェクト回復済
 //std::cout << "    etsProcessed : " << std::endl;
-        // 静的領域回復でない時のみ、回復済み返却（呼び出し元で回復しない）
-        if (iTrackingMode != etmPointee)
-        {
-            if (oIsLoaded) *oIsLoaded=true;
-        }
+        if (oIsLoaded) *oIsLoaded=true;
 
         // 通常ポインタ以外（領域管理する）なら、アドレスを更新する
         //  複数回同じ領域のシリアライズを許可するが、回復時も同じアドレスとは限らないため。
@@ -1058,8 +1089,13 @@ void BaseSerializer::recoverObject
         //  この事態はオブジェクト追跡単位中にシリアライズした領域を開放すると発生する。
         if (iTrackingMode == etmPointee)
         {
-            (*mDeserializeList)[iObjectId].mAddress=oPointer;
 //std::cout << "    etmPointee : mAddress=" << oPointer << std::endl;
+            if ((*mDeserializeList)[iObjectId].mAddress != oPointer)
+            {
+                THEOLIZER_INTERNAL_WRONG_USING(
+                    "This instance(%1%) is different from saved.",
+                    getNameByTypeId(iTypeInfo));
+            }
         }
         else
         {
@@ -1086,35 +1122,34 @@ void BaseSerializer::clearTrackingImpl()
         // ObjectId順で処理する
         for (std::size_t i=0; i < mSerializeList->size(); ++i)
         {
-            for (auto&& aSerializeInfo : *mSerializeList)
+            for (auto&& element : *mSerializeList)
             {
-                if (aSerializeInfo.mObjectId != i)
+                if (element.second.mObjectId != i)
             continue;
 
-                if ((aSerializeInfo.mStatus == etsInit)
-                 || (aSerializeInfo.mStatus == etsPointed))
+                if ((element.second.mStatus == etsInit)
+                 || (element.second.mStatus == etsPointed))
                 {
                     if (mCheckMode != CheckMode::InMemory)
                     {
                         THEOLIZER_INTERNAL_ERROR
                         (
                             u8"Some pointed data does not save.(%1%)",
-                            getNameByTypeId(aSerializeInfo.mStdTypeIndex)
+                            getNameByTypeId(element.first.mStdTypeIndex)
                         );
                     }
                     else
                     {
                         std::uintptr_t  aPointer=
-                            reinterpret_cast<std::uintptr_t>(aSerializeInfo.mAddress);
+                            reinterpret_cast<std::uintptr_t>(element.first.mAddress);
                         saveControl(aPointer);
                     }
                 }
             }
         }
         // 初期状態へ戻す(先頭はnullptr用)
-        mSerializeList->resize(1);
-        mObjectId=1;
-        (*mSerializeList)[0].mStatus=etsNullPtr;
+        mSerializeList->clear();
+        initSerializeList();
     }
 
     if (mDeserializeList)

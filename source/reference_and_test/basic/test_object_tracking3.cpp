@@ -44,7 +44,8 @@
 #include "test_object_tracking3.cpp.theolizer.hpp"
 
 //############################################################################
-//      組み合わせテスト
+//      オーナー・ポインタのテスト
+//      多重保存の正常系テスト
 //############################################################################
 
 // ***************************************************************************
@@ -113,6 +114,29 @@ void saveObjectTracking3(tSerializer& iSerializer)
 
         iSerializer.clearTracking();
     }
+
+//----------------------------------------------------------------------------
+//      多重保存の正常系テスト
+//----------------------------------------------------------------------------
+
+    {
+        ObjectTrackingDerived   aObjectTrackingDerived{true};
+        ObjectTrackingDerived&  aObjectTrackingDerivedRef(aObjectTrackingDerived);
+
+        // 追跡指定有り
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aObjectTrackingDerived);
+        aObjectTrackingDerivedRef.mLong=333;    // この変更は記録されない
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aObjectTrackingDerivedRef);
+
+        // 追跡指定無し(変更が反映される)
+        // mLong=333;も記録される
+        THEOLIZER_PROCESS(iSerializer, aObjectTrackingDerived);
+        aObjectTrackingDerivedRef.mLong=334;    // この変更は記録される
+        THEOLIZER_PROCESS(iSerializer, aObjectTrackingDerivedRef);
+
+        iSerializer.clearTracking();
+    }
+
     std::cout << "        saveObjectTracking3() end" << std::endl;
 }
 
@@ -197,6 +221,41 @@ void loadObjectTracking3(tSerializer& iSerializer)
         aManualClass4OwnerListNull.check();
         aManualClass4OwnerList.check(true);
     }
+
+//----------------------------------------------------------------------------
+//      多重保存の正常系テスト
+//----------------------------------------------------------------------------
+
+    {
+        ObjectTrackingDerived   aObjectTrackingDerived;
+        // 参照のアドレス設定はTHEOLIZER_PROCESS_POINTEE前に行うこと。
+        ObjectTrackingDerived&  aObjectTrackingDerivedRef(aObjectTrackingDerived);
+
+        // 追跡指定有り
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aObjectTrackingDerived);
+        aObjectTrackingDerived.check();
+
+        // mLong=333;が反映されないことを確認
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aObjectTrackingDerivedRef);
+        aObjectTrackingDerivedRef.check();
+
+        // 追跡指定無し(変更が反映される)
+
+        // mLong=333;が反映されることを確認
+        THEOLIZER_PROCESS(iSerializer, aObjectTrackingDerived);
+        THEOLIZER_EQUAL(aObjectTrackingDerived.mInt,   100);
+        THEOLIZER_EQUAL(aObjectTrackingDerived.mShort, 200);
+        THEOLIZER_EQUAL(aObjectTrackingDerived.mLong,  333);
+
+        // mLong=334;が反映されることを確認
+        THEOLIZER_PROCESS(iSerializer, aObjectTrackingDerivedRef);
+        THEOLIZER_EQUAL(aObjectTrackingDerivedRef.mInt,   100);
+        THEOLIZER_EQUAL(aObjectTrackingDerivedRef.mShort, 200);
+        THEOLIZER_EQUAL(aObjectTrackingDerivedRef.mLong,  334);
+
+        iSerializer.clearTracking();
+    }
+
     std::cout << "        loadObjectTracking3() end" << std::endl;
 }
 

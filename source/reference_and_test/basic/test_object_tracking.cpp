@@ -212,6 +212,68 @@ void tutoriseObjectTracking()
         THEOLIZER_EQUAL_PTR(aShortPtr, aObjectTrackingClassOwner->getDynamic());
     }
 
+//----------------------------------------------------------------------------
+//      複数回シリアライズ・データの回復エラーテスト
+//----------------------------------------------------------------------------
+
+//      ---<<< 保存 >>>---
+
+    {
+        ObjectTrackingDerived   aObjectTrackingDerived{true};
+        ObjectTrackingDerived&  aObjectTrackingDerivedRef(aObjectTrackingDerived);
+
+        std::ofstream   aStream("tutorise_object_tracking_multi.json");
+        theolizer::JsonOSerializer<> aSerializer(aStream);
+
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aObjectTrackingDerived);
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aObjectTrackingDerivedRef);
+
+        // オブジェクトIDテーブルのクリア
+        aSerializer.clearTracking();
+    }
+
+//      ---<<< 正常系 >>>---
+
+    {
+        ObjectTrackingDerived   aObjectTrackingDerived;
+        ObjectTrackingDerived&  aObjectTrackingDerivedRef(aObjectTrackingDerived);
+
+        std::ifstream   aStream("tutorise_object_tracking_multi.json");
+        theolizer::JsonISerializer<> aSerializer(aStream);
+
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aObjectTrackingDerived);
+        aObjectTrackingDerived.check();
+
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aObjectTrackingDerivedRef);
+        aObjectTrackingDerivedRef.check();
+
+        // オブジェクトIDテーブルのクリア
+        aSerializer.clearTracking();
+    }
+
+//      ---<<< 異常系 >>>---
+
+    {
+        ObjectTrackingDerived   aObjectTrackingDerived;
+        ObjectTrackingDerived   aObjectTrackingDerived2;
+
+        std::ifstream   aStream("tutorise_object_tracking_multi.json");
+        theolizer::JsonISerializer<> aSerializer(aStream);
+
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aObjectTrackingDerived);
+        aObjectTrackingDerived.check();
+
+        // 保存時と異なるアドレスへ回復するとエラー
+        THEOLIZER_CHECK_EXCEPTION2(
+            THEOLIZER_PROCESS_POINTEE(aSerializer, aObjectTrackingDerived2);,// dStatements
+            theolizer::ErrorInfo& e,                                // dException
+            e.getErrorKind() == theolizer::ErrorKind::WrongUsing,   // dJudge
+            e.getMessage());                                        // dResult
+
+        // オブジェクトIDテーブルのクリア
+        aSerializer.clearTracking();
+    }
+
     std::cout << "tutoriseObjectTracking() end\n" << std::endl;
 }
 

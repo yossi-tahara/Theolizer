@@ -300,6 +300,7 @@ struct Switcher
                 SavePointer<tBaseSerializer,
                             typename std::remove_pointer<PointerType>::type
                            >::save(iSerializer, const_cast<PointerType&>(iPointer));
+                aSerializeInfo.mStatus=etsProcessed;
             }
         }
         iSerializer.mRequireCheckTracking=true;

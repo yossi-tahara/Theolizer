@@ -406,27 +406,19 @@ enum TrackingStatus
 
 struct SerializeInfo
 {
-    void*           mAddress;
-    std::type_index mStdTypeIndex;
     size_t          mObjectId;
     TrackingStatus  mStatus;
 
     SerializeInfo() :
-        mAddress(nullptr),
-        mStdTypeIndex(typeid(nullptr)),
         mObjectId(0),
         mStatus(etsInit)
     { }
 
     SerializeInfo
     (
-        void* iAddress,
-        std::type_info const& iTypeInfo,
         size_t iObjectId,
         TrackingStatus iStatus
-    ) : mAddress(iAddress),
-        mStdTypeIndex(iTypeInfo),
-        mObjectId(iObjectId),
+    ) : mObjectId(iObjectId),
         mStatus(iStatus)
     { }
 };
@@ -1213,6 +1205,7 @@ private:
     size_t                              mObjectId;
     struct SerializeList;
     std::unique_ptr<SerializeList>      mSerializeList;
+    void initSerializeList();
 
 //----------------------------------------------------------------------------
 //      シリアライズ用オブジェクト登録
