@@ -1709,9 +1709,9 @@ struct TheolizerNonIntrusive<DerivedManual>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
-        THEOLIZER_PROCESS(iSerializer, static_cast<BaseFullAuto const&>(*iInstance));
-        THEOLIZER_PROCESS(iSerializer, static_cast<BaseHalfAuto const&>(*iInstance));
-        THEOLIZER_PROCESS(iSerializer, static_cast<BaseManual const&>(*iInstance));
+        THEOLIZER_PROCESS_BASE(iSerializer, BaseFullAuto, iInstance);
+        THEOLIZER_PROCESS_BASE(iSerializer, BaseHalfAuto, iInstance);
+        THEOLIZER_PROCESS_BASE(iSerializer, BaseManual ,  iInstance);
         THEOLIZER_PROCESS(iSerializer, iInstance->mBaseFullAutoPublic);
         THEOLIZER_PROCESS(iSerializer, iInstance->mBaseHalfAutoPublic);
         THEOLIZER_PROCESS(iSerializer, iInstance->mBaseManualPublic);
@@ -1726,9 +1726,9 @@ struct TheolizerNonIntrusive<DerivedManual>::
     {
         if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
-        THEOLIZER_PROCESS(iSerializer, static_cast<BaseFullAuto&>(*oInstance));
-        THEOLIZER_PROCESS(iSerializer, static_cast<BaseHalfAuto&>(*oInstance));
-        THEOLIZER_PROCESS(iSerializer, static_cast<BaseManual&>(*oInstance));
+        THEOLIZER_PROCESS_BASE(iSerializer, BaseFullAuto, oInstance);
+        THEOLIZER_PROCESS_BASE(iSerializer, BaseHalfAuto, oInstance);
+        THEOLIZER_PROCESS_BASE(iSerializer, BaseManual,   oInstance);
         THEOLIZER_PROCESS(iSerializer, oInstance->mBaseFullAutoPublic);
         THEOLIZER_PROCESS(iSerializer, oInstance->mBaseHalfAutoPublic);
         THEOLIZER_PROCESS(iSerializer, oInstance->mBaseManualPublic);
@@ -1955,9 +1955,9 @@ struct TheolizerNonIntrusive<TripledManual>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
-        THEOLIZER_PROCESS(iSerializer, static_cast<DerivedFullAuto const&>(*iInstance));
-        THEOLIZER_PROCESS(iSerializer, static_cast<DerivedHalfAuto const&>(*iInstance));
-        THEOLIZER_PROCESS(iSerializer, static_cast<DerivedManual const&>(*iInstance));
+        THEOLIZER_PROCESS_BASE(iSerializer, DerivedFullAuto, iInstance);
+        THEOLIZER_PROCESS_BASE(iSerializer, DerivedHalfAuto, iInstance);
+        THEOLIZER_PROCESS_BASE(iSerializer, DerivedManual,   iInstance);
         THEOLIZER_PROCESS(iSerializer, iInstance->mDerivedFullAutoPublic);
         THEOLIZER_PROCESS(iSerializer, iInstance->mDerivedHalfAutoPublic);
         THEOLIZER_PROCESS(iSerializer, iInstance->mDerivedManualPublic);
@@ -1972,9 +1972,9 @@ struct TheolizerNonIntrusive<TripledManual>::
     {
         if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
-        THEOLIZER_PROCESS(iSerializer, static_cast<DerivedFullAuto&>(*oInstance));
-        THEOLIZER_PROCESS(iSerializer, static_cast<DerivedHalfAuto&>(*oInstance));
-        THEOLIZER_PROCESS(iSerializer, static_cast<DerivedManual&>(*oInstance));
+        THEOLIZER_PROCESS_BASE(iSerializer, DerivedFullAuto, oInstance);
+        THEOLIZER_PROCESS_BASE(iSerializer, DerivedHalfAuto, oInstance);
+        THEOLIZER_PROCESS_BASE(iSerializer, DerivedManual,   oInstance);
         THEOLIZER_PROCESS(iSerializer, oInstance->mDerivedFullAutoPublic);
         THEOLIZER_PROCESS(iSerializer, oInstance->mDerivedHalfAutoPublic);
         THEOLIZER_PROCESS(iSerializer, oInstance->mDerivedManualPublic);

@@ -802,22 +802,38 @@ bool ClassTypeInfo<tClassType>::loadTypeInstance
 
     if (aFound)
     {
-        if (aDoRelease)
+        // 参照経由で処理中の時、アドレス変更不可
+        if (iSerializer.mRefProcessing)
         {
-            // シリアライズ・データとポインタ指す先の型が異なる場合、解放する
-            //  ただし、std::shared_ptrが管理する領域の場合は、std::shared_ptr側で解放するので
-            //  ここでは解放しない。
-            if (!iSerializer.mIsShared)
+            if (aDoRelease)
             {
-                delete iPointer;
+                THEOLIZER_INTERNAL_WRONG_USING(
+                    "Type of this instance(%1%) is different from saved.",
+                    getNameByTypeInfo(typeid(*iPointer)));
             }
-            iPointer=nullptr;
         }
-
-        // 自動型で、nullptrなら領域獲得
-        if (tClassType::Theolizer::kIsAuto)
+        else
         {
-            if (!iPointer) iPointer=reinterpret_cast<tClassType*>(createClass2<TheolizerTarget>());
+            if (aDoRelease)
+            {
+                // シリアライズ・データとポインタ指す先の型が異なる場合、解放する
+                //  ただし、std::shared_ptrが管理する領域の場合は、std::shared_ptr側で解放するので
+                //  ここでは解放しない。
+                if (!iSerializer.mIsShared)
+                {
+                    delete iPointer;
+                }
+                iPointer=nullptr;
+            }
+
+            // 自動型で、nullptrなら領域獲得
+            if (tClassType::Theolizer::kIsAuto)
+            {
+                if (!iPointer)
+                {
+                    iPointer=reinterpret_cast<tClassType*>(createClass2<TheolizerTarget>());
+                }
+            }
         }
 
         // インスタンス回復

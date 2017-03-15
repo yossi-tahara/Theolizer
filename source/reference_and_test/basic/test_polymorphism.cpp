@@ -114,6 +114,140 @@ void tutorisePolymorphism()
         aPolyBase1->check();
     }
 
+//----------------------------------------------------------------------------
+//      参照回復時のエラー・テスト
+//          保存時と異なる型検出
+//          nullptr参照(通常あり得ないが)
+//----------------------------------------------------------------------------
+
+//      ---<<< 保存 >>>---
+
+    {
+        std::ofstream   aStream("tutorise_polymorphism_refer.json");
+        theolizer::JsonOSerializer<> aSerializer(aStream);
+
+        // 非侵入型完全自動
+        PolyDerivedFullAuto aPolyDerivedFullAuto(true);
+        PolyBaseFullAuto&   aPolyBaseFullAutoRef(aPolyDerivedFullAuto);
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aPolyBaseFullAutoRef);
+
+        // 侵入型半自動
+        PolyDerivedHalfAuto aPolyDerivedHalfAuto(true);
+        PolyBaseHalfAuto&   aPolyBaseHalfAutoRef(aPolyDerivedHalfAuto);
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aPolyBaseHalfAutoRef);
+
+        // 非侵入型手動
+        PolyDerivedManual aPolyDerivedManual(true);
+        PolyBaseManual&   aPolyBaseManualRef(aPolyDerivedManual);
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aPolyBaseManualRef);
+
+        // オブジェクトIDテーブルのクリア
+        aSerializer.clearTracking();
+    }
+
+//      ---<<< 正常系 >>>---
+
+    {
+        std::ifstream   aStream("tutorise_polymorphism_refer.json");
+        theolizer::JsonISerializer<> aSerializer(aStream);
+
+        // 非侵入型完全自動
+        PolyDerivedFullAuto aPolyDerivedFullAuto;
+        PolyBaseFullAuto&   aPolyBaseFullAutoRef(aPolyDerivedFullAuto);
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aPolyBaseFullAutoRef);
+        aPolyBaseFullAutoRef.check(true);
+
+        // 侵入型半自動
+        PolyDerivedHalfAuto aPolyDerivedHalfAuto;
+        PolyBaseHalfAuto&   aPolyBaseHalfAutoRef(aPolyDerivedHalfAuto);
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aPolyBaseHalfAutoRef);
+        aPolyBaseHalfAutoRef.check(true);
+
+        // 非侵入型手動
+        PolyDerivedManual aPolyDerivedManual;
+        PolyBaseManual&   aPolyBaseManualRef(aPolyDerivedManual);
+        THEOLIZER_PROCESS_POINTEE(aSerializer, aPolyBaseManualRef);
+        aPolyBaseManualRef.check(true);
+
+        // オブジェクトIDテーブルのクリア
+        aSerializer.clearTracking();
+    }
+
+//      ---<<< 異常系(型違い) >>>---
+
+    {
+        std::ifstream   aStream("tutorise_polymorphism_refer.json");
+        theolizer::JsonISerializer<> aSerializer(aStream);
+
+        // 保存時と異なる型へ回復しようとするとエラー
+
+        // 非侵入型完全自動
+        PolyDerivedHalfAuto aPolyDerivedHalfAuto;
+        PolyBaseFullAuto&   aPolyBaseFullAutoRef(aPolyDerivedHalfAuto);
+        THEOLIZER_CHECK_EXCEPTION2(
+            THEOLIZER_PROCESS_POINTEE(aSerializer, aPolyBaseFullAutoRef);,// dStatements
+            theolizer::ErrorInfo& e,                                // dException
+            e.getErrorKind() == theolizer::ErrorKind::WrongUsing,   // dJudge
+            e.getMessage());                                        // dResult
+
+        // 侵入型半自動
+        PolyDerivedManual   aPolyDerivedManual;
+        PolyBaseHalfAuto&   aPolyBaseHalfAutoRef(aPolyDerivedManual);
+        THEOLIZER_CHECK_EXCEPTION2(
+            THEOLIZER_PROCESS_POINTEE(aSerializer, aPolyBaseHalfAutoRef);,// dStatements
+            theolizer::ErrorInfo& e,                                // dException
+            e.getErrorKind() == theolizer::ErrorKind::WrongUsing,   // dJudge
+            e.getMessage());                                        // dResult
+
+        // 非侵入型手動
+        PolyDerivedFullAuto aPolyDerivedFullAuto;
+        PolyBaseManual&     aPolyBaseManualRef(aPolyDerivedFullAuto);
+        THEOLIZER_CHECK_EXCEPTION2(
+            THEOLIZER_PROCESS_POINTEE(aSerializer, aPolyBaseManualRef);,// dStatements
+            theolizer::ErrorInfo& e,                                // dException
+            e.getErrorKind() == theolizer::ErrorKind::WrongUsing,   // dJudge
+            e.getMessage());                                        // dResult
+
+        // オブジェクトIDテーブルのクリア
+        aSerializer.clearTracking();
+    }
+
+//      ---<<< 異常系(nullptr) >>>---
+
+    {
+        std::ifstream   aStream("tutorise_polymorphism_refer.json");
+        theolizer::JsonISerializer<> aSerializer(aStream);
+
+        // nullptrへ回復しようとするとエラー
+
+        // 非侵入型完全自動
+        PolyBaseFullAuto*   aPolyBaseFullAutoPtr(nullptr);
+        THEOLIZER_CHECK_EXCEPTION2(
+            THEOLIZER_PROCESS_POINTEE(aSerializer, *aPolyBaseFullAutoPtr);,// dStatements
+            theolizer::ErrorInfo& e,                                // dException
+            e.getErrorKind() == theolizer::ErrorKind::WrongUsing,   // dJudge
+            e.getMessage());                                        // dResult
+
+        // 侵入型半自動
+        PolyBaseHalfAuto*   aPolyBaseHalfAutoPtr(nullptr);
+        THEOLIZER_CHECK_EXCEPTION2(
+            THEOLIZER_PROCESS_POINTEE(aSerializer, *aPolyBaseHalfAutoPtr);,// dStatements
+            theolizer::ErrorInfo& e,                                // dException
+            e.getErrorKind() == theolizer::ErrorKind::WrongUsing,   // dJudge
+            e.getMessage());                                        // dResult
+
+        // 非侵入型手動
+        PolyBaseManual*     aPolyBaseManualPtr(nullptr);
+        THEOLIZER_CHECK_EXCEPTION2(
+            THEOLIZER_PROCESS_POINTEE(aSerializer, *aPolyBaseManualPtr);,// dStatements
+            theolizer::ErrorInfo& e,                                // dException
+            e.getErrorKind() == theolizer::ErrorKind::WrongUsing,   // dJudge
+            e.getMessage());                                        // dResult
+
+        // オブジェクトIDテーブルのクリア
+        aSerializer.clearTracking();
+    }
+
     std::cout << "tutorisePolymorphism() end\n" << std::endl;
 }
 
@@ -167,6 +301,53 @@ void savePolymorphism(tSerializer& iSerializer)
         aVector.emplace_back(new PolyDerivedManual(true));
         THEOLIZER_PROCESS(iSerializer, aVector);
 
+        iSerializer.clearTracking();
+    }
+
+//----------------------------------------------------------------------------
+//      参照
+//----------------------------------------------------------------------------
+
+    {
+        // 非侵入型完全自動
+        PolyDerivedFullAuto aPolyDerivedFullAuto(true);
+        PolyBaseFullAuto&   aPolyBaseFullAutoRef(aPolyDerivedFullAuto);
+        THEOLIZER_PROCESS(iSerializer, aPolyBaseFullAutoRef);
+
+        // 侵入型半自動
+        PolyDerivedHalfAuto aPolyDerivedHalfAuto(true);
+        PolyBaseHalfAuto&   aPolyBaseHalfAutoRef(aPolyDerivedHalfAuto);
+        THEOLIZER_PROCESS(iSerializer, aPolyBaseHalfAutoRef);
+
+        // 非侵入型手動
+        PolyDerivedManual aPolyDerivedManual(true);
+        PolyBaseManual&   aPolyBaseManualRef(aPolyDerivedManual);
+        THEOLIZER_PROCESS(iSerializer, aPolyBaseManualRef);
+
+        // オブジェクト追跡されていないことを確認する
+        THEOLIZER_EQUAL(iSerializer.getRequireCheckTracking(), false);
+    }
+
+    {
+        // 非侵入型完全自動
+        PolyDerivedFullAuto aPolyDerivedFullAuto(true);
+        PolyBaseFullAuto&   aPolyBaseFullAutoRef(aPolyDerivedFullAuto);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aPolyBaseFullAutoRef);
+
+        // 侵入型半自動
+        PolyDerivedHalfAuto aPolyDerivedHalfAuto(true);
+        PolyBaseHalfAuto&   aPolyBaseHalfAutoRef(aPolyDerivedHalfAuto);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aPolyBaseHalfAutoRef);
+
+        // 非侵入型手動
+        PolyDerivedManual aPolyDerivedManual(true);
+        PolyBaseManual&   aPolyBaseManualRef(aPolyDerivedManual);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aPolyBaseManualRef);
+
+        // オブジェクト追跡されていることを確認する
+        THEOLIZER_EQUAL(iSerializer.getRequireCheckTracking(), true);
+
+        // 基底クラスで派生クラスをシリアライズすると、オブジェクト追跡されるので要クリア
         iSerializer.clearTracking();
     }
 }
@@ -238,6 +419,60 @@ void loadPolymorphism(tSerializer& iSerializer)
 
         aVector[2]->check(true);
         THEOLIZER_EQUAL(typeid(*aVector[2].get()), typeid(PolyDerivedManual));
+    }
+
+//----------------------------------------------------------------------------
+//      参照
+//----------------------------------------------------------------------------
+
+    {
+        PolyDerivedFullAuto aPolyDerivedFullAuto;
+        PolyBaseFullAuto&   aPolyBaseFullAutoRef(aPolyDerivedFullAuto);
+        THEOLIZER_PROCESS(iSerializer, aPolyBaseFullAutoRef);
+        aPolyBaseFullAutoRef.check(true);
+
+        // 侵入型半自動
+        PolyDerivedHalfAuto aPolyDerivedHalfAuto;
+        PolyBaseHalfAuto&   aPolyBaseHalfAutoRef(aPolyDerivedHalfAuto);
+        THEOLIZER_PROCESS(iSerializer, aPolyBaseHalfAutoRef);
+        aPolyBaseHalfAutoRef.check(true);
+
+        // 非侵入型手動
+        PolyDerivedManual aPolyDerivedManual;
+        PolyBaseManual&   aPolyBaseManualRef(aPolyDerivedManual);
+        THEOLIZER_PROCESS(iSerializer, aPolyBaseManualRef);
+        aPolyBaseManualRef.check(true);
+
+        // オブジェクト追跡されていないことを確認する
+        THEOLIZER_EQUAL(iSerializer.getRequireCheckTracking(), false);
+
+        // 基底クラスで派生クラスをシリアライズすると、オブジェクト追跡されるので要クリア
+        iSerializer.clearTracking();
+    }
+
+    {
+        PolyDerivedFullAuto aPolyDerivedFullAuto;
+        PolyBaseFullAuto&   aPolyBaseFullAutoRef(aPolyDerivedFullAuto);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aPolyBaseFullAutoRef);
+        aPolyBaseFullAutoRef.check(true);
+
+        // 侵入型半自動
+        PolyDerivedHalfAuto aPolyDerivedHalfAuto;
+        PolyBaseHalfAuto&   aPolyBaseHalfAutoRef(aPolyDerivedHalfAuto);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aPolyBaseHalfAutoRef);
+        aPolyBaseHalfAutoRef.check(true);
+
+        // 非侵入型手動
+        PolyDerivedManual aPolyDerivedManual;
+        PolyBaseManual&   aPolyBaseManualRef(aPolyDerivedManual);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aPolyBaseManualRef);
+        aPolyBaseManualRef.check(true);
+
+        // オブジェクト追跡されていることを確認する
+        THEOLIZER_EQUAL(iSerializer.getRequireCheckTracking(), true);
+
+        // 基底クラスで派生クラスをシリアライズすると、オブジェクト追跡されるので要クリア
+        iSerializer.clearTracking();
     }
 }
 

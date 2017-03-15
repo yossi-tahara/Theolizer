@@ -280,6 +280,8 @@ endif()
 #       バージョン変更テスト
 #-----------------------------------------------------------------------------
 
+if(TRUE)
+
 set(FIRST_VERSION "ver1a")
 set(LAST_VERSION  "ver3b")
 set(TEST_LABEL "TestF2L")
@@ -368,3 +370,5 @@ message(STATUS "DEPENDS : ${TARGET_NAME}${FIRST_VERSION}Exec depends to ${TARGET
 set_tests_properties(${TARGET_NAME}${FIRST_VERSION}Exec2
     PROPERTIES DEPENDS ${TARGET_NAME}${LAST_VERSION}Exec)
 message(STATUS "DEPENDS : ${TARGET_NAME}${FIRST_VERSION}Exec2 depends to ${TARGET_NAME}${LAST_VERSION}Exec")
+
+endif()

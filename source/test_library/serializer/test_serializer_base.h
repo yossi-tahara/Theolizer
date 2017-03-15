@@ -710,7 +710,7 @@ struct TheolizerNonIntrusive<NonIntrusiveDrived>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
-        THEOLIZER_PROCESS(iSerializer, static_cast<NonIntrusiveBase const&>(*iInstance));
+        THEOLIZER_PROCESS_BASE(iSerializer, NonIntrusiveBase, iInstance);
         THEOLIZER_PROCESS(iSerializer, iInstance->mInt);
     }
 
@@ -724,7 +724,7 @@ struct TheolizerNonIntrusive<NonIntrusiveDrived>::
         // もし、nullptrなら、インスタンス生成
         if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
-        THEOLIZER_PROCESS(iSerializer, static_cast<NonIntrusiveBase&>(*oInstance));
+        THEOLIZER_PROCESS_BASE(iSerializer, NonIntrusiveBase, oInstance);
         THEOLIZER_PROCESS(iSerializer, oInstance->mInt);
     }
 };

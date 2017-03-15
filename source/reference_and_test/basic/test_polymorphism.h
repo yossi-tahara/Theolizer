@@ -279,9 +279,9 @@ struct TheolizerNonIntrusive<PolyDerivedManual>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
-        THEOLIZER_PROCESS(iSerializer, static_cast<PolyBaseFullAuto const&>(*iInstance));
-        THEOLIZER_PROCESS(iSerializer, static_cast<PolyBaseHalfAuto const&>(*iInstance));
-        THEOLIZER_PROCESS(iSerializer, static_cast<PolyBaseManual const&>(*iInstance));
+        THEOLIZER_PROCESS_BASE(iSerializer, PolyBaseFullAuto, iInstance);
+        THEOLIZER_PROCESS_BASE(iSerializer, PolyBaseHalfAuto, iInstance);
+        THEOLIZER_PROCESS_BASE(iSerializer, PolyBaseManual,   iInstance);
         THEOLIZER_PROCESS(iSerializer, iInstance->mDerivedData);
     }
 
@@ -294,9 +294,9 @@ struct TheolizerNonIntrusive<PolyDerivedManual>::
     {
         if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
-        THEOLIZER_PROCESS(iSerializer, static_cast<PolyBaseFullAuto&>(*oInstance));
-        THEOLIZER_PROCESS(iSerializer, static_cast<PolyBaseHalfAuto&>(*oInstance));
-        THEOLIZER_PROCESS(iSerializer, static_cast<PolyBaseManual&>(*oInstance));
+        THEOLIZER_PROCESS_BASE(iSerializer, PolyBaseFullAuto, oInstance);
+        THEOLIZER_PROCESS_BASE(iSerializer, PolyBaseHalfAuto, oInstance);
+        THEOLIZER_PROCESS_BASE(iSerializer, PolyBaseManual,   oInstance);
         THEOLIZER_PROCESS(iSerializer, oInstance->mDerivedData);
     }
 };

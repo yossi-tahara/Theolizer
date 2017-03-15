@@ -76,6 +76,20 @@ namespace theolizer
             (dSerializer, dInstance, #dInstance, THEOLIZER_INTERNAL_FILE, __LINE__);\
     } while(0)
 
+//      ---<<< 基底クラス（非侵入型手動専用） >>>---
+
+#define THEOLIZER_PROCESS_BASE(dSerializer, dBase, dInstance)               \
+    {                                                                       \
+        theolizer::internal::BaseSerializer::AutoBaseProcessing             \
+            aAutoBaseProcessing(dSerializer);                               \
+        theolizer::internal::process<theolizer::internal::etmDefault,tTheolizerVersion>\
+        (                                                                   \
+            dSerializer,                                                    \
+            const_cast<dBase&>(static_cast<dBase const&>(*dInstance)),      \
+            "(" #dBase ")", THEOLIZER_INTERNAL_FILE, __LINE__               \
+        );                                                                  \
+    }
+
 //############################################################################
 //      クラスとenum型のシリアライズ／デシリアライズ定義
 //############################################################################

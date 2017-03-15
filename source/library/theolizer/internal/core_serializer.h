@@ -423,9 +423,9 @@ struct SerializeInfo
     { }
 };
 
-//----------------------------------------------------------------------------
+// ***************************************************************************
 //      デシリアライズ用オブジェクト情報
-//----------------------------------------------------------------------------
+// ***************************************************************************
 
 struct DeserializeInfo
 {
@@ -561,6 +561,9 @@ private:
     bool                                    mRequireCheckTracking;
 
 public:
+    //! @todo T.B.D.
+    bool getRequireCheckTracking() { return mRequireCheckTracking; }
+
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
     // デフォルトは保存先無し
     static const bool                       kHasDestination=false;
@@ -652,16 +655,33 @@ protected:
 //----------------------------------------------------------------------------
 
 private:
-    bool    mClassTracking;
-    void clearClassTracking() {mClassTracking=false;}
+	// 派生クラスの一部としての基底クラス処理中
+    bool    mBaseProcessing;
+    struct AutoBaseProcessing
+    {
+        bool  	mBaseProcessingBack;
+        bool&   mBaseProcessing;
+        AutoBaseProcessing(BaseSerializer& iSerializer) :
+            mBaseProcessingBack(iSerializer.mBaseProcessing),
+            mBaseProcessing(    iSerializer.mBaseProcessing)
+        {
+            mBaseProcessing=true;
+        }
+        ~AutoBaseProcessing()
+        {
+            mBaseProcessing=mBaseProcessingBack;
+        }
+    };
 
+	// クラスのオブジェクト追跡中
+    bool    mClassTracking;
     struct AutoClassTracking
     {
-        bool    mClassTrackingBack;
+        bool  	mClassTrackingBack;
         bool&   mClassTracking;
         AutoClassTracking(BaseSerializer& iSerializer) :
             mClassTrackingBack(iSerializer.mClassTracking),
-            mClassTracking(iSerializer.mClassTracking)
+            mClassTracking(    iSerializer.mClassTracking)
         {
             mClassTracking=true;
         }
@@ -670,6 +690,25 @@ private:
             mClassTracking=mClassTrackingBack;
         }
     };
+
+	// 参照処理中
+    bool	mRefProcessing;
+    struct AutoRefProcessing
+    {
+        bool    mRefProcessingBack;
+        bool&   mRefProcessing;
+        AutoRefProcessing(BaseSerializer& iSerializer) :
+            mRefProcessingBack(iSerializer.mRefProcessing),
+            mRefProcessing(    iSerializer.mRefProcessing)
+        {
+            mRefProcessing=true;
+        }
+        ~AutoRefProcessing()
+        {
+            mRefProcessing=mRefProcessingBack;
+        }
+    };
+
 
 //----------------------------------------------------------------------------
 //      オブジェクト追跡テーブルをクリアする
@@ -882,6 +921,7 @@ private:
         }
 
         AutoRestoreSave aAutoRestoreSave(*this, aElementsMapping);
+        BaseSerializer::AutoBaseProcessing aAutoBaseProcessing(*this);
         for (size_t i=0; !tVersionType::getElementTheolizer(i).isSentinel() ; ++i)
         {
             if (!mDestinations.isMatch(tVersionType::getElementTheolizer(i).getDestinations()))
@@ -890,7 +930,7 @@ private:
             // 基底クラスの処理が終わったら、オーナー処理中をクリアする
             if (!tVersionType::getElementTheolizer(i).isBaseClass())
             {
-                clearClassTracking();
+                mBaseProcessing=false;
             }
 
             char const* aElementName=tVersionType::getElementTheolizer(i).getName();
@@ -1063,6 +1103,7 @@ private:
             aElementsMapping=emOrder;
         }
         AutoRestoreLoad aAutoRestoreLoad(*this, aElementsMapping);
+        BaseSerializer::AutoBaseProcessing aAutoBaseProcessing(*this);
 
         // 要素がないならNOP
         if (tVersionType::getElementTheolizer(0).isSentinel())
@@ -1157,7 +1198,7 @@ private:
                 // 基底クラスの処理が終わったら、オーナー処理中をクリアする
                 if (!tVersionType::getElementTheolizer(aIndex).isBaseClass())
                 {
-                    clearClassTracking();
+                    mBaseProcessing=false;
                 }
 
                 // 回復
