@@ -130,7 +130,7 @@ enumシンボル THEOLIZER_ANNOTATE(ES:シンボル名リスト:シンボル値�
 
 <br>
 //############################################################################
-@section HowToMakeGlobalVersionNoTable2 2.グローバル・バージョン番号テーブル生成
+@section HowToMakeGlobalVersionNoTable 2.グローバル・バージョン番号テーブル生成
 //############################################################################
 
 enum型解説の途中ですが、ここでバージョン・アップ前の準備について説明します。<br>
@@ -222,8 +222,7 @@ enum型をバージョン・アップする時の手順は次の通りです。
 
 <br>
 @subsection HowToModifyEnum32 3-2.非侵入型半自動への変更方法
-単純にTHEOLIZER_ENUM()マクロで指定しするだけです。対象のenum型定義よりも後、*.theolizer.hppをインクルードする前にTHEOLIZER_ENUM()マクロを置いて下さい。。<br>
-なお、THEOLIZER_ENUM_VALUE()でシンボル値保存へ直接変更することはできません。シンボル値保存へ変更する場合は、ローカル・バージョン番号を更新する時に行って下さい。<br>
+単純にTHEOLIZER_ENUM()マクロで指定しするだけです。対象のenum型定義よりも後、*.theolizer.hppをインクルードする前にTHEOLIZER_ENUM()マクロを置いて下さい。なお、THEOLIZER_ENUM_VALUE()でシンボル値保存へ直接変更することはできません。シンボル値保存へ変更する場合は、ローカル・バージョン番号を更新する時に行って下さい。<br>
 
 <b>サンプル</b><br>
 test_modify_enum.hで定義しているEnumFullAutoとScopedEnumFullAutoはver1a, ver1bまでは非侵入型完全自動ですが、ver1cにて非侵入型半自動へ修正しています。<br>

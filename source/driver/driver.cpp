@@ -497,6 +497,18 @@ int main(int iArgc, const char **iArgv)
 //  ENABLE_OUTPUT(KIND(Time)|KIND(Parameter));
     ENABLE_OUTPUT(KIND(Time)|KIND(Driver)|KIND(Parameter)|KIND(AstAnalyze));
 
+    struct Auto
+    {
+        Auto()
+        {
+            PARAMETER_OUTPUT("Theolizer Driver : Start -----------------------------------");
+        }
+        ~Auto()
+        {
+            PARAMETER_OUTPUT("Theolizer Driver : End   -----------------------------------");
+        }
+    } aAuto;
+
     FineTimer   ft;
     int i;
 
@@ -877,6 +889,8 @@ return aRet;
     TIME_OUTPUT("Compile time=, ", ft.GetmSec(), ", mSec");
 
     llvm::llvm_shutdown();
+
+    PARAMETER_OUTPUT("ret=", ret);
 
     return ret;
 }

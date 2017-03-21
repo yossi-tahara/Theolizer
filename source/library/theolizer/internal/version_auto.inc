@@ -1111,10 +1111,15 @@ THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
 {
     if (iVersionNo < (THEOLIZER_GENERATED_VERSION_NO+1))
     {
-        THEOLIZER_GENERATED_CLASS_TYPE::
-            TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO>
-                aVersion(*this, iVersionNo, true);
-        aVersion.saveClass(iSerializer, iVersionNo);
+        typedef THEOLIZER_GENERATED_CLASS_TYPE::
+            TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO> TheolizerVersion;
+
+        std::unique_ptr<TheolizerVersion> aVersion=
+            std::unique_ptr<TheolizerVersion>
+            (
+                new TheolizerVersion(*this, iVersionNo, true)
+            );
+        aVersion->saveClass(iSerializer, iVersionNo);
     }
     else
     {
@@ -1137,10 +1142,15 @@ THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
     mTheolizerSpecials.mIsLoading=true; // デストラクト時upVersionを呼ぶため
     if (iVersionNo < (THEOLIZER_GENERATED_VERSION_NO+1))
     {
-        THEOLIZER_GENERATED_CLASS_TYPE::
-            TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO>
-                aVersion(*this, iVersionNo, false);
-        aVersion.loadClass(iSerializer, iVersionNo);
+        typedef THEOLIZER_GENERATED_CLASS_TYPE::
+            TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO> TheolizerVersion;
+
+        std::unique_ptr<TheolizerVersion> aVersion=
+            std::unique_ptr<TheolizerVersion>
+            (
+                new TheolizerVersion(*this, iVersionNo, false)
+            );
+        aVersion->loadClass(iSerializer, iVersionNo);
     }
     else
     {
@@ -1354,12 +1364,19 @@ THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::saveClass
     unsigned iVersionNo
 )
 {
-    THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
+    typedef THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
     <
         theolizer::internal::BaseSerializer,
         Theolizer::kLastVersionNo
-    > aVersion(*iPointer, iVersionNo, true);
-    aVersion.saveClass(iSerializer, iVersionNo);
+    > TheolizerVersion;
+
+    std::unique_ptr<TheolizerVersion> aVersion=
+        std::unique_ptr<TheolizerVersion>
+        (
+            new TheolizerVersion(*iPointer, iVersionNo, true)
+        );
+
+    aVersion->saveClass(iSerializer, iVersionNo);
 }
 
 //      ---<<< 回復 >>>---
@@ -1373,12 +1390,18 @@ THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::loadClass
     unsigned iVersionNo
 )
 {
-    THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
+    typedef THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
     <
         theolizer::internal::BaseSerializer,
         Theolizer::kLastVersionNo
-    > aVersion(*ioPointer, iVersionNo, false);
-    aVersion.loadClass(iSerializer, iVersionNo);
+    > TheolizerVersion;
+
+    std::unique_ptr<TheolizerVersion> aVersion=
+        std::unique_ptr<TheolizerVersion>
+        (
+            new TheolizerVersion(*ioPointer, iVersionNo, false)
+        );
+    aVersion->loadClass(iSerializer, iVersionNo);
 }
 
 //----------------------------------------------------------------------------
