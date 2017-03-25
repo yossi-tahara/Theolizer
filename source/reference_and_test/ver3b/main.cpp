@@ -74,6 +74,22 @@ void saveModifyEnum(tSerializer& iSerializer);
 template<class tSerializer>
 void loadModifyEnum(tSerializer& iSerializer);
 
+//----------------------------------------------------------------------------
+//      クラス変更テスト
+//----------------------------------------------------------------------------
+
+//      ---<<< 使い方のサンプル・コード >>>---
+
+//void tutoriseModifyClass();
+
+//      ---<<< 自動テスト >>>---
+
+template<class tSerializer>
+void saveModifyClass(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadModifyClass(tSerializer& iSerializer);
+
 // ***************************************************************************
 //      各テスト呼び出し
 // ***************************************************************************
@@ -107,6 +123,10 @@ void saveBasic(tSerializer& iSerializer)
 #ifndef DISABLE_MODIFY_ENUM_TEST
     saveModifyEnum(iSerializer);
 #endif
+
+#ifndef DISABLE_MODIFY_CLASS_TEST
+    saveModifyClass(iSerializer);
+#endif
 }
 
 template<class tSerializer>
@@ -116,6 +136,10 @@ void loadBasic(tSerializer& iSerializer)
 
 #ifndef DISABLE_MODIFY_ENUM_TEST
     loadModifyEnum(iSerializer);
+#endif
+
+#ifndef DISABLE_MODIFY_CLASS_TEST
+    loadModifyClass(iSerializer);
 #endif
 }
 

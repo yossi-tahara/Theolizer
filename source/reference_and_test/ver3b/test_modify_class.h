@@ -29,12 +29,12 @@
 
 struct ArraySizeTest
 {
-    static const unsigned   kSize=kDefSize;
+    static const unsigned   kSize=kVer3Size;
     unsigned    mArray1D[kSize];
     unsigned    mArray2D[kSize][kSize];
     unsigned    mArray3D[kSize][kSize][kSize];
 
-    ArraySizeTest() : mArray1D{}, mArray2D{}, mArray3D{}
+    ArraySizeTest() : mArray1D{}, mArray2D{}
     { }
     ArraySizeTest(bool)
     {
@@ -51,24 +51,45 @@ struct ArraySizeTest
             }
         }
     }
-    void check(bool isValued=false)
+    void check(bool isValued=false, unsigned iSize=kSize)
     {
         for (unsigned i=0; i < kSize; ++i)
         {
-            THEOLIZER_EQUAL(mArray1D[i], ((isValued)?i:0), i);
+            if (i < iSize)
+            {
+                THEOLIZER_EQUAL(mArray1D[i], ((isValued)?i:0), i);
+            }
+            else
+            {
+                THEOLIZER_EQUAL(mArray1D[i], 0, i);
+            }
             for (unsigned j=0; j < kSize; ++j)
             {
-                THEOLIZER_EQUAL(mArray2D[i][j], ((isValued)?(i*1000+j):0), i, j);
+                if ((i < iSize) && (j < iSize))
+                {
+                    THEOLIZER_EQUAL(mArray2D[i][j], ((isValued)?(i*1000+j):0), i, j);
+                }
+                else
+                {
+                    THEOLIZER_EQUAL(mArray2D[i][j], 0, i, j);
+                }
                 for (unsigned k=0; k < kSize; ++k)
                 {
-                    THEOLIZER_EQUAL(mArray3D[i][j][k], ((isValued)?((i*1000+j)*1000+k):0),
-                        i, j, k);
+                    if ((i < iSize) && (j < iSize) && (k < iSize))
+                    {
+                        THEOLIZER_EQUAL(mArray3D[i][j][k], ((isValued)?((i*1000+j)*1000+k):0),
+                            i, j, k);
+                    }
+                    else
+                    {
+                        THEOLIZER_EQUAL(mArray3D[i][j][k], 0, i, j, k);
+                    }
                 }
             }
         }
     }
 
-    THEOLIZER_INTRUSIVE(CS, (ArraySizeTest), 1);
+    THEOLIZER_INTRUSIVE(CS, (ArraySizeTest), 2);
 };
 
 //----------------------------------------------------------------------------
