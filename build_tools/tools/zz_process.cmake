@@ -486,19 +486,15 @@ elseif("${PROC}" STREQUAL "full")
             build(ShortTest Debug .)
             set(TEMP_LOG "${TEMP_LOG}${OUTPUT_LOG}")
         else()
-            if((NOT "${CI_SERVICE}" STREQUAL "") AND ("$ENV{PARALLEL_TEST}" STREQUAL ""))
-                relay("  Release Build..(short)")
-                build(ShortTest Release .)
-            else()
-                relay("  Release Build..")
-                build(FullTest Release .)
-            endif()
+            relay("  Release Build..")
+            build(FullTest$ENV{PARALLEL_TEST} Release .)
             set(TEMP_LOG "${TEMP_LOG}${OUTPUT_LOG}")
         endif()
         get_pass_list()
         math(EXPR INDEX "${INDEX} + 1")
 
-        if(${RETURN_CODE} EQUAL 0)
+        # 非Travis-CI時のみインストールする
+        if((${RETURN_CODE} EQUAL 0) AND ("${CI_SERVICE}" STREQUAL ""))
             relay("  Installing  ...")
 
             # インストール先を一旦削除してからインストールする

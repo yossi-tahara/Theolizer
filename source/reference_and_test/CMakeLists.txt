@@ -24,7 +24,7 @@
 #       NOW_VERSION  : 現バージョン指定
 #       PREV_VERSION : 前バージョン指定  (先頭バージョンは"")
 #       LAST_VERSION : 最終バージョン指定(バージョン処理無しなら"")
-macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR_CHECK)
+macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR_CHECK TEST_FL)
     set(TEST_NAME ${TARGET_NAME}${NOW_VERSION})
     set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${NOW_VERSION}")
     set(BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}")
@@ -190,7 +190,7 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR
     # ビルド
     add_test_sub_base(${TEST_NAME}Build ${CMAKE_COMMAND}
         --build ${CMAKE_BINARY_DIR} --config $<CONFIG> --target ${TEST_NAME})
-    set_tests_properties(${TEST_NAME}Build PROPERTIES LABELS TestFL)
+    set_tests_properties(${TEST_NAME}Build PROPERTIES LABELS ${TEST_FL})
 
     # 前バージョンがあるなら、前バージョンのビルドへ依存
     if(NOT "${PREV_VERSION}" STREQUAL "")
@@ -208,7 +208,7 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR
     else()
         # 1回目の実行
         add_test_sub_base(${TEST_NAME}Exec ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME})
-        set_tests_properties(${TEST_NAME}Exec PROPERTIES LABELS TestFL)
+        set_tests_properties(${TEST_NAME}Exec PROPERTIES LABELS ${TEST_FL})
         set_tests_properties(${TEST_NAME}Exec PROPERTIES FOLDER "TestTargets")
 ##        set_tests_properties(${TEST_NAME}Exec PROPERTIES DEPENDS ${TEST_NAME}Build)
 ##        message(STATUS "DEPENDS : ${TEST_NAME}Exec depends to ${TEST_NAME}Build")
@@ -220,7 +220,7 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR
 
         # 2回目実行
         add_test_sub_base(${TEST_NAME}Exec2 ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME} Exec2)
-        set_tests_properties(${TEST_NAME}Exec2 PROPERTIES LABELS TestFL)
+        set_tests_properties(${TEST_NAME}Exec2 PROPERTIES LABELS ${TEST_FL})
         set_tests_properties(${TEST_NAME}Exec2 PROPERTIES FOLDER "TestTargets")
         # 前バージョンがあるなら、2回目実行の前バージョンへ依存
         if(NOT "${PREV_VERSION}" STREQUAL "")
@@ -255,6 +255,7 @@ if(TRUE)
 set(FIRST_VERSION "")
 set(LAST_VERSION  "")
 set(PREV_VERSION  "")
+set(TEST_LABEL "TestF1L")
 
 set(NOW_VERSION basic)
 set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.cpp)
@@ -269,8 +270,9 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_d
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_support_stl.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${SOURCE_LIST})
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    ${SOURCE_LIST})
 
 endif()
 
@@ -280,6 +282,7 @@ endif()
 
 set(FIRST_VERSION "ver1a")
 set(LAST_VERSION  "ver3b")
+set(TEST_LABEL "TestF2L")
 
 #       ---<<< ver1a >>>---
 
@@ -289,8 +292,9 @@ set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.c
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_enum.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${SOURCE_LIST})
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    ${SOURCE_LIST})
 
 #       ---<<< ver1b >>>---
 
@@ -300,8 +304,9 @@ set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.c
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_enum.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${SOURCE_LIST})
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    ${SOURCE_LIST})
 
 #       ---<<< ver1c >>>---
 
@@ -311,8 +316,9 @@ set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.c
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_enum.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${SOURCE_LIST})
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    ${SOURCE_LIST})
 
 #       ---<<< ver2a >>>---
 
@@ -322,8 +328,9 @@ set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.c
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_enum.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${SOURCE_LIST})
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    ${SOURCE_LIST})
 
 #       ---<<< ver3a >>>---
 
@@ -333,8 +340,9 @@ set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.c
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_enum.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${SOURCE_LIST})
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    ${SOURCE_LIST})
 
 #       ---<<< ver3b >>>---
 
@@ -344,8 +352,9 @@ set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.c
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_enum.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${SOURCE_LIST})
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    ${SOURCE_LIST})
 
 #-----------------------------------------------------------------------------
 #       最初のバージョンの1回目実行を最後のバージョンのビルドへ依存させる

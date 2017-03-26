@@ -239,13 +239,17 @@ endfunction()
 #       ---<<< test target >>>---
 
 # Full
-if(WIN32)
-    add_custom_target(FullTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF.*")
-else()
-    add_custom_target(FullTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF.*" "$PARALLEL_TEST")
-endif()
+add_custom_target(FullTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF.*")
 set_target_properties(FullTest PROPERTIES FOLDER "TestTargets")
 exclude_all_target(FullTest)
+
+add_custom_target(FullTest1 COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF[1L].*")
+set_target_properties(FullTest1 PROPERTIES FOLDER "TestTargets")
+exclude_all_target(FullTest1)
+
+add_custom_target(FullTest2 COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF[2L].*")
+set_target_properties(FullTest2 PROPERTIES FOLDER "TestTargets")
+exclude_all_target(FullTest2)
 
 # Long(Build using Driver Test)
 add_custom_target(LongTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "Test.*L.*")
@@ -338,6 +342,8 @@ function(add_test_function TARGET_NAME)
                          "<<<FAIL>>>;Detected memory leaks!")
     set_tests_properties(${TARGET_NAME}  PROPERTIES LABELS TestFLMS)
     add_dependencies(FullTest  ${TARGET_NAME})
+    add_dependencies(FullTest1 ${TARGET_NAME})
+    add_dependencies(FullTest2 ${TARGET_NAME})
     add_dependencies(LongTest  ${TARGET_NAME})
     add_dependencies(ShortTest ${TARGET_NAME})
 endfunction(add_test_function)

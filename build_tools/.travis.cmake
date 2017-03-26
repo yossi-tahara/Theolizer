@@ -112,7 +112,11 @@ set(ENV{LC_ALL} "C")
 #-----------------------------------------------------------------------------
 
 output_title("****** StaticWithBoost ******")
-build_by_gcc(gcc540 64 StaticWithBoost TRUE FALSE "13 1" "11 1")
+if("$ENV{PARALLEL_TEST}" STREQUAL "1")
+    build_by_gcc(gcc540 64 StaticWithBoost TRUE FALSE "14 1" "11 1")
+else()
+    build_by_gcc(gcc540 64 StaticWithBoost TRUE FALSE "29 1" "11 1")
+endif()
 
 #output_title("****** Static ******")
 #build_by_gcc(gcc540 64 Static FALSE FALSE "13 1" "11 1")

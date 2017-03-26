@@ -21,6 +21,10 @@ addons:
     - g++-5
     - gcc-5
 
+env:
+  - PARALLEL_TEST=1
+  - PARALLEL_TEST=2
+
 before_install:
   - g++ --version
   - g++-5 --version
@@ -41,8 +45,8 @@ script:
 after_script:
   - echo '================================================================================='
   - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/reference_and_test/version/ver1/*.hpp
-  - echo '---------------------------------------------------------------------------------'
-  - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/*.log
+#  - echo '---------------------------------------------------------------------------------'
+#  - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/*.log
 #  - echo '---------------------------------------------------------------------------------'
 #  - cat /home/travis/build/yossi-tahara/build/gcc540x64-Static-Release/*.log
 #  - echo '---------------------------------------------------------------------------------'
