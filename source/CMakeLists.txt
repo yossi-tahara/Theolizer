@@ -239,7 +239,11 @@ endfunction()
 #       ---<<< test target >>>---
 
 # Full
-add_custom_target(FullTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF.*")
+if(WIN32)
+    add_custom_target(FullTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF.*")
+else()
+    add_custom_target(FullTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF.*" "$PARALLEL_TEST")
+endif()
 set_target_properties(FullTest PROPERTIES FOLDER "TestTargets")
 exclude_all_target(FullTest)
 
