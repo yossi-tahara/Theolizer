@@ -92,6 +92,7 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR
         else()
             message(SEND_ERROR "unknown BUILD_TYPE : ${CMAKE_BUILD_TYPE}")
         endif()
+        set(PARAMETERS "${PARAMETERS} -v")
         STRING(REPLACE " " ";" PARAMETERS "${PARAMETERS}")
 
         # Theolizerへ解析要求

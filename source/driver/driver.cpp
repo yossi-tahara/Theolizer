@@ -597,6 +597,7 @@ return 1;
     bool aIsVersion = false;
     bool aIsNostdinc = false;
     bool aIsNostdincpp = false;
+    bool aIsOptionv = false;
     string aOriginalPath;
 
     for (auto&& arg : aArgv)
@@ -655,6 +656,7 @@ return TheolizerProc(aExePath, arg);
         if (StringRef(arg).equals("--version"))     aIsVersion    = true;
         if (StringRef(arg).equals("-nostdinc"))     aIsNostdinc   = true;
         if (StringRef(arg).equals("-nostdinc++"))   aIsNostdincpp = true;
+        if (StringRef(arg).equals("-v"))            aIsOptionv    = true;
     }
 
     // 元コンパイラのパス名をaExePathから生成する
@@ -675,7 +677,7 @@ return TheolizerProc(aExePath, arg);
     else
     {
         // ライセンス表示
-        if ((aDriverMode != gpp) || (aIsVersion))
+        if ((aDriverMode != gpp) || (aIsVersion) || (aIsOptionv))
         {
             llvm::outs() << theolizer::getVersionString() << "\n";
             llvm::outs() << "\n";
@@ -773,7 +775,8 @@ return TheolizerProc(aExePath, arg);
             TIME_OUTPUT("post BuildCompilation() time=, ", ft.GetmSec(false), ", mSec");
             FineTimer   ft2;
 
-            if (aIsVersion) {
+            if (aIsVersion)
+            {
                 llvm::outs() << "\n";
             }
 

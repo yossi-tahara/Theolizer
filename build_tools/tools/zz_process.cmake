@@ -216,11 +216,11 @@ macro(end LOG_FILE BREAK)
         endif()
     endif()
 
-    search(${LOG_FILE} FALSE "[^\n0-9A-Za-z_]*Configuring incomplete,")
-    search(${LOG_FILE} FALSE "[^\n0-9A-Za-z_]*warning[^0-9A-Za-z_]............")
-    search(${LOG_FILE} FALSE "[^\n0-9A-Za-z_]*error[^0-9A-Za-z_]............")
-    search(${LOG_FILE} FALSE "[^\n0-9A-Za-z_]*undefined reference[^0-9A-Za-z_]")
-    search(${LOG_FILE} TRUE  "[^\nA-Za-z_]*% tests passed[^0-9A-Za-z_][^\n]*")
+    search(${LOG_FILE} FALSE "[^\n0-9A-Za-z_]Configuring incomplete,")
+    search(${LOG_FILE} FALSE "[^\n0-9A-Za-z_]warning[^0-9A-Za-z_]............")
+    search(${LOG_FILE} FALSE "[^\n0-9A-Za-z_]error[^0-9A-Za-z_(]............")
+    search(${LOG_FILE} FALSE "[^\n0-9A-Za-z_]undefined reference[^0-9A-Za-z_]")
+    search(${LOG_FILE} TRUE  "[0-9]+% tests passed[^0-9A-Za-z_][^\n]*")
 
     # テスト結果の数を確認
     if(NOT "${ARGN}" STREQUAL "")
@@ -267,7 +267,7 @@ macro(build TARGET CONFIG_TYPE WORKING_DIR)
             ERROR_VARIABLE  OUTPUT_LOG
             RESULT_VARIABLE RETURN_CODE
         )
-    else()
+    elseif("${CI_SERVICE}" STREQUAL "")
         execute_process(
             COMMAND ${MAKE} ${TARGET} ${PARALLEL}
             WORKING_DIRECTORY "${WORKING_DIR}"
@@ -275,6 +275,14 @@ macro(build TARGET CONFIG_TYPE WORKING_DIR)
             ERROR_VARIABLE  OUTPUT_LOG
             RESULT_VARIABLE RETURN_CODE
         )
+    else()
+        execute_process(
+            COMMAND bash -c "${MAKE} ${TARGET} 2>&1 | tee temp.txt" ${PARALLEL}
+            WORKING_DIRECTORY "${WORKING_DIR}"
+            RESULT_VARIABLE RETURN_CODE
+        )
+        file(READ temp.txt TEMP)
+        set(OUTPUT_LOG "${OUTPUT_LOG}${TEMP}")
     endif()
 #message(STATUS "build(${TARGET} ${CONFIG_TYPE} ${WORKING_DIR}) RETURN_CODE=${RETURN_CODE}")
 #message(STATUS "OUTPUT_LOG=${OUTPUT_LOG}")
