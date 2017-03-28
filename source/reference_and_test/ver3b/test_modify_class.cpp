@@ -57,6 +57,24 @@ void saveModifyClass(tSerializer& iSerializer)
     std::cout << "    saveModifyClass();\n";
 
 //----------------------------------------------------------------------------
+//      変更テスト用クラス（名前対応）
+//----------------------------------------------------------------------------
+
+    {
+        ChangedModifyClassName  aChangedModifyClassName{true};
+        THEOLIZER_PROCESS(iSerializer, aChangedModifyClassName);
+    }
+
+//----------------------------------------------------------------------------
+//      変更テスト用クラス（順序対応）
+//----------------------------------------------------------------------------
+
+    {
+        ChangedModifyClassOrder    aChangedModifyClassOrder{true};
+        THEOLIZER_PROCESS(iSerializer, aChangedModifyClassOrder);
+    }
+
+//----------------------------------------------------------------------------
 //      配列要素数の上限テスト
 //----------------------------------------------------------------------------
 
@@ -89,14 +107,28 @@ void loadModifyClass(tSerializer& iSerializer)
 {
 //theolizer::DisplayPass aDisplayPass;
 
-    std::size_t aIndex=gIndex;
-    if (aIndex == kDefaultIndex)
+    VersionEnum aVersionEnum=gVersionList[gDataIndex].mVersionEnum;
+    std::cout << "    loadModifyClass(" << aVersionEnum << ");\n";
+
+//----------------------------------------------------------------------------
+//      変更テスト用クラス（名前対応）
+//----------------------------------------------------------------------------
+
     {
-        aIndex=gProgramIndex;
+        ChangedModifyClassName  aChangedModifyClassName;
+        THEOLIZER_PROCESS(iSerializer, aChangedModifyClassName);
+        aChangedModifyClassName.check();
     }
 
-    VersionEnum aVersionEnum=gVersionList[aIndex].mVersionEnum;
-    std::cout << "    loadModifyClass(" << aVersionEnum << ");\n";
+//----------------------------------------------------------------------------
+//      変更テスト用クラス（順序対応）
+//----------------------------------------------------------------------------
+
+    {
+        ChangedModifyClassOrder    aChangedModifyClassOrder;
+        THEOLIZER_PROCESS(iSerializer, aChangedModifyClassOrder);
+        aChangedModifyClassOrder.check();
+    }
 
 //----------------------------------------------------------------------------
 //      配列要素数の上限テスト
@@ -105,7 +137,7 @@ void loadModifyClass(tSerializer& iSerializer)
     {
         auto    aArray=std::unique_ptr<ArraySizeTest>(new ArraySizeTest{});
         THEOLIZER_PROCESS(iSerializer, aArray);
-        aArray->check(true, (aIndex < gMyIndex)?kDefSize:ArraySizeTest::kSize);
+        aArray->check(true, (gDataIndex < gMyIndex)?kDefSize:ArraySizeTest::kSize);
 
         // オブジェクトIDテーブルのクリア
         iSerializer.clearTracking();

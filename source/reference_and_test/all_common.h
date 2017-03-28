@@ -92,7 +92,8 @@ VersionList const gVersionList[]=
 const std::size_t   kDefaultIndex=std::numeric_limits<std::size_t>::max();
 
 extern std::size_t gMyIndex;        // 自分自身のバージョン・インデックス
-extern std::size_t gIndex;          // データのバージョン・インデックス
+extern std::size_t gIndex;          // データのバージョン・インデックス(指定値)
+extern std::size_t gDataIndex;      // データのバージョン・インデックス(実値)
 extern std::size_t gProgramIndex;   // 保存したプログラムのバージョン・インデックス
 
 // ***************************************************************************

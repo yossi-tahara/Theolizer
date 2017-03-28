@@ -327,7 +327,7 @@ int main(int argc, char** argv)
                                     +std::to_string(line)+")}";
             auto aError=aSerializer.getErrorInfo();
             THEOLIZER_CHECK(aError, aError.getErrorType());
-            THEOLIZER_EQUAL(aError.getMessage(), aMessage);
+            THEOLIZER_EQUAL(aError.getMessage().str().substr(0, aMessage.str().size()), aMessage);
             THEOLIZER_EQUAL(aError.getAdditionalInfo(), aAdditionalInfo);
             THEOLIZER_EQUAL(string(aError.getFileName()), "core_serializer.cpp");
             aSerializer.resetError();

@@ -57,15 +57,30 @@ void saveModifyClass(tSerializer& iSerializer)
     std::cout << "    saveModifyClass();\n";
 
 //----------------------------------------------------------------------------
+//      変更テスト用クラス（名前対応）
+//----------------------------------------------------------------------------
+
+    {
+        ModifyClassName aModifyClassName{true};
+        THEOLIZER_PROCESS(iSerializer, aModifyClassName);
+    }
+
+//----------------------------------------------------------------------------
+//      変更テスト用クラス（順序対応）
+//----------------------------------------------------------------------------
+
+    {
+        ModifyClassOrder    aModifyClassOrder{true};
+        THEOLIZER_PROCESS(iSerializer, aModifyClassOrder);
+    }
+
+//----------------------------------------------------------------------------
 //      配列要素数の上限テスト
 //----------------------------------------------------------------------------
 
     {
-std::cout << "pre" << std::endl;
         auto    aArray=std::unique_ptr<ArraySizeTest>(new ArraySizeTest{true});
-std::cout << "post" << std::endl;
         THEOLIZER_PROCESS(iSerializer, aArray);
-std::cout << "post post" << std::endl;
 
         // オブジェクトIDテーブルのクリア
         iSerializer.clearTracking();
@@ -92,6 +107,26 @@ void loadModifyClass(tSerializer& iSerializer)
 {
 //theolizer::DisplayPass aDisplayPass;
     std::cout << "    loadModifyClass();\n";
+
+//----------------------------------------------------------------------------
+//      変更テスト用クラス（名前対応）
+//----------------------------------------------------------------------------
+
+    {
+        ModifyClassName aModifyClassName;
+        THEOLIZER_PROCESS(iSerializer, aModifyClassName);
+        aModifyClassName.check();
+    }
+
+//----------------------------------------------------------------------------
+//      変更テスト用クラス（順序対応）
+//----------------------------------------------------------------------------
+
+    {
+        ModifyClassOrder    aModifyClassOrder;
+        THEOLIZER_PROCESS(iSerializer, aModifyClassOrder);
+        aModifyClassOrder.check();
+    }
 
 //----------------------------------------------------------------------------
 //      配列要素数の上限テスト

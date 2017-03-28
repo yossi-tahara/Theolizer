@@ -655,11 +655,11 @@ protected:
 //----------------------------------------------------------------------------
 
 private:
-	// 派生クラスの一部としての基底クラス処理中
+    // 派生クラスの一部としての基底クラス処理中
     bool    mBaseProcessing;
     struct AutoBaseProcessing
     {
-        bool  	mBaseProcessingBack;
+        bool    mBaseProcessingBack;
         bool&   mBaseProcessing;
         AutoBaseProcessing(BaseSerializer& iSerializer) :
             mBaseProcessingBack(iSerializer.mBaseProcessing),
@@ -673,11 +673,11 @@ private:
         }
     };
 
-	// クラスのオブジェクト追跡中
+    // クラスのオブジェクト追跡中
     bool    mClassTracking;
     struct AutoClassTracking
     {
-        bool  	mClassTrackingBack;
+        bool    mClassTrackingBack;
         bool&   mClassTracking;
         AutoClassTracking(BaseSerializer& iSerializer) :
             mClassTrackingBack(iSerializer.mClassTracking),
@@ -691,8 +691,8 @@ private:
         }
     };
 
-	// 参照処理中
-    bool	mRefProcessing;
+    // 参照処理中
+    bool    mRefProcessing;
     struct AutoRefProcessing
     {
         bool    mRefProcessingBack;
@@ -1096,6 +1096,11 @@ private:
     template<class tVersionType>
     void loadClassImpl(tVersionType& iVersion)
     {
+#if 0
+auto& aClassTypeInfo=ClassTypeInfo<typename tVersionType::TheolizerClass>::getInstance();
+std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
+#endif
+
         ElementsMapping aElementsMapping = tVersionType::Theolizer::kElementsMapping;
         // ヘッダが有るなら、フォーマット上は順序対応でOK
         if (CheckMode::TypeCheck <= mCheckMode)
@@ -1148,7 +1153,8 @@ private:
                 if (aElementName.empty())
                 {
                     // 最後に到達したら破棄
-                    if (tVersionType::getElementTheolizer(i).isSentinel()) {
+                    if (tVersionType::getElementTheolizer(i).isSentinel())
+                    {
                         aIndex=i;
             break;
                     }
@@ -1203,6 +1209,7 @@ private:
 
                 // 回復
                 tVersionType::getElementTheolizer(aIndex).loadElement(*this, iVersion);
+//std::cout << "    " << tVersionType::getElementTheolizer(aIndex).getName() << "\n";
 
                 // 次処理
                 aIndex++;
@@ -1211,7 +1218,11 @@ private:
                     // FastSerializer(変更不可)の時は直ぐに終了
                     if (aReadStat == DontCare)
         break;
-                    aIndex=0;
+                    // 名前対応なら先頭へ戻す
+                    if (!aElementName.empty())
+                    {
+                        aIndex=0;
+                    }
                 }
             }
             else
@@ -1224,6 +1235,9 @@ private:
                 disposeElement();
             }
         }
+#if 0
+std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- end\n";
+#endif
     }
 
 //----------------------------------------------------------------------------

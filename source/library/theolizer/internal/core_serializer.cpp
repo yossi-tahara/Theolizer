@@ -536,7 +536,7 @@ void BaseSerializer::loadProcessStart(std::size_t iTypeIndex)
             }
             if (!aIsMatch)
             {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.");
+                THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.(%1%)", aTypeName);
             }
         }
         break;

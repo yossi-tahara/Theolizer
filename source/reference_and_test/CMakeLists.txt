@@ -24,7 +24,7 @@
 #       NOW_VERSION  : 現バージョン指定
 #       PREV_VERSION : 前バージョン指定  (先頭バージョンは"")
 #       LAST_VERSION : 最終バージョン指定(バージョン処理無しなら"")
-macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR_CHECK TEST_FL)
+macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR_CHECK TEST_FL MS RS)
     set(TEST_NAME ${TARGET_NAME}${NOW_VERSION})
     set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${NOW_VERSION}")
     set(BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}")
@@ -168,6 +168,8 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR
                 "-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
                 "-DPREV_DIR=${PREV_DIR}"
                 "-DBINARY_DIR=${BINARY_DIR}"
+                "-DMATCH_STRING=${MS}"
+                "-DREPLACE_STRING=${RS}"
                 -P "${CMAKE_CURRENT_SOURCE_DIR}/copy.cmake"
             COMMAND $<TARGET_FILE:TheolizerDriver> ${PARAMETERS})
     else()
@@ -181,6 +183,8 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR
                 "-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
                 "-DPREV_DIR=${PREV_DIR}"
                 "-DBINARY_DIR=${BINARY_DIR}"
+                "-DMATCH_STRING=${MS}"
+                "-DREPLACE_STRING=${RS}"
                 -P "${CMAKE_CURRENT_SOURCE_DIR}/copy.cmake"
             COMMAND ${CMAKE_INSTALL_PREFIX}/bin/TheolizerDriver ${PARAMETERS})
     endif()
@@ -272,7 +276,7 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_s
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
 add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
-    ${SOURCE_LIST})
+    "" "" ${SOURCE_LIST})
 
 endif()
 
@@ -297,7 +301,7 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_m
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
 add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
-    ${SOURCE_LIST})
+    "" "" ${SOURCE_LIST})
 
 #       ---<<< ver1b >>>---
 
@@ -310,7 +314,7 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_m
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
 add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
-    ${SOURCE_LIST})
+    "" "" ${SOURCE_LIST})
 
 #       ---<<< ver1c >>>---
 
@@ -323,7 +327,7 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_m
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
 add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
-    ${SOURCE_LIST})
+    "" "" ${SOURCE_LIST})
 
 #       ---<<< ver2a >>>---
 
@@ -336,7 +340,7 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_m
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
 add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
-    ${SOURCE_LIST})
+    " ModifyClass" " ChangedModifyClass" ${SOURCE_LIST})
 
 #       ---<<< ver3a >>>---
 
@@ -349,7 +353,7 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_m
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
 add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
-    ${SOURCE_LIST})
+    "" "" ${SOURCE_LIST})
 
 #       ---<<< ver3b >>>---
 
@@ -362,7 +366,7 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_m
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
 add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
-    ${SOURCE_LIST})
+    "" "" ${SOURCE_LIST})
 
 #-----------------------------------------------------------------------------
 #       最初のバージョンの1回目実行を最後のバージョンのビルドへ依存させる

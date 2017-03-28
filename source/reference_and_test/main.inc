@@ -29,7 +29,8 @@ using theolizer::CheckMode;
 // ***************************************************************************
 
 std::size_t gMyIndex;           // 自分自身のバージョン・インデックス
-std::size_t gIndex;             // データのバージョン・インデックス
+std::size_t gIndex;             // データのバージョン・インデックス(指定値)
+std::size_t gDataIndex;         // データのバージョン・インデックス(実値)
 std::size_t gProgramIndex;      // 保存したプログラムのバージョン・インデックス
 
 // ***************************************************************************
@@ -66,9 +67,11 @@ void callTests
     std::cout << "---------- callTests("
               << ((iDoSave)?"save":"load") << ", ";
     std::cout << "gMyIndex=" << gMyIndex << ", gIndex=";
+    gDataIndex=gIndex;
     if (gIndex == kDefaultIndex)
     {
         std::cout << "<Default>, ";
+        gDataIndex=gProgramIndex;
     }
     else
     {

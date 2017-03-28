@@ -57,15 +57,30 @@ void saveModifyClass(tSerializer& iSerializer)
     std::cout << "    saveModifyClass();\n";
 
 //----------------------------------------------------------------------------
+//      変更テスト用クラス（名前対応）
+//----------------------------------------------------------------------------
+
+    {
+        ChangedModifyClassName  aChangedModifyClassName{true};
+        THEOLIZER_PROCESS(iSerializer, aChangedModifyClassName);
+    }
+
+//----------------------------------------------------------------------------
+//      変更テスト用クラス（順序対応）
+//----------------------------------------------------------------------------
+
+    {
+        ChangedModifyClassOrder    aChangedModifyClassOrder{true};
+        THEOLIZER_PROCESS(iSerializer, aChangedModifyClassOrder);
+    }
+
+//----------------------------------------------------------------------------
 //      配列要素数の上限テスト
 //----------------------------------------------------------------------------
 
     {
-std::cout << "pre" << std::endl;
         auto    aArray=std::unique_ptr<ArraySizeTest>(new ArraySizeTest{true});
-std::cout << "post" << std::endl;
         THEOLIZER_PROCESS(iSerializer, aArray);
-std::cout << "post post" << std::endl;
 
         // オブジェクトIDテーブルのクリア
         iSerializer.clearTracking();
@@ -92,6 +107,26 @@ void loadModifyClass(tSerializer& iSerializer)
 {
 //theolizer::DisplayPass aDisplayPass;
     std::cout << "    loadModifyClass();\n";
+
+//----------------------------------------------------------------------------
+//      変更テスト用クラス（名前対応）
+//----------------------------------------------------------------------------
+
+    {
+        ChangedModifyClassName  aChangedModifyClassName;
+        THEOLIZER_PROCESS(iSerializer, aChangedModifyClassName);
+        aChangedModifyClassName.check();
+    }
+
+//----------------------------------------------------------------------------
+//      変更テスト用クラス（順序対応）
+//----------------------------------------------------------------------------
+
+    {
+        ChangedModifyClassOrder    aChangedModifyClassOrder;
+        THEOLIZER_PROCESS(iSerializer, aChangedModifyClassOrder);
+        aChangedModifyClassOrder.check();
+    }
 
 //----------------------------------------------------------------------------
 //      配列要素数の上限テスト

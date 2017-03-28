@@ -213,13 +213,7 @@ void loadModifyEnum(tSerializer& iSerializer)
 {
 //theolizer::DisplayPass aDisplayPass;
 
-    std::size_t aIndex=gIndex;
-    if (aIndex == kDefaultIndex)
-    {
-        aIndex=gProgramIndex;
-    }
-
-    VersionEnum aVersionEnum=gVersionList[aIndex].mVersionEnum;
+    VersionEnum aVersionEnum=gVersionList[gDataIndex].mVersionEnum;
     std::cout << "    loadModifyEnum(" << aVersionEnum << ");\n";
 
 //----------------------------------------------------------------------------
@@ -282,11 +276,11 @@ void loadModifyEnum(tSerializer& iSerializer)
             break;
 
         default:
-            THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
-                gVersionList[aIndex].mName);
+            THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", gDataIndex,
+                gVersionList[gDataIndex].mName);
         }
         // グローバル・バージョン番号が1なら
-        if (gVersionList[aIndex].mVersionNo == 1)
+        if (gVersionList[gDataIndex].mVersionNo == 1)
         {
             THEOLIZER_EQUAL(aEnumFullAuto9, eefaDefault);
         }
@@ -351,11 +345,11 @@ void loadModifyEnum(tSerializer& iSerializer)
             break;
 
         default:
-            THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
-                gVersionList[aIndex].mName);
+            THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", gDataIndex,
+                gVersionList[gDataIndex].mName);
         }
         // グローバル・バージョン番号が1なら
-        if (gVersionList[aIndex].mVersionNo == 1)
+        if (gVersionList[gDataIndex].mVersionNo == 1)
         {
             THEOLIZER_EQUAL(aScopedEnumFullAuto9, ScopedEnumFullAuto::Default);
         }
@@ -424,8 +418,8 @@ void loadModifyEnum(tSerializer& iSerializer)
             break;
 
         default:
-            THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
-                gVersionList[aIndex].mName);
+            THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", gDataIndex,
+                gVersionList[gDataIndex].mName);
         }
         // 保存したプログラムのグローバル・バージョン番号が3未満なら
         if (gVersionList[gProgramIndex].mVersionNo < 3)
@@ -437,7 +431,7 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_EQUAL(aEnumSymName8, eesnValue1);
         }
         // グローバル・バージョン番号が1なら
-        if (gVersionList[aIndex].mVersionNo == 1)
+        if (gVersionList[gDataIndex].mVersionNo == 1)
         {
             THEOLIZER_EQUAL(aEnumSymName9, eesnDefault);
         }
@@ -500,8 +494,8 @@ void loadModifyEnum(tSerializer& iSerializer)
             break;
 
         default:
-            THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
-                gVersionList[aIndex].mName);
+            THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", gDataIndex,
+                gVersionList[gDataIndex].mName);
         }
         // 保存したプログラムのグローバル・バージョン番号が3未満なら
         if (gVersionList[gProgramIndex].mVersionNo < 3)
@@ -513,7 +507,7 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_EQUAL(aScopedEnumSymName8, ScopedEnumSymName::Value1);
         }
         // グローバル・バージョン番号が1なら
-        if (gVersionList[aIndex].mVersionNo == 1)
+        if (gVersionList[gDataIndex].mVersionNo == 1)
         {
             THEOLIZER_EQUAL(aScopedEnumSymName9, ScopedEnumSymName::Default);
         }
@@ -582,8 +576,8 @@ void loadModifyEnum(tSerializer& iSerializer)
             break;
 
         default:
-            THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
-                gVersionList[aIndex].mName);
+            THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", gDataIndex,
+                gVersionList[gDataIndex].mName);
         }
         // 保存したプログラムのグローバル・バージョン番号が3未満なら
         if (gVersionList[gProgramIndex].mVersionNo < 3)
@@ -595,7 +589,7 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_EQUAL(aEnumSymVal8, eesvValue10);
         }
         // グローバル・バージョン番号が1なら
-        if (gVersionList[aIndex].mVersionNo == 1)
+        if (gVersionList[gDataIndex].mVersionNo == 1)
         {
             THEOLIZER_EQUAL(aEnumSymVal9, eesvDefault);
         }
@@ -658,8 +652,8 @@ void loadModifyEnum(tSerializer& iSerializer)
             break;
 
         default:
-            THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", aIndex,
-                gVersionList[aIndex].mName);
+            THEOLIZER_INTERNAL_ABORT("Version Index(%1%:%2%) Error", gDataIndex,
+                gVersionList[gDataIndex].mName);
         }
         // 保存したプログラムのグローバル・バージョン番号が3未満なら
         if (gVersionList[gProgramIndex].mVersionNo < 3)
@@ -671,7 +665,7 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_EQUAL(aScopedEnumSymVal8, ScopedEnumSymVal::Value10);
         }
         // グローバル・バージョン番号が1なら
-        if (gVersionList[aIndex].mVersionNo == 1)
+        if (gVersionList[gDataIndex].mVersionNo == 1)
         {
             THEOLIZER_EQUAL(aScopedEnumSymVal9, ScopedEnumSymVal::Default);
         }

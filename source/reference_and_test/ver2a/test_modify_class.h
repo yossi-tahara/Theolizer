@@ -24,6 +24,97 @@
 #include <string>
 
 // ***************************************************************************
+//      変更テスト用クラス（名前対応）
+// ***************************************************************************
+
+struct ChangedModifyClassName
+{
+    unsigned    mUnsigned;  // 順序変更
+//  short       mShort;     // 削除
+    int         mInt;
+    long        mLong;      // 追加
+
+    ChangedModifyClassName()     : mUnsigned()   , mInt(0)  , mLong()    { }
+    ChangedModifyClassName(bool) : mUnsigned(120), mInt(110), mLong(130) { }
+    void check()
+    {
+//      THEOLIZER_EQUAL(mShort,    100);
+        THEOLIZER_EQUAL(mInt,      110);
+        THEOLIZER_EQUAL(mUnsigned, 120);
+        switch(gVersionList[gDataIndex].mVersionEnum)
+        {
+        case VersionEnum::ver1a:
+            THEOLIZER_EQUAL(mLong,  0);
+            break;
+
+        case VersionEnum::ver1b:
+        case VersionEnum::ver1c:
+        case VersionEnum::ver2a:
+            THEOLIZER_EQUAL(mLong,  130);
+            break;
+
+        case VersionEnum::ver3a:
+        case VersionEnum::ver3b:
+        default:
+            // FAILさせる
+            THEOLIZER_EQUAL(gDataIndex, gMyIndex);
+            break;
+        }
+    }
+    THEOLIZER_INTRUSIVE(CS, (ChangedModifyClassName), 2);
+};
+
+// ***************************************************************************
+//      変更テスト用クラス（順序対応）  メンバ変数追加
+// ***************************************************************************
+
+struct ChangedModifyClassOrder
+{
+    short       mShort;
+    int         mInt;
+    unsigned    mUnsigned;
+    long        mLong;      // 追加
+
+    ChangedModifyClassOrder()     : mShort(0)  , mInt(0)  , mUnsigned()   , mLong()    { }
+    ChangedModifyClassOrder(bool) : mShort(200), mInt(210), mUnsigned(220), mLong(230) { }
+    void check()
+    {
+        THEOLIZER_EQUAL(mShort,    200);
+        THEOLIZER_EQUAL(mInt,      210);
+        THEOLIZER_EQUAL(mUnsigned, 220);
+        switch(gVersionList[gDataIndex].mVersionEnum)
+        {
+        case VersionEnum::ver1a:
+            THEOLIZER_EQUAL(mLong,  0);
+            break;
+
+        case VersionEnum::ver1b:
+        case VersionEnum::ver1c:
+        case VersionEnum::ver2a:
+            switch(gVersionList[gProgramIndex].mVersionEnum)
+            {
+            case VersionEnum::ver3b:
+                THEOLIZER_EQUAL(mLong,  0);
+                break;
+
+            default:
+                THEOLIZER_EQUAL(mLong,  230);
+                break;
+            }
+            break;
+
+        case VersionEnum::ver3a:
+        case VersionEnum::ver3b:
+        default:
+            // FAILさせる
+            THEOLIZER_EQUAL(gDataIndex, gMyIndex);
+            break;
+        }
+    }
+    THEOLIZER_INTRUSIVE_ORDER(CS, (ChangedModifyClassOrder), 2);
+};
+
+// ***************************************************************************
 //      配列の要素数上限テスト
 // ***************************************************************************
 

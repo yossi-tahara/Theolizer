@@ -24,6 +24,69 @@
 #include <string>
 
 // ***************************************************************************
+//      変更テスト用クラス（名前対応）
+// ***************************************************************************
+
+struct ChangedModifyClassName
+{
+    unsigned    mUnsigned;  // 順序変更
+//  short       mShort;     // 削除
+    int         mIntChanged THEOLIZER_ANNOTATE(FS:mInt);    // 変数名変更
+    long        mLong;      // 追加
+
+    ChangedModifyClassName()     : mUnsigned()   , mIntChanged(0)  , mLong()    { }
+    ChangedModifyClassName(bool) : mUnsigned(120), mIntChanged(110), mLong(130) { }
+    void check()
+    {
+//      THEOLIZER_EQUAL(mShort,      100);
+        THEOLIZER_EQUAL(mIntChanged, 110);
+        THEOLIZER_EQUAL(mUnsigned,   120);
+        switch(gVersionList[gDataIndex].mVersionEnum)
+        {
+        case VersionEnum::ver1a:
+            THEOLIZER_EQUAL(mLong,  0);
+            break;
+
+        case VersionEnum::ver1b:
+        case VersionEnum::ver1c:
+        case VersionEnum::ver2a:
+        case VersionEnum::ver3a:
+        case VersionEnum::ver3b:
+            THEOLIZER_EQUAL(mLong,  130);
+            break;
+
+        default:
+            // FAILさせる
+            THEOLIZER_EQUAL(gDataIndex, gMyIndex);
+            break;
+        }
+    }
+    THEOLIZER_INTRUSIVE(CS, (ChangedModifyClassName), 3);
+};
+
+// ***************************************************************************
+//      変更テスト用クラス（順序対応）  メンバ変数追加
+// ***************************************************************************
+
+struct ChangedModifyClassOrder
+{
+    short       mShort;
+    int         mIntChanged THEOLIZER_ANNOTATE(FS:mInt);    // 変数名変更
+    unsigned    mUnsigned;
+//  long        mLong;      // 追加→バージョンアップ→削除
+
+    ChangedModifyClassOrder()     : mShort(0)  , mIntChanged(0)  , mUnsigned()    { }
+    ChangedModifyClassOrder(bool) : mShort(200), mIntChanged(210), mUnsigned(220) { }
+    void check()
+    {
+        THEOLIZER_EQUAL(mShort,      200);
+        THEOLIZER_EQUAL(mIntChanged, 210);
+        THEOLIZER_EQUAL(mUnsigned,   220);
+    }
+    THEOLIZER_INTRUSIVE_ORDER(CS, (ChangedModifyClassOrder), 3);
+};
+
+// ***************************************************************************
 //      配列の要素数上限テスト
 // ***************************************************************************
 
@@ -34,7 +97,7 @@ struct ArraySizeTest
     unsigned    mArray2D[kSize][kSize];
     unsigned    mArray3D[kSize][kSize][kSize];
 
-    ArraySizeTest() : mArray1D{}, mArray2D{}
+    ArraySizeTest() : mArray1D{}, mArray2D{}, mArray3D{}
     { }
     ArraySizeTest(bool)
     {

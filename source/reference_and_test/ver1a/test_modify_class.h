@@ -24,6 +24,48 @@
 #include <string>
 
 // ***************************************************************************
+//      変更テスト用クラス（名前対応）
+// ***************************************************************************
+
+struct ModifyClassName
+{
+    short       mShort;
+    int         mInt;
+    unsigned    mUnsigned;
+
+    ModifyClassName()     : mShort(0)  , mInt(0)  , mUnsigned()    { }
+    ModifyClassName(bool) : mShort(100), mInt(110), mUnsigned(120) { }
+    void check()
+    {
+        THEOLIZER_EQUAL(mShort,    100);
+        THEOLIZER_EQUAL(mInt,      110);
+        THEOLIZER_EQUAL(mUnsigned, 120);
+    }
+//  THEOLIZER_INTRUSIVE(CS, (ModifyClassName), 1);
+};
+
+// ***************************************************************************
+//      変更テスト用クラス（順序対応）
+// ***************************************************************************
+
+struct ModifyClassOrder
+{
+    short       mShort;
+    int         mInt;
+    unsigned    mUnsigned;
+
+    ModifyClassOrder()     : mShort(0)  , mInt(0)  , mUnsigned()    { }
+    ModifyClassOrder(bool) : mShort(200), mInt(210), mUnsigned(220) { }
+    void check()
+    {
+        THEOLIZER_EQUAL(mShort,    200);
+        THEOLIZER_EQUAL(mInt,      210);
+        THEOLIZER_EQUAL(mUnsigned, 220);
+    }
+    THEOLIZER_INTRUSIVE_ORDER(CS, (ModifyClassOrder), 1);
+};
+
+// ***************************************************************************
 //      配列の要素数上限テスト
 // ***************************************************************************
 
