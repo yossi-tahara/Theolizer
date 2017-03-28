@@ -439,6 +439,8 @@ namespace internal
 {
     THEOLIZER_INTERNAL_DLL extern unsigned     gTotal;
     THEOLIZER_INTERNAL_DLL extern unsigned     gFailCount;
+    THEOLIZER_INTERNAL_DLL extern bool         gAbortedOutput;
+    THEOLIZER_INTERNAL_DLL bool checkFailCount();
     THEOLIZER_INTERNAL_DLL void lockMutex();
     THEOLIZER_INTERNAL_DLL void unlockMutex();
 }   // namespace internal
@@ -459,7 +461,7 @@ namespace internal
 #define THEOLIZER_INTERNAL_RESULT(dResult)                                  \
     do                                                                      \
     {                                                                       \
-        if (!aIsPass || theolizer::DisplayPass::on())                       \
+        if ((!aIsPass && theolizer::internal::checkFailCount()) || theolizer::DisplayPass::on())\
         {                                                                   \
             std::ostream& os=theolizer::internal::getOStream();             \
             std::streamsize precision=os.precision();                       \
@@ -483,8 +485,10 @@ namespace internal
             theolizer::internal::lockMutex();                               \
             theolizer::internal::gFailCount++;                              \
             aIsPass=false;                                                  \
-            theolizer::internal::getOStream() << "\n" THEOLIZER_INTERNAL_FAIL\
-                << ((dAbort)?"(skiped following tests)":"") << "\n";        \
+            if (theolizer::internal::checkFailCount()) {                    \
+                theolizer::internal::getOStream() << "\n" THEOLIZER_INTERNAL_FAIL\
+                    << ((dAbort)?"(skiped following tests)":"") << "\n";    \
+            }                                                               \
         }                                                                   \
         else                                                                \
         {                                                                   \
@@ -498,7 +502,7 @@ namespace internal
     do                                                                      \
     {                                                                       \
         THEOLIZER_INTERNAL_JUDGE_ONLY(dAbort, dJudge);                      \
-        if (!aIsPass)                                                       \
+        if (!aIsPass && theolizer::internal::checkFailCount())              \
         {                                                                   \
             theolizer::internal::getOStream()                               \
                 << THEOLIZER_INTERNAL_FILE << "("  << __LINE__ << ")\n"     \
@@ -533,7 +537,7 @@ namespace internal
 #define THEOLIZER_INTERNAL_RESULT_PTR(dResult)                              \
     do                                                                      \
     {                                                                       \
-        if (!aIsPass || theolizer::DisplayPass::on())                       \
+        if ((!aIsPass && theolizer::internal::checkFailCount()) || theolizer::DisplayPass::on())\
         {                                                                   \
             std::ostream& os=theolizer::internal::getOStream();             \
             std::streamsize precision=os.precision();                       \
@@ -568,7 +572,7 @@ namespace internal
         bool    aIsPass=true;                                               \
         THEOLIZER_INTERNAL_JUDGE_ONLY(false,                                \
             ((dLhs)==THEOLZIER_INTERNAL_FIRST(__VA_ARGS__)));               \
-        if (!aIsPass) {                                                     \
+        if (!aIsPass && theolizer::internal::checkFailCount()) {            \
             theolizer::internal::getOStream()                               \
                 << THEOLIZER_INTERNAL_FILE << "("  << __LINE__ << ")\n";    \
         } else if (theolizer::DisplayPass::on()) {                          \
@@ -593,7 +597,7 @@ namespace internal
     {                                                                       \
         bool    aIsPass=true;                                               \
         THEOLIZER_INTERNAL_JUDGE_ONLY(false, (dLhs) == (dRhs));             \
-        if (!aIsPass) {                                                     \
+        if (!aIsPass && theolizer::internal::checkFailCount()) {            \
             theolizer::internal::getOStream()                               \
                 << THEOLIZER_INTERNAL_FILE << "("  << __LINE__ << ")\n";    \
         } else if (theolizer::DisplayPass::on()) {                          \

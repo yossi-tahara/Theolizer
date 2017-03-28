@@ -288,6 +288,20 @@ std::mutex  gTestMutex;
 
 unsigned    gTotal;
 unsigned    gFailCount;
+bool        gAbortedOutput;
+
+bool checkFailCount()
+{
+    if (gAbortedOutput)
+return false;
+
+    if (100 < gFailCount)
+    {
+        gAbortedOutput=true;
+        getOStream() << "\n" THEOLIZER_INTERNAL_FAIL " Too many fails.\n";
+    }
+    return !gAbortedOutput;
+}
 
 void lockMutex()
 {
@@ -338,6 +352,7 @@ void initResult()
 {
     internal::gTotal=0;
     internal::gFailCount=0;
+    internal::gAbortedOutput=false;
 }
 
 void incrementFailCount()
