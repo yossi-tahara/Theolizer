@@ -259,13 +259,22 @@ if(TRUE)
 set(FIRST_VERSION "")
 set(LAST_VERSION  "")
 set(PREV_VERSION  "")
-set(TEST_LABEL "TestF1L")
 
 set(NOW_VERSION basic)
+set(TEST_LABEL "TestF1L")
 set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_basic_process.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_class_variation.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_enum_variation.cpp)
+
+message(STATUS "start of add_build_and_test("
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    "" "" ${SOURCE_LIST})
+
+set(NOW_VERSION basic2)
+set(TEST_LABEL "TestF2L")
+set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_object_tracking.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_object_tracking2.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_object_tracking3.cpp)
@@ -288,7 +297,7 @@ if(TRUE)
 
 set(FIRST_VERSION "ver1a")
 set(LAST_VERSION  "ver3b")
-set(TEST_LABEL "TestF2L")
+set(TEST_LABEL "TestF3L")
 
 #       ---<<< ver1a >>>---
 

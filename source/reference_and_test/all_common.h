@@ -47,6 +47,7 @@
 
 #define VERSION_INDEX()                                                     \
     VERSION_DEF(basic, 0),                                                  \
+    VERSION_DEF(basic2,0),                                                  \
     VERSION_DEF(ver1a, 1),                                                  \
     VERSION_DEF(ver1b, 1),                                                  \
     VERSION_DEF(ver1c, 1),                                                  \

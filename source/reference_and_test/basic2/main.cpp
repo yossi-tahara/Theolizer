@@ -55,46 +55,115 @@
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
-//      THEOLIZER_PROCESS()の基本的な使い方
-//----------------------------------------------------------------------------
-
-template<class tSerializer>
-void saveBasicProcess(tSerializer& iSerializer);
-
-template<class tSerializer>
-void loadBasicProcess(tSerializer& iSerializer);
-
-//----------------------------------------------------------------------------
-//      classの様々なバリエーション
+//      オブジェクト追跡
 //----------------------------------------------------------------------------
 
 //      ---<<< 使い方のサンプル・コード >>>---
 
-void tutoriseClassVariation();
+void tutoriseObjectTracking();
 
 //      ---<<< 自動テスト >>>---
 
 template<class tSerializer>
-void saveClassVariation(tSerializer& iSerializer);
+void saveObjectTracking(tSerializer& iSerializer);
 
 template<class tSerializer>
-void loadClassVariation(tSerializer& iSerializer);
+void loadObjectTracking(tSerializer& iSerializer);
+
+template<class tSerializer>
+void saveObjectTracking3(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadObjectTracking3(tSerializer& iSerializer);
 
 //----------------------------------------------------------------------------
-//      enum型の様々なバリエーション
+//      ポリモーフィズム
 //----------------------------------------------------------------------------
 
 //      ---<<< 使い方のサンプル・コード >>>---
 
-void tutoriseEnumVariation();
+void tutorisePolymorphism();
 
 //      ---<<< 自動テスト >>>---
 
 template<class tSerializer>
-void saveEnumVariation(tSerializer& iSerializer);
+void savePolymorphism(tSerializer& iSerializer);
 
 template<class tSerializer>
-void loadEnumVariation(tSerializer& iSerializer);
+void loadPolymorphism(tSerializer& iSerializer);
+
+//----------------------------------------------------------------------------
+//      保存の有無と保存先
+//----------------------------------------------------------------------------
+
+#ifndef DISABLE_DESTINATIONS_TEST
+
+//      ---<<< 使い方のサンプル・コード >>>---
+
+void tutoriseDestinations();
+
+//      ---<<< 自動テスト >>>---
+
+template<class tSerializer>
+void saveSpecifySaving(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadSpecifySaving(tSerializer& iSerializer);
+
+template<class tSerializerA, class tSerializerB, class tSerializerAB>
+void saveDestinations
+(
+    tSerializerA&  iSerializerA,
+    tSerializerB&  iSerializerB,
+    tSerializerAB& iSerializerAB
+);
+
+template<class tSerializerA, class tSerializerB, class tSerializerAB>
+void loadDestinations
+(
+    tSerializerA&  iSerializerA,
+    tSerializerB&  iSerializerB,
+    tSerializerAB& iSerializerAB
+);
+#endif // DISABLE_DESTINATIONS_TEST
+
+//----------------------------------------------------------------------------
+//      標準コンテナ
+//----------------------------------------------------------------------------
+
+#ifndef DISABLE_SUPPORT_STL_TEST
+
+//      ---<<< 使い方のサンプル・コード >>>---
+
+void tutoriseSupportStl();
+
+//      ---<<< 自動テスト >>>---
+
+template<class tSerializer>
+void saveSupportStl(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadSupportStl(tSerializer& iSerializer);
+
+//      ---<<< 自動テスト(保存先指定の合成テスト) >>>---
+
+template<class tSerializerA, class tSerializerB, class tSerializerAB>
+void saveSupportStlDestinations
+(
+    tSerializerA&  iSerializerA,
+    tSerializerB&  iSerializerB,
+    tSerializerAB& iSerializerAB
+);
+
+template<class tSerializerA, class tSerializerB, class tSerializerAB>
+void loadSupportStlDestinations
+(
+    tSerializerA&  iSerializerA,
+    tSerializerB&  iSerializerB,
+    tSerializerAB& iSerializerAB
+);
+
+#endif // DISABLE_SUPPORT_STL_TEST
 
 // ***************************************************************************
 //      各テスト呼び出し
@@ -108,11 +177,17 @@ void callTutorial()
 {
     std::cout << "callTutorial();\n";
 
-    #ifndef DISABLE_CLASS_VARIATION_TEST
-        tutoriseClassVariation();
+    #ifndef DISABLE_OBJECT_TRACKING_TEST
+        tutoriseObjectTracking();
     #endif
-    #ifndef DISABLE_ENUM_VARIATION_TEST
-        tutoriseEnumVariation();
+    #ifndef DISABLE_POLYMORPHISM_TEST
+        tutorisePolymorphism();
+    #endif
+    #ifndef DISABLE_DESTINATIONS_TEST
+        tutoriseDestinations();
+    #endif
+    #ifndef DISABLE_SUPPORT_STL_TEST
+        tutoriseSupportStl();
     #endif
 
     // ここまでの中間結果表示
@@ -129,14 +204,20 @@ void saveBasic(tSerializer& iSerializer)
 {
     std::cout << "saveBasic();\n";
 
-#ifndef DISABLE_BASIC_PROCESS_TEST
-    saveBasicProcess(iSerializer);
+#ifndef DISABLE_OBJECT_TRACKING2_TEST
+    saveObjectTracking(iSerializer);
 #endif
-#ifndef DISABLE_CLASS_VARIATION_TEST
-    saveClassVariation(iSerializer);
+#ifndef DISABLE_OBJECT_TRACKING3_TEST
+    saveObjectTracking3(iSerializer);
 #endif
-#ifndef DISABLE_ENUM_VARIATION_TEST
-    saveEnumVariation(iSerializer);
+#ifndef DISABLE_POLYMORPHISM_TEST
+    savePolymorphism(iSerializer);
+#endif
+#ifndef DISABLE_DESTINATIONS_TEST
+    saveSpecifySaving(iSerializer);
+#endif
+#ifndef DISABLE_SUPPORT_STL_TEST
+    saveSupportStl(iSerializer);
 #endif
 }
 
@@ -145,14 +226,20 @@ void loadBasic(tSerializer& iSerializer)
 {
     std::cout << "loadBasic();\n";
 
-#ifndef DISABLE_BASIC_PROCESS_TEST
-    loadBasicProcess(iSerializer);
+#ifndef DISABLE_OBJECT_TRACKING2_TEST
+    loadObjectTracking(iSerializer);
 #endif
-#ifndef DISABLE_CLASS_VARIATION_TEST
-    loadClassVariation(iSerializer);
+#ifndef DISABLE_OBJECT_TRACKING3_TEST
+    loadObjectTracking3(iSerializer);
 #endif
-#ifndef DISABLE_ENUM_VARIATION_TEST
-    loadEnumVariation(iSerializer);
+#ifndef DISABLE_POLYMORPHISM_TEST
+    loadPolymorphism(iSerializer);
+#endif
+#ifndef DISABLE_DESTINATIONS_TEST
+    loadSpecifySaving(iSerializer);
+#endif
+#ifndef DISABLE_SUPPORT_STL_TEST
+    loadSupportStl(iSerializer);
 #endif
 }
 
@@ -168,6 +255,12 @@ void callSaveDestinations
     tSerializerAB& iSerializerAB
 )
 {
+#ifndef DISABLE_DESTINATIONS_TEST
+    saveDestinations(iSerializerA, iSerializerB, iSerializerAB);
+#endif
+#ifndef DISABLE_SUPPORT_STL_TEST
+    saveSupportStlDestinations(iSerializerA, iSerializerB, iSerializerAB);
+#endif
 }
 
 template<class tSerializerA, class tSerializerB, class tSerializerAB>
@@ -178,6 +271,12 @@ void callLoadDestinations
     tSerializerAB& iSerializerAB
 )
 {
+#ifndef DISABLE_DESTINATIONS_TEST
+    loadDestinations(iSerializerA, iSerializerB, iSerializerAB);
+#endif
+#ifndef DISABLE_SUPPORT_STL_TEST
+    loadSupportStlDestinations(iSerializerA, iSerializerB, iSerializerAB);
+#endif
 }
 
 //############################################################################

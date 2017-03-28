@@ -24,6 +24,7 @@ addons:
 env:
   - PARALLEL_TEST=1
   - PARALLEL_TEST=2
+  - PARALLEL_TEST=3
 
 before_install:
   - g++ --version

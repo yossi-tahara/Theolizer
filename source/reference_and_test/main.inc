@@ -547,9 +547,14 @@ return 2;
             gIndex=kDefaultIndex;
             for (gProgramIndex=0; gProgramIndex <= gMyIndex; ++gProgramIndex)
             {
-                    // 非変更／変更が一致していない時はcontinue
-                    if ((gVersionList[gMyIndex].mVersionNo == 0)
-                     != (gVersionList[gProgramIndex].mVersionNo == 0))
+                // 非変更／変更が一致していない時はcontinue
+                if ((gVersionList[gMyIndex].mVersionNo == 0)
+                 != (gVersionList[gProgramIndex].mVersionNo == 0))
+            continue;
+
+                // 非変更の時は他のプログラムIndexのデータを回復しない
+                if ((gVersionList[gMyIndex].mVersionNo == 0)
+                 && (gMyIndex != gProgramIndex))
             continue;
 
                 callTests(aDoSave, CheckMode::NoTypeCheck);
@@ -572,7 +577,12 @@ std::cout << "    gProgramIndex=" << gProgramIndex << "\n";
                       != (gVersionList[gIndex].mVersionNo == 0))
                      || ((gVersionList[gProgramIndex].mVersionNo == 0)
                       != (gVersionList[gIndex].mVersionNo == 0)))
-        continue;
+            continue;
+
+                    // 非変更の時は他のプログラムIndexのデータを回復しない
+                    if ((gVersionList[gMyIndex].mVersionNo == 0)
+                     && (gMyIndex != gProgramIndex))
+            continue;
 
                     // 対象プログラム未満の時は、次のグローバル・バージョン番号が同じならcontinue
                     if (gIndex < gProgramIndex)

@@ -251,6 +251,10 @@ add_custom_target(FullTest2 COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF[2L].
 set_target_properties(FullTest2 PROPERTIES FOLDER "TestTargets")
 exclude_all_target(FullTest2)
 
+add_custom_target(FullTest3 COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF[3L].*")
+set_target_properties(FullTest3 PROPERTIES FOLDER "TestTargets")
+exclude_all_target(FullTest3)
+
 # Long(Build using Driver Test)
 add_custom_target(LongTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "Test.*L.*")
 exclude_all_target(LongTest)
@@ -340,10 +344,11 @@ function(add_test_function TARGET_NAME)
     add_test_sub(${TARGET_NAME} ${TARGET_NAME})
     set_tests_properties(${TARGET_NAME} PROPERTIES FAIL_REGULAR_EXPRESSION
                          "<<<FAIL>>>;Detected memory leaks!")
-    set_tests_properties(${TARGET_NAME}  PROPERTIES LABELS TestFLMS)
+    set_tests_properties(${TARGET_NAME}  PROPERTIES LABELS TestFLS)
     add_dependencies(FullTest  ${TARGET_NAME})
     add_dependencies(FullTest1 ${TARGET_NAME})
     add_dependencies(FullTest2 ${TARGET_NAME})
+    add_dependencies(FullTest3 ${TARGET_NAME})
     add_dependencies(LongTest  ${TARGET_NAME})
     add_dependencies(ShortTest ${TARGET_NAME})
 endfunction(add_test_function)
