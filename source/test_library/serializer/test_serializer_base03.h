@@ -59,7 +59,7 @@ struct BaseClass
     THEOLIZER_INTERNAL_CLASS_NAME((u8"BaseClass"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mInt,mInt,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mInt),mInt,etmDefault,\
         (theolizerD::All),\
         (int))
 #include <theolizer/internal/version_auto.inc>
@@ -93,7 +93,7 @@ THEOLIZER_REGISTER_CLASS((DerivedClass));
 #define THEOLIZER_GENERATED_BASE_LIST()\
     THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(BaseClass),1)
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
         (theolizerD::All),\
         (unsigned int))
 #include <theolizer/internal/version_auto.inc>
@@ -127,7 +127,7 @@ THEOLIZER_REGISTER_CLASS((Derived2Class));
 #define THEOLIZER_GENERATED_BASE_LIST()\
     THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(DerivedClass),1)
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mLong,mLong,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mLong),mLong,etmDefault,\
         (theolizerD::All),\
         (long))
 #include <theolizer/internal/version_auto.inc>
@@ -168,7 +168,7 @@ struct NamespaceClass
     THEOLIZER_INTERNAL_CLASS_NAME((u8"user::NamespaceClass"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
         (theolizerD::All),\
         (unsigned int))
 #include <theolizer/internal/version_auto.inc>
@@ -223,13 +223,13 @@ struct ReferenceClass
     THEOLIZER_INTERNAL_CLASS_NAME((u8"ReferenceClass"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
         (theolizerD::All),\
         (unsigned int &))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mBaseClass,mBaseClass,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mBaseClass),mBaseClass,etmDefault,\
         (theolizerD::All),\
         (BaseClass &))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mIntArray,mIntArray,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mIntArray),mIntArray,etmDefault,\
         (theolizerD::All),\
         (int (&)[2]))
 #include <theolizer/internal/version_auto.inc>

@@ -76,16 +76,16 @@ public:
     THEOLIZER_INTERNAL_CLASS_NAME((u8"IntrusiveBase2"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emOrder
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mLong,mLong,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mLong),mLong,etmDefault,\
         (theolizerD::All),\
         (long))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mLongLong,mLongLong,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mLongLong),mLongLong,etmDefault,\
         (theolizerD::All),\
         (long long))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mULong,mULong,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mULong),mULong,etmDefault,\
         (theolizerD::All),\
         (unsigned long))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mULongLong,mULongLong,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mULongLong),mULongLong,etmDefault,\
         (theolizerD::All),\
         (unsigned short))
 #include <theolizer/internal/version_auto.inc>

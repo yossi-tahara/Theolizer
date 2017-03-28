@@ -84,15 +84,22 @@ namespace internal
 //      文字列化
 // ***************************************************************************
 
-#define THEOLIZER_INTERNAL_STRINGIZE(...)    THEOLIZER_INTERNAL_STRINGIZE_I(__VA_ARGS__)
-#define THEOLIZER_INTERNAL_STRINGIZE_I(...)  #__VA_ARGS__ ""
+#define THEOLIZER_INTERNAL_STRINGIZE(...)       THEOLIZER_INTERNAL_STRINGIZE_I(__VA_ARGS__)
+#define THEOLIZER_INTERNAL_STRINGIZE_I(...)     #__VA_ARGS__ ""
 
 // ***************************************************************************
 //      シンボルの結合
 // ***************************************************************************
 
-#define THEOLIZER_INTERNAL_CAT(a, b)    THEOLIZER_INTERNAL_CAT_I(a, b)
-#define THEOLIZER_INTERNAL_CAT_I(a, b) a ## b
+#define THEOLIZER_INTERNAL_CAT(a, b)            THEOLIZER_INTERNAL_CAT_I(a, b)
+#define THEOLIZER_INTERNAL_CAT_I(a, b)          a ## b
+
+// ***************************************************************************
+//      先頭取り出し
+// ***************************************************************************
+
+#define THEOLIZER_INTERNAL_FIRST(dFirst, ...)   THEOLIZER_INTERNAL_FIRST_I(dFirst)
+#define THEOLIZER_INTERNAL_FIRST_I(dFirst)      dFirst
 
 // ***************************************************************************
 //      マクロ展開処理

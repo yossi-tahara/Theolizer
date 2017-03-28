@@ -320,18 +320,18 @@ ASTANALYZE_OUTPUT("  Array : ", iType.getDesugaredType(*gASTContext).getAsString
         switch (aKind)
         {
         case NonKeepStep:
-            mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_AN(";
+            mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_AN((";
             break;
 
         case KeepStepIntrusive:
-            mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_AKI(";
+            mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_AKI((";
             break;
 
         case KeepStepNonIntrusive:
-            mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_AKN(";
+            mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_AKN((";
             break;
         }
-        mLastVersion << iName.str() << "," << iName.str() << "," << mObjectTracking << ",\\\n"
+        mLastVersion << iName.str() << ")," << iName.str() << "," << mObjectTracking << ",\\\n"
                      << "        "   << mDestination << ",\\\n"
                      << "        ("  << aUnderlyingType.getAsString(mPrintingPolicy) << ")";
 
@@ -379,8 +379,8 @@ ASTANALYZE_OUTPUT("  Array : ", iType.getDesugaredType(*gASTContext).getAsString
 
     void createBuiltin(StringRef iName, QualType iType)
     {
-        mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_N("
-                     << iName.str() << "," << iName.str() << "," << mObjectTracking << ",\\\n"
+        mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_N(("
+                     << iName.str() << ")," << iName.str() << "," << mObjectTracking << ",\\\n"
                      << "        "   << mDestination << ",\\\n"
                      << "        ("  << iType.getAsString(mPrintingPolicy) << "))";
     }
@@ -392,8 +392,8 @@ ASTANALYZE_OUTPUT("  Array : ", iType.getDesugaredType(*gASTContext).getAsString
     void createTemplateParm(StringRef iName, QualType iType,
                             clang::TemplateTypeParmType const* iTemplateParm)
     {
-        mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_N("
-                     << iName.str() << "," << iName.str() << "," << mObjectTracking << ",\\\n"
+        mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_N(("
+                     << iName.str() << ")," << iName.str() << "," << mObjectTracking << ",\\\n"
                      << "        "   << mDestination << ",\\\n"
                      << "        ("  << iType.getAsString(mPrintingPolicy) << "))";
     }
@@ -420,19 +420,19 @@ ASTANALYZE_OUTPUT("  Array : ", iType.getDesugaredType(*gASTContext).getAsString
         {
             if (found->second.mIsFullAuto)
             {
-                mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_KN(";
+                mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_KN((";
             }
             else
             {
-                mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_KI(";
+                mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_KI((";
             }
         }
         else
         {
-            mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_N(";
+            mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_N((";
         }
 
-        mLastVersion << iName.str() << "," << iName.str() << "," << mObjectTracking << ",\\\n"
+        mLastVersion << iName.str() << ")," << iName.str() << "," << mObjectTracking << ",\\\n"
                      << "        "   << mDestination << ",\\\n"
                      << "        (" << iType.getAsString(mPrintingPolicy) << ")";
 
@@ -459,8 +459,8 @@ ASTANALYZE_OUTPUT("  Array : ", iType.getDesugaredType(*gASTContext).getAsString
         if (!found)
     return false;
 
-        mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_KN("
-                     << iName.str() << "," << iName.str() << "," << mObjectTracking << ",\\\n"
+        mLastVersion << "    THEOLIZER_INTERNAL_ELEMENT_KN(("
+                     << iName.str() << ")," << iName.str() << "," << mObjectTracking << ",\\\n"
                      << "        "   << mDestination << ",\\\n"
                      << "        ("  << iType.getAsString(mPrintingPolicy) << ")"
                      << "," << found->second.mLastVersionNo << ")";

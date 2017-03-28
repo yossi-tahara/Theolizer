@@ -216,17 +216,17 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
     #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
         #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,              \
             dTrack,dDest,dType,dVer,dAnno)                                  \
-                THEOLIZER_INTERNAL_DEFERRED_GENERATION(dVer) dName;
+                THEOLIZER_INTERNAL_DEFERRED_GENERATION(dVer) THEOLIZER_INTERNAL_FIRST dName;
         #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,          \
             dTrack,dDest,dType,dVer,dAnno)                                  \
-                THEOLIZER_INTERNAL_DEFERRED_GENERATION(dVer) dName;
+                THEOLIZER_INTERNAL_DEFERRED_GENERATION(dVer) THEOLIZER_INTERNAL_FIRST dName;
         #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,              \
             dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                      \
                 THEOLIZER_INTERNAL_##dDef((                                 \
-                    THEOLIZER_INTERNAL_DEFERRED_GENERATION(dVer) dName;))
+                    THEOLIZER_INTERNAL_DEFERRED_GENERATION(dVer) THEOLIZER_INTERNAL_FIRST dName;))
         #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,          \
             dTrack,dDest,dType,dVerNo,dVer,dAnno)                           \
-                THEOLIZER_INTERNAL_DEFERRED_GENERATION(dVer) dName;
+                THEOLIZER_INTERNAL_DEFERRED_GENERATION(dVer) THEOLIZER_INTERNAL_FIRST dName;
         THEOLIZER_GENERATED_ELEMENT_LIST()
         #undef  THEOLIZER_INTERNAL_VERSION_EN
         #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
@@ -240,16 +240,16 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,dName()
+                    ,THEOLIZER_INTERNAL_FIRST dName()
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,dName()
+                    ,THEOLIZER_INTERNAL_FIRST dName()
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
-                THEOLIZER_INTERNAL_##dDef((,dName()))
+                THEOLIZER_INTERNAL_##dDef((,THEOLIZER_INTERNAL_FIRST dName()))
             #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno)                       \
-                    ,dName()
+                    ,THEOLIZER_INTERNAL_FIRST dName()
             THEOLIZER_GENERATED_ELEMENT_LIST()
             #undef  THEOLIZER_INTERNAL_VERSION_EN
             #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
@@ -264,16 +264,16 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,dName()
+                    ,THEOLIZER_INTERNAL_FIRST dName()
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,dName()
+                    ,THEOLIZER_INTERNAL_FIRST dName()
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
-                THEOLIZER_INTERNAL_##dDef((,dName()))
+                THEOLIZER_INTERNAL_##dDef((,THEOLIZER_INTERNAL_FIRST dName()))
             #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno)                       \
-                    ,dName()
+                    ,THEOLIZER_INTERNAL_FIRST dName()
             THEOLIZER_GENERATED_ELEMENT_LIST()
             #undef  THEOLIZER_INTERNAL_VERSION_EN
             #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
@@ -372,19 +372,23 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
                 #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,      \
                     dTrack,dDest,dType,dVer,dAnno)                          \
                         THEOLIZER_ANNOTATE(dAnno)                           \
-                        typedef THEOLIZER_INTERNAL_UNPAREN dType   _##dName;
+                        typedef THEOLIZER_INTERNAL_UNPAREN dType            \
+                            THEOLIZER_INTERNAL_CAT(_, THEOLIZER_INTERNAL_FIRST dName);
                 #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,  \
                     dTrack,dDest,dType,dVer,dAnno)                          \
                         THEOLIZER_ANNOTATE(dAnno)                           \
-                        typedef THEOLIZER_INTERNAL_UNPAREN dType   _##dName;
+                        typedef THEOLIZER_INTERNAL_UNPAREN dType            \
+                            THEOLIZER_INTERNAL_CAT(_, THEOLIZER_INTERNAL_FIRST dName);
                 #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,      \
                     dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)              \
                         THEOLIZER_ANNOTATE(dAnno)                           \
-                        typedef THEOLIZER_INTERNAL_UNPAREN dType   _##dName;
+                        typedef THEOLIZER_INTERNAL_UNPAREN dType            \
+                            THEOLIZER_INTERNAL_CAT(_, THEOLIZER_INTERNAL_FIRST dName);
                 #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,  \
                     dTrack,dDest,dType,dVerNo,dVer,dAnno)                   \
                         THEOLIZER_ANNOTATE(dAnno)                           \
-                        typedef THEOLIZER_INTERNAL_UNPAREN dType   _##dName;
+                        typedef THEOLIZER_INTERNAL_UNPAREN dType            \
+                            THEOLIZER_INTERNAL_CAT(_, THEOLIZER_INTERNAL_FIRST dName);
                 THEOLIZER_GENERATED_ELEMENT_LIST()
                 #undef  THEOLIZER_INTERNAL_VERSION_EN
                 #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
@@ -492,16 +496,16 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
     #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
         #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,              \
             dTrack,dDest,dType,dVer,dAnno)                                  \
-                THEOLIZER_INTERNAL_UNPAREN dVer& dName;
+                THEOLIZER_INTERNAL_UNPAREN dVer& THEOLIZER_INTERNAL_FIRST dName;
         #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,          \
             dTrack,dDest,dType,dVer,dAnno)                                  \
-                THEOLIZER_INTERNAL_UNPAREN dVer& dName;
+                THEOLIZER_INTERNAL_UNPAREN dVer& THEOLIZER_INTERNAL_FIRST dName;
         #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,              \
             dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                      \
-                THEOLIZER_INTERNAL_UNPAREN dVer dName;
+                THEOLIZER_INTERNAL_UNPAREN dVer THEOLIZER_INTERNAL_FIRST dName;
         #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,          \
             dTrack,dDest,dType,dVerNo,dVer,dAnno)                           \
-                THEOLIZER_INTERNAL_UNPAREN dVer dName;
+                THEOLIZER_INTERNAL_UNPAREN dVer THEOLIZER_INTERNAL_FIRST dName;
         THEOLIZER_GENERATED_ELEMENT_LIST()
         #undef  THEOLIZER_INTERNAL_VERSION_EN
         #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
@@ -523,16 +527,16 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
     #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
         #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,              \
             dTrack,dDest,dType,dVer,dAnno)                                  \
-                bool dName##TheolizerSucceed;
+                bool THEOLIZER_INTERNAL_SUCCEED_FLG(dName);
         #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,          \
             dTrack,dDest,dType,dVer,dAnno)                                  \
-                bool dName##TheolizerSucceed;
+                bool THEOLIZER_INTERNAL_SUCCEED_FLG(dName);
         #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,              \
             dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                      \
-                bool dName##TheolizerSucceed;
+                bool THEOLIZER_INTERNAL_SUCCEED_FLG(dName);
         #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,          \
             dTrack,dDest,dType,dVerNo,dVer,dAnno)                           \
-                bool dName##TheolizerSucceed;
+                bool THEOLIZER_INTERNAL_SUCCEED_FLG(dName);
         THEOLIZER_GENERATED_ELEMENT_LIST()
         #undef  THEOLIZER_INTERNAL_VERSION_EN
         #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
@@ -647,20 +651,21 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,dName(iParentVersion.dNextName)                        \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iParentVersion.dNextName)\
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,dName(mTheolizerBackups->dName.get())                  \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(                        \
+                        mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get())\
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
-                    ,dName(iParentVersion.dNextName)                        \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iParentVersion.dNextName)\
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno)                       \
-                    ,dName()                                                \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName()                       \
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             THEOLIZER_GENERATED_ELEMENT_LIST()
             #undef  THEOLIZER_INTERNAL_VERSION_EN
             #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
@@ -698,13 +703,13 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    theolizer::internal::copyData(mTheolizerBackups->dName.get(), dName);
+                    theolizer::internal::copyData(mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get(), THEOLIZER_INTERNAL_FIRST dName);
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
                     THEOLIZER_INTERNAL_##dDef((                             \
-                        theolizer::internal::copyData(mTheolizerBackups->dName.get(), dName);))
+                        theolizer::internal::copyData(mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get(), THEOLIZER_INTERNAL_FIRST dName);))
             #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno)
             THEOLIZER_GENERATED_ELEMENT_LIST()
@@ -735,20 +740,20 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,dName(iSameVersion.dName)                              \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,dName(iSameVersion.dName)                              \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
-                    ,dName(iSameVersion.dName)                              \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno)                       \
-                    ,dName(iSameVersion.dName)                              \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             THEOLIZER_GENERATED_ELEMENT_LIST()
             #undef  THEOLIZER_INTERNAL_VERSION_EN
             #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
@@ -780,20 +785,20 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,dName(iSameVersion.dName)                              \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,dName(iSameVersion.dName)                              \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
-                    ,dName(iSameVersion.dName)                              \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno)                       \
-                    ,dName(iSameVersion.dName)                              \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             THEOLIZER_GENERATED_ELEMENT_LIST()
             #undef  THEOLIZER_INTERNAL_VERSION_EN
             #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
@@ -827,20 +832,22 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,dName(mTheolizerBackups->dName.get())                  \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(                        \
+                        mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get())\
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,dName(mTheolizerBackups->dName.get())                  \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(                        \
+                        mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get())\
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
-                    ,dName()                                                \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName()                       \
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno)                       \
-                    ,dName()                                                \
-                    ,dName##TheolizerSucceed(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName()                       \
+                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             THEOLIZER_GENERATED_ELEMENT_LIST()
             #undef  THEOLIZER_INTERNAL_VERSION_EN
             #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
@@ -875,18 +882,20 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                if (!dName##TheolizerSucceed)                               \
+                if (!THEOLIZER_INTERNAL_SUCCEED_FLG(dName))                 \
                 {                                                           \
-                    theolizer::internal::copyData(dName, mTheolizerBackups->dName.get());\
+                    theolizer::internal::copyData(THEOLIZER_INTERNAL_FIRST dName,\
+                        mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get());\
                 }
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
                 THEOLIZER_INTERNAL_##dDef((                                 \
-                    if (!dName##TheolizerSucceed)                           \
+                    if (!THEOLIZER_INTERNAL_SUCCEED_FLG(dName))             \
                     {                                                       \
-                        theolizer::internal::copyData(dName, mTheolizerBackups->dName.get());\
+                        theolizer::internal::copyData(THEOLIZER_INTERNAL_FIRST dName,\
+                            mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get());\
                     }))
             #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno)
@@ -904,19 +913,19 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
                 if (mTheolizerSpecials.mParentVersion)                      \
                 {                                                           \
                     mTheolizerSpecials.mParentVersion->dNextName##TheolizerSucceed=\
-                        dName##TheolizerSucceed;                            \
+                        THEOLIZER_INTERNAL_SUCCEED_FLG(dName);              \
                 }                                                           \
                 if (mTheolizerSpecials.mSameVersion)                        \
                 {                                                           \
-                    mTheolizerSpecials.mSameVersion->dName##TheolizerSucceed=\
-                        dName##TheolizerSucceed;                            \
+                    mTheolizerSpecials.mSameVersion->THEOLIZER_INTERNAL_SUCCEED_FLG(dName)=\
+                        THEOLIZER_INTERNAL_SUCCEED_FLG(dName);              \
                 }
         #else
             #define THEOLIZER_INTERNAL_SUCCEED(dName, dNextName)            \
                 if (mTheolizerSpecials.mSameVersion)                        \
                 {                                                           \
-                    mTheolizerSpecials.mSameVersion->dName##TheolizerSucceed=\
-                        dName##TheolizerSucceed;                            \
+                    mTheolizerSpecials.mSameVersion->THEOLIZER_INTERNAL_SUCCEED_FLG(dName)=\
+                        THEOLIZER_INTERNAL_SUCCEED_FLG(dName);              \
                 }
         #endif
 

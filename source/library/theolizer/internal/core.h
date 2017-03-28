@@ -317,7 +317,7 @@ public:
 
 #define THEOLIZER_INTERNAL_REGISTER_ELEMENT(dName,dNextName,dTrack,dDest,dType,dVerNo,dVer)\
     {                                                                       \
-        /*要素名*/          #dName,                                         \
+        /*要素名*/          THEOLIZER_INTERNAL_STRINGIZE(THEOLIZER_INTERNAL_FIRST dName),\
         /*Is基底クラス*/    false,                                          \
         /*保存先*/          {THEOLIZER_INTERNAL_UNPAREN dDest},             \
         /*TypeIndex関数*/                                                   \
@@ -329,13 +329,15 @@ public:
         /*保存関数*/                                                        \
         [](tBaseSerializer& iSerializer, TheolizerVersion& iInstance)       \
         {                                                                   \
-            THEOLIZER_INTERNAL_SAVE(iSerializer, iInstance.dName, dTrack);\
+            THEOLIZER_INTERNAL_SAVE(iSerializer,                            \
+                iInstance.THEOLIZER_INTERNAL_FIRST dName, dTrack);          \
         },                                                                  \
         /*回復関数*/                                                        \
         [](tBaseSerializer& iSerializer, TheolizerVersion& iInstance)       \
         {                                                                   \
-            THEOLIZER_INTERNAL_LOAD(iSerializer, iInstance.dName, dTrack);\
-            iInstance.dName##TheolizerSucceed=true;                         \
+            THEOLIZER_INTERNAL_LOAD(iSerializer,                            \
+                iInstance.THEOLIZER_INTERNAL_FIRST dName, dTrack);          \
+            iInstance.THEOLIZER_INTERNAL_SUCCEED_FLG(dName)=true;           \
         },                                                                  \
         /*(次バージョンの要素名)*/                                          \
         #dNextName,                                                         \
@@ -642,6 +644,13 @@ struct EnumElement : public ElementBase
             THEOLIZER_INTERNAL_UNPAREN dType                                \
         >::type                                                             \
     >
+
+//      ---<<< TheolizerSucceedフラグ展開 >>>---
+
+#define THEOLIZER_INTERNAL_SUCCEED_FLG(dName)                               \
+    THEOLIZER_INTERNAL_SUCCEED_FLG_I(THEOLIZER_INTERNAL_FIRST dName)
+#define THEOLIZER_INTERNAL_SUCCEED_FLG_I(dName)                             \
+    THEOLIZER_INTERNAL_CAT(dName, TheolizerSucceed)
 
 //############################################################################
 //      ポリモーフィズム対応

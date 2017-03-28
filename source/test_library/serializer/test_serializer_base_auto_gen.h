@@ -109,13 +109,13 @@
     THEOLIZER_INTERNAL_CLASS_NAME((u8"IntrusiveBase"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mInt,mInt,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mInt),mInt,etmDefault,\
         (theolizerD::Machine),\
         (int))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mShort,mShort,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mShort),mShort,etmDefault,\
         (theolizerD::Machine),\
         (short))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mString,mString,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mString),mString,etmDefault,\
         (theolizerD::User),\
         (std::string))
 #include <theolizer/internal/version_auto.inc>
@@ -128,16 +128,16 @@
     THEOLIZER_INTERNAL_CLASS_NAME((u8"IntrusiveBase"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emOrder
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mInt,mInt,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mInt),mInt,etmDefault,\
         (theolizerD::All),\
         (int))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mShort,mShort,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mShort),mShort,etmDefault,\
         (theolizerD::All),\
         (short))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mString,mString,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mString),mString,etmDefault,\
         (theolizerD::All),\
         (std::string))\
-    THEOLIZER_INTERNAL_ELEMENT_N_DEL(mChar,,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N_DEL((mChar),,etmDefault,\
         (theolizerD::All),\
         (char))
 #include <theolizer/internal/version_auto.inc>
@@ -160,16 +160,16 @@
 #define THEOLIZER_GENERATED_CLASS_NAME() THEOLIZER_INTERNAL_CLASS_NAME((u8"IntrusiveBase2"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emOrder
 #define THEOLIZER_GENERATED_ELEMENT_LIST() \
-    THEOLIZER_INTERNAL_ELEMENT_N(mLong,mLong,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mLong),mLong,etmDefault,\
         (theolizerD::Machine,theolizerD::Document),\
         (long))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mLongLong,mLongLong,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mLongLong),mLongLong,etmDefault,\
         (theolizerD::Machine,theolizerD::Document),\
         (long long))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mULong,mULong,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mULong),mULong,etmDefault,\
         (theolizerD::User,theolizerD::Document),\
         (unsigned long))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mULongLong,mULongLong,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mULongLong),mULongLong,etmDefault,\
         (theolizerD::User,theolizerD::Document),\
         (unsigned long long))
 #include <theolizer/internal/version_auto.inc>
@@ -195,16 +195,16 @@
 #define THEOLIZER_GENERATED_BASE_LIST()\
     THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),2)
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
         (theolizerD::All),\
         (unsigned int))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUShort,mUShort,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUShort),mUShort,etmDefault,\
         (theolizerD::All),\
         (unsigned short))\
-    THEOLIZER_INTERNAL_ELEMENT_KI(mIntrusiveBase,mIntrusiveBase,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KI((mIntrusiveBase),mIntrusiveBase,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase),2)\
-    THEOLIZER_INTERNAL_ELEMENT_KN(mEnum,mEnum,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KN((mEnum),mEnum,etmDefault,\
         (theolizerD::All),\
         (EnumTest),2)
 #include <theolizer/internal/version_auto.inc>
@@ -220,19 +220,19 @@
     THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),2) THEOLIZER_GENERATED_SEP\
     THEOLIZER_INTERNAL_BASE_KI_DEL(public,etmDefault,1,(IntrusiveBase2),1)
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
         (theolizerD::All),\
         (unsigned int))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUShort2,mUShort,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUShort2),mUShort,etmDefault,\
         (theolizerD::All),\
         (unsigned short))\
-    THEOLIZER_INTERNAL_ELEMENT_KI(mIntrusiveBase,mIntrusiveBase,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KI((mIntrusiveBase),mIntrusiveBase,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase),2)\
-    THEOLIZER_INTERNAL_ELEMENT_KI_DEL(mIntrusiveBase2,,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KI_DEL((mIntrusiveBase2),,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase2),1)\
-    THEOLIZER_INTERNAL_ELEMENT_KN(mEnum,mEnum,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KN((mEnum),mEnum,etmDefault,\
         (theolizerD::All),\
         (EnumTest),2)
 #include <theolizer/internal/version_auto.inc>
@@ -248,16 +248,16 @@
     THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),1) THEOLIZER_GENERATED_SEP\
     THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,1,(IntrusiveBase2),1)
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUShort1,mUShort2,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUShort1),mUShort2,etmDefault,\
         (theolizerD::All),\
         (unsigned short))\
-    THEOLIZER_INTERNAL_ELEMENT_KI(mIntrusiveBase,mIntrusiveBase,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KI((mIntrusiveBase),mIntrusiveBase,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase),1)\
-    THEOLIZER_INTERNAL_ELEMENT_KI(mIntrusiveBase2,mIntrusiveBase2,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KI((mIntrusiveBase2),mIntrusiveBase2,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase2),1)\
-    THEOLIZER_INTERNAL_ELEMENT_KN(mEnum,mEnum,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KN((mEnum),mEnum,etmDefault,\
         (theolizerD::All),\
         (EnumTest),2)
 #include <theolizer/internal/version_auto.inc>
@@ -272,16 +272,16 @@
 #define THEOLIZER_GENERATED_BASE_LIST()\
     THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),1)
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUShort0,mUShort1,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUShort0),mUShort1,etmDefault,\
         (theolizerD::All),\
         (unsigned short))\
-    THEOLIZER_INTERNAL_ELEMENT_N_DEL(mUChar,,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N_DEL((mUChar),,etmDefault,\
         (theolizerD::All),\
         (unsigned char))\
-    THEOLIZER_INTERNAL_ELEMENT_KI(mIntrusiveBase,mIntrusiveBase,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KI((mIntrusiveBase),mIntrusiveBase,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase),1)\
-    THEOLIZER_INTERNAL_ELEMENT_KN(mEnum,mEnum,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KN((mEnum),mEnum,etmDefault,\
         (theolizerD::All),\
         (EnumTest),1)
 #include <theolizer/internal/version_auto.inc>
@@ -305,10 +305,10 @@
     THEOLIZER_INTERNAL_CLASS_NAME((u8"FullAuto"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mInt,mInt,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mInt),mInt,etmDefault,\
         (theolizerD::All),\
         (int))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mShort,mShort,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mShort),mShort,etmDefault,\
         (theolizerD::All),\
         (short))
 #include <theolizer/internal/version_auto.inc>
@@ -334,10 +334,10 @@
     THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"FullAutoTemplate",tType0,tType1))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mType0,mType0,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mType0),mType0,etmDefault,\
         (theolizerD::All),\
         (tType0))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mType1,mType1,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mType1),mType1,etmDefault,\
         (theolizerD::All),\
         (tType1))
 #include <theolizer/internal/version_auto.inc>
@@ -369,16 +369,16 @@
     THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase2),1) THEOLIZER_GENERATED_SEP\
     THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,1,(IntrusiveBase),2)
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_KI(mIntrusiveBase2,mIntrusiveBase2,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KI((mIntrusiveBase2),mIntrusiveBase2,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase2),1)\
-    THEOLIZER_INTERNAL_ELEMENT_KI(mIntrusiveBase,mIntrusiveBase,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KI((mIntrusiveBase),mIntrusiveBase,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase),2)\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUShort,mUShort,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUShort),mUShort,etmDefault,\
         (theolizerD::All),\
         (unsigned short))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
         (theolizerD::All),\
         (unsigned int))
 #include <theolizer/internal/version_auto.inc>
@@ -406,19 +406,19 @@ namespace change_order{namespace dummy{
     THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),2) THEOLIZER_GENERATED_SEP\
     THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,1,(IntrusiveBase2),1)
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
         (theolizerD::All),\
         (unsigned int))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUShort,mUShort,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUShort),mUShort,etmDefault,\
         (theolizerD::All),\
         (unsigned short))\
-    THEOLIZER_INTERNAL_ELEMENT_KI(mIntrusiveBase,mIntrusiveBase,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KI((mIntrusiveBase),mIntrusiveBase,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase),2)\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUChar,mUChar,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUChar),mUChar,etmDefault,\
         (theolizerD::All),\
         (unsigned char))\
-    THEOLIZER_INTERNAL_ELEMENT_KI(mIntrusiveBase2,mIntrusiveBase2,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KI((mIntrusiveBase2),mIntrusiveBase2,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase2),1)
 #include <theolizer/internal/version_auto.inc>
@@ -446,10 +446,10 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_BASE_LIST()\
     THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),2)
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
         (theolizerD::All),\
         (unsigned int))\
-    THEOLIZER_INTERNAL_ELEMENT_KI(mIntrusiveBase2,mIntrusiveBase2,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KI((mIntrusiveBase2),mIntrusiveBase2,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase2),1)
 #include <theolizer/internal/version_auto.inc>
@@ -477,7 +477,7 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_CLASS_NAME() THEOLIZER_INTERNAL_CLASS_NAME((u8"Included1"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mInt,mInt,etmPointee,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mInt),mInt,etmPointee,\
         (theolizerD::All),\
         (int))
 #include <theolizer/internal/version_auto.inc>
@@ -500,7 +500,7 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_CLASS_NAME() THEOLIZER_INTERNAL_CLASS_NAME((u8"Included2"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mShort,mShort,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mShort),mShort,etmDefault,\
         (theolizerD::All),\
         (short))
 #include <theolizer/internal/version_auto.inc>
@@ -523,13 +523,13 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_CLASS_NAME() THEOLIZER_INTERNAL_CLASS_NAME((u8"DestinationTest"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_KI(mIncluded1,mIncluded1,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KI((mIncluded1),mIncluded1,etmDefault,\
         (theolizerD::Machine),\
         (Included1),1)\
-    THEOLIZER_INTERNAL_ELEMENT_KI(mIncluded2,mIncluded2,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KI((mIncluded2),mIncluded2,etmDefault,\
         (theolizerD::User),\
         (Included2),1)\
-    THEOLIZER_INTERNAL_ELEMENT_KN(mFullAutoTemplate,mFullAutoTemplate,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KN((mFullAutoTemplate),mFullAutoTemplate,etmDefault,\
         (theolizerD::All),\
         (FullAutoTemplate<int, short>),1)
 #include <theolizer/internal/version_auto.inc>
@@ -559,33 +559,33 @@ namespace change_order{namespace dummy{
     THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(Included1),1)
 #ifndef NO_ARRAY
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmPointee,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmPointee,\
         (theolizerD::All),\
         (unsigned))\
-    THEOLIZER_INTERNAL_ELEMENT_KN(mEnum,mEnum,etmPointee,\
+    THEOLIZER_INTERNAL_ELEMENT_KN((mEnum),mEnum,etmPointee,\
         (theolizerD::All),\
         (EnumTest),2)\
-    THEOLIZER_INTERNAL_ELEMENT_KI(mIncluded2,mIncluded2,etmPointee,\
+    THEOLIZER_INTERNAL_ELEMENT_KI((mIncluded2),mIncluded2,etmPointee,\
         (theolizerD::All),\
         (Included2),1)\
-    THEOLIZER_INTERNAL_ELEMENT_N(mString,mString,etmPointee,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mString),mString,etmPointee,\
         (theolizerD::All),\
         (string))\
-    THEOLIZER_INTERNAL_ELEMENT_AN(mArray,mArray,etmPointee,\
+    THEOLIZER_INTERNAL_ELEMENT_AN((mArray),mArray,etmPointee,\
         (theolizerD::All),\
         (unsigned),2,3)
 #else
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmPointee,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmPointee,\
         (theolizerD::All),\
         (unsigned))\
-    THEOLIZER_INTERNAL_ELEMENT_KN(mEnum,mEnum,etmPointee,\
+    THEOLIZER_INTERNAL_ELEMENT_KN((mEnum),mEnum,etmPointee,\
         (theolizerD::All),\
         (EnumTest),2)\
-    THEOLIZER_INTERNAL_ELEMENT_KI(mIncluded2,mIncluded2,etmPointee,\
+    THEOLIZER_INTERNAL_ELEMENT_KI((mIncluded2),mIncluded2,etmPointee,\
         (theolizerD::All),\
         (Included2),1)\
-    THEOLIZER_INTERNAL_ELEMENT_N(mString,mString,etmPointee,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mString),mString,etmPointee,\
         (theolizerD::All),\
         (string))
 #endif
@@ -609,22 +609,22 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_CLASS_NAME() THEOLIZER_INTERNAL_CLASS_NAME((u8"Pointers"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
         (theolizerD::All),\
         (unsigned*))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mEnum,mEnum,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mEnum),mEnum,etmDefault,\
         (theolizerD::All),\
         (EnumTest*))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mIncluded2,mIncluded2,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mIncluded2),mIncluded2,etmDefault,\
         (theolizerD::All),\
         (Included2*))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mString,mString,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mString),mString,etmDefault,\
         (theolizerD::All),\
         (string*))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mArrayInt,mArrayInt,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mArrayInt),mArrayInt,etmDefault,\
         (theolizerD::All),\
         (int (*)[2][3]))\
-    THEOLIZER_INTERNAL_ELEMENT_KN(mFullAutoTemplateArray,mFullAutoTemplateArray,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_KN((mFullAutoTemplateArray),mFullAutoTemplateArray,etmDefault,\
         (theolizerD::All),\
         (FullAutoTemplate<int[2], short (*)[3]>),1)
 #include <theolizer/internal/version_auto.inc>
@@ -648,36 +648,36 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #ifndef NO_ARRAY
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmOwner,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmOwner,\
         (theolizerD::All),\
         (unsigned*))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mEnum,mEnum,etmOwner,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mEnum),mEnum,etmOwner,\
         (theolizerD::All),\
         (EnumTest*))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mIncluded1,mIncluded1,etmOwner,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mIncluded1),mIncluded1,etmOwner,\
         (theolizerD::All),\
         (Included1*))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mString,mString,etmOwner,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mString),mString,etmOwner,\
         (theolizerD::All),\
         (string*))\
-    THEOLIZER_INTERNAL_ELEMENT_AN(mArray,mArray,etmOwner,\
+    THEOLIZER_INTERNAL_ELEMENT_AN((mArray),mArray,etmOwner,\
         (theolizerD::All),\
         (int*),3)\
-    THEOLIZER_INTERNAL_ELEMENT_N(mArrayPtr,mArrayPtr,etmOwner,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mArrayPtr),mArrayPtr,etmOwner,\
         (theolizerD::All),\
         (int(*)[2]))
 #else
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mUInt,mUInt,etmOwner,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmOwner,\
         (theolizerD::All),\
         (unsigned*))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mEnum,mEnum,etmOwner,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mEnum),mEnum,etmOwner,\
         (theolizerD::All),\
         (EnumTest*))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mIncluded1,mIncluded1,etmOwner,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mIncluded1),mIncluded1,etmOwner,\
         (theolizerD::All),\
         (Included1*))\
-    THEOLIZER_INTERNAL_ELEMENT_N(mString,mString,etmOwner,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mString),mString,etmOwner,\
         (theolizerD::All),\
         (string*))
 #endif
@@ -707,22 +707,22 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #ifndef NO_ARRAY
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_AN(mArrayInc,mArrayInc,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_AN((mArrayInc),mArrayInc,etmDefault,\
         (theolizerD::All),\
         (short),2,3,4)\
-    THEOLIZER_INTERNAL_ELEMENT_AN(mArrayDec,mArrayDec,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_AN((mArrayDec),mArrayDec,etmDefault,\
         (theolizerD::All),\
         (unsigned int),2)\
-    THEOLIZER_INTERNAL_ELEMENT_AKI(mClassArrayInc,mClassArrayInc,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_AKI((mClassArrayInc),mClassArrayInc,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase),2,2,3,4)\
-    THEOLIZER_INTERNAL_ELEMENT_AKI(mClassArrayDec,mClassArrayDec,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_AKI((mClassArrayDec),mClassArrayDec,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase),2,2)\
-    THEOLIZER_INTERNAL_ELEMENT_AKN(mEnumArrayInc,mEnumArrayInc,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_AKN((mEnumArrayInc),mEnumArrayInc,etmDefault,\
         (theolizerD::All),\
         (EnumTest),2,2,3,4)\
-    THEOLIZER_INTERNAL_ELEMENT_AKN(mEnumArrayDec,mEnumArrayDec,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_AKN((mEnumArrayDec),mEnumArrayDec,etmDefault,\
         (theolizerD::All),\
         (EnumTest),2,2)
 #else
@@ -739,22 +739,22 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #ifndef NO_ARRAY
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_AN(mArrayInc,mArrayInc,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_AN((mArrayInc),mArrayInc,etmDefault,\
         (theolizerD::All),\
         (short),2)\
-    THEOLIZER_INTERNAL_ELEMENT_AN(mArrayDec,mArrayDec,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_AN((mArrayDec),mArrayDec,etmDefault,\
         (theolizerD::All),\
         (unsigned int),2,3,4)\
-    THEOLIZER_INTERNAL_ELEMENT_AKI(mClassArrayInc,mClassArrayInc,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_AKI((mClassArrayInc),mClassArrayInc,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase),1,2)\
-    THEOLIZER_INTERNAL_ELEMENT_AKI(mClassArrayDec,mClassArrayDec,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_AKI((mClassArrayDec),mClassArrayDec,etmDefault,\
         (theolizerD::All),\
         (IntrusiveBase),1,2,3,4)\
-    THEOLIZER_INTERNAL_ELEMENT_AKN(mEnumArrayInc,mEnumArrayInc,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_AKN((mEnumArrayInc),mEnumArrayInc,etmDefault,\
         (theolizerD::All),\
         (EnumTest),1,2)\
-    THEOLIZER_INTERNAL_ELEMENT_AKN(mEnumArrayDec,mEnumArrayDec,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_AKN((mEnumArrayDec),mEnumArrayDec,etmDefault,\
         (theolizerD::All),\
         (EnumTest),1,2,3,4)
 #else
@@ -786,7 +786,7 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #ifndef NO_ARRAY
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_AN(mIntArray,mIntArray,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_AN((mIntArray),mIntArray,etmDefault,\
         (theolizerD::All),\
         (int),tDim0*2,tDim1*2)
 #else
@@ -853,7 +853,7 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_BASE_LIST()\
     THEOLIZER_INTERNAL_BASE_N(public,etmDefault,0,(NonIntrusiveBase))
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
-    THEOLIZER_INTERNAL_ELEMENT_N(mShort,mShort,etmDefault,\
+    THEOLIZER_INTERNAL_ELEMENT_N((mShort),mShort,etmDefault,\
         (theolizerD::All),\
         (short))
 #include <theolizer/internal/version_auto.inc>
