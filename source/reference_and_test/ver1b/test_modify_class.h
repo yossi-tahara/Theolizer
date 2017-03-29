@@ -24,21 +24,141 @@
 #include <string>
 
 // ***************************************************************************
+//      変更テストの被包含クラス
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      非侵入型全自動
+//----------------------------------------------------------------------------
+
+struct ModifyFullAuto
+{
+    int     mFullAuto;
+
+    ModifyFullAuto(int iValue=0) : mFullAuto(iValue) { }
+    void check(int iValue)
+    {
+        THEOLIZER_EQUAL(mFullAuto, iValue);
+    }
+};
+
+//----------------------------------------------------------------------------
+//      侵入型半自動
+//----------------------------------------------------------------------------
+
+struct ModifyHalfAuto2
+{
+    int     mHalfAuto2;
+
+    ModifyHalfAuto2(int iValue=0) : mHalfAuto2(iValue) { }
+    void check(int iValue)
+    {
+        THEOLIZER_EQUAL(mHalfAuto2, iValue);
+    }
+    THEOLIZER_INTRUSIVE(CS, (ModifyHalfAuto2), 1);
+};
+
+//----------------------------------------------------------------------------
+//      非侵入型手動
+//----------------------------------------------------------------------------
+
+struct ModifyManual
+{
+    int     mManual;
+
+    ModifyManual(int iValue=0) : mManual(iValue) { }
+    void check(int iValue)
+    {
+        THEOLIZER_EQUAL(mManual, iValue);
+    }
+};
+
+// 非侵入型手動クラスの指定
+THEOLIZER_NON_INTRUSIVE_ORDER((ModifyManual), 1);
+
+// 保存処理／回復処理関数
+template<class tBaseSerializer, class tTheolizerVersion>
+struct TheolizerNonIntrusive<ModifyManual>::
+    TheolizerUserDefine<tBaseSerializer, tTheolizerVersion, 1>
+{
+    // Save members.
+    static void saveClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
+    )
+    {
+        THEOLIZER_PROCESS(iSerializer, iInstance->mManual);
+    }
+
+    // Load members.
+    static void loadClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget*& oInstance
+    )
+    {
+        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
+        
+        THEOLIZER_PROCESS(iSerializer, oInstance->mManual);
+    }
+};
+
+// ***************************************************************************
 //      変更テスト用クラス（名前対応）
 // ***************************************************************************
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_NAME
-struct ModifyClassName
+struct ModifyClassName :
+    public ModifyManual,    // 順序変更
+    public ModifyFullAuto,
+//  public ModifyHalfAuto,  // 削除
+    public ModifyHalfAuto2  // 追加
 {
     unsigned    mUnsigned;  // 順序変更
 //  short       mShort;     // 削除
     int         mInt;
     long        mLong;      // 追加
 
-    ModifyClassName()     : mUnsigned()   , mInt(0)  , mLong()    { }
-    ModifyClassName(bool) : mUnsigned(102), mInt(101), mLong(103) { }
+    ModifyClassName()     :
+        ModifyManual(0),
+        ModifyFullAuto(0),
+//      ModifyHalfAuto(0),
+        ModifyHalfAuto2(0),
+        mUnsigned(0)  , mInt(0)  , mLong(0)
+    { }
+    ModifyClassName(bool) :
+        ModifyManual(152),
+        ModifyFullAuto(150),
+//      ModifyHalfAuto(151),
+        ModifyHalfAuto2(153),
+        mUnsigned(102), mInt(101), mLong(103)
+    { }
     void check()
     {
+        THEOLIZER_EQUAL(mFullAuto, 150);
+//      THEOLIZER_EQUAL(mHalfAuto, 151);
+        THEOLIZER_EQUAL(mManual,   152);
+        switch(gVersionList[gDataIndex].mVersionEnum)
+        {
+        case VersionEnum::ver1a:
+            THEOLIZER_EQUAL(mHalfAuto2,0);
+            break;
+
+        case VersionEnum::ver1b:
+            THEOLIZER_EQUAL(mHalfAuto2,153);
+            break;
+
+        case VersionEnum::ver1c:
+        case VersionEnum::ver2a:
+        case VersionEnum::ver3a:
+        case VersionEnum::ver3b:
+        default:
+            // FAILさせる
+            THEOLIZER_EQUAL(gDataIndex, gMyIndex);
+            break;
+        }
+
 //      THEOLIZER_EQUAL(mShort,    100);
         THEOLIZER_EQUAL(mInt,      101);
         THEOLIZER_EQUAL(mUnsigned, 102);

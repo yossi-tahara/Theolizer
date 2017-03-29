@@ -52,6 +52,7 @@ THEOLIZER_INTERNAL_DISABLE_WARNING()
 #include <chrono>
 #include <thread>
 #include <map>
+#include <forward_list>
 #include <limits>
 
 //----------------------------------------------------------------------------

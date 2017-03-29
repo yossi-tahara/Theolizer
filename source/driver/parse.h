@@ -1225,6 +1225,7 @@ ASTANALYZE_OUTPUT("      ", qt->getTypeClass(),
                   ", ", Type::Record,
                   ", ", Type::Enum,
                   ", ", Type::TemplateTypeParm,
+                  ", ", Type::TemplateSpecialization,
                   ", ", Type::InjectedClassName,
                   ", ", Type::DependentName);
 
@@ -1232,6 +1233,8 @@ ASTANALYZE_OUTPUT("      ", qt->getTypeClass(),
         {
         case Type::Builtin:
         case Type::TemplateTypeParm:
+        case Type::TemplateSpecialization:
+        case Type::DependentTemplateSpecialization:
     return ;
 
         case Type::ConstantArray:
@@ -1283,20 +1286,63 @@ ASTANALYZE_OUTPUT("          aTargetEnum=", aTargetEnum->getQualifiedNameAsStrin
                 if (isString(qt, iErrorPos))
     return;
 
-                // TheolizerVersionとTheolizerBaseは処理しない
-                if ((qt.getBaseTypeIdentifier())
-                 && ((qt.getBaseTypeIdentifier()->getName().equals("TheolizerVersion"))
-                  || (qt.getBaseTypeIdentifier()->getName().equals("TheolizerBase"))))
+                // TheolizerBaseは処理しない、TheolizerVersionはターゲット取り出し
+                CXXRecordDecl const* aInstanciatedClass = qt->getAsCXXRecordDecl();
+                CXXRecordDecl const* aTargetClass=nullptr;
+                if (qt.getBaseTypeIdentifier())
+                {
+                    if (qt.getBaseTypeIdentifier()->getName().equals("TheolizerBase"))
+    return;
+                    if (qt.getBaseTypeIdentifier()->getName().equals("TheolizerVersion"))
+                    {
+ASTANALYZE_OUTPUT("++++++++++++++++++processElement(TheolizerVersion)");
+                        for (auto&& aDecl : aInstanciatedClass->decls())
+                        {
+                            if (aDecl->getKind() != Decl::Typedef)
+                        continue;
+
+                            TypedefDecl* td = cast<TypedefDecl>(aDecl);
+                            if (td->getName().equals("TheolizerTarget"))
+                            {
+                                QualType qt2=td->getUnderlyingType().
+                                                getDesugaredType(*gASTContext);
+
+                                // std::string等なら、プリミティブとして処理する。
+                                if (isString(qt2, iErrorPos))
+    return;
+                                aTargetClass=qt2->getAsCXXRecordDecl();
+                                if (aTargetClass)
+                        break;
+
+                                // Enum型処理
+                                EnumType const* et = qt2->getAs<EnumType>();
+                                if (!et)
+    return;
+                                EnumDecl const* aTargetEnum = et->getDecl();
+                                if (!aTargetEnum)
     return;
 
-                CXXRecordDecl const* aInstanciatedClass = qt->getAsCXXRecordDecl();
-                ERROR(!aInstanciatedClass, iErrorPos);
-
-                CXXRecordDecl const* aTargetClass=
-                    aInstanciatedClass->getTemplateInstantiationPattern();
+ASTANALYZE_OUTPUT("          aTargetEnum=", aTargetEnum->getQualifiedNameAsString(),
+                  " ", aTargetEnum);
+                                mAstInterface.mSerializeListEnum.addSaveLoad(aTargetEnum);
+    return;
+                            }
+                        }
+ASTANALYZE_OUTPUT("------------------processElement(TheolizerVersion) aTargetClass=",
+    aTargetClass);
+                        if (!aTargetClass)
+    return;
+                    }
+                }
                 if (!aTargetClass)
                 {
-                    aTargetClass=aInstanciatedClass;
+                    ERROR(!aInstanciatedClass, iErrorPos);
+
+                    aTargetClass=aInstanciatedClass->getTemplateInstantiationPattern();
+                    if (!aTargetClass)
+                    {
+                        aTargetClass=aInstanciatedClass;
+                    }
                 }
 ASTANALYZE_OUTPUT("          aTargetClass=", aTargetClass->getQualifiedNameAsString(),
                   " ", aTargetClass);
@@ -1304,7 +1350,7 @@ ASTANALYZE_OUTPUT("          aTargetClass=", aTargetClass->getQualifiedNameAsStr
                 if (mAstInterface.mSerializeListClass.addSaveLoad(aTargetClass, iIsRegisterdClass))
                 {
                     // 初めてのsave/loadなら、枚挙する
-                    enumerateClass(aInstanciatedClass);
+                    enumerateClass(aTargetClass);
                 }
             }
             break;
@@ -1330,7 +1376,12 @@ ASTANALYZE_OUTPUT("Theolizer unkown pattern.", qt->getTypeClass());
 //      保存／回復しているクラスに含まれるclassとenum型を枚挙し、登録する
 //----------------------------------------------------------------------------
 
-    void enumerateClass(CXXRecordDecl const* iClass, AnnotationInfo const* iAnnotationInfo=nullptr)
+    void enumerateClass
+    (
+        CXXRecordDecl const* iClass,
+        bool iIsVersion=false,
+        AnnotationInfo const* iAnnotationInfo=nullptr
+    )
     {
 ASTANALYZE_OUTPUT("++++++++++++ enumerateClass(", iClass->getQualifiedNameAsString(), ")");
 
@@ -1351,7 +1402,7 @@ ASTANALYZE_OUTPUT("          base : ", aBaseDecl->getQualifiedNameAsString());
                 if (mAstInterface.mSerializeListClass.addSaveLoad(aBaseDecl))
                 {
                     // 初めてのsave/loadなら、更にクラス内のクラスとenum型を枚挙し、登録する
-                    enumerateClass(aBaseDecl);
+                    enumerateClass(aBaseDecl, iIsVersion);
                 }
             }
         }
@@ -1375,6 +1426,14 @@ ASTANALYZE_OUTPUT("          field : ", field->getType().getCanonicalType().getA
             // privateは処理しない
             if (field->getAccess() == clang::AS_private)
         continue;
+
+            // TheolizerVersion<>のmTheolizerBackupsとmTheolizerSpecialsを除く
+            if (iIsVersion)
+            {
+                if ((field->getName() == "mTheolizerBackups")
+                 || (field->getName() == "mTheolizerSpecials"))
+        continue;
+            }
 
             // アノテーション確認
             AnnotationInfo annotation = getAnnotationInfo(field, AnnotateType::Field);
@@ -1424,11 +1483,20 @@ ASTANALYZE_OUTPUT("++++++++++++ enumerateNonFullAuto()");
             if ((!aSerializeInfo.second.mIsFullAuto)
              && (!aSerializeInfo.second.mIsManual))
             {
+                // ターゲット・クラスの枚挙
                 enumerateClass
                 (
                     aSerializeInfo.second.mTheolizerTarget,
+                    false,
                     &(aSerializeInfo.second.mAnnotationInfo)
                 );
+
+                // TheolizerVersion<>の枚挙
+                for (auto&& aTheolizerVersion : aSerializeInfo.second.mTheolizerVersionList)
+                {
+                    enumerateClass(aTheolizerVersion, true);
+ASTANALYZE_OUTPUT("    enumerateClass(", aTheolizerVersion->getQualifiedNameAsString(), ")");
+                }
             }
         }
 ASTANALYZE_OUTPUT("------------ enumerateNonFullAuto()");

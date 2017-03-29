@@ -109,22 +109,33 @@ struct TheolizerNonIntrusive<ModifyManual>::
 // ***************************************************************************
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_NAME
-struct ModifyClassName : public ModifyFullAuto
+struct ModifyClassName :
+    public ModifyFullAuto,
+    public ModifyHalfAuto,
+    public ModifyManual
 {
     short       mShort;
     int         mInt;
     unsigned    mUnsigned;
 
     ModifyClassName()     :
-//      ModifyFullAuto(0),
-        mShort(0)  , mInt(0)  , mUnsigned()
+        ModifyFullAuto(0),
+        ModifyHalfAuto(0),
+        ModifyManual(0),
+        mShort(0)  , mInt(0)  , mUnsigned(0)
     { }
     ModifyClassName(bool) :
-//      ModifyFullAuto(150),
+        ModifyFullAuto(150),
+        ModifyHalfAuto(151),
+        ModifyManual(152),
         mShort(100), mInt(101), mUnsigned(102)
     { }
     void check()
     {
+        THEOLIZER_EQUAL(mFullAuto, 150);
+        THEOLIZER_EQUAL(mHalfAuto, 151);
+        THEOLIZER_EQUAL(mManual,   152);
+
         THEOLIZER_EQUAL(mShort,    100);
         THEOLIZER_EQUAL(mInt,      101);
         THEOLIZER_EQUAL(mUnsigned, 102);

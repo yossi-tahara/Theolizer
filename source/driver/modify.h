@@ -541,8 +541,8 @@ ASTANALYZE_OUTPUT("(1)mTarget=", mTarget->getName());
         if ((iSerializeInfo.mLastVersionNo >= 2)
          && (!iSerializeInfo.mTheolizerVersionPrev))
         {
-            gCustomDiag.ErrorReport(mTarget->getLocation(),
-                "No previous version.");
+            gCustomDiag.ErrorReport(mTarget->getLocation(), "No previous version(%0, %1).")
+                << iSerializeInfo.mClassName << iSerializeInfo.mLastVersionNo;
 return eAborted;
         }
 
@@ -1016,8 +1016,8 @@ ASTANALYZE_OUTPUT("    mAnnotationInfoTS=", iSerializeInfo.mAnnotationInfoTS.mPa
         if ((iSerializeInfo.mLastVersionNo >= 2)
          && (!iSerializeInfo.mTheolizerVersionPrev))
         {
-            gCustomDiag.ErrorReport(mTarget->getLocation(),
-                "No previous version.");
+            gCustomDiag.ErrorReport(mTarget->getLocation(), "No previous version(%0, %1).")
+                << iSerializeInfo.mClassName << iSerializeInfo.mLastVersionNo;
 return eAborted;
         }
 

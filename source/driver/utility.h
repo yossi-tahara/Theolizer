@@ -854,6 +854,7 @@ public:
         {
             clang::TextDiagnosticPrinter::HandleDiagnostic(iDiagLevel, iInfo);
             mHasErrorOccurred=true;
+ASTANALYZE_OUTPUT("mHasErrorOccurred=true;");
         }
     }
 };
@@ -1263,6 +1264,8 @@ struct SerializeInfo
     bool                    mIsRegisteredClass;     // THEOLIZER_REGISTER_CLASS()指定クラス
     CXXRecordDecl const*    mTheolizerVersionLast;  // 最新版のTheolizerVersion<>
     CXXRecordDecl const*    mTheolizerVersionPrev;  // １つ前のTheolizerVersion<>
+    std::forward_list<CXXRecordDecl const*>         // 全てのTheolizerVersion<>のリスト
+                            mTheolizerVersionList;
     string const            mClassName;             // クラス名
     FullSourceLoc           mLastVersionNoLoc;      // kLastVersionNo定義位置
     FullSourceLoc           mVersionNoLastLoc;      // 最新版のkVersionNo定義位置
@@ -1516,7 +1519,10 @@ ASTANALYZE_OUTPUT("SerializeList::annexVersion(", iTheolizerTarget->getQualified
                   ") : last ", (void*)iTheolizerVersion);
             pos->second.mTheolizerVersionLast=iTheolizerVersion;
             pos->second.mVersionNoLastLoc=iVersionNoLoc;
-            if (iLastVersionNoLoc.isValid()) pos->second.mLastVersionNoLoc=iLastVersionNoLoc;
+            if (iLastVersionNoLoc.isValid())
+            {
+                pos->second.mLastVersionNoLoc=iLastVersionNoLoc;
+            }
         }
         else if ((pos->second.mLastVersionNo-1) == iVersionNo)
         {
@@ -1526,9 +1532,10 @@ ASTANALYZE_OUTPUT("SerializeList::annexVersion(", iTheolizerTarget->getQualified
                   ") : prev ", (void*)iTheolizerVersion);
             pos->second.mTheolizerVersionPrev=iTheolizerVersion;
             pos->second.mVersionNoPrevLoc=iVersionNoLoc;
-            if (iLastVersionNoLoc.isValid()) {pos->second.mLastVersionNoLoc=iLastVersionNoLoc;
-ASTANALYZE_OUTPUT("iLastVersionNoLoc=", iLastVersionNoLoc.printToString(*gSourceManager));
-}
+            if (iLastVersionNoLoc.isValid())
+            {
+                pos->second.mLastVersionNoLoc=iLastVersionNoLoc;
+            }
         }
         // 最新版より1つだけ新しいものは登録しないことにより、削除される。
         //  それ以上新しいものがあるとエラー
@@ -1539,6 +1546,12 @@ ASTANALYZE_OUTPUT("iLastVersionNoLoc=", iLastVersionNoLoc.printToString(*gSource
 
             gCustomDiag.ErrorReport(aTargetClass->getLocation(),
                                     "Can not down plural versions in once.");
+        }
+
+        // TheolizerVersion<>のリストに登録する
+        if (iVersionNo <= pos->second.mLastVersionNo)
+        {
+            pos->second.mTheolizerVersionList.emplace_front(iTheolizerVersion);
         }
     }
 

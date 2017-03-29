@@ -139,7 +139,7 @@ void loadModifyClass(tSerializer& iSerializer)
     {
         auto    aArray=std::unique_ptr<ArraySizeTest>(new ArraySizeTest{});
         THEOLIZER_PROCESS(iSerializer, aArray);
-        aArray->check(true, (gDataIndex < gMyIndex)?kDefSize:ArraySizeTest::kSize);
+        aArray->check(true);
 
         // オブジェクトIDテーブルのクリア
         iSerializer.clearTracking();

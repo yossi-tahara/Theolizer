@@ -24,19 +24,108 @@
 #include <string>
 
 // ***************************************************************************
+//      変更テストの被包含クラス
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      非侵入型全自動
+//----------------------------------------------------------------------------
+
+struct ModifyFullAuto
+{
+    int     mFullAuto;
+
+    ModifyFullAuto(int iValue=0) : mFullAuto(iValue) { }
+    void check(int iValue)
+    {
+        THEOLIZER_EQUAL(mFullAuto, iValue);
+    }
+};
+
+//----------------------------------------------------------------------------
+//      侵入型半自動
+//----------------------------------------------------------------------------
+
+struct ModifyHalfAuto2
+{
+    int     mHalfAuto2;
+
+    ModifyHalfAuto2(int iValue=0) : mHalfAuto2(iValue) { }
+    void check(int iValue)
+    {
+        THEOLIZER_EQUAL(mHalfAuto2, iValue);
+    }
+    THEOLIZER_INTRUSIVE(CS, (ModifyHalfAuto2), 1);
+};
+
+//----------------------------------------------------------------------------
+//      非侵入型手動
+//----------------------------------------------------------------------------
+
+struct ModifyManual
+{
+    int     mManual;
+
+    ModifyManual(int iValue=0) : mManual(iValue) { }
+    void check(int iValue)
+    {
+        THEOLIZER_EQUAL(mManual, iValue);
+    }
+};
+
+// 非侵入型手動クラスの指定
+THEOLIZER_NON_INTRUSIVE_ORDER((ModifyManual), 1);
+
+// 保存処理／回復処理関数
+template<class tBaseSerializer, class tTheolizerVersion>
+struct TheolizerNonIntrusive<ModifyManual>::
+    TheolizerUserDefine<tBaseSerializer, tTheolizerVersion, 1>
+{
+    // Save members.
+    static void saveClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
+    )
+    {
+        THEOLIZER_PROCESS(iSerializer, iInstance->mManual);
+    }
+
+    // Load members.
+    static void loadClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget*& oInstance
+    )
+    {
+        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
+        
+        THEOLIZER_PROCESS(iSerializer, oInstance->mManual);
+    }
+};
+
+// ***************************************************************************
 //      変更テスト用クラス（名前対応）
 // ***************************************************************************
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_NAME
-struct ChangedModifyClassName
+struct ChangedModifyClassName :
+    public ModifyManual,    // 順序変更
+    public ModifyFullAuto,
+//  public ModifyHalfAuto,  // 削除
+    public ModifyHalfAuto2  // 追加
 {
     unsigned    mUnsigned;  // 順序変更
 //  short       mShort;     // 削除
     int         mInt;
     long        mLong;      // 追加
 
-    ChangedModifyClassName()     : mUnsigned()   , mInt(0)  , mLong()    { }
-    ChangedModifyClassName(bool) : mUnsigned(102), mInt(101), mLong(103) { }
+    ChangedModifyClassName()     :
+        mUnsigned(0)  , mInt(0)  , mLong(0)
+    { }
+    ChangedModifyClassName(bool) :
+        mUnsigned(102), mInt(101), mLong(103)
+    { }
     void check()
     {
 //      THEOLIZER_EQUAL(mShort,    100);
