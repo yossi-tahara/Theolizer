@@ -60,24 +60,29 @@ void saveModifyClass(tSerializer& iSerializer)
 //      変更テスト用クラス（名前対応）
 //----------------------------------------------------------------------------
 
+#ifndef DISABLE_MODIFY_CLASS_TEST_NAME
     {
-        ChangedModifyClassName  aChangedModifyClassName{true};
+        ChangedModifyClassName aChangedModifyClassName{true};
         THEOLIZER_PROCESS(iSerializer, aChangedModifyClassName);
     }
+#endif  // DISABLE_MODIFY_CLASS_TEST_NAME
 
 //----------------------------------------------------------------------------
 //      変更テスト用クラス（順序対応）
 //----------------------------------------------------------------------------
 
+#ifndef DISABLE_MODIFY_CLASS_TEST_ORDER
     {
         ChangedModifyClassOrder    aChangedModifyClassOrder{true};
         THEOLIZER_PROCESS(iSerializer, aChangedModifyClassOrder);
     }
+#endif  // DISABLE_MODIFY_CLASS_TEST_ORDER
 
 //----------------------------------------------------------------------------
 //      配列要素数の上限テスト
 //----------------------------------------------------------------------------
 
+#ifndef DISABLE_MODIFY_CLASS_TEST_ARRAY
     {
         auto    aArray=std::unique_ptr<ArraySizeTest>(new ArraySizeTest{true});
         THEOLIZER_PROCESS(iSerializer, aArray);
@@ -85,13 +90,7 @@ void saveModifyClass(tSerializer& iSerializer)
         // オブジェクトIDテーブルのクリア
         iSerializer.clearTracking();
     }
-
-//----------------------------------------------------------------------------
-//      
-//----------------------------------------------------------------------------
-
-    {
-    }
+#endif  // DISABLE_MODIFY_CLASS_TEST_ARRAY
 }
 //! [saveModifyClass]
 
@@ -114,26 +113,31 @@ void loadModifyClass(tSerializer& iSerializer)
 //      変更テスト用クラス（名前対応）
 //----------------------------------------------------------------------------
 
+#ifndef DISABLE_MODIFY_CLASS_TEST_NAME
     {
         ChangedModifyClassName  aChangedModifyClassName;
         THEOLIZER_PROCESS(iSerializer, aChangedModifyClassName);
         aChangedModifyClassName.check();
     }
+#endif  // DISABLE_MODIFY_CLASS_TEST_NAME
 
 //----------------------------------------------------------------------------
 //      変更テスト用クラス（順序対応）
 //----------------------------------------------------------------------------
 
+#ifndef DISABLE_MODIFY_CLASS_TEST_ORDER
     {
         ChangedModifyClassOrder    aChangedModifyClassOrder;
         THEOLIZER_PROCESS(iSerializer, aChangedModifyClassOrder);
         aChangedModifyClassOrder.check();
     }
+#endif  // DISABLE_MODIFY_CLASS_TEST_ORDER
 
 //----------------------------------------------------------------------------
 //      配列要素数の上限テスト
 //----------------------------------------------------------------------------
 
+#ifndef DISABLE_MODIFY_CLASS_TEST_ARRAY
     {
         auto    aArray=std::unique_ptr<ArraySizeTest>(new ArraySizeTest{});
         THEOLIZER_PROCESS(iSerializer, aArray);
@@ -142,13 +146,7 @@ void loadModifyClass(tSerializer& iSerializer)
         // オブジェクトIDテーブルのクリア
         iSerializer.clearTracking();
     }
-
-//----------------------------------------------------------------------------
-//      
-//----------------------------------------------------------------------------
-
-    {
-    }
+#endif  // DISABLE_MODIFY_CLASS_TEST_ARRAY
 }
 //! [loadModifyClass]
 

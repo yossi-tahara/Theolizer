@@ -24,30 +24,120 @@
 #include <string>
 
 // ***************************************************************************
+//      変更テストの被包含クラス
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      非侵入型全自動
+//----------------------------------------------------------------------------
+
+struct ModifyFullAuto
+{
+    int     mFullAuto;
+
+    ModifyFullAuto(int iValue=0) : mFullAuto(iValue) { }
+    void check(int iValue)
+    {
+        THEOLIZER_EQUAL(mFullAuto, iValue);
+    }
+};
+
+//----------------------------------------------------------------------------
+//      侵入型半自動
+//----------------------------------------------------------------------------
+
+struct ModifyHalfAuto
+{
+    int     mHalfAuto;
+
+    ModifyHalfAuto(int iValue=0) : mHalfAuto(iValue) { }
+    void check(int iValue)
+    {
+        THEOLIZER_EQUAL(mHalfAuto, iValue);
+    }
+    THEOLIZER_INTRUSIVE(CS, (ModifyHalfAuto), 1);
+};
+
+//----------------------------------------------------------------------------
+//      非侵入型手動
+//----------------------------------------------------------------------------
+
+struct ModifyManual
+{
+    int     mManual;
+
+    ModifyManual(int iValue=0) : mManual(iValue) { }
+    void check(int iValue)
+    {
+        THEOLIZER_EQUAL(mManual, iValue);
+    }
+};
+
+// 非侵入型手動クラスの指定
+THEOLIZER_NON_INTRUSIVE_ORDER((ModifyManual), 1);
+
+// 保存処理／回復処理関数
+template<class tBaseSerializer, class tTheolizerVersion>
+struct TheolizerNonIntrusive<ModifyManual>::
+    TheolizerUserDefine<tBaseSerializer, tTheolizerVersion, 1>
+{
+    // Save members.
+    static void saveClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
+    )
+    {
+        THEOLIZER_PROCESS(iSerializer, iInstance->mManual);
+    }
+
+    // Load members.
+    static void loadClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget*& oInstance
+    )
+    {
+        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
+        
+        THEOLIZER_PROCESS(iSerializer, oInstance->mManual);
+    }
+};
+
+// ***************************************************************************
 //      変更テスト用クラス（名前対応）
 // ***************************************************************************
 
-struct ModifyClassName
+#ifndef DISABLE_MODIFY_CLASS_TEST_NAME
+struct ModifyClassName : public ModifyFullAuto
 {
     short       mShort;
     int         mInt;
     unsigned    mUnsigned;
 
-    ModifyClassName()     : mShort(0)  , mInt(0)  , mUnsigned()    { }
-    ModifyClassName(bool) : mShort(100), mInt(110), mUnsigned(120) { }
+    ModifyClassName()     :
+//      ModifyFullAuto(0),
+        mShort(0)  , mInt(0)  , mUnsigned()
+    { }
+    ModifyClassName(bool) :
+//      ModifyFullAuto(150),
+        mShort(100), mInt(101), mUnsigned(102)
+    { }
     void check()
     {
         THEOLIZER_EQUAL(mShort,    100);
-        THEOLIZER_EQUAL(mInt,      110);
-        THEOLIZER_EQUAL(mUnsigned, 120);
+        THEOLIZER_EQUAL(mInt,      101);
+        THEOLIZER_EQUAL(mUnsigned, 102);
     }
 //  THEOLIZER_INTRUSIVE(CS, (ModifyClassName), 1);
 };
+#endif  // DISABLE_MODIFY_CLASS_TEST_NAME
 
 // ***************************************************************************
 //      変更テスト用クラス（順序対応）
 // ***************************************************************************
 
+#ifndef DISABLE_MODIFY_CLASS_TEST_ORDER
 struct ModifyClassOrder
 {
     short       mShort;
@@ -55,20 +145,22 @@ struct ModifyClassOrder
     unsigned    mUnsigned;
 
     ModifyClassOrder()     : mShort(0)  , mInt(0)  , mUnsigned()    { }
-    ModifyClassOrder(bool) : mShort(200), mInt(210), mUnsigned(220) { }
+    ModifyClassOrder(bool) : mShort(200), mInt(201), mUnsigned(202) { }
     void check()
     {
         THEOLIZER_EQUAL(mShort,    200);
-        THEOLIZER_EQUAL(mInt,      210);
-        THEOLIZER_EQUAL(mUnsigned, 220);
+        THEOLIZER_EQUAL(mInt,      201);
+        THEOLIZER_EQUAL(mUnsigned, 202);
     }
     THEOLIZER_INTRUSIVE_ORDER(CS, (ModifyClassOrder), 1);
 };
+#endif  // DISABLE_MODIFY_CLASS_TEST_ORDER
 
 // ***************************************************************************
 //      配列の要素数上限テスト
 // ***************************************************************************
 
+#ifndef DISABLE_MODIFY_CLASS_TEST_ARRAY
 struct ArraySizeTest
 {
     static const unsigned   kSize=kDefSize;
@@ -112,9 +204,6 @@ struct ArraySizeTest
 
     THEOLIZER_INTRUSIVE(CS, (ArraySizeTest), 1);
 };
-
-//----------------------------------------------------------------------------
-//      
-//----------------------------------------------------------------------------
+#endif  // DISABLE_MODIFY_CLASS_TEST_ARRAY
 
 #endif  // TEST_MODIFY_CLASS_H

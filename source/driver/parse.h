@@ -491,7 +491,7 @@ ASTANALYZE_OUTPUT("    ::Theolizer does not process.");
                         "previous definition here");
                 }
                 mAstInterface.mGlobalVersionNoTableDecl = iCXXRecordDecl;
-ASTANALYZE_OUTPUT("    GlobalVersionNoTable");
+ASTANALYZE_OUTPUT("    mGlobalVersionNoTableDecl=", iCXXRecordDecl->getQualifiedNameAsString());
     return true;
             }
         }

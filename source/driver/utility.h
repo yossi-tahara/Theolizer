@@ -356,7 +356,8 @@ public:
 #endif
 
 template<typename Type>
-LogFile::LogOStream& operator,(LogFile::LogOStream& iOStream, Type iObject) {
+LogFile::LogOStream& operator,(LogFile::LogOStream& iOStream, Type iObject)
+{
     iOStream << iObject;
     return iOStream;
 }
@@ -802,6 +803,9 @@ public:
 //      診断結果表示用DiagnosticConsumer
 // ***************************************************************************
 
+extern ASTContext*  gASTContext;
+std::string         gLastErrorMessage;
+
 class TheolizerDiagnosticConsumer : public clang::TextDiagnosticPrinter
 {
 private:
@@ -825,17 +829,26 @@ public:
 
         ASTANALYZE_OUTPUT("### HandleDiagnostic ###");
         ASTANALYZE_OUTPUT("    DiagLevel = ", iDiagLevel);
+        std::string aLocation;
         if (iInfo.hasSourceManager())
         {
-            ASTANALYZE_OUTPUT("    Location = ",
-                iInfo.getLocation().printToString(iInfo.getSourceManager()));
+            aLocation=gASTContext->getFullLoc(iInfo.getLocation()).getSpellingLoc().
+                    printToString(iInfo.getSourceManager());
         }
         else
         {
-            ASTANALYZE_OUTPUT("    Location = <no-source>");
+            aLocation="<no-source>";
         }
-        ASTANALYZE_OUTPUT("    mMessage = ", aMessage);
+        ASTANALYZE_OUTPUT("    mMessage  = ", aMessage);
+        ASTANALYZE_OUTPUT("    aLocation = ", aLocation);
 
+        // 最後のErrorとFatalを記録する
+        if (clang::DiagnosticsEngine::Level::Error <= iDiagLevel)
+        {
+            gLastErrorMessage=aMessage + "\n" + aLocation;
+        }
+
+        // 致命的エラーやTheolizerエラーを反映する
         if ((iDiagLevel == clang::DiagnosticsEngine::Level::Fatal)
          || (StringRef(aMessage).startswith(kDiagMarker)))
         {

@@ -2322,6 +2322,8 @@ ASTANALYZE_OUTPUT("    aSourceStatus=", aSourceStatus);
         aClassList.clear(); // 不要メモリ解放
 
 ASTANALYZE_OUTPUT("============ GlobalVersionNoTable ============");
+ASTANALYZE_OUTPUT("mGlobalVersionNoTableDecl=", mAstInterface.mGlobalVersionNoTableDecl);
+ASTANALYZE_OUTPUT("mAstInterface.mLocationDefault=", mAstInterface.mLocationDefault.isInvalid());
         // グローバル・バージョン番号テーブル無し
         if (mAstInterface.mGlobalVersionNoTableDecl == nullptr)
         {
@@ -2347,8 +2349,8 @@ ASTANALYZE_OUTPUT("==============================================");
 ASTANALYZE_OUTPUT("hpp generation : tellp()=", mTheolizerHpp.tellp(),
                   " isInvalid()=", mAstInterface.mLocationDefault.isInvalid(),
                   " source=", gCompilingSourceName);
-        // 空
-        if (mTheolizerHpp.tellp() <= 0)
+        // 空、かつ、インクルードされていないなら、保存しない
+        if ((mTheolizerHpp.tellp() <= 0) && (mAstInterface.mLocationDefault.isInvalid()))
         {
             mAstInterface.mDoSaveTheolizerHpp=false;
         }

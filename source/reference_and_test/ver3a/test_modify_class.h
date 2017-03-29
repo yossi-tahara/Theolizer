@@ -27,6 +27,7 @@
 //      変更テスト用クラス（名前対応）
 // ***************************************************************************
 
+#ifndef DISABLE_MODIFY_CLASS_TEST_NAME
 struct ChangedModifyClassName
 {
     unsigned    mUnsigned;  // 順序変更
@@ -35,12 +36,12 @@ struct ChangedModifyClassName
     long        mLong;      // 追加
 
     ChangedModifyClassName()     : mUnsigned()   , mIntChanged(0)  , mLong()    { }
-    ChangedModifyClassName(bool) : mUnsigned(120), mIntChanged(110), mLong(130) { }
+    ChangedModifyClassName(bool) : mUnsigned(102), mIntChanged(101), mLong(103) { }
     void check()
     {
 //      THEOLIZER_EQUAL(mShort,      100);
-        THEOLIZER_EQUAL(mIntChanged, 110);
-        THEOLIZER_EQUAL(mUnsigned,   120);
+        THEOLIZER_EQUAL(mIntChanged, 101);
+        THEOLIZER_EQUAL(mUnsigned,   102);
         switch(gVersionList[gDataIndex].mVersionEnum)
         {
         case VersionEnum::ver1a:
@@ -51,7 +52,7 @@ struct ChangedModifyClassName
         case VersionEnum::ver1c:
         case VersionEnum::ver2a:
         case VersionEnum::ver3a:
-            THEOLIZER_EQUAL(mLong,  130);
+            THEOLIZER_EQUAL(mLong,  103);
             break;
 
         case VersionEnum::ver3b:
@@ -63,11 +64,13 @@ struct ChangedModifyClassName
     }
     THEOLIZER_INTRUSIVE(CS, (ChangedModifyClassName), 3);
 };
+#endif  // DISABLE_MODIFY_CLASS_TEST_NAME
 
 // ***************************************************************************
 //      変更テスト用クラス（順序対応）  メンバ変数追加
 // ***************************************************************************
 
+#ifndef DISABLE_MODIFY_CLASS_TEST_ORDER
 struct ChangedModifyClassOrder
 {
     short       mShort;
@@ -76,12 +79,12 @@ struct ChangedModifyClassOrder
     long        mLong;      // 追加
 
     ChangedModifyClassOrder()     : mShort(0)  , mIntChanged(0)  , mUnsigned()   , mLong()    { }
-    ChangedModifyClassOrder(bool) : mShort(200), mIntChanged(210), mUnsigned(220), mLong(230) { }
+    ChangedModifyClassOrder(bool) : mShort(200), mIntChanged(201), mUnsigned(202), mLong(203) { }
     void check()
     {
         THEOLIZER_EQUAL(mShort,      200);
-        THEOLIZER_EQUAL(mIntChanged, 210);
-        THEOLIZER_EQUAL(mUnsigned,   220);
+        THEOLIZER_EQUAL(mIntChanged, 201);
+        THEOLIZER_EQUAL(mUnsigned,   202);
         switch(gVersionList[gDataIndex].mVersionEnum)
         {
         case VersionEnum::ver1a:
@@ -99,7 +102,7 @@ struct ChangedModifyClassOrder
                 break;
 
             default:
-                THEOLIZER_EQUAL(mLong,  230);
+                THEOLIZER_EQUAL(mLong,  203);
                 break;
             }
             break;
@@ -113,11 +116,13 @@ struct ChangedModifyClassOrder
     }
     THEOLIZER_INTRUSIVE_ORDER(CS, (ChangedModifyClassOrder), 3);
 };
+#endif  // DISABLE_MODIFY_CLASS_TEST_ORDER
 
 // ***************************************************************************
 //      配列の要素数上限テスト
 // ***************************************************************************
 
+#ifndef DISABLE_MODIFY_CLASS_TEST_ARRAY
 struct ArraySizeTest
 {
     static const unsigned   kSize=kDefSize;
@@ -161,9 +166,6 @@ struct ArraySizeTest
 
     THEOLIZER_INTRUSIVE(CS, (ArraySizeTest), 1);
 };
-
-//----------------------------------------------------------------------------
-//      
-//----------------------------------------------------------------------------
+#endif  // DISABLE_MODIFY_CLASS_TEST_ARRAY
 
 #endif  // TEST_MODIFY_CLASS_H

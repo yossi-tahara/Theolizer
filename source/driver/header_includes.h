@@ -27,7 +27,7 @@
 
 #ifdef _MSC_VER     // start of disabling MSVC warnings
     #pragma warning(push)
-    #pragma warning(disable:4100 4141 4146 4180 4244 4245 4258 4267 4291 4310 4324 4345 4351 4355 4389 4456 4457 4458 4459 4503 4624 4722 4800 4996)
+    #pragma warning(disable:4100 4141 4146 4180 4244 4245 4258 4267 4291 4310 4324 4345 4351 4355 4389 4456 4457 4458 4459 4503 4624 4702 4722 4800 4913 4996)
 #endif
 
 #include <theolizer/internal/avoid-trouble.h>

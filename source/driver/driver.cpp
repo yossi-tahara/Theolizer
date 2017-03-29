@@ -490,6 +490,13 @@ vector<string> GetCompilerInfo(const string& iExePath,
 //      メイン
 // ***************************************************************************
 
+int callParse
+(
+    string const&                   iExecPath,
+    llvm::opt::ArgStringList const& iArgs,
+    string const&                   iTarget
+);
+
 int main(int iArgc, const char **iArgv)
 {
 //  DISABLE_OUTPUT();
@@ -829,7 +836,7 @@ return TheolizerProc(aExePath, arg);
                     gRetryAST=false;
 
                     // AST解析とソース修正
-                    ret=parse(aExePath, args, aTarget);
+                    ret=callParse(aExePath, args, aTarget);
                 } while(gExclusiveControl.getRedoRequest() || gRetryAST);
                 if (ret) aRet=ret;
 
@@ -933,3 +940,74 @@ char* GetCurrentDirName()
     return getcwd(nullptr, 0);
 }
 #endif
+
+//############################################################################
+//      libToolingで発生した例外処理
+//############################################################################
+
+// ***************************************************************************
+//      WindowsのSEHやLinuxのSIGNALを捕まえるため、boost::execution_monitorを使う
+// ***************************************************************************
+
+#ifdef _MSC_VER     // start of disabling MSVC warnings
+    #pragma warning(disable:4702 4913)
+#endif
+
+#define BOOST_TEST_NO_MAIN
+#define BOOST_NO_EXCEPTIONS
+#include <boost/test/included/prg_exec_monitor.hpp>
+
+// ***************************************************************************
+//      中継用ファンクタ
+// ***************************************************************************
+
+struct ParseCaller
+{
+    ParseCaller
+    (
+        string const&                   iExecPath,
+        llvm::opt::ArgStringList const& iArgs,
+        string const&                   iTarget
+    ) : mExecPath(iExecPath),
+        mArgs(iArgs),
+        mTarget(iTarget)
+    { }
+
+    int operator()() { return parse(mExecPath, mArgs, mTarget); }
+
+private:
+    string const&                   mExecPath;
+    llvm::opt::ArgStringList const& mArgs;
+    string const&                   mTarget;
+};
+
+// ***************************************************************************
+//      例外キャッチ用中継関数
+// ***************************************************************************
+
+int callParse
+(
+    string const&                   iExecPath,
+    llvm::opt::ArgStringList const& iArgs,
+    string const&                   iTarget
+)
+{
+    int result=0;
+    try
+    {
+        gLastErrorMessage="";
+        result = ::boost::execution_monitor().execute(ParseCaller(iExecPath, iArgs, iTarget));
+    }
+    catch(std::exception& e)
+    {
+        llvm::errs() << "\n**** std::exception : " << e.what() << "\n";
+        result = 1;
+    }
+    catch(...)
+    {
+        llvm::errs() << "\n**** Unknown exception from clang :  " << gLastErrorMessage << "\n";
+        result = 2;
+    }
+
+    return result;
+}
