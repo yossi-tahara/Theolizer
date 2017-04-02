@@ -165,11 +165,11 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR
             COMMAND ${CMAKE_COMMAND} -E remove_directory ${BINARY_DIR}
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_DIR} ${BINARY_DIR}
             COMMAND ${CMAKE_COMMAND}
-                "-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
-                "-DPREV_DIR=${PREV_DIR}"
-                "-DBINARY_DIR=${BINARY_DIR}"
-                "-DMATCH_STRING=${MS}"
-                "-DREPLACE_STRING=${RS}"
+                \"-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}\"
+                \"-DPREV_DIR=${PREV_DIR}\"
+                \"-DBINARY_DIR=${BINARY_DIR}\"
+                \"-DMATCH_STRING=${MS}\"
+                \"-DREPLACE_STRING=${RS}\"
                 -P "${CMAKE_CURRENT_SOURCE_DIR}/copy.cmake"
             COMMAND $<TARGET_FILE:TheolizerDriver> ${PARAMETERS})
     else()
@@ -180,11 +180,11 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR
             COMMAND ${CMAKE_COMMAND} -E remove_directory ${BINARY_DIR}
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${SOURCE_DIR} ${BINARY_DIR}
             COMMAND ${CMAKE_COMMAND}
-                "-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}"
-                "-DPREV_DIR=${PREV_DIR}"
-                "-DBINARY_DIR=${BINARY_DIR}"
-                "-DMATCH_STRING=${MS}"
-                "-DREPLACE_STRING=${RS}"
+                \"-DSOURCE_DIR=${CMAKE_CURRENT_SOURCE_DIR}\"
+                \"-DPREV_DIR=${PREV_DIR}\"
+                \"-DBINARY_DIR=${BINARY_DIR}\"
+                \"-DMATCH_STRING=${MS}\"
+                \"-DREPLACE_STRING=${RS}\"
                 -P "${CMAKE_CURRENT_SOURCE_DIR}/copy.cmake"
             COMMAND ${CMAKE_INSTALL_PREFIX}/bin/TheolizerDriver ${PARAMETERS})
     endif()
