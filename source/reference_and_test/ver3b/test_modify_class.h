@@ -60,7 +60,8 @@ struct OldFullAuto1
 //      侵入型半自動
 //----------------------------------------------------------------------------
 
-// ver1aにあったものを復活
+//      ---<<< ver1aとver3bで使用する >>>---
+
 struct ModifyHalfAuto
 {
     int     mHalfAuto;
@@ -73,7 +74,8 @@ struct ModifyHalfAuto
     THEOLIZER_INTRUSIVE(CS, (ModifyHalfAuto), 1);
 };
 
-// ver1bからのもの
+//      ---<<< ver1b以降で使用する >>>---
+
 struct ModifyHalfAutoY
 {
     std::string mHalfAutoY THEOLIZER_ANNOTATE(FS:mHalfAutoX);
@@ -294,17 +296,93 @@ struct ModifyClassName :
 // ***************************************************************************
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_ORDER
-struct ModifyClassOrder
+struct ModifyClassOrder :
+    // --- 基底クラス ---
+    public ModifyFullAuto,
+    public ModifyHalfAuto,
+    public ModifyManual
 {
+    // --- クラス型メンバ変数---
+    ModifyFullAuto  mFullAutoMember;
+    ModifyHalfAuto  mHalfAutoMember;
+    ModifyManual    mManualMember;
+
+    // --- 基本型メンバ変数---
     short       mShort;
     int         mIntChanged THEOLIZER_ANNOTATE(FS:mInt);    // 変数名変更
     unsigned    mUnsigned;
-//  long        mLong;      // 追加→バージョンアップ→削除
 
-    ModifyClassOrder()     : mShort(0)  , mIntChanged(0)  , mUnsigned()    { }
-    ModifyClassOrder(bool) : mShort(220), mIntChanged(221), mUnsigned(222) { }
+    // 1b:追加
+//  ModifyHalfAutoY mHalfAutoYMember;   // 2a:名変更
+//  long            mLong;
+
+//----------------------------------------------------------------------------
+//      デフォルト・コンストラクタ
+//----------------------------------------------------------------------------
+
+    ModifyClassOrder() :
+        // --- 基底クラス ---
+        ModifyFullAuto(0),
+        ModifyHalfAuto(0),
+        ModifyManual(0),
+
+        // --- クラス型メンバ変数---
+        mFullAutoMember(0),
+        mHalfAutoMember(0),
+        mManualMember(0),
+
+        // --- 基本型メンバ変数---
+        mShort(0),
+        mIntChanged(0),
+        mUnsigned(0)
+
+        // 1b:追加
+//      mHalfAutoYMember(""),   // 2a:名変更
+//      mLong(0)
+    { }
+
+//----------------------------------------------------------------------------
+//      保存データ設定用コンストラクタ
+//----------------------------------------------------------------------------
+
+    ModifyClassOrder(bool) :
+        // --- 基底クラス ---
+        ModifyFullAuto(200),
+        ModifyHalfAuto(201),
+        ModifyManual(202),
+
+        // --- クラス型メンバ変数---
+        mFullAutoMember(210),
+        mHalfAutoMember(211),
+        mManualMember(212),
+
+        // --- 基本型メンバ変数---
+        mShort(220),
+        mIntChanged(221),
+        mUnsigned(222)
+
+        // 1b:追加
+//      mHalfAutoYMember("213"),    // 2a:名変更
+//      mLong(223)
+    { }
+
+//----------------------------------------------------------------------------
+//      チェック
+//----------------------------------------------------------------------------
+
     void check()
     {
+        // --- 基底クラス ---
+        THEOLIZER_EQUAL(mFullAuto, 200);
+        THEOLIZER_EQUAL(mHalfAuto, 201);
+        THEOLIZER_EQUAL(mManual,   202);
+
+        // --- クラス型メンバ変数---
+        THEOLIZER_EQUAL(mFullAutoMember.mFullAuto,   210);
+        THEOLIZER_EQUAL(mHalfAutoMember.mHalfAuto,   211);
+        THEOLIZER_EQUAL(mManualMember.mManual,       212);
+
+        // --- 基本型メンバ変数---
         THEOLIZER_EQUAL(mShort,      220);
         THEOLIZER_EQUAL(mIntChanged, 221);
         THEOLIZER_EQUAL(mUnsigned,   222);

@@ -46,6 +46,8 @@ struct ModifyFullAuto
 //      侵入型半自動
 //----------------------------------------------------------------------------
 
+//      ---<<< ver1aとver3bで使用する >>>---
+
 struct ModifyHalfAuto
 {
     int     mHalfAuto;
@@ -197,16 +199,81 @@ struct ModifyClassName :
 // ***************************************************************************
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_ORDER
-struct ModifyClassOrder
+struct ModifyClassOrder :
+    // --- 基底クラス ---
+    public ModifyFullAuto,
+    public ModifyHalfAuto,
+    public ModifyManual
 {
-    short       mShort;
-    int         mInt;
-    unsigned    mUnsigned;
+    // --- クラス型メンバ変数---
+    ModifyFullAuto  mFullAutoMember;
+    ModifyHalfAuto  mHalfAutoMember;
+    ModifyManual    mManualMember;
 
-    ModifyClassOrder()     : mShort(0)  , mInt(0)  , mUnsigned()    { }
-    ModifyClassOrder(bool) : mShort(220), mInt(221), mUnsigned(222) { }
+    // --- 基本型メンバ変数---
+    short           mShort;
+    int             mInt;
+    unsigned        mUnsigned;
+
+//----------------------------------------------------------------------------
+//      デフォルト・コンストラクタ
+//----------------------------------------------------------------------------
+
+    ModifyClassOrder() :
+        // --- 基底クラス ---
+        ModifyFullAuto(0),
+        ModifyHalfAuto(0),
+        ModifyManual(0),
+
+        // --- クラス型メンバ変数---
+        mFullAutoMember(0),
+        mHalfAutoMember(0),
+        mManualMember(0),
+
+        // --- 基本型メンバ変数---
+        mShort(0),
+        mInt(0),
+        mUnsigned(0)
+    { }
+
+//----------------------------------------------------------------------------
+//      保存データ設定用コンストラクタ
+//----------------------------------------------------------------------------
+
+    ModifyClassOrder(bool) :
+        // --- 基底クラス ---
+        ModifyFullAuto(200),
+        ModifyHalfAuto(201),
+        ModifyManual(202),
+
+        // --- クラス型メンバ変数---
+        mFullAutoMember(210),
+        mHalfAutoMember(211),
+        mManualMember(212),
+
+        // --- 基本型メンバ変数---
+        mShort(220),
+        mInt(221),
+        mUnsigned(222)
+    { }
+
+//----------------------------------------------------------------------------
+//      チェック
+//----------------------------------------------------------------------------
+
     void check()
     {
+        // --- 基底クラス ---
+        THEOLIZER_EQUAL(mFullAuto, 200);
+        THEOLIZER_EQUAL(mHalfAuto, 201);
+        THEOLIZER_EQUAL(mManual,   202);
+
+        // --- クラス型メンバ変数---
+        THEOLIZER_EQUAL(mFullAutoMember.mFullAuto, 210);
+        THEOLIZER_EQUAL(mHalfAutoMember.mHalfAuto, 211);
+        THEOLIZER_EQUAL(mManualMember.mManual,     212);
+
+        // --- 基本型メンバ変数---
         THEOLIZER_EQUAL(mShort,    220);
         THEOLIZER_EQUAL(mInt,      221);
         THEOLIZER_EQUAL(mUnsigned, 222);

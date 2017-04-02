@@ -46,6 +46,22 @@ struct ModifyFullAuto
 //      侵入型半自動
 //----------------------------------------------------------------------------
 
+//      ---<<< ver1aとver3bで使用する >>>---
+
+struct ModifyHalfAuto
+{
+    int     mHalfAuto;
+
+    ModifyHalfAuto(int iValue=0) : mHalfAuto(iValue) { }
+    void check(int iValue)
+    {
+        THEOLIZER_EQUAL(mHalfAuto, iValue);
+    }
+    THEOLIZER_INTRUSIVE(CS, (ModifyHalfAuto), 1);
+};
+
+//      ---<<< ver1b以降で使用する >>>---
+
 struct ModifyHalfAutoX
 {
     std::string mHalfAutoX;
@@ -132,7 +148,7 @@ struct ModifyClassName :
 //      デフォルト・コンストラクタ
 //----------------------------------------------------------------------------
 
-    ModifyClassName()     :
+    ModifyClassName() :
         // --- 基底クラス ---
         ModifyManual(0),                // 1b:順序変更
         ModifyFullAuto(0),
@@ -263,17 +279,112 @@ struct ModifyClassName :
 // ***************************************************************************
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_ORDER
-struct ModifyClassOrder
+struct ModifyClassOrder :
+    // --- 基底クラス ---
+    public ModifyFullAuto,
+    public ModifyHalfAuto,
+    public ModifyManual
 {
-    short       mShort;
-    int         mInt;
-    unsigned    mUnsigned;
-    long        mLong;      // 追加
+    // --- クラス型メンバ変数---
+    ModifyFullAuto  mFullAutoMember;
+    ModifyHalfAuto  mHalfAutoMember;
+    ModifyManual    mManualMember;
 
-    ModifyClassOrder()     : mShort(0)  , mInt(0)  , mUnsigned()   , mLong()    { }
-    ModifyClassOrder(bool) : mShort(220), mInt(221), mUnsigned(222), mLong(223) { }
+    // --- 基本型メンバ変数---
+    short           mShort;
+    int             mInt;
+    unsigned        mUnsigned;
+
+    // 1b:追加
+    ModifyHalfAutoX mHalfAutoXMember; 
+    long            mLong;
+
+//----------------------------------------------------------------------------
+//      デフォルト・コンストラクタ
+//----------------------------------------------------------------------------
+
+    ModifyClassOrder() :
+        // --- 基底クラス ---
+        ModifyFullAuto(0),
+        ModifyHalfAuto(0),
+        ModifyManual(0),
+
+        // --- クラス型メンバ変数---
+        mFullAutoMember(0),
+        mHalfAutoMember(0),
+        mManualMember(0),
+
+        // --- 基本型メンバ変数---
+        mShort(0),
+        mInt(0),
+        mUnsigned(0),
+
+        // 1b:追加
+        mHalfAutoXMember(""),           
+        mLong(0)
+    { }
+
+//----------------------------------------------------------------------------
+//      保存データ設定用コンストラクタ
+//----------------------------------------------------------------------------
+
+    ModifyClassOrder(bool) :
+        // --- 基底クラス ---
+        ModifyFullAuto(200),
+        ModifyHalfAuto(201),
+        ModifyManual(202),
+
+        // --- クラス型メンバ変数---
+        mFullAutoMember(210),
+        mHalfAutoMember(211),
+        mManualMember(212),
+
+        // --- 基本型メンバ変数---
+        mShort(220),
+        mInt(221),
+        mUnsigned(222),
+
+        // 1b:追加
+        mHalfAutoXMember("213"), 
+        mLong(223)
+    { }
+
+//----------------------------------------------------------------------------
+//      チェック
+//----------------------------------------------------------------------------
+
     void check()
     {
+        // --- 基底クラス ---
+        THEOLIZER_EQUAL(mFullAuto, 200);
+        THEOLIZER_EQUAL(mHalfAuto, 201);
+        THEOLIZER_EQUAL(mManual,   202);
+
+        // --- クラス型メンバ変数---
+        THEOLIZER_EQUAL(mFullAutoMember.mFullAuto, 210);
+        THEOLIZER_EQUAL(mHalfAutoMember.mHalfAuto, 211);
+        THEOLIZER_EQUAL(mManualMember.mManual,     212);
+        switch(gVersionList[gDataIndex].mVersionEnum)
+        {
+        case VersionEnum::ver1a:
+            THEOLIZER_EQUAL(mHalfAutoXMember.mHalfAutoX, "");
+            break;
+
+        case VersionEnum::ver1b:
+            THEOLIZER_EQUAL(mHalfAutoXMember.mHalfAutoX, "213");
+            break;
+
+        case VersionEnum::ver1c:
+        case VersionEnum::ver2a:
+        case VersionEnum::ver3a:
+        case VersionEnum::ver3b:
+        default:
+            // FAILさせる
+            THEOLIZER_EQUAL(gDataIndex, gMyIndex);
+            break;
+        }
+
+        // --- 基本型メンバ変数---
         THEOLIZER_EQUAL(mShort,    220);
         THEOLIZER_EQUAL(mInt,      221);
         THEOLIZER_EQUAL(mUnsigned, 222);
