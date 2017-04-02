@@ -62,8 +62,8 @@ void saveModifyClass(tSerializer& iSerializer)
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_NAME
     {
-        ChangedModifyClassName aChangedModifyClassName{true};
-        THEOLIZER_PROCESS(iSerializer, aChangedModifyClassName);
+        ModifyClassName aModifyClassName{true};
+        THEOLIZER_PROCESS(iSerializer, aModifyClassName);
     }
 #endif  // DISABLE_MODIFY_CLASS_TEST_NAME
 
@@ -73,8 +73,8 @@ void saveModifyClass(tSerializer& iSerializer)
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_ORDER
     {
-        ChangedModifyClassOrder    aChangedModifyClassOrder{true};
-        THEOLIZER_PROCESS(iSerializer, aChangedModifyClassOrder);
+        ModifyClassOrder    aModifyClassOrder{true};
+        THEOLIZER_PROCESS(iSerializer, aModifyClassOrder);
     }
 #endif  // DISABLE_MODIFY_CLASS_TEST_ORDER
 
@@ -115,9 +115,9 @@ void loadModifyClass(tSerializer& iSerializer)
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_NAME
     {
-        ChangedModifyClassName  aChangedModifyClassName;
-        THEOLIZER_PROCESS(iSerializer, aChangedModifyClassName);
-        aChangedModifyClassName.check();
+        ModifyClassName  aModifyClassName;
+        THEOLIZER_PROCESS(iSerializer, aModifyClassName);
+        aModifyClassName.check();
     }
 #endif  // DISABLE_MODIFY_CLASS_TEST_NAME
 
@@ -127,9 +127,9 @@ void loadModifyClass(tSerializer& iSerializer)
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_ORDER
     {
-        ChangedModifyClassOrder    aChangedModifyClassOrder;
-        THEOLIZER_PROCESS(iSerializer, aChangedModifyClassOrder);
-        aChangedModifyClassOrder.check();
+        ModifyClassOrder    aModifyClassOrder;
+        THEOLIZER_PROCESS(iSerializer, aModifyClassOrder);
+        aModifyClassOrder.check();
     }
 #endif  // DISABLE_MODIFY_CLASS_TEST_ORDER
 
@@ -141,7 +141,7 @@ void loadModifyClass(tSerializer& iSerializer)
     {
         auto    aArray=std::unique_ptr<ArraySizeTest>(new ArraySizeTest{});
         THEOLIZER_PROCESS(iSerializer, aArray);
-        aArray->check(true, (gDataIndex < gMyIndex)?kDefSize:ArraySizeTest::kSize);
+        aArray->check();
 
         // オブジェクトIDテーブルのクリア
         iSerializer.clearTracking();

@@ -46,16 +46,16 @@ struct ModifyFullAuto
 //      侵入型半自動
 //----------------------------------------------------------------------------
 
-struct ModifyHalfAuto2
+struct ModifyHalfAutoX
 {
-    int     mHalfAuto2;
+    std::string mHalfAutoX;
 
-    ModifyHalfAuto2(int iValue=0) : mHalfAuto2(iValue) { }
-    void check(int iValue)
+    ModifyHalfAutoX(std::string const& iValue=0) : mHalfAutoX(iValue) { }
+    void check(std::string const& iValue)
     {
-        THEOLIZER_EQUAL(mHalfAuto2, iValue);
+        THEOLIZER_EQUAL(mHalfAutoX, iValue);
     }
-    THEOLIZER_INTRUSIVE(CS, (ModifyHalfAuto2), 1);
+    THEOLIZER_INTRUSIVE(CS, (ModifyHalfAutoX), 1);
 };
 
 //----------------------------------------------------------------------------
@@ -109,27 +109,110 @@ struct TheolizerNonIntrusive<ModifyManual>::
 // ***************************************************************************
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_NAME
-struct ChangedModifyClassName
+struct ModifyClassName :
+    // --- 基底クラス ---
+    public ModifyManual,        // 順序変更
+    public ModifyFullAuto,
+//  public ModifyHalfAuto,      // 削除
+    public ModifyHalfAutoX      // 追加
 {
-    unsigned    mUnsigned;  // 順序変更
-//  short       mShort;     // 削除
-    int         mIntChanged THEOLIZER_ANNOTATE(FS:mInt);    // 変数名変更
-    long        mLong;      // 追加
+    // --- クラス型メンバ変数---
+    ModifyManual    mManualMember;      // 順序変更
+    ModifyFullAuto  mFullAutoMember;
+//  ModifyHalfAuto  mHalfAutoMember;    // 削除
+    ModifyHalfAutoX mHalfAutoXMember;   // 追加
 
-    ChangedModifyClassName()     :
-        mUnsigned(0)  , mIntChanged(0)  , mLong(0)
+    // --- 基本型メンバ変数---
+    unsigned    mUnsigned;      // 順序変更
+    short       mShortChanged THEOLIZER_ANNOTATE(FS:mShort);    // 変数名変更
+//  int         mInt;           // 削除
+    long        mLong;          // 追加
+
+//----------------------------------------------------------------------------
+//      デフォルト・コンストラクタ
+//----------------------------------------------------------------------------
+
+    ModifyClassName() :
+        // --- 基底クラス ---
+        ModifyManual(0),        // 順序変更
+        ModifyFullAuto(0),
+//      ModifyHalfAuto(0),      // 削除
+        ModifyHalfAutoX(""),    // 追加
+
+        // --- クラス型メンバ変数---
+        mManualMember(0),               // 順序変更
+        mFullAutoMember(0),
+//      mHalfAutoMember(0),             // 削除
+        mHalfAutoXMember(""),           // 追加
+
+        // --- 基本型メンバ変数---
+        mUnsigned(0),           // 順序変更
+        mShortChanged(0),
+//      mInt(0),                // 削除
+        mLong(0)                // 追加
     { }
-    ChangedModifyClassName(bool) :
-        mUnsigned(102), mIntChanged(101), mLong(103)
+
+//----------------------------------------------------------------------------
+//      保存データ設定用コンストラクタ
+//----------------------------------------------------------------------------
+
+    ModifyClassName(bool) :
+        // --- 基底クラス ---
+        ModifyManual(102),      // 順序変更
+        ModifyFullAuto(100),
+//      ModifyHalfAuto(101),    // 削除
+        ModifyHalfAutoX("103"), // 追加
+
+        // --- クラス型メンバ変数---
+        mManualMember(112),             // 順序変更
+        mFullAutoMember(110),
+//      mHalfAutoMember(111),           // 削除
+        mHalfAutoXMember("113"),        // 追加
+
+        // --- 基本型メンバ変数---
+        mUnsigned(122),         // 順序変更
+        mShortChanged(120),
+//      mInt(121),              // 削除
+        mLong(123)              // 追加
     { }
+
+//----------------------------------------------------------------------------
+//      チェック
+//----------------------------------------------------------------------------
+
     void check()
     {
-//      THEOLIZER_EQUAL(mShort,      100);
-        THEOLIZER_EQUAL(mIntChanged, 101);
-        THEOLIZER_EQUAL(mUnsigned,   102);
+        // --- 基底クラス ---
+        THEOLIZER_EQUAL(mFullAuto, 100);
+//      THEOLIZER_EQUAL(mHalfAuto, 101);
+        THEOLIZER_EQUAL(mManual,   102);
         switch(gVersionList[gDataIndex].mVersionEnum)
         {
         case VersionEnum::ver1a:
+            THEOLIZER_EQUAL(mHalfAutoX, "");
+            break;
+
+        case VersionEnum::ver1b:
+        case VersionEnum::ver1c:
+        case VersionEnum::ver2a:
+        case VersionEnum::ver3a:
+            THEOLIZER_EQUAL(mHalfAutoX, "103");
+            break;
+
+        case VersionEnum::ver3b:
+        default:
+            // FAILさせる
+            THEOLIZER_EQUAL(gDataIndex, gMyIndex);
+            break;
+        }
+
+        // --- 基本型メンバ変数---
+//      THEOLIZER_EQUAL(mInt,           121);
+        THEOLIZER_EQUAL(mUnsigned,      122);
+        switch(gVersionList[gDataIndex].mVersionEnum)
+        {
+        case VersionEnum::ver1a:
+            THEOLIZER_EQUAL(mShortChanged,  120);
             THEOLIZER_EQUAL(mLong,  0);
             break;
 
@@ -137,7 +220,18 @@ struct ChangedModifyClassName
         case VersionEnum::ver1c:
         case VersionEnum::ver2a:
         case VersionEnum::ver3a:
-            THEOLIZER_EQUAL(mLong,  103);
+            switch(gVersionList[gProgramIndex].mVersionEnum)
+            {
+            case VersionEnum::ver3b:
+                THEOLIZER_EQUAL(mShortChanged,  0);
+                THEOLIZER_EQUAL(mLong,          0);
+                break;
+
+            default:
+                THEOLIZER_EQUAL(mShortChanged,  120);
+                THEOLIZER_EQUAL(mLong,          123);
+                break;
+            }
             break;
 
         case VersionEnum::ver3b:
@@ -147,7 +241,7 @@ struct ChangedModifyClassName
             break;
         }
     }
-    THEOLIZER_INTRUSIVE(CS, (ChangedModifyClassName), 3);
+    THEOLIZER_INTRUSIVE(CS, (ModifyClassName), 3);
 };
 #endif  // DISABLE_MODIFY_CLASS_TEST_NAME
 
@@ -156,20 +250,20 @@ struct ChangedModifyClassName
 // ***************************************************************************
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_ORDER
-struct ChangedModifyClassOrder
+struct ModifyClassOrder
 {
     short       mShort;
     int         mIntChanged THEOLIZER_ANNOTATE(FS:mInt);    // 変数名変更
     unsigned    mUnsigned;
     long        mLong;      // 追加
 
-    ChangedModifyClassOrder()     : mShort(0)  , mIntChanged(0)  , mUnsigned()   , mLong()    { }
-    ChangedModifyClassOrder(bool) : mShort(200), mIntChanged(201), mUnsigned(202), mLong(203) { }
+    ModifyClassOrder()     : mShort(0)  , mIntChanged(0)  , mUnsigned()   , mLong()    { }
+    ModifyClassOrder(bool) : mShort(220), mIntChanged(221), mUnsigned(222), mLong(223) { }
     void check()
     {
-        THEOLIZER_EQUAL(mShort,      200);
-        THEOLIZER_EQUAL(mIntChanged, 201);
-        THEOLIZER_EQUAL(mUnsigned,   202);
+        THEOLIZER_EQUAL(mShort,      220);
+        THEOLIZER_EQUAL(mIntChanged, 221);
+        THEOLIZER_EQUAL(mUnsigned,   222);
         switch(gVersionList[gDataIndex].mVersionEnum)
         {
         case VersionEnum::ver1a:
@@ -187,7 +281,7 @@ struct ChangedModifyClassOrder
                 break;
 
             default:
-                THEOLIZER_EQUAL(mLong,  203);
+                THEOLIZER_EQUAL(mLong,  223);
                 break;
             }
             break;
@@ -199,7 +293,7 @@ struct ChangedModifyClassOrder
             break;
         }
     }
-    THEOLIZER_INTRUSIVE_ORDER(CS, (ChangedModifyClassOrder), 3);
+    THEOLIZER_INTRUSIVE_ORDER(CS, (ModifyClassOrder), 3);
 };
 #endif  // DISABLE_MODIFY_CLASS_TEST_ORDER
 
@@ -232,17 +326,17 @@ struct ArraySizeTest
             }
         }
     }
-    void check(bool isValued=false)
+    void check()
     {
         for (unsigned i=0; i < kSize; ++i)
         {
-            THEOLIZER_EQUAL(mArray1D[i], ((isValued)?i:0), i);
+            THEOLIZER_EQUAL(mArray1D[i], i, i);
             for (unsigned j=0; j < kSize; ++j)
             {
-                THEOLIZER_EQUAL(mArray2D[i][j], ((isValued)?(i*1000+j):0), i, j);
+                THEOLIZER_EQUAL(mArray2D[i][j], i*1000+j, i, j);
                 for (unsigned k=0; k < kSize; ++k)
                 {
-                    THEOLIZER_EQUAL(mArray3D[i][j][k], ((isValued)?((i*1000+j)*1000+k):0),
+                    THEOLIZER_EQUAL(mArray3D[i][j][k], (i*1000+j)*1000+k,
                         i, j, k);
                 }
             }

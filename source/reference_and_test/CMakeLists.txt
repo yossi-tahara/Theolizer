@@ -349,7 +349,7 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_m
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
 add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
-    " ModifyClass" " ChangedModifyClass" ${SOURCE_LIST})
+    " ModifyHalfAutoXXX" " ModifyHalfAuto" ${SOURCE_LIST})
 
 #       ---<<< ver3a >>>---
 

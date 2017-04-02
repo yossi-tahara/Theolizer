@@ -110,35 +110,83 @@ struct TheolizerNonIntrusive<ModifyManual>::
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_NAME
 struct ModifyClassName :
+    // --- 基底クラス ---
     public ModifyFullAuto,
     public ModifyHalfAuto,
     public ModifyManual
 {
-    short       mShort;
-    int         mInt;
-    unsigned    mUnsigned;
+    // --- クラス型メンバ変数---
+    ModifyFullAuto  mFullAutoMember;
+    ModifyHalfAuto  mHalfAutoMember;
+    ModifyManual    mManualMember;
+
+    // --- 基本型メンバ変数---
+    short           mShort;
+    int             mInt;
+    unsigned        mUnsigned;
+
+//----------------------------------------------------------------------------
+//      デフォルト・コンストラクタ
+//----------------------------------------------------------------------------
 
     ModifyClassName()     :
+        // --- 基底クラス ---
         ModifyFullAuto(0),
         ModifyHalfAuto(0),
         ModifyManual(0),
-        mShort(0)  , mInt(0)  , mUnsigned(0)
+
+        // --- クラス型メンバ変数---
+        mFullAutoMember(0),
+        mHalfAutoMember(0),
+        mManualMember(0),
+
+        // --- 基本型メンバ変数---
+        mShort(0),
+        mInt(0),
+        mUnsigned(0)
     { }
+
+//----------------------------------------------------------------------------
+//      保存データ設定用コンストラクタ
+//----------------------------------------------------------------------------
+
     ModifyClassName(bool) :
-        ModifyFullAuto(150),
-        ModifyHalfAuto(151),
-        ModifyManual(152),
-        mShort(100), mInt(101), mUnsigned(102)
+        // --- 基底クラス ---
+        ModifyFullAuto(100),
+        ModifyHalfAuto(101),
+        ModifyManual(102),
+
+        // --- クラス型メンバ変数---
+        mFullAutoMember(110),
+        mHalfAutoMember(111),
+        mManualMember(112),
+
+        // --- 基本型メンバ変数---
+        mShort(120),
+        mInt(121),
+        mUnsigned(122)
     { }
+
+//----------------------------------------------------------------------------
+//      チェック
+//----------------------------------------------------------------------------
+
     void check()
     {
-        THEOLIZER_EQUAL(mFullAuto, 150);
-        THEOLIZER_EQUAL(mHalfAuto, 151);
-        THEOLIZER_EQUAL(mManual,   152);
+        // --- 基底クラス ---
+        THEOLIZER_EQUAL(mFullAuto, 100);
+        THEOLIZER_EQUAL(mHalfAuto, 101);
+        THEOLIZER_EQUAL(mManual,   102);
 
-        THEOLIZER_EQUAL(mShort,    100);
-        THEOLIZER_EQUAL(mInt,      101);
-        THEOLIZER_EQUAL(mUnsigned, 102);
+        // --- クラス型メンバ変数---
+        THEOLIZER_EQUAL(mFullAutoMember.mFullAuto, 110);
+        THEOLIZER_EQUAL(mHalfAutoMember.mHalfAuto, 111);
+        THEOLIZER_EQUAL(mManualMember.mManual,     112);
+
+        // --- 基本型メンバ変数---
+        THEOLIZER_EQUAL(mShort,    120);
+        THEOLIZER_EQUAL(mInt,      121);
+        THEOLIZER_EQUAL(mUnsigned, 122);
     }
 //  THEOLIZER_INTRUSIVE(CS, (ModifyClassName), 1);
 };
@@ -156,12 +204,12 @@ struct ModifyClassOrder
     unsigned    mUnsigned;
 
     ModifyClassOrder()     : mShort(0)  , mInt(0)  , mUnsigned()    { }
-    ModifyClassOrder(bool) : mShort(200), mInt(201), mUnsigned(202) { }
+    ModifyClassOrder(bool) : mShort(220), mInt(221), mUnsigned(222) { }
     void check()
     {
-        THEOLIZER_EQUAL(mShort,    200);
-        THEOLIZER_EQUAL(mInt,      201);
-        THEOLIZER_EQUAL(mUnsigned, 202);
+        THEOLIZER_EQUAL(mShort,    220);
+        THEOLIZER_EQUAL(mInt,      221);
+        THEOLIZER_EQUAL(mUnsigned, 222);
     }
     THEOLIZER_INTRUSIVE_ORDER(CS, (ModifyClassOrder), 1);
 };
@@ -196,17 +244,17 @@ struct ArraySizeTest
             }
         }
     }
-    void check(bool isValued=false)
+    void check()
     {
         for (unsigned i=0; i < kSize; ++i)
         {
-            THEOLIZER_EQUAL(mArray1D[i], ((isValued)?i:0), i);
+            THEOLIZER_EQUAL(mArray1D[i], i:0), i);
             for (unsigned j=0; j < kSize; ++j)
             {
-                THEOLIZER_EQUAL(mArray2D[i][j], ((isValued)?(i*1000+j):0), i, j);
+                THEOLIZER_EQUAL(mArray2D[i][j], i*1000+j, i, j);
                 for (unsigned k=0; k < kSize; ++k)
                 {
-                    THEOLIZER_EQUAL(mArray3D[i][j][k], ((isValued)?((i*1000+j)*1000+k):0),
+                    THEOLIZER_EQUAL(mArray3D[i][j][k], (i*1000+j)*1000+k,
                         i, j, k);
                 }
             }
