@@ -703,13 +703,17 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    theolizer::internal::copyData(mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get(), THEOLIZER_INTERNAL_FIRST dName);
+                    theolizer::internal::copyData(                          \
+                        mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get(),\
+                        THEOLIZER_INTERNAL_FIRST dName);
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
                     THEOLIZER_INTERNAL_##dDef((                             \
-                        theolizer::internal::copyData(mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get(), THEOLIZER_INTERNAL_FIRST dName);))
+                        theolizer::internal::copyData(                      \
+                            mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get(),\
+                            THEOLIZER_INTERNAL_FIRST dName);))
             #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno)
             THEOLIZER_GENERATED_ELEMENT_LIST()

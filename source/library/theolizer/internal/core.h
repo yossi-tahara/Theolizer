@@ -564,7 +564,7 @@ struct EnumElement : public ElementBase
 // 次バージョンで削除
 #define THEOLIZER_INTERNAL_ELEMENT_KN_DEL(dName, dNextName, dTrack, dDest, dType, dVerNo)\
     THEOLIZER_INTERNAL_VERSION_EV_DEL(dName, dNextName, dTrack, dDest, dType, dVerNo,\
-        (THEOLIZER_INTERNAL_VERTYPE_N(dType, dVerNo))),                     \
+        (THEOLIZER_INTERNAL_VERTYPE_N(dType, dVerNo)),                      \
         TS:_THEOLIZER_INTERNAL_ELEMENT_KN(dName,dNextName,dTrack,\\dDest,\\dType,dVerNo))
 
 //      ---<<< バージョン・アップ／ダウンの足並みを揃えない生配列型要素 >>>---
