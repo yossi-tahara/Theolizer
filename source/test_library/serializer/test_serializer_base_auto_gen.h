@@ -100,7 +100,7 @@
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,2)
-#define THEOLIZER_GENERATED_CLASS_TYPE IntrusiveBase
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(IntrusiveBase)
 
 //      ---<<< Version.2 >>>---
 
@@ -152,7 +152,7 @@
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE IntrusiveBase2
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(IntrusiveBase2)
 
 //      ---<<< Version.1 >>>---
 
@@ -184,7 +184,7 @@
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,4)
-#define THEOLIZER_GENERATED_CLASS_TYPE IntrusiveDerived
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(IntrusiveDerived)
 
 //      ---<<< Version.4 >>>---
 
@@ -193,7 +193,7 @@
     THEOLIZER_INTERNAL_CLASS_NAME((u8"IntrusiveDerived"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_BASE_LIST()\
-    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),2)
+    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),2,u8"IntrusiveBase")
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
     THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
         (theolizerD::All),\
@@ -217,8 +217,9 @@
     THEOLIZER_INTERNAL_CLASS_NAME((u8"IntrusiveDerived"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_BASE_LIST()\
-    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),2) THEOLIZER_GENERATED_SEP\
-    THEOLIZER_INTERNAL_BASE_KI_DEL(public,etmDefault,1,(IntrusiveBase2),1)
+    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),2,u8"IntrusiveBase")\
+    THEOLIZER_GENERATED_SEP\
+    THEOLIZER_INTERNAL_BASE_KI_DEL(public,etmDefault,1,(IntrusiveBase2),1,u8"IntrusiveBase2")
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
     THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
         (theolizerD::All),\
@@ -245,8 +246,9 @@
     THEOLIZER_INTERNAL_CLASS_NAME((u8"IntrusiveDerived"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_BASE_LIST()\
-    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),1) THEOLIZER_GENERATED_SEP\
-    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,1,(IntrusiveBase2),1)
+    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),1,u8"IntrusiveBase")\
+        THEOLIZER_GENERATED_SEP\
+    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,1,(IntrusiveBase2),1,u8"IntrusiveBase2")
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
     THEOLIZER_INTERNAL_ELEMENT_N((mUShort1),mUShort2,etmDefault,\
         (theolizerD::All),\
@@ -270,7 +272,7 @@
     THEOLIZER_INTERNAL_CLASS_NAME((u8"IntrusiveDerived"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_BASE_LIST()\
-    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),1)
+    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),1,u8"IntrusiveBase")
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
     THEOLIZER_INTERNAL_ELEMENT_N((mUShort0),mUShort1,etmDefault,\
         (theolizerD::All),\
@@ -358,7 +360,7 @@
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE DerivedChange
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(DerivedChange)
 
 //      ---<<< Version.1 >>>---
 
@@ -366,8 +368,9 @@
 #define THEOLIZER_GENERATED_CLASS_NAME() THEOLIZER_INTERNAL_CLASS_NAME((u8"DerivedChange"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_BASE_LIST()\
-    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase2),1) THEOLIZER_GENERATED_SEP\
-    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,1,(IntrusiveBase),2)
+    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase2),1,u8"IntrusiveBase2")\
+        THEOLIZER_GENERATED_SEP\
+    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,1,(IntrusiveBase),2,u8"IntrusiveBase")
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
     THEOLIZER_INTERNAL_ELEMENT_KI((mIntrusiveBase2),mIntrusiveBase2,etmDefault,\
         (theolizerD::All),\
@@ -394,7 +397,7 @@
 namespace change_order{namespace dummy{
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE change_order::dummy::DerivedChange
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(change_order::dummy::DerivedChange)
 
 //      ---<<< Version.1 >>>---
 
@@ -403,8 +406,9 @@ namespace change_order{namespace dummy{
     THEOLIZER_INTERNAL_CLASS_NAME((u8"change_order::dummy::DerivedChange"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_BASE_LIST()\
-    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),2) THEOLIZER_GENERATED_SEP\
-    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,1,(IntrusiveBase2),1)
+    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),2,u8"IntrusiveBase")\
+        THEOLIZER_GENERATED_SEP\
+    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,1,(IntrusiveBase2),1,u8"IntrusiveBase2")
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
     THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
         (theolizerD::All),\
@@ -436,7 +440,7 @@ namespace change_order{namespace dummy{
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE DerivedDelete
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(DerivedDelete)
 
 //      ---<<< Version.1 >>>---
 
@@ -444,7 +448,7 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_CLASS_NAME() THEOLIZER_INTERNAL_CLASS_NAME((u8"DerivedDelete"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_BASE_LIST()\
-    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),2)
+    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(IntrusiveBase),2,u8"IntrusiveBase")
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
     THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
         (theolizerD::All),\
@@ -469,7 +473,7 @@ namespace change_order{namespace dummy{
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE Included1
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(Included1)
 
 //      ---<<< Version.1 >>>---
 
@@ -492,7 +496,7 @@ namespace change_order{namespace dummy{
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE Included2
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(Included2)
 
 //      ---<<< Version.1 >>>---
 
@@ -515,7 +519,7 @@ namespace change_order{namespace dummy{
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE DestinationTest
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(DestinationTest)
 
 //      ---<<< Version.1 >>>---
 
@@ -548,7 +552,7 @@ namespace change_order{namespace dummy{
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE Tracking
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(Tracking)
 
 //      ---<<< Version.1 >>>---
 
@@ -556,7 +560,7 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_CLASS_NAME() THEOLIZER_INTERNAL_CLASS_NAME((u8"Tracking"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_BASE_LIST()\
-    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(Included1),1)
+    THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,0,(Included1),1,u8"Included1")
 #ifndef NO_ARRAY
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
     THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmPointee,\
@@ -601,7 +605,7 @@ namespace change_order{namespace dummy{
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE Pointers
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(Pointers)
 
 //      ---<<< Version.1 >>>---
 
@@ -639,7 +643,7 @@ namespace change_order{namespace dummy{
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE Dynamic
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(Dynamic)
 
 //      ---<<< Version.1 >>>---
 
@@ -697,7 +701,7 @@ namespace change_order{namespace dummy{
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,2)
-#define THEOLIZER_GENERATED_CLASS_TYPE ArrayClass
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(ArrayClass)
 
 //      ---<<< Version.2 >>>---
 
@@ -772,7 +776,7 @@ namespace change_order{namespace dummy{
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE ArrayClassTemplate<tDim0, tDim1>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(ArrayClassTemplate<tDim0, tDim1>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<std::size_t tDim0, std::size_t tDim1>
 #define THEOLIZER_GENERATED_UNIQUE_NAME ArrayClassTemplatePrimary
 
@@ -804,7 +808,7 @@ namespace change_order{namespace dummy{
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE NonIntrusiveBase
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(NonIntrusiveBase)
 
 //      ---<<< Version.1 >>>---
 
@@ -822,7 +826,7 @@ namespace change_order{namespace dummy{
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE NonIntrusiveDrived
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(NonIntrusiveDrived)
 
 //      ---<<< Version.1 >>>---
 
@@ -830,7 +834,7 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_CLASS_NAME()\
     THEOLIZER_INTERNAL_CLASS_NAME((u8"NonIntrusiveDrived"))
 #define THEOLIZER_GENERATED_BASE_LIST()\
-    THEOLIZER_INTERNAL_BASE_N(public,etmDefault,0,(NonIntrusiveBase))
+    THEOLIZER_INTERNAL_BASE_N(public,etmDefault,0,(NonIntrusiveBase),u8"NonIntrusiveBase")
 #include <theolizer/internal/version_manual.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
@@ -843,7 +847,7 @@ namespace change_order{namespace dummy{
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE IntrusiveDerived2
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(IntrusiveDerived2)
 
 //      ---<<< Version.1 >>>---
 
@@ -851,7 +855,7 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_CLASS_NAME() THEOLIZER_INTERNAL_CLASS_NAME((u8"IntrusiveDerived2"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #define THEOLIZER_GENERATED_BASE_LIST()\
-    THEOLIZER_INTERNAL_BASE_N(public,etmDefault,0,(NonIntrusiveBase))
+    THEOLIZER_INTERNAL_BASE_N(public,etmDefault,0,(NonIntrusiveBase),u8"NonIntrusiveBase")
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
     THEOLIZER_INTERNAL_ELEMENT_N((mShort),mShort,etmDefault,\
         (theolizerD::All),\

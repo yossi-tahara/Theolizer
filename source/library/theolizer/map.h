@@ -53,7 +53,7 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::map<Key, T, Compare, Alloc>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(std::map<Key, T, Compare, Alloc>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class Key, class T, class Compare, class Alloc>
 #define THEOLIZER_GENERATED_UNIQUE_NAME mapTheolizer
 
@@ -126,7 +126,7 @@ public:
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE theolizer::MapPointee<Key, T, Compare, Alloc>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(theolizer::MapPointee<Key, T, Compare, Alloc>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class Key, class T, class Compare, class Alloc>
 #define THEOLIZER_GENERATED_UNIQUE_NAME MapPointeeTheolizer
 
@@ -179,7 +179,7 @@ public:
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::multimap<Key, T, Compare, Alloc>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(std::multimap<Key, T, Compare, Alloc>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class Key, class T, class Compare, class Alloc>
 #define THEOLIZER_GENERATED_UNIQUE_NAME multimapTheolizer
 

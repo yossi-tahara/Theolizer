@@ -248,7 +248,7 @@ struct ArraySizeTest
     {
         for (unsigned i=0; i < kSize; ++i)
         {
-            THEOLIZER_EQUAL(mArray1D[i], i:0), i);
+            THEOLIZER_EQUAL(mArray1D[i], i);
             for (unsigned j=0; j < kSize; ++j)
             {
                 THEOLIZER_EQUAL(mArray2D[i][j], i*1000+j, i, j);

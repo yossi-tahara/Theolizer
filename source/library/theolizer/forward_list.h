@@ -54,7 +54,7 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::forward_list<T, Alloc>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(std::forward_list<T, Alloc>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class Alloc>
 #define THEOLIZER_GENERATED_UNIQUE_NAME forward_listTheolizer
 
@@ -122,7 +122,7 @@ public:
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE theolizer::ForwardListPointee<T, Alloc>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(theolizer::ForwardListPointee<T, Alloc>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class Alloc>
 #define THEOLIZER_GENERATED_UNIQUE_NAME ForwardListPointeeTheolizer
 

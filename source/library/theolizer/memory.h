@@ -122,7 +122,7 @@ struct TheolizerNonIntrusive<std::unique_ptr<T, D>>::
 #ifdef  THEOLIZER_WRITE_CODE // ###### std::unique_ptr<T,D> ######
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::unique_ptr<T, D>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(std::unique_ptr<T, D>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class D>
 #define THEOLIZER_GENERATED_UNIQUE_NAME unique_ptrTheolizer
 
@@ -232,7 +232,7 @@ struct TheolizerNonIntrusive<std::shared_ptr<T>>::
 #ifdef  THEOLIZER_WRITE_CODE // ###### std::shared_ptr<T> ######
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::shared_ptr<T>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(std::shared_ptr<T>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T>
 #define THEOLIZER_GENERATED_UNIQUE_NAME shared_ptrTheolizer
 
@@ -307,7 +307,7 @@ struct TheolizerNonIntrusive<std::weak_ptr<T>>::
 #ifdef  THEOLIZER_WRITE_CODE // ###### std::weak_ptr<T> ######
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::weak_ptr<T>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(std::weak_ptr<T>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T>
 #define THEOLIZER_GENERATED_UNIQUE_NAME weak_ptrTheolizer
 

@@ -29,7 +29,7 @@
 #include "serializer.h"
 #include "internal/containers.h"
 
-THEOLIZER_PROVIDED_BY("Theoride Technology");
+//THEOLIZER_PROVIDED_BY("Theoride Technology");
 
 //############################################################################
 //      std::array<>対応
@@ -52,7 +52,7 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::array<T, N>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(std::array<T, N>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, std::size_t N>
 #define THEOLIZER_GENERATED_UNIQUE_NAME arrayTheolizer
 
@@ -119,7 +119,7 @@ public:
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE theolizer::ArrayPointee<T, N>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(theolizer::ArrayPointee<T, N>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, std::size_t N>
 #define THEOLIZER_GENERATED_UNIQUE_NAME ArrayPointeeTheolizer
 

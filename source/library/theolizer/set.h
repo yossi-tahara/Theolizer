@@ -53,7 +53,7 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::set<T, Compare, Alloc>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(std::set<T, Compare, Alloc>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class Compare, class Alloc>
 #define THEOLIZER_GENERATED_UNIQUE_NAME setTheolizer
 
@@ -106,7 +106,7 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::multiset<T, Compare, Alloc>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(std::multiset<T, Compare, Alloc>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T, class Compare, class Alloc>
 #define THEOLIZER_GENERATED_UNIQUE_NAME multisetTheolizer
 

@@ -67,7 +67,7 @@ public:
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE IntrusiveBase2
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(IntrusiveBase2)
 
 //      ---<<< Version.1 >>>---
 

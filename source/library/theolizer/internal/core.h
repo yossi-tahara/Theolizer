@@ -254,9 +254,9 @@ public:
 //          2016/08/02現在、基底Serializerを非テンプレート化することで、
 //          基底クラスへの登録を単純化できたので、登録場所はここである必要はない筈。
 
-#define THEOLIZER_INTERNAL_REGISTER_BASE(dSpec, dTrack, dId, dType, dVerNo, dVer)\
+#define THEOLIZER_INTERNAL_REGISTER_BASE(dSpec, dTrack, dId, dType, dVerNo, dName, dVer)\
     {                                                                       \
-        /*基底クラス名*/    #dType,                                         \
+        /*基底クラス名*/    "{" dName "}",                                  \
         /*Is基底クラス*/    true,                                           \
         /*保存先*/          {theolizerD::All},                              \
         /*TypeIndex関数*/                                                   \
@@ -293,9 +293,9 @@ public:
 //      非侵入型手動の基底クラス用（ポリモーフィズム用の基底クラス・リストの定義）
 //      保存／回復処理は手動なので保存／回復処理不要
 
-#define THEOLIZER_INTERNAL_REGISTER_MBASE(dSpec, dTrack, dType, dVerNo, dVer)\
+#define THEOLIZER_INTERNAL_REGISTER_MBASE(dSpec, dTrack, dType, dVerNo, dName, dVer)\
     {                                                                       \
-        /*基底クラス名*/    #dType,                                         \
+        /*基底クラス名*/    "{" dName "}",                                  \
         /*Is基底クラス*/    true,                                           \
         /*保存先*/          {theolizerD::All},                              \
         /*TypeIndex関数*/                                                   \
@@ -476,46 +476,46 @@ struct EnumElement : public ElementBase
 //          dIdは各TheolzierVersion<>において、基底クラスのバックアップ領域に付ける変数ID
 
 // 継続
-#define THEOLIZER_INTERNAL_BASE_N(dSpec, dTrack, dId, dType)                \
-    THEOLIZER_INTERNAL_VERSION_B(dSpec, dTrack, dId, dType, 0,              \
+#define THEOLIZER_INTERNAL_BASE_N(dSpec, dTrack, dId, dType, dName)         \
+    THEOLIZER_INTERNAL_VERSION_B(dSpec, dTrack, dId, dType, 0, dName,       \
         (TheolizerBase<THEOLIZER_INTERNAL_UNPAREN dType>),                  \
-        TS:_THEOLIZER_INTERNAL_BASE_N(dSpec,dTrack,dId,dType))
+        TS:_THEOLIZER_INTERNAL_BASE_N(dSpec,dTrack,dId,dType,dName))
 
 // 次バージョンで削除
-#define THEOLIZER_INTERNAL_BASE_N_DEL(dSpec, dTrack, dId, dType)            \
-    THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec, dTrack, dId, dType, 0,          \
+#define THEOLIZER_INTERNAL_BASE_N_DEL(dSpec, dTrack, dId, dType, dName)     \
+    THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec, dTrack, dId, dType, 0, dName,   \
         (TheolizerBase<THEOLIZER_INTERNAL_UNPAREN dType>),                  \
-        TS:_THEOLIZER_INTERNAL_BASE_N(dSpec,dTrack,dId,dType))
+        TS:_THEOLIZER_INTERNAL_BASE_N(dSpec,dTrack,dId,dType,dName))
 
 //      ---<<< バージョン・アップ／ダウンの足並みを揃える基底クラス >>>---
 //          半自動型(侵入型半自動)
 
 // 継続
-#define THEOLIZER_INTERNAL_BASE_KI(dSpec, dTrack, dId, dType, dVerNo)       \
-    THEOLIZER_INTERNAL_VERSION_B(dSpec, dTrack, dId, dType, dVerNo,         \
+#define THEOLIZER_INTERNAL_BASE_KI(dSpec, dTrack, dId, dType, dVerNo, dName)\
+    THEOLIZER_INTERNAL_VERSION_B(dSpec, dTrack, dId, dType, dVerNo, dName,  \
         (THEOLIZER_INTERNAL_VERTYPE_I(dType, dVerNo)),                      \
-        TS:_THEOLIZER_INTERNAL_BASE_KI(dSpec,dTrack,dId,dType,dVerNo))
+        TS:_THEOLIZER_INTERNAL_BASE_KI(dSpec,dTrack,dId,dType,dVerNo,dName))
 
 // 次バージョンで削除
-#define THEOLIZER_INTERNAL_BASE_KI_DEL(dSpec, dTrack, dId, dType, dVerNo)   \
-    THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec, dTrack, dId, dType, dVerNo,     \
+#define THEOLIZER_INTERNAL_BASE_KI_DEL(dSpec, dTrack, dId, dType, dVerNo, dName)\
+    THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec, dTrack, dId, dType, dVerNo, dName,\
         (THEOLIZER_INTERNAL_VERTYPE_I(dType, dVerNo)),                      \
-        TS:_THEOLIZER_INTERNAL_BASE_KI(dSpec,dTrack,dId,dType,dVerNo))
+        TS:_THEOLIZER_INTERNAL_BASE_KI(dSpec,dTrack,dId,dType,dVerNo,dName))
 
 //      ---<<< バージョン・アップ／ダウンの足並みを揃える基底クラス >>>---
 //          完全自動型
 
 // 継続
-#define THEOLIZER_INTERNAL_BASE_KN(dSpec, dTrack, dId, dType, dVerNo)       \
-    THEOLIZER_INTERNAL_VERSION_B(dSpec, dTrack, dId, dType, dVerNo,         \
+#define THEOLIZER_INTERNAL_BASE_KN(dSpec, dTrack, dId, dType, dVerNo, dName)\
+    THEOLIZER_INTERNAL_VERSION_B(dSpec, dTrack, dId, dType, dVerNo, dName,  \
         (THEOLIZER_INTERNAL_VERTYPE_N(dType, dVerNo)),                      \
-        TS:_THEOLIZER_INTERNAL_BASE_KN(dSpec,dTrack,dId,dType,dVerNo))
+        TS:_THEOLIZER_INTERNAL_BASE_KN(dSpec,dTrack,dId,dType,dVerNo,dName))
 
 // 次バージョンで削除
-#define THEOLIZER_INTERNAL_BASE_KN_DEL(dSpec, dTrack, dId, dType, dVerNo)   \
-    THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec, dTrack, dId, dType, dVerNo,     \
+#define THEOLIZER_INTERNAL_BASE_KN_DEL(dSpec, dTrack, dId, dType, dVerNo, dName)\
+    THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec, dTrack, dId, dType, dVerNo, dName,\
         (THEOLIZER_INTERNAL_VERTYPE_N(dType, dVerNo)),                      \
-        TS:_THEOLIZER_INTERNAL_BASE_KN(dSpec,dTrack,dId,dType,dVerNo))
+        TS:_THEOLIZER_INTERNAL_BASE_KN(dSpec,dTrack,dId,dType,dVerNo,dName))
 
 //      ---<<< バージョン・アップ／ダウンの足並みを揃えない要素 >>>---
 //          プリミティブ、ポインタ、手動型

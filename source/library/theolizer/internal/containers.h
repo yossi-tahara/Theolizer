@@ -30,6 +30,8 @@
 //      Begin
 //############################################################################
 
+THEOLIZER_PROVIDED_BY("Theoride Technology");
+
 // ***************************************************************************
 //          DLL用の警告禁止
 // ***************************************************************************
@@ -254,7 +256,7 @@ struct TheolizerNonIntrusive<std::pair<T1, T2>>::
 #ifdef  THEOLIZER_WRITE_CODE // ###### std::pair<T1,T2> ######
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::pair<T1, T2>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(std::pair<T1, T2>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class T1, class T2>
 #define THEOLIZER_GENERATED_UNIQUE_NAME pairTheolizer
 

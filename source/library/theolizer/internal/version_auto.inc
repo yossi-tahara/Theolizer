@@ -297,9 +297,9 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
     // 基底クラス指定
     #if defined(THEOLIZER_GENERATED_BASE_LIST)
         #define THEOLIZER_GENERATED_SEP   ,
-        #define THEOLIZER_INTERNAL_VERSION_B(dSpec, dTrack, dId, dType, dVerNo, dVer, dAnno)\
+        #define THEOLIZER_INTERNAL_VERSION_B(dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)\
             dSpec THEOLIZER_INTERNAL_UNPAREN dVer
-        #define THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec, dTrack, dId, dType, dVerNo, dVer, dAnno)\
+        #define THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)\
             dSpec THEOLIZER_INTERNAL_UNPAREN dVer
         : THEOLIZER_GENERATED_BASE_LIST()
         #undef  THEOLIZER_GENERATED_SEP
@@ -355,11 +355,11 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
             #if defined(THEOLIZER_GENERATED_BASE_LIST)
                 #define THEOLIZER_GENERATED_SEP
                 #define THEOLIZER_INTERNAL_VERSION_B(                       \
-                    dSpec, dTrack, dId, dType, dVerNo, dVer, dAnno)         \
+                    dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)         \
                     THEOLIZER_ANNOTATE(dAnno)                               \
                     void BaseDefine dType;
                 #define THEOLIZER_INTERNAL_VERSION_B_DEL(                   \
-                    dSpec, dTrack, dId, dType, dVerNo, dVer, dAnno)         \
+                    dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)         \
                     THEOLIZER_ANNOTATE(dAnno)                               \
                     void BaseDefine dType;
                 THEOLIZER_GENERATED_BASE_LIST()
@@ -476,10 +476,11 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         // 自分を基底クラスへ登録する
         #if defined(THEOLIZER_GENERATED_BASE_LIST)
             #define THEOLIZER_GENERATED_SEP
-            #define THEOLIZER_INTERNAL_VERSION_B(dSpec, dTrack, dId, dType, dVerNo, dVer, dAnno)\
+            #define THEOLIZER_INTERNAL_VERSION_B(dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)\
                 THEOLIZER_INTERNAL_MAKE_CLASS_TYPE(dType)::getInstance().template\
                     registerDrivedClass<THEOLIZER_GENERATED_CLASS_TYPE>();
-            #define THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
+            #define THEOLIZER_INTERNAL_VERSION_B_DEL(                       \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
                 THEOLIZER_INTERNAL_VERSION_B(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)
             THEOLIZER_GENERATED_BASE_LIST()
             #undef  THEOLIZER_GENERATED_SEP
@@ -553,13 +554,15 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
     {
         #if defined(THEOLIZER_GENERATED_BASE_LIST)
             #define THEOLIZER_GENERATED_SEP
-            #define THEOLIZER_INTERNAL_VERSION_B(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
+            #define THEOLIZER_INTERNAL_VERSION_B(                           \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
                 theolizer::internal::RegisterType                           \
                 <                                                           \
                     tBaseSerializer,                                        \
                     THEOLIZER_INTERNAL_UNPAREN dType                        \
                 >::getInstance();
-            #define THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
+            #define THEOLIZER_INTERNAL_VERSION_B_DEL(                       \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
                 theolizer::internal::RegisterType                           \
                 <                                                           \
                     tBaseSerializer,                                        \
@@ -634,9 +637,11 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
     ) :
         #if defined(THEOLIZER_GENERATED_BASE_LIST)
             #define THEOLIZER_GENERATED_SEP
-            #define THEOLIZER_INTERNAL_VERSION_B(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
+            #define THEOLIZER_INTERNAL_VERSION_B(                           \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
                 THEOLIZER_INTERNAL_UNPAREN dVer(iParentVersion),
-            #define THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
+            #define THEOLIZER_INTERNAL_VERSION_B_DEL(                       \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
                 THEOLIZER_INTERNAL_UNPAREN dVer(),
             THEOLIZER_GENERATED_BASE_LIST()
             #undef  THEOLIZER_GENERATED_SEP
@@ -731,9 +736,11 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
     TheolizerVersion(TheolizerVersion& iSameVersion) :
         #if defined(THEOLIZER_GENERATED_BASE_LIST)
             #define THEOLIZER_GENERATED_SEP
-            #define THEOLIZER_INTERNAL_VERSION_B(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
+            #define THEOLIZER_INTERNAL_VERSION_B(                           \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
                 THEOLIZER_INTERNAL_UNPAREN dVer(iSameVersion),
-            #define THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
+            #define THEOLIZER_INTERNAL_VERSION_B_DEL(                       \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
                 THEOLIZER_INTERNAL_UNPAREN dVer(iSameVersion),
             THEOLIZER_GENERATED_BASE_LIST()
             #undef  THEOLIZER_GENERATED_SEP
@@ -775,9 +782,11 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
     TheolizerVersion(TheolizerVersion&& iSameVersion) :
         #if defined(THEOLIZER_GENERATED_BASE_LIST)
             #define THEOLIZER_GENERATED_SEP
-            #define THEOLIZER_INTERNAL_VERSION_B(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
+            #define THEOLIZER_INTERNAL_VERSION_B(                           \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
                 THEOLIZER_INTERNAL_UNPAREN dVer(iSameVersion),
-            #define THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
+            #define THEOLIZER_INTERNAL_VERSION_B_DEL(                       \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
                 THEOLIZER_INTERNAL_UNPAREN dVer(iSameVersion),
             THEOLIZER_GENERATED_BASE_LIST()
             #undef  THEOLIZER_GENERATED_SEP
@@ -819,9 +828,11 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
     TheolizerVersion() :
         #if defined(THEOLIZER_GENERATED_BASE_LIST)
             #define THEOLIZER_GENERATED_SEP
-            #define THEOLIZER_INTERNAL_VERSION_B(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
+            #define THEOLIZER_INTERNAL_VERSION_B(                           \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
                 THEOLIZER_INTERNAL_UNPAREN dVer(),
-            #define THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
+            #define THEOLIZER_INTERNAL_VERSION_B_DEL(                       \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
                 THEOLIZER_INTERNAL_UNPAREN dVer(),
             THEOLIZER_GENERATED_BASE_LIST()
             #undef  THEOLIZER_GENERATED_SEP
@@ -1066,10 +1077,12 @@ THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
     {
         #if defined(THEOLIZER_GENERATED_BASE_LIST)
             #define THEOLIZER_GENERATED_SEP
-            #define THEOLIZER_INTERNAL_VERSION_B(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
-                THEOLIZER_INTERNAL_REGISTER_BASE(dSpec, dTrack, dId, dType, dVerNo, dVer),
-            #define THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
-                THEOLIZER_INTERNAL_REGISTER_BASE(dSpec, dTrack, dId, dType, dVerNo, dVer),
+            #define THEOLIZER_INTERNAL_VERSION_B(                           \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
+                THEOLIZER_INTERNAL_REGISTER_BASE(dSpec, dTrack, dId, dType, dVerNo, dName, dVer),
+            #define THEOLIZER_INTERNAL_VERSION_B_DEL(                       \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
+                THEOLIZER_INTERNAL_REGISTER_BASE(dSpec, dTrack, dId, dType, dVerNo, dName, dVer),
             THEOLIZER_GENERATED_BASE_LIST()
             #undef  THEOLIZER_GENERATED_SEP
             #undef  THEOLIZER_INTERNAL_VERSION_B

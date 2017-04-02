@@ -178,11 +178,11 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
             #if defined(THEOLIZER_GENERATED_BASE_LIST)
                 #define THEOLIZER_GENERATED_SEP
                 #define THEOLIZER_INTERNAL_VERSION_B(                       \
-                    dSpec, dTrack, dId, dType, dVerNo, dVer, dAnno)         \
+                    dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)         \
                     THEOLIZER_ANNOTATE(dAnno)                               \
                     void BaseDefine dType;
                 #define THEOLIZER_INTERNAL_VERSION_B_DEL(                   \
-                    dSpec, dTrack, dId, dType, dVerNo, dVer, dAnno)         \
+                    dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)         \
                     THEOLIZER_ANNOTATE(dAnno)                               \
                     void BaseDefine dType;
                 THEOLIZER_GENERATED_BASE_LIST()
@@ -238,10 +238,12 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         // 自分を基底クラスへ登録する
         #if defined(THEOLIZER_GENERATED_BASE_LIST)
             #define THEOLIZER_GENERATED_SEP
-            #define THEOLIZER_INTERNAL_VERSION_B(dSpec, dTrack, dId, dType, dVerNo, dVer, dAnno)\
+            #define THEOLIZER_INTERNAL_VERSION_B(                           \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
                 THEOLIZER_INTERNAL_MAKE_CLASS_TYPE(dType)::getInstance().template\
                     registerDrivedClass<THEOLIZER_INTERNAL_DERIVED>();
-            #define THEOLIZER_INTERNAL_VERSION_B_DEL(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)\
+            #define THEOLIZER_INTERNAL_VERSION_B_DEL(                       \
+                dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)             \
                 THEOLIZER_INTERNAL_VERSION_B(dSpec,dTrack,dId,dType,dVerNo,dVer,dAnno)
             THEOLIZER_GENERATED_BASE_LIST()
             #undef  THEOLIZER_GENERATED_SEP
@@ -287,19 +289,19 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
             #if defined(THEOLIZER_GENERATED_BASE_LIST)
                 #define THEOLIZER_GENERATED_SEP
                 #define THEOLIZER_INTERNAL_VERSION_B(                       \
-                    dSpec, dTrack, dId, dType, dVerNo, dVer, dAnno)         \
+                    dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)         \
                     {                                                       \
                         theolizer::internal::Element<TheolizerVersion>      \
                         aElement                                            \
-                        THEOLIZER_INTERNAL_REGISTER_MBASE(dSpec, dTrack, dType, dVerNo, dVer);\
+                        THEOLIZER_INTERNAL_REGISTER_MBASE(dSpec,dTrack,dType,dVerNo,dName,dVer);\
                         sElementList.push_back(std::move(aElement));        \
                     }
                 #define THEOLIZER_INTERNAL_VERSION_B_DEL(                   \
-                    dSpec, dTrack, dId, dType, dVerNo, dVer, dAnno)         \
+                    dSpec,dTrack,dId,dType,dVerNo,dName,dVer,dAnno)         \
                     {                                                       \
                         theolizer::internal::Element<TheolizerVersion>      \
                         aElement                                            \
-                        THEOLIZER_INTERNAL_REGISTER_MBASE(dSpec, dTrack, dType, dVerNo, dVer);\
+                        THEOLIZER_INTERNAL_REGISTER_MBASE(dSpec,dTrack,dType,dVerNo,dName,dVer);\
                         sElementList.push_back(std::move(aElement));        \
                     }
                 THEOLIZER_GENERATED_BASE_LIST()

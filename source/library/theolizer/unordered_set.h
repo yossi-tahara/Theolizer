@@ -55,7 +55,7 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::unordered_set<Key, Hash, Pred, Alloc>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(std::unordered_set<Key, Hash, Pred, Alloc>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class Key, class Hash, class Pred, class Alloc>
 #define THEOLIZER_GENERATED_UNIQUE_NAME unordered_setTheolizer
 
@@ -110,7 +110,7 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::unordered_multiset<Key, Hash, Pred, Alloc>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(std::unordered_multiset<Key, Hash, Pred, Alloc>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class Key, class Hash, class Pred, class Alloc>
 #define THEOLIZER_GENERATED_UNIQUE_NAME unordered_multisetTheolizer
 

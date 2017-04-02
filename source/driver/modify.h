@@ -234,12 +234,9 @@ ASTANALYZE_OUTPUT("instertString");
         // バージョン番号(ある時だけ)
         if (aIsKeepStep)
         {
-            mLastVersion << "," << found->second.mLastVersionNo << ")";
+            mLastVersion << "," << found->second.mLastVersionNo;
         }
-        else
-        {
-            mLastVersion << ")";
-        }
+        mLastVersion << ",u8\"" << iBaseName << "\")";
     }
 
 //----------------------------------------------------------------------------
@@ -1264,8 +1261,8 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
         }
         else
         {
-            mLastVersion << "#define THEOLIZER_GENERATED_CLASS_TYPE "
-                         << aClassName << "\n";
+            mLastVersion << "#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN("
+                         << aClassName << ")\n";
         }
         if (aIsTemplate)
         {
@@ -1354,7 +1351,7 @@ ASTANALYZE_OUTPUT("    Base : ", aBaseName, " hasDefinition()=", aBase->hasDefin
                 }
                 else
                 {
-                    mLastVersion << " THEOLIZER_GENERATED_SEP\\\n";
+                    mLastVersion << "\\\n        THEOLIZER_GENERATED_SEP\\\n";
                 }
 
                 createBaseClass
@@ -1615,7 +1612,7 @@ ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsSt
                     aIsFirst=false;
                     mPrevVersion << "#define THEOLIZER_GENERATED_BASE_LIST()\\\n";
                 } else {
-                    mPrevVersion << " THEOLIZER_GENERATED_SEP\\\n";
+                    mPrevVersion << "\\\n        THEOLIZER_GENERATED_SEP\\\n";
                 }
 
                 // 基底クラスが削除されているかどうか判定する

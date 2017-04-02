@@ -46,16 +46,16 @@ struct ModifyFullAuto
 //      侵入型半自動
 //----------------------------------------------------------------------------
 
-struct ModifyHalfAutoX
+struct ModifyHalfAutoY
 {
-    std::string mHalfAutoX;
+    std::string mHalfAutoY;
 
-    ModifyHalfAutoX(std::string const& iValue=0) : mHalfAutoX(iValue) { }
+    ModifyHalfAutoY(std::string const& iValue=0) : mHalfAutoY(iValue) { }
     void check(std::string const& iValue)
     {
-        THEOLIZER_EQUAL(mHalfAutoX, iValue);
+        THEOLIZER_EQUAL(mHalfAutoY, iValue);
     }
-    THEOLIZER_INTRUSIVE(CS, (ModifyHalfAutoX), 1);
+    THEOLIZER_INTRUSIVE(CS, (ModifyHalfAutoY), 1);
 };
 
 //----------------------------------------------------------------------------
@@ -114,13 +114,13 @@ struct ModifyClassName :
     public ModifyManual,        // 順序変更
     public ModifyFullAuto,
 //  public ModifyHalfAuto,      // 削除
-    public ModifyHalfAutoX      // 追加
+    public ModifyHalfAutoY      // 追加
 {
     // --- クラス型メンバ変数---
     ModifyManual    mManualMember;      // 順序変更
     ModifyFullAuto  mFullAutoMember;
 //  ModifyHalfAuto  mHalfAutoMember;    // 削除
-    ModifyHalfAutoX mHalfAutoXMember;   // 追加
+    ModifyHalfAutoY mHalfAutoYMember;   // 追加
 
     // --- 基本型メンバ変数---
     unsigned    mUnsigned;      // 順序変更
@@ -137,13 +137,13 @@ struct ModifyClassName :
         ModifyManual(0),        // 順序変更
         ModifyFullAuto(0),
 //      ModifyHalfAuto(0),      // 削除
-        ModifyHalfAutoX(""),    // 追加
+        ModifyHalfAutoY(""),    // 追加
 
         // --- クラス型メンバ変数---
         mManualMember(0),               // 順序変更
         mFullAutoMember(0),
 //      mHalfAutoMember(0),             // 削除
-        mHalfAutoXMember(""),           // 追加
+        mHalfAutoYMember(""),           // 追加
 
         // --- 基本型メンバ変数---
         mUnsigned(0),           // 順序変更
@@ -161,13 +161,13 @@ struct ModifyClassName :
         ModifyManual(102),      // 順序変更
         ModifyFullAuto(100),
 //      ModifyHalfAuto(101),    // 削除
-        ModifyHalfAutoX("103"), // 追加
+        ModifyHalfAutoY("103"), // 追加
 
         // --- クラス型メンバ変数---
         mManualMember(112),             // 順序変更
         mFullAutoMember(110),
 //      mHalfAutoMember(111),           // 削除
-        mHalfAutoXMember("113"),        // 追加
+        mHalfAutoYMember("113"),        // 追加
 
         // --- 基本型メンバ変数---
         mUnsigned(122),         // 順序変更
@@ -189,14 +189,14 @@ struct ModifyClassName :
         switch(gVersionList[gDataIndex].mVersionEnum)
         {
         case VersionEnum::ver1a:
-            THEOLIZER_EQUAL(mHalfAutoX, "");
+            THEOLIZER_EQUAL(mHalfAutoY, "");
             break;
 
         case VersionEnum::ver1b:
         case VersionEnum::ver1c:
         case VersionEnum::ver2a:
         case VersionEnum::ver3a:
-            THEOLIZER_EQUAL(mHalfAutoX, "103");
+            THEOLIZER_EQUAL(mHalfAutoY, "103");
             break;
 
         case VersionEnum::ver3b:

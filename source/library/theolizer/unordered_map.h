@@ -55,7 +55,7 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::unordered_map<Key, T, Hash, Pred, Alloc>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(std::unordered_map<Key, T, Hash, Pred, Alloc>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class Key, class T, class Hash, class Pred, class Alloc>
 #define THEOLIZER_GENERATED_UNIQUE_NAME unordered_mapTheolizer
 
@@ -132,7 +132,7 @@ public:
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE theolizer::UnorderedMapPointee<Key, T, Hash, Pred, Alloc>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(theolizer::UnorderedMapPointee<Key, T, Hash, Pred, Alloc>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class Key, class T, class Hash, class Pred, class Alloc>
 #define THEOLIZER_GENERATED_UNIQUE_NAME UnorderedMapPointeeTheolizer
 
@@ -183,7 +183,7 @@ public:
 #ifdef  THEOLIZER_WRITE_CODE
 
 #define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
-#define THEOLIZER_GENERATED_CLASS_TYPE std::unordered_multimap<Key, T, Hash, Pred, Alloc>
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(std::unordered_multimap<Key, T, Hash, Pred, Alloc>)
 #define THEOLIZER_GENERATED_PARAMETER_LIST template<class Key, class T, class Hash, class Pred, class Alloc>
 #define THEOLIZER_GENERATED_UNIQUE_NAME unordered_multimapTheolizer
 
