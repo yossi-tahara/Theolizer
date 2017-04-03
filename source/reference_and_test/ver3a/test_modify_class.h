@@ -146,13 +146,13 @@ struct ModifyClassName :
 //  public ModifyHalfAuto,              // 1b:削除
     public ModifyHalfAutoY              // 1b:追加→2a:名変更
 {
-    // --- クラス型メンバ変数---
+    // --- クラス型メンバ変数 ---
     ModifyManual    mManualMember;      // 1b:順序変更
     ModifyFullAuto  mFullAutoMember;
 //  ModifyHalfAuto  mHalfAutoMember;    // 1b:削除
     ModifyHalfAutoY mHalfAutoYMember;   // 1b:追加→2a:名変更
 
-    // --- 基本型メンバ変数---
+    // --- 基本型メンバ変数 ---
     unsigned    mUnsigned;              // 1b:順序変更
     short       mShortChanged THEOLIZER_ANNOTATE(FS:mShort); // 3a:変数名変更
 //  int         mInt;                   // 1b:削除
@@ -169,13 +169,13 @@ struct ModifyClassName :
 //      ModifyHalfAuto(0),              // 1b:削除
         ModifyHalfAutoY(""),            // 1b:追加→2a:名変更
 
-        // --- クラス型メンバ変数---
+        // --- クラス型メンバ変数 ---
         mManualMember(0),               // 1b:順序変更
         mFullAutoMember(0),
 //      mHalfAutoMember(0),             // 1b:削除
         mHalfAutoYMember(""),           // 1b:追加→2a:名変更
 
-        // --- 基本型メンバ変数---
+        // --- 基本型メンバ変数 ---
         mUnsigned(0),                   // 1b:順序変更
         mShortChanged(0),
 //      mInt(0),                        // 1b:削除
@@ -193,13 +193,13 @@ struct ModifyClassName :
 //      ModifyHalfAuto(101),            // 1b:削除
         ModifyHalfAutoY("103"),         // 1b:追加→2a:名変更
 
-        // --- クラス型メンバ変数---
+        // --- クラス型メンバ変数 ---
         mManualMember(112),             // 1b:順序変更
         mFullAutoMember(110),
 //      mHalfAutoMember(111),           // 1b:削除
         mHalfAutoYMember("113"),        // 1b:追加→2a:名変更
 
-        // --- 基本型メンバ変数---
+        // --- 基本型メンバ変数 ---
         mUnsigned(122),                 // 1b:順序変更
         mShortChanged(120),
 //      mInt(121),                      // 1b:削除
@@ -247,7 +247,7 @@ struct ModifyClassName :
             break;
         }
 
-        // --- クラス型メンバ変数---
+        // --- クラス型メンバ変数 ---
 //      THEOLIZER_EQUAL(mHalfAutoMember.mHalfAuto, 111);
         THEOLIZER_EQUAL(mManualMember.mManual,     112);
         switch(gVersionList[gDataIndex].mVersionEnum)
@@ -282,7 +282,7 @@ struct ModifyClassName :
             break;
         }
 
-        // --- 基本型メンバ変数---
+        // --- 基本型メンバ変数 ---
 //      THEOLIZER_EQUAL(mInt,           121);
         THEOLIZER_EQUAL(mUnsigned,      122);
         switch(gVersionList[gDataIndex].mVersionEnum)
@@ -332,12 +332,12 @@ struct ModifyClassOrder :
     public ModifyHalfAuto,
     public ModifyManual
 {
-    // --- クラス型メンバ変数---
+    // --- クラス型メンバ変数 ---
     ModifyFullAuto  mFullAutoMember;
     ModifyHalfAuto  mHalfAutoMember;
     ModifyManual    mManualMember;
 
-    // --- 基本型メンバ変数---
+    // --- 基本型メンバ変数 ---
     short           mShort;
     int             mIntChanged THEOLIZER_ANNOTATE(FS:mInt);    // 変数名変更
     unsigned        mUnsigned;
@@ -356,12 +356,12 @@ struct ModifyClassOrder :
         ModifyHalfAuto(0),
         ModifyManual(0),
 
-        // --- クラス型メンバ変数---
+        // --- クラス型メンバ変数 ---
         mFullAutoMember(0),
         mHalfAutoMember(0),
         mManualMember(0),
 
-        // --- 基本型メンバ変数---
+        // --- 基本型メンバ変数 ---
         mShort(0),
         mIntChanged(0),
         mUnsigned(0),
@@ -381,12 +381,12 @@ struct ModifyClassOrder :
         ModifyHalfAuto(201),
         ModifyManual(202),
 
-        // --- クラス型メンバ変数---
+        // --- クラス型メンバ変数 ---
         mFullAutoMember(210),
         mHalfAutoMember(211),
         mManualMember(212),
 
-        // --- 基本型メンバ変数---
+        // --- 基本型メンバ変数 ---
         mShort(220),
         mIntChanged(221),
         mUnsigned(222),
@@ -407,7 +407,7 @@ struct ModifyClassOrder :
         THEOLIZER_EQUAL(mHalfAuto, 201);
         THEOLIZER_EQUAL(mManual,   202);
 
-        // --- クラス型メンバ変数---
+        // --- クラス型メンバ変数 ---
         THEOLIZER_EQUAL(mFullAutoMember.mFullAuto,   210);
         THEOLIZER_EQUAL(mHalfAutoMember.mHalfAuto,   211);
         THEOLIZER_EQUAL(mManualMember.mManual,       212);
@@ -440,7 +440,7 @@ struct ModifyClassOrder :
             break;
         }
 
-        // --- 基本型メンバ変数---
+        // --- 基本型メンバ変数 ---
         THEOLIZER_EQUAL(mShort,      220);
         THEOLIZER_EQUAL(mIntChanged, 221);
         THEOLIZER_EQUAL(mUnsigned,   222);
@@ -482,17 +482,51 @@ struct ModifyClassOrder :
 // ***************************************************************************
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_ARRAY
-struct ArraySizeTest
+struct ArrayTest
 {
+    // --- 次元変更テスト用 ---
+    static const unsigned   kSize1x=2;
+    static const unsigned   kSize0x=3;
+    static const unsigned   kSize1=3;
+    static const unsigned   kSize0=2;
+    unsigned    mArrayDim[kSize1][kSize0];
+
+    // --- サイズ上限テスト用 ---
     static const unsigned   kSize=kDefSize;
     unsigned    mArray1D[kSize];
     unsigned    mArray2D[kSize][kSize];
     unsigned    mArray3D[kSize][kSize][kSize];
 
-    ArraySizeTest() : mArray1D{}, mArray2D{}, mArray3D{}
+//----------------------------------------------------------------------------
+//      デフォルト・コンストラクタ
+//----------------------------------------------------------------------------
+
+    ArrayTest() :
+        // --- 次元変更テスト用 ---
+        mArrayDim{},
+
+        // --- サイズ上限テスト用 ---
+        mArray1D{},
+        mArray2D{},
+        mArray3D{}
     { }
-    ArraySizeTest(bool)
+
+//----------------------------------------------------------------------------
+//      保存データ設定用コンストラクタ
+//----------------------------------------------------------------------------
+
+    ArrayTest(bool)
     {
+        // --- 次元変更テスト用 ---
+        for (unsigned j=0; j < kSize1; ++j)
+        {
+            for (unsigned k=0; k < kSize0; ++k)
+            {
+                mArrayDim[j][k]=j*10+k;
+            }
+        }
+
+        // --- サイズ上限テスト用 ---
         for (unsigned i=0; i < kSize; ++i)
         {
             mArray1D[i]=i;
@@ -506,11 +540,57 @@ struct ArraySizeTest
             }
         }
     }
+
+//----------------------------------------------------------------------------
+//      チェック
+//----------------------------------------------------------------------------
+
     void check()
     {
+        // --- 次元変更テスト用 ---
+        for (unsigned j=0; j < kSize1; ++j)
+        {
+            for (unsigned k=0; k < kSize0; ++k)
+            {
+                if ((gVersionList[gDataIndex].mVersionEnum == VersionEnum::ver2a)
+                 && ((gVersionList[gProgramIndex].mVersionEnum == VersionEnum::ver2a)
+                  || (gVersionList[gProgramIndex].mVersionEnum == VersionEnum::ver3a)))
+                {
+                    THEOLIZER_EQUAL(mArrayDim[j][k], j*10+k, j, k);
+                }
+                else if ((gVersionList[gDataIndex].mVersionEnum == VersionEnum::ver3a)
+                      && (gVersionList[gProgramIndex].mVersionEnum == VersionEnum::ver3a))
+                {
+                    THEOLIZER_EQUAL(mArrayDim[j][k], j*10+k, j, k);
+                }
+                else if ((VersionEnum::ver1c <= gVersionList[gDataIndex].mVersionEnum)
+                      && (gVersionList[gDataIndex].mVersionEnum <= VersionEnum::ver3a))
+                {
+                    if ((j < kSize1x) && (k < kSize0x))
+                    {
+                        THEOLIZER_EQUAL(mArrayDim[j][k], j*10+k, j, k);
+                    }
+                    else
+                    {
+                        THEOLIZER_EQUAL(mArrayDim[j][k], 0, j, k);
+                    }
+                }
+                else if (gVersionList[gDataIndex].mVersionEnum < VersionEnum::ver1c)
+                {
+                    THEOLIZER_EQUAL(mArrayDim[j][k], 0, j, k);
+                }
+                else
+                {
+                    // FAILさせる
+                    THEOLIZER_EQUAL(gDataIndex, gMyIndex, j, k);
+                }
+            }
+        }
+
+        // --- サイズ上限テスト用 ---
         for (unsigned i=0; i < kSize; ++i)
         {
-            THEOLIZER_EQUAL(mArray1D[i], i, i);
+            THEOLIZER_EQUAL(mArray1D[i], i);
             for (unsigned j=0; j < kSize; ++j)
             {
                 THEOLIZER_EQUAL(mArray2D[i][j], i*1000+j, i, j);
@@ -523,7 +603,7 @@ struct ArraySizeTest
         }
     }
 
-    THEOLIZER_INTRUSIVE(CS, (ArraySizeTest), 1);
+    THEOLIZER_INTRUSIVE(CS, (ArrayTest), 3);
 };
 #endif  // DISABLE_MODIFY_CLASS_TEST_ARRAY
 

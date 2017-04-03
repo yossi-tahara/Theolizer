@@ -117,12 +117,12 @@ struct ModifyClassName :
     public ModifyHalfAuto,
     public ModifyManual
 {
-    // --- クラス型メンバ変数---
+    // --- クラス型メンバ変数 ---
     ModifyFullAuto  mFullAutoMember;
     ModifyHalfAuto  mHalfAutoMember;
     ModifyManual    mManualMember;
 
-    // --- 基本型メンバ変数---
+    // --- 基本型メンバ変数 ---
     short           mShort;
     int             mInt;
     unsigned        mUnsigned;
@@ -137,12 +137,12 @@ struct ModifyClassName :
         ModifyHalfAuto(0),
         ModifyManual(0),
 
-        // --- クラス型メンバ変数---
+        // --- クラス型メンバ変数 ---
         mFullAutoMember(0),
         mHalfAutoMember(0),
         mManualMember(0),
 
-        // --- 基本型メンバ変数---
+        // --- 基本型メンバ変数 ---
         mShort(0),
         mInt(0),
         mUnsigned(0)
@@ -158,12 +158,12 @@ struct ModifyClassName :
         ModifyHalfAuto(101),
         ModifyManual(102),
 
-        // --- クラス型メンバ変数---
+        // --- クラス型メンバ変数 ---
         mFullAutoMember(110),
         mHalfAutoMember(111),
         mManualMember(112),
 
-        // --- 基本型メンバ変数---
+        // --- 基本型メンバ変数 ---
         mShort(120),
         mInt(121),
         mUnsigned(122)
@@ -180,12 +180,12 @@ struct ModifyClassName :
         THEOLIZER_EQUAL(mHalfAuto, 101);
         THEOLIZER_EQUAL(mManual,   102);
 
-        // --- クラス型メンバ変数---
+        // --- クラス型メンバ変数 ---
         THEOLIZER_EQUAL(mFullAutoMember.mFullAuto, 110);
         THEOLIZER_EQUAL(mHalfAutoMember.mHalfAuto, 111);
         THEOLIZER_EQUAL(mManualMember.mManual,     112);
 
-        // --- 基本型メンバ変数---
+        // --- 基本型メンバ変数 ---
         THEOLIZER_EQUAL(mShort,    120);
         THEOLIZER_EQUAL(mInt,      121);
         THEOLIZER_EQUAL(mUnsigned, 122);
@@ -205,12 +205,12 @@ struct ModifyClassOrder :
     public ModifyHalfAuto,
     public ModifyManual
 {
-    // --- クラス型メンバ変数---
+    // --- クラス型メンバ変数 ---
     ModifyFullAuto  mFullAutoMember;
     ModifyHalfAuto  mHalfAutoMember;
     ModifyManual    mManualMember;
 
-    // --- 基本型メンバ変数---
+    // --- 基本型メンバ変数 ---
     short           mShort;
     int             mInt;
     unsigned        mUnsigned;
@@ -225,12 +225,12 @@ struct ModifyClassOrder :
         ModifyHalfAuto(0),
         ModifyManual(0),
 
-        // --- クラス型メンバ変数---
+        // --- クラス型メンバ変数 ---
         mFullAutoMember(0),
         mHalfAutoMember(0),
         mManualMember(0),
 
-        // --- 基本型メンバ変数---
+        // --- 基本型メンバ変数 ---
         mShort(0),
         mInt(0),
         mUnsigned(0)
@@ -246,12 +246,12 @@ struct ModifyClassOrder :
         ModifyHalfAuto(201),
         ModifyManual(202),
 
-        // --- クラス型メンバ変数---
+        // --- クラス型メンバ変数 ---
         mFullAutoMember(210),
         mHalfAutoMember(211),
         mManualMember(212),
 
-        // --- 基本型メンバ変数---
+        // --- 基本型メンバ変数 ---
         mShort(220),
         mInt(221),
         mUnsigned(222)
@@ -268,12 +268,12 @@ struct ModifyClassOrder :
         THEOLIZER_EQUAL(mHalfAuto, 201);
         THEOLIZER_EQUAL(mManual,   202);
 
-        // --- クラス型メンバ変数---
+        // --- クラス型メンバ変数 ---
         THEOLIZER_EQUAL(mFullAutoMember.mFullAuto, 210);
         THEOLIZER_EQUAL(mHalfAutoMember.mHalfAuto, 211);
         THEOLIZER_EQUAL(mManualMember.mManual,     212);
 
-        // --- 基本型メンバ変数---
+        // --- 基本型メンバ変数 ---
         THEOLIZER_EQUAL(mShort,    220);
         THEOLIZER_EQUAL(mInt,      221);
         THEOLIZER_EQUAL(mUnsigned, 222);
@@ -287,17 +287,32 @@ struct ModifyClassOrder :
 // ***************************************************************************
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_ARRAY
-struct ArraySizeTest
+struct ArrayTest
 {
+    // --- サイズ上限テスト用 ---
     static const unsigned   kSize=kDefSize;
     unsigned    mArray1D[kSize];
     unsigned    mArray2D[kSize][kSize];
     unsigned    mArray3D[kSize][kSize][kSize];
 
-    ArraySizeTest() : mArray1D{}, mArray2D{}, mArray3D{}
+//----------------------------------------------------------------------------
+//      デフォルト・コンストラクタ
+//----------------------------------------------------------------------------
+
+    ArrayTest() :
+        // --- サイズ上限テスト用 ---
+        mArray1D{},
+        mArray2D{},
+        mArray3D{}
     { }
-    ArraySizeTest(bool)
+
+//----------------------------------------------------------------------------
+//      保存データ設定用コンストラクタ
+//----------------------------------------------------------------------------
+
+    ArrayTest(bool)
     {
+        // --- サイズ上限テスト用 ---
         for (unsigned i=0; i < kSize; ++i)
         {
             mArray1D[i]=i;
@@ -311,8 +326,14 @@ struct ArraySizeTest
             }
         }
     }
+
+//----------------------------------------------------------------------------
+//      チェック
+//----------------------------------------------------------------------------
+
     void check()
     {
+        // --- サイズ上限テスト用 ---
         for (unsigned i=0; i < kSize; ++i)
         {
             THEOLIZER_EQUAL(mArray1D[i], i);
@@ -328,7 +349,7 @@ struct ArraySizeTest
         }
     }
 
-    THEOLIZER_INTRUSIVE(CS, (ArraySizeTest), 1);
+    THEOLIZER_INTRUSIVE(CS, (ArrayTest), 1);
 };
 #endif  // DISABLE_MODIFY_CLASS_TEST_ARRAY
 

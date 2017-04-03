@@ -84,7 +84,7 @@ void saveModifyClass(tSerializer& iSerializer)
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_ARRAY
     {
-        auto    aArray=std::unique_ptr<ArraySizeTest>(new ArraySizeTest{true});
+        auto    aArray=std::unique_ptr<ArrayTest>(new ArrayTest{true});
         THEOLIZER_PROCESS(iSerializer, aArray);
 
         // オブジェクトIDテーブルのクリア
@@ -137,7 +137,7 @@ void loadModifyClass(tSerializer& iSerializer)
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_ARRAY
     {
-        auto    aArray=std::unique_ptr<ArraySizeTest>(new ArraySizeTest{});
+        auto    aArray=std::unique_ptr<ArrayTest>(new ArrayTest{});
         THEOLIZER_PROCESS(iSerializer, aArray);
         aArray->check();
 
