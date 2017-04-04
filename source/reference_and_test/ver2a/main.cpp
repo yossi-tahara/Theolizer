@@ -91,6 +91,40 @@ void saveModifyClass(tSerializer& iSerializer);
 template<class tSerializer>
 void loadModifyClass(tSerializer& iSerializer);
 
+//----------------------------------------------------------------------------
+//      クラス変更の複合テスト
+//----------------------------------------------------------------------------
+
+//      ---<<< 使い方のサンプル・コード >>>---
+
+//void tutoriseModifyComplex();
+
+//      ---<<< 自動テスト >>>---
+
+template<class tSerializer>
+void saveModifyComplex(tSerializer& iSerializer);
+
+template<class tSerializer>
+void loadModifyComplex(tSerializer& iSerializer);
+
+//      ---<<< 保存先指定自動テスト >>>---
+
+template<class tSerializerA, class tSerializerB, class tSerializerAB>
+void saveDestinations
+(
+    tSerializerA&  iSerializerA,
+    tSerializerB&  iSerializerB,
+    tSerializerAB& iSerializerAB
+);
+
+template<class tSerializerA, class tSerializerB, class tSerializerAB>
+void loadDestinations
+(
+    tSerializerA&  iSerializerA,
+    tSerializerB&  iSerializerB,
+    tSerializerAB& iSerializerAB
+);
+
 // ***************************************************************************
 //      各テスト呼び出し
 // ***************************************************************************
@@ -124,6 +158,10 @@ void saveBasic(tSerializer& iSerializer)
 #ifndef DISABLE_MODIFY_CLASS_TEST
     saveModifyClass(iSerializer);
 #endif
+
+#ifndef DISABLE_MODIFY_COMPLEX_TEST
+    saveModifyComplex(iSerializer);
+#endif
 }
 
 template<class tSerializer>
@@ -137,6 +175,10 @@ void loadBasic(tSerializer& iSerializer)
 
 #ifndef DISABLE_MODIFY_CLASS_TEST
     loadModifyClass(iSerializer);
+#endif
+
+#ifndef DISABLE_MODIFY_COMPLEX_TEST
+    loadModifyComplex(iSerializer);
 #endif
 }
 
@@ -153,6 +195,10 @@ void callSaveDestinations
 )
 {
     std::cout << "    callSaveDestinations();\n";
+
+#ifndef DISABLE_MODIFY_COMPLEX_TEST
+    saveDestinations(iSerializerA, iSerializerB, iSerializerAB);
+#endif
 }
 
 template<class tSerializerA, class tSerializerB, class tSerializerAB>
@@ -164,6 +210,10 @@ void callLoadDestinations
 )
 {
     std::cout << "    callLoadDestinations();\n";
+
+#ifndef DISABLE_MODIFY_COMPLEX_TEST
+    loadDestinations(iSerializerA, iSerializerB, iSerializerAB);
+#endif
 }
 
 //############################################################################

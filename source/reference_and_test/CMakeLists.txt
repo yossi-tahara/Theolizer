@@ -306,6 +306,7 @@ set(NOW_VERSION  "ver1a")
 set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_enum.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_class.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_complex.cpp)
 
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
@@ -319,6 +320,7 @@ set(NOW_VERSION ver1b)
 set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_enum.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_class.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_complex.cpp)
 
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
@@ -332,6 +334,7 @@ set(NOW_VERSION ver1c)
 set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_enum.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_class.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_complex.cpp)
 
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
@@ -345,6 +348,7 @@ set(NOW_VERSION ver2a)
 set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_enum.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_class.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_complex.cpp)
 
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
@@ -358,6 +362,7 @@ set(NOW_VERSION ver3a)
 set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_enum.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_class.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_complex.cpp)
 
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
@@ -371,6 +376,7 @@ set(NOW_VERSION ver3b)
 set(SOURCE_LIST                ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/main.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_enum.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_class.cpp)
+set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_complex.cpp)
 
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
