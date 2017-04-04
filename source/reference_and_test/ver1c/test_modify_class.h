@@ -42,7 +42,7 @@ struct ModifyFullAuto
     }
 };
 
-//      ---<<< 旧バージョンのみに存在する完全自動型 >>>---
+//      ---<<< 旧バージョンのみに存在する完全自動クラス型 >>>---
 
 struct OldFullAuto0
 {
@@ -54,6 +54,14 @@ struct OldFullAuto1
 {
     int     mOldFullAuto1;
     OldFullAuto1(int iValue=0) : mOldFullAuto1(iValue) { }
+};
+
+//      ---<<< 旧バージョンのみに存在する完全自動enum型 >>>---
+
+enum OldFullAutoEnum
+{
+    eofaeSymbol0,
+    eofaeSymbol1
 };
 
 //----------------------------------------------------------------------------
@@ -152,7 +160,10 @@ struct ModifyClassName :
     ModifyFullAuto  mFullAutoMember;
 //  ModifyHalfAuto  mHalfAutoMember;    // 1b:削除
     ModifyHalfAutoX mHalfAutoXMember;   // 1b:追加
+    // クラス型メンバ変数削除テスト
     OldFullAuto1    mOldFullAuto1;      // 1c:追加(2aで削除)
+    // enum型メンバ変数削除テスト
+    OldFullAutoEnum mOldFullAutoEnum;   // 1c:追加(2aで削除)
 
     // --- 基本型メンバ変数 ---
     unsigned    mUnsigned;              // 1b:順序変更
@@ -178,6 +189,7 @@ struct ModifyClassName :
 //      mHalfAutoMember(0),             // 1b:削除
         mHalfAutoXMember(""),           // 1b:追加
         mOldFullAuto1(0),               // 1c:追加(2aで削除)
+        mOldFullAutoEnum(eofaeSymbol0), // 1c:追加(2aで削除)
 
         // --- 基本型メンバ変数 ---
         mUnsigned(0),                   // 1b:順序変更
@@ -204,6 +216,7 @@ struct ModifyClassName :
 //      mHalfAutoMember(111),           // 1b:削除
         mHalfAutoXMember("113"),        // 1b:追加
         mOldFullAuto1(114),             // 1c:追加(2aで削除)
+        mOldFullAutoEnum(eofaeSymbol1), // 1c:追加(2aで削除)
 
         // --- 基本型メンバ変数 ---
         mUnsigned(122),                 // 1b:順序変更
@@ -271,6 +284,7 @@ struct ModifyClassName :
             THEOLIZER_EQUAL(mFullAutoMember.mFullAuto,   110);
             THEOLIZER_EQUAL(mHalfAutoXMember.mHalfAutoX, "");
             THEOLIZER_EQUAL(mOldFullAuto1.mOldFullAuto1, 0);
+            THEOLIZER_EQUAL(mOldFullAutoEnum, eofaeSymbol0);
             break;
 
         case VersionEnum::ver1b:
@@ -281,18 +295,21 @@ struct ModifyClassName :
                 THEOLIZER_EQUAL(mFullAutoMember.mFullAuto,   0);
                 THEOLIZER_EQUAL(mHalfAutoXMember.mHalfAutoX, "");
                 THEOLIZER_EQUAL(mOldFullAuto1.mOldFullAuto1, 0);
+                THEOLIZER_EQUAL(mOldFullAutoEnum, eofaeSymbol0);
                 break;
 
             case VersionEnum::ver1c:
                 THEOLIZER_EQUAL(mFullAutoMember.mFullAuto,   110);
                 THEOLIZER_EQUAL(mHalfAutoXMember.mHalfAutoX, "113");
                 THEOLIZER_EQUAL(mOldFullAuto1.mOldFullAuto1, 114);
+                THEOLIZER_EQUAL(mOldFullAutoEnum, eofaeSymbol1);
                 break;
 
             default:
                 THEOLIZER_EQUAL(mFullAutoMember.mFullAuto,   110);
                 THEOLIZER_EQUAL(mHalfAutoXMember.mHalfAutoX, "113");
                 THEOLIZER_EQUAL(mOldFullAuto1.mOldFullAuto1, 0);
+                THEOLIZER_EQUAL(mOldFullAutoEnum, eofaeSymbol0);
                 break;
             }
             break;
@@ -502,7 +519,7 @@ struct ModifyClassOrder :
 #endif  // DISABLE_MODIFY_CLASS_TEST_ORDER
 
 // ***************************************************************************
-//      配列の要素数上限テスト
+//      配列のテスト
 // ***************************************************************************
 
 #ifndef DISABLE_MODIFY_CLASS_TEST_ARRAY

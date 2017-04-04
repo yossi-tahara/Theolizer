@@ -42,7 +42,7 @@ struct ModifyFullAuto
     }
 };
 
-//      ---<<< 旧バージョンのみに存在する完全自動型 >>>---
+//      ---<<< 旧バージョンのみに存在する完全自動クラス型 >>>---
 
 struct OldFullAuto0
 {
@@ -54,6 +54,14 @@ struct OldFullAuto1
 {
     int     mOldFullAuto1;
     OldFullAuto1() : mOldFullAuto1(0) { }
+};
+
+//      ---<<< 旧バージョンのみに存在する完全自動enul型 >>>---
+
+enum OldFullAutoEnum
+{
+    Symbol0,
+    Symbol1
 };
 
 //----------------------------------------------------------------------------
