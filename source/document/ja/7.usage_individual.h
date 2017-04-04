@@ -56,7 +56,7 @@
 
 enum型は従来のenum型と、C++11で追加されたscoped enum型の２つをテストします。
 
-@dontinclude basic/test_basic_process.h
+@dontinclude test_basic_process.h
 @skip NormalEnum
 @until };
 @until };

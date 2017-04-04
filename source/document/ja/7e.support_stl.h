@@ -55,10 +55,10 @@ unique_ptrは通常通りシリアライズ可能です。<br>
 - weak_ptr<br>
 バインドしているshared_ptrをシリアライズします。ですので、shared_ptrと同様同じインスタンスを管理するものは同じオブジェクト追跡単位内でシリアライズして下さい。
 
-<b>スマート・ポインタの保存と回復処理（source/reference_and_test/basic/test_support_stl.cpp）</b><br>
+<b>スマート・ポインタの保存と回復処理（source/reference_and_test/basic2/test_support_stl.cpp）</b><br>
 unique_ptr、shared_ptr、weak_ptrの保存／回復のサンプル・ソースです。
 
-@snippet  basic/test_support_stl.cpp SmartPtr
+@snippet  basic2/test_support_stl.cpp SmartPtr
 
 //############################################################################
 @section HowToUseContainer 2.標準コンテナのシリアライズ方法
@@ -107,21 +107,21 @@ multiset, multimap, unordered_multiset, unordered_multimapは、回復する際�
 
 @subsection HowToUseContainer21 2-1.標準コンテナを通常の使い方で保存／回復するサンプル・ソース
 
-<b>サンプル・ソース（source/reference_and_test/basic/test_support_stl.cpp）</b><br>
+<b>サンプル・ソース（source/reference_and_test/basic2/test_support_stl.cpp）</b><br>
 
-@snippet  basic/test_support_stl.cpp ContaierNomal
+@snippet  basic2/test_support_stl.cpp ContaierNomal
 
 @subsection HowToUseContainer22 2-2.標準コンテナの要素を被ポインタとする保存／回復するサンプル・ソース
 
-<b>サンプル・ソース（source/reference_and_test/basic/test_support_stl.cpp）</b><br>
+<b>サンプル・ソース（source/reference_and_test/basic2/test_support_stl.cpp）</b><br>
 
-@snippet  basic/test_support_stl.cpp ContaierPointee
+@snippet  basic2/test_support_stl.cpp ContaierPointee
 
 @subsection HowToUseContainer23 2-3.標準コンテナの要素を合成回復サンプル・ソース
 
-<b>サンプル・ソースsource/reference_and_test/basic/test_support_stl.cpp）</b><br>
+<b>サンプル・ソースsource/reference_and_test/basic2/test_support_stl.cpp）</b><br>
 
-@snippet  basic/test_support_stl.cpp ContaierDestinations
+@snippet  basic2/test_support_stl.cpp ContaierDestinations
 
 <br>
 //############################################################################
@@ -149,7 +149,7 @@ unique_ptrとweak_ptrについては、使い方説明にて保存／回復テ�
 そして、それぞれについて、手動(トップ・レベル)、自動、手動(非トップ・レベル)による保存／回復をテストしています。
 そのための補助クラスとして、SmartTestAutoとSmartTestManualを使っています。
 
-<b>source/reference_and_test/basic/test_support_stl.cpp</b>でテスト関数を定義してます。<br>
+<b>source/reference_and_test/basic2/test_support_stl.cpp</b>でテスト関数を定義してます。<br>
 
 1. 保存処理<br>
 template<class tSerializer><br>
@@ -163,7 +163,7 @@ void loadSupportStl(tSerializer& iSerializer)の前半<br>
 @subsubsection TestContainer312 3-1-2.合成回復
 
 unique_ptrとshared_ptrについて、それが管理するクラスをDestAとDestBに分割して保存し合成回復できることを確認しています。
-<b>source/reference_and_test/basic/test_support_stl.cpp</b>でテスト関数を定義してます。<br>
+<b>source/reference_and_test/basic2/test_support_stl.cpp</b>でテスト関数を定義してます。<br>
 
 1. 保存処理<br>
 template<class tSerializer><br>
@@ -194,7 +194,7 @@ unorderedコンテナに対応するため、TestStlはstd::hashクラスを特�
 |set, multiset, unordered_set, unordered_multiset|saveContainerSet, loadContainerSet|
 |map, multimap, unordered_map, unordered_multimap|saveContainerMap, loadContainerMap|
 
-<b>source/reference_and_test/basic/test_support_stl.cpp</b>でテスト関数を定義してます。<br>
+<b>source/reference_and_test/basic2/test_support_stl.cpp</b>でテスト関数を定義してます。<br>
 
 1. 保存処理<br>
 template<class tSerializer><br>
@@ -220,7 +220,7 @@ TestStlDestinationsは保存先としてDestAとDestBを指定したメンバを
 |vector(bool以外), deque, list, forward_list|saveNoKey, loadNoKey|
 |map, unordered_map|saveKey, loadeKey|
 
-<b>source/reference_and_test/basic/test_support_stl.cpp</b>でテスト関数を定義してます。<br>
+<b>source/reference_and_test/basic2/test_support_stl.cpp</b>でテスト関数を定義してます。<br>
 
 1. 保存処理<br>
 template<class tSerializer><br>
