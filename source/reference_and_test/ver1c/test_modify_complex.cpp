@@ -63,7 +63,15 @@ void saveModifyComplex(tSerializer& iSerializer)
 //----------------------------------------------------------------------------
 
     {
-        iSerializer;
+        PointeeClass    aPointeeClass;
+        PointeeInclude  aPointeeInclude(aPointeeClass, true);
+        PointerInclude  aPointerInclude(aPointeeInclude);
+
+        THEOLIZER_PROCESS(iSerializer, aPointeeClass);
+        THEOLIZER_PROCESS(iSerializer, aPointeeInclude);
+        THEOLIZER_PROCESS(iSerializer, aPointerInclude);
+
+        iSerializer.clearTracking();
     }
 
 //----------------------------------------------------------------------------
@@ -93,7 +101,19 @@ void loadModifyComplex(tSerializer& iSerializer)
 //----------------------------------------------------------------------------
 
     {
-        iSerializer;
+//theolizer::DisplayPass aDisplayPass;
+        PointeeClass    aPointeeClass;
+        PointeeInclude  aPointeeInclude(aPointeeClass);
+        PointerInclude  aPointerInclude;
+
+        THEOLIZER_PROCESS(iSerializer, aPointeeClass);
+        THEOLIZER_PROCESS(iSerializer, aPointeeInclude);
+        THEOLIZER_PROCESS(iSerializer, aPointerInclude);
+
+        aPointeeInclude.check();
+        aPointerInclude.check(aPointeeInclude);
+
+        iSerializer.clearTracking();
     }
 
 //----------------------------------------------------------------------------

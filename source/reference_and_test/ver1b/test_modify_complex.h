@@ -23,4 +23,90 @@
 #if !defined(TEST_MODIFY_COMPLEX_H)
 #define TEST_MODIFY_COMPLEX_H
 
+#include <theolizer/memory.h>   // for std::unique_ptr<>
+
+// ***************************************************************************
+//      複合テスト対象クラス
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      他のクラスに含まれるクラス（侵入型半自動）
+//----------------------------------------------------------------------------
+
+struct PointeeClass
+{
+    int     mInt;
+
+    PointeeClass(int iInt=0) : mInt(iInt) { }
+    THEOLIZER_INTRUSIVE(CS, (PointeeClass), 1);
+};
+
+//----------------------------------------------------------------------------
+//      他のクラスを含む被ポイント側クラス
+//----------------------------------------------------------------------------
+
+struct PointeeInclude
+{
+    std::unique_ptr<PointeeClass>   mPointeeClassOwner;                 // オーナ指定ポインタ
+    PointeeClass    mPointeeClass    THEOLIZER_ANNOTATE(FS:<>Pointee);  // 被ポインタ実体
+    PointeeClass&   mPointeeClassRef THEOLIZER_ANNOTATE(FS:<>Pointee);  // 被ポインタ参照
+
+    PointeeInclude(PointeeClass& iPointeeClassRef) :
+        mPointeeClassOwner(new PointeeClass(0)),
+        mPointeeClass(0),
+        mPointeeClassRef(iPointeeClassRef)
+    { }
+
+    PointeeInclude(PointeeClass& iPointeeClassRef, bool) :
+        mPointeeClassOwner(new PointeeClass(100)),
+        mPointeeClass(101),
+        mPointeeClassRef(iPointeeClassRef)
+    {
+        mPointeeClassRef.mInt=102;
+    }
+
+    void check()
+    {
+        THEOLIZER_EQUAL(mPointeeClassOwner->mInt,   100);
+        THEOLIZER_EQUAL(mPointeeClass.mInt,         101);
+        THEOLIZER_EQUAL(mPointeeClassRef.mInt,      102);
+    }
+    THEOLIZER_INTRUSIVE(CS, (PointeeInclude), 1);
+};
+
+//----------------------------------------------------------------------------
+//      他のクラスを含むポインタ側クラス
+//          ver1 : 
+//              mPointeeClass0 → mPointeeClassOwner
+//              mPointeeClass1 → mPointeeClass
+//              mPointeeClass2 → mPointeeClassRef
+//----------------------------------------------------------------------------
+
+struct PointerInclude
+{
+    PointeeClass*   mPointeeClass0;
+    PointeeClass*   mPointeeClass1;
+    PointeeClass*   mPointeeClass2;
+
+    PointerInclude() :
+        mPointeeClass0(nullptr),
+        mPointeeClass1(nullptr),
+        mPointeeClass2(nullptr)
+    { }
+
+    PointerInclude(PointeeInclude& iPointeeInclude) :
+        mPointeeClass0( iPointeeInclude.mPointeeClassOwner.get()),
+        mPointeeClass1(&iPointeeInclude.mPointeeClass),
+        mPointeeClass2(&iPointeeInclude.mPointeeClassRef)
+    { }
+
+    void check(PointeeInclude& iPointeeInclude)
+    {
+        THEOLIZER_EQUAL_PTR(mPointeeClass0,  iPointeeInclude.mPointeeClassOwner.get());
+        THEOLIZER_EQUAL_PTR(mPointeeClass1, &iPointeeInclude.mPointeeClass);
+        THEOLIZER_EQUAL_PTR(mPointeeClass2, &iPointeeInclude.mPointeeClassRef);
+    }
+    THEOLIZER_INTRUSIVE(CS, (PointerInclude), 1);
+};
+
 #endif  // TEST_MODIFY_COMPLEX_H
