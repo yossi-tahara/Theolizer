@@ -67,6 +67,16 @@ void saveModifyComplex(tSerializer& iSerializer)
     std::cout << "    saveModifyComplex();\n";
 
 //----------------------------------------------------------------------------
+//      トップ・レベルの追加(ver2にて追加)
+//----------------------------------------------------------------------------
+
+    if (2 <= iSerializer.getGlobalVersionNo())
+    {
+        int     aAdditionalData=123;
+        THEOLIZER_PROCESS(iSerializer, aAdditionalData);
+    }
+
+//----------------------------------------------------------------------------
 //      オブジェクト追跡
 //----------------------------------------------------------------------------
 
@@ -103,6 +113,17 @@ void loadModifyComplex(tSerializer& iSerializer)
 {
 //theolizer::DisplayPass aDisplayPass;
     std::cout << "    loadModifyComplex();\n";
+
+//----------------------------------------------------------------------------
+//      トップ・レベルの追加(ver2にて追加)
+//----------------------------------------------------------------------------
+
+    if (2 <= iSerializer.getGlobalVersionNo())
+    {
+        int     aAdditionalData=0;
+        THEOLIZER_PROCESS(iSerializer, aAdditionalData);
+        THEOLIZER_EQUAL(aAdditionalData, 123);
+    }
 
 //----------------------------------------------------------------------------
 //      オブジェクト追跡

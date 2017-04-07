@@ -599,10 +599,11 @@ protected:
 //      シリアライズ／デシリアライズ補助API
 // ***************************************************************************
 
-protected:
+public:
     // 最新版処理
     unsigned getGlobalVersionNo() const {return mGlobalVersionNo;}
 
+protected:
     // ClassType終了状態返却(デフォルト)
     virtual bool isTerminated() const {return false;}
 
