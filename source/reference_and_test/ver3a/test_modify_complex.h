@@ -26,7 +26,7 @@
 #include <theolizer/memory.h>   // for std::unique_ptr<>
 
 // ***************************************************************************
-//      複合テスト対象クラス
+//      オブジェクト追跡のバージョン変更テスト
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
@@ -38,55 +38,7 @@ struct PointeeClass
     int     mInt;
 
     PointeeClass(int iInt=0) : mInt(iInt) { }
-    THEOLIZER_INTRUSIVE(CS, (PointeeClass), 2);
-};
-
-//      ---<<< バージョン・アップ／ダウン処理 ver1/ver2 >>>---
-
-template<class tTheolizerVersion, class tNextVersion>
-struct PointeeClass::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
-{
-    // Initialize members that is deleted in next version.
-    static void initialize(tTheolizerVersion& oNowVersion)
-    {
-std::cout << "PointeeClass1::initialize()\n";
-    }
-
-    // Members version down.
-    static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
-    {
-std::cout << "PointeeClass1::downVersion()\n";
-    }
-
-    // Members version up.
-    static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
-    {
-std::cout << "PointeeClass1::upVersion()\n";
-    }
-};
-
-//      ---<<< バージョン・アップ／ダウン処理 ver2/ver3 >>>---
-
-template<class tTheolizerVersion, class tNextVersion>
-struct PointeeClass::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 2>
-{
-    // Initialize members that is deleted in next version.
-    static void initialize(tTheolizerVersion& oNowVersion)
-    {
-std::cout << "PointeeClass2::initialize()\n";
-    }
-
-    // Members version down.
-    static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
-    {
-std::cout << "PointeeClass2::downVersion()\n";
-    }
-
-    // Members version up.
-    static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
-    {
-std::cout << "PointeeClass2::upVersion()\n";
-    }
+    THEOLIZER_INTRUSIVE(CS, (PointeeClass), 1);
 };
 
 //----------------------------------------------------------------------------
@@ -96,18 +48,19 @@ std::cout << "PointeeClass2::upVersion()\n";
 struct PointeeInclude
 {
     std::unique_ptr<PointeeClass>   mPointeeClassOwner;                 // オーナ指定ポインタ
-    PointeeClass    mPointeeClass    THEOLIZER_ANNOTATE(FS:<>Pointee);  // 被ポインタ実体
+                                                                        // 被ポインタ実体
+    PointeeClass    mPointeeClassX   THEOLIZER_ANNOTATE(FS:mPointeeClass<>Pointee);
     PointeeClass&   mPointeeClassRef THEOLIZER_ANNOTATE(FS:<>Pointee);  // 被ポインタ参照
 
     PointeeInclude(PointeeClass& iPointeeClassRef) :
         mPointeeClassOwner(new PointeeClass(0)),
-        mPointeeClass(0),
+        mPointeeClassX(0),
         mPointeeClassRef(iPointeeClassRef)
     { }
 
     PointeeInclude(PointeeClass& iPointeeClassRef, bool) :
         mPointeeClassOwner(new PointeeClass(100)),
-        mPointeeClass(101),
+        mPointeeClassX(101),
         mPointeeClassRef(iPointeeClassRef)
     {
         mPointeeClassRef.mInt=102;
@@ -116,65 +69,17 @@ struct PointeeInclude
     void check()
     {
         THEOLIZER_EQUAL(mPointeeClassOwner->mInt,   100);
-        THEOLIZER_EQUAL(mPointeeClass.mInt,         101);
+        THEOLIZER_EQUAL(mPointeeClassX.mInt,        101);
         THEOLIZER_EQUAL(mPointeeClassRef.mInt,      102);
     }
-    THEOLIZER_INTRUSIVE(CS, (PointeeInclude), 2);
-};
-
-//      ---<<< バージョン・アップ／ダウン処理 ver1/ver2 >>>---
-
-template<class tTheolizerVersion, class tNextVersion>
-struct PointeeInclude::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
-{
-    // Initialize members that is deleted in next version.
-    static void initialize(tTheolizerVersion& oNowVersion)
-    {
-std::cout << "PointeeInclude1::initialize()\n";
-    }
-
-    // Members version down.
-    static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
-    {
-std::cout << "PointeeInclude1::downVersion()\n";
-    }
-
-    // Members version up.
-    static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
-    {
-std::cout << "PointeeInclude1::upVersion()\n";
-    }
-};
-
-//      ---<<< バージョン・アップ／ダウン処理 ver2/ver3 >>>---
-
-template<class tTheolizerVersion, class tNextVersion>
-struct PointeeInclude::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 2>
-{
-    // Initialize members that is deleted in next version.
-    static void initialize(tTheolizerVersion& oNowVersion)
-    {
-std::cout << "PointeeInclude2::initialize()\n";
-    }
-
-    // Members version down.
-    static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
-    {
-std::cout << "PointeeInclude2::downVersion()\n";
-    }
-
-    // Members version up.
-    static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
-    {
-std::cout << "PointeeInclude2::upVersion()\n";
-    }
+    THEOLIZER_INTRUSIVE(CS, (PointeeInclude), 3);
 };
 
 //----------------------------------------------------------------------------
 //      他のクラスを含むポインタ側クラス
 //          ver1 : 
 //              mPointeeClass0 → mPointeeClassOwner
-//              mPointeeClass1 → mPointeeClass
+//              mPointeeClass1 → mPointeeClassX
 //              mPointeeClass2 → mPointeeClassRef
 //----------------------------------------------------------------------------
 
@@ -191,66 +96,43 @@ struct PointerInclude
     { }
 
     PointerInclude(PointeeInclude& iPointeeInclude) :
-        mPointeeClass0( iPointeeInclude.mPointeeClassOwner.get()),
-        mPointeeClass1(&iPointeeInclude.mPointeeClass),
-        mPointeeClass2(&iPointeeInclude.mPointeeClassRef)
+        mPointeeClass0(&iPointeeInclude.mPointeeClassRef),
+        mPointeeClass1( iPointeeInclude.mPointeeClassOwner.get()),
+        mPointeeClass2(&iPointeeInclude.mPointeeClassX)
     { }
 
     void check(PointeeInclude& iPointeeInclude)
     {
-        THEOLIZER_EQUAL_PTR(mPointeeClass0,  iPointeeInclude.mPointeeClassOwner.get());
-        THEOLIZER_EQUAL_PTR(mPointeeClass1, &iPointeeInclude.mPointeeClass);
-        THEOLIZER_EQUAL_PTR(mPointeeClass2, &iPointeeInclude.mPointeeClassRef);
+        switch(gVersionList[gProgramIndex].mVersionEnum)
+        {
+        case VersionEnum::ver1a:
+        case VersionEnum::ver1b:
+        case VersionEnum::ver1c:
+            THEOLIZER_EQUAL_PTR(mPointeeClass0,  iPointeeInclude.mPointeeClassOwner.get());
+            THEOLIZER_EQUAL_PTR(mPointeeClass1, &iPointeeInclude.mPointeeClassX);
+            THEOLIZER_EQUAL_PTR(mPointeeClass2, &iPointeeInclude.mPointeeClassRef);
+            break;
+
+        case VersionEnum::ver2a:
+            THEOLIZER_EQUAL_PTR(mPointeeClass0, &iPointeeInclude.mPointeeClassX);
+            THEOLIZER_EQUAL_PTR(mPointeeClass1, &iPointeeInclude.mPointeeClassRef);
+            THEOLIZER_EQUAL_PTR(mPointeeClass2,  iPointeeInclude.mPointeeClassOwner.get());
+            break;
+
+        case VersionEnum::ver3a:
+        case VersionEnum::ver3b:
+            THEOLIZER_EQUAL_PTR(mPointeeClass0, &iPointeeInclude.mPointeeClassRef);
+            THEOLIZER_EQUAL_PTR(mPointeeClass1,  iPointeeInclude.mPointeeClassOwner.get());
+            THEOLIZER_EQUAL_PTR(mPointeeClass2, &iPointeeInclude.mPointeeClassX);
+            break;
+
+        default:
+            // FAILさせる
+            THEOLIZER_EQUAL(gDataIndex, gMyIndex);
+            break;
+        }
     }
-    THEOLIZER_INTRUSIVE(CS, (PointerInclude), 2);
-};
-
-//      ---<<< バージョン・アップ／ダウン処理 ver1/ver2 >>>---
-
-template<class tTheolizerVersion, class tNextVersion>
-struct PointerInclude::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
-{
-    // Initialize members that is deleted in next version.
-    static void initialize(tTheolizerVersion& oNowVersion)
-    {
-std::cout << "PointerInclude1::initialize()\n";
-    }
-
-    // Members version down.
-    static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
-    {
-std::cout << "PointerInclude1::downVersion()\n";
-    }
-
-    // Members version up.
-    static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
-    {
-std::cout << "PointerInclude1::upVersion()\n";
-    }
-};
-
-//      ---<<< バージョン・アップ／ダウン処理 ver2/ver3 >>>---
-
-template<class tTheolizerVersion, class tNextVersion>
-struct PointerInclude::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 2>
-{
-    // Initialize members that is deleted in next version.
-    static void initialize(tTheolizerVersion& oNowVersion)
-    {
-std::cout << "PointerInclude2::initialize()\n";
-    }
-
-    // Members version down.
-    static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
-    {
-std::cout << "PointerInclude2::downVersion()\n";
-    }
-
-    // Members version up.
-    static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
-    {
-std::cout << "PointerInclude2::upVersion()\n";
-    }
+    THEOLIZER_INTRUSIVE(CS, (PointerInclude), 3);
 };
 
 #endif  // TEST_MODIFY_COMPLEX_H

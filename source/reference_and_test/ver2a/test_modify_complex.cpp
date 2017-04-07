@@ -24,6 +24,14 @@
 #ifndef DISABLE_MODIFY_COMPLEX_TEST
 
 // ***************************************************************************
+//          警告抑止
+// ***************************************************************************
+
+#if defined(_MSC_VER)
+    #pragma warning(disable:4100)
+#endif
+
+// ***************************************************************************
 //      インクルード
 // ***************************************************************************
 
@@ -146,9 +154,6 @@ void saveDestinations
     std::cout << "saveDestinations()" << std::endl;
 
     {
-        iSerializerA;
-        iSerializerB;
-        iSerializerAB;
     }
 }
 
@@ -169,9 +174,6 @@ void loadDestinations
     std::cout << "loadDestinations()" << std::endl;
 
     {
-        iSerializerA;
-        iSerializerB;
-        iSerializerAB;
     }
 }
 

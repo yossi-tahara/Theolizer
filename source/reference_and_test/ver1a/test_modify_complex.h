@@ -26,7 +26,7 @@
 #include <theolizer/memory.h>   // for std::unique_ptr<>
 
 // ***************************************************************************
-//      複合テスト対象クラス
+//      オブジェクト追跡のバージョン変更テスト
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
@@ -102,9 +102,34 @@ struct PointerInclude
 
     void check(PointeeInclude& iPointeeInclude)
     {
-        THEOLIZER_EQUAL_PTR(mPointeeClass0,  iPointeeInclude.mPointeeClassOwner.get());
-        THEOLIZER_EQUAL_PTR(mPointeeClass1, &iPointeeInclude.mPointeeClass);
-        THEOLIZER_EQUAL_PTR(mPointeeClass2, &iPointeeInclude.mPointeeClassRef);
+        switch(gVersionList[gProgramIndex].mVersionEnum)
+        {
+        case VersionEnum::ver1a:
+        case VersionEnum::ver1b:
+        case VersionEnum::ver1c:
+            THEOLIZER_EQUAL_PTR(mPointeeClass0,  iPointeeInclude.mPointeeClassOwner.get());
+            THEOLIZER_EQUAL_PTR(mPointeeClass1, &iPointeeInclude.mPointeeClass);
+            THEOLIZER_EQUAL_PTR(mPointeeClass2, &iPointeeInclude.mPointeeClassRef);
+            break;
+
+        case VersionEnum::ver2a:
+            THEOLIZER_EQUAL_PTR(mPointeeClass0, &iPointeeInclude.mPointeeClass);
+            THEOLIZER_EQUAL_PTR(mPointeeClass1, &iPointeeInclude.mPointeeClassRef);
+            THEOLIZER_EQUAL_PTR(mPointeeClass2,  iPointeeInclude.mPointeeClassOwner.get());
+            break;
+
+        case VersionEnum::ver3a:
+        case VersionEnum::ver3b:
+            THEOLIZER_EQUAL_PTR(mPointeeClass0, &iPointeeInclude.mPointeeClassRef);
+            THEOLIZER_EQUAL_PTR(mPointeeClass1,  iPointeeInclude.mPointeeClassOwner.get());
+            THEOLIZER_EQUAL_PTR(mPointeeClass2, &iPointeeInclude.mPointeeClass);
+            break;
+
+        default:
+            // FAILさせる
+            THEOLIZER_EQUAL(gDataIndex, gMyIndex);
+            break;
+        }
     }
     THEOLIZER_INTRUSIVE(CS, (PointerInclude), 1);
 };
