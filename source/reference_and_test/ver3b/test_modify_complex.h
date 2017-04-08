@@ -135,4 +135,270 @@ struct PointerInclude
     THEOLIZER_INTRUSIVE(CS, (PointerInclude), 3);
 };
 
+// ***************************************************************************
+//      バージョン・アップ／ダウンのテスト
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      非可逆バージョン・アップの原因となるenum型
+//          良くあるバージョン・アップを想定
+//----------------------------------------------------------------------------
+
+enum class ClassKind
+{
+    Default,
+    Kind1,
+    Kind2   THEOLIZER_ANNOTATE(ES:::1)
+};
+THEOLIZER_ENUM(ClassKind, 2);
+
+//----------------------------------------------------------------------------
+//      バージョン・アップ／ダウン処理テスト（保存先指定含む）
+//----------------------------------------------------------------------------
+
+struct VersionUpDownTest
+{
+    ClassKind   mClassKind  THEOLIZER_ANNOTATE(FS:<theolizerD::DestA>);
+    int         mData0      THEOLIZER_ANNOTATE(FS:<theolizerD::DestA>);
+    int         mData1      THEOLIZER_ANNOTATE(FS:<theolizerD::DestB>);
+
+    VersionUpDownTest(ClassKind iClassKind=ClassKind::Default) :
+        mClassKind(iClassKind),
+        mData0(0),
+        mData1(0)
+    {
+		switch(mClassKind)
+		{
+		case ClassKind::Default:
+			break;
+
+		case ClassKind::Kind1:
+			mData0=1110;
+			break;
+
+		case ClassKind::Kind2:
+			mData0=2210;
+			break;
+		}
+		if (mClassKind != ClassKind::Default)
+		{
+			mData1=110020;
+		}
+	}
+
+    void check(ClassKind iClassKind)
+    {
+		ClassKind aClassKind=iClassKind;
+        if (gVersionList[gDataIndex].mVersionEnum < VersionEnum::ver2a)
+        {
+			aClassKind=ClassKind::Kind1;
+		}
+
+        THEOLIZER_EQUAL(mClassKind, aClassKind);
+		switch(mClassKind)
+		{
+		case ClassKind::Default:
+	        THEOLIZER_EQUAL(mData0, 0);
+	        THEOLIZER_EQUAL(mData1, 0);
+			break;
+
+		case ClassKind::Kind1:
+	        THEOLIZER_EQUAL(mData0, 1110);
+	        THEOLIZER_EQUAL(mData1, 110020);
+			break;
+
+		case ClassKind::Kind2:
+	        THEOLIZER_EQUAL(mData0, 2210);
+	        THEOLIZER_EQUAL(mData1, 110020);
+			break;
+		}
+    }
+
+    THEOLIZER_INTRUSIVE(CS, (VersionUpDownTest), 3);
+};
+
+//      ---<<< バージョン・アップ／ダウン処理 ver1 <-> ver2 >>>---
+
+template<class tTheolizerVersion, class tNextVersion>
+struct VersionUpDownTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
+{
+    // Initialize members that is deleted in next version.
+    static void initialize(tTheolizerVersion& oNowVersion)
+    {
+    }
+
+    // Members version down.
+    static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
+    {
+		switch(iNextVersion.mClassKind)
+		{
+		case ClassKind::Default:
+			break;
+
+		case ClassKind::Kind1:
+			oNowVersion.mData0=iNextVersion.mData0-100;
+			oNowVersion.mData1=iNextVersion.mData1-10000;
+			break;
+
+		case ClassKind::Kind2:
+			oNowVersion.mData0=iNextVersion.mData0-200;
+			oNowVersion.mData1=iNextVersion.mData1-10000;
+			break;
+		}
+std::cout << "downVersion<1>"
+		  << " ClassKind : " << (int)((ClassKind)oNowVersion.mClassKind)
+		  << "<-" << (int)((ClassKind)iNextVersion.mClassKind)
+		  << " mData1 :" << oNowVersion.mData1 << "<-" << iNextVersion.mData1  << std::endl;
+    }
+
+    // Members version up.
+    static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
+    {
+		switch(iNowVersion.mClassKind)
+		{
+		case ClassKind::Default:
+			break;
+
+		case ClassKind::Kind1:
+			oNextVersion.mData0=iNowVersion.mData0+100;
+			oNextVersion.mData1=iNowVersion.mData1+10000;
+			break;
+
+		case ClassKind::Kind2:	// ここには来ない(ver1では定義されていないため)
+			oNextVersion.mData0=iNowVersion.mData0+200;
+			oNextVersion.mData1=iNowVersion.mData1+10000;
+			break;
+		}
+    }
+};
+
+//      ---<<< バージョン・アップ／ダウン処理 ver2 <-> ver3 >>>---
+
+template<class tTheolizerVersion, class tNextVersion>
+struct VersionUpDownTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 2>
+{
+    // Initialize members that is deleted in next version.
+    static void initialize(tTheolizerVersion& oNowVersion)
+    {
+    }
+
+    // Members version down.
+    static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
+    {
+		switch(iNextVersion.mClassKind)
+		{
+		case ClassKind::Default:
+			oNowVersion.mData1=static_cast<short>(iNextVersion.mData1);
+			break;
+
+		case ClassKind::Kind1:
+			oNowVersion.mData0=iNextVersion.mData0-1000;
+			oNowVersion.mData1=static_cast<short>(iNextVersion.mData1-100000);
+			break;
+
+		case ClassKind::Kind2:
+			oNowVersion.mData0=iNextVersion.mData0-2000;
+			oNowVersion.mData1=static_cast<short>(iNextVersion.mData1-100000);
+			break;
+		}
+std::cout << "downVersion<2>"
+		  << " ClassKind : " << (int)((ClassKind)oNowVersion.mClassKind)
+		  << "<-" << (int)((ClassKind)iNextVersion.mClassKind)
+		  << " mData1 :" << oNowVersion.mData1 << "<-" << iNextVersion.mData1  << std::endl;
+    }
+
+    // Members version up.
+    static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
+    {
+		switch(iNowVersion.mClassKind)
+		{
+		case ClassKind::Default:
+			oNextVersion.mData1=iNowVersion.mData1;
+			break;
+
+		case ClassKind::Kind1:
+			oNextVersion.mData0=iNowVersion.mData0+1000;
+			oNextVersion.mData1=iNowVersion.mData1+100000;
+			break;
+
+		case ClassKind::Kind2:
+			oNextVersion.mData0=iNowVersion.mData0+2000;
+			oNextVersion.mData1=iNowVersion.mData1+100000;
+			break;
+		}
+		oNextVersion.mData1TheolizerSucceed=iNowVersion.mData1TheolizerSucceed;
+    }
+};
+
+//----------------------------------------------------------------------------
+//      Keep-stepとNon-Keep-stepのテスト用
+//----------------------------------------------------------------------------
+
+struct KeepStepTest :
+    public VersionUpDownTest                                                    // Keep-step
+{
+    VersionUpDownTest   mVersionUpDownTest;                                     // Keep-step
+    VersionUpDownTest*  mVersionUpDownTestPtr;                                  // Non-Keep-step
+    VersionUpDownTest&  mVersionUpDownTestRef THEOLIZER_ANNOTATE(FS:<>Pointee); // Non-Keep-step
+
+    KeepStepTest(VersionUpDownTest& iVersionUpDownTest, ClassKind iClassKind=ClassKind::Default) :
+    	VersionUpDownTest(iClassKind),
+        mVersionUpDownTest(iClassKind),
+        mVersionUpDownTestPtr((iClassKind==ClassKind::Default)?nullptr:&iVersionUpDownTest),
+        mVersionUpDownTestRef(iVersionUpDownTest)
+    { }
+
+    void check(VersionUpDownTest& iVersionUpDownTest, ClassKind iClassKind)
+    {
+		VersionUpDownTest::check(iClassKind);
+        mVersionUpDownTest.check(iClassKind);
+        THEOLIZER_EQUAL_PTR( mVersionUpDownTestPtr, &iVersionUpDownTest);
+        THEOLIZER_EQUAL_PTR(&mVersionUpDownTestRef, &iVersionUpDownTest);
+    }
+
+    THEOLIZER_INTRUSIVE(CS, (KeepStepTest), 3);
+};
+
+//      ---<<< バージョン・アップ／ダウン処理 ver1 <-> ver2 >>>---
+
+template<class tTheolizerVersion, class tNextVersion>
+struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
+{
+    // Initialize members that is deleted in next version.
+    static void initialize(tTheolizerVersion& oNowVersion)
+    {
+    }
+
+    // Members version down.
+    static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
+    {
+    }
+
+    // Members version up.
+    static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
+    {
+    }
+};
+
+//      ---<<< バージョン・アップ／ダウン処理 ver2 <-> ver3 >>>---
+
+template<class tTheolizerVersion, class tNextVersion>
+struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 2>
+{
+    // Initialize members that is deleted in next version.
+    static void initialize(tTheolizerVersion& oNowVersion)
+    {
+    }
+
+    // Members version down.
+    static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
+    {
+    }
+
+    // Members version up.
+    static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
+    {
+    }
+};
+
 #endif  // TEST_MODIFY_COMPLEX_H

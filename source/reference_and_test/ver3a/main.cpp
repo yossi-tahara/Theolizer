@@ -47,6 +47,7 @@
 #define THEOLIZER_GLOBAL_VERSION_TABLE
 #include "test_modify_enum.h"
 #include "test_modify_class.h"
+#include "test_modify_complex.h"
 
 // 自動生成ソース
 #include "main.cpp.theolizer.hpp"

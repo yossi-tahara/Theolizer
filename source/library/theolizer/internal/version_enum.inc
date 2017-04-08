@@ -216,8 +216,12 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         THEOLIZER_INTERNAL_COMPARE(>=)
     #undef  THEOLIZER_INTERNAL_COMPARE
 
-    BaseType& operator=(BaseType iRhs) { mValue=iRhs; return mValue; }
-    operator BaseType() { return mValue; }
+    TheolizerVersion& operator=(TheolizerTarget iRhs)
+    {
+        mValueRef=static_cast<BaseType>(iRhs);
+        return *this;
+    }
+    operator TheolizerTarget() const { return static_cast<TheolizerTarget>(mValueRef); }
 
 //----------------------------------------------------------------------------
 //      コンストラクタ(次バージョンからコンストラクト)

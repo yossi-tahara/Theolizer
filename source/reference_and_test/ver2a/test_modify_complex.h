@@ -178,4 +178,185 @@ struct PointerInclude
     THEOLIZER_INTRUSIVE(CS, (PointerInclude), 2);
 };
 
+// ***************************************************************************
+//      バージョン・アップ／ダウンのテスト
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      非可逆バージョン・アップの原因となるenum型
+//          良くあるバージョン・アップを想定
+//----------------------------------------------------------------------------
+
+enum class ClassKind
+{
+    Default,
+    Kind1,
+    Kind2   THEOLIZER_ANNOTATE(ES:::1)
+};
+THEOLIZER_ENUM(ClassKind, 2);
+
+//----------------------------------------------------------------------------
+//      バージョン・アップ／ダウン処理テスト（保存先指定含む）
+//----------------------------------------------------------------------------
+
+struct VersionUpDownTest
+{
+    ClassKind   mClassKind  THEOLIZER_ANNOTATE(FS:<theolizerD::DestA>);
+    int         mData0      THEOLIZER_ANNOTATE(FS:<theolizerD::DestA>);
+    short       mData1      THEOLIZER_ANNOTATE(FS:<theolizerD::DestB>);
+
+    VersionUpDownTest(ClassKind iClassKind=ClassKind::Default) :
+        mClassKind(iClassKind),
+        mData0(0),
+        mData1(0)
+    {
+        switch(mClassKind)
+        {
+        case ClassKind::Default:
+            break;
+
+        case ClassKind::Kind1:
+            mData0=110;
+            break;
+
+        case ClassKind::Kind2:
+            mData0=210;
+            break;
+        }
+        if (mClassKind != ClassKind::Default)
+        {
+            mData1=10020;
+        }
+    }
+
+    void check(ClassKind iClassKind)
+    {
+        ClassKind aClassKind=iClassKind;
+        if (gVersionList[gDataIndex].mVersionEnum < VersionEnum::ver2a)
+        {
+            aClassKind=ClassKind::Kind1;
+        }
+
+        THEOLIZER_EQUAL(mClassKind, aClassKind);
+        switch(mClassKind)
+        {
+        case ClassKind::Default:
+            THEOLIZER_EQUAL(mData0, 0);
+            THEOLIZER_EQUAL(mData1, 0);
+            break;
+
+        case ClassKind::Kind1:
+            THEOLIZER_EQUAL(mData0, 110);
+            THEOLIZER_EQUAL(mData1, 10020);
+            break;
+
+        case ClassKind::Kind2:
+            THEOLIZER_EQUAL(mData0, 210);
+            THEOLIZER_EQUAL(mData1, 10020);
+            break;
+        }
+    }
+
+    THEOLIZER_INTRUSIVE(CS, (VersionUpDownTest), 2);
+};
+
+//      ---<<< バージョン・アップ／ダウン処理 ver1 <-> ver2 >>>---
+
+template<class tTheolizerVersion, class tNextVersion>
+struct VersionUpDownTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
+{
+    // Initialize members that is deleted in next version.
+    static void initialize(tTheolizerVersion& oNowVersion)
+    {
+    }
+
+    // Members version down.
+    static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
+    {
+        switch(iNextVersion.mClassKind)
+        {
+        case ClassKind::Default:
+            break;
+
+        case ClassKind::Kind1:
+            oNowVersion.mData0=iNextVersion.mData0-100;
+            break;
+
+        case ClassKind::Kind2:
+            oNowVersion.mData0=iNextVersion.mData0-200;
+            break;
+        }
+        oNowVersion.mData1=iNextVersion.mData1-10000;
+    }
+
+    // Members version up.
+    static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
+    {
+        switch(iNowVersion.mClassKind)
+        {
+        case ClassKind::Default:
+            break;
+
+        case ClassKind::Kind1:
+            oNextVersion.mData0=iNowVersion.mData0+100;
+            break;
+
+        case ClassKind::Kind2:  // ここには来ない(ver1では定義されていないため)
+            oNextVersion.mData0=iNowVersion.mData0+200;
+            break;
+        }
+        oNextVersion.mData1=iNowVersion.mData1+10000;
+    }
+};
+
+//----------------------------------------------------------------------------
+//      Keep-stepとNon-Keep-stepのテスト用
+//----------------------------------------------------------------------------
+
+struct KeepStepTest :
+    public VersionUpDownTest                                                    // Keep-step
+{
+    VersionUpDownTest   mVersionUpDownTest;                                     // Keep-step
+    VersionUpDownTest*  mVersionUpDownTestPtr;                                  // Non-Keep-step
+    VersionUpDownTest&  mVersionUpDownTestRef THEOLIZER_ANNOTATE(FS:<>Pointee); // Non-Keep-step
+
+    KeepStepTest(VersionUpDownTest& iVersionUpDownTest, ClassKind iClassKind=ClassKind::Default) :
+        VersionUpDownTest(iClassKind),
+        mVersionUpDownTest(iClassKind),
+        mVersionUpDownTestPtr((iClassKind==ClassKind::Default)?nullptr:&iVersionUpDownTest),
+        mVersionUpDownTestRef(iVersionUpDownTest)
+    { }
+
+    void check(VersionUpDownTest& iVersionUpDownTest, ClassKind iClassKind)
+    {
+        VersionUpDownTest::check(iClassKind);
+        mVersionUpDownTest.check(iClassKind);
+        THEOLIZER_EQUAL_PTR( mVersionUpDownTestPtr, &iVersionUpDownTest);
+        THEOLIZER_EQUAL_PTR(&mVersionUpDownTestRef, &iVersionUpDownTest);
+    }
+
+    THEOLIZER_INTRUSIVE(CS, (KeepStepTest), 2);
+};
+
+//      ---<<< バージョン・アップ／ダウン処理 ver1 <-> ver2 >>>---
+
+template<class tTheolizerVersion, class tNextVersion>
+struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
+{
+    // Initialize members that is deleted in next version.
+    static void initialize(tTheolizerVersion& oNowVersion)
+    {
+    }
+
+    // Members version down.
+    static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
+    {
+    }
+
+    // Members version up.
+    static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
+    {
+    }
+};
+
 #endif  // TEST_MODIFY_COMPLEX_H

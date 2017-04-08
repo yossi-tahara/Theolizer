@@ -134,4 +134,75 @@ struct PointerInclude
     THEOLIZER_INTRUSIVE(CS, (PointerInclude), 1);
 };
 
+// ***************************************************************************
+//      バージョン・アップ／ダウンのテスト
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      非可逆バージョン・アップの原因となるenum型
+//          良くあるバージョン・アップを想定
+//----------------------------------------------------------------------------
+
+enum class ClassKind
+{
+    Default,
+    Kind1
+};
+THEOLIZER_ENUM(ClassKind, 1);
+
+//----------------------------------------------------------------------------
+//      バージョン・アップ／ダウン処理テスト（保存先指定含む）
+//----------------------------------------------------------------------------
+
+struct VersionUpDownTest
+{
+    ClassKind   mClassKind  THEOLIZER_ANNOTATE(FS:<theolizerD::DestA>);
+    int         mData0      THEOLIZER_ANNOTATE(FS:<theolizerD::DestA>);
+    short       mData1      THEOLIZER_ANNOTATE(FS:<theolizerD::DestB>);
+
+    VersionUpDownTest(ClassKind iClassKind=ClassKind::Default) :
+        mClassKind(iClassKind),
+        mData0((mClassKind==ClassKind::Default)?0:10),
+        mData1((mClassKind==ClassKind::Default)?0:20)
+    { }
+
+    void check(ClassKind iClassKind)
+    {
+        THEOLIZER_EQUAL(mClassKind, iClassKind);
+        THEOLIZER_EQUAL(mData0, 10);
+        THEOLIZER_EQUAL(mData1, 20);
+    }
+
+    THEOLIZER_INTRUSIVE(CS, (VersionUpDownTest), 1);
+};
+
+//----------------------------------------------------------------------------
+//      Keep-stepとNon-Keep-stepのテスト用
+//----------------------------------------------------------------------------
+
+struct KeepStepTest :
+    public VersionUpDownTest                                                    // Keep-step
+{
+    VersionUpDownTest   mVersionUpDownTest;                                     // Keep-step
+    VersionUpDownTest*  mVersionUpDownTestPtr;                                  // Non-Keep-step
+    VersionUpDownTest&  mVersionUpDownTestRef THEOLIZER_ANNOTATE(FS:<>Pointee); // Non-Keep-step
+
+    KeepStepTest(VersionUpDownTest& iVersionUpDownTest, ClassKind iClassKind=ClassKind::Default) :
+        VersionUpDownTest(iClassKind),
+        mVersionUpDownTest(iClassKind),
+        mVersionUpDownTestPtr((iClassKind==ClassKind::Default)?nullptr:&iVersionUpDownTest),
+        mVersionUpDownTestRef(iVersionUpDownTest)
+    { }
+
+    void check(VersionUpDownTest& iVersionUpDownTest, ClassKind iClassKind)
+    {
+        VersionUpDownTest::check(iClassKind);
+        mVersionUpDownTest.check(iClassKind);
+        THEOLIZER_EQUAL_PTR( mVersionUpDownTestPtr, &iVersionUpDownTest);
+        THEOLIZER_EQUAL_PTR(&mVersionUpDownTestRef, &iVersionUpDownTest);
+    }
+
+    THEOLIZER_INTRUSIVE(CS, (KeepStepTest), 1);
+};
+
 #endif  // TEST_MODIFY_COMPLEX_H

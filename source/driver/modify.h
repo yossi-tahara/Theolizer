@@ -1716,7 +1716,8 @@ ASTANALYZE_OUTPUT("    Element = ", found->first,
                   " : ", found->second.mType == qt,
                   " : ", qt.getAsString());
 
-                    // 型が変化していたらエラー(ただし配列なら基底クラスで比較する)
+#if 0
+                    // 型が変化していたらエラー(配列なら基底クラスで比較する)
                     QualType aNewQt=getUnderlyingType(found->second.mType).getCanonicalType();
                     QualType aNowQt=getUnderlyingType(qt).getCanonicalType();
                     if (aNewQt != aNowQt)
@@ -1725,6 +1726,16 @@ ASTANALYZE_OUTPUT("    Element = ", found->first,
                             "Does not change type(%0).") << found->first;
             continue;
                     }
+#else
+                    // 型が変化していたら、当変数が削除され、別変数が定義されたものとする
+                    QualType aNewQt=getUnderlyingType(found->second.mType).getCanonicalType();
+                    QualType aNowQt=getUnderlyingType(qt).getCanonicalType();
+                    if (aNewQt != aNowQt)
+                    {
+                        found=aElementList.end();
+                        aDeleted=true;
+                    }
+#endif
                 }
 
                 // アノテーション文字列を加工して出力

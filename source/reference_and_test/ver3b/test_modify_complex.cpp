@@ -93,10 +93,16 @@ void saveModifyComplex(tSerializer& iSerializer)
     }
 
 //----------------------------------------------------------------------------
-//      バージョン・アップ／ダウン処理（参照テスト含む）
+//      Keep-stepとNon-Keep-stepのテスト用
 //----------------------------------------------------------------------------
 
     {
+        VersionUpDownTest   aVersionUpDownTest(ClassKind::Kind1);
+        KeepStepTest        aKeepStepTest(aVersionUpDownTest, ClassKind::Kind2);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aVersionUpDownTest);
+        THEOLIZER_PROCESS(iSerializer, aKeepStepTest);
+
+        iSerializer.clearTracking();
     }
 }
 //! [saveModifyComplex]
@@ -146,10 +152,18 @@ void loadModifyComplex(tSerializer& iSerializer)
     }
 
 //----------------------------------------------------------------------------
-//      バージョン・アップ／ダウン処理（参照テスト含む）
+//      Keep-stepとNon-Keep-stepのテスト用
 //----------------------------------------------------------------------------
 
     {
+        VersionUpDownTest   aVersionUpDownTest;
+        KeepStepTest        aKeepStepTest(aVersionUpDownTest);
+        THEOLIZER_PROCESS_POINTEE(iSerializer, aVersionUpDownTest);
+        THEOLIZER_PROCESS(iSerializer, aKeepStepTest);
+        aVersionUpDownTest.check(ClassKind::Kind1);
+        aKeepStepTest.check(aVersionUpDownTest, ClassKind::Kind2);
+
+        iSerializer.clearTracking();
     }
 }
 //! [loadModifyComplex]

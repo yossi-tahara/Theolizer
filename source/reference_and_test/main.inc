@@ -66,7 +66,7 @@ void callTests
 {
     std::cout << "---------- callTests("
               << ((iDoSave)?"save":"load") << ", ";
-    std::cout << "gMyIndex=" << gMyIndex << ", gIndex=";
+    std::cout << "gMyIndex=" << gVersionList[gMyIndex].mName << ", gIndex=";
     gDataIndex=gIndex;
     if (gIndex == kDefaultIndex)
     {
@@ -75,9 +75,9 @@ void callTests
     }
     else
     {
-        std::cout << gIndex << ", ";
+        std::cout << gVersionList[gIndex].mName << ", ";
     }
-    std::cout << "gProgramIndex=" << gProgramIndex << ", "
+    std::cout << "gProgramIndex=" << gVersionList[gProgramIndex].mName << ", "
               << iCheckMode << ");" << std::endl;
 
 //----------------------------------------------------------------------------
