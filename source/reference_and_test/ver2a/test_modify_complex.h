@@ -313,26 +313,174 @@ struct VersionUpDownTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1
 //      Keep-stepとNon-Keep-stepのテスト用
 //----------------------------------------------------------------------------
 
+//      ---<<< 非侵入型完全自動 >>>---
+
+struct VersionFullAuto
+{
+    int     mFullAuto;
+
+    VersionFullAuto(bool iValued=false) :
+        mFullAuto((iValued)?123:0)
+    { }
+    void check() const
+    {
+        switch(gVersionList[gDataIndex].mVersionEnum)
+        {
+        case VersionEnum::ver1a:
+        case VersionEnum::ver1b:
+            THEOLIZER_EQUAL(mFullAuto, 0);
+            break;
+
+        case VersionEnum::ver1c:
+        case VersionEnum::ver2a:
+            THEOLIZER_EQUAL(mFullAuto, 123);
+            break;
+
+        case VersionEnum::ver3a:
+        case VersionEnum::ver3b:
+        default:
+            // FAILさせる
+            THEOLIZER_EQUAL(gDataIndex, gMyIndex);
+            break;
+        }
+    }
+};
+
+//      ---<<< 非侵入型手動 >>>---
+//          ver1:int型で保存(切り捨て)
+//          ver2:double型で保存
+
+class VersionManual
+{
+    double  mManual;
+public:
+    double&       get()       { return mManual; }
+    double const& get() const { return mManual; }
+
+    VersionManual(bool iValued=false) :
+        mManual((iValued)?2.5:0.0)
+    { }
+    void check() const
+    {
+        switch(gVersionList[gDataIndex].mVersionEnum)
+        {
+        case VersionEnum::ver1a:
+        case VersionEnum::ver1b:
+            THEOLIZER_EQUAL(mManual, 0);
+            break;
+
+        case VersionEnum::ver1c:
+            THEOLIZER_EQUAL(mManual, 2);
+            break;
+
+        case VersionEnum::ver2a:
+            THEOLIZER_EQUAL(mManual, 2.5);
+            break;
+
+        case VersionEnum::ver3a:
+        case VersionEnum::ver3b:
+        default:
+            // FAILさせる
+            THEOLIZER_EQUAL(gDataIndex, gMyIndex);
+            break;
+        }
+    }
+};
+
+// 非侵入型手動クラスの指定
+THEOLIZER_NON_INTRUSIVE_ORDER((VersionManual), 2);
+
+// 保存処理／回復処理関数
+template<class tBaseSerializer, class tTheolizerVersion>
+struct TheolizerNonIntrusive<VersionManual>::
+    TheolizerUserDefine<tBaseSerializer, tTheolizerVersion, 1>
+{
+    // Save members.
+    static void saveClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
+    )
+    {
+        THEOLIZER_PROCESS(iSerializer, static_cast<int>(iInstance->get()));
+    }
+
+    // Load members.
+    static void loadClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget*& oInstance
+    )
+    {
+        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
+        int temp;
+        THEOLIZER_PROCESS(iSerializer, temp);
+        oInstance->get()=temp;
+    }
+};
+
+// 保存処理／回復処理関数
+template<class tBaseSerializer, class tTheolizerVersion>
+struct TheolizerNonIntrusive<VersionManual>::
+    TheolizerUserDefine<tBaseSerializer, tTheolizerVersion, 2>
+{
+    // Save members.
+    static void saveClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
+    )
+    {
+        THEOLIZER_PROCESS(iSerializer, iInstance->get());
+    }
+
+    // Load members.
+    static void loadClassManual
+    (
+        tBaseSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget*& oInstance
+    )
+    {
+        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
+        
+        THEOLIZER_PROCESS(iSerializer, oInstance->get());
+    }
+};
+
+//      ---<<< テスト対象クラス >>>---
+
 struct KeepStepTest :
-    public VersionUpDownTest                                                    // Keep-step
+    public VersionUpDownTest,                                                   // Keep-step
+    public VersionFullAuto,                                                     // FullAuto
+    public VersionManual                                                        // Manual
 {
     VersionUpDownTest   mVersionUpDownTest;                                     // Keep-step
     VersionUpDownTest*  mVersionUpDownTestPtr;                                  // Non-Keep-step
     VersionUpDownTest&  mVersionUpDownTestRef THEOLIZER_ANNOTATE(FS:<>Pointee); // Non-Keep-step
+    VersionFullAuto     mVersionFullAuto;                                       // FullAuto
+    VersionManual       mVersionManual;                                         // Manual
 
-    KeepStepTest(VersionUpDownTest& iVersionUpDownTest, ClassKind iClassKind=ClassKind::Default) :
-        VersionUpDownTest(iClassKind),
-        mVersionUpDownTest(iClassKind),
-        mVersionUpDownTestPtr((iClassKind==ClassKind::Default)?nullptr:&iVersionUpDownTest),
-        mVersionUpDownTestRef(iVersionUpDownTest)
+    KeepStepTest(VersionUpDownTest& iVersionUpDownTest, bool iValued=false) :
+        VersionUpDownTest((iValued)?ClassKind::Kind2:ClassKind::Default),
+        VersionFullAuto(iValued),
+        VersionManual(iValued),
+        mVersionUpDownTest((iValued)?ClassKind::Kind2:ClassKind::Default),
+        mVersionUpDownTestPtr((iValued)?&iVersionUpDownTest:nullptr),
+        mVersionUpDownTestRef(iVersionUpDownTest),
+        mVersionFullAuto(iValued),
+        mVersionManual(iValued)
     { }
 
-    void check(VersionUpDownTest& iVersionUpDownTest, ClassKind iClassKind)
+    void check(VersionUpDownTest& iVersionUpDownTest)
     {
-        VersionUpDownTest::check(iClassKind);
-        mVersionUpDownTest.check(iClassKind);
+        VersionUpDownTest::check(ClassKind::Kind2);
+        VersionFullAuto::check();
+        VersionManual::check();
+        mVersionUpDownTest.check(ClassKind::Kind2);
         THEOLIZER_EQUAL_PTR( mVersionUpDownTestPtr, &iVersionUpDownTest);
         THEOLIZER_EQUAL_PTR(&mVersionUpDownTestRef, &iVersionUpDownTest);
+        mVersionFullAuto.check();
+        mVersionManual.check();
     }
 
     THEOLIZER_INTRUSIVE(CS, (KeepStepTest), 2);
@@ -356,6 +504,36 @@ struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
     // Members version up.
     static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
     {
+        THEOLIZER_EQUAL(static_cast<int>(iNowVersion.mClassKind.get()),
+                        static_cast<int>(ClassKind::Kind1));
+        THEOLIZER_EQUAL(static_cast<int>(iNowVersion.mVersionUpDownTest.mClassKind.get()),
+                        static_cast<int>(ClassKind::Kind1));
+
+        switch(gVersionList[gDataIndex].mVersionEnum)
+        {
+        case VersionEnum::ver1a:
+        case VersionEnum::ver1b:
+            THEOLIZER_EQUAL(iNowVersion.mFullAuto,  0);
+            oNextVersion.VersionManualTheolizerBase.check();
+            THEOLIZER_EQUAL(iNowVersion.mVersionFullAuto.mFullAuto,  0);
+            iNowVersion.mVersionManual.check();
+            break;
+
+        case VersionEnum::ver1c:
+        case VersionEnum::ver2a:
+            THEOLIZER_EQUAL(iNowVersion.mFullAuto,  123);
+            oNextVersion.VersionManualTheolizerBase.check();
+            THEOLIZER_EQUAL(iNowVersion.mVersionFullAuto.mFullAuto,  123);
+            iNowVersion.mVersionManual.check();
+            break;
+
+        case VersionEnum::ver3a:
+        case VersionEnum::ver3b:
+        default:
+            // FAILさせる
+            THEOLIZER_EQUAL(gDataIndex, gMyIndex);
+            break;
+        }
     }
 };
 

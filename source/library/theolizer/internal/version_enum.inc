@@ -223,6 +223,9 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     }
     operator TheolizerTarget() const { return static_cast<TheolizerTarget>(mValueRef); }
 
+    BaseType getIntegral() const { return mValueRef; }
+    TheolizerTarget  get() const { return static_cast<TheolizerTarget>(mValueRef); }
+
 //----------------------------------------------------------------------------
 //      コンストラクタ(次バージョンからコンストラクト)
 //          古い版からの場合は、TheolizerVersion<>なのでconstを付けて良い。

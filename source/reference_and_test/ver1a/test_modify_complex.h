@@ -187,17 +187,17 @@ struct KeepStepTest :
     VersionUpDownTest*  mVersionUpDownTestPtr;                                  // Non-Keep-step
     VersionUpDownTest&  mVersionUpDownTestRef THEOLIZER_ANNOTATE(FS:<>Pointee); // Non-Keep-step
 
-    KeepStepTest(VersionUpDownTest& iVersionUpDownTest, ClassKind iClassKind=ClassKind::Default) :
-        VersionUpDownTest(iClassKind),
-        mVersionUpDownTest(iClassKind),
-        mVersionUpDownTestPtr((iClassKind==ClassKind::Default)?nullptr:&iVersionUpDownTest),
+    KeepStepTest(VersionUpDownTest& iVersionUpDownTest, bool iValued=false) :
+        VersionUpDownTest((iValued)?ClassKind::Kind1:ClassKind::Default),
+        mVersionUpDownTest((iValued)?ClassKind::Kind1:ClassKind::Default),
+        mVersionUpDownTestPtr((iValued)?&iVersionUpDownTest:nullptr),
         mVersionUpDownTestRef(iVersionUpDownTest)
     { }
 
-    void check(VersionUpDownTest& iVersionUpDownTest, ClassKind iClassKind)
+    void check(VersionUpDownTest& iVersionUpDownTest)
     {
-        VersionUpDownTest::check(iClassKind);
-        mVersionUpDownTest.check(iClassKind);
+        VersionUpDownTest::check(ClassKind::Kind1);
+        mVersionUpDownTest.check(ClassKind::Kind1);
         THEOLIZER_EQUAL_PTR( mVersionUpDownTestPtr, &iVersionUpDownTest);
         THEOLIZER_EQUAL_PTR(&mVersionUpDownTestRef, &iVersionUpDownTest);
     }

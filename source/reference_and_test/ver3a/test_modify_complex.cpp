@@ -98,7 +98,7 @@ void saveModifyComplex(tSerializer& iSerializer)
 
     {
         VersionUpDownTest   aVersionUpDownTest(ClassKind::Kind1);
-        KeepStepTest        aKeepStepTest(aVersionUpDownTest, ClassKind::Kind2);
+        KeepStepTest        aKeepStepTest(aVersionUpDownTest, true);
         THEOLIZER_PROCESS_POINTEE(iSerializer, aVersionUpDownTest);
         THEOLIZER_PROCESS(iSerializer, aKeepStepTest);
 
@@ -161,7 +161,7 @@ void loadModifyComplex(tSerializer& iSerializer)
         THEOLIZER_PROCESS_POINTEE(iSerializer, aVersionUpDownTest);
         THEOLIZER_PROCESS(iSerializer, aKeepStepTest);
         aVersionUpDownTest.check(ClassKind::Kind1);
-        aKeepStepTest.check(aVersionUpDownTest, ClassKind::Kind2);
+        aKeepStepTest.check(aVersionUpDownTest);
 
         iSerializer.clearTracking();
     }
