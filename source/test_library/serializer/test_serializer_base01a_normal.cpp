@@ -363,6 +363,7 @@ exit(1);
     THEOLIZER_EQUAL(aIntrusiveDerived.mIntrusiveBase.mShort, 602);
     THEOLIZER_EQUAL(aIntrusiveDerived.mIntrusiveBase.mString, u8"603)テスト");
 
+std::cout << "aIntrusiveDerived.mEnum=" << &(aIntrusiveDerived.mEnum) << "\n";
     THEOLIZER_EQUAL(aIntrusiveDerived.mEnum, EnumTest::two);
 
 //      ---<<< 完全自動（ノーマル） >>>---

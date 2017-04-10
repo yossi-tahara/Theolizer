@@ -156,6 +156,7 @@ namespace theolizer
                         public THEOLIZER_INTERNAL_UNPAREN dClass            \
     {                                                                       \
     private:                                                                \
+        static const bool kIsTheolizerNonIntrusive=true;                    \
         THEOLIZER_INTERNAL_SERIALIZABLE_MANUAL(dClass, dLastVersionNo,      \
             (), theolizer::internal::emOrder, true);                        \
     }
@@ -168,6 +169,7 @@ namespace theolizer
                                 public THEOLIZER_INTERNAL_UNPAREN dClass    \
     {                                                                       \
     private:                                                                \
+        static const bool kIsTheolizerNonIntrusive=true;                    \
         THEOLIZER_ANNOTATE(                                                 \
             TS:THEOLIZER_INTERNAL_UNPAREN dList;THEOLIZER_INTERNAL_UNPAREN dClass)\
         THEOLIZER_INTERNAL_SERIALIZABLE_MANUAL(dClass, dLastVersionNo,      \

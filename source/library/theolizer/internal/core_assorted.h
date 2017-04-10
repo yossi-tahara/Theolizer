@@ -730,7 +730,7 @@ namespace internal
 
 }   // namespace theolizer
 
-//      ---<<<< 非侵入型/enum型プライマリー・テンプレート >>>---
+//      ---<<<< enum型/非侵入型/プリミティブ/ポインタ/参照プライマリー・テンプレート >>>---
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
@@ -741,6 +741,17 @@ struct TheolizerNonIntrusive {};
 
 template<class tClassType>
 class TheolizerBase {};
+
+//      ---<<<< Non-keep-step型用プライマリー・テンプレート >>>---
+//          ポインタ/参照/手動型クラス
+
+template<class tClassType, class tEnable=void>
+struct TheolizerNonKeepStep
+{
+    static const bool kIsTheolizerNonKeepStep=true;
+
+    
+};
 
 //      ---<<<< トップ・レベル登録時のバージョン伝達エラー回避用 >>>---
 //      コーディング規約上、tで始まる名前はテンプレート引数だが、
@@ -888,35 +899,38 @@ struct IsTheolizerVersion
 //----------------------------------------------------------------------------
 
 template<class tClass, class tEnable=void>
-struct IsTheolizerBaseImpl : public std::false_type
+struct IsTheolizerBase : public std::false_type
 { };
 
 template<class tClass>
-struct IsTheolizerBaseImpl
+struct IsTheolizerBase
 <
     tClass,
     EnableIf<tClass::kIsTheolizerBase && !IsTheolizerVersion<tClass>::value>
 > : public std::true_type
 { };
 
-template<class tClass>
-struct IsTheolizerBase
-{
-    static const bool value=IsTheolizerBaseImpl<tClass>::value;
-};
-
 //----------------------------------------------------------------------------
-//      非侵入型生成
+//      TheolizerNonKeepStepクラス判定
 //----------------------------------------------------------------------------
 
-template<class tClass>
-struct NonIntrusiveImpl
-{
-    typedef TheolizerNonIntrusive<typename std::remove_const<tClass>::type> Type;
-};
+template<class tClass, class tEnable=void>
+struct IsTheolizerNonKeepStepImpl : public std::false_type
+{ };
 
 template<class tClass>
-using NonIntrusive=typename NonIntrusiveImpl<tClass>::Type;
+struct IsTheolizerNonKeepStepImpl
+<
+    tClass,
+    EnableIf<tClass::kIsTheolizerNonKeepStep>
+> : public std::true_type
+{ };
+
+template<class tClass>
+struct IsTheolizerNonKeepStep
+{
+    static const bool value=IsTheolizerNonKeepStepImpl<tClass>::value;
+};
 
 //----------------------------------------------------------------------------
 //      非侵入型クラス判定
@@ -930,7 +944,10 @@ template<class tClass>
 struct IsNonIntrusiveImpl
 <
     tClass,
-    EnableIf<NonIntrusive<tClass>::kIsTheolizer>
+    EnableIf
+    <
+        TheolizerNonIntrusive<typename std::remove_const<tClass>::type>::kIsTheolizer
+    >
 > : public std::true_type
 { };
 
@@ -958,6 +975,7 @@ struct IsIntrusiveImpl
      && !IsString<tClass>::value
      && !IsNonIntrusive<tClass>::value
      && !IsTheolizerBase<tClass>::value
+     && !IsTheolizerNonKeepStep<tClass>::value
     >
 > : public std::true_type
 { };
@@ -1148,11 +1166,54 @@ public:
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
 
+}   // namespace theolizer
+
+// ***************************************************************************
+//      TheolizerNonKeepStepクラス
+//          プリミティブ
+//          ポインタ
+//          参照
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      プリミティブ用部分特殊化
+//----------------------------------------------------------------------------
+
+template<typename tPrimitiveType>
+struct TheolizerNonKeepStep
+<
+    tPrimitiveType,
+    theolizer::internal::EnableIf<theolizer::internal::IsPrimitive<tPrimitiveType>::value>
+>
+{
+    static const bool kIsTheolizerNonKeepStep=true;
+    typedef tPrimitiveType  Type;
+};
+
+#if 0
+//----------------------------------------------------------------------------
+//      ポインタ/参照用部分特殊化
+//----------------------------------------------------------------------------
+
+template<typename tPointerType>
+struct TheolizerNonKeepStep
+<
+    tPointerType,
+    theolizer::internal::EnableIf
+    <
+           std::is_pointer<tPointerType>::value
+        || std::is_lvalue_reference<tPointerType>::value
+    >
+>
+{
+    static const bool kIsTheolizerNonKeepStep=true;
+    typedef tPointerType    TheolizerTarget;
+};
+#endif
+
 //############################################################################
 //      End
 //############################################################################
-
-}   // namespace theolizer
 
 // ***************************************************************************
 //          警告抑止解除

@@ -67,6 +67,29 @@ int main(int argc, char** argv)
     try
     {
 
+// 一時的デバッグ用
+#if 0
+        {
+            std::ofstream   aStream("aaa.log");
+            theolizer::JsonOSerializer<>  aSerializer(aStream);
+
+            TheolizerNonIntrusive<int> aInt;
+            THEOLIZER_INTERNAL_SAVE(aSerializer, aInt, TrackingMode::etmDefault);
+
+            TheolizerNonIntrusive<int*> aIntPtr;
+            THEOLIZER_INTERNAL_SAVE(aSerializer, aIntPtr, TrackingMode::etmDefault);
+
+            TheolizerNonIntrusive<int&> aIntRef;
+            THEOLIZER_INTERNAL_SAVE(aSerializer, aIntRef, TrackingMode::etmDefault);
+
+            TheolizerNonIntrusive<EnumTest> aEnumTest;
+            THEOLIZER_INTERNAL_SAVE(aSerializer, aEnumTest, TrackingMode::etmDefault);
+
+            TheolizerNonIntrusive<NonIntrusiveBase> aNonIntrusiveBase;
+            THEOLIZER_INTERNAL_SAVE(aSerializer, aNonIntrusiveBase, TrackingMode::etmDefault);
+        }
+#endif
+
 // ***************************************************************************
 //      メタ・シリアライズ
 // ***************************************************************************

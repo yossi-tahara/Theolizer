@@ -181,18 +181,19 @@ namespace internal
     THEOLIZER_INTERNAL_SERIALIZABLE(theolizer::internal::emOrder)
 
 #define THEOLIZER_INTERNAL_SERIALIZABLE(dMap)                               \
-public:                                                                     \
-    template<class tBaseSerializer, unsigned tVersionNo>                    \
-    struct TheolizerVersion { };                                            \
-                                                                            \
-private:                                                                    \
     static const bool kIsTheolizer=true;                                    \
+friend int main(int argc, char** argv);\
     template<class>         friend struct theolizer::internal::IsNonIntrusive;\
     template<class, class>  friend struct theolizer::internal::IsNonIntrusiveImpl;\
+    template<class>         friend struct theolizer::internal::IsTheolizerNonKeepStep;\
+    template<class, class>  friend struct theolizer::internal::IsTheolizerNonKeepStepImpl;\
     template<class, typename, bool, theolizer::internal::TrackingMode, class>\
         friend struct theolizer::internal::Switcher;                        \
     template<typename, bool> friend struct theolizer::internal::RegisterToBaseClassEntrance;\
-    template<class> friend class theolizer::internal::ClassTypeInfo
+    template<class> friend class theolizer::internal::ClassTypeInfo;        \
+public:                                                                     \
+    template<class tBaseSerializer, unsigned tVersionNo>                    \
+    struct TheolizerVersion { }
 
 #define THEOLIZER_INTERNAL_TEMPLATE_PARAMETER(dClass, dName, dParam, dUniqueClass)\
     typedef void NoGenerate; /* ドライバへの自動生成無し指示 */             \
@@ -237,10 +238,11 @@ private:                                                                    \
             (tBaseSerializer&, typename tTheolizerVersion::TheolizerClass*&)\
         { }                                                                 \
     };                                                                      \
-private:                                                                    \
     static const bool kIsTheolizer=true;                                    \
     template<class>         friend struct theolizer::internal::IsNonIntrusive;\
     template<class, class>  friend struct theolizer::internal::IsNonIntrusiveImpl;\
+    template<class>         friend struct theolizer::internal::IsTheolizerNonKeepStep;\
+    template<class, class>  friend struct theolizer::internal::IsTheolizerNonKeepStepImpl;\
     template<class, typename, bool, theolizer::internal::TrackingMode, class>\
         friend struct theolizer::internal::Switcher;                        \
     template<typename, bool> friend struct theolizer::internal::RegisterToBaseClassEntrance;\
@@ -762,6 +764,7 @@ private:
     friend THEOLIZER_INTERNAL_DLL bool isLastVersion();
     friend THEOLIZER_INTERNAL_DLL bool isSaver();
     friend THEOLIZER_INTERNAL_DLL bool duringBackup();
+    friend THEOLIZER_INTERNAL_DLL unsigned& getUpVersionCount();
 
     // 最新版処理
     bool isLastVersion() const {return mGlobalVersionNo == mLastGlobalVersionNo;}
@@ -771,6 +774,11 @@ private:
 
     // バックアップ処理中
     bool duringBackup() const {return mDuringBackup;}
+
+    // upVersionカウンタ(upVersionによる設定を管理する)
+    //  0 :バージョン・ダウン処理中、または、save後のバージョン・アップ処理中
+    //  1-:load後のバージョン・アップ処理中
+    unsigned        mUpVersionCount;
 
 // ***************************************************************************
 //      シリアライズ機能群
@@ -1397,14 +1405,6 @@ void loadClass(BaseSerializer& iBaseSerializer, tVersionType& iVersion)
 {
     iBaseSerializer.loadClassImpl(iVersion);
 }
-
-// ***************************************************************************
-//      現在処理中のSerializerの状態獲得
-// ***************************************************************************
-
-THEOLIZER_INTERNAL_DLL bool isLastVersion();
-THEOLIZER_INTERNAL_DLL bool isSaver();
-THEOLIZER_INTERNAL_DLL bool duringBackup();
 
 //############################################################################
 //      std::shared_ptrサポート

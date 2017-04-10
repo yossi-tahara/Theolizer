@@ -596,6 +596,11 @@ bool duringBackup()
     return xNowSerializer->duringBackup();
 }
 
+unsigned& getUpVersionCount()
+{
+    return xNowSerializer->mUpVersionCount;
+}
+
 //############################################################################
 //      基底Serializer(シリアライズ／デシリアライズ実処理)
 //############################################################################
@@ -661,6 +666,7 @@ BaseSerializer::BaseSerializer
     mBaseProcessing(false),
     mClassTracking(false),
     mRefProcessing(false),
+    mUpVersionCount(0),
     mCheckMode(iCheckMode),
     mElementsMapping(emOrder),
     mIsShared(false),

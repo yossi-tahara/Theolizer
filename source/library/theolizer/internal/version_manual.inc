@@ -95,16 +95,6 @@ public:
     { }
     operator THEOLIZER_GENERATED_CLASS_TYPE&()             {return THEOLIZER_INTERNAL_RELAY_NAME;}
     operator THEOLIZER_GENERATED_CLASS_TYPE const&() const {return THEOLIZER_INTERNAL_RELAY_NAME;}
-
-#if 0
-    THEOLIZER_GENERATED_CLASS_TYPE&       get()       {return THEOLIZER_INTERNAL_RELAY_NAME;}
-    THEOLIZER_GENERATED_CLASS_TYPE const& get() const {return THEOLIZER_INTERNAL_RELAY_NAME;}
-    TheolizerBase& operator=(TheolizerBase const& iRhs)
-    {
-        if (&iRhs != this) mInstance=iRhs.mInstance;
-        return *this;
-    }
-#endif
 };
 #undef THEOLIZER_INTERNAL_RELAY_NAME
 #undef THEOLIZER_INTERNAL_PARAMETER_LIST

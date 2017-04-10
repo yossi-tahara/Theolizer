@@ -151,6 +151,9 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     // 親(ターゲット、もしくは、次バージョン)インスタンスへのポインタ
     ParentVersion*                  mParentVersion;
 
+    // 同じバージョン
+    TheolizerVersion*               mSameVersion;
+
 //      ---<<< 保存／回復関数 >>>---
 
     void saveEnum(tBaseSerializer& iSerializer, unsigned iVersionNo);
@@ -189,19 +192,81 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
     // 実体
     BaseType        mValue;
+    BaseType const  mBackup;
 
-    // 実体の参照(同じバージョンの時は親インスタンスのmValueへの参照となる)
-    BaseType&       mValueRef;
+//      ---<<< バージョン・アップ時の引継ぎ処理用 >>>---
 
-    // 回復処理中フラグ(これがfalseならupVersion()を呼ばない)
-    bool            mIsLoad;
+    unsigned        mUpVersionCount;// upVersionカウンタ
+    bool            mDoSucceed;     // 引継ぎフラグ
+    bool            mIsChanged;     // これを含むクラスのupVersionにて変更された
+
+    // 通常設定
+    TheolizerVersion& operator=(TheolizerTarget iRhs)
+    {
+std::cout << "enum::TheolizerVersion<>::operator=(" << static_cast<BaseType>(iRhs) << ");\n";
+std::cout << "    mUpVersionCount    =" << mUpVersionCount << "\n";
+std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCount() << "\n";
+        if ((mUpVersionCount == 0)
+         || (mUpVersionCount == theolizer::internal::getUpVersionCount()))
+        {
+            mUpVersionCount=theolizer::internal::getUpVersionCount();
+            mValue=static_cast<BaseType>(iRhs);
+
+            // 回復中なら、管理フラグ更新
+            if (mUpVersionCount)
+            {
+                if (!mIsChanged)
+                {
+                    mIsChanged=true;
+                }
+            }
+        }
+std::cout << "    mValue               =" << mValue << "\n";
+std::cout << "    mIsChanged           =" << mIsChanged << "\n";
+        return *this;
+    }
+
+    // 強制引継ぎ設定（他の変数から引き継ぐ）
+    void set(BaseType iValue, bool iDoSucceed)  // iDoSucceedは引継ぎ元変数のmDoSucceed
+    {
+        if ((mUpVersionCount == 0)
+         || (mUpVersionCount == theolizer::internal::getUpVersionCount()))
+        {
+            mUpVersionCount=theolizer::internal::getUpVersionCount();
+            mValue=iValue;
+
+            // 回復中なら、管理フラグ更新
+            if (mUpVersionCount)
+            {
+                if (iDoSucceed)
+                {
+                    mIsChanged=true;
+                    mDoSucceed=true;
+                }
+            }
+        }
+    }
+
+    // 前バージョンのデストラクタから呼ばれる引継ぎ処理
+    void succeed(BaseType iValue)
+    {
+std::cout << "enum::TheolizerVersion<>::succeed(" << iValue << ");\n";
+std::cout << "    mIsChanged =" << mIsChanged << "\n";
+        // 変更されていないなら、引き継ぐ
+        if (!mIsChanged)
+        {
+            mValue=iValue;
+            mDoSucceed=true;
+std::cout << "    mDoSucceed =" << mDoSucceed << "\n";
+        }
+    }
 
 //      ---<<< 中身へのアクセス用 >>>---
 
     typedef BaseType AsElementOfArray;
     AsElementOfArray& getAccess()
     {
-        return mValueRef;
+        return mValue;
     }
 
 //      ---<<< initialize(), up/downVersion()関数内でのアクセス用 >>>---
@@ -216,15 +281,10 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         THEOLIZER_INTERNAL_COMPARE(>=)
     #undef  THEOLIZER_INTERNAL_COMPARE
 
-    TheolizerVersion& operator=(TheolizerTarget iRhs)
-    {
-        mValueRef=static_cast<BaseType>(iRhs);
-        return *this;
-    }
-    operator TheolizerTarget() const { return static_cast<TheolizerTarget>(mValueRef); }
+    operator TheolizerTarget() const { return static_cast<TheolizerTarget>(mValue); }
 
-    BaseType getIntegral() const { return mValueRef; }
-    TheolizerTarget  get() const { return static_cast<TheolizerTarget>(mValueRef); }
+    BaseType getIntegral() const { return mValue; }
+    TheolizerTarget  get() const { return static_cast<TheolizerTarget>(mValue); }
 
 //----------------------------------------------------------------------------
 //      コンストラクタ(次バージョンからコンストラクト)
@@ -236,9 +296,12 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     TheolizerVersion(ParentVersion& iParentVersion) :
         mTarget(&iParentVersion),
         mParentVersion(&iParentVersion),
+        mSameVersion(nullptr),
         mValue(static_cast<BaseType>(iParentVersion)),
-        mValueRef(mValue),
-        mIsLoad(false)
+        mBackup(mValue),
+        mUpVersionCount(0),
+        mDoSucceed(false),
+        mIsChanged(false)
     {
         // 内部的にstd::stringを使うので登録する
         theolizer::internal::RegisterType
@@ -251,9 +314,12 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     TheolizerVersion(ParentVersion & iParentVersion) :
         mTarget(iParentVersion.mTarget),
         mParentVersion(&iParentVersion),
-        mValue(THEOLIZER_GENERATED_DEFAULT_VALUE),
-        mValueRef(mValue),
-        mIsLoad(false)
+        mSameVersion(nullptr),
+        mValue(iParentVersion.mValue),
+        mBackup(mValue),
+        mUpVersionCount(0),
+        mDoSucceed(false),
+        mIsChanged(false)
     {   // 最新版でない時のみバージョン・ダウン実施
         downVersion();
     }
@@ -266,9 +332,12 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     TheolizerVersion(TheolizerVersion& iSameVersion) :
         mTarget(iSameVersion.mTarget),
         mParentVersion(nullptr),
-        mValue(0),
-        mValueRef(iSameVersion.mValueRef),
-        mIsLoad(false)
+        mSameVersion(&iSameVersion),
+        mValue(iSameVersion.mValue),
+        mBackup(mValue),
+        mUpVersionCount(0),
+        mDoSucceed(false),
+        mIsChanged(false)
     {
     }
 
@@ -281,9 +350,12 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     TheolizerVersion(TheolizerVersion&& iSameVersion) :
         mTarget(iSameVersion.mTarget),
         mParentVersion(nullptr),
-        mValue(iSameVersion.mValueRef),
-        mValueRef(mValue),
-        mIsLoad(false)
+        mSameVersion(nullptr),
+        mValue(iSameVersion.mValue),
+        mBackup(mValue),
+        mUpVersionCount(0),
+        mDoSucceed(false),
+        mIsChanged(false)
     {
     }
 
@@ -294,9 +366,12 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     TheolizerVersion() :
         mTarget(nullptr),
         mParentVersion(nullptr),
+        mSameVersion(nullptr),
         mValue(THEOLIZER_GENERATED_DEFAULT_VALUE),
-        mValueRef(mValue),
-        mIsLoad(false)
+        mBackup(mValue),
+        mUpVersionCount(0),
+        mDoSucceed(false),
+        mIsChanged(false)
     {
     }
 
@@ -306,14 +381,47 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
     ~TheolizerVersion()
     {   // 最新版でない時のみバージョン・アップ実施
+std::cout << "enum::~TheolizerVersion(" << THEOLIZER_GENERATED_VERSION_NO << ") " << this << "\n";
         #if (THEOLIZER_GENERATED_VERSION_NO == THEOLIZER_GENERATED_LAST_VERSION_NO)
-        if (mParentVersion) {
-            *mParentVersion = static_cast<THEOLIZER_GENERATED_ENUM_TYPE>(mValueRef);
-        }
+std::cout << "    mParentVersion=" << mParentVersion << "\n";
+            if (mParentVersion)
+            {
+std::cout << "    mValue=" << mValue << ";\n";
+                *mParentVersion = static_cast<THEOLIZER_GENERATED_ENUM_TYPE>(mValue);
+            }
+            else if (mSameVersion)
+            {
+std::cout << "    mSameVersion->succeed(" << mValue << ");\n";
+                mSameVersion->succeed(mValue);
+            }
         #else
-        if (mParentVersion && mIsLoad) {
-            upVersion();
-        }
+            // 引継ぎ無し
+            if (!mDoSucceed)
+            {
+                // 変更されていないなら、元の値を回復する
+                if (!mIsChanged)
+                {
+std::cout << "    mValue=" << mBackup << ";\n";
+                    mValue=mBackup;
+                }
+            }
+            // 引継ぎ有り
+            else
+            {
+                if (mParentVersion)
+                {
+                    // 既に変更されていたなら、バーション・アップ処理省略
+                    if (!mIsChanged)
+                    {
+                        upVersion();
+                    }
+                }
+                else if (mSameVersion)
+                {
+std::cout << "    mSameVersion->succeed(" << mValue << ");\n";
+                    mSameVersion->succeed(mValue);
+                }
+            }
         #endif
     }
 
@@ -334,22 +442,25 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     #if (THEOLIZER_GENERATED_VERSION_NO != THEOLIZER_GENERATED_LAST_VERSION_NO)
     void downVersion()
     {
+std::cout << "enum::downVersion : THEOLIZER_GENERATED_VERSION_NO="
+          << THEOLIZER_GENERATED_VERSION_NO << "\n";
         for (size_t i=0; !mParentVersion->kEnumElementList[i].isSentinel(); ++i)
         {
-            if (mParentVersion->kEnumElementList[i].mValues[0] == mParentVersion->mValueRef)
+            if (mParentVersion->kEnumElementList[i].mValues[0] == mParentVersion->mValue)
             {
-                mValueRef=mParentVersion->kEnumElementList[i].mPrevValue;
+                mValue=mParentVersion->kEnumElementList[i].mPrevValue;
+std::cout << "    mValue=" << mValue << "\n";
     return;
             }
         }
 
         // 見つからなければ、警告しデフォルト値へ変換する。
-        mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
+        mValue=THEOLIZER_GENERATED_DEFAULT_VALUE;
         THEOLIZER_INTERNAL_WARNING(
             "Can not transform Version.%1%'s value(%2%) to Version.%3%'s value. "
             "Please check THEOLIZER_ANNOTATE() for %4%.",
             THEOLIZER_GENERATED_VERSION_NO+1,
-            mParentVersion->mValueRef,
+            mParentVersion->mValue,
             THEOLIZER_GENERATED_VERSION_NO,
             THEOLIZER_GENERATED_ENUM_NAME);
     }
@@ -362,22 +473,24 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     #if (THEOLIZER_GENERATED_VERSION_NO != THEOLIZER_GENERATED_LAST_VERSION_NO)
     void upVersion()
     {
+std::cout << "enum::upVersion : THEOLIZER_GENERATED_VERSION_NO="
+          << THEOLIZER_GENERATED_VERSION_NO << "\n";
         for (size_t i=0; !mParentVersion->kEnumElementList[i].isSentinel(); ++i)
         {
-            if (mValueRef == mParentVersion->kEnumElementList[i].mPrevValue)
+            if (mValue == mParentVersion->kEnumElementList[i].mPrevValue)
             {
-                mParentVersion->mValueRef=mParentVersion->kEnumElementList[i].mValues[0];
+                mParentVersion->succeed(mParentVersion->kEnumElementList[i].mValues[0]);
     return;
             }
         }
 
         // 見つからなければ、警告しデフォルト値へ変換する。
-        mParentVersion->mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
+        mParentVersion->succeed(THEOLIZER_GENERATED_DEFAULT_VALUE);
         THEOLIZER_INTERNAL_WARNING(
             "Can not transform Version.%1%'s value(%2%) to Version.%3%'s value. "
             "Please check THEOLIZER_ANNOTATE() for %4%.",
             THEOLIZER_GENERATED_VERSION_NO,
-            mValueRef,
+            mValue,
             (THEOLIZER_GENERATED_VERSION_NO+1),
             THEOLIZER_GENERATED_ENUM_NAME);
     }
@@ -392,14 +505,14 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         // 値を保存する時の処理
         if (Theolizer::kEnumSaveType == theolizer::internal::estValue)
         {
-            THEOLIZER_INTERNAL_SAVE(iSerializer, mValueRef, etmDefault);
+            THEOLIZER_INTERNAL_SAVE(iSerializer, mValue, etmDefault);
     return;
         }
 
         // 名前を保存する時の処理
         for (size_t i=0; !kEnumElementList[i].isSentinel(); ++i)
         {
-            if (kEnumElementList[i].mValues[0] == mValueRef)
+            if (kEnumElementList[i].mValues[0] == mValue)
             {
                 std::string aEnumSymbol(kEnumElementList[i].mSymbols[0]);
                 THEOLIZER_INTERNAL_SAVE(iSerializer, aEnumSymbol, etmDefault);
@@ -413,7 +526,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         THEOLIZER_INTERNAL_WARNING(
             "Can not find enum symbol's value(%1%) at Version.%2%. "
             "Please check THEOLIZER_ANNOTATE() for %3%.",
-            mValueRef,
+            mValue,
             THEOLIZER_GENERATED_VERSION_NO,
             THEOLIZER_GENERATED_ENUM_NAME);
     }
@@ -424,57 +537,64 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
     void loadEnumImpl(tBaseSerializer& iSerializer)
     {
+std::cout << "loadEnumImpl(" << THEOLIZER_GENERATED_VERSION_NO << ") " << this << "\n";
+        mDoSucceed=true;
         // 値で回復する時の処理（既知の値であることをチェックする）
         if (Theolizer::kEnumSaveType == theolizer::internal::estValue)
         {
-            THEOLIZER_INTERNAL_LOAD(iSerializer, mValueRef, etmDefault);
+            THEOLIZER_INTERNAL_LOAD(iSerializer, mValue, etmDefault);
             for (size_t i=0; !kEnumElementList[i].isSentinel(); ++i)
             {
                 for (size_t j=0; j < kEnumElementList[i].mValues.size(); ++j)
                 {
-                    if (mValueRef == kEnumElementList[i].mValues[j])
+                    if (mValue == kEnumElementList[i].mValues[j])
                     {
-                        mValueRef=kEnumElementList[i].mValues[0];
+                        mValue=kEnumElementList[i].mValues[0];
+std::cout << "    (1)mValue=" << mValue << "\n";
     return;
                     }
                 }
             }
 
-        mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
+        mValue=THEOLIZER_GENERATED_DEFAULT_VALUE;
         THEOLIZER_INTERNAL_WARNING(
             u8"Can not find loaded value(%1%) in Version.%2%'s symbol. "
             "Please check THEOLIZER_ANNOTATE() for %3%.",
-            mValueRef,
+            mValue,
             THEOLIZER_GENERATED_VERSION_NO,
             THEOLIZER_GENERATED_ENUM_NAME);
+std::cout << "    (2)mValue=" << mValue << "\n";
     return;
         }
 
         // 名前で回復する時の処理
         std::string  aName;
         THEOLIZER_INTERNAL_LOAD(iSerializer, aName, etmDefault);
+std::cout << "    aName=" << aName << "\n";
 
-        mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
+        mValue=THEOLIZER_GENERATED_DEFAULT_VALUE;
         for (size_t i=0; !kEnumElementList[i].isSentinel(); ++i)
         {
             for (size_t j=0; j < kEnumElementList[i].mSymbols.size(); ++j)
             {
                 if (aName == kEnumElementList[i].mSymbols[j])
                 {
-                    mValueRef=kEnumElementList[i].mValues[0];
+                    mValue=kEnumElementList[i].mValues[0];
+std::cout << "    (3)mValue=" << mValue << "\n";
     return;
                 }
             }
         }
 
         // 見つからなければ、警告しデフォルト値として回復する。
-        mValueRef=THEOLIZER_GENERATED_DEFAULT_VALUE;
+        mValue=THEOLIZER_GENERATED_DEFAULT_VALUE;
         THEOLIZER_INTERNAL_WARNING(
             u8"Can not find loaded symbol(%1%) in Version.%2%'s symbol. "
             "Please check THEOLIZER_ANNOTATE() for %3%.",
             aName,
             THEOLIZER_GENERATED_VERSION_NO,
             THEOLIZER_GENERATED_ENUM_NAME);
+std::cout << "    (4)mValue=" << mValue << "\n";
     }
 
 //----------------------------------------------------------------------------
@@ -587,8 +707,8 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     THEOLIZER_GENERATED_VERSION_NO+1
 >::loadEnum(tBaseSerializer& iSerializer, unsigned iVersionNo)
 {
-    mIsLoad=true;   // デストラクト時upVersionを呼ぶため
-    if (iVersionNo < (THEOLIZER_GENERATED_VERSION_NO+1)) {
+    if (iVersionNo < (THEOLIZER_GENERATED_VERSION_NO+1))
+    {
         THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         <
             tBaseSerializer,
@@ -596,7 +716,9 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         > aVersion(*this);
         aVersion.loadEnum(iSerializer, iVersionNo);
 return;
-    } else {
+    }
+    else
+    {
         loadEnumImpl(iSerializer);
     }
 }
@@ -689,7 +811,6 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion<tBaseSerializer, 1>::loadEnum
     unsigned iVersionNo
 )
 {
-    mIsLoad=true;   // デストラクト時upVersionを呼ぶため
     loadEnumImpl(iSerializer);
 }
 
