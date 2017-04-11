@@ -1261,7 +1261,7 @@ struct Switcher
 };
 
 //----------------------------------------------------------------------------
-//      TheolizerNonKeepStep<プリミティブ型>クラス用Switcher
+//      TheolizerNonKeepStep<>用Switcher
 //----------------------------------------------------------------------------
 
 template
@@ -1280,63 +1280,26 @@ struct Switcher
     EnableIf
     <
            IsTheolizerNonKeepStep<tTheolizerNonKeepStep>::value
-        && IsPrimitive<typename tTheolizerNonKeepStep::TheolizerTarget>::value
     >
 >
 {
     // 保存
     static void save(tBaseSerializer& iSerializer, tTheolizerNonKeepStep& iInstance)
     {
-std::cout << "Switcher<TheolizerNonKeepStep<Primitive : "
+std::cout << "Switcher<TheolizerNonKeepStep<"
           << THEOLIZER_INTERNAL_TYPE_NAME(typename tTheolizerNonKeepStep::Type)
           << ">::save()\n";
+
+        iInstance.save<tIsRegister>(iSerializer);
     }
     // 回復
     static void load(tBaseSerializer& iSerializer, tTheolizerNonKeepStep& oInstance)
     {
-std::cout << "Switcher<TheolizerNonKeepStep<Primitive : "
+std::cout << "Switcher<TheolizerNonKeepStep<"
           << THEOLIZER_INTERNAL_TYPE_NAME(typename tTheolizerNonKeepStep::Type)
           << ">::load()\n";
-    }
-};
 
-//----------------------------------------------------------------------------
-//      TheolizerNonKeepStep<非プリミティブ型>クラス用Switcher
-//----------------------------------------------------------------------------
-
-template
-<
-    class tBaseSerializer,
-    class tTheolizerNonKeepStep,
-    bool tIsRegister,
-    TrackingMode tTrackingMode
->
-struct Switcher
-<
-    tBaseSerializer,
-    tTheolizerNonKeepStep,
-    tIsRegister,
-    tTrackingMode,
-    EnableIf
-    <
-           IsTheolizerNonKeepStep<tTheolizerNonKeepStep>::value
-        && !IsPrimitive<typename tTheolizerNonKeepStep::TheolizerTarget>::value
-    >
->
-{
-    // 保存
-    static void save(tBaseSerializer& iSerializer, tTheolizerNonKeepStep& iInstance)
-    {
-std::cout << "Switcher<TheolizerNonKeepStep<Non-Primitive : "
-          << THEOLIZER_INTERNAL_TYPE_NAME(typename tTheolizerNonKeepStep::Type)
-          << ">::save()\n";
-    }
-    // 回復
-    static void load(tBaseSerializer& iSerializer, tTheolizerNonKeepStep& oInstance)
-    {
-std::cout << "Switcher<TheolizerNonKeepStep<Non-Primitive : "
-          << THEOLIZER_INTERNAL_TYPE_NAME(typename tTheolizerNonKeepStep::Type)
-          << ">::load()\n";
+        oInstance.save<tIsRegister>(iSerializer);
     }
 };
 

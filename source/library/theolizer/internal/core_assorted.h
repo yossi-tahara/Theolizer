@@ -745,13 +745,8 @@ class TheolizerBase {};
 //      ---<<<< Non-keep-step型用プライマリー・テンプレート >>>---
 //          ポインタ/参照/手動型クラス
 
-template<class tClassType, class tEnable=void>
-struct TheolizerNonKeepStep
-{
-    static const bool kIsTheolizerNonKeepStep=true;
-
-    
-};
+template<class tClassType, class tEnable>
+struct TheolizerNonKeepStep;
 
 //      ---<<<< トップ・レベル登録時のバージョン伝達エラー回避用 >>>---
 //      コーディング規約上、tで始まる名前はテンプレート引数だが、
@@ -1167,49 +1162,6 @@ public:
 }   // namespace internal
 
 }   // namespace theolizer
-
-// ***************************************************************************
-//      TheolizerNonKeepStepクラス
-//          プリミティブ
-//          ポインタ
-//          参照
-// ***************************************************************************
-
-//----------------------------------------------------------------------------
-//      プリミティブ用部分特殊化
-//----------------------------------------------------------------------------
-
-template<typename tPrimitiveType>
-struct TheolizerNonKeepStep
-<
-    tPrimitiveType,
-    theolizer::internal::EnableIf<theolizer::internal::IsPrimitive<tPrimitiveType>::value>
->
-{
-    static const bool kIsTheolizerNonKeepStep=true;
-    typedef tPrimitiveType  Type;
-};
-
-#if 0
-//----------------------------------------------------------------------------
-//      ポインタ/参照用部分特殊化
-//----------------------------------------------------------------------------
-
-template<typename tPointerType>
-struct TheolizerNonKeepStep
-<
-    tPointerType,
-    theolizer::internal::EnableIf
-    <
-           std::is_pointer<tPointerType>::value
-        || std::is_lvalue_reference<tPointerType>::value
-    >
->
-{
-    static const bool kIsTheolizerNonKeepStep=true;
-    typedef tPointerType    TheolizerTarget;
-};
-#endif
 
 //############################################################################
 //      End

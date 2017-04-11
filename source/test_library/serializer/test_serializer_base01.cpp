@@ -68,25 +68,32 @@ int main(int argc, char** argv)
     {
 
 // 一時的デバッグ用
-#if 0
+#if 1
         {
             std::ofstream   aStream("aaa.log");
             theolizer::JsonOSerializer<>  aSerializer(aStream);
 
-            TheolizerNonIntrusive<int> aInt;
-            THEOLIZER_INTERNAL_SAVE(aSerializer, aInt, TrackingMode::etmDefault);
+            int aInt(123);
+            TheolizerNonKeepStep<int> aNonKeepStepInt(aInt);
+            THEOLIZER_INTERNAL_SAVE(aSerializer, aNonKeepStepInt, TrackingMode::etmDefault);
 
-            TheolizerNonIntrusive<int*> aIntPtr;
-            THEOLIZER_INTERNAL_SAVE(aSerializer, aIntPtr, TrackingMode::etmDefault);
+            int* aIntPtr(&aInt);
+            TheolizerNonKeepStep<int*> aNonKeepStepIntPtr(aIntPtr);
+            THEOLIZER_INTERNAL_SAVE(aSerializer, aNonKeepStepIntPtr, TrackingMode::etmDefault);
 
-            TheolizerNonIntrusive<int&> aIntRef;
-            THEOLIZER_INTERNAL_SAVE(aSerializer, aIntRef, TrackingMode::etmDefault);
+            TheolizerNonKeepStep<int&> aNonKeepStepIntRef(aInt);
+            THEOLIZER_INTERNAL_SAVE(aSerializer, aNonKeepStepIntRef, TrackingMode::etmDefault);
 
-            TheolizerNonIntrusive<EnumTest> aEnumTest;
-            THEOLIZER_INTERNAL_SAVE(aSerializer, aEnumTest, TrackingMode::etmDefault);
+            NonIntrusiveBase aNonIntrusiveBase;
+            TheolizerNonKeepStep<NonIntrusiveBase> aNonKeepStepNonIntrusiveBase(aNonIntrusiveBase);
+            THEOLIZER_INTERNAL_SAVE(aSerializer, aNonKeepStepNonIntrusiveBase, TrackingMode::etmDefault);
 
-            TheolizerNonIntrusive<NonIntrusiveBase> aNonIntrusiveBase;
-            THEOLIZER_INTERNAL_SAVE(aSerializer, aNonIntrusiveBase, TrackingMode::etmDefault);
+            // 以下は使わないが念のため動きを見る
+            EnumTest aEnumTest(EnumTest::two);
+            TheolizerNonKeepStep<EnumTest> aNonKeepStepEnumTest(aEnumTest);
+            THEOLIZER_INTERNAL_SAVE(aSerializer, aNonKeepStepEnumTest, TrackingMode::etmDefault);
+
+            aSerializer.clearTracking();
         }
 #endif
 

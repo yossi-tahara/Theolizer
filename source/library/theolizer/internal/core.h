@@ -25,15 +25,84 @@
 //      Begin
 //############################################################################
 
+// ***************************************************************************
+//      TheolizerNonKeepStepクラス
+//          プリミティブ    部分特殊化
+//          その他          プライマリ
+//              ポインタ
+//              参照
+//              非侵入型
+// ***************************************************************************
+
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+
+//----------------------------------------------------------------------------
+//      プライマリー
+//----------------------------------------------------------------------------
+
+template<class tClassType, class tEnable=void>
+struct TheolizerNonKeepStep
+{
+    static const bool kIsTheolizerNonKeepStep=true;
+    typedef tClassType      Type;
+    typedef typename std::remove_reference<tClassType>::type    TargetType;
+
+    TargetType&     mTarget;
+    TheolizerNonKeepStep(TargetType& iTarget) : mTarget(iTarget) { }
+
+    template<bool tIsRegister, class tBaseSerializer>
+    void save(tBaseSerializer& iSerializer)
+    {
+        theolizer::internal::Switcher
+        <
+            tBaseSerializer,
+            TargetType,
+            tIsRegister,
+            theolizer::internal::etmDefault
+        >::save(iSerializer, mTarget);
+    }
+
+    template<bool tIsRegister, class tBaseSerializer>
+    void load(tBaseSerializer& iSerializer)
+    {
+        theolizer::internal::Switcher
+        <
+            tBaseSerializer,
+            TargetType,
+            tIsRegister,
+            theolizer::internal::etmDefault
+        >::load(iSerializer, mTarget);
+    }
+};
+
+//----------------------------------------------------------------------------
+//      プリミティブ用部分特殊化
+//----------------------------------------------------------------------------
+
+#if 0
+template<typename tPrimitiveType>
+struct TheolizerNonKeepStep
+<
+    tPrimitiveType,
+    theolizer::internal::EnableIf<theolizer::internal::IsPrimitive<tPrimitiveType>::value>
+>
+{
+    static const bool kIsTheolizerNonKeepStep=true;
+    typedef tPrimitiveType  Type;
+};
+#endif
+
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
+
+//############################################################################
+//      バージョン対応用定義群
+//############################################################################
+
 namespace theolizer
 {
 namespace internal
 {
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
-
-//############################################################################
-//      バージョン対応用定義群
-//############################################################################
 
 //----------------------------------------------------------------------------
 //      Element/EnumElementの基底クラス
