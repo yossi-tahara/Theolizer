@@ -743,7 +743,7 @@ template<class tClassType>
 class TheolizerBase {};
 
 //      ---<<<< Non-keep-step型用プライマリー・テンプレート >>>---
-//          ポインタ/参照/手動型クラス
+//          プリミティブ/ポインタ/手動型クラス
 
 template<class tClassType, class tEnable>
 struct TheolizerNonKeepStep;

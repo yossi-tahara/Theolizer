@@ -1290,7 +1290,7 @@ std::cout << "Switcher<TheolizerNonKeepStep<"
           << THEOLIZER_INTERNAL_TYPE_NAME(typename tTheolizerNonKeepStep::Type)
           << ">::save()\n";
 
-        iInstance.save<tIsRegister>(iSerializer);
+        iInstance.template save<tIsRegister, tTrackingMode>(iSerializer);
     }
     // 回復
     static void load(tBaseSerializer& iSerializer, tTheolizerNonKeepStep& oInstance)
@@ -1299,7 +1299,7 @@ std::cout << "Switcher<TheolizerNonKeepStep<"
           << THEOLIZER_INTERNAL_TYPE_NAME(typename tTheolizerNonKeepStep::Type)
           << ">::load()\n";
 
-        oInstance.save<tIsRegister>(iSerializer);
+        oInstance.template load<tIsRegister, tTrackingMode>(iSerializer);
     }
 };
 
@@ -1378,6 +1378,11 @@ struct BranchedProcess
         size_t          iLineNo
     )
     {
+        // upVersionカウンタ・クリア
+        theolizer::internal::getUpVersionCount()=0;
+std::cout << "(0.1)UpVersionCount=" << theolizer::internal::getUpVersionCount()
+          << " " << THEOLIZER_INTERNAL_TYPE_NAME(tType) << std::endl;
+
         // 型情報取得中継クラス登録
         TypeFunctions<tSerializer>  aTypeFunctions;
 
@@ -1450,6 +1455,11 @@ struct BranchedProcess
         size_t          iLineNo
     )
     {
+        // upVersionCountのクリアと回復制御(processからの戻り時に元に戻す
+        AutoRestore<unsigned> aUpVersionCount(getUpVersionCount(), 0);
+std::cout << "(0.2)UpVersionCount=" << theolizer::internal::getUpVersionCount()
+          << " " << THEOLIZER_INTERNAL_TYPE_NAME(tType) << std::endl;
+
         // TypeInfoListへ登録
         RegisterType<tSerializer, tType, tTheolizerVersion>::getInstance();
 

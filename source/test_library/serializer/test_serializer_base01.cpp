@@ -76,22 +76,30 @@ int main(int argc, char** argv)
             int aInt(123);
             TheolizerNonKeepStep<int> aNonKeepStepInt(aInt);
             THEOLIZER_INTERNAL_SAVE(aSerializer, aNonKeepStepInt, TrackingMode::etmDefault);
-
+aStream << "\n";
             int* aIntPtr(&aInt);
             TheolizerNonKeepStep<int*> aNonKeepStepIntPtr(aIntPtr);
             THEOLIZER_INTERNAL_SAVE(aSerializer, aNonKeepStepIntPtr, TrackingMode::etmDefault);
+aStream << "\n";
 
+#if 0       // 参照を与えてはいけない(マクロでremove_referenceする)
             TheolizerNonKeepStep<int&> aNonKeepStepIntRef(aInt);
             THEOLIZER_INTERNAL_SAVE(aSerializer, aNonKeepStepIntRef, TrackingMode::etmDefault);
+aStream << "\n";
+#endif
 
             NonIntrusiveBase aNonIntrusiveBase;
+            aNonIntrusiveBase.mLong=456;
             TheolizerNonKeepStep<NonIntrusiveBase> aNonKeepStepNonIntrusiveBase(aNonIntrusiveBase);
-            THEOLIZER_INTERNAL_SAVE(aSerializer, aNonKeepStepNonIntrusiveBase, TrackingMode::etmDefault);
+            THEOLIZER_INTERNAL_SAVE(aSerializer, aNonKeepStepNonIntrusiveBase,
+                TrackingMode::etmDefault);
+aStream << "\n";
 
             // 以下は使わないが念のため動きを見る
             EnumTest aEnumTest(EnumTest::two);
             TheolizerNonKeepStep<EnumTest> aNonKeepStepEnumTest(aEnumTest);
             THEOLIZER_INTERNAL_SAVE(aSerializer, aNonKeepStepEnumTest, TrackingMode::etmDefault);
+aStream << "\n";
 
             aSerializer.clearTracking();
         }

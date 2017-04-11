@@ -237,6 +237,7 @@ struct VersionUpDownTest
             aClassKind=ClassKind::Kind1;
         }
 
+std::cout << "&mClassKind=" << &mClassKind << "\n";
         THEOLIZER_EQUAL(mClassKind, aClassKind);
         switch(mClassKind)
         {

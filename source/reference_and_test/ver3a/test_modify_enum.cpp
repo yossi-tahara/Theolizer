@@ -485,6 +485,7 @@ void loadModifyEnum(tSerializer& iSerializer)
             THEOLIZER_EQUAL(aErrorInfo.getErrorType(), theolizer::ErrorType::Warning,
                 aErrorInfo);
             iSerializer.resetError();
+std::cout << "&aEnumSymName8=" << &aEnumSymName8 << "\n";
             THEOLIZER_EQUAL(aEnumSymName8, eesnDefault);
         }
         else

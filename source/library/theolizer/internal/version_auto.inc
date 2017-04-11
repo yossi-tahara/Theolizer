@@ -984,9 +984,10 @@ if (theolizer::internal::getUpVersionCount())
                         THEOLIZER_GENERATED_VERSION_NO
                     >::upVersion(*this, *(mTheolizerSpecials.mParentVersion));
 
-                    // バージョン・アップ開始(++upVersionカウンタ)
+                    // バージョン・アップ(++upVersionカウンタ)
                     ++theolizer::internal::getUpVersionCount();
-std::cout << "UpVersionCount=" << theolizer::internal::getUpVersionCount() << std::endl;
+std::cout << "(3)UpVersionCount=" << theolizer::internal::getUpVersionCount()
+          << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(*this) << std::endl;
 }
                     mTheolizerSpecials.mParentVersion->mTheolizerSpecials.mIsLoading
                         =mTheolizerSpecials.mIsLoading;
@@ -1191,6 +1192,8 @@ THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
 
         // バージョン・アップ開始(upVersionカウンタ=1)
         theolizer::internal::getUpVersionCount()=1;
+std::cout << "(2)UpVersionCount=" << theolizer::internal::getUpVersionCount()
+          << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(*this) << std::endl;
     }
 }
 
@@ -1326,6 +1329,8 @@ THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion<tBaseSerializer, 1>::loadClass
 
     // バージョン・アップ開始(upVersionカウンタ=1)
     theolizer::internal::getUpVersionCount()=1;
+std::cout << "(1)UpVersionCount=" << theolizer::internal::getUpVersionCount()
+          << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(*this) << std::endl;
 }
 
 //----------------------------------------------------------------------------
@@ -1403,9 +1408,6 @@ THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::saveClass
     unsigned iVersionNo
 )
 {
-    // upVersionカウンタ・クリア
-    theolizer::internal::getUpVersionCount()=0;
-
     typedef THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
     <
         theolizer::internal::BaseSerializer,
@@ -1432,9 +1434,6 @@ THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::loadClass
     unsigned iVersionNo
 )
 {
-    // upVersionカウンタ・クリア
-    theolizer::internal::getUpVersionCount()=0;
-
     typedef THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
     <
         theolizer::internal::BaseSerializer,
@@ -1447,9 +1446,6 @@ THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::loadClass
             new TheolizerVersion(*ioPointer, iVersionNo, false)
         );
     aVersion->loadClass(iSerializer, iVersionNo);
-
-    // upVersionカウンタ・クリア(後始末)
-    theolizer::internal::getUpVersionCount()=0;
 }
 
 //----------------------------------------------------------------------------

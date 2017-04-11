@@ -508,6 +508,7 @@ struct SharedPtrTable
     template<class, typename, class>                        friend struct LoadPointer;      \
     template<typename...>                                   friend struct ParameterName;    \
     template<class>                             friend struct ::TheolizerNonIntrusive;      \
+    template<class, class>                      friend struct ::TheolizerNonKeepStep;       \
     template<class>                             friend class TypeFunctions;                 \
     template<class, class, class, bool, bool>   friend class RegisterType;                  \
                                                 friend class BaseTypeInfo;                  \
@@ -1405,6 +1406,15 @@ void loadClass(BaseSerializer& iBaseSerializer, tVersionType& iVersion)
 {
     iBaseSerializer.loadClassImpl(iVersion);
 }
+
+// ***************************************************************************
+//      現在処理中のSerializerの状態獲得
+// ***************************************************************************
+
+THEOLIZER_INTERNAL_DLL bool isLastVersion();
+THEOLIZER_INTERNAL_DLL bool isSaver();
+THEOLIZER_INTERNAL_DLL bool duringBackup();
+THEOLIZER_INTERNAL_DLL unsigned& getUpVersionCount();
 
 //############################################################################
 //      std::shared_ptrサポート

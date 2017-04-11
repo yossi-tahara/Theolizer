@@ -184,38 +184,6 @@ internal::ScopeExit<tReleaser> makeScopeExit(tReleaser &&iReleaser) noexcept
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
-//      ヘルパー・クラス
-//----------------------------------------------------------------------------
-
-namespace internal
-{
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
-
-template<typename tType>
-class AutoRestore
-{
-    tType   mBackup;
-    tType&  mTarget;
-
-public:
-    explicit AutoRestore(tType& iTarget, tType iInitialValue) :
-                    mBackup(iTarget),   // iTargetの値をmBackupへバックアップ
-                    mTarget(iTarget)    // iTargetのアドレスをmTargetへ設定
-    {
-        mTarget=iInitialValue;
-    }
-    ~AutoRestore()
-    {
-        mTarget=mBackup;
-    }
-    AutoRestore(AutoRestore const&) = delete;
-    AutoRestore& operator=(AutoRestore const&) = delete;
-};
-
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
-}   // namespace internal
-
-//----------------------------------------------------------------------------
 //      本体
 //----------------------------------------------------------------------------
 
