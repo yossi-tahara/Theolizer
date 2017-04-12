@@ -560,41 +560,60 @@ struct ArrayClass::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
     static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
     {
 #ifndef NO_ARRAY
-        for (std::size_t i=0; i < oNextVersion.mArrayInc.size(); ++i) {
-            for (std::size_t j=0; j < oNextVersion.mArrayInc[i].size(); ++j) {
-                for (std::size_t k=0; k < oNextVersion.mArrayInc[i][j].size(); ++k) {
-                    if ((i==0)&&(j==0)&&(k<2)) {
-                    } else {
-//std::cout << "upVersion() : mArrayInc[" << i << "][" << j << "][" << k << "]="
-//          << oNextVersion.mArrayInc[i][j][k] << "\n";
+        for (std::size_t i=0; i < oNextVersion.mArrayInc.size(); ++i)
+        {
+            for (std::size_t j=0; j < oNextVersion.mArrayInc[i].size(); ++j)
+            {
+                for (std::size_t k=0; k < oNextVersion.mArrayInc[i][j].size(); ++k)
+                {
+                    if ((i==0)&&(j==0)&&(k<2))
+                    {
+                    }
+                    else
+                    {
+std::cout << "upVersion() : mArrayInc[" << i << "][" << j << "][" << k << "]="
+          << oNextVersion.mArrayInc[i][j][k] << "\n";
                         oNextVersion.mArrayInc[i][j][k]=99;
                     }
                 }
             }
         }
 
-        for (std::size_t i=0; i < oNextVersion.mClassArrayInc.size(); ++i) {
-            for (std::size_t j=0; j < oNextVersion.mClassArrayInc[i].size(); ++j) {
-                for (std::size_t k=0; k < oNextVersion.mClassArrayInc[i][j].size(); ++k) {
-                    if ((i==0)&&(j==0)&&(k<2)) {
-                    } else {
-//std::cout << "upVersion() : mClassArrayInc[" << i << "][" << j << "][" << k << "]="
-//          << oNextVersion.mClassArrayInc[i][j][k].mShort << "\n";
-                        oNextVersion.mClassArrayInc[i][j][k].mShort=999;
-                        oNextVersion.mClassArrayInc[i][j][k].mShortTheolizerSucceed=true;
+        for (std::size_t i=0; i < oNextVersion.mClassArrayInc.size(); ++i)
+        {
+            for (std::size_t j=0; j < oNextVersion.mClassArrayInc[i].size(); ++j)
+            {
+                for (std::size_t k=0; k < oNextVersion.mClassArrayInc[i][j].size(); ++k)
+                {
+                    if ((i==0)&&(j==0)&&(k<2))
+                    {
+                    }
+                    else
+                    {
+std::cout << "upVersion() : mClassArrayInc[" << i << "][" << j << "][" << k << "]="
+          << oNextVersion.mClassArrayInc[i][j][k].mShort << "\n";
+                        oNextVersion.mClassArrayInc[i][j][k].mShort.
+                            set(999, iNowVersion.mClassArrayInc[0].mShort.getDoSucceed());
                     }
                 }
             }
         }
 
-        for (std::size_t i=0; i < oNextVersion.mEnumArrayInc.size(); ++i) {
-            for (std::size_t j=0; j < oNextVersion.mEnumArrayInc[i].size(); ++j) {
-                for (std::size_t k=0; k < oNextVersion.mEnumArrayInc[i][j].size(); ++k) {
-                    if ((i==0)&&(j==0)&&(k<2)) {
-                    } else {
-//std::cout << "upVersion() : mEnumArrayInc[" << i << "][" << j << "][" << k << "]="
-//          << oNextVersion.mEnumArrayInc[i][j][k] << "\n";
-                        oNextVersion.mEnumArrayInc[i][j][k]=1;
+        for (std::size_t i=0; i < oNextVersion.mEnumArrayInc.size(); ++i)
+        {
+            for (std::size_t j=0; j < oNextVersion.mEnumArrayInc[i].size(); ++j)
+            {
+                for (std::size_t k=0; k < oNextVersion.mEnumArrayInc[i][j].size(); ++k)
+                {
+                    if ((i==0)&&(j==0)&&(k<2))
+                    {
+                    }
+                    else
+                    {
+std::cout << "upVersion() : mEnumArrayInc[" << i << "][" << j << "][" << k << "]="
+          << oNextVersion.mEnumArrayInc[i][j][k].getUnderlyingType() << "\n";
+                        oNextVersion.mEnumArrayInc[i][j][k].
+                            set(1, iNowVersion.mEnumArrayInc[0].getDoSucceed());
                     }
                 }
             }

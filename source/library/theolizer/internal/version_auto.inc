@@ -518,10 +518,8 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
 //          enum型と歩調を合わせるために定義する
 
     typedef TheolizerVersion AsElementOfArray;
-    AsElementOfArray& getAccess()
-    {
-        return *this;
-    }
+    AsElementOfArray&       getAccess()       { return *this; }
+    AsElementOfArray const& getAccess() const { return *this; }
 
 //      ---<<< 引き継ぎフラグ定義 >>>---
 
@@ -800,11 +798,13 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
+                    ,THEOLIZER_INTERNAL_FIRST dName(                        \
+                        std::move(iSameVersion.THEOLIZER_INTERNAL_FIRST dName))\
                     ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
+                    ,THEOLIZER_INTERNAL_FIRST dName(                        \
+                        std::move(iSameVersion.THEOLIZER_INTERNAL_FIRST dName))\
                     ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
@@ -849,13 +849,11 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,THEOLIZER_INTERNAL_FIRST dName(                        \
-                        mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get())\
+                    ,THEOLIZER_INTERNAL_FIRST dName()                       \
                     ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,THEOLIZER_INTERNAL_FIRST dName(                        \
-                        mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get())\
+                    ,THEOLIZER_INTERNAL_FIRST dName()                       \
                     ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \

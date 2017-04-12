@@ -316,19 +316,18 @@ std::cout << "    mIsChanged           =" << mIsChanged << "\n";
 std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
     }
 
-//      ---<<< 中身へのアクセス用 >>>---
+//      ---<<< 配列処理の中身へのアクセス用 >>>---
 
-    typedef BaseType AsElementOfArray;
-    AsElementOfArray& getAccess()
-    {
-        return mValue;
-    }
+    typedef TheolizerVersion AsElementOfArray;
+    AsElementOfArray&       getAccess()       { return *this; }
+    AsElementOfArray const& getAccess() const { return *this; }
 
 //      ---<<< initialize(), up/downVersion()関数内でのアクセス用 >>>---
 
-    operator TheolizerTarget() const { return static_cast<TheolizerTarget>(mValue); }
-    TheolizerTarget  get() const { return static_cast<TheolizerTarget>(mValue); }
-    BaseType getIntegral() const { return mValue; }
+    operator TheolizerTarget()   const { return static_cast<TheolizerTarget>(mValue); }
+    TheolizerTarget get()        const { return static_cast<TheolizerTarget>(mValue); }
+    BaseType getUnderlyingType() const { return mValue; }
+    bool getDoSucceed()          const { return mDoSucceed; }
 
 //----------------------------------------------------------------------------
 //      コンストラクタ(次バージョンからコンストラクト)
@@ -519,14 +518,14 @@ std::cout << "enum::upVersion<"
             if (mValue == mParentVersion->kEnumElementList[i].mPrevValue)
             {
                 *mParentVersion=mParentVersion->kEnumElementList[i].mValues[0];
-std::cout << "    (1)*mParentVersion=" << mParentVersion->getIntegral() << ";\n";
+std::cout << "    (1)*mParentVersion=" << mParentVersion->getUnderlyingType() << ";\n";
     return;
             }
         }
 
         // 見つからなければ、警告しデフォルト値へ変換する。
         *mParentVersion=THEOLIZER_GENERATED_DEFAULT_VALUE;
-std::cout << "    (2)*mParentVersion=" << mParentVersion->getIntegral() << ";\n";
+std::cout << "    (2)*mParentVersion=" << mParentVersion->getUnderlyingType() << ";\n";
         THEOLIZER_INTERNAL_WARNING(
             "Can not transform Version.%1%'s value(%2%) to Version.%3%'s value. "
             "Please check THEOLIZER_ANNOTATE() for %4%.",

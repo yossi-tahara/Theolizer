@@ -24,6 +24,15 @@
 //      Begin
 //############################################################################
 
+// ***************************************************************************
+//          警告抑止
+// ***************************************************************************
+
+#ifdef _MSC_VER
+  #pragma warning(push)
+  #pragma warning(disable:4127)
+#endif
+
 namespace theolizer
 {
 namespace internal
@@ -55,7 +64,7 @@ struct ArrayDebugBase
     }
 };
 
-#if 0
+#if 1
 template<typename... tTypes>
 void outputArrayDebugImpl(tTypes...)
 {
@@ -64,19 +73,21 @@ void outputArrayDebugImpl(tTypes...)
 template<typename tFirst, typename... tTypes>
 void outputArrayDebugImpl(tFirst const& iFirst, tTypes const&... iTypes)
 {
-    std::cout << string(ArrayDebugBase::mtIndent*2+2, ' ')
+    std::cout << std::string(ArrayDebugBase::mtIndent*2+2, ' ')
               << "[" << &iFirst << "] "
               << THEOLIZER_INTERNAL_TYPE_NAME(tFirst) << std::endl;
-    if (sizeof...(tTypes)) {
+    if (sizeof...(tTypes))
+    {
         return outputArrayDebugImpl(iTypes...);
     }
 }
 
 template<typename... tTypes>
-unsigned outputArrayDebug(string const& iTitle, tTypes const&... iTypes)
+unsigned outputArrayDebug(std::string const& iTitle, tTypes const&... iTypes)
 {
-    std::cout << string(ArrayDebugBase::mtIndent*2, ' ') << iTitle << std::endl;
-    if (sizeof...(tTypes)) {
+    std::cout << std::string(ArrayDebugBase::mtIndent*2, ' ') << iTitle << std::endl;
+    if (sizeof...(tTypes))
+    {
         outputArrayDebugImpl(iTypes...);
     }
     return 0;
@@ -127,7 +138,7 @@ struct GetTheolizerTarget
 };
 
 template<typename tUnderlyingType>
-struct GetTheolizerTarget<tUnderlyingType&>
+struct GetTheolizerTarget< ::TheolizerNonKeepStep<tUnderlyingType, void> >
 {
     typedef tUnderlyingType   Type;
 };
@@ -263,7 +274,8 @@ struct ArrayManager<tUnderlyingType>
 
         // 中身へのアクセスを提供する
         typedef typename tUnderlyingType::AsElementOfArray  AsElementOfArray;
-        AsElementOfArray& getAccess() {return mElement.getAccess();}
+        AsElementOfArray&       getAccess()       {return mElement.getAccess();}
+        AsElementOfArray const& getAccess() const {return mElement.getAccess();}
 
         // 自分自身の配列を返却する(save/loadArrayへ渡すためと次元数削減時に使用)
         tUnderlyingType& get() {return mElement;}
@@ -303,24 +315,28 @@ struct ArrayManager<tUnderlyingType>
 
 //      --- コピー演算子 ---
 
+#if 0
         TheolizerVersion& operator=(TheolizerVersion const& iRhs)
         {
             if (&iRhs != this) copyData(mElement, iRhs.mElement);
             return *this;
         }
+#endif
     };
 };
 
-//      ---<<< 基本型のTheolizerVersion<>(参照:Non-keep-step型用) >>>---
+//      ---<<< 基本型のTheolizerVersion<>(Non-keep-step型用) >>>---
 
-template<typename tUnderlyingType>
-struct ArrayManager<tUnderlyingType&>   // tUnderlyingTypeの参照がここで外れる
+template<typename tPrimitiveType>
+struct ArrayManager< ::TheolizerNonKeepStep<tPrimitiveType, void> >
 {
+    typedef ::TheolizerNonKeepStep<tPrimitiveType, void>   TheolizerNonKeepStep;
+
     template<class tMidSerializer, unsigned tVersionNo>
     struct TheolizerVersion THEOLIZER_INTERNAL_DEBUG_ARRAY_BASE
     {
-        typedef void TheolizerArrayUnderlying;  // Switcher<>分岐用
-        typedef tUnderlyingType UnderlyingType; // Switcher<>処理用
+        typedef void TheolizerArrayUnderlying;          // Switcher<>分岐用
+        typedef TheolizerNonKeepStep UnderlyingType;    // Switcher<>処理用
 
         // Switcher<>分岐用
         struct Theolizer
@@ -332,24 +348,24 @@ struct ArrayManager<tUnderlyingType&>   // tUnderlyingTypeの参照がここで�
 //      --- 型定義 ---
 
         // ユーザ定義配列の基本型
-        typedef tUnderlyingType TheolizerTarget;
+        typedef tPrimitiveType TheolizerTarget;
 
         // ユーザ定義配列用内部配列の型
         typedef theolizer::internal::CoveredArray<TheolizerTarget> TargetCoveredArray;
 
 //      --- 実体定義 ---
 
-        DeferredGeneration<tUnderlyingType> mElementBody;   // 実体(削除された時用)
-        tUnderlyingType&                    mElement;       // 参照
+        TheolizerNonKeepStep    mElement;   // 実体
 
 //      --- アクセス用関数 ---
 
         // 中身へのアクセスを提供する
-        typedef tUnderlyingType AsElementOfArray;
-        AsElementOfArray& getAccess() {return mElement;}
+        typedef TheolizerNonKeepStep AsElementOfArray;
+        AsElementOfArray&       getAccess()       {return mElement;}
+        AsElementOfArray const& getAccess() const {return mElement;}
 
         // 自分自身の配列を返却する(save/loadArrayへ渡すためと次元数削減時に使用)
-        tUnderlyingType& get() {return mElement;}
+        TheolizerNonKeepStep& get() {return mElement;}
 
 //      --- 構築用関数 ---
 
@@ -375,23 +391,24 @@ struct ArrayManager<tUnderlyingType&>   // tUnderlyingTypeの参照がここで�
         // ムーブ・コンストラクタ(同バージョンから)
         TheolizerVersion(TheolizerVersion&& iElement) :
             THEOLIZER_INTERNAL_DEBUG_ARRAY(u8"NKS:Move    ", *this, iElement)
-            mElementBody(std::move(iElement.mElementBody)),
-            mElement(iElement.mElement)
+            mElement(std::move(iElement.mElement))
         { THEOLIZER_INTERNAL_DEBUG_ARRAY_END(); }
 
         // デフォルト・コンストラクタ
         TheolizerVersion() :
-            THEOLIZER_INTERNAL_DEBUG_ARRAY(u8"KS :Default ", *this)
-            mElement(mElementBody.get())
+            THEOLIZER_INTERNAL_DEBUG_ARRAY(u8"NKS :Default ", *this)
+            mElement()
         { THEOLIZER_INTERNAL_DEBUG_ARRAY_END(); }
 
 //      --- コピー演算子 ---
 
+#if 0
         TheolizerVersion& operator=(TheolizerVersion const& iRhs)
         {
             if (&iRhs != this) copyData(mElement, iRhs.mElement);
             return *this;
         }
+#endif
     };
 };
 
@@ -447,7 +464,10 @@ struct ArrayManager<tUnderlyingType, tFirst, tDims...>
         static std::size_t size() {return tFirst;}
 
         // 指定要素へのアクセスを提供する
-        ElementType& operator[](std::size_t iIndex)
+        ElementType&       operator[](std::size_t iIndex)
+        {return mArrayBody.mElements[iIndex].getAccess();}
+
+        ElementType const& operator[](std::size_t iIndex) const
         {return mArrayBody.mElements[iIndex].getAccess();}
 
         // 自分自身を返却する
@@ -594,11 +614,13 @@ struct ArrayManager<tUnderlyingType, tFirst, tDims...>
 
 //      --- コピー演算子 ---
 
+#if 0
         TheolizerVersion& operator=(TheolizerVersion const& iRhs)
         {
             if (&iRhs != this) copyData(mArrayBody.mElements, iRhs.mArrayBody.mElements);
             return *this;
         }
+#endif
     };
 };
 
@@ -633,5 +655,13 @@ struct ArrayManager<tUnderlyingType, tFirst, tDims...>::
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
 }   // namespace theolizer
+
+// ***************************************************************************
+//          警告抑止解除
+// ***************************************************************************
+
+#ifdef _MSC_VER
+  #pragma warning(pop)
+#endif
 
 #endif  // THEOLIZER_INTERNAL_VERSION_ARRAY_H

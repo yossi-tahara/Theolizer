@@ -274,8 +274,6 @@ std::cout << "TestISerializerNormal(" << iFileName << ", "
     THEOLIZER_PROCESS(aSerializer, aDouble);
     THEOLIZER_EQUAL(aDouble, 1.23456789012345);
 
-try
-{
     long double aLongDouble;
     THEOLIZER_PROCESS(aSerializer, aLongDouble);
 
@@ -289,13 +287,6 @@ try
         double temp=static_cast<double>(aLongDouble);
         THEOLIZER_EQUAL(temp, 1.23456789012345);
     }
-}
-catch(theolizer::ErrorInfo& e)
-{
-    std::cout << e.getMessage() << std::endl;
-exit(1);
-}
-
 
 //      ---<<< enum型 >>>---
 

@@ -25,6 +25,15 @@
 //      Begin
 //############################################################################
 
+// ***************************************************************************
+//          警告抑止
+// ***************************************************************************
+
+#ifdef _MSC_VER
+  #pragma warning(push)
+  #pragma warning(disable:4127)
+#endif
+
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
@@ -48,6 +57,11 @@ struct TheolizerNonKeepStep
 private:
     typedef theolizer::internal::TrackingMode   TrackingMode;
     typedef TheolizerNonKeepStep<Type>          This;
+
+//      ---<<< 配列処理用 >>>---
+
+    template<typename, std::size_t...>  friend struct theolizer::internal::ArrayManager;
+    Type& getData() { return *mTarget; }
 
 //      ---<<< 変更と引継ぎ >>>---
 
@@ -84,15 +98,15 @@ public:
 
 //      ---<<< 値取り出し >>>---
 
-//  Type get()      const { return *mTarget; }
-//  operator Type() const { return get(); }
+    Type const& get()      const { return *mTarget; }
+    operator Type const&() const { return get(); }
 
 //      ---<<< 保存／回復処理 >>>---
 
     template<bool tIsRegister, TrackingMode tTrackingMode, class tBaseSerializer>
     void save(tBaseSerializer& iSerializer)
     {
-std::cout << "TheolizerNonKeepStep<tClassType>\n";
+std::cout << "TheolizerNonKeepStep<tClassType>" << std::endl;
         theolizer::internal::Switcher<tBaseSerializer, Type, tIsRegister, tTrackingMode>::
             save(iSerializer, *mTarget);
     }
@@ -200,7 +214,7 @@ struct TheolizerNonKeepStepBase
 {
 protected:
     TheolizerNonKeepStepBase(tStringType const& iString="") : tStringType(iString) { }
-    TheolizerNonKeepStepBase(tStringType&& iString) : tStringType(std::forward(iString)) { }
+    TheolizerNonKeepStepBase(tStringType&& iString) : tStringType(std::move(iString)) { }
     tStringType& getData() { return *this; }
 
 private:
@@ -257,6 +271,11 @@ private:
     typedef theolizer::internal::TheolizerNonKeepStepBase<tPrimitiveType, This> Base;
     typedef theolizer::internal::TrackingMode                                   TrackingMode;
     typedef theolizer::internal::BaseSerializer                                 BaseSerializer;
+
+//      ---<<< 配列処理用 >>>---
+
+    template<typename, std::size_t...>  friend struct theolizer::internal::ArrayManager;
+    Type& getData() { return mValue; }
 
 //      ---<<< 変更と引継ぎ >>>---
 
@@ -327,9 +346,9 @@ public:
     This& operator=(Type iRhs)
     {
 std::cout << "TheolizerNonKeepStep<" << THEOLIZER_INTERNAL_TYPE_NAME(Type)
-          << ">::operator=(" << iRhs << ");\n";
-std::cout << "    mUpVersionCount    =" << mUpVersionCount << "\n";
-std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCount() << "\n";
+          << ">::operator=(" << iRhs << "); " << (void*)mTarget << std::endl;
+std::cout << "    mUpVersionCount    =" << mUpVersionCount << "" << std::endl;
+std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCount() << "" << std::endl;
 
         unsigned aUpVersionCount=theolizer::internal::getUpVersionCount();
 
@@ -357,9 +376,9 @@ std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCoun
             }
         }
 
-std::cout << "    mValue               =" << mValue << "\n";
-std::cout << "    mIsChanged           =" << mIsChanged << "\n";
-std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
+std::cout << "    mValue               =" << mValue << "" << std::endl;
+std::cout << "    mIsChanged           =" << mIsChanged << "" << std::endl;
+std::cout << "    mDoSucceed           =" << mDoSucceed << "" << std::endl;
         return *this;
     }
 
@@ -367,9 +386,9 @@ std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
     void set(Type iValue, bool iDoSucceed)  // iDoSucceedは引継ぎ元変数のmDoSucceed
     {
 std::cout << "TheolizerNonKeepStep<" << THEOLIZER_INTERNAL_TYPE_NAME(Type)
-          << ">::set(" << iValue << ", " << iDoSucceed << ");\n";
-std::cout << "    mUpVersionCount    =" << mUpVersionCount << "\n";
-std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCount() << "\n";
+          << ">::set(" << iValue << ", " << iDoSucceed << "); " << (void*)mTarget << std::endl;
+std::cout << "    mUpVersionCount    =" << mUpVersionCount << "" << std::endl;
+std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCount() << "" << std::endl;
 
         unsigned aUpVersionCount=theolizer::internal::getUpVersionCount();
 
@@ -396,9 +415,9 @@ std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCoun
                 mDoSucceed=true;
             }
         }
-std::cout << "    mValue               =" << mValue << "\n";
-std::cout << "    mIsChanged           =" << mIsChanged << "\n";
-std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
+std::cout << "    mValue               =" << mValue << "" << std::endl;
+std::cout << "    mIsChanged           =" << mIsChanged << "" << std::endl;
+std::cout << "    mDoSucceed           =" << mDoSucceed << "" << std::endl;
     }
 
 private:
@@ -406,8 +425,8 @@ private:
     void succeed(Type iValue, bool iDoSucceed)
     {
 std::cout << "TheolizerNonKeepStep<" << THEOLIZER_INTERNAL_TYPE_NAME(Type)
-          << ">::succeed(" << iValue << ");\n";
-std::cout << "    mIsChanged =" << mIsChanged << "\n";
+          << ">::succeed(" << iValue << "); " << (void*)mTarget << std::endl;
+std::cout << "    mIsChanged =" << mIsChanged << "" << std::endl;
 
         // setされていない時
         if (!mDoSucceed)
@@ -432,9 +451,9 @@ std::cout << "    mIsChanged =" << mIsChanged << "\n";
                 }
             }
         }
-std::cout << "    mValue               =" << mValue << "\n";
-std::cout << "    mIsChanged           =" << mIsChanged << "\n";
-std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
+std::cout << "    mValue               =" << mValue << "" << std::endl;
+std::cout << "    mIsChanged           =" << mIsChanged << "" << std::endl;
+std::cout << "    mDoSucceed           =" << mDoSucceed << "" << std::endl;
     }
 
 public:
@@ -442,28 +461,30 @@ public:
     ~TheolizerNonKeepStep()
     {
 std::cout << "TheolizerNonKeepStep<" << THEOLIZER_INTERNAL_TYPE_NAME(Type)
-          << ">::TheolizerNonKeepStep();\n";
-std::cout << "    mValue               =" << mValue << "\n";
-std::cout << "    mIsChanged           =" << mIsChanged << "\n";
-std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
+          << ">::~TheolizerNonKeepStep(); " << (void*)mTarget << std::endl;
+std::cout << "    mValue               =" << mValue << "" << std::endl;
+std::cout << "    mIsChanged           =" << mIsChanged << "" << std::endl;
+std::cout << "    mDoSucceed           =" << mDoSucceed << "" << std::endl;
 
         // 引継ぎ処理
         if (mNextPtr)
         {
-std::cout << "    mNextPtr->succeed(" << mValue << ");\n";
+std::cout << "    mNextPtr->succeed(" << mValue << ");" << std::endl;
             mNextPtr->succeed(mValue, mDoSucceed);
         }
         else if (mTarget)
         {
-std::cout << "    *mTarget" << mValue << ");\n";
+std::cout << "    *mTarget=" << mValue << ";" << std::endl;
             *mTarget=mValue;
         }
     }
 
 //      ---<<< 値取り出し >>>---
 
-    Type get()      const { return (mTarget)?*mTarget:mNextPtr->get(); }
+    Type get()      const { return mValue; }
     operator Type() const { return get(); }
+
+    bool getDoSucceed() const { return mDoSucceed; }
 
 //      ---<<< 保存／回復処理 >>>---
 
@@ -471,7 +492,8 @@ std::cout << "    *mTarget" << mValue << ");\n";
     template<bool tIsRegister, TrackingMode tTrackingMode, class tBaseSerializer>
     void save(tBaseSerializer& iSerializer)
     {
-std::cout << "TheolizerNonKeepStep<tPrimitiveType>\n";
+std::cout << "TheolizerNonKeepStep<tPrimitiveType>::save(" << mValue << ") "
+          << (void*)mTarget << std::endl;
         if (tTrackingMode == TrackingMode::etmDefault)
         {
             iSerializer.savePrimitive(mValue);
@@ -508,6 +530,7 @@ std::cout << "TheolizerNonKeepStep<tPrimitiveType>\n";
     template<bool tIsRegister, TrackingMode tTrackingMode, class tBaseSerializer>
     void load(tBaseSerializer& iSerializer)
     {
+        mDoSucceed=true;
         if (tTrackingMode == TrackingMode::etmDefault)
         {
             iSerializer.loadPrimitive(mValue);
@@ -534,6 +557,8 @@ std::cout << "TheolizerNonKeepStep<tPrimitiveType>\n";
                 iSerializer.loadPrimitive(mValue);
             }
         }
+std::cout << "TheolizerNonKeepStep<tPrimitiveType>::load(" << mValue << ") "
+          << (void*)mTarget << std::endl;
     }
 };
 
@@ -1097,7 +1122,7 @@ struct EnumElement : public ElementBase
     THEOLIZER_INTERNAL_VERSION_EV(dName, dNextName, dTrack, dDest,          \
         (theolizer::internal::Array<THEOLIZER_INTERNAL_UNPAREN dType, __VA_ARGS__>), 0,\
         (typename theolizer::internal::ArrayManager<                        \
-            THEOLIZER_INTERNAL_UNPAREN dType&, __VA_ARGS__>::template       \
+            THEOLIZER_INTERNAL_NON_KEEP_STEP(dType), __VA_ARGS__>::template \
                 TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO>),\
         TS:_THEOLIZER_INTERNAL_ELEMENT_AN(dName,dNextName,dTrack,\\dDest,\\dType,__VA_ARGS__),\
         DEF)
@@ -1107,7 +1132,7 @@ struct EnumElement : public ElementBase
     THEOLIZER_INTERNAL_VERSION_EV_DEL(dName, dNextName, dTrack, dDest,      \
         (theolizer::internal::Array<THEOLIZER_INTERNAL_UNPAREN dType, __VA_ARGS__>), 0,\
         (typename theolizer::internal::ArrayManager<                        \
-            THEOLIZER_INTERNAL_UNPAREN dType&, __VA_ARGS__>::template       \
+            THEOLIZER_INTERNAL_NON_KEEP_STEP(dType), __VA_ARGS__>::template \
                 TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO>),\
         TS:_THEOLIZER_INTERNAL_ELEMENT_AN(dName,dNextName,dTrack,\\dDest,\\dType,__VA_ARGS__))
 
@@ -1427,5 +1452,13 @@ return ret;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
 }   // namespace theolizer
+
+// ***************************************************************************
+//          警告抑止解除
+// ***************************************************************************
+
+#ifdef _MSC_VER
+  #pragma warning(pop)
+#endif
 
 #endif  // THEOLIZER_INTERNAL_CORE_H

@@ -131,7 +131,9 @@ std::cout << "TestOSerializerNormal2(" << iFileName << ", "
     {
         aArrayClass.mEnumArrayDec[i]=static_cast<EnumTest>(i%3);
     }
+std::cout << "pre  aArrayClass(save)" << std::endl;
     THEOLIZER_PROCESS(aSerializer, aArrayClass);
+std::cout << "post aArrayClass(save)" << std::endl;
 
 //      ---<<< 生配列(クラス・テンプレート内) >>>---
 
@@ -207,12 +209,24 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
     THEOLIZER_PROCESS(aSerializer, aArray);
     for (std::size_t i=0; i < std::extent<decltype(aArray), 0>::value; ++i)
         for (std::size_t j=0; j < std::extent<decltype(aArray), 1>::value; ++j)
-            THEOLIZER_EQUAL(aArray[i][j], static_cast<int>(10*i+j));
+            THEOLIZER_EQUAL(aArray[i][j], static_cast<int>(10*i+j), i, j);
 
 //      ---<<< 生配列(クラス内) >>>---
 
     ArrayClass aArrayClass;
+std::cout << "pre  aArrayClass(load)\n";
     THEOLIZER_PROCESS(aSerializer, aArrayClass);
+std::cout << "    &(aArrayClass.mArrayInc[0][0][0])=" << &(aArrayClass.mArrayInc[0][0][0]) << "\n";
+std::cout << "    &(aArrayClass.mArrayInc[0][0][1])=" << &(aArrayClass.mArrayInc[0][0][1]) << "\n";
+std::cout << "    &(aArrayClass.mArrayDec[0])      =" << &(aArrayClass.mArrayDec[0]) << "\n";
+std::cout << "    &(aArrayClass.mArrayDec[1])      =" << &(aArrayClass.mArrayDec[1]) << "\n";
+std::cout << "    &(aArrayClass.mEnumArrayInc[0][0][2])=" << &(aArrayClass.mEnumArrayInc[0][0][2])
+      << "\n";
+std::cout << "    &(aArrayClass.mEnumArrayInc[0][0][3])=" << &(aArrayClass.mEnumArrayInc[0][0][3])
+      << "\n";
+
+
+std::cout << "post aArrayClass(load)\n";
 
     // 最新版のままの場合
 #ifndef NO_ARRAY
@@ -229,14 +243,15 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
                     THEOLIZER_EQUAL
                     (
                         aArrayClass.mArrayInc[i][j][k],
-                        static_cast<short>(1000+i*100+j*10+k)
+                        static_cast<short>(1000+i*100+j*10+k),
+                            i, j, k
                     );
                 }
             }
         }
         for (std::size_t i=0; i < std::extent<decltype(aArrayClass.mArrayDec), 0>::value; ++i)
         {
-            THEOLIZER_EQUAL(aArrayClass.mArrayDec[i], 2000+i);
+            THEOLIZER_EQUAL(aArrayClass.mArrayDec[i], 2000+i, i);
         }
 
         // クラス配列
@@ -250,14 +265,15 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
                     THEOLIZER_EQUAL
                     (
                         aArrayClass.mClassArrayInc[i][j][k].mShort,
-                        static_cast<short>(3000+i*100+j*10+k)
+                        static_cast<short>(3000+i*100+j*10+k),
+                            i, j, k
                     );
                 }
             }
         }
         for (std::size_t i=0; i < std::extent<decltype(aArrayClass.mClassArrayDec), 0>::value; ++i)
         {
-            THEOLIZER_EQUAL(aArrayClass.mClassArrayDec[i].mShort, static_cast<short>(4000+i));
+            THEOLIZER_EQUAL(aArrayClass.mClassArrayDec[i].mShort, static_cast<short>(4000+i), i);
         }
 
         // enum配列
@@ -272,7 +288,8 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
                     THEOLIZER_EQUAL
                     (
                         aArrayClass.mEnumArrayInc[i][j][k],
-                        static_cast<EnumTest>(k%3)
+                        static_cast<EnumTest>(k%3),
+                            i, j, k
                     );
                 }
             }
@@ -283,7 +300,7 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
             THEOLIZER_EQUAL
             (
                 aArrayClass.mEnumArrayDec[i],
-                static_cast<EnumTest>(i%3)
+                static_cast<EnumTest>(i%3), i
             );
         }
     }
@@ -304,19 +321,21 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
                         THEOLIZER_EQUAL
                         (
                             aArrayClass.mArrayInc[i][j][k],
-                            static_cast<short>(1000+i*100+j*10+k)
+                            static_cast<short>(1000+i*100+j*10+k),
+                            i, j, k
                         );
                     }
                     else
                     {
-                        THEOLIZER_EQUAL(aArrayClass.mArrayInc[i][j][k], static_cast<short>(99));
+                        THEOLIZER_EQUAL(aArrayClass.mArrayInc[i][j][k], static_cast<short>(99),
+                            i, j, k);
                     }
                 }
             }
         }
         for (std::size_t i=0; i < std::extent<decltype(aArrayClass.mArrayDec), 0>::value; ++i)
         {
-            THEOLIZER_EQUAL(aArrayClass.mArrayDec[i], static_cast<unsigned>(2000+i));
+            THEOLIZER_EQUAL(aArrayClass.mArrayDec[i], static_cast<unsigned>(2000+i), i);
         }
 
         // クラス配列
@@ -332,7 +351,8 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
                         THEOLIZER_EQUAL
                         (
                             aArrayClass.mClassArrayInc[i][j][k].mShort,
-                            static_cast<short>(3000+i*100+j*10+k)
+                            static_cast<short>(3000+i*100+j*10+k),
+                            i, j, k
                         );
                     }
                     else
@@ -340,7 +360,8 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
                         THEOLIZER_EQUAL
                         (
                             aArrayClass.mClassArrayInc[i][j][k].mShort,
-                            static_cast<short>(999)
+                            static_cast<short>(999),
+                            i, j, k
                         );
                     }
                 }
@@ -348,7 +369,7 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
         }
         for (std::size_t i=0; i < std::extent<decltype(aArrayClass.mClassArrayDec), 0>::value; ++i)
         {
-            THEOLIZER_EQUAL(aArrayClass.mClassArrayDec[i].mShort, static_cast<short>(4000+i));
+            THEOLIZER_EQUAL(aArrayClass.mClassArrayDec[i].mShort, static_cast<short>(4000+i), i);
         }
 
         // enum配列
@@ -364,7 +385,8 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
                         THEOLIZER_EQUAL
                         (
                             aArrayClass.mEnumArrayInc[i][j][k],
-                            static_cast<EnumTest>(k%3)
+                            static_cast<EnumTest>(k%3),
+                            i, j, k
                         );
                     }
                     else
@@ -372,7 +394,8 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
                         THEOLIZER_EQUAL
                         (
                             aArrayClass.mEnumArrayInc[i][j][k],
-                            static_cast<EnumTest>(1)
+                            static_cast<EnumTest>(1),
+                            i, j, k
                         );
                     }
                 }
@@ -384,7 +407,7 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
             THEOLIZER_EQUAL
             (
                 aArrayClass.mEnumArrayDec[i],
-                static_cast<EnumTest>(i%3)
+                static_cast<EnumTest>(i%3), i
             );
         }
     }

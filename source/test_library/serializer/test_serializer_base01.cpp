@@ -62,6 +62,7 @@ void TestEof(const theolizer::CheckMode iCheckMode);
 
 int main(int argc, char** argv)
 {
+    int ret=0;
 //  theolizer::DisplayPass aDisplayPass;
 
     try
@@ -74,6 +75,8 @@ int main(int argc, char** argv)
             theolizer::JsonOSerializer<>  aSerializer(aStream);
 
             int aInt(123);
+            THEOLIZER_PROCESS_POINTEE(aSerializer, aInt);
+
             TheolizerNonKeepStep<int> aNonKeepStepInt(aInt);
             THEOLIZER_INTERNAL_SAVE(aSerializer, aNonKeepStepInt, TrackingMode::etmDefault);
 aStream << "\n";
@@ -472,6 +475,7 @@ aStream << "\n";
     catch(theolizer::ErrorInfo& e)
     {
         std::cout << e.getMessage() << std::endl;
+        ret=1;
     }
 
 // ***************************************************************************
@@ -481,5 +485,5 @@ aStream << "\n";
     theolizer::removeFile("ErrorLogFile0.log");
     theolizer::removeFile("ErrorLogFile1.log");
 
-    return 0;
+    return ret;
 }
