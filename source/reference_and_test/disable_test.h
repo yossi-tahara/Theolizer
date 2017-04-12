@@ -25,8 +25,8 @@
 //      basicテストの有効／無効
 // ***************************************************************************
 
-//#define DISABLE_BASIC_PROCESS_TEST
-//#define DISABLE_CLASS_VARIATION_TEST
+#define DISABLE_BASIC_PROCESS_TEST
+#define DISABLE_CLASS_VARIATION_TEST
 //#define DISABLE_ENUM_VARIATION_TEST
 #define DISABLE_OBJECT_TRACKING_TEST
 #define DISABLE_OBJECT_TRACKING2_TEST
@@ -45,6 +45,6 @@
 #define DISABLE_MODIFY_CLASS_TEST_ORDER
 #define DISABLE_MODIFY_CLASS_TEST_ARRAY
 
-//#define DISABLE_MODIFY_COMPLEX_TEST
+#define DISABLE_MODIFY_COMPLEX_TEST
 
 #endif  // DISABLE_TEST_H

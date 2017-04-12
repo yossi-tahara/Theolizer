@@ -250,6 +250,8 @@ std::cout << "enum::TheolizerVersion<" << THEOLIZER_GENERATED_VERSION_NO
 std::cout << "    mUpVersionCount    =" << mUpVersionCount << "\n";
 std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCount() << "\n";
 
+        unsigned aUpVersionCount=theolizer::internal::getUpVersionCount();
+
         // バージョン・ダウン中
         if (aUpVersionCount == 0)
         {   // 使用禁止
@@ -323,18 +325,6 @@ std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
     }
 
 //      ---<<< initialize(), up/downVersion()関数内でのアクセス用 >>>---
-
-#if 0
-    #define THEOLIZER_INTERNAL_COMPARE(dCmp)                            \
-        bool operator dCmp(BaseType iRhs) const { return mValue dCmp iRhs; }
-        THEOLIZER_INTERNAL_COMPARE(==)
-        THEOLIZER_INTERNAL_COMPARE(!=)
-        THEOLIZER_INTERNAL_COMPARE(<)
-        THEOLIZER_INTERNAL_COMPARE(>)
-        THEOLIZER_INTERNAL_COMPARE(<=)
-        THEOLIZER_INTERNAL_COMPARE(>=)
-    #undef  THEOLIZER_INTERNAL_COMPARE
-#endif
 
     operator TheolizerTarget() const { return static_cast<TheolizerTarget>(mValue); }
     TheolizerTarget  get() const { return static_cast<TheolizerTarget>(mValue); }

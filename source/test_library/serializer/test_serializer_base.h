@@ -138,17 +138,17 @@ struct IntrusiveBase::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
     // 保存／回復の両方で新版から旧版へ変換する
     static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
     {
-        oNowVersion.mInt += 10000;
-        oNowVersion.mShort += 10000;
-        oNowVersion.mString.append("-Appended");
+        oNowVersion.mInt   = iNextVersion.mInt  +10000;
+        oNowVersion.mShort = iNextVersion.mShort+10000;
+        oNowVersion.mString= iNextVersion.mString+"-Appended";
     }
 
     // 回復時、旧版から新版へ変換する
     static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
     {
-        oNextVersion.mInt -= 10000;
-        oNextVersion.mShort -= 10000;
-        oNextVersion.mString=oNextVersion.mString.substr(0, oNextVersion.mString.size()-9);
+        oNextVersion.mInt   = iNowVersion.mInt  -10000;
+        oNextVersion.mShort = iNowVersion.mShort-10000;
+        oNextVersion.mString= iNowVersion.mString.substr(0, iNowVersion.mString.size()-9);
     }
 };
 
@@ -214,7 +214,7 @@ struct IntrusiveDerived::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 2>
     // 保存／回復の両方で新版から旧版へ変換する
     static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
     {
-        oNowVersion.mUShort1 += 1;
+        oNowVersion.mUShort1 = iNextVersion.mUShort2+1;
     }
 
     // 回復時、旧版から新版へ変換する
@@ -236,7 +236,7 @@ struct IntrusiveDerived::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
     // 保存／回復の両方で新版から旧版へ変換する
     static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
     {
-        oNowVersion.mUShort0 += 1;
+        oNowVersion.mUShort0 = iNextVersion.mUShort1+1;
     }
 
     // 回復時、旧版から新版へ変換する

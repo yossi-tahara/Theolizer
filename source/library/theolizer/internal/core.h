@@ -25,6 +25,8 @@
 //      Begin
 //############################################################################
 
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+
 // ***************************************************************************
 //      TheolizerNonKeepStepクラス
 //          プリミティブ    部分特殊化
@@ -32,8 +34,6 @@
 //              ポインタ
 //              非侵入型
 // ***************************************************************************
-
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 //----------------------------------------------------------------------------
 //      プライマリー
@@ -47,51 +47,221 @@ struct TheolizerNonKeepStep
 
 private:
     typedef theolizer::internal::TrackingMode   TrackingMode;
-    Type&       mTarget;
+    typedef TheolizerNonKeepStep<Type>          This;
+
+//      ---<<< 変更と引継ぎ >>>---
+
+    // 削除時の実体
+    Type        mValue;
+
+    // ターゲット
+    Type*       mTarget;
 
 public:
-    TheolizerNonKeepStep(Type& iTarget) : mTarget(iTarget) { }
+    // ターゲットからのコンストラクタ
+    TheolizerNonKeepStep(Type& iTarget) :
+        mValue(),
+        mTarget(&iTarget)
+    { }
+
+    // 次からのコンストラクタ
+    TheolizerNonKeepStep(This& iNext) :
+        mValue(),
+        mTarget(iNext.mTarget)
+    { }
+
+    // ムーブ・コンストラクタ(配列処理用)
+    TheolizerNonKeepStep(This&& iNext) :
+        mValue(),
+        mTarget(iNext.mTarget)
+    { }
+
+    // デフォルト・コンストラクタ(次で削除されていた場合)
+    TheolizerNonKeepStep() :
+        mValue(),
+        mTarget(&mValue)
+    { }
+
+//      ---<<< 値取り出し >>>---
+
+//  Type get()      const { return *mTarget; }
+//  operator Type() const { return get(); }
+
+//      ---<<< 保存／回復処理 >>>---
 
     template<bool tIsRegister, TrackingMode tTrackingMode, class tBaseSerializer>
     void save(tBaseSerializer& iSerializer)
     {
 std::cout << "TheolizerNonKeepStep<tClassType>\n";
         theolizer::internal::Switcher<tBaseSerializer, Type, tIsRegister, tTrackingMode>::
-            save(iSerializer, mTarget);
+            save(iSerializer, *mTarget);
     }
 
     template<bool tIsRegister, TrackingMode tTrackingMode, class tBaseSerializer>
     void load(tBaseSerializer& iSerializer)
     {
         theolizer::internal::Switcher<tBaseSerializer, Type, tIsRegister, tTrackingMode>::
-            load(iSerializer, mTarget);
+            load(iSerializer, *mTarget);
     }
 };
 
 //----------------------------------------------------------------------------
-//      プリミティブ用部分特殊化
+//      TheolizerNonKeepStepの分岐
 //----------------------------------------------------------------------------
 
+namespace theolizer
+{
+namespace internal
+{
+
+//      ---<<< プライマリー >>>---
+
+template<typename tPrimitiveType, class tThis, class tEnable=void>
+class TheolizerNonKeepStepBase { };
+
+//      ---<<< 数値型用部分特殊化 >>>---
+
+template<typename tArithmeticType, class tThis>
+class TheolizerNonKeepStepBase
+<
+    tArithmeticType,
+    tThis,
+    theolizer::internal::EnableIf<std::is_arithmetic<tArithmeticType>::value>
+>
+{
+    typedef tArithmeticType Type;
+    typedef     tThis       This;
+    Type    mData;
+protected:
+    TheolizerNonKeepStepBase(Type iData=0) : mData(iData) { }
+    Type& getData() { return mData; }
+
+    virtual This& operator=(Type iRhs)=0;
+    virtual ~TheolizerNonKeepStepBase() { }
+
+public:
+    // 各種演算子定義
 #if 0
+    // 下記関数は「グローバルなoperator dCmp(Type, Type)やoperator dOpe(Type, Type)と曖昧になる」
+    #define THEOLIZER_INTERNAL_COMPARE(dCmp)\
+        bool operator dCmp(Type iRhs) const { return mData dCmp iRhs; }\
+        friend bool operator dCmp(Type iLhs, This const& iRhs) { return iLhs dCmp iRhs.mData; }
+        THEOLIZER_INTERNAL_COMPARE(==)
+        THEOLIZER_INTERNAL_COMPARE(!=)
+        THEOLIZER_INTERNAL_COMPARE(<)
+        THEOLIZER_INTERNAL_COMPARE(>)
+        THEOLIZER_INTERNAL_COMPARE(<=)
+        THEOLIZER_INTERNAL_COMPARE(>=)
+    #undef  THEOLIZER_INTERNAL_COMPARE
+    #define THEOLIZER_INTERNAL_BINARY(dOpe)\
+        Type operator dOpe(Type iRhs) const { return mData dOpe iRhs; }\
+        friend Type operator dOpe(Type iLhs, This const& iRhs) { return iLhs dOpe iRhs.mData; }
+        THEOLIZER_INTERNAL_BINARY(+)
+        THEOLIZER_INTERNAL_BINARY(-)
+        THEOLIZER_INTERNAL_BINARY(*)
+        THEOLIZER_INTERNAL_BINARY(/)
+        THEOLIZER_INTERNAL_BINARY(%)
+        THEOLIZER_INTERNAL_BINARY(<<)
+        THEOLIZER_INTERNAL_BINARY(>>)
+        THEOLIZER_INTERNAL_BINARY(&)
+        THEOLIZER_INTERNAL_BINARY(^)
+        THEOLIZER_INTERNAL_BINARY(|)
+    #undef  THEOLIZER_INTERNAL_BINARY
+
+    #define THEOLIZER_INTERNAL_ASSIGN(dOpe)\
+        This& operator dOpe##=(Type iRhs) { return operator=(mData dOpe iRhs); }
+        THEOLIZER_INTERNAL_ASSIGN(+)
+        THEOLIZER_INTERNAL_ASSIGN(-)
+        THEOLIZER_INTERNAL_ASSIGN(*)
+        THEOLIZER_INTERNAL_ASSIGN(/)
+        THEOLIZER_INTERNAL_ASSIGN(%)
+        THEOLIZER_INTERNAL_ASSIGN(<<)
+        THEOLIZER_INTERNAL_ASSIGN(>>)
+        THEOLIZER_INTERNAL_ASSIGN(&)
+        THEOLIZER_INTERNAL_ASSIGN(^)
+        THEOLIZER_INTERNAL_ASSIGN(|)
+    #undef  THEOLIZER_INTERNAL_ASSIGN
+    This& operator++()     { return operator=(mData+1); }\
+    Type  operator++(Type) { Type temp=mData; operator=(mData+1); return temp; }
+    This& operator--()     { return operator=(mData-1); }\
+    Type  operator--(Type) { Type temp=mData; operator=(mData-1); return temp; }
+#endif
+};
+
+//      ---<<< 文字列型用部分特殊化 >>>---
+
+template<typename tStringType, class tThis>
+struct TheolizerNonKeepStepBase
+<
+    tStringType,
+    tThis,
+    theolizer::internal::EnableIf<theolizer::internal::IsString<tStringType>::value>
+> : public tStringType
+{
+protected:
+    TheolizerNonKeepStepBase(tStringType const& iString="") : tStringType(iString) { }
+    TheolizerNonKeepStepBase(tStringType&& iString) : tStringType(std::forward(iString)) { }
+    tStringType& getData() { return *this; }
+
+private:
+    // 禁止するメソッド
+    // Iterators
+    using tStringType::begin;
+    using tStringType::end;
+    using tStringType::rbegin;
+    using tStringType::rend;
+
+    // Capacity
+    using tStringType::resize;
+    using tStringType::clear;
+
+    // Element access
+    using tStringType::operator[];
+    using tStringType::at;
+
+    // Modifiers
+    using tStringType::operator+=;
+    using tStringType::append;
+    using tStringType::push_back;
+    using tStringType::assign;
+    using tStringType::insert;
+    using tStringType::erase;
+    using tStringType::replace;
+    using tStringType::swap;
+    using tStringType::pop_back;
+};
+
+}   // namespace internal
+}   // namespace theolizer
+
+//----------------------------------------------------------------------------
+//      TheolizerNonKeepStepプリミティブ用部分特殊化の実体部
+//----------------------------------------------------------------------------
+
 template<typename tPrimitiveType>
 struct TheolizerNonKeepStep
 <
     tPrimitiveType,
     theolizer::internal::EnableIf<theolizer::internal::IsPrimitive<tPrimitiveType>::value>
->
+> : public theolizer::internal::TheolizerNonKeepStepBase
+    <
+        tPrimitiveType,
+        TheolizerNonKeepStep<tPrimitiveType>
+    >
 {
     static const bool       kIsTheolizerNonKeepStep=true;
     typedef tPrimitiveType  Type;
 
 private:
-    typedef theolizer::internal::TrackingMode   TrackingMode;
-    typedef theolizer::internal::BaseSerializer BaseSerializer;
-    typedef TheolizerNonKeepStep<Type>          This;
+    typedef TheolizerNonKeepStep<Type>                                          This;
+    typedef theolizer::internal::TheolizerNonKeepStepBase<tPrimitiveType, This> Base;
+    typedef theolizer::internal::TrackingMode                                   TrackingMode;
+    typedef theolizer::internal::BaseSerializer                                 BaseSerializer;
 
 //      ---<<< 変更と引継ぎ >>>---
 
     // 実体
-    Type        mValue;
+    Type&       mValue;
     Type        mBackup;
 
     // 引継ぎ先（ターゲット or 次バージョンへのポインタ)
@@ -107,7 +277,8 @@ private:
 public:
     // ターゲットからのコンストラクタ
     TheolizerNonKeepStep(Type& iTarget) :
-        mValue(iTarget),
+        Base(iTarget),
+        mValue(Base::getData()),
         mBackup(),
         mTarget(&iTarget),
         mNextPtr(nullptr),
@@ -118,7 +289,8 @@ public:
 
     // 次からのコンストラクタ
     TheolizerNonKeepStep(This& iNext) :
-        mValue(iNext.mValue),
+        Base(iNext.mValue),
+        mValue(Base::getData()),
         mBackup(),
         mTarget(iNext.mTarget),
         mNextPtr(&iNext),
@@ -129,7 +301,8 @@ public:
 
     // ムーブ・コンストラクタ(配列処理用)
     TheolizerNonKeepStep(This&& iNext) :
-        mValue(std::move(iNext.mValue)),
+        Base(std::move(iNext.mValue)),
+        mValue(Base::getData()),
         mBackup(),
         mTarget(iNext.mTarget),
         mNextPtr(iNext.mNextPtr),
@@ -140,7 +313,8 @@ public:
 
     // デフォルト・コンストラクタ(次で削除されていた場合)
     TheolizerNonKeepStep() :
-        mValue(),
+        Base(),
+        mValue(Base::getData()),
         mBackup(),
         mTarget(nullptr),
         mNextPtr(nullptr),
@@ -197,6 +371,8 @@ std::cout << "TheolizerNonKeepStep<" << THEOLIZER_INTERNAL_TYPE_NAME(Type)
 std::cout << "    mUpVersionCount    =" << mUpVersionCount << "\n";
 std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCount() << "\n";
 
+        unsigned aUpVersionCount=theolizer::internal::getUpVersionCount();
+
         // バージョン・ダウン中
         if (aUpVersionCount == 0)
         {   // 使用禁止
@@ -225,6 +401,7 @@ std::cout << "    mIsChanged           =" << mIsChanged << "\n";
 std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
     }
 
+private:
     // 前バージョンのデストラクタから呼ばれる引継ぎ処理
     void succeed(Type iValue, bool iDoSucceed)
     {
@@ -260,6 +437,7 @@ std::cout << "    mIsChanged           =" << mIsChanged << "\n";
 std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
     }
 
+public:
     // デストラクタ(次バージョンへの引継ぎ実行)
     ~TheolizerNonKeepStep()
     {
@@ -283,16 +461,6 @@ std::cout << "    *mTarget" << mValue << ");\n";
     }
 
 //      ---<<< 値取り出し >>>---
-
-    #define THEOLIZER_INTERNAL_COMPARE(dCmp)                            \
-        bool operator dCmp(Type iRhs) const { return get() dCmp iRhs; }
-        THEOLIZER_INTERNAL_COMPARE(==)
-        THEOLIZER_INTERNAL_COMPARE(!=)
-        THEOLIZER_INTERNAL_COMPARE(<)
-        THEOLIZER_INTERNAL_COMPARE(>)
-        THEOLIZER_INTERNAL_COMPARE(<=)
-        THEOLIZER_INTERNAL_COMPARE(>=)
-    #undef  THEOLIZER_INTERNAL_COMPARE
 
     Type get()      const { return (mTarget)?*mTarget:mNextPtr->get(); }
     operator Type() const { return get(); }
@@ -368,7 +536,6 @@ std::cout << "TheolizerNonKeepStep<tPrimitiveType>\n";
         }
     }
 };
-#endif
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
@@ -783,6 +950,13 @@ struct EnumElement : public ElementBase
 };
 
 // ***************************************************************************
+//      Non-keep-step用定義
+// ***************************************************************************
+
+#define THEOLIZER_INTERNAL_NON_KEEP_STEP(dType)                             \
+    TheolizerNonKeepStep<typename std::remove_reference<THEOLIZER_INTERNAL_UNPAREN dType>::type>
+
+// ***************************************************************************
 //      バージョン定義(共通)
 // ***************************************************************************
 
@@ -870,13 +1044,13 @@ struct EnumElement : public ElementBase
 // 継続
 #define THEOLIZER_INTERNAL_ELEMENT_N(dName, dNextName, dTrack, dDest, dType)\
     THEOLIZER_INTERNAL_VERSION_EN(dName, dNextName, dTrack, dDest, dType,   \
-        (THEOLIZER_INTERNAL_UNREFERENCE(dType)),                            \
+        (THEOLIZER_INTERNAL_NON_KEEP_STEP(dType)),                          \
         TS:_THEOLIZER_INTERNAL_ELEMENT_N(dName,dNextName,dTrack,\\dDest,\\dType))
 
 // 次バージョンで削除
 #define THEOLIZER_INTERNAL_ELEMENT_N_DEL(dName, dNextName, dTrack, dDest, dType)\
     THEOLIZER_INTERNAL_VERSION_EN_DEL(dName, dNextName, dTrack, dDest, dType,\
-        (THEOLIZER_INTERNAL_UNREFERENCE(dType)),                            \
+        (THEOLIZER_INTERNAL_NON_KEEP_STEP(dType)),                          \
         TS:_THEOLIZER_INTERNAL_ELEMENT_N(dName,dNextName,dTrack,\\dDest,\\dType))
 
 //      ---<<< THEOLIZER_INTERNAL_VERSION_EV/_DEL()展開用補助マクロ >>>---

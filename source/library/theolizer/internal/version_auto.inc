@@ -497,10 +497,10 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
     #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
         #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,              \
             dTrack,dDest,dType,dVer,dAnno)                                  \
-                THEOLIZER_INTERNAL_UNPAREN dVer& THEOLIZER_INTERNAL_FIRST dName;
+                THEOLIZER_INTERNAL_UNPAREN dVer THEOLIZER_INTERNAL_FIRST dName;
         #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,          \
             dTrack,dDest,dType,dVer,dAnno)                                  \
-                THEOLIZER_INTERNAL_UNPAREN dVer& THEOLIZER_INTERNAL_FIRST dName;
+                THEOLIZER_INTERNAL_UNPAREN dVer THEOLIZER_INTERNAL_FIRST dName;
         #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,              \
             dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                      \
                 THEOLIZER_INTERNAL_UNPAREN dVer THEOLIZER_INTERNAL_FIRST dName;
@@ -695,6 +695,7 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
             }
         #endif
 
+#if 0
         // 最新版処理でないならバックアップする
         if (theolizer::internal::isLastVersion())
     return;
@@ -727,6 +728,7 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
             #undef  THEOLIZER_INTERNAL_VERSION_EV
             #undef  THEOLIZER_INTERNAL_VERSION_EV_DEL
         #endif
+#endif
     }
 
 //----------------------------------------------------------------------------
@@ -892,6 +894,7 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         // 各要素を必要に応じてリストアする(目標バージョンが自分でない時のみ)
         //  コンストラクト時にバックアップされた時。
         //  引き継ぎするもの(回復されたもの)はリストアしない
+#if 0
         if (mTheolizerBackups && mTheolizerBackups->mIsBackuped)
         {
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
@@ -964,6 +967,7 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
             #endif
         }
         #undef THEOLIZER_INTERNAL_SUCCEED
+#endif
 
         // 最新版でない時のみupVersion()有り
         #if (THEOLIZER_GENERATED_VERSION_NO != THEOLIZER_GENERATED_LAST_VERSION_NO)

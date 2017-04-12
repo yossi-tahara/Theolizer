@@ -1438,6 +1438,17 @@ ASTANALYZE_OUTPUT("    mObjectTracking=", mObjectTracking);
 
                 // 型取り出し
                 QualType qt=field->getType().getDesugaredType(*gASTContext);
+
+                // TheolizerNonKeepStepならば、
+                {
+                    CXXRecordDecl* crd=qt->getAsCXXRecordDecl();
+ASTANALYZE_OUTPUT("info TheolizerNonKeepStep : ", crd);
+if (crd)
+{
+    ASTANALYZE_OUTPUT(crd->getQualifiedNameAsString());
+}
+                }
+
                 Type const* type = qt.getTypePtr();
 
                 // 要素リストへ登録
