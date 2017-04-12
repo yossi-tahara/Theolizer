@@ -208,18 +208,33 @@ std::cout << "enum::TheolizerVersion<" << THEOLIZER_GENERATED_VERSION_NO
           << "); " << mTarget << "\n";
 std::cout << "    mUpVersionCount    =" << mUpVersionCount << "\n";
 std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCount() << "\n";
-        if ((mUpVersionCount == 0)
-         || (mUpVersionCount == theolizer::internal::getUpVersionCount()))
-        {
-            mUpVersionCount=theolizer::internal::getUpVersionCount();
-            mValue=iRhs;
 
-            // 回復中なら、管理フラグ更新
-            if (mUpVersionCount)
+        unsigned aUpVersionCount=theolizer::internal::getUpVersionCount();
+
+        // バージョン・ダウン中
+        if (aUpVersionCount == 0)
+        {
+            mValue=iRhs;
+        }
+
+        // 回復後のバージョン・アップ中、かつ、有効なset呼び出し無し
+        else if (!mDoSucceed)
+        {
+            // 最初の呼び出しなら、バックアップする
+            if (mUpVersionCount == 0)
             {
+                mBackup=mValue;
+                mUpVersionCount=aUpVersionCount;
+            }
+
+            // 最初の呼び出しと同じupVersion()からの呼び出し
+            if (mUpVersionCount == aUpVersionCount)
+            {
+                mValue=iRhs;
                 mIsChanged=true;
             }
         }
+
 std::cout << "    mValue               =" << mValue << "\n";
 std::cout << "    mIsChanged           =" << mIsChanged << "\n";
 std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
@@ -234,16 +249,28 @@ std::cout << "enum::TheolizerVersion<" << THEOLIZER_GENERATED_VERSION_NO
           << "); " << mTarget << "\n";
 std::cout << "    mUpVersionCount    =" << mUpVersionCount << "\n";
 std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCount() << "\n";
-        if ((mUpVersionCount == 0)
-         || (mUpVersionCount == theolizer::internal::getUpVersionCount()))
-        {
-            mUpVersionCount=theolizer::internal::getUpVersionCount();
-            mValue=iValue;
 
-            // 回復中なら、管理フラグ更新
-            if (mUpVersionCount)
+        // バージョン・ダウン中
+        if (aUpVersionCount == 0)
+        {   // 使用禁止
+            THEOLIZER_INTERNAL_ABORT("Do not call <member>.set() in downVersion().");
+        }
+
+        // 回復後のバージョン・アップ中、かつ、有効なset呼び出し
+        else if (iDoSucceed)
+        {
+            // 最初の呼び出しなら、バックアップする
+            if (mUpVersionCount == 0)
             {
-                mDoSucceed=iDoSucceed;
+                mBackup=mValue;
+                mUpVersionCount=aUpVersionCount;
+            }
+
+            // 最初の呼び出しと同じupVersion()からの呼び出し
+            if (mUpVersionCount == aUpVersionCount)
+            {
+                mValue=iValue;
+                mDoSucceed=true;
             }
         }
 std::cout << "    mValue               =" << mValue << "\n";
@@ -261,11 +288,13 @@ std::cout << "    mIsChanged =" << mIsChanged << "\n";
 
         // setされていない時
         if (!mDoSucceed)
-        {
-            // 引継ぎ無しならリストアする
+        {   // 引継ぎ無し
             if (!iDoSucceed)
-            {
-                mValue=mBackup;
+            {   // 変更されていたらリストアする
+                if (mIsChanged)
+                {
+                    mValue=mBackup;
+                }
             }
 
             // 引継ぎ有り
@@ -295,6 +324,7 @@ std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
 
 //      ---<<< initialize(), up/downVersion()関数内でのアクセス用 >>>---
 
+#if 0
     #define THEOLIZER_INTERNAL_COMPARE(dCmp)                            \
         bool operator dCmp(BaseType iRhs) const { return mValue dCmp iRhs; }
         THEOLIZER_INTERNAL_COMPARE(==)
@@ -304,6 +334,7 @@ std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
         THEOLIZER_INTERNAL_COMPARE(<=)
         THEOLIZER_INTERNAL_COMPARE(>=)
     #undef  THEOLIZER_INTERNAL_COMPARE
+#endif
 
     operator TheolizerTarget() const { return static_cast<TheolizerTarget>(mValue); }
     TheolizerTarget  get() const { return static_cast<TheolizerTarget>(mValue); }
