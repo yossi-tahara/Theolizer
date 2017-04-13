@@ -572,7 +572,7 @@ struct ArrayClass::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
                     }
                     else
                     {
-                        oNextVersion.mArrayInc[i][j][k]=99;
+                        oNextVersion.mArrayInc[i][j][k].set(99, true);
                     }
                 }
             }
@@ -589,8 +589,7 @@ struct ArrayClass::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
                     }
                     else
                     {
-                        oNextVersion.mClassArrayInc[i][j][k].mShort.
-                            set(999, iNowVersion.mClassArrayInc[0].mShort.getDoSucceed());
+                        oNextVersion.mClassArrayInc[i][j][k].mShort.set(999, true);
                     }
                 }
             }
@@ -607,8 +606,7 @@ struct ArrayClass::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
                     }
                     else
                     {
-                        oNextVersion.mEnumArrayInc[i][j][k].
-                            set(1, iNowVersion.mEnumArrayInc[0].getDoSucceed());
+                        oNextVersion.mEnumArrayInc[i][j][k].set(1, true);
                     }
                 }
             }

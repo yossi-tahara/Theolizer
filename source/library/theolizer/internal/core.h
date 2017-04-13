@@ -79,19 +79,19 @@ private:
 
 public:
     // ターゲットからのコンストラクタ
-    TheolizerNonKeepStep(Type& iTarget) :
+    explicit TheolizerNonKeepStep(Type& iTarget) :
         mValue(),
         mTarget(&iTarget)
     { }
 
     // 次からのコンストラクタ
-    TheolizerNonKeepStep(This& iNext) :
+    explicit TheolizerNonKeepStep(This& iNext) :
         mValue(),
         mTarget(iNext.mTarget)
     { }
 
     // ムーブ・コンストラクタ(配列処理用)
-    TheolizerNonKeepStep(This&& iNext) :
+    explicit TheolizerNonKeepStep(This&& iNext) :
         mValue(),
         mTarget(iNext.mTarget)
     { }
@@ -106,6 +106,12 @@ public:
 
     Type const& get()      const { return *mTarget; }
     operator Type const&() const { return get(); }
+
+    // 非constはライト・オンリー
+private:
+    Type const& get();
+    operator Type const&();
+public:
 
 //      ---<<< 保存／回復処理 >>>---
 
@@ -253,7 +259,7 @@ private:
 
 public:
     // ターゲットからのコンストラクタ
-    TheolizerNonKeepStep(Type& iTarget) :
+    explicit TheolizerNonKeepStep(Type& iTarget) :
         Base(iTarget),
         mValue(Base::getData()),
         mBackup(),
@@ -265,7 +271,7 @@ public:
     { }
 
     // 次からのコンストラクタ
-    TheolizerNonKeepStep(This& iNext) :
+    explicit TheolizerNonKeepStep(This& iNext) :
         Base(iNext.mValue),
         mValue(Base::getData()),
         mBackup(),
@@ -277,7 +283,7 @@ public:
     { }
 
     // ムーブ・コンストラクタ(配列処理用)
-    TheolizerNonKeepStep(This&& iNext) :
+    explicit TheolizerNonKeepStep(This&& iNext) :
         Base(std::move(iNext.mValue)),
         mValue(Base::getData()),
         mBackup(),
@@ -446,7 +452,7 @@ std::cout << "    mDoSucceed           =" << mDoSucceed << "" << std::endl;
 THEOLIZER_DEBUG((std::cout << "    mNextPtr->succeed(" << mValue << ");" << std::endl;));
             mNextPtr->succeed(mValue, mDoSucceed);
         }
-        else if (mTarget)
+        else if (mTarget && mDoSucceed)
         {
 THEOLIZER_DEBUG((std::cout << "    *mTarget=" << mValue << ";" << std::endl;));
             *mTarget=mValue;
@@ -455,6 +461,7 @@ THEOLIZER_DEBUG((std::cout << "    *mTarget=" << mValue << ";" << std::endl;));
 
 //      ---<<< 値取り出し >>>---
 
+Type* getTarget() { return mTarget; }
     Type get()      const { return mValue; }
     operator Type() const { return get(); }
 

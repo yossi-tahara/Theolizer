@@ -249,6 +249,16 @@ std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
         return *this;
     }
 
+    // BaseType以外は非サポート
+    template<typename tType>
+    TheolizerVersion& operator=(tType const& iRhs)
+    {
+        static_assert(!std::is_same<tType, TheolizerVersion>::value,
+            "Can not assign enum type to prepare for changing enum definition.");
+        static_assert(std::is_same<tType, TheolizerVersion>::value,
+            "Can not supprt this type.");
+    }
+
     // 強制引継ぎ設定（他の変数から引き継ぐ）
     void set(BaseType iValue, bool iDoSucceed)  // iDoSucceedは引継ぎ元変数のmDoSucceed
     {
@@ -339,16 +349,14 @@ std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
 
 //      ---<<< initialize(), up/downVersion()関数内でのアクセス用 >>>---
 
-    TheolizerTarget get()        const { return static_cast<TheolizerTarget>(mValue); }
-    operator TheolizerTarget()   const { return get(); }
-    BaseType getUnderlyingType() const { return mValue; }
+    BaseType get()        const { return mValue; }
+    operator BaseType()   const { return get(); }
     bool getDoSucceed()          const { return mDoSucceed; }
 
     // 非constはライト・オンリー
 private:
-    TheolizerTarget get();
-    operator TheolizerTarget();
-    BaseType getUnderlyingType();
+    BaseType get();
+    operator BaseType();
 public:
 
 //----------------------------------------------------------------------------
@@ -358,7 +366,7 @@ public:
 //----------------------------------------------------------------------------
 
 #if (THEOLIZER_GENERATED_VERSION_NO == THEOLIZER_GENERATED_LAST_VERSION_NO)
-    TheolizerVersion(ParentVersion& iParentVersion) :
+    explicit TheolizerVersion(ParentVersion& iParentVersion) :
         mTarget(&iParentVersion),
         mParentVersion(&iParentVersion),
         mSameVersion(nullptr),
@@ -376,7 +384,7 @@ public:
         >::getInstance();
     }
 #else
-    TheolizerVersion(ParentVersion & iParentVersion) :
+    explicit TheolizerVersion(ParentVersion & iParentVersion) :
         mTarget(iParentVersion.mTarget),
         mParentVersion(&iParentVersion),
         mSameVersion(nullptr),
@@ -394,7 +402,7 @@ public:
 //      コンストラクタ(同じバージョンからコンストラクト)
 //----------------------------------------------------------------------------
 
-    TheolizerVersion(TheolizerVersion& iSameVersion) :
+    explicit TheolizerVersion(TheolizerVersion& iSameVersion) :
         mTarget(iSameVersion.mTarget),
         mParentVersion(nullptr),
         mSameVersion(&iSameVersion),
@@ -412,7 +420,7 @@ public:
 //          生配列の次元数／要素数変更対応に必要
 //----------------------------------------------------------------------------
 
-    TheolizerVersion(TheolizerVersion&& iSameVersion) :
+    explicit TheolizerVersion(TheolizerVersion&& iSameVersion) :
         mTarget(iSameVersion.mTarget),
         mParentVersion(nullptr),
         mSameVersion(nullptr),
@@ -487,16 +495,6 @@ THEOLIZER_DEBUG((std::cout << "    mSameVersion->succeed(" << mValue << ");\n";)
     }
 
 //----------------------------------------------------------------------------
-//      コピー演算子(データのみコピーする。管理情報は対象外)
-//----------------------------------------------------------------------------
-
-    TheolizerVersion& operator=(TheolizerVersion const& iRhs)
-    {
-        if (&iRhs != this) mValue=iRhs.mValue;
-        return *this;
-    }
-
-//----------------------------------------------------------------------------
 //      バージョン・ダウン処理
 //----------------------------------------------------------------------------
 
@@ -554,7 +552,7 @@ std::cout << "    (1)*mParentVersion=" << mParentVersion->mValue << ";\n";
         }
 
         // 見つからなければ、警告しデフォルト値へ変換する。
-        *mParentVersion=THEOLIZER_GENERATED_DEFAULT_VALUE;
+        *mParentVersion=static_cast<BaseType>(THEOLIZER_GENERATED_DEFAULT_VALUE);
 THEOLIZER_DEBUG((
 std::cout << "    (2)*mParentVersion=" << mParentVersion->mValue << ";\n";
 ));
