@@ -312,16 +312,6 @@ struct ArrayManager<tUnderlyingType>
             THEOLIZER_INTERNAL_DEBUG_ARRAY(u8"KS :Default ", *this)
             mElement()
         { THEOLIZER_INTERNAL_DEBUG_ARRAY_END(); }
-
-//      --- コピー演算子 ---
-
-#if 0
-        TheolizerVersion& operator=(TheolizerVersion const& iRhs)
-        {
-            if (&iRhs != this) copyData(mElement, iRhs.mElement);
-            return *this;
-        }
-#endif
     };
 };
 
@@ -399,16 +389,6 @@ struct ArrayManager< ::TheolizerNonKeepStep<tPrimitiveType, void> >
             THEOLIZER_INTERNAL_DEBUG_ARRAY(u8"NKS :Default ", *this)
             mElement()
         { THEOLIZER_INTERNAL_DEBUG_ARRAY_END(); }
-
-//      --- コピー演算子 ---
-
-#if 0
-        TheolizerVersion& operator=(TheolizerVersion const& iRhs)
-        {
-            if (&iRhs != this) copyData(mElement, iRhs.mElement);
-            return *this;
-        }
-#endif
     };
 };
 
@@ -611,16 +591,6 @@ struct ArrayManager<tUnderlyingType, tFirst, tDims...>
             THEOLIZER_INTERNAL_DEBUG_ARRAY(u8"---:Next-lower", *this, iTheolizerVersion)
             mArrayBody(VersionElement(iTheolizerVersion))
         { THEOLIZER_INTERNAL_DEBUG_ARRAY_END(); }
-
-//      --- コピー演算子 ---
-
-#if 0
-        TheolizerVersion& operator=(TheolizerVersion const& iRhs)
-        {
-            if (&iRhs != this) copyData(mArrayBody.mElements, iRhs.mArrayBody.mElements);
-            return *this;
-        }
-#endif
     };
 };
 

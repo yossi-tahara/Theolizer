@@ -28,7 +28,7 @@
 #include <sstream>
 
 #include "internal.h"
-#include "serializer_fast.h"
+#include "../serializer_fast.h"
 
 //############################################################################
 //      Begin

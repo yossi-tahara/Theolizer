@@ -34,6 +34,12 @@
 */
 //############################################################################
 
+#if 0
+    #define THEOLIZER_DEBUG(dStatements)    THEOLIZER_INTERNAL_UNPAREN dStatements
+#else
+    #define THEOLIZER_DEBUG(dStatements)
+#endif
+
 // ***************************************************************************
 //          警告抑止
 // ***************************************************************************
@@ -203,12 +209,13 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     // 通常設定(旧バージョンはenum型が異なるので、数値で設定する)
     TheolizerVersion& operator=(BaseType iRhs)
     {
+THEOLIZER_DEBUG((
 std::cout << "enum::TheolizerVersion<" << THEOLIZER_GENERATED_VERSION_NO
           << ">::operator=(" << iRhs
           << "); " << mTarget << "\n";
 std::cout << "    mUpVersionCount    =" << mUpVersionCount << "\n";
 std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCount() << "\n";
-
+));
         unsigned aUpVersionCount=theolizer::internal::getUpVersionCount();
 
         // バージョン・ダウン中
@@ -234,22 +241,24 @@ std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCoun
                 mIsChanged=true;
             }
         }
-
+THEOLIZER_DEBUG((
 std::cout << "    mValue               =" << mValue << "\n";
 std::cout << "    mIsChanged           =" << mIsChanged << "\n";
 std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
+));
         return *this;
     }
 
     // 強制引継ぎ設定（他の変数から引き継ぐ）
     void set(BaseType iValue, bool iDoSucceed)  // iDoSucceedは引継ぎ元変数のmDoSucceed
     {
+THEOLIZER_DEBUG((
 std::cout << "enum::TheolizerVersion<" << THEOLIZER_GENERATED_VERSION_NO
           << ">::succeed(" << iValue << ", " << iDoSucceed
           << "); " << mTarget << "\n";
 std::cout << "    mUpVersionCount    =" << mUpVersionCount << "\n";
 std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCount() << "\n";
-
+));
         unsigned aUpVersionCount=theolizer::internal::getUpVersionCount();
 
         // バージョン・ダウン中
@@ -275,18 +284,22 @@ std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCoun
                 mDoSucceed=true;
             }
         }
+THEOLIZER_DEBUG((
 std::cout << "    mValue               =" << mValue << "\n";
 std::cout << "    mIsChanged           =" << mIsChanged << "\n";
 std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
+));
     }
 
     // 前バージョンのデストラクタから呼ばれる引継ぎ処理
     void succeed(BaseType iValue, bool iDoSucceed)
     {
+THEOLIZER_DEBUG((
 std::cout << "enum::TheolizerVersion<" << THEOLIZER_GENERATED_VERSION_NO
           << ">::succeed(" << iValue << ", " << iDoSucceed
           << "); " << mTarget << "\n";
 std::cout << "    mIsChanged =" << mIsChanged << "\n";
+));
 
         // setされていない時
         if (!mDoSucceed)
@@ -311,9 +324,11 @@ std::cout << "    mIsChanged =" << mIsChanged << "\n";
                 }
             }
         }
+THEOLIZER_DEBUG((
 std::cout << "    mValue               =" << mValue << "\n";
 std::cout << "    mIsChanged           =" << mIsChanged << "\n";
 std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
+));
     }
 
 //      ---<<< 配列処理の中身へのアクセス用 >>>---
@@ -324,10 +339,17 @@ std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
 
 //      ---<<< initialize(), up/downVersion()関数内でのアクセス用 >>>---
 
-    operator TheolizerTarget()   const { return static_cast<TheolizerTarget>(mValue); }
     TheolizerTarget get()        const { return static_cast<TheolizerTarget>(mValue); }
+    operator TheolizerTarget()   const { return get(); }
     BaseType getUnderlyingType() const { return mValue; }
     bool getDoSucceed()          const { return mDoSucceed; }
+
+    // 非constはライト・オンリー
+private:
+    TheolizerTarget get();
+    operator TheolizerTarget();
+    BaseType getUnderlyingType();
+public:
 
 //----------------------------------------------------------------------------
 //      コンストラクタ(次バージョンからコンストラクト)
@@ -424,21 +446,23 @@ std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
 
     ~TheolizerVersion()
     {   // 最新版でない時のみバージョン・アップ実施
+THEOLIZER_DEBUG((
 std::cout << "enum::~TheolizerVersion<" << THEOLIZER_GENERATED_VERSION_NO << "> "
           << mTarget << "\n";
 std::cout << "    mValue               =" << mValue << "\n";
 std::cout << "    mIsChanged           =" << mIsChanged << "\n";
 std::cout << "    mDoSucceed           =" << mDoSucceed << "\n";
+));
         #if (THEOLIZER_GENERATED_VERSION_NO == THEOLIZER_GENERATED_LAST_VERSION_NO)
-std::cout << "    mParentVersion=" << mParentVersion << "\n";
+THEOLIZER_DEBUG((std::cout << "    mParentVersion=" << mParentVersion << "\n";));
             if (mParentVersion && mDoSucceed)
             {
-std::cout << "    *mParentVersion=" << mValue << ";\n";
+THEOLIZER_DEBUG((std::cout << "    *mParentVersion=" << mValue << ";\n";));
                 *mParentVersion = static_cast<THEOLIZER_GENERATED_ENUM_TYPE>(mValue);
             }
             else if (mSameVersion)
             {
-std::cout << "    mSameVersion->succeed(" << mValue << ");\n";
+THEOLIZER_DEBUG((std::cout << "    mSameVersion->succeed(" << mValue << ");\n";));
                 mSameVersion->succeed(mValue, mDoSucceed);
             }
         #else
@@ -451,12 +475,12 @@ std::cout << "    mSameVersion->succeed(" << mValue << ");\n";
                 }
 
                 // 引継ぎ処理
-std::cout << "    mParentVersion->succeed(" << mValue << ");\n";
+THEOLIZER_DEBUG((std::cout << "    mParentVersion->succeed(" << mValue << ");\n";));
                 mParentVersion->succeed(mValue, mDoSucceed);
             }
             else if (mSameVersion)
             {
-std::cout << "    mSameVersion->succeed(" << mValue << ");\n";
+THEOLIZER_DEBUG((std::cout << "    mSameVersion->succeed(" << mValue << ");\n";));
                 mSameVersion->succeed(mValue, mDoSucceed);
             }
         #endif
@@ -479,15 +503,17 @@ std::cout << "    mSameVersion->succeed(" << mValue << ");\n";
     #if (THEOLIZER_GENERATED_VERSION_NO != THEOLIZER_GENERATED_LAST_VERSION_NO)
     void downVersion()
     {
+THEOLIZER_DEBUG((
 std::cout << "enum::downVersion<"
           << THEOLIZER_GENERATED_VERSION_NO << "> " << mTarget << "\n";
 std::cout << "    mParentVersion->mValue=" << mParentVersion->mValue << "\n";
+));
         for (size_t i=0; !mParentVersion->kEnumElementList[i].isSentinel(); ++i)
         {
             if (mParentVersion->kEnumElementList[i].mValues[0] == mParentVersion->mValue)
             {
                 mBackup=mValue=mParentVersion->kEnumElementList[i].mPrevValue;
-std::cout << "    mValue=" << mValue << "\n";
+THEOLIZER_DEBUG((std::cout << "    mValue=" << mValue << "\n";));
     return;
             }
         }
@@ -511,21 +537,27 @@ std::cout << "    mValue=" << mValue << "\n";
     #if (THEOLIZER_GENERATED_VERSION_NO != THEOLIZER_GENERATED_LAST_VERSION_NO)
     void upVersion()
     {
+THEOLIZER_DEBUG((
 std::cout << "enum::upVersion<"
           << THEOLIZER_GENERATED_VERSION_NO << "> " << mTarget << "\n";
+));
         for (size_t i=0; !mParentVersion->kEnumElementList[i].isSentinel(); ++i)
         {
             if (mValue == mParentVersion->kEnumElementList[i].mPrevValue)
             {
                 *mParentVersion=mParentVersion->kEnumElementList[i].mValues[0];
-std::cout << "    (1)*mParentVersion=" << mParentVersion->getUnderlyingType() << ";\n";
+THEOLIZER_DEBUG((
+std::cout << "    (1)*mParentVersion=" << mParentVersion->mValue << ";\n";
+));
     return;
             }
         }
 
         // 見つからなければ、警告しデフォルト値へ変換する。
         *mParentVersion=THEOLIZER_GENERATED_DEFAULT_VALUE;
-std::cout << "    (2)*mParentVersion=" << mParentVersion->getUnderlyingType() << ";\n";
+THEOLIZER_DEBUG((
+std::cout << "    (2)*mParentVersion=" << mParentVersion->mValue << ";\n";
+));
         THEOLIZER_INTERNAL_WARNING(
             "Can not transform Version.%1%'s value(%2%) to Version.%3%'s value. "
             "Please check THEOLIZER_ANNOTATE() for %4%.",
@@ -577,7 +609,9 @@ std::cout << "    (2)*mParentVersion=" << mParentVersion->getUnderlyingType() <<
 
     void loadEnumImpl(tBaseSerializer& iSerializer)
     {
+THEOLIZER_DEBUG((
 std::cout << "loadEnumImpl(" << THEOLIZER_GENERATED_VERSION_NO << ") " << mTarget << "\n";
+));
         mDoSucceed=true;
         // 値で回復する時の処理（既知の値であることをチェックする）
         if (Theolizer::kEnumSaveType == theolizer::internal::estValue)
@@ -590,7 +624,7 @@ std::cout << "loadEnumImpl(" << THEOLIZER_GENERATED_VERSION_NO << ") " << mTarge
                     if (mValue == kEnumElementList[i].mValues[j])
                     {
                         mValue=kEnumElementList[i].mValues[0];
-std::cout << "    (1)mValue=" << mValue << "\n";
+THEOLIZER_DEBUG((std::cout << "    (1)mValue=" << mValue << "\n";));
     return;
                     }
                 }
@@ -603,14 +637,14 @@ std::cout << "    (1)mValue=" << mValue << "\n";
             mValue,
             THEOLIZER_GENERATED_VERSION_NO,
             THEOLIZER_GENERATED_ENUM_NAME);
-std::cout << "    (2)mValue=" << mValue << "\n";
+THEOLIZER_DEBUG((std::cout << "    (2)mValue=" << mValue << "\n";));
     return;
         }
 
         // 名前で回復する時の処理
         std::string  aName;
         THEOLIZER_INTERNAL_LOAD(iSerializer, aName, etmDefault);
-std::cout << "    aName=" << aName << "\n";
+THEOLIZER_DEBUG((std::cout << "    aName=" << aName << "\n";));
 
         mValue=THEOLIZER_GENERATED_DEFAULT_VALUE;
         for (size_t i=0; !kEnumElementList[i].isSentinel(); ++i)
@@ -620,7 +654,7 @@ std::cout << "    aName=" << aName << "\n";
                 if (aName == kEnumElementList[i].mSymbols[j])
                 {
                     mValue=kEnumElementList[i].mValues[0];
-std::cout << "    (3)mValue=" << mValue << "\n";
+THEOLIZER_DEBUG((std::cout << "    (3)mValue=" << mValue << "\n";));
     return;
                 }
             }
@@ -634,7 +668,7 @@ std::cout << "    (3)mValue=" << mValue << "\n";
             aName,
             THEOLIZER_GENERATED_VERSION_NO,
             THEOLIZER_GENERATED_ENUM_NAME);
-std::cout << "    (4)mValue=" << mValue << "\n";
+THEOLIZER_DEBUG((std::cout << "    (4)mValue=" << mValue << "\n";));
     }
 
 //----------------------------------------------------------------------------
@@ -762,8 +796,10 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
         // バージョン・アップ開始(upVersionカウンタ=1)
         theolizer::internal::getUpVersionCount()=1;
+THEOLIZER_DEBUG((
 std::cout << "(4)UpVersionCount=" << theolizer::internal::getUpVersionCount()
           << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(*this) << std::endl;
+));
     }
 }
 
@@ -859,8 +895,10 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion<tBaseSerializer, 1>::loadEnum
 
     // バージョン・アップ開始(upVersionカウンタ=1)
     theolizer::internal::getUpVersionCount()=1;
+THEOLIZER_DEBUG((
 std::cout << "(3)UpVersionCount=" << theolizer::internal::getUpVersionCount()
           << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(*this) << std::endl;
+));
 }
 
 //      ---<<< クラス名返却 >>>---
@@ -1015,3 +1053,5 @@ inline unsigned THEOLIZER_INTERNAL_DERIVED::Theolizer::getTypeFlags(unsigned iVe
 #ifdef _MSC_VER
   #pragma warning(pop)
 #endif
+
+#undef THEOLIZER_DEBUG

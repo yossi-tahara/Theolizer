@@ -38,6 +38,12 @@
 */
 //############################################################################
 
+#if 0
+    #define THEOLIZER_DEBUG(dStatements)    THEOLIZER_INTERNAL_UNPAREN dStatements
+#else
+    #define THEOLIZER_DEBUG(dStatements)
+#endif
+
 // ***************************************************************************
 //          警告抑止
 // ***************************************************************************
@@ -158,9 +164,6 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO> SameVersion;
     SameVersion*    mSameVersion;
 
-    // 回復処理中フラグ(これがfalseならupVersion()を呼ばない)
-    bool            mIsLoading;
-
     // コンストラクタ(親、もしくは、次バージョンからコンストラクト)
     //  デフォルト・コンストラクタも共用している。
     TheolizerSpecials(ParentVersion* iParentVersion=nullptr) :
@@ -174,7 +177,6 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         #endif
         ,mParentVersion(iParentVersion)
         ,mSameVersion(nullptr)
-        ,mIsLoading(false)
     { }
 
     // コンストラクタ(同じバージョンからコンストラクト)
@@ -182,104 +184,6 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         mTarget(iSameVersion->mTheolizerSpecials.mTarget)
         ,mParentVersion(nullptr)
         ,mSameVersion(iSameVersion)
-        ,mIsLoading(false)
-    { }
-};
-
-// ***************************************************************************
-//      ClassType用TheolizerBackups<>部分特殊化定義
-//          回復されなかったメンバ変数の値を元に戻すためのハックアップの保持
-//          および、次バージョンで削除されたメンバの処理用記憶領域
-//          基底クラスは、TheolizerBase+基底クラス名というメンバ変数名で定義。
-// ***************************************************************************
-
-THEOLIZER_GENERATED_PARAMETER_LIST
-template<class tBaseSerializer>
-struct THEOLIZER_GENERATED_CLASS_TYPE::
-    TheolizerBackups<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO>
-{
-    // 親クラス定義(最新版か古い版かで切り替える)
-    #if (THEOLIZER_GENERATED_VERSION_NO == THEOLIZER_GENERATED_LAST_VERSION_NO)
-    typedef THEOLIZER_GENERATED_CLASS_TYPE ParentVersion;
-    #else
-    typedef THEOLIZER_GENERATED_CLASS_TYPE::
-        TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO+1> ParentVersion;
-    #endif
-    // 統一バージョン定義
-    typedef typename THEOLIZER_GENERATED_CLASS_TYPE::template
-        TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO> SameVersion;
-
-    // バックアップされたらtrue
-    bool    mIsBackuped;
-
-    // バックアップ／削除対応領域生成
-    #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
-        #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,              \
-            dTrack,dDest,dType,dVer,dAnno)                                  \
-                THEOLIZER_INTERNAL_DEFERRED_GENERATION(dVer) THEOLIZER_INTERNAL_FIRST dName;
-        #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,          \
-            dTrack,dDest,dType,dVer,dAnno)                                  \
-                THEOLIZER_INTERNAL_DEFERRED_GENERATION(dVer) THEOLIZER_INTERNAL_FIRST dName;
-        #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,              \
-            dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                      \
-                THEOLIZER_INTERNAL_##dDef((                                 \
-                    THEOLIZER_INTERNAL_DEFERRED_GENERATION(dVer) THEOLIZER_INTERNAL_FIRST dName;))
-        #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,          \
-            dTrack,dDest,dType,dVerNo,dVer,dAnno)                           \
-                THEOLIZER_INTERNAL_DEFERRED_GENERATION(dVer) THEOLIZER_INTERNAL_FIRST dName;
-        THEOLIZER_GENERATED_ELEMENT_LIST()
-        #undef  THEOLIZER_INTERNAL_VERSION_EN
-        #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
-        #undef  THEOLIZER_INTERNAL_VERSION_EV
-        #undef  THEOLIZER_INTERNAL_VERSION_EV_DEL
-    #endif
-
-    // コンストラクタ(同じバージョンからコンストラクト)
-    TheolizerBackups(SameVersion* iSameVersion) :
-        mIsBackuped(false)
-        #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
-            #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
-                dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,THEOLIZER_INTERNAL_FIRST dName()
-            #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
-                dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,THEOLIZER_INTERNAL_FIRST dName()
-            #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
-                dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
-                THEOLIZER_INTERNAL_##dDef((,THEOLIZER_INTERNAL_FIRST dName()))
-            #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
-                dTrack,dDest,dType,dVerNo,dVer,dAnno)                       \
-                    ,THEOLIZER_INTERNAL_FIRST dName()
-            THEOLIZER_GENERATED_ELEMENT_LIST()
-            #undef  THEOLIZER_INTERNAL_VERSION_EN
-            #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
-            #undef  THEOLIZER_INTERNAL_VERSION_EV
-            #undef  THEOLIZER_INTERNAL_VERSION_EV_DEL
-        #endif
-    { }
-
-    // デフォルト・コンストラクタ
-    TheolizerBackups() :
-        mIsBackuped(false)
-        #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
-            #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
-                dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,THEOLIZER_INTERNAL_FIRST dName()
-            #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
-                dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,THEOLIZER_INTERNAL_FIRST dName()
-            #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
-                dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
-                THEOLIZER_INTERNAL_##dDef((,THEOLIZER_INTERNAL_FIRST dName()))
-            #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
-                dTrack,dDest,dType,dVerNo,dVer,dAnno)                       \
-                    ,THEOLIZER_INTERNAL_FIRST dName()
-            THEOLIZER_GENERATED_ELEMENT_LIST()
-            #undef  THEOLIZER_INTERNAL_VERSION_EN
-            #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
-            #undef  THEOLIZER_INTERNAL_VERSION_EV
-            #undef  THEOLIZER_INTERNAL_VERSION_EV_DEL
-        #endif
     { }
 };
 
@@ -419,13 +323,7 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO+1> ParentVersion;
     #endif
 
-//      ---<<< バックアップ用メンバ変数群 >>>---
-//          次バージョンでの削除メンバの領域としても使用するため、
-//          最初に初期化する必要があり、他の要素より最初に定義する
-
-    typedef typename THEOLIZER_GENERATED_CLASS_TYPE::template
-        TheolizerBackups<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO>   TheolizerBackups;
-    std::unique_ptr<TheolizerBackups>                                       mTheolizerBackups;
+//      ---<<< 管理領域 >>>---
 
     typename THEOLIZER_GENERATED_CLASS_TYPE::template
         TheolizerSpecials<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO>  mTheolizerSpecials;
@@ -520,28 +418,6 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
     typedef TheolizerVersion AsElementOfArray;
     AsElementOfArray&       getAccess()       { return *this; }
     AsElementOfArray const& getAccess() const { return *this; }
-
-//      ---<<< 引き継ぎフラグ定義 >>>---
-
-    #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
-        #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,              \
-            dTrack,dDest,dType,dVer,dAnno)                                  \
-                bool THEOLIZER_INTERNAL_SUCCEED_FLG(dName);
-        #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,          \
-            dTrack,dDest,dType,dVer,dAnno)                                  \
-                bool THEOLIZER_INTERNAL_SUCCEED_FLG(dName);
-        #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,              \
-            dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                      \
-                bool THEOLIZER_INTERNAL_SUCCEED_FLG(dName);
-        #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,          \
-            dTrack,dDest,dType,dVerNo,dVer,dAnno)                           \
-                bool THEOLIZER_INTERNAL_SUCCEED_FLG(dName);
-        THEOLIZER_GENERATED_ELEMENT_LIST()
-        #undef  THEOLIZER_INTERNAL_VERSION_EN
-        #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
-        #undef  THEOLIZER_INTERNAL_VERSION_EV
-        #undef  THEOLIZER_INTERNAL_VERSION_EV_DEL
-    #endif
 
 //----------------------------------------------------------------------------
 //      各要素をTypeInfoListへ登録する
@@ -646,29 +522,20 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
             #undef  THEOLIZER_INTERNAL_VERSION_B
             #undef  THEOLIZER_INTERNAL_VERSION_B_DEL
         #endif
-        mTheolizerBackups
-        (
-            std::unique_ptr<TheolizerBackups>(new TheolizerBackups(this))
-        ),
         mTheolizerSpecials(&iParentVersion)  // ,後置→,前置へ変えている
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,THEOLIZER_INTERNAL_FIRST dName(iParentVersion.dNextName)\
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iParentVersion.dNextName)
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,THEOLIZER_INTERNAL_FIRST dName(                        \
-                        mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get())\
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName()
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
-                    ,THEOLIZER_INTERNAL_FIRST dName(iParentVersion.dNextName)\
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iParentVersion.dNextName)
             #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno)                       \
-                    ,THEOLIZER_INTERNAL_FIRST dName()                       \
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName()
             THEOLIZER_GENERATED_ELEMENT_LIST()
             #undef  THEOLIZER_INTERNAL_VERSION_EN
             #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
@@ -681,52 +548,13 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
 
        // 最新版でない時のみdownVersion()有り
         #if (THEOLIZER_GENERATED_VERSION_NO != THEOLIZER_GENERATED_LAST_VERSION_NO)
-            // バックアップ中はdownVersion()しない
-            if (!theolizer::internal::duringBackup())
-            {
-                THEOLIZER_GENERATED_CLASS_TYPE::TheolizerUserDefine
-                <
-                    TheolizerVersion,
-                    ParentVersion,
-                    THEOLIZER_GENERATED_VERSION_NO
-                >::downVersion(*(mTheolizerSpecials.mParentVersion), *this);
-            }
+            THEOLIZER_GENERATED_CLASS_TYPE::TheolizerUserDefine
+            <
+                TheolizerVersion,
+                ParentVersion,
+                THEOLIZER_GENERATED_VERSION_NO
+            >::downVersion(*(mTheolizerSpecials.mParentVersion), *this);
         #endif
-
-#if 0
-        // 最新版処理でないならバックアップする
-        if (theolizer::internal::isLastVersion())
-    return;
-
-        // 保存時は、自分が最新版の時のみバックアップする
-        if ((theolizer::internal::isSaver())
-         && (THEOLIZER_GENERATED_VERSION_NO < Theolizer::kLastVersionNo))
-    return;
-
-        mTheolizerBackups->mIsBackuped=true;
-        #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
-            #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
-                dTrack,dDest,dType,dVer,dAnno)                              \
-                    theolizer::internal::copyData(                          \
-                        mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get(),\
-                        THEOLIZER_INTERNAL_FIRST dName);
-            #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
-                dTrack,dDest,dType,dVer,dAnno)
-            #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
-                dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
-                    THEOLIZER_INTERNAL_##dDef((                             \
-                        theolizer::internal::copyData(                      \
-                            mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get(),\
-                            THEOLIZER_INTERNAL_FIRST dName);))
-            #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
-                dTrack,dDest,dType,dVerNo,dVer,dAnno)
-            THEOLIZER_GENERATED_ELEMENT_LIST()
-            #undef  THEOLIZER_INTERNAL_VERSION_EN
-            #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
-            #undef  THEOLIZER_INTERNAL_VERSION_EV
-            #undef  THEOLIZER_INTERNAL_VERSION_EV_DEL
-        #endif
-#endif
     }
 
 //----------------------------------------------------------------------------
@@ -751,20 +579,16 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
-                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)
             #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno)                       \
-                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)
             THEOLIZER_GENERATED_ELEMENT_LIST()
             #undef  THEOLIZER_INTERNAL_VERSION_EN
             #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
@@ -793,27 +617,22 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
             #undef  THEOLIZER_INTERNAL_VERSION_B
             #undef  THEOLIZER_INTERNAL_VERSION_B_DEL
         #endif
-        mTheolizerBackups(std::move(iSameVersion.mTheolizerBackups)),
         mTheolizerSpecials(std::move(iSameVersion.mTheolizerSpecials))  // ,後置→,前置へ変えている
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
                     ,THEOLIZER_INTERNAL_FIRST dName(                        \
-                        std::move(iSameVersion.THEOLIZER_INTERNAL_FIRST dName))\
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                        std::move(iSameVersion.THEOLIZER_INTERNAL_FIRST dName))
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)                              \
                     ,THEOLIZER_INTERNAL_FIRST dName(                        \
-                        std::move(iSameVersion.THEOLIZER_INTERNAL_FIRST dName))\
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                        std::move(iSameVersion.THEOLIZER_INTERNAL_FIRST dName))
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
-                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)
             #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno)                       \
-                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)\
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName(iSameVersion.THEOLIZER_INTERNAL_FIRST dName)
             THEOLIZER_GENERATED_ELEMENT_LIST()
             #undef  THEOLIZER_INTERNAL_VERSION_EN
             #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
@@ -841,28 +660,20 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
             #undef  THEOLIZER_INTERNAL_VERSION_B
             #undef  THEOLIZER_INTERNAL_VERSION_B_DEL
         #endif
-        mTheolizerBackups
-        (
-            std::unique_ptr<TheolizerBackups>(new TheolizerBackups())
-        ),
         mTheolizerSpecials()             // ,後置→,前置へ変えている
         #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
             #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,THEOLIZER_INTERNAL_FIRST dName()                       \
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName()
             #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVer,dAnno)                              \
-                    ,THEOLIZER_INTERNAL_FIRST dName()                       \
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName()
             #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
-                    ,THEOLIZER_INTERNAL_FIRST dName()                       \
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName()
             #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
                 dTrack,dDest,dType,dVerNo,dVer,dAnno)                       \
-                    ,THEOLIZER_INTERNAL_FIRST dName()                       \
-                    ,THEOLIZER_INTERNAL_SUCCEED_FLG(dName)(false)
+                    ,THEOLIZER_INTERNAL_FIRST dName()
             THEOLIZER_GENERATED_ELEMENT_LIST()
             #undef  THEOLIZER_INTERNAL_VERSION_EN
             #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
@@ -889,119 +700,25 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
 
     ~TheolizerVersion()
     {
-        // 各要素を必要に応じてリストアする(目標バージョンが自分でない時のみ)
-        //  コンストラクト時にバックアップされた時。
-        //  引き継ぎするもの(回復されたもの)はリストアしない
-#if 0
-        if (mTheolizerBackups && mTheolizerBackups->mIsBackuped)
-        {
-        #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
-            #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,          \
-                dTrack,dDest,dType,dVer,dAnno)                              \
-                if (!THEOLIZER_INTERNAL_SUCCEED_FLG(dName))                 \
-                {                                                           \
-                    theolizer::internal::copyData(THEOLIZER_INTERNAL_FIRST dName,\
-                        mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get());\
-                }
-            #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,      \
-                dTrack,dDest,dType,dVer,dAnno)
-            #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,          \
-                dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)                  \
-                THEOLIZER_INTERNAL_##dDef((                                 \
-                    if (!THEOLIZER_INTERNAL_SUCCEED_FLG(dName))             \
-                    {                                                       \
-                        theolizer::internal::copyData(THEOLIZER_INTERNAL_FIRST dName,\
-                            mTheolizerBackups->THEOLIZER_INTERNAL_FIRST dName.get());\
-                    }))
-            #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,      \
-                dTrack,dDest,dType,dVerNo,dVer,dAnno)
-            THEOLIZER_GENERATED_ELEMENT_LIST()
-            #undef  THEOLIZER_INTERNAL_VERSION_EN
-            #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
-            #undef  THEOLIZER_INTERNAL_VERSION_EV
-            #undef  THEOLIZER_INTERNAL_VERSION_EV_DEL
-        #endif
-        }
-
-        // 最新版でない時か同一バージョン時に、XxxTheolizerSucceed引き継ぎ
-        #if (THEOLIZER_GENERATED_VERSION_NO != THEOLIZER_GENERATED_LAST_VERSION_NO)
-            #define THEOLIZER_INTERNAL_SUCCEED(dName, dNextName)            \
-                if (mTheolizerSpecials.mParentVersion)                      \
-                {                                                           \
-                    mTheolizerSpecials.mParentVersion->dNextName##TheolizerSucceed=\
-                        THEOLIZER_INTERNAL_SUCCEED_FLG(dName);              \
-                }                                                           \
-                if (mTheolizerSpecials.mSameVersion)                        \
-                {                                                           \
-                    mTheolizerSpecials.mSameVersion->THEOLIZER_INTERNAL_SUCCEED_FLG(dName)=\
-                        THEOLIZER_INTERNAL_SUCCEED_FLG(dName);              \
-                }
-        #else
-            #define THEOLIZER_INTERNAL_SUCCEED(dName, dNextName)            \
-                if (mTheolizerSpecials.mSameVersion)                        \
-                {                                                           \
-                    mTheolizerSpecials.mSameVersion->THEOLIZER_INTERNAL_SUCCEED_FLG(dName)=\
-                        THEOLIZER_INTERNAL_SUCCEED_FLG(dName);              \
-                }
-        #endif
-
-        {
-            #if defined(THEOLIZER_GENERATED_ELEMENT_LIST)
-                #define THEOLIZER_INTERNAL_VERSION_EN(dName,dNextName,      \
-                    dTrack,dDest,dType,dVer,dAnno)                          \
-                        THEOLIZER_INTERNAL_SUCCEED(dName, dNextName);
-                #define THEOLIZER_INTERNAL_VERSION_EN_DEL(dName,dNextName,  \
-                    dTrack,dDest,dType,dVer,dAnno)
-                #define THEOLIZER_INTERNAL_VERSION_EV(dName,dNextName,      \
-                    dTrack,dDest,dType,dVerNo,dVer,dAnno,dDef)              \
-                        THEOLIZER_INTERNAL_SUCCEED(dName, dNextName);
-                #define THEOLIZER_INTERNAL_VERSION_EV_DEL(dName,dNextName,  \
-                    dTrack,dDest,dType,dVerNo,dVer,dAnno)
-                THEOLIZER_GENERATED_ELEMENT_LIST()
-                #undef  THEOLIZER_INTERNAL_VERSION_EN
-                #undef  THEOLIZER_INTERNAL_VERSION_EN_DEL
-                #undef  THEOLIZER_INTERNAL_VERSION_EV
-                #undef  THEOLIZER_INTERNAL_VERSION_EV_DEL
-            #endif
-        }
-        #undef THEOLIZER_INTERNAL_SUCCEED
-#endif
-
         // 最新版でない時のみupVersion()有り
         #if (THEOLIZER_GENERATED_VERSION_NO != THEOLIZER_GENERATED_LAST_VERSION_NO)
-            // 保存中とバックアップ中はupVersion()しない
-            if ((mTheolizerSpecials.mIsLoading)
-             && (!theolizer::internal::duringBackup()))
-            {
-                // 次バージョンからのコンストラクト時はバージョン・アップとmIsLoading引き継ぎ
-                if (mTheolizerSpecials.mParentVersion)
-                {
+        // 回復中、かつ、次バージョンからのコンストラクトなら、バージョン・アップ有り
+        if ((theolizer::internal::getUpVersionCount()) && (mTheolizerSpecials.mParentVersion))
+        {
+            THEOLIZER_GENERATED_CLASS_TYPE::TheolizerUserDefine
+            <
+                TheolizerVersion,
+                ParentVersion,
+                THEOLIZER_GENERATED_VERSION_NO
+            >::upVersion(*this, *(mTheolizerSpecials.mParentVersion));
 
-if (theolizer::internal::getUpVersionCount())
-{
-                    THEOLIZER_GENERATED_CLASS_TYPE::TheolizerUserDefine
-                    <
-                        TheolizerVersion,
-                        ParentVersion,
-                        THEOLIZER_GENERATED_VERSION_NO
-                    >::upVersion(*this, *(mTheolizerSpecials.mParentVersion));
-
-                    // バージョン・アップ(++upVersionカウンタ)
-                    ++theolizer::internal::getUpVersionCount();
+            // バージョン・アップ(++upVersionカウンタ)
+            ++theolizer::internal::getUpVersionCount();
+THEOLIZER_DEBUG((
 std::cout << "(3)UpVersionCount=" << theolizer::internal::getUpVersionCount()
           << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(*this) << std::endl;
-}
-                    mTheolizerSpecials.mParentVersion->mTheolizerSpecials.mIsLoading
-                        =mTheolizerSpecials.mIsLoading;
-                }
-
-                // 同バージョンからコンストラクト時はmIsLoading引き継ぎのみ
-                if (mTheolizerSpecials.mSameVersion)
-                {
-                    mTheolizerSpecials.mSameVersion->mTheolizerSpecials.mIsLoading
-                        =mTheolizerSpecials.mIsLoading;
-                }
-            }
+));
+        }
         #endif
     }
 
@@ -1175,7 +892,6 @@ THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
     THEOLIZER_GENERATED_VERSION_NO+1
 >::loadClass(tBaseSerializer& iSerializer, unsigned iVersionNo)
 {
-    mTheolizerSpecials.mIsLoading=true; // デストラクト時upVersionを呼ぶため
     if (iVersionNo < (THEOLIZER_GENERATED_VERSION_NO+1))
     {
         typedef THEOLIZER_GENERATED_CLASS_TYPE::
@@ -1194,8 +910,10 @@ THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
 
         // バージョン・アップ開始(upVersionカウンタ=1)
         theolizer::internal::getUpVersionCount()=1;
+THEOLIZER_DEBUG((
 std::cout << "(2)UpVersionCount=" << theolizer::internal::getUpVersionCount()
           << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(*this) << std::endl;
+));
     }
 }
 
@@ -1326,13 +1044,14 @@ THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion<tBaseSerializer, 1>::loadClass
     unsigned iVersionNo
 )
 {
-    mTheolizerSpecials.mIsLoading=true; // デストラクト時upVersionを呼ぶため
     theolizer::internal::loadClass(iSerializer, *this);
 
     // バージョン・アップ開始(upVersionカウンタ=1)
     theolizer::internal::getUpVersionCount()=1;
+THEOLIZER_DEBUG((
 std::cout << "(1)UpVersionCount=" << theolizer::internal::getUpVersionCount()
           << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(*this) << std::endl;
+));
 }
 
 //----------------------------------------------------------------------------
@@ -1580,3 +1299,5 @@ inline void THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::registerToBaseClass
 #if defined(__GNUC__)
     #pragma GCC diagnostic pop
 #endif
+
+#undef THEOLIZER_DEBUG

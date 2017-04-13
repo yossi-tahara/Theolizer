@@ -1452,11 +1452,10 @@ ASTANALYZE_OUTPUT("          field : ", field->getType().getCanonicalType().getA
             if (field->getAccess() == clang::AS_private)
         continue;
 
-            // TheolizerVersion<>のmTheolizerBackupsとmTheolizerSpecialsを除く
+            // TheolizerVersion<>のmTheolizerSpecialsを除く
             if (iIsVersion)
             {
-                if ((field->getName() == "mTheolizerBackups")
-                 || (field->getName() == "mTheolizerSpecials"))
+                if (field->getName() == "mTheolizerSpecials")
         continue;
             }
 

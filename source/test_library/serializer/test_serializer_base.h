@@ -27,6 +27,7 @@
 
 #include <theolizer/serializer_json.h>
 #include <theolizer/serializer_binary.h>
+#include <theolizer/serializer_fast.h>
 using theolizer::u8string;
 
 using namespace std;
@@ -571,8 +572,6 @@ struct ArrayClass::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
                     }
                     else
                     {
-std::cout << "upVersion() : mArrayInc[" << i << "][" << j << "][" << k << "]="
-          << oNextVersion.mArrayInc[i][j][k] << "\n";
                         oNextVersion.mArrayInc[i][j][k]=99;
                     }
                 }
@@ -590,8 +589,6 @@ std::cout << "upVersion() : mArrayInc[" << i << "][" << j << "][" << k << "]="
                     }
                     else
                     {
-std::cout << "upVersion() : mClassArrayInc[" << i << "][" << j << "][" << k << "]="
-          << oNextVersion.mClassArrayInc[i][j][k].mShort << "\n";
                         oNextVersion.mClassArrayInc[i][j][k].mShort.
                             set(999, iNowVersion.mClassArrayInc[0].mShort.getDoSucceed());
                     }
@@ -610,8 +607,6 @@ std::cout << "upVersion() : mClassArrayInc[" << i << "][" << j << "][" << k << "
                     }
                     else
                     {
-std::cout << "upVersion() : mEnumArrayInc[" << i << "][" << j << "][" << k << "]="
-          << oNextVersion.mEnumArrayInc[i][j][k].getUnderlyingType() << "\n";
                         oNextVersion.mEnumArrayInc[i][j][k].
                             set(1, iNowVersion.mEnumArrayInc[0].getDoSucceed());
                     }

@@ -32,6 +32,7 @@
 
 // theolizerライブラリ
 #include <theolizer/serializer_binary.h>
+#include <theolizer/serializer_fast.h>
 #include <theolizer/serializer_json.h>
 
 // プロジェクト・ヘッダ

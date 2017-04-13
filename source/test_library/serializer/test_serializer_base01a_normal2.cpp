@@ -131,9 +131,7 @@ std::cout << "TestOSerializerNormal2(" << iFileName << ", "
     {
         aArrayClass.mEnumArrayDec[i]=static_cast<EnumTest>(i%3);
     }
-std::cout << "pre  aArrayClass(save)" << std::endl;
     THEOLIZER_PROCESS(aSerializer, aArrayClass);
-std::cout << "post aArrayClass(save)" << std::endl;
 
 //      ---<<< 生配列(クラス・テンプレート内) >>>---
 
@@ -214,19 +212,7 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
 //      ---<<< 生配列(クラス内) >>>---
 
     ArrayClass aArrayClass;
-std::cout << "pre  aArrayClass(load)\n";
     THEOLIZER_PROCESS(aSerializer, aArrayClass);
-std::cout << "    &(aArrayClass.mArrayInc[0][0][0])=" << &(aArrayClass.mArrayInc[0][0][0]) << "\n";
-std::cout << "    &(aArrayClass.mArrayInc[0][0][1])=" << &(aArrayClass.mArrayInc[0][0][1]) << "\n";
-std::cout << "    &(aArrayClass.mArrayDec[0])      =" << &(aArrayClass.mArrayDec[0]) << "\n";
-std::cout << "    &(aArrayClass.mArrayDec[1])      =" << &(aArrayClass.mArrayDec[1]) << "\n";
-std::cout << "    &(aArrayClass.mEnumArrayInc[0][0][2])=" << &(aArrayClass.mEnumArrayInc[0][0][2])
-      << "\n";
-std::cout << "    &(aArrayClass.mEnumArrayInc[0][0][3])=" << &(aArrayClass.mEnumArrayInc[0][0][3])
-      << "\n";
-
-
-std::cout << "post aArrayClass(load)\n";
 
     // 最新版のままの場合
 #ifndef NO_ARRAY

@@ -128,8 +128,6 @@ namespace internal
     };                                                                      \
     template<class tBaseSerializer, unsigned tVersionNo>                    \
     struct TheolizerSpecials { };                                           \
-    template<class tBaseSerializer, unsigned tVersionNo>                    \
-    struct TheolizerBackups { };                                            \
     THEOLIZER_INTERNAL_SERIALIZABLE(theolizer::internal::emOrder)
 
 #define THEOLIZER_INTERNAL_SERIALIZABLE_MANUAL(dClass, dLastVersionNo,      \
@@ -556,7 +554,6 @@ protected:
     GlobalVersionNoTableBase const*const    mGlobalVersionNoTable;
     unsigned                                mGlobalVersionNo;
     unsigned                                mLastGlobalVersionNo;
-    bool                                    mDuringBackup;
     TypeInfoListImpl&                       mTypeInfoList;
 
 private:
@@ -764,7 +761,6 @@ public:
 private:
     friend THEOLIZER_INTERNAL_DLL bool isLastVersion();
     friend THEOLIZER_INTERNAL_DLL bool isSaver();
-    friend THEOLIZER_INTERNAL_DLL bool duringBackup();
     friend THEOLIZER_INTERNAL_DLL unsigned& getUpVersionCount();
 
     // 最新版処理
@@ -772,9 +768,6 @@ private:
 
     // 保存処理
     bool isSaver() const {return mIsSaver;}
-
-    // バックアップ処理中
-    bool duringBackup() const {return mDuringBackup;}
 
     // upVersionカウンタ(upVersionによる設定を管理する)
     //  0 :バージョン・ダウン処理中、または、save後のバージョン・アップ処理中
@@ -1413,7 +1406,6 @@ void loadClass(BaseSerializer& iBaseSerializer, tVersionType& iVersion)
 
 THEOLIZER_INTERNAL_DLL bool isLastVersion();
 THEOLIZER_INTERNAL_DLL bool isSaver();
-THEOLIZER_INTERNAL_DLL bool duringBackup();
 THEOLIZER_INTERNAL_DLL unsigned& getUpVersionCount();
 
 //############################################################################

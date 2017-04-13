@@ -38,6 +38,7 @@ namespace std
 
 // theolizerライブラリ
 #include <theolizer/serializer_binary.h>
+#include <theolizer/serializer_fast.h>
 #include <theolizer/serializer_json.h>
 
 #include <theolizer/memory.h>   // std::unique_ptrのシリアライズ化

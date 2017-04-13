@@ -25,7 +25,7 @@
 #if !defined(THEOLIZER_INTERNAL_SERIALIZER_FAST_H)
 #define THEOLIZER_INTERNAL_SERIALIZER_FAST_H
 
-#include "core.h"
+#include "internal/core.h"
 
 //############################################################################
 //      Begin
@@ -133,7 +133,7 @@ private:
 //      ---<<< プリミティブ保存 >>>---
 
     #define THEOLIZER_INTERNAL_DEF_SAVE
-    #include "primitive.inc"
+    #include "internal/primitive.inc"
 
 //      ---<<< Element前処理 >>>---
 
@@ -245,7 +245,7 @@ private:
 //      ---<<< プリミティブ回復 >>>---
 
     #define THEOLIZER_INTERNAL_DEF_LOAD
-    #include "primitive.inc"
+    #include "internal/primitive.inc"
 
 //      ---<<< Element前処理 >>>---
 
@@ -298,25 +298,6 @@ private:
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
-// ***************************************************************************
-//      privateアクセス用補助クラス
-//          backupSerializable/restoreSerializableのfriend指定がうまくいかない
-// ***************************************************************************
-
-template<class tSerializer>
-struct SetDuringBackup
-{
-    tSerializer& mSerializer;
-    SetDuringBackup(tSerializer& iSerializer) : mSerializer(iSerializer)
-    {
-        mSerializer.mDuringBackup=true;
-    }
-    ~SetDuringBackup()
-    {
-        mSerializer.mDuringBackup=false;
-    }
-};
-
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
 
@@ -328,8 +309,6 @@ template<Destination uDefault=theolizerD::All, Destination... uDestinations>
 class FastOSerializer : public internal::FastMidOSerializer
 {
     THEOLIZER_INTERNAL_FRIENDS;
-    template<class tSerializer> friend struct internal::SetDuringBackup;
-    using   BaseSerializer::mDuringBackup;
 
     void AbstructSerializer() { }       // インスタンス生成許可
 
@@ -377,8 +356,6 @@ template<Destination uDefault=theolizerD::All, Destination... uDestinations>
 class FastISerializer : public internal::FastMidISerializer
 {
     THEOLIZER_INTERNAL_FRIENDS;
-    template<class tSerializer> friend struct internal::SetDuringBackup;
-    using   BaseSerializer::mDuringBackup;
 
     void AbstructSerializer() { }       // インスタンス生成許可
 
@@ -436,7 +413,6 @@ void backupSerializable(tClass const& iInstance, std::ostream& oStream, bool iIs
 {
     FastOSerializer<>  aSerializer(oStream);
     {
-        internal::SetDuringBackup<decltype(aSerializer)>    aAutoRestore(aSerializer);
         THEOLIZER_PROCESS(aSerializer, iInstance);
     }
     aSerializer.clearTracking();
@@ -452,7 +428,6 @@ void backupSerializable(tClass const& iInstance, std::ostream& oStream, bool iIs
     // 保存
     FastOSerializer<>  aSerializer(oStream);
     {
-        internal::SetDuringBackup<decltype(aSerializer)>    aAutoRestore(aSerializer);
         BaseSerializer& aBaseSerializer=aSerializer;
         THEOLIZER_INTERNAL_SAVE(aBaseSerializer, const_cast<Type&>(iInstance), etmDefault);
     }
@@ -469,7 +444,6 @@ void restoreSerializable(tClass& oInstance, std::istream& iStream, bool iIsBacku
 {
     FastISerializer<>  aSerializer(iStream);
     {
-        internal::SetDuringBackup<decltype(aSerializer)>    aAutoRestore(aSerializer);
         THEOLIZER_PROCESS(aSerializer, oInstance);
     }
     aSerializer.clearTracking();
@@ -482,7 +456,6 @@ void restoreSerializable(tClass& oInstance, std::istream& iStream, bool iIsBacku
     // 回復
     FastISerializer<>  aSerializer(iStream);
     {
-        internal::SetDuringBackup<decltype(aSerializer)>    aAutoRestore(aSerializer);
         BaseSerializer& aBaseSerializer=aSerializer;
         THEOLIZER_INTERNAL_LOAD(aBaseSerializer, oInstance, etmDefault);
     }

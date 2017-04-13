@@ -591,11 +591,6 @@ bool isSaver()
     return xNowSerializer->isSaver();
 }
 
-bool duringBackup()
-{
-    return xNowSerializer->duringBackup();
-}
-
 unsigned& getUpVersionCount()
 {
     return xNowSerializer->mUpVersionCount;
@@ -658,7 +653,6 @@ BaseSerializer::BaseSerializer
     mGlobalVersionNoTable(iGlobalVersionNoTable),
     mGlobalVersionNo(iGlobalVersionNo),
     mLastGlobalVersionNo(iLastGlobalVersionNo),
-    mDuringBackup(false),
     mTypeInfoList(TypeInfoList::getInstance().getList()),
     mTypeIndexCount(mTypeInfoList.size()),
     mRequireCheckTracking(false),
@@ -957,8 +951,7 @@ SerializeInfo& BaseSerializer::registerObject
     auto found = mSerializeList->find(aSerializeKey);
 
     // 見つかった時
-    if ((found != mSerializeList->end())
-     && (!(mDuringBackup && (iTrackingMode == etmPointee)))) // バックアップ中のPointeeは強制不一致
+    if (found != mSerializeList->end())
     {
         // 既にターゲット保存(etsProcessed)済みなら状態を更新しない
         if (found->second.mStatus != etsPointed)
