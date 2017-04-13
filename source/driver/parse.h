@@ -1218,6 +1218,31 @@ ASTANALYZE_OUTPUT("          This is primitive.(", qt.getAsString(), ")");
     void processElement(QualType iQualType, Decl const* iErrorPos, bool iIsRegisterdClass=false)
     {
         QualType qt=iQualType.getDesugaredType(*gASTContext);
+        // TheolizerNonKeepStepなら、Type取り出し
+        do
+        {
+            CXXRecordDecl* crd=qt->getAsCXXRecordDecl();
+            if (!crd)
+        break;
+
+            ClassTemplateSpecializationDecl const* ctsd
+                =dyn_cast<ClassTemplateSpecializationDecl >(crd);
+            if (!ctsd)
+        break;
+
+            if (crd->getName().startswith("TheolizerNonKeepStep") == false)
+        break;
+
+            TemplateArgumentList const& tal=ctsd->getTemplateArgs();
+            if (tal.size() < 1)
+        break;
+
+            TemplateArgument const& ta = tal.get(0);
+            qt = ta.getAsType();
+ASTANALYZE_OUTPUT("    TheolizerNonKeepStep::Type=", qt.getAsString());
+        }
+        while(0);
+
 ASTANALYZE_OUTPUT("    processElement() ", qt.getAsString());
 ASTANALYZE_OUTPUT("      ", qt->getTypeClass(),
                   " : ", Type::Builtin,

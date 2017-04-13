@@ -1438,17 +1438,6 @@ ASTANALYZE_OUTPUT("    mObjectTracking=", mObjectTracking);
 
                 // 型取り出し
                 QualType qt=field->getType().getDesugaredType(*gASTContext);
-
-                // TheolizerNonKeepStepならば、
-                {
-                    CXXRecordDecl* crd=qt->getAsCXXRecordDecl();
-ASTANALYZE_OUTPUT("info TheolizerNonKeepStep : ", crd);
-if (crd)
-{
-    ASTANALYZE_OUTPUT(crd->getQualifiedNameAsString());
-}
-                }
-
                 Type const* type = qt.getTypePtr();
 
                 // 要素リストへ登録
@@ -1545,6 +1534,8 @@ for (auto element : aElementList)
         {
 ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsString());
 
+//      ---<<< 管理情報取り出し >>>---
+
             // struct Theolizerを探す
             CXXRecordDecl const* aTheolizer=nullptr;
             for (auto&& decl : aTheolizerVersionPrev->decls())
@@ -1609,7 +1600,8 @@ ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsSt
                 }
             }
 
-            // 基底クラス情報取り出し
+//      ---<<< 基底クラス情報取り出し >>>---
+
             aIsFirst=true;
             for (auto&& aDecl : aDecls)
             {
@@ -1696,7 +1688,8 @@ ASTANALYZE_OUTPUT("    Base = ", found->first, " : ", found->second.mType == qt,
                 mPrevVersion << "\n";
             }
 
-            // メンバ変数情報取り出し
+//      ---<<< メンバ変数情報取り出し >>>---
+
             aIsFirst=true;
             for (auto&& aDecl : aDecls)
             {
@@ -1824,12 +1817,19 @@ ASTANALYZE_OUTPUT("    Previouse(2) : ", temp.first.substr(pos3));
                     mPrevVersion << "\\\n        " << temp.first.str();
                 }
             }
-            if (!aIsFirst) {
+
+//      ---<<< クラス定義ソース生成 >>>---
+
+            if (!aIsFirst)
+            {
                 mPrevVersion << "\n";
             }
-            if (!iSerializeInfo.mIsManual) {
+            if (!iSerializeInfo.mIsManual)
+            {
                 mPrevVersion << "#include <theolizer/internal/version_auto.inc>\n";
-            } else {
+            }
+            else
+            {
                 mPrevVersion << "#include <theolizer/internal/version_manual.inc>\n";
             }
             mPrevVersion << "#undef  THEOLIZER_GENERATED_VERSION_NO";
