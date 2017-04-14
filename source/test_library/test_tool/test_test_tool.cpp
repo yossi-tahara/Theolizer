@@ -324,8 +324,10 @@ int main(int argc, char** argv)
             ++aTestCounter;
             THEOLIZER_REQUIRE(result_string == "Test", result_string);
         }
-        catch(...)
+        catch(std::runtime_error& e)
         {
+            ++aTestCounter;
+            THEOLIZER_EQUAL(std::string(e.what()), "Test aborted.");
             exception=true;
         }
         judgeAndReplase(out, false, ss.str(), exception == false);
@@ -338,8 +340,10 @@ int main(int argc, char** argv)
             ++aTestCounter;
             THEOLIZER_REQUIRE(result_string == "Test-Error", result_string);
         }
-        catch(...)
+        catch(std::runtime_error& e)
         {
+            ++aTestCounter;
+            THEOLIZER_EQUAL(std::string(e.what()), "Test aborted.");
             exception=true;
         }
         judgeAndReplase(out, true, ss.str(), exception == true);
@@ -377,8 +381,10 @@ int main(int argc, char** argv)
             ++aTestCounter;
             THEOLIZER_REQUIRE_EXCEPTION(throw 1; , int);
         }
-        catch(...)
+        catch(std::runtime_error& e)
         {
+            ++aTestCounter;
+            THEOLIZER_EQUAL(std::string(e.what()), "Test aborted.");
             exception=true;
         }
         judgeAndReplase(out, false, ss.str(), exception == false);
@@ -391,8 +397,10 @@ int main(int argc, char** argv)
             ++aTestCounter;
             THEOLIZER_REQUIRE_EXCEPTION(;, int);
         }
-        catch(...)
+        catch(std::runtime_error& e)
         {
+            ++aTestCounter;
+            THEOLIZER_EQUAL(std::string(e.what()), "Test aborted.");
             exception=true;
         }
         judgeAndReplase(out, true, ss.str(), exception == true);
@@ -452,8 +460,10 @@ int main(int argc, char** argv)
                 e == 1,                             // dJudge
                 e);                                 // dResult
         }
-        catch(...)
+        catch(std::runtime_error& e)
         {
+            ++aTestCounter;
+            THEOLIZER_EQUAL(std::string(e.what()), "Test aborted.");
             exception=true;
         }
         judgeAndReplase(out, false, ss.str(), exception == false);
@@ -470,8 +480,10 @@ int main(int argc, char** argv)
                 e == 1,                             // dJudge
                 e);                                 // dResult
         }
-        catch(...)
+        catch(std::runtime_error& e)
         {
+            ++aTestCounter;
+            THEOLIZER_EQUAL(std::string(e.what()), "Test aborted.");
             exception=true;
         }
         judgeAndReplase(out, true, ss.str(), exception == true);
@@ -488,8 +500,10 @@ int main(int argc, char** argv)
                 e.getMessage() == "Test-Error",     // dJudge
                 e.getMessage());                    // dResult
         }
-        catch(...)
+        catch(std::runtime_error& e)
         {
+            ++aTestCounter;
+            THEOLIZER_EQUAL(std::string(e.what()), "Test aborted.");
             exception=true;
         }
         judgeAndReplase(out, true, ss.str(), exception == true);

@@ -113,7 +113,7 @@ THEOLIZER_INTERNAL_DLL void setOStream(std::ostream& iOStream);
 THEOLIZER_INTERNAL_DLL std::ostream& getOStream();
 
 // ***************************************************************************
-//      テスト中断用例外を投げる
+//      テスト中断
 // ***************************************************************************
 
 THEOLIZER_INTERNAL_DLL void throwAbort();

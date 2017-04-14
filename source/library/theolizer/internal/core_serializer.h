@@ -601,6 +601,7 @@ protected:
 
 public:
     // 最新版処理
+    //! @todo T.B.D.
     unsigned getGlobalVersionNo() const {return mGlobalVersionNo;}
 
 protected:

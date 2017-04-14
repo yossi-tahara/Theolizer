@@ -32,16 +32,15 @@
 
 #include "avoid-trouble.h"
 
+#include <stdexcept>
 #include <regex>
 #include <algorithm>
 #include <mutex>
 
-#define BOOST_ALL_NO_LIB        // Auto-linkを禁止する
-#define BOOST_TEST_NO_MAIN
+#define BOOST_ALL_NO_LIB                // Auto-linkを禁止する
 #define BOOST_NO_EXCEPTIONS
-THEOLIZER_INTERNAL_DISABLE_WARNING()
-#include <boost/test/included/prg_exec_monitor.hpp>
 
+THEOLIZER_INTERNAL_DISABLE_WARNING()    // boostで出るauto_ptr警告を抑止する
 #include <boost/filesystem.hpp>
 namespace boostF = boost::filesystem;
 
@@ -267,17 +266,11 @@ std::ostream& getOStream()
 
 // ***************************************************************************
 //      テスト中断用例外を投げる
-//          任意の例外はboost::excution_monitorでunkown type例外になってしまう。
-//          そこで、boost::execution_exception例外を投げ、判別できるようにする。
 // ***************************************************************************
-
-const boost::unit_test::const_string TheolizerTestAborted = "TheolizerTestAborted";
 
 void throwAbort()
 {
-    throw boost::execution_exception(boost::execution_exception::user_error,
-                                     TheolizerTestAborted,
-                                     boost::execution_exception::location());
+    throw std::runtime_error("Test aborted.");
 }
 
 // ***************************************************************************
@@ -375,7 +368,7 @@ bool printResult(char const* iTitle)
     *internal::gOStream
         << "    Total = " << internal::gTotal << "\n"
         << "    Pass  = " << internal::gTotal - internal::gFailCount << "\n"
-        << "    Fail  = " << internal::gFailCount << "\n";
+        << "    Fail  = " << internal::gFailCount << std::endl;
 
     return (internal::gFailCount == 0);
 }
