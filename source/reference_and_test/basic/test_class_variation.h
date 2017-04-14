@@ -460,20 +460,20 @@ public:
     }
 
     // privateメンバの値をチェック
-    void checkPrivate(bool isValued=false)
+    void checkPrivate(bool iIsValued=false)
     {
         #define DEFINE(dType, dVar, dDef, dVal)                             \
-            THEOLIZER_EQUAL(dVar##Private, ((!isValued)?dDef:dVal));
+            THEOLIZER_EQUAL(dVar##Private, ((!iIsValued)?dDef:dVal));
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1Private[i], ((!isValued)?dDef:dVal), i);\
+                THEOLIZER_EQUAL(dVar##Array1Private[i], ((!iIsValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2Private[j][i], ((!isValued)?dDef:dVal), j, i);\
+                    THEOLIZER_EQUAL(dVar##Array2Private[j][i], ((!iIsValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3Private[k][j][i], ((!isValued)?dDef:dVal),\
+                        THEOLIZER_EQUAL(dVar##Array3Private[k][j][i], ((!iIsValued)?dDef:dVal),\
                                         k, j, i);                           \
                     }                                                       \
                 }                                                           \
@@ -484,20 +484,20 @@ public:
     }
 
     // protectedメンバの値をチェック
-    void checkProtected(bool isValued=false)
+    void checkProtected(bool iIsValued=false)
     {
         #define DEFINE(dType, dVar, dDef, dVal)                             \
-            THEOLIZER_EQUAL(dVar##Protected, ((!isValued)?dDef:dVal));
+            THEOLIZER_EQUAL(dVar##Protected, ((!iIsValued)?dDef:dVal));
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1Protected[i], ((!isValued)?dDef:dVal), i);\
+                THEOLIZER_EQUAL(dVar##Array1Protected[i], ((!iIsValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2Protected[j][i], ((!isValued)?dDef:dVal), j, i);\
+                    THEOLIZER_EQUAL(dVar##Array2Protected[j][i], ((!iIsValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3Protected[k][j][i], ((!isValued)?dDef:dVal),\
+                        THEOLIZER_EQUAL(dVar##Array3Protected[k][j][i], ((!iIsValued)?dDef:dVal),\
                                         k, j, i);                           \
                     }                                                       \
                 }                                                           \
@@ -508,20 +508,20 @@ public:
     }
 
     // publicメンバの値をチェック
-    void checkPublic(bool isValued=false)
+    void checkPublic(bool iIsValued=false)
     {
         #define DEFINE(dType, dVar, dDef, dVal)                             \
-            THEOLIZER_EQUAL(dVar, ((!isValued)?dDef:dVal));
+            THEOLIZER_EQUAL(dVar, ((!iIsValued)?dDef:dVal));
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1[i], ((!isValued)?dDef:dVal), i);\
+                THEOLIZER_EQUAL(dVar##Array1[i], ((!iIsValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!isValued)?dDef:dVal), j, i);\
+                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!iIsValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!isValued)?dDef:dVal),\
+                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!iIsValued)?dDef:dVal),\
                                         k, j, i);                           \
                     }                                                       \
                 }                                                           \
@@ -534,7 +534,7 @@ public:
         {
             for (std::size_t j=0; j < kCol; ++j)
             {
-                THEOLIZER_EQUAL(mArrayOnly[i][j].mInt, ((!isValued)?0:kValue));
+                THEOLIZER_EQUAL(mArrayOnly[i][j].mInt, ((!iIsValued)?0:kValue));
             }
         }
     }
@@ -686,20 +686,20 @@ public:
     }
 
     // privateメンバの値をチェック
-    void checkPrivate(bool isValued=false)
+    void checkPrivate(bool iIsValued=false)
     {
         #define DEFINE(dType, dVar, dDef, dVal)                             \
-            THEOLIZER_EQUAL(dVar##Private, ((!isValued)?dDef:dVal));
+            THEOLIZER_EQUAL(dVar##Private, ((!iIsValued)?dDef:dVal));
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1Private[i], ((!isValued)?dDef:dVal), i);\
+                THEOLIZER_EQUAL(dVar##Array1Private[i], ((!iIsValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2Private[j][i], ((!isValued)?dDef:dVal), j, i);\
+                    THEOLIZER_EQUAL(dVar##Array2Private[j][i], ((!iIsValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3Private[k][j][i], ((!isValued)?dDef:dVal),\
+                        THEOLIZER_EQUAL(dVar##Array3Private[k][j][i], ((!iIsValued)?dDef:dVal),\
                                         k, j, i);                           \
                     }                                                       \
                 }                                                           \
@@ -710,20 +710,20 @@ public:
     }
 
     // protectedメンバの値をチェック
-    void checkProtected(bool isValued=false)
+    void checkProtected(bool iIsValued=false)
     {
         #define DEFINE(dType, dVar, dDef, dVal)                             \
-            THEOLIZER_EQUAL(dVar##Protected, ((!isValued)?dDef:dVal));
+            THEOLIZER_EQUAL(dVar##Protected, ((!iIsValued)?dDef:dVal));
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1Protected[i], ((!isValued)?dDef:dVal), i);\
+                THEOLIZER_EQUAL(dVar##Array1Protected[i], ((!iIsValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2Protected[j][i], ((!isValued)?dDef:dVal), j, i);\
+                    THEOLIZER_EQUAL(dVar##Array2Protected[j][i], ((!iIsValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3Protected[k][j][i], ((!isValued)?dDef:dVal),\
+                        THEOLIZER_EQUAL(dVar##Array3Protected[k][j][i], ((!iIsValued)?dDef:dVal),\
                                         k, j, i);                           \
                     }                                                       \
                 }                                                           \
@@ -734,20 +734,20 @@ public:
     }
 
     // publicメンバの値をチェック
-    void checkPublic(bool isValued=false)
+    void checkPublic(bool iIsValued=false)
     {
         #define DEFINE(dType, dVar, dDef, dVal)                             \
-            THEOLIZER_EQUAL(dVar, ((!isValued)?dDef:dVal));
+            THEOLIZER_EQUAL(dVar, ((!iIsValued)?dDef:dVal));
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1[i], ((!isValued)?dDef:dVal), i);\
+                THEOLIZER_EQUAL(dVar##Array1[i], ((!iIsValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!isValued)?dDef:dVal), j, i);\
+                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!iIsValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!isValued)?dDef:dVal),\
+                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!iIsValued)?dDef:dVal),\
                                         k, j, i);                           \
                     }                                                       \
                 }                                                           \
@@ -760,7 +760,7 @@ public:
         {
             for (std::size_t j=0; j < kCol; ++j)
             {
-                THEOLIZER_EQUAL(mArrayOnly[i][j].mInt, ((!isValued)?0:kValue));
+                THEOLIZER_EQUAL(mArrayOnly[i][j].mInt, ((!iIsValued)?0:kValue));
             }
         }
     }
@@ -914,20 +914,20 @@ public:
     }
 
     // privateメンバの値をチェック
-    void checkPrivate(bool isValued=false)
+    void checkPrivate(bool iIsValued=false)
     {
         #define DEFINE(dType, dVar, dDef, dVal)                             \
-            THEOLIZER_EQUAL(dVar##Private, ((!isValued)?dDef:dVal));
+            THEOLIZER_EQUAL(dVar##Private, ((!iIsValued)?dDef:dVal));
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1Private[i], ((!isValued)?dDef:dVal), i);\
+                THEOLIZER_EQUAL(dVar##Array1Private[i], ((!iIsValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2Private[j][i], ((!isValued)?dDef:dVal), j, i);\
+                    THEOLIZER_EQUAL(dVar##Array2Private[j][i], ((!iIsValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3Private[k][j][i], ((!isValued)?dDef:dVal),\
+                        THEOLIZER_EQUAL(dVar##Array3Private[k][j][i], ((!iIsValued)?dDef:dVal),\
                                         k, j, i);                           \
                     }                                                       \
                 }                                                           \
@@ -938,20 +938,20 @@ public:
     }
 
     // protectedメンバの値をチェック
-    void checkProtected(bool isValued=false)
+    void checkProtected(bool iIsValued=false)
     {
         #define DEFINE(dType, dVar, dDef, dVal)                             \
-            THEOLIZER_EQUAL(dVar##Protected, ((!isValued)?dDef:dVal));
+            THEOLIZER_EQUAL(dVar##Protected, ((!iIsValued)?dDef:dVal));
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1Protected[i], ((!isValued)?dDef:dVal), i);\
+                THEOLIZER_EQUAL(dVar##Array1Protected[i], ((!iIsValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2Protected[j][i], ((!isValued)?dDef:dVal), j, i);\
+                    THEOLIZER_EQUAL(dVar##Array2Protected[j][i], ((!iIsValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3Protected[k][j][i], ((!isValued)?dDef:dVal),\
+                        THEOLIZER_EQUAL(dVar##Array3Protected[k][j][i], ((!iIsValued)?dDef:dVal),\
                                         k, j, i);                           \
                     }                                                       \
                 }                                                           \
@@ -962,20 +962,20 @@ public:
     }
 
     // publicメンバの値をチェック
-    void checkPublic(bool isValued=false)
+    void checkPublic(bool iIsValued=false)
     {
         #define DEFINE(dType, dVar, dDef, dVal)                             \
-            THEOLIZER_EQUAL(dVar, ((!isValued)?dDef:dVal));
+            THEOLIZER_EQUAL(dVar, ((!iIsValued)?dDef:dVal));
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1[i], ((!isValued)?dDef:dVal), i);\
+                THEOLIZER_EQUAL(dVar##Array1[i], ((!iIsValued)?dDef:dVal), i);\
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!isValued)?dDef:dVal), j, i);\
+                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!iIsValued)?dDef:dVal), j, i);\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!isValued)?dDef:dVal),\
+                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!iIsValued)?dDef:dVal),\
                                         k, j, i);                           \
                     }                                                       \
                 }                                                           \
@@ -988,7 +988,7 @@ public:
         {
             for (std::size_t j=0; j < kCol; ++j)
             {
-                THEOLIZER_EQUAL(mArrayOnly[i][j].mInt, ((!isValued)?0:kValue));
+                THEOLIZER_EQUAL(mArrayOnly[i][j].mInt, ((!iIsValued)?0:kValue));
             }
         }
     }
@@ -1084,20 +1084,20 @@ public:
     }
 
     // publicメンバの値をチェック
-    void checkPublic(bool isValued=false)
+    void checkPublic(bool iIsValued=false)
     {
         #define DEFINE(dType, dVar, dDef, dVal)                             \
-            THEOLIZER_EQUAL(dVar, ((!isValued)?dDef:dVal));
+            THEOLIZER_EQUAL(dVar, ((!iIsValued)?dDef:dVal));
         #define ARRAY(dType, dVar, dNum, dDef, dVal)                        \
             for (std::size_t i=0; i < dNum; ++i)                            \
             {                                                               \
-                THEOLIZER_EQUAL(dVar##Array1[i], ((!isValued)?dDef:dVal));  \
+                THEOLIZER_EQUAL(dVar##Array1[i], ((!iIsValued)?dDef:dVal));  \
                 for (std::size_t j=0; j < 2; ++j)                           \
                 {                                                           \
-                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!isValued)?dDef:dVal));\
+                    THEOLIZER_EQUAL(dVar##Array2[j][i], ((!iIsValued)?dDef:dVal));\
                     for (std::size_t k=0; k < 3; ++k)                       \
                     {                                                       \
-                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!isValued)?dDef:dVal));\
+                        THEOLIZER_EQUAL(dVar##Array3[k][j][i], ((!iIsValued)?dDef:dVal));\
                     }                                                       \
                 }                                                           \
             }
@@ -1109,7 +1109,7 @@ public:
         {
             for (std::size_t j=0; j < kCol; ++j)
             {
-                THEOLIZER_EQUAL(mArrayOnly[i][j].mInt, ((!isValued)?0:kValue));
+                THEOLIZER_EQUAL(mArrayOnly[i][j].mInt, ((!iIsValued)?0:kValue));
             }
         }
     }
@@ -1214,29 +1214,26 @@ protected:
 public:
     int     mIntPublic;
 
-    // デフォルト・コンストラクタ
-    BaseFullAuto() : mIntPrivate(0), mIntProtected(0), mIntPublic(0)
-    { }
-
-    // 保存前の値設定
-    BaseFullAuto(bool) :
-        mIntPrivate(kIntPrivate),
-        mIntProtected(kIntProtected),
-        mIntPublic(kIntPublic)
+    // コンストラクタ
+    //  (デフォルト・コンストラクタは意図的に無し)
+    BaseFullAuto(bool iIsValued) :
+        mIntPrivate(  (iIsValued)?kIntPrivate:0),
+        mIntProtected((iIsValued)?kIntProtected:0),
+        mIntPublic(   (iIsValued)?kIntPublic:0)
     { }
 
     // 一致チェック
-    void checkPrivate(bool isValued=false)
+    void checkPrivate(bool iIsValued=false)
     {
-        THEOLIZER_EQUAL(mIntPrivate, ((!isValued)?0:kIntPrivate));
+        THEOLIZER_EQUAL(mIntPrivate, ((!iIsValued)?0:kIntPrivate));
     }
-    void checkProtected(bool isValued=false)
+    void checkProtected(bool iIsValued=false)
     {
-        THEOLIZER_EQUAL(mIntProtected, ((!isValued)?0:kIntProtected));
+        THEOLIZER_EQUAL(mIntProtected, ((!iIsValued)?0:kIntProtected));
     }
-    void checkPublic(bool isValued=false)
+    void checkPublic(bool iIsValued=false)
     {
-        THEOLIZER_EQUAL(mIntPublic, ((!isValued)?0:kIntPublic));
+        THEOLIZER_EQUAL(mIntPublic, ((!iIsValued)?0:kIntPublic));
     }
 };
 
@@ -1263,25 +1260,26 @@ public:
     BaseHalfAuto() : mIntPrivate(0), mIntProtected(0), mIntPublic(0)
     { }
 
-    // 保存前の値設定
-    BaseHalfAuto(bool) :
-        mIntPrivate(kIntPrivate),
-        mIntProtected(kIntProtected),
-        mIntPublic(kIntPublic)
+    // コンストラクタ
+    //  (デフォルト・コンストラクタは意図的に無し)
+    BaseHalfAuto(bool iIsValued) :
+        mIntPrivate(  (iIsValued)?kIntPrivate:0),
+        mIntProtected((iIsValued)?kIntProtected:0),
+        mIntPublic(   (iIsValued)?kIntPublic:0)
     { }
 
     // 一致チェック
-    void checkPrivate(bool isValued=false)
+    void checkPrivate(bool iIsValued=false)
     {
-        THEOLIZER_EQUAL(mIntPrivate, ((!isValued)?0:kIntPrivate));
+        THEOLIZER_EQUAL(mIntPrivate, ((!iIsValued)?0:kIntPrivate));
     }
-    void checkProtected(bool isValued=false)
+    void checkProtected(bool iIsValued=false)
     {
-        THEOLIZER_EQUAL(mIntProtected, ((!isValued)?0:kIntProtected));
+        THEOLIZER_EQUAL(mIntProtected, ((!iIsValued)?0:kIntProtected));
     }
-    void checkPublic(bool isValued=false)
+    void checkPublic(bool iIsValued=false)
     {
-        THEOLIZER_EQUAL(mIntPublic, ((!isValued)?0:kIntPublic));
+        THEOLIZER_EQUAL(mIntPublic, ((!iIsValued)?0:kIntPublic));
     }
 
     // 侵入型半自動 指定
@@ -1317,19 +1315,16 @@ class BaseManual : protected ProtectedInheritance
 public:
     int     mIntPublic;
 
-    // デフォルト・コンストラクタ
-    BaseManual() : mIntPublic(0)
-    { }
-
-    // 保存前の値設定
-    BaseManual(bool) :
-        mIntPublic(kIntPublic)
+    // コンストラクタ
+    //  (デフォルト・コンストラクタは意図的に無し)
+    BaseManual(bool iIsValued=false) :
+        mIntPublic((iIsValued)?kIntPublic:0)
     { }
 
     // 一致チェック
-    void checkPublic(bool isValued=false)
+    void checkPublic(bool iIsValued=false)
     {
-        THEOLIZER_EQUAL(mIntPublic, ((!isValued)?0:kIntPublic));
+        THEOLIZER_EQUAL(mIntPublic, ((!iIsValued)?0:kIntPublic));
     }
 };
 
@@ -1373,7 +1368,7 @@ struct TheolizerNonIntrusive<BaseManual<tInitialValue>>::
         typename tTheolizerVersion::TheolizerTarget*& oInstance
     )
     {
-        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
+        if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget(false);
 
         THEOLIZER_PROCESS(iSerializer, oInstance->mIntPublic);
     }
@@ -1410,27 +1405,29 @@ public:
     BaseHalfAuto<1621>  mBaseHalfAutoPublic;
     BaseManual  <1631>  mBaseManualPublic;
 
+    // デフォルト・コンストラクタ
     DerivedFullAuto() :
-        BaseFullAuto<1111>{},
-        BaseHalfAuto<1121>{},
-        BaseManual  <1131>{},
-        BaseFullAuto<1211>{},
-        BaseHalfAuto<1221>{},
-        BaseManual  <1231>{},
-        BaseFullAuto<1311>{},
-        BaseHalfAuto<1321>{},
-        BaseManual  <1331>{},
-        mBaseFullAutoPrivate{},
-        mBaseHalfAutoPrivate{},
-        mBaseManualPrivate{},
-        mBaseFullAutoProtected{},
-        mBaseHalfAutoProtected{},
-        mBaseManualProtected{},
-        mBaseFullAutoPublic{},
-        mBaseHalfAutoPublic{},
-        mBaseManualPublic{}
+        BaseFullAuto<1111>{false},
+        BaseHalfAuto<1121>{false},
+        BaseManual  <1131>{false},
+        BaseFullAuto<1211>{false},
+        BaseHalfAuto<1221>{false},
+        BaseManual  <1231>{false},
+        BaseFullAuto<1311>{false},
+        BaseHalfAuto<1321>{false},
+        BaseManual  <1331>{false},
+        mBaseFullAutoPrivate{false},
+        mBaseHalfAutoPrivate{false},
+        mBaseManualPrivate{false},
+        mBaseFullAutoProtected{false},
+        mBaseHalfAutoProtected{false},
+        mBaseManualProtected{false},
+        mBaseFullAutoPublic{false},
+        mBaseHalfAutoPublic{false},
+        mBaseManualPublic{false}
     { }
 
+    // 保存用コンストラクタ
     DerivedFullAuto(bool) :
         BaseFullAuto<1111>{true},
         BaseHalfAuto<1121>{true},
@@ -1537,27 +1534,29 @@ public:
     BaseHalfAuto<2621>  mBaseHalfAutoPublic;
     BaseManual  <2631>  mBaseManualPublic;
 
+    // デフォルト・コンストラクタ
     DerivedHalfAuto() :
-        BaseFullAuto<2111>{},
-        BaseHalfAuto<2121>{},
-        BaseManual  <2131>{},
-        BaseFullAuto<2211>{},
-        BaseHalfAuto<2221>{},
-        BaseManual  <2231>{},
-        BaseFullAuto<2311>{},
-        BaseHalfAuto<2321>{},
-        BaseManual  <2331>{},
-        mBaseFullAutoPrivate{},
-        mBaseHalfAutoPrivate{},
-        mBaseManualPrivate{},
-        mBaseFullAutoProtected{},
-        mBaseHalfAutoProtected{},
-        mBaseManualProtected{},
-        mBaseFullAutoPublic{},
-        mBaseHalfAutoPublic{},
-        mBaseManualPublic{}
+        BaseFullAuto<2111>{false},
+        BaseHalfAuto<2121>{false},
+        BaseManual  <2131>{false},
+        BaseFullAuto<2211>{false},
+        BaseHalfAuto<2221>{false},
+        BaseManual  <2231>{false},
+        BaseFullAuto<2311>{false},
+        BaseHalfAuto<2321>{false},
+        BaseManual  <2331>{false},
+        mBaseFullAutoPrivate{false},
+        mBaseHalfAutoPrivate{false},
+        mBaseManualPrivate{false},
+        mBaseFullAutoProtected{false},
+        mBaseHalfAutoProtected{false},
+        mBaseManualProtected{false},
+        mBaseFullAutoPublic{false},
+        mBaseHalfAutoPublic{false},
+        mBaseManualPublic{false}
     { }
 
+    // 保存用コンストラクタ
     DerivedHalfAuto(bool) :
         BaseFullAuto<2111>{true},
         BaseHalfAuto<2121>{true},
@@ -1654,15 +1653,17 @@ public:
     BaseHalfAuto<3621>  mBaseHalfAutoPublic;
     BaseManual  <3631>  mBaseManualPublic;
 
+    // デフォルト・コンストラクタ
     DerivedManual() :
-        BaseFullAuto{},
-        BaseHalfAuto{},
-        BaseManual{},
-        mBaseFullAutoPublic{},
-        mBaseHalfAutoPublic{},
-        mBaseManualPublic{}
+        BaseFullAuto{false},
+        BaseHalfAuto{false},
+        BaseManual{false},
+        mBaseFullAutoPublic{false},
+        mBaseHalfAutoPublic{false},
+        mBaseManualPublic{false}
     { }
 
+    // 保存用コンストラクタ
     DerivedManual(bool) :
         BaseFullAuto{true},
         BaseHalfAuto{true},
