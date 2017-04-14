@@ -953,6 +953,8 @@ char* GetCurrentDirName()
     #pragma warning(disable:4702 4913)
 #endif
 
+#undef new          // 誰かがデバッグ・ビルド時に#defineしており、boostと干渉する
+
 #define BOOST_TEST_NO_MAIN
 #define BOOST_NO_EXCEPTIONS
 #include <boost/test/included/prg_exec_monitor.hpp>
