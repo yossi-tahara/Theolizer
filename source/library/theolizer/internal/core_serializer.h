@@ -122,7 +122,6 @@ namespace internal
     struct TheolizerUserDefine                                              \
     {                                                                       \
         static const unsigned kTheolizerVersionNo=tVersionNo;               \
-        static void initialize(tTheolizerVersion&) {}                       \
         static void downVersion(tNextVersion const&, tTheolizerVersion&) { }\
         static void upVersion(tTheolizerVersion const&, tNextVersion&) { }  \
     };                                                                      \

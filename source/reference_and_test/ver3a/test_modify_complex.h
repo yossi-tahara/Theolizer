@@ -584,11 +584,6 @@ struct VersionUpDownTest
 template<class tTheolizerVersion, class tNextVersion>
 struct VersionUpDownTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
 {
-    // Initialize members that is deleted in next version.
-    static void initialize(tTheolizerVersion& oNowVersion)
-    {
-    }
-
     // Members version down.
     static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
     {
@@ -682,11 +677,6 @@ struct VersionUpDownTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1
 template<class tTheolizerVersion, class tNextVersion>
 struct VersionUpDownTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 2>
 {
-    // Initialize members that is deleted in next version.
-    static void initialize(tTheolizerVersion& oNowVersion)
-    {
-    }
-
     // Members version down.
     static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
     {
@@ -925,11 +915,6 @@ struct KeepStepTest :
 template<class tTheolizerVersion, class tNextVersion>
 struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
 {
-    // Initialize members that is deleted in next version.
-    static void initialize(tTheolizerVersion& oNowVersion)
-    {
-    }
-
     // Members version down.
     static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
     {
@@ -1015,11 +1000,6 @@ struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
 template<class tTheolizerVersion, class tNextVersion>
 struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 2>
 {
-    // Initialize members that is deleted in next version.
-    static void initialize(tTheolizerVersion& oNowVersion)
-    {
-    }
-
     // Members version down.
     static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
     {

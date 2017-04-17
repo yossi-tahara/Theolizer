@@ -341,7 +341,7 @@ THEOLIZER_INTERNAL_VER_DEBUG((
     AsElementOfArray&       getAccess()       { return *this; }
     AsElementOfArray const& getAccess() const { return *this; }
 
-//      ---<<< initialize(), up/downVersion()関数内でのアクセス用 >>>---
+//      ---<<< up/downVersion()関数内でのアクセス用 >>>---
 
     BaseType get()        const { return mValue; }
     operator BaseType()   const { return get(); }

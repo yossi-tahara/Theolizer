@@ -674,16 +674,7 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
             #undef  THEOLIZER_INTERNAL_VERSION_EV
             #undef  THEOLIZER_INTERNAL_VERSION_EV_DEL
         #endif
-    {   // 最新版でない時のみinitialize()有り
-        #if (THEOLIZER_GENERATED_VERSION_NO != THEOLIZER_GENERATED_LAST_VERSION_NO)
-            THEOLIZER_GENERATED_CLASS_TYPE::TheolizerUserDefine
-            <
-                TheolizerVersion,
-                ParentVersion,
-                THEOLIZER_GENERATED_VERSION_NO
-            >::initialize(*this);
-        #endif
-
+    {
         // 要素登録(新バージョンで削除され、他で保存されないケース対応のため)
         registerElements();
     }

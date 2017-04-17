@@ -866,7 +866,7 @@ ASTANALYZE_OUTPUT("genarateClassLastVersion");
         mLastVersion << "\n";
 
 //----------------------------------------------------------------------------
-//      半自動型用initialize/up/downVersion雛形生成
+//      半自動型用up/downVersion雛形生成
 //----------------------------------------------------------------------------
 
         if (!iSerializeInfo.mIsFullAuto
@@ -878,10 +878,6 @@ ASTANALYZE_OUTPUT("genarateClassLastVersion");
                 "struct " << iClassName <<
                 "::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>\n"
                 "{\n"
-                "    // Initialize members that is deleted in next version.\n"
-                "    static void initialize(tTheolizerVersion& oNowVersion)\n"
-                "    {\n"
-                "    }\n\n"
                 "    // Members version down.\n"
                 "    static void downVersion(tNextVersion const& iNextVersion,"
                     " tTheolizerVersion& oNowVersion)\n"

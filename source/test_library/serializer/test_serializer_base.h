@@ -131,11 +131,6 @@ public:
 template<class tTheolizerVersion, class tNextVersion>
 struct IntrusiveBase::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
 {
-    // 他のクラスで使用され、次バージョンで使用しなくなった場合に初期値を設定する
-    static void initialize(tTheolizerVersion& oNowVersion)
-    {
-    }
-
     // 保存／回復の両方で新版から旧版へ変換する
     static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
     {
@@ -207,11 +202,6 @@ public:
 template<class tTheolizerVersion, class tNextVersion>
 struct IntrusiveDerived::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 2>
 {
-    // 他のクラスで使用され、次バージョンで使用しなくなった場合に初期値を設定する
-    static void initialize(tTheolizerVersion& oNowVersion)
-    {
-    }
-
     // 保存／回復の両方で新版から旧版へ変換する
     static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
     {
@@ -229,11 +219,6 @@ struct IntrusiveDerived::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 2>
 template<class tTheolizerVersion, class tNextVersion>
 struct IntrusiveDerived::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
 {
-    // 他のクラスで使用され、次バージョンで使用しなくなった場合に初期値を設定する
-    static void initialize(tTheolizerVersion& oNowVersion)
-    {
-    }
-
     // 保存／回復の両方で新版から旧版へ変換する
     static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
     {
@@ -547,11 +532,6 @@ public:
 template<class tTheolizerVersion, class tNextVersion>
 struct ArrayClass::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
 {
-    // 他のクラスで使用され、次バージョンで使用しなくなった場合に初期値を設定する
-    static void initialize(tTheolizerVersion& oNowVersion)
-    {
-    }
-
     // 保存／回復の両方で新版から旧版へ変換する
     static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
     {
