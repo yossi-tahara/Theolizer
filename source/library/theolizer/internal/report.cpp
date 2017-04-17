@@ -70,15 +70,15 @@ struct tm getGmTime(time_t const& iTime)
 {
     struct tm  aTm;
 
-#if defined(_MSC_VER)
+#if defined(_WIN32)
     if (gmtime_s(&aTm, &iTime))
     {
-        aTm={0};
+        aTm={};
     }
 #else
     if (gmtime_r(&iTime, &aTm) == nullptr)
     {
-        aTm={0};
+        aTm={};
     }
 #endif
 
@@ -88,15 +88,15 @@ struct tm getLocalTime(time_t const& iTime)
 {
     struct tm  aTm;
 
-#if defined(_MSC_VER)
+#if defined(_WIN32)
     if (localtime_s(&aTm, &iTime))
     {
-        aTm={0};
+        aTm={};
     }
 #else
     if (localtime_r(&iTime, &aTm) == nullptr)
     {
-        aTm={0};
+        aTm={};
     }
 #endif
 

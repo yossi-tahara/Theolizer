@@ -485,12 +485,15 @@ struct Switcher
     static void save(tBaseSerializer& iSerializer, tTargetClass& iInstance)
     {
         auto& aClassTypeInfo = ClassTypeInfo<IntrusiveType>::getInstance();
+
+#ifndef THEOLIZER_INTERNAL_DISABLE_NULL_REFERENCE
         if (!&iInstance)
         {
             THEOLIZER_INTERNAL_WRONG_USING(
                 "This reference(%1%) is nullptr.",
                 aClassTypeInfo.getCName());
         }
+#endif
 
         // 参照のポリモーフィズム対応
         //  クラス内の基底クラスのシリアライズ中でない時に、
@@ -573,12 +576,15 @@ struct Switcher
     static void load(tBaseSerializer& iSerializer, tTargetClass& oInstance)
     {
         auto& aClassTypeInfo = ClassTypeInfo<IntrusiveType>::getInstance();
+
+#ifndef THEOLIZER_INTERNAL_DISABLE_NULL_REFERENCE
         if (!&oInstance)
         {
             THEOLIZER_INTERNAL_WRONG_USING(
                 "This reference(%1%) is nullptr.",
                 aClassTypeInfo.getCName());
         }
+#endif
 
         // 参照のポリモーフィズム対応
         //  クラス内の基底クラスのシリアライズ中でない時に、
@@ -692,12 +698,15 @@ struct Switcher
     static void save(tBaseSerializer& iSerializer, tTargetClass& iInstance)
     {
         auto& aClassTypeInfo = ClassTypeInfo<NonIntrusiveType>::getInstance();
+
+#ifndef THEOLIZER_INTERNAL_DISABLE_NULL_REFERENCE
         if (!&iInstance)
         {
             THEOLIZER_INTERNAL_WRONG_USING(
                 "This reference(%1%) is nullptr.",
                 aClassTypeInfo.getCName());
         }
+#endif
 
         // 参照のポリモーフィズム対応
         //  クラス内の基底クラスのシリアライズ中でない時に、
@@ -780,12 +789,15 @@ struct Switcher
     static void load(tBaseSerializer& iSerializer, tTargetClass& oInstance)
     {
         auto& aClassTypeInfo = ClassTypeInfo<NonIntrusiveType>::getInstance();
+
+#ifndef THEOLIZER_INTERNAL_DISABLE_NULL_REFERENCE
         if (!&oInstance)
         {
             THEOLIZER_INTERNAL_WRONG_USING(
                 "This reference(%1%) is nullptr.",
                 aClassTypeInfo.getCName());
         }
+#endif
 
         // 参照のポリモーフィズム対応
         //  クラス内の基底クラスのシリアライズ中でない時に、

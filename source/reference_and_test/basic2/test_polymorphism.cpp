@@ -118,7 +118,7 @@ void tutorisePolymorphism()
 //----------------------------------------------------------------------------
 //      参照回復時のエラー・テスト
 //          保存時と異なる型検出
-//          nullptr参照(通常あり得ないが)
+//          nullptr参照(本来あり得ない)
 //----------------------------------------------------------------------------
 
 //      ---<<< 保存 >>>---
@@ -215,6 +215,7 @@ void tutorisePolymorphism()
 
 //      ---<<< 異常系(nullptr) >>>---
 
+#ifndef THEOLIZER_INTERNAL_DISABLE_NULL_REFERENCE
     {
         std::ifstream   aStream("tutorise_polymorphism_refer.json");
         theolizer::JsonISerializer<> aSerializer(aStream);
@@ -248,6 +249,7 @@ void tutorisePolymorphism()
         // オブジェクトIDテーブルのクリア
         aSerializer.clearTracking();
     }
+#endif
 
     std::cout << "tutorisePolymorphism() end\n" << std::endl;
 }
