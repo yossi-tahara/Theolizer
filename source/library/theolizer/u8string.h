@@ -52,7 +52,16 @@ Visual Studio 2015以降ならば、u8"任意文字列"の書式にてUTF-8文�
 
 #include "internal/external.h"          // インクルード漏れチェックのため
 
+// iosfwd警告抑止(DLL用ビルド時に発生する)
+#ifdef _MSC_VER
+  #pragma warning(push)
+  #pragma warning(disable:4702)
+#endif
 #include <string>
+#ifdef _MSC_VER
+  #pragma warning(pop)
+#endif
+
 #include <iostream>
 
 //############################################################################

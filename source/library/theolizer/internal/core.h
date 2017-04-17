@@ -25,10 +25,14 @@
 //      Begin
 //############################################################################
 
+// ***************************************************************************
+//      TheolizerNonKeepStepとenum型のデバック用
+// ***************************************************************************
+
 #if 0
-    #define THEOLIZER_DEBUG(dStatements)    THEOLIZER_INTERNAL_UNPAREN dStatements
+    #define THEOLIZER_INTERNAL_VER_DEBUG(dStatements)    THEOLIZER_INTERNAL_UNPAREN dStatements
 #else
-    #define THEOLIZER_DEBUG(dStatements)
+    #define THEOLIZER_INTERNAL_VER_DEBUG(dStatements)
 #endif
 
 // ***************************************************************************
@@ -37,10 +41,14 @@
 
 #ifdef _MSC_VER
   #pragma warning(push)
-  #pragma warning(disable:4127)
+  #pragma warning(disable:4127 4251)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
+
+//############################################################################
+//      バージョン対応用定義群
+//############################################################################
 
 // ***************************************************************************
 //      TheolizerNonKeepStepクラス
@@ -118,7 +126,7 @@ public:
     template<bool tIsRegister, TrackingMode tTrackingMode, class tBaseSerializer>
     void save(tBaseSerializer& iSerializer)
     {
-THEOLIZER_DEBUG((std::cout << "TheolizerNonKeepStep<tClassType>" << std::endl;));
+THEOLIZER_INTERNAL_VER_DEBUG((std::cout << "TheolizerNonKeepStep<tClassType>" << std::endl;));
         theolizer::internal::Switcher<tBaseSerializer, Type, tIsRegister, tTrackingMode>::
             save(iSerializer, *mTarget);
     }
@@ -156,7 +164,7 @@ class TheolizerNonKeepStepBase
 >
 {
     typedef tArithmeticType Type;
-    typedef     tThis       This;
+    typedef tThis           This;
     Type    mData;
 protected:
     TheolizerNonKeepStepBase(Type iData=0) : mData(iData) { }
@@ -177,7 +185,7 @@ struct TheolizerNonKeepStepBase
 > : public tStringType
 {
 protected:
-    TheolizerNonKeepStepBase(tStringType const& iString="") : tStringType(iString) { }
+    TheolizerNonKeepStepBase(tStringType const& iString=tStringType()) : tStringType(iString) { }
     TheolizerNonKeepStepBase(tStringType&& iString) : tStringType(std::move(iString)) { }
     tStringType& getData() { return *this; }
 
@@ -217,7 +225,7 @@ private:
 //----------------------------------------------------------------------------
 
 template<typename tPrimitiveType>
-struct TheolizerNonKeepStep
+struct THEOLIZER_INTERNAL_DLL TheolizerNonKeepStep
 <
     tPrimitiveType,
     theolizer::internal::EnableIf<theolizer::internal::IsPrimitive<tPrimitiveType>::value>
@@ -259,218 +267,41 @@ private:
 
 public:
     // ターゲットからのコンストラクタ
-    explicit TheolizerNonKeepStep(Type& iTarget) :
-        Base(iTarget),
-        mValue(Base::getData()),
-        mBackup(),
-        mTarget(&iTarget),
-        mNextPtr(nullptr),
-        mDoSucceed(false),
-        mIsChanged(false),
-        mUpVersionCount(0)
-    { }
+    explicit TheolizerNonKeepStep(Type& iTarget);
 
     // 次からのコンストラクタ
-    explicit TheolizerNonKeepStep(This& iNext) :
-        Base(iNext.mValue),
-        mValue(Base::getData()),
-        mBackup(),
-        mTarget(iNext.mTarget),
-        mNextPtr(&iNext),
-        mDoSucceed(false),
-        mIsChanged(false),
-        mUpVersionCount(0)
-    { }
+    explicit TheolizerNonKeepStep(This& iNext);
 
     // ムーブ・コンストラクタ(配列処理用)
-    explicit TheolizerNonKeepStep(This&& iNext) :
-        Base(std::move(iNext.mValue)),
-        mValue(Base::getData()),
-        mBackup(),
-        mTarget(iNext.mTarget),
-        mNextPtr(iNext.mNextPtr),
-        mDoSucceed(false),
-        mIsChanged(false),
-        mUpVersionCount(0)
-    { }
+    explicit TheolizerNonKeepStep(This&& iNext);
 
     // デフォルト・コンストラクタ(次で削除されていた場合)
-    TheolizerNonKeepStep() :
-        Base(),
-        mValue(Base::getData()),
-        mBackup(),
-        mTarget(nullptr),
-        mNextPtr(nullptr),
-        mDoSucceed(false),
-        mIsChanged(false),
-        mUpVersionCount(0)
-    { }
+    TheolizerNonKeepStep();
 
     // 当プリミティブを含むクラスやその上位クラスのupVersionからの通常設定
-    This& operator=(Type iRhs)
-    {
-THEOLIZER_DEBUG((
-std::cout << "TheolizerNonKeepStep<" << THEOLIZER_INTERNAL_TYPE_NAME(Type)
-          << ">::operator=(" << iRhs << "); " << (void*)mTarget << std::endl;
-std::cout << "    mUpVersionCount    =" << mUpVersionCount << "" << std::endl;
-std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCount() << ""
-          << std::endl;
-));
-
-        unsigned aUpVersionCount=theolizer::internal::getUpVersionCount();
-
-        // バージョン・ダウン中
-        if (aUpVersionCount == 0)
-        {
-            mValue=iRhs;
-        }
-
-        // 回復後のバージョン・アップ中、かつ、有効なset呼び出し無し
-        else if (!mDoSucceed)
-        {
-            // 最初の呼び出しなら、バックアップする
-            if (mUpVersionCount == 0)
-            {
-                mBackup=mValue;
-                mUpVersionCount=aUpVersionCount;
-            }
-
-            // 最初の呼び出しと同じupVersion()からの呼び出し
-            if (mUpVersionCount == aUpVersionCount)
-            {
-                mValue=iRhs;
-                mIsChanged=true;
-            }
-        }
-
-THEOLIZER_DEBUG((
-std::cout << "    mValue               =" << mValue << "" << std::endl;
-std::cout << "    mIsChanged           =" << mIsChanged << "" << std::endl;
-std::cout << "    mDoSucceed           =" << mDoSucceed << "" << std::endl;
-));
-        return *this;
-    }
+    This& operator=(Type iRhs);
 
     // 強制引継ぎ設定（他の変数から引き継ぐ）
-    void set(Type iValue, bool iDoSucceed)  // iDoSucceedは引継ぎ元変数のmDoSucceed
-    {
-THEOLIZER_DEBUG((
-std::cout << "TheolizerNonKeepStep<" << THEOLIZER_INTERNAL_TYPE_NAME(Type)
-          << ">::set(" << iValue << ", " << iDoSucceed << "); " << (void*)mTarget << std::endl;
-std::cout << "    mUpVersionCount    =" << mUpVersionCount << "" << std::endl;
-std::cout << "    getUpVersionCount()=" << theolizer::internal::getUpVersionCount() << ""
-          << std::endl;
-));
-
-        unsigned aUpVersionCount=theolizer::internal::getUpVersionCount();
-
-        // バージョン・ダウン中
-        if (aUpVersionCount == 0)
-        {   // 使用禁止
-            THEOLIZER_INTERNAL_ABORT("Do not call <member>.set() in downVersion().");
-        }
-
-        // 回復後のバージョン・アップ中、かつ、有効なset呼び出し
-        else if (iDoSucceed)
-        {
-            // 最初の呼び出しなら、バックアップする
-            if (mUpVersionCount == 0)
-            {
-                mBackup=mValue;
-                mUpVersionCount=aUpVersionCount;
-            }
-
-            // 最初の呼び出しと同じupVersion()からの呼び出し
-            if (mUpVersionCount == aUpVersionCount)
-            {
-                mValue=iValue;
-                mDoSucceed=true;
-            }
-        }
-THEOLIZER_DEBUG((
-std::cout << "    mValue               =" << mValue << "" << std::endl;
-std::cout << "    mIsChanged           =" << mIsChanged << "" << std::endl;
-std::cout << "    mDoSucceed           =" << mDoSucceed << "" << std::endl;
-));
-    }
+    void set(Type iValue, bool iDoSucceed); // iDoSucceedは引継ぎ元変数のmDoSucceed
 
 private:
     // 前バージョンのデストラクタから呼ばれる引継ぎ処理
-    void succeed(Type iValue, bool iDoSucceed)
-    {
-THEOLIZER_DEBUG((
-std::cout << "TheolizerNonKeepStep<" << THEOLIZER_INTERNAL_TYPE_NAME(Type)
-          << ">::succeed(" << iValue << "); " << (void*)mTarget << std::endl;
-std::cout << "    mIsChanged =" << mIsChanged << "" << std::endl;
-));
-
-        // setされていない時
-        if (!mDoSucceed)
-        {   // 引継ぎ無し
-            if (!iDoSucceed)
-            {   // 変更されていたらリストアする
-                if (mIsChanged)
-                {
-                    mValue=mBackup;
-                }
-            }
-
-            // 引継ぎ有り
-            else
-            {
-                mDoSucceed=true;
-
-                // 変更されていないなら、引き継ぐ
-                if (!mIsChanged)
-                {
-                    mValue=iValue;
-                }
-            }
-        }
-THEOLIZER_DEBUG((
-std::cout << "    mValue               =" << mValue << "" << std::endl;
-std::cout << "    mIsChanged           =" << mIsChanged << "" << std::endl;
-std::cout << "    mDoSucceed           =" << mDoSucceed << "" << std::endl;
-));
-    }
+    void succeed(Type iValue, bool iDoSucceed);
 
 public:
     // デストラクタ(次バージョンへの引継ぎ実行)
-    ~TheolizerNonKeepStep()
-    {
-THEOLIZER_DEBUG((
-std::cout << "TheolizerNonKeepStep<" << THEOLIZER_INTERNAL_TYPE_NAME(Type)
-          << ">::~TheolizerNonKeepStep(); " << (void*)mTarget << std::endl;
-std::cout << "    mValue               =" << mValue << "" << std::endl;
-std::cout << "    mIsChanged           =" << mIsChanged << "" << std::endl;
-std::cout << "    mDoSucceed           =" << mDoSucceed << "" << std::endl;
-));
-
-        // 引継ぎ処理
-        if (mNextPtr)
-        {
-THEOLIZER_DEBUG((std::cout << "    mNextPtr->succeed(" << mValue << ");" << std::endl;));
-            mNextPtr->succeed(mValue, mDoSucceed);
-        }
-        else if (mTarget && mDoSucceed)
-        {
-THEOLIZER_DEBUG((std::cout << "    *mTarget=" << mValue << ";" << std::endl;));
-            *mTarget=mValue;
-        }
-    }
+    ~TheolizerNonKeepStep();
 
 //      ---<<< 値取り出し >>>---
 
-Type* getTarget() { return mTarget; }
-    Type get()      const { return mValue; }
-    operator Type() const { return get(); }
-
+    Type get()          const { return mValue; }
+    operator Type()     const { return get(); }
     bool getDoSucceed() const { return mDoSucceed; }
 
     // 非constはライト・オンリー
 private:
-    Type get();
-    operator Type();
+    Type get()      { return Type(); }  // dummy
+    operator Type() { return get();  }
 public:
 
 //      ---<<< 保存／回復処理 >>>---
@@ -479,9 +310,9 @@ public:
     template<bool tIsRegister, TrackingMode tTrackingMode, class tBaseSerializer>
     void save(tBaseSerializer& iSerializer)
     {
-THEOLIZER_DEBUG((
-std::cout << "TheolizerNonKeepStep<tPrimitiveType>::save(" << mValue << ") "
-          << (void*)mTarget << std::endl;
+THEOLIZER_INTERNAL_VER_DEBUG((
+    std::cout << "TheolizerNonKeepStep<tPrimitiveType>::save(" << mValue << ") "
+              << (void*)mTarget << std::endl;
 ));
         if (tTrackingMode == TrackingMode::etmDefault)
         {
@@ -546,18 +377,18 @@ std::cout << "TheolizerNonKeepStep<tPrimitiveType>::save(" << mValue << ") "
                 iSerializer.loadPrimitive(mValue);
             }
         }
-THEOLIZER_DEBUG((
-std::cout << "TheolizerNonKeepStep<tPrimitiveType>::load(" << mValue << ") "
-          << (void*)mTarget << std::endl;
+THEOLIZER_INTERNAL_VER_DEBUG((
+    std::cout << "TheolizerNonKeepStep<tPrimitiveType>::load(" << mValue << ") "
+              << (void*)mTarget << std::endl;
 ));
     }
 };
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
-//############################################################################
-//      バージョン対応用定義群
-//############################################################################
+// ***************************************************************************
+//      バージョン定義(クラス型)
+// ***************************************************************************
 
 namespace theolizer
 {
@@ -584,10 +415,6 @@ struct ElementBase
     virtual bool isBaseClass() const                    {return false;}
     virtual Destinations const& getDestinations() const = 0;
 };
-
-// ***************************************************************************
-//      バージョン定義(クラス型)
-// ***************************************************************************
 
 //----------------------------------------------------------------------------
 //      TheolizerVersion<>内の要素(メンバー変数)管理クラス
@@ -1443,7 +1270,5 @@ return ret;
 #ifdef _MSC_VER
   #pragma warning(pop)
 #endif
-
-#undef THEOLIZER_DEBUG
 
 #endif  // THEOLIZER_INTERNAL_CORE_H

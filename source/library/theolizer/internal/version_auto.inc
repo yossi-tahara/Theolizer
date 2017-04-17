@@ -38,12 +38,6 @@
 */
 //############################################################################
 
-#if 0
-    #define THEOLIZER_DEBUG(dStatements)    THEOLIZER_INTERNAL_UNPAREN dStatements
-#else
-    #define THEOLIZER_DEBUG(dStatements)
-#endif
-
 // ***************************************************************************
 //          警告抑止
 // ***************************************************************************
@@ -714,9 +708,9 @@ struct THEOLIZER_GENERATED_CLASS_TYPE::
 
             // バージョン・アップ(++upVersionカウンタ)
             ++theolizer::internal::getUpVersionCount();
-THEOLIZER_DEBUG((
-std::cout << "(3)UpVersionCount=" << theolizer::internal::getUpVersionCount()
-          << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(*this) << std::endl;
+THEOLIZER_INTERNAL_VER_DEBUG((
+        std::cout << "(3)UpVersionCount=" << theolizer::internal::getUpVersionCount()
+                  << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(*this) << std::endl;
 ));
         }
         #endif
@@ -910,9 +904,9 @@ THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
 
         // バージョン・アップ開始(upVersionカウンタ=1)
         theolizer::internal::getUpVersionCount()=1;
-THEOLIZER_DEBUG((
-std::cout << "(2)UpVersionCount=" << theolizer::internal::getUpVersionCount()
-          << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(*this) << std::endl;
+THEOLIZER_INTERNAL_VER_DEBUG((
+    std::cout << "(2)UpVersionCount=" << theolizer::internal::getUpVersionCount()
+              << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(*this) << std::endl;
 ));
     }
 }
@@ -1048,9 +1042,9 @@ THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion<tBaseSerializer, 1>::loadClass
 
     // バージョン・アップ開始(upVersionカウンタ=1)
     theolizer::internal::getUpVersionCount()=1;
-THEOLIZER_DEBUG((
-std::cout << "(1)UpVersionCount=" << theolizer::internal::getUpVersionCount()
-          << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(*this) << std::endl;
+THEOLIZER_INTERNAL_VER_DEBUG((
+    std::cout << "(1)UpVersionCount=" << theolizer::internal::getUpVersionCount()
+              << " " << THEOLIZER_INTERNAL_TYPE_NAME_VAR(*this) << std::endl;
 ));
 }
 
@@ -1299,5 +1293,3 @@ inline void THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::registerToBaseClass
 #if defined(__GNUC__)
     #pragma GCC diagnostic pop
 #endif
-
-#undef THEOLIZER_DEBUG

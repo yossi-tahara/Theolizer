@@ -1928,10 +1928,11 @@ ASTANALYZE_OUTPUT("--- eUpdate ---");
 
             // --- １つ前の版の処理 ---
 
-            // １つ前の版が存在し、に変更があれば置き換え
+            // １つ前の版が存在し、変更があれば置き換え
             if ((iSerializeInfo.mTheolizerVersionPrev)
              && (getNowSource(aPrevVersionNoBegin, aPrevVersionNoEnd) != mPrevVersion.str()))
             {
+ASTANALYZE_OUTPUT("--- modify prev-version ---");
                 // ただし、変更禁止ならエラー
                 if (!aIsUpdateAllowedPrev)
                 {
