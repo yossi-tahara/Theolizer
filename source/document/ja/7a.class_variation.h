@@ -123,7 +123,7 @@ THEOLIZER_INTRUSIVE()とTHEOLIZER_INTRUSIVE_ORDER()は、最後に<b>private:</b
   - <b>dClass</b><br>
     自クラス名を指定します。C++はメンバ関数の外クラス定義内で自クラスにアクセスできないため、指定が必要なのです。クラス名の外側に必ず()を付けて下さい。<br>
   - <b>dLastVersionNo</b><br>
-    最新版のバージョン番号は指定します。最初は1を指定して下さい。<br>
+    最新版のローカル・バージョン番号を指定します。最初は1を指定して下さい。<br>
     「@ref ChangingClass 」で使い方を説明します。<br>
 <br>
 

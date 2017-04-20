@@ -423,7 +423,7 @@ struct KeepStepTest :
         mVersionManual.check();
     }
 
-    THEOLIZER_INTRUSIVE(CS, (KeepStepTest), 1);
+    THEOLIZER_INTRUSIVE(CS, (KeepStepTest), 1); // 侵入型半自動へ変更後、バージョン・アップする
 };
 
 #endif  // TEST_MODIFY_COMPLEX_H

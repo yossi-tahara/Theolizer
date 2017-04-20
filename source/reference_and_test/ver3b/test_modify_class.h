@@ -316,9 +316,9 @@ struct ModifyClassOrder :
     ModifyManual    mManualMember;
 
     // --- 基本型メンバ変数 ---
-    short       mShort;
-    int         mIntChanged THEOLIZER_ANNOTATE(FS:mInt);    // 変数名変更
-    unsigned    mUnsigned;
+    short           mShort;
+    int             mIntChanged THEOLIZER_ANNOTATE(FS:mInt);    // 変数名変更
+    unsigned        mUnsigned;
 
     // 1b:追加
 //  ModifyHalfAutoY mHalfAutoYMember;   // 2a:名変更
@@ -414,7 +414,7 @@ struct ArrayTest
     unsigned    mArrayDim[kSize1][kSize0];
 
     // --- サイズ上限テスト用 ---
-    static const unsigned   kSize=kVer3Size;
+    static const unsigned   kSize=kArrayMax;
     unsigned    mArray1D[kSize];
     unsigned    mArray2D[kSize][kSize];
     unsigned    mArray3D[kSize][kSize][kSize];
@@ -504,7 +504,7 @@ struct ArrayTest
         }
 
         // --- サイズ上限テスト用 ---
-        unsigned aSize = (gDataIndex < gMyIndex)?kDefSize:kSize;
+        unsigned aSize = (gDataIndex < gMyIndex)?2:kSize;
 
         for (unsigned i=0; i < kSize; ++i)
         {

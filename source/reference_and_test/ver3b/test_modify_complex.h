@@ -305,7 +305,7 @@ struct VersionUpDownTest
     }
 
     // チェック
-    void check(ClassKind iClassKind)
+    void check(ClassKind iClassKind, bool iProcess=false)
     {
         ClassKind aClassKind=iClassKind;
         if (gVersionList[gDataIndex].mVersionEnum < VersionEnum::ver2a)
@@ -338,111 +338,241 @@ struct VersionUpDownTest
         }
 
         // Non-keep-stepのバージョン・アップ組合せテスト
-        switch(gVersionList[gDataIndex].mVersionEnum)
+
+        // upVersion処理有り
+        if (iProcess)
         {
-        case VersionEnum::ver1a:
-        case VersionEnum::ver1b:
-            THEOLIZER_EQUAL(mEnum00, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum01, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum02, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum03, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum04, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum05, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum06, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum10, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum11, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum12, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum13, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum14, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum15, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum16, ClassKind::Origin);
+            // Non-keep-stepのバージョン・アップ組合せテスト
+            switch(gVersionList[gDataIndex].mVersionEnum)
+            {
+            case VersionEnum::ver1a:
+            case VersionEnum::ver1b:
+                THEOLIZER_EQUAL(mEnum00, ClassKind::Origin, (void*)&mEnum00);
+                THEOLIZER_EQUAL(mEnum01, ClassKind::Origin, (void*)&mEnum01);
+                THEOLIZER_EQUAL(mEnum02, ClassKind::Origin, (void*)&mEnum02);
+                THEOLIZER_EQUAL(mEnum03, ClassKind::Origin, (void*)&mEnum03);
+                THEOLIZER_EQUAL(mEnum04, ClassKind::Set,    (void*)&mEnum04);
+                THEOLIZER_EQUAL(mEnum05, ClassKind::Set,    (void*)&mEnum05);
+                THEOLIZER_EQUAL(mEnum06, ClassKind::Set,    (void*)&mEnum06);
 
-            THEOLIZER_EQUAL(mInt00, eisOrigin);
-            THEOLIZER_EQUAL(mInt01, eisOrigin);
-            THEOLIZER_EQUAL(mInt02, eisOrigin);
-            THEOLIZER_EQUAL(mInt03, eisOrigin);
-            THEOLIZER_EQUAL(mInt04, eisOrigin);
-            THEOLIZER_EQUAL(mInt05, eisOrigin);
-            THEOLIZER_EQUAL(mInt06, eisOrigin);
-            THEOLIZER_EQUAL(mInt10, eisOrigin);
-            THEOLIZER_EQUAL(mInt11, eisOrigin);
-            THEOLIZER_EQUAL(mInt12, eisOrigin);
-            THEOLIZER_EQUAL(mInt13, eisOrigin);
-            THEOLIZER_EQUAL(mInt14, eisOrigin);
-            THEOLIZER_EQUAL(mInt15, eisOrigin);
-            THEOLIZER_EQUAL(mInt16, eisOrigin);
-            break;
+                THEOLIZER_EQUAL(mEnum10, ClassKind::Origin, (void*)&mEnum10);
+                THEOLIZER_EQUAL(mEnum11, ClassKind::Origin, (void*)&mEnum11);
+                THEOLIZER_EQUAL(mEnum12, ClassKind::Origin, (void*)&mEnum12);
+                THEOLIZER_EQUAL(mEnum13, ClassKind::Origin, (void*)&mEnum13);
+                THEOLIZER_EQUAL(mEnum14, ClassKind::Set,    (void*)&mEnum14);
+                THEOLIZER_EQUAL(mEnum15, ClassKind::Set,    (void*)&mEnum15);
+                THEOLIZER_EQUAL(mEnum16, ClassKind::Set,    (void*)&mEnum16);
 
-        case VersionEnum::ver1c:
-            THEOLIZER_EQUAL(mEnum00, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum01, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum02, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum03, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum04, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum05, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum06, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum10, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum11, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum12, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum13, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum14, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum15, ClassKind::Origin);
-            THEOLIZER_EQUAL(mEnum16, ClassKind::Origin);
+                THEOLIZER_EQUAL(mInt00, eisOrigin, (void*)&mInt00);
+                THEOLIZER_EQUAL(mInt01, eisOrigin, (void*)&mInt01);
+                THEOLIZER_EQUAL(mInt02, eisOrigin, (void*)&mInt02);
+                THEOLIZER_EQUAL(mInt03, eisOrigin, (void*)&mInt03);
+                THEOLIZER_EQUAL(mInt04, eisSet,    (void*)&mInt04);
+                THEOLIZER_EQUAL(mInt05, eisSet,    (void*)&mInt05);
+                THEOLIZER_EQUAL(mInt06, eisSet,    (void*)&mInt06);
 
-            THEOLIZER_EQUAL(mInt00, eisLoad);
-            THEOLIZER_EQUAL(mInt01, eisLoad);
-            THEOLIZER_EQUAL(mInt02, eisLoad);
-            THEOLIZER_EQUAL(mInt03, eisLoad);
-            THEOLIZER_EQUAL(mInt04, eisLoad);
-            THEOLIZER_EQUAL(mInt05, eisLoad);
-            THEOLIZER_EQUAL(mInt06, eisLoad);
-            THEOLIZER_EQUAL(mInt10, eisOrigin);
-            THEOLIZER_EQUAL(mInt11, eisOrigin);
-            THEOLIZER_EQUAL(mInt12, eisOrigin);
-            THEOLIZER_EQUAL(mInt13, eisOrigin);
-            THEOLIZER_EQUAL(mInt14, eisOrigin);
-            THEOLIZER_EQUAL(mInt15, eisOrigin);
-            THEOLIZER_EQUAL(mInt16, eisOrigin);
-            break;
+                THEOLIZER_EQUAL(mInt10, eisOrigin, (void*)&mInt10);
+                THEOLIZER_EQUAL(mInt11, eisOrigin, (void*)&mInt11);
+                THEOLIZER_EQUAL(mInt12, eisOrigin, (void*)&mInt12);
+                THEOLIZER_EQUAL(mInt13, eisOrigin, (void*)&mInt13);
+                THEOLIZER_EQUAL(mInt14, eisSet,    (void*)&mInt14);
+                THEOLIZER_EQUAL(mInt15, eisSet,    (void*)&mInt15);
+                THEOLIZER_EQUAL(mInt16, eisSet,    (void*)&mInt16);
+                break;
 
-        case VersionEnum::ver2a:
-        case VersionEnum::ver3a:
-        case VersionEnum::ver3b:
-            THEOLIZER_EQUAL(mEnum00, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum01, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum02, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum03, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum04, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum05, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum06, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum10, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum11, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum12, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum13, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum14, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum15, ClassKind::Load);
-            THEOLIZER_EQUAL(mEnum16, ClassKind::Load);
+            case VersionEnum::ver1c:
+                THEOLIZER_EQUAL(mEnum00, ClassKind::Load,   (void*)&mEnum00);
+                THEOLIZER_EQUAL(mEnum01, ClassKind::Ope,    (void*)&mEnum01);
+                THEOLIZER_EQUAL(mEnum02, ClassKind::Load,   (void*)&mEnum02);
+                THEOLIZER_EQUAL(mEnum03, ClassKind::Ope,    (void*)&mEnum03);
+                THEOLIZER_EQUAL(mEnum04, ClassKind::Set,    (void*)&mEnum04);
+                THEOLIZER_EQUAL(mEnum05, ClassKind::Set,    (void*)&mEnum05);
+                THEOLIZER_EQUAL(mEnum06, ClassKind::Set,    (void*)&mEnum06);
 
-            THEOLIZER_EQUAL(mInt00, eisLoad);
-            THEOLIZER_EQUAL(mInt01, eisLoad);
-            THEOLIZER_EQUAL(mInt02, eisLoad);
-            THEOLIZER_EQUAL(mInt03, eisLoad);
-            THEOLIZER_EQUAL(mInt04, eisLoad);
-            THEOLIZER_EQUAL(mInt05, eisLoad);
-            THEOLIZER_EQUAL(mInt06, eisLoad);
-            THEOLIZER_EQUAL(mInt10, eisLoad);
-            THEOLIZER_EQUAL(mInt11, eisLoad);
-            THEOLIZER_EQUAL(mInt12, eisLoad);
-            THEOLIZER_EQUAL(mInt13, eisLoad);
-            THEOLIZER_EQUAL(mInt14, eisLoad);
-            THEOLIZER_EQUAL(mInt15, eisLoad);
-            THEOLIZER_EQUAL(mInt16, eisLoad);
-            break;
+                THEOLIZER_EQUAL(mEnum10, ClassKind::Origin, (void*)&mEnum10);
+                THEOLIZER_EQUAL(mEnum11, ClassKind::Origin, (void*)&mEnum11);
+                THEOLIZER_EQUAL(mEnum12, ClassKind::Origin, (void*)&mEnum12);
+                THEOLIZER_EQUAL(mEnum13, ClassKind::Origin, (void*)&mEnum13);
+                THEOLIZER_EQUAL(mEnum14, ClassKind::Set,    (void*)&mEnum14);
+                THEOLIZER_EQUAL(mEnum15, ClassKind::Set,    (void*)&mEnum15);
+                THEOLIZER_EQUAL(mEnum16, ClassKind::Set,    (void*)&mEnum16);
 
-        default:
-            // FAILさせる
-            THEOLIZER_EQUAL(gDataIndex, gMyIndex);
-            break;
+                THEOLIZER_EQUAL(mInt00, eisLoad,   (void*)&mInt00);
+                THEOLIZER_EQUAL(mInt01, eisOpe,    (void*)&mInt01);
+                THEOLIZER_EQUAL(mInt02, eisLoad,   (void*)&mInt02);
+                THEOLIZER_EQUAL(mInt03, eisOpe,    (void*)&mInt03);
+                THEOLIZER_EQUAL(mInt04, eisSet,    (void*)&mInt04);
+                THEOLIZER_EQUAL(mInt05, eisSet,    (void*)&mInt05);
+                THEOLIZER_EQUAL(mInt06, eisSet,    (void*)&mInt06);
+
+                THEOLIZER_EQUAL(mInt10, eisOrigin, (void*)&mInt10);
+                THEOLIZER_EQUAL(mInt11, eisOrigin, (void*)&mInt11);
+                THEOLIZER_EQUAL(mInt12, eisOrigin, (void*)&mInt12);
+                THEOLIZER_EQUAL(mInt13, eisOrigin, (void*)&mInt13);
+                THEOLIZER_EQUAL(mInt14, eisSet,    (void*)&mInt14);
+                THEOLIZER_EQUAL(mInt15, eisSet,    (void*)&mInt15);
+                THEOLIZER_EQUAL(mInt16, eisSet,    (void*)&mInt16);
+                break;
+
+            case VersionEnum::ver2a:
+            case VersionEnum::ver3a:
+            case VersionEnum::ver3b:
+                THEOLIZER_EQUAL(mEnum00, ClassKind::Load, (void*)&mEnum00);
+                THEOLIZER_EQUAL(mEnum01, ClassKind::Load, (void*)&mEnum01);
+                THEOLIZER_EQUAL(mEnum02, ClassKind::Load, (void*)&mEnum02);
+                THEOLIZER_EQUAL(mEnum03, ClassKind::Load, (void*)&mEnum03);
+                THEOLIZER_EQUAL(mEnum04, ClassKind::Load, (void*)&mEnum04);
+                THEOLIZER_EQUAL(mEnum05, ClassKind::Load, (void*)&mEnum05);
+                THEOLIZER_EQUAL(mEnum06, ClassKind::Load, (void*)&mEnum06);
+
+                THEOLIZER_EQUAL(mEnum10, ClassKind::Load, (void*)&mEnum10);
+                THEOLIZER_EQUAL(mEnum11, ClassKind::Load, (void*)&mEnum11);
+                THEOLIZER_EQUAL(mEnum12, ClassKind::Load, (void*)&mEnum12);
+                THEOLIZER_EQUAL(mEnum13, ClassKind::Load, (void*)&mEnum13);
+                THEOLIZER_EQUAL(mEnum14, ClassKind::Load, (void*)&mEnum14);
+                THEOLIZER_EQUAL(mEnum15, ClassKind::Load, (void*)&mEnum15);
+                THEOLIZER_EQUAL(mEnum16, ClassKind::Load, (void*)&mEnum16);
+
+                THEOLIZER_EQUAL(mInt00, eisLoad, (void*)&mInt00);
+                THEOLIZER_EQUAL(mInt01, eisLoad, (void*)&mInt01);
+                THEOLIZER_EQUAL(mInt02, eisLoad, (void*)&mInt02);
+                THEOLIZER_EQUAL(mInt03, eisLoad, (void*)&mInt03);
+                THEOLIZER_EQUAL(mInt04, eisLoad, (void*)&mInt04);
+                THEOLIZER_EQUAL(mInt05, eisLoad, (void*)&mInt05);
+                THEOLIZER_EQUAL(mInt06, eisLoad, (void*)&mInt06);
+
+                THEOLIZER_EQUAL(mInt10, eisLoad, (void*)&mInt10);
+                THEOLIZER_EQUAL(mInt11, eisLoad, (void*)&mInt11);
+                THEOLIZER_EQUAL(mInt12, eisLoad, (void*)&mInt12);
+                THEOLIZER_EQUAL(mInt13, eisLoad, (void*)&mInt13);
+                THEOLIZER_EQUAL(mInt14, eisLoad, (void*)&mInt14);
+                THEOLIZER_EQUAL(mInt15, eisLoad, (void*)&mInt15);
+                THEOLIZER_EQUAL(mInt16, eisLoad, (void*)&mInt16);
+                break;
+
+            default:
+                // FAILさせる
+                THEOLIZER_EQUAL(gDataIndex, gMyIndex);
+                break;
+            }
+        }
+
+        // upVersion処理無し
+        else
+        {
+            // Non-keep-stepのバージョン・アップ組合せテスト
+            switch(gVersionList[gDataIndex].mVersionEnum)
+            {
+            case VersionEnum::ver1a:
+            case VersionEnum::ver1b:
+                THEOLIZER_EQUAL(mEnum00, ClassKind::Origin, (void*)&mEnum00);
+                THEOLIZER_EQUAL(mEnum01, ClassKind::Origin, (void*)&mEnum01);
+                THEOLIZER_EQUAL(mEnum02, ClassKind::Origin, (void*)&mEnum02);
+                THEOLIZER_EQUAL(mEnum03, ClassKind::Origin, (void*)&mEnum03);
+                THEOLIZER_EQUAL(mEnum04, ClassKind::Inner,  (void*)&mEnum04);
+                THEOLIZER_EQUAL(mEnum05, ClassKind::Inner,  (void*)&mEnum05);
+                THEOLIZER_EQUAL(mEnum06, ClassKind::Inner,  (void*)&mEnum06);
+
+                THEOLIZER_EQUAL(mEnum10, ClassKind::Origin, (void*)&mEnum10);
+                THEOLIZER_EQUAL(mEnum11, ClassKind::Origin, (void*)&mEnum11);
+                THEOLIZER_EQUAL(mEnum12, ClassKind::Origin, (void*)&mEnum12);
+                THEOLIZER_EQUAL(mEnum13, ClassKind::Origin, (void*)&mEnum13);
+                THEOLIZER_EQUAL(mEnum14, ClassKind::Inner,  (void*)&mEnum14);
+                THEOLIZER_EQUAL(mEnum15, ClassKind::Inner,  (void*)&mEnum15);
+                THEOLIZER_EQUAL(mEnum16, ClassKind::Inner,  (void*)&mEnum16);
+
+                THEOLIZER_EQUAL(mInt00, eisOrigin, (void*)&mInt00);
+                THEOLIZER_EQUAL(mInt01, eisOrigin, (void*)&mInt01);
+                THEOLIZER_EQUAL(mInt02, eisOrigin, (void*)&mInt02);
+                THEOLIZER_EQUAL(mInt03, eisOrigin, (void*)&mInt03);
+                THEOLIZER_EQUAL(mInt04, eisInner,  (void*)&mInt04);
+                THEOLIZER_EQUAL(mInt05, eisInner,  (void*)&mInt05);
+                THEOLIZER_EQUAL(mInt06, eisInner,  (void*)&mInt06);
+
+                THEOLIZER_EQUAL(mInt10, eisOrigin, (void*)&mInt10);
+                THEOLIZER_EQUAL(mInt11, eisOrigin, (void*)&mInt11);
+                THEOLIZER_EQUAL(mInt12, eisOrigin, (void*)&mInt12);
+                THEOLIZER_EQUAL(mInt13, eisOrigin, (void*)&mInt13);
+                THEOLIZER_EQUAL(mInt14, eisInner,  (void*)&mInt14);
+                THEOLIZER_EQUAL(mInt15, eisInner,  (void*)&mInt15);
+                THEOLIZER_EQUAL(mInt16, eisInner,  (void*)&mInt16);
+                break;
+
+            case VersionEnum::ver1c:
+                THEOLIZER_EQUAL(mEnum00, ClassKind::Load,   (void*)&mEnum00);
+                THEOLIZER_EQUAL(mEnum01, ClassKind::Inner,  (void*)&mEnum01);
+                THEOLIZER_EQUAL(mEnum02, ClassKind::Load,   (void*)&mEnum02);
+                THEOLIZER_EQUAL(mEnum03, ClassKind::Inner,  (void*)&mEnum03);
+                THEOLIZER_EQUAL(mEnum04, ClassKind::Inner,  (void*)&mEnum04);
+                THEOLIZER_EQUAL(mEnum05, ClassKind::Inner,  (void*)&mEnum05);
+                THEOLIZER_EQUAL(mEnum06, ClassKind::Inner,  (void*)&mEnum06);
+
+                THEOLIZER_EQUAL(mEnum10, ClassKind::Origin, (void*)&mEnum10);
+                THEOLIZER_EQUAL(mEnum11, ClassKind::Origin, (void*)&mEnum11);
+                THEOLIZER_EQUAL(mEnum12, ClassKind::Origin, (void*)&mEnum12);
+                THEOLIZER_EQUAL(mEnum13, ClassKind::Origin, (void*)&mEnum13);
+                THEOLIZER_EQUAL(mEnum14, ClassKind::Inner,  (void*)&mEnum14);
+                THEOLIZER_EQUAL(mEnum15, ClassKind::Inner,  (void*)&mEnum15);
+                THEOLIZER_EQUAL(mEnum16, ClassKind::Inner,  (void*)&mEnum16);
+
+                THEOLIZER_EQUAL(mInt00, eisLoad,   (void*)&mInt00);
+                THEOLIZER_EQUAL(mInt01, eisInner,  (void*)&mInt01);
+                THEOLIZER_EQUAL(mInt02, eisLoad,   (void*)&mInt02);
+                THEOLIZER_EQUAL(mInt03, eisInner,  (void*)&mInt03);
+                THEOLIZER_EQUAL(mInt04, eisInner,  (void*)&mInt04);
+                THEOLIZER_EQUAL(mInt05, eisInner,  (void*)&mInt05);
+                THEOLIZER_EQUAL(mInt06, eisInner,  (void*)&mInt06);
+
+                THEOLIZER_EQUAL(mInt10, eisOrigin, (void*)&mInt10);
+                THEOLIZER_EQUAL(mInt11, eisOrigin, (void*)&mInt11);
+                THEOLIZER_EQUAL(mInt12, eisOrigin, (void*)&mInt12);
+                THEOLIZER_EQUAL(mInt13, eisOrigin, (void*)&mInt13);
+                THEOLIZER_EQUAL(mInt14, eisInner,  (void*)&mInt14);
+                THEOLIZER_EQUAL(mInt15, eisInner,  (void*)&mInt15);
+                THEOLIZER_EQUAL(mInt16, eisInner,  (void*)&mInt16);
+                break;
+
+            case VersionEnum::ver2a:
+            case VersionEnum::ver3a:
+            case VersionEnum::ver3b:
+                THEOLIZER_EQUAL(mEnum00, ClassKind::Load, (void*)&mEnum00);
+                THEOLIZER_EQUAL(mEnum01, ClassKind::Load, (void*)&mEnum01);
+                THEOLIZER_EQUAL(mEnum02, ClassKind::Load, (void*)&mEnum02);
+                THEOLIZER_EQUAL(mEnum03, ClassKind::Load, (void*)&mEnum03);
+                THEOLIZER_EQUAL(mEnum04, ClassKind::Load, (void*)&mEnum04);
+                THEOLIZER_EQUAL(mEnum05, ClassKind::Load, (void*)&mEnum05);
+                THEOLIZER_EQUAL(mEnum06, ClassKind::Load, (void*)&mEnum06);
+
+                THEOLIZER_EQUAL(mEnum10, ClassKind::Load, (void*)&mEnum10);
+                THEOLIZER_EQUAL(mEnum11, ClassKind::Load, (void*)&mEnum11);
+                THEOLIZER_EQUAL(mEnum12, ClassKind::Load, (void*)&mEnum12);
+                THEOLIZER_EQUAL(mEnum13, ClassKind::Load, (void*)&mEnum13);
+                THEOLIZER_EQUAL(mEnum14, ClassKind::Load, (void*)&mEnum14);
+                THEOLIZER_EQUAL(mEnum15, ClassKind::Load, (void*)&mEnum15);
+                THEOLIZER_EQUAL(mEnum16, ClassKind::Load, (void*)&mEnum16);
+
+                THEOLIZER_EQUAL(mInt00, eisLoad, (void*)&mInt00);
+                THEOLIZER_EQUAL(mInt01, eisLoad, (void*)&mInt01);
+                THEOLIZER_EQUAL(mInt02, eisLoad, (void*)&mInt02);
+                THEOLIZER_EQUAL(mInt03, eisLoad, (void*)&mInt03);
+                THEOLIZER_EQUAL(mInt04, eisLoad, (void*)&mInt04);
+                THEOLIZER_EQUAL(mInt05, eisLoad, (void*)&mInt05);
+                THEOLIZER_EQUAL(mInt06, eisLoad, (void*)&mInt06);
+
+                THEOLIZER_EQUAL(mInt10, eisLoad, (void*)&mInt10);
+                THEOLIZER_EQUAL(mInt11, eisLoad, (void*)&mInt11);
+                THEOLIZER_EQUAL(mInt12, eisLoad, (void*)&mInt12);
+                THEOLIZER_EQUAL(mInt13, eisLoad, (void*)&mInt13);
+                THEOLIZER_EQUAL(mInt14, eisLoad, (void*)&mInt14);
+                THEOLIZER_EQUAL(mInt15, eisLoad, (void*)&mInt15);
+                THEOLIZER_EQUAL(mInt16, eisLoad, (void*)&mInt16);
+                break;
+
+            default:
+                // FAILさせる
+                THEOLIZER_EQUAL(gDataIndex, gMyIndex);
+                break;
+            }
         }
     }
 
@@ -497,6 +627,48 @@ struct VersionUpDownTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1
             THEOLIZER_EQUAL(gDataIndex, gMyIndex);
             break;
         }
+
+        // Non-keep-stepのバージョン・アップ組合せテスト
+        //  外側にupVersionが有るときは、内側のupVersionが無視されることを確認する
+        oNextVersion.mEnum01=kClassKind2Inner;              // operator=
+        oNextVersion.mEnum02.set(kClassKind2Inner, false);  // 無効set
+        oNextVersion.mEnum03=kClassKind2Inner;              // operator=
+        oNextVersion.mEnum03.set(kClassKind2Inner, false);  // 無効set
+        oNextVersion.mEnum04.set(kClassKind2Inner, true);   // 有効set
+        oNextVersion.mEnum05=kClassKind2Inner;              // operator=→
+        oNextVersion.mEnum05.set(kClassKind2Inner, true);   // 有効set
+        oNextVersion.mEnum06.set(kClassKind2Inner, true);   // 有効set  →
+        oNextVersion.mEnum06=kClassKind2Inner;              // operator=
+
+        oNextVersion.mEnum11=kClassKind2Inner;              // operator=
+        oNextVersion.mEnum12.set(kClassKind2Inner, false);  // 無効set
+        oNextVersion.mEnum13=kClassKind2Inner;              // operator=
+        oNextVersion.mEnum13.set(kClassKind2Inner, false);  // 無効set
+        oNextVersion.mEnum14.set(kClassKind2Inner, true);   // 有効set
+        oNextVersion.mEnum15=kClassKind2Inner;              // operator=→
+        oNextVersion.mEnum15.set(kClassKind2Inner, true);   // 有効set
+        oNextVersion.mEnum16.set(kClassKind2Inner, true);   // 有効set  →
+        oNextVersion.mEnum16=kClassKind2Inner;              // operator=
+
+        oNextVersion.mInt01=eisInner;                       // operator=
+        oNextVersion.mInt02.set(eisInner, false);           // 無効set
+        oNextVersion.mInt03=eisInner;                       // operator=
+        oNextVersion.mInt03.set(eisInner, false);           // 無効set
+        oNextVersion.mInt04.set(eisInner, true);            // 有効set
+        oNextVersion.mInt05=eisInner;                       // operator=→
+        oNextVersion.mInt05.set(eisInner, true);            // 有効set
+        oNextVersion.mInt06.set(eisInner, true);            // 有効set  →
+        oNextVersion.mInt06=eisInner;                       // operator=
+
+        oNextVersion.mInt11=eisInner;                       // operator=
+        oNextVersion.mInt12.set(eisInner, false);           // 無効set
+        oNextVersion.mInt13=eisInner;                       // operator=
+        oNextVersion.mInt13.set(eisInner, false);           // 無効set
+        oNextVersion.mInt14.set(eisInner, true);            // 有効set
+        oNextVersion.mInt15=eisInner;                       // operator=→
+        oNextVersion.mInt15.set(eisInner, true);            // 有効set
+        oNextVersion.mInt16.set(eisInner, true);            // 有効set  →
+        oNextVersion.mInt16=eisInner;                       // operator=
     }
 };
 
@@ -725,7 +897,7 @@ struct KeepStepTest :
 
     void check(VersionUpDownTest& iVersionUpDownTest)
     {
-        VersionUpDownTest::check(ClassKind::Kind2);
+        VersionUpDownTest::check(ClassKind::Kind2, true);
         VersionFullAuto::check();
         VersionManual::check();
         mVersionUpDownTest.check(ClassKind::Kind2);
@@ -768,16 +940,58 @@ struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
 
         case VersionEnum::ver2a:
         case VersionEnum::ver3a:
+        case VersionEnum::ver3b:
             THEOLIZER_EQUAL(iNowVersion.mVersionUpDownTestPtr.get()->mClassKind, ClassKind::Kind2);
             THEOLIZER_EQUAL(iNowVersion.mVersionUpDownTestRef.get().mClassKind,  ClassKind::Kind2);
             break;
 
-        case VersionEnum::ver3b:
         default:
             // FAILさせる
             THEOLIZER_EQUAL(gDataIndex, gMyIndex);
             break;
         }
+
+        // Non-keep-stepのバージョン・アップ組合せテスト
+        //  基底クラスVersionUpDownTestのメンバを書き換える
+        oNextVersion.mEnum01=kClassKind2Ope;            // operator=
+        oNextVersion.mEnum02.set(kClassKind2Set, false);// 無効set
+        oNextVersion.mEnum03=kClassKind2Ope;            // operator=
+        oNextVersion.mEnum03.set(kClassKind2Set, false);// 無効set
+        oNextVersion.mEnum04.set(kClassKind2Set, true); // 有効set
+        oNextVersion.mEnum05=kClassKind2Ope;            // operator=→
+        oNextVersion.mEnum05.set(kClassKind2Set, true); // 有効set
+        oNextVersion.mEnum06.set(kClassKind2Set, true); // 有効set→
+        oNextVersion.mEnum06=kClassKind2Ope;            // operator=
+
+        oNextVersion.mEnum11=kClassKind2Ope;            // operator=
+        oNextVersion.mEnum12.set(kClassKind2Set, false);// 無効set
+        oNextVersion.mEnum13=kClassKind2Ope;            // operator=
+        oNextVersion.mEnum13.set(kClassKind2Set, false);// 無効set
+        oNextVersion.mEnum14.set(kClassKind2Set, true); // 有効set
+        oNextVersion.mEnum15=kClassKind2Ope;            // operator=→
+        oNextVersion.mEnum15.set(kClassKind2Set, true); // 有効set
+        oNextVersion.mEnum16.set(kClassKind2Set, true); // 有効set→
+        oNextVersion.mEnum16=kClassKind2Ope;            // operator=
+
+        oNextVersion.mInt01=eisOpe;                     // operator=
+        oNextVersion.mInt02.set(eisSet, false);         // 無効set
+        oNextVersion.mInt03=eisOpe;                     // operator=
+        oNextVersion.mInt03.set(eisSet, false);         // 無効set
+        oNextVersion.mInt04.set(eisSet, true);          // 有効set
+        oNextVersion.mInt05=eisOpe;                     // operator=→
+        oNextVersion.mInt05.set(eisSet, true);          // 有効set
+        oNextVersion.mInt06.set(eisSet, true);          // 有効set  →
+        oNextVersion.mInt06=eisOpe;                     // operator=
+
+        oNextVersion.mInt11=eisOpe;                     // operator=
+        oNextVersion.mInt12.set(eisSet, false);         // 無効set
+        oNextVersion.mInt13=eisOpe;                     // operator=
+        oNextVersion.mInt13.set(eisSet, false);         // 無効set
+        oNextVersion.mInt14.set(eisSet, true);          // 有効set
+        oNextVersion.mInt15=eisOpe;                     // operator=→
+        oNextVersion.mInt15.set(eisSet, true);          // 有効set
+        oNextVersion.mInt16.set(eisSet, true);          // 有効set  →
+        oNextVersion.mInt16=eisOpe;                     // operator=
     }
 };
 
@@ -794,19 +1008,18 @@ struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 2>
     // Members version up.
     static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
     {
-        // ver2->ver1->ver2が不可逆変換だが、
-        //  回復しなかった時は元に戻る。
-        //  ver1から回復した時のみKind1になる。(ver2はKind2を設定するため)
-        if ((!iNowVersion.mClassKind.getDoSucceed())
-         || (VersionEnum::ver2a <= gVersionList[gDataIndex].mVersionEnum))
+        if (iNowVersion.mClassKind.getDoSucceed())
         {
-            THEOLIZER_EQUAL(iNowVersion.mClassKind.get(), kClassKind2Kind2);
-            THEOLIZER_EQUAL(iNowVersion.mVersionUpDownTest.mClassKind.get(), kClassKind2Kind2);
-        }
-        else
-        {
-            THEOLIZER_EQUAL(iNowVersion.mClassKind.get(), kClassKind1Kind1);
-            THEOLIZER_EQUAL(iNowVersion.mVersionUpDownTest.mClassKind.get(), kClassKind1Kind1);
+            if (VersionEnum::ver2a <= gVersionList[gDataIndex].mVersionEnum)
+            {
+                THEOLIZER_EQUAL(iNowVersion.mClassKind.get(), kClassKind2Kind2);
+                THEOLIZER_EQUAL(iNowVersion.mVersionUpDownTest.mClassKind.get(), kClassKind2Kind2);
+            }
+            else
+            {
+                THEOLIZER_EQUAL(iNowVersion.mClassKind.get(), kClassKind1Kind1);
+                THEOLIZER_EQUAL(iNowVersion.mVersionUpDownTest.mClassKind.get(), kClassKind1Kind1);
+            }
         }
 
         switch(gVersionList[gDataIndex].mVersionEnum)

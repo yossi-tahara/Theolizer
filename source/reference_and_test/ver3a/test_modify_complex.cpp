@@ -94,7 +94,7 @@ void saveModifyComplex(tSerializer& iSerializer)
     }
 
 //----------------------------------------------------------------------------
-//      Keep-stepとNon-Keep-stepのテスト用
+//      Keep-stepとNon-Keep-step
 //----------------------------------------------------------------------------
 
     {
@@ -153,7 +153,7 @@ void loadModifyComplex(tSerializer& iSerializer)
     }
 
 //----------------------------------------------------------------------------
-//      Keep-stepとNon-Keep-stepのテスト用
+//      Keep-stepとNon-Keep-step
 //----------------------------------------------------------------------------
 
     {
@@ -189,7 +189,20 @@ void saveDestinations
 {
     std::cout << "saveDestinations()" << std::endl;
 
+//----------------------------------------------------------------------------
+//      Keep-stepとNon-Keep-step
+//----------------------------------------------------------------------------
+
     {
+        VersionUpDownTest   aVersionUpDownTest(ClassKind::Kind1);
+        KeepStepTest        aKeepStepTest(aVersionUpDownTest, true);
+        THEOLIZER_PROCESS_POINTEE(iSerializerA, aVersionUpDownTest);
+        THEOLIZER_PROCESS(iSerializerA, aKeepStepTest);
+        iSerializerA.clearTracking();
+
+        THEOLIZER_PROCESS_POINTEE(iSerializerB, aVersionUpDownTest);
+        THEOLIZER_PROCESS(iSerializerB, aKeepStepTest);
+        iSerializerB.clearTracking();
     }
 }
 
@@ -209,7 +222,23 @@ void loadDestinations
 {
     std::cout << "loadDestinations()" << std::endl;
 
+//----------------------------------------------------------------------------
+//      Keep-stepとNon-Keep-step
+//----------------------------------------------------------------------------
+
     {
+        VersionUpDownTest   aVersionUpDownTest;
+        KeepStepTest        aKeepStepTest(aVersionUpDownTest);
+        THEOLIZER_PROCESS_POINTEE(iSerializerA, aVersionUpDownTest);
+        THEOLIZER_PROCESS(iSerializerA, aKeepStepTest);
+        iSerializerA.clearTracking();
+
+        THEOLIZER_PROCESS_POINTEE(iSerializerB, aVersionUpDownTest);
+        THEOLIZER_PROCESS(iSerializerB, aKeepStepTest);
+        iSerializerB.clearTracking();
+
+        aVersionUpDownTest.check(ClassKind::Kind1);
+        aKeepStepTest.check(aVersionUpDownTest);
     }
 }
 

@@ -171,6 +171,9 @@ struct ModifyClassName :
 //  int         mInt;                   // 1b:削除
     long        mLong;                  // 1b:追加
 
+//  以下略
+//  ↑ドキュメント用のコメント
+
 //----------------------------------------------------------------------------
 //      デフォルト・コンストラクタ
 //----------------------------------------------------------------------------
@@ -358,7 +361,7 @@ struct ModifyClassName :
             break;
         }
     }
-    THEOLIZER_INTRUSIVE(CS, (ModifyClassName), 1);
+    THEOLIZER_INTRUSIVE(CS, (ModifyClassName), 1);  // 侵入型半自動へ変更後、バージョン・アップする
 };
 #endif  // DISABLE_MODIFY_CLASS_TEST_NAME
 
@@ -386,6 +389,9 @@ struct ModifyClassOrder :
     // 1b:追加
     ModifyHalfAutoX mHalfAutoXMember;
     long            mLong;
+
+//  以下略
+//  ↑ドキュメント用のコメント
 
 //----------------------------------------------------------------------------
 //      デフォルト・コンストラクタ
@@ -532,8 +538,11 @@ struct ArrayTest
     static const unsigned   kSize0=3;
     unsigned    mArrayDim[kSize1][kSize0];
 
+//  以下略
+//  ↑ドキュメント用のコメント
+
     // --- サイズ上限テスト用 ---
-    static const unsigned   kSize=kDefSize;
+    static const unsigned   kSize=2;
     unsigned    mArray1D[kSize];
     unsigned    mArray2D[kSize][kSize];
     unsigned    mArray3D[kSize][kSize][kSize];

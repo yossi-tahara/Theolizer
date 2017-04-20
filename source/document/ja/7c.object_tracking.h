@@ -55,7 +55,7 @@
 @subsection HowToObjectTracking12 1-2.サンプル・ソース
 
 <b>サンプル用のクラス定義：(source/reference_and_test/basic2/test_object_tracking.h）</b><br>
-（静的定義領域、動的生成領域については「@ref HowToObjectTracking33 」を参照下さい。）
+（静的定義領域、動的生成領域については@ref HowToObjectTracking33 を参照下さい。）
 
 @dontinclude basic2/test_object_tracking.h
 @skip ObjectTrackingClass
@@ -135,7 +135,7 @@ ObjectTrackingClass全体はオブジェクト追跡するクラスのサンプ�
 基底クラスへのポインタ経由でシリアライズしたい派生クラスは必ず指定して下さい。<br>
 指定漏れすると、シリアライズ処理する時に"Can not find the derived class for <基底クラス>."エラーになります。<br>
 
-また、「@ref Basic164 」も参照下さい。
+また、@ref Basic164 も参照下さい。
 
 <b>サンプル用のクラス定義：(source/reference_and_test/basic2/test_polymorphism.h）</b>
 
@@ -280,11 +280,11 @@ newやnew[]で獲得するインスタンスです。
 
 <br>
 @subsection HowToObjectTracking34 3-4.オブジェクト追跡対象について
-静的定義領域は、全てのシリアライズ対象の変数がオブジェクト追跡候補になります。しかし、実際にポインタでポイントされる変数はその内の一部だけですので、全てをオブジェクト追跡するのは無駄が多いです。そこで、「@ref Basic21 」で示した方法でオブジェクト追跡対象を絞り込んでいます。
+静的定義領域は、全てのシリアライズ対象の変数がオブジェクト追跡候補になります。しかし、実際にポインタでポイントされる変数はその内の一部だけですので、全てをオブジェクト追跡するのは無駄が多いです。そこで、@ref Basic21 で示した方法でオブジェクト追跡対象を絞り込んでいます。
 
 <br>
 @subsection HowToObjectTracking35 3-5.オブジェクト追跡単位について
-「@ref Basic22 」に示したオブジェクト追跡単位について少し詳しく説明します。
+@ref Basic22 に示したオブジェクト追跡単位について少し詳しく説明します。
 
 これはオブジェクトIDテーブルの有効期間です。clearTracking()することで
 
@@ -390,7 +390,7 @@ void loadObjectTracking(tSerializer& iSerializer)の前半<br>
 <b>source/reference_and_test/basic2/test_object_tracking.h</b>でテスト用のクラスとマクロを定義してます。<br>
 
 1. DEFINE_MEMBERS()マクロ<br>
-各種の型に対応する、変数宣言や初期化を定義するためのマクロです。「@ref SingleTest 」と同じ名前ですが、少し異なるマクロです。定義している変数の型は同じですが、初期化値が異なります。<br>
+各種の型に対応する、変数宣言や初期化を定義するためのマクロです。@ref SingleTest と同じ名前ですが、少し異なるマクロです。定義している変数の型は同じですが、初期化値が異なります。<br>
 <br>
 
 2. PointeeListクラス<br>

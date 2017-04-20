@@ -152,13 +152,13 @@ struct ModifyClassName :
     public ModifyManual,                // 1b:順序変更
     public ModifyFullAuto,
 //  public ModifyHalfAuto,              // 1b:削除
-    public ModifyHalfAutoY              // 1b:追加→2a:名変更
+    public ModifyHalfAutoY              // 1b:追加→2a:名前変更
 {
     // --- クラス型メンバ変数 ---
     ModifyManual    mManualMember;      // 1b:順序変更
     ModifyFullAuto  mFullAutoMember;
 //  ModifyHalfAuto  mHalfAutoMember;    // 1b:削除
-    ModifyHalfAutoY mHalfAutoYMember;   // 1b:追加→2a:名変更
+    ModifyHalfAutoY mHalfAutoYMember;   // 1b:追加→2a:名前変更
 
     // --- 基本型メンバ変数 ---
     unsigned    mUnsigned;              // 1b:順序変更
@@ -350,7 +350,7 @@ struct ModifyClassOrder :
     int             mIntChanged THEOLIZER_ANNOTATE(FS:mInt);    // 変数名変更
     unsigned        mUnsigned;
 
-    // 1b:追加
+    // 1b:追加→3b:削除
     ModifyHalfAutoY mHalfAutoYMember;   // 2a:名変更
     long            mLong;
 
@@ -500,7 +500,7 @@ struct ArrayTest
     unsigned    mArrayDim[kSize1][kSize0];
 
     // --- サイズ上限テスト用 ---
-    static const unsigned   kSize=kDefSize;
+    static const unsigned   kSize=2;
     unsigned    mArray1D[kSize];
     unsigned    mArray2D[kSize][kSize];
     unsigned    mArray3D[kSize][kSize][kSize];

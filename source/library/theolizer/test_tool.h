@@ -434,7 +434,7 @@ namespace internal
             std::ostream& os=theolizer::internal::getOStream();             \
             std::streamsize precision=os.precision();                       \
             os.precision(std::numeric_limits<long double>::digits10);       \
-            os << THEOLIZER_INTERNAL_U8(#dResult) " : " << dResult << "\n"; \
+            os << THEOLIZER_INTERNAL_U8(#dResult) " : " << (dResult) << "\n";\
             os.precision(precision);                                        \
         }                                                                   \
     }                                                                       \
@@ -474,13 +474,13 @@ namespace internal
         {                                                                   \
             theolizer::internal::getOStream()                               \
                 << THEOLIZER_INTERNAL_FILE << "("  << __LINE__ << ")\n"     \
-                << "Expression : " << u8##dExpression << "\n";              \
+                << "Expression : " << (u8##dExpression) << "\n";            \
         }                                                                   \
         else if (theolizer::DisplayPass::on())                              \
         {                                                                   \
             theolizer::internal::getOStream() << "\n" THEOLIZER_INTERNAL_PASS "\n"\
                 << THEOLIZER_INTERNAL_FILE << "("  << __LINE__ << ")\n"     \
-                << "Expression : " << u8##dExpression << "\n";              \
+                << "Expression : " << (u8##dExpression) << "\n";            \
         }                                                                   \
     }                                                                       \
     while(0)

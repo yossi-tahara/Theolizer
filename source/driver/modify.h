@@ -479,8 +479,6 @@ ASTANALYZE_OUTPUT("  Array : ", iType.getDesugaredType(*gASTContext).getAsString
 
 // ***************************************************************************
 //      最新版の新規部分生成
-//          TheolizerMarker()指定があった場合、その自動生成位置を返却する
-//
 //          ここは最新版と１つ前の版のTheolizerVersion<>がない時に呼ばれる
 //          なお、完全自動型用マクロについては、既に存在していても
 //          TheolizerVersion<>を無視するのでここに来る。
@@ -825,8 +823,6 @@ ASTANALYZE_OUTPUT("-------- mPrevVersion\n", mPrevVersion.str());
 
 // ***************************************************************************
 //      最新版の新規部分生成
-//          TheolizerMarker()指定があった場合、その自動生成位置を返却する
-//
 //          ここは最新版と１つ前の版のTheolizerVersion<>がない時に呼ばれる
 //          なお、完全自動型用マクロについては、既に存在していても
 //          TheolizerVersion<>を無視するのでここに来る。
@@ -1200,8 +1196,10 @@ ASTANALYZE_OUTPUT("    aAddClassName=", aAddClassName);
         mNamespaceNestCount=0;
 ////    bool aIsTheolizerHpp=true;
 
-        // 最新版のTheolizerVersion無し
-        if (!iSerializeInfo.mTheolizerVersionLast)
+ASTANALYZE_OUTPUT("    mTheolizerVersionLast=", iSerializeInfo.mTheolizerVersionLast);
+ASTANALYZE_OUTPUT("    mTheolizerVersionPrev=", iSerializeInfo.mTheolizerVersionPrev);
+        // 最新版のTheolizerVersion無し、もしくは、完全自動型から半自動型へ変更
+        if (!iSerializeInfo.mTheolizerVersionLast || iSerializeInfo.mIsChanged)
         {
             aSourceStatus=eVersionUp;
             mRetryAST=true;

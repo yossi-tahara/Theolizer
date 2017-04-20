@@ -117,6 +117,11 @@ void loadModifyClass(tSerializer& iSerializer)
         ModifyClassName  aModifyClassName;
         THEOLIZER_PROCESS(iSerializer, aModifyClassName);
         aModifyClassName.check();
+
+        // 回復結果の表示
+        std::cout << "aModifyClassName\n";
+        theolizer::JsonOSerializer<> jos(std::cout);
+        THEOLIZER_PROCESS(jos, aModifyClassName);
     }
 #endif  // DISABLE_MODIFY_CLASS_TEST_NAME
 
@@ -129,6 +134,11 @@ void loadModifyClass(tSerializer& iSerializer)
         ModifyClassOrder    aModifyClassOrder;
         THEOLIZER_PROCESS(iSerializer, aModifyClassOrder);
         aModifyClassOrder.check();
+
+        // 回復結果の表示
+        std::cout << "aModifyClassOrder\n";
+        theolizer::JsonOSerializer<> jos(std::cout);
+        THEOLIZER_PROCESS(jos, aModifyClassOrder);
     }
 #endif  // DISABLE_MODIFY_CLASS_TEST_ORDER
 
@@ -141,9 +151,15 @@ void loadModifyClass(tSerializer& iSerializer)
         auto    aArray=std::unique_ptr<ArrayTest>(new ArrayTest{});
         THEOLIZER_PROCESS(iSerializer, aArray);
         aArray->check();
-
         // オブジェクトIDテーブルのクリア
         iSerializer.clearTracking();
+
+        // 回復結果の表示
+        std::cout << "aArray\n";
+        theolizer::JsonOSerializer<> jos(std::cout);
+        THEOLIZER_PROCESS(jos, aArray);
+        // オブジェクトIDテーブルのクリア
+        jos.clearTracking();
     }
 #endif  // DISABLE_MODIFY_CLASS_TEST_ARRAY
 }

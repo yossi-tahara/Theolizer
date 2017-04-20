@@ -1008,19 +1008,18 @@ struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 2>
     // Members version up.
     static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
     {
-        // ver2->ver1->ver2が不可逆変換だが、
-        //  回復しなかった時は元に戻る。
-        //  ver1から回復した時のみKind1になる。(ver2はKind2を設定するため)
-        if ((!iNowVersion.mClassKind.getDoSucceed())
-         || (VersionEnum::ver2a <= gVersionList[gDataIndex].mVersionEnum))
+        if (iNowVersion.mClassKind.getDoSucceed())
         {
-            THEOLIZER_EQUAL(iNowVersion.mClassKind.get(), kClassKind2Kind2);
-            THEOLIZER_EQUAL(iNowVersion.mVersionUpDownTest.mClassKind.get(), kClassKind2Kind2);
-        }
-        else
-        {
-            THEOLIZER_EQUAL(iNowVersion.mClassKind.get(), kClassKind1Kind1);
-            THEOLIZER_EQUAL(iNowVersion.mVersionUpDownTest.mClassKind.get(), kClassKind1Kind1);
+            if (VersionEnum::ver2a <= gVersionList[gDataIndex].mVersionEnum)
+            {
+                THEOLIZER_EQUAL(iNowVersion.mClassKind.get(), kClassKind2Kind2);
+                THEOLIZER_EQUAL(iNowVersion.mVersionUpDownTest.mClassKind.get(), kClassKind2Kind2);
+            }
+            else
+            {
+                THEOLIZER_EQUAL(iNowVersion.mClassKind.get(), kClassKind1Kind1);
+                THEOLIZER_EQUAL(iNowVersion.mVersionUpDownTest.mClassKind.get(), kClassKind1Kind1);
+            }
         }
 
         switch(gVersionList[gDataIndex].mVersionEnum)

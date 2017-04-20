@@ -77,6 +77,7 @@ void callTests
     {
         std::cout << gVersionList[gIndex].mName << ", ";
     }
+    std::cout << "gDataIndex=" << gVersionList[gDataIndex].mName << ", ";
     std::cout << "gProgramIndex=" << gVersionList[gProgramIndex].mName << ", "
               << iCheckMode << ");" << std::endl;
 

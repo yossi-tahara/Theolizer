@@ -85,7 +85,7 @@ THEOLIZER_DESTINATIONS(Dest7, Dest8, Dest9,  Dest10, Dest11);
 また、各保存先はtheolizer::destination名前空間に配置されます。また、この名前空間にはtheolizerDの別名を定義しています。例えばDest1はtheolizerD::Dest1として指定します。
 
 @subsubsection HowToSpecifySaving132 1-3-2.デフォルト保存／非保存クラスの指定方法
-「@ref HalfAutoClass 」をTHEOLIZER_INTRUSIVE()マクロで指定しますが、その先頭パラメータで指定します。<br>
+@ref HalfAutoClass をTHEOLIZER_INTRUSIVE()マクロで指定しますが、その先頭パラメータで指定します。<br>
 デフォルト保存クラス　：THEOLIZER_INTRUSIVE(<b>CS</b>, (クラス名), バージョン番号);<br>
 デフォルト非保存クラス：THEOLIZER_INTRUSIVE(<b>CN</b>, (クラス名), バージョン番号);<br>
 

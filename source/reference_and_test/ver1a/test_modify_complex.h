@@ -202,7 +202,7 @@ struct KeepStepTest :
         THEOLIZER_EQUAL_PTR(&mVersionUpDownTestRef, &iVersionUpDownTest);
     }
 
-    THEOLIZER_INTRUSIVE(CS, (KeepStepTest), 1);
+//  THEOLIZER_INTRUSIVE(CS, (KeepStepTest), 1); // 最初は非侵入型完全自動
 };
 
 #endif  // TEST_MODIFY_COMPLEX_H

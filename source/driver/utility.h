@@ -1261,6 +1261,7 @@ struct SerializeInfo
     CXXRecordDecl const*    mNonIntrusive;          // TheolizerNonIntrusive<>のDecl(非侵入型手動)
     bool                    mIsManual;              // 手動型
     bool                    mIsFullAuto;            // 完全自動型
+    bool                    mIsChanged;             // 完全自動型から半自動型へ変更
     bool                    mIsRegisteredClass;     // THEOLIZER_REGISTER_CLASS()指定クラス
     CXXRecordDecl const*    mTheolizerVersionLast;  // 最新版のTheolizerVersion<>
     CXXRecordDecl const*    mTheolizerVersionPrev;  // １つ前のTheolizerVersion<>
@@ -1291,6 +1292,7 @@ struct SerializeInfo
             mNonIntrusive(iNonIntrusive),
             mIsManual(iIsManual),
             mIsFullAuto(iIsFullAuto),
+            mIsChanged(false),
             mIsRegisteredClass(false),
             mTheolizerVersionLast(nullptr),
             mTheolizerVersionPrev(nullptr),
@@ -1396,6 +1398,7 @@ ASTANALYZE_OUTPUT("getIndex(", iCandidate->getQualifiedNameAsString(),
             {
 ASTANALYZE_OUTPUT("addSerializable(", iTheolizerTarget->getQualifiedNameAsString(), ")"
                   " is changed FullAuto to HalfAuto.");
+                  pos->second.mIsChanged=true;
             }
             else
             {

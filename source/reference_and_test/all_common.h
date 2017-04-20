@@ -139,10 +139,9 @@ AutoRelease<tType> makeAutoRelease(tType* iData)
 //############################################################################
 
 // ***************************************************************************
-//      ArrayTestのmArray?Dのサイズ
+//      ArrayTestのmArray?Dの最大サイズ
 // ***************************************************************************
 
-static const unsigned   kDefSize =2;
-static const unsigned   kVer3Size=160;
+static const unsigned   kArrayMax=160;
 
 #endif  // ALL_COMMON_H

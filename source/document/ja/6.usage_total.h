@@ -172,7 +172,7 @@ Theolizerは、バージョンを上げた時に古いクラス定義やenum型�
 dInstanceを保存／回復します。<br>
 ポインタ型を指定した場合は、アドレス回復のためにポイント先のオブジェクト追跡を行います。<br>
 
-他にTHEOLIZER_PROCESS_POINTEE()とTHEOLIZER_PROCESS_OWNER()がありますが、これらについては「@ref ObjectTracking 」で説明します。
+他にTHEOLIZER_PROCESS_POINTEE()とTHEOLIZER_PROCESS_OWNER()がありますが、これらについては@ref ObjectTracking で説明します。
 
 <div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
 このようにシリアライザを問わず、全て同じマクロでシリアライズ処理できます。<br>

@@ -171,6 +171,9 @@ struct ModifyClassName :
     ModifyHalfAuto  mHalfAutoArray[2];  // 2b:追加(3a:削除)
     ModifyManual    mManualArray[2];    // 2b:追加(3a:削除)
 
+//  以下略
+//  ↑ドキュメント用のコメント
+
 //----------------------------------------------------------------------------
 //      デフォルト・コンストラクタ
 //----------------------------------------------------------------------------
@@ -367,7 +370,7 @@ struct ModifyClassName :
             THEOLIZER_EQUAL(gDataIndex, gMyIndex);
         }
     }
-    THEOLIZER_INTRUSIVE(CS, (ModifyClassName), 2);
+    THEOLIZER_INTRUSIVE(CS, (ModifyClassName), 2);  // ver.2へバージョン・アップ
 };
 #endif  // DISABLE_MODIFY_CLASS_TEST_NAME
 
@@ -395,6 +398,9 @@ struct ModifyClassOrder :
     // 1b:追加
     ModifyHalfAutoY mHalfAutoYMember THEOLIZER_ANNOTATE(FS:mHalfAutoXMember);// 2a:名変更
     long            mLong;
+
+//  以下略
+//  ↑ドキュメント用のコメント
 
 //----------------------------------------------------------------------------
 //      デフォルト・コンストラクタ
@@ -523,7 +529,7 @@ struct ModifyClassOrder :
             break;
         }
     }
-    THEOLIZER_INTRUSIVE_ORDER(CS, (ModifyClassOrder), 2);
+    THEOLIZER_INTRUSIVE_ORDER(CS, (ModifyClassOrder), 2);   // ver.2へバージョン・アップ
 };
 #endif  // DISABLE_MODIFY_CLASS_TEST_ORDER
 
@@ -542,8 +548,11 @@ struct ArrayTest
     static const unsigned   kSize0=2;
     unsigned    mArrayDim[kSize2][kSize1][kSize0];
 
+//  以下略
+//  ↑ドキュメント用のコメント
+
     // --- サイズ上限テスト用 ---
-    static const unsigned   kSize=kDefSize;
+    static const unsigned   kSize=2;
     unsigned    mArray1D[kSize];
     unsigned    mArray2D[kSize][kSize];
     unsigned    mArray3D[kSize][kSize][kSize];

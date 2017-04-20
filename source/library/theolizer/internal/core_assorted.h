@@ -39,24 +39,6 @@
 //############################################################################
 
 // ***************************************************************************
-//      TheolizerNonKeepStepとenum型のデバック用
-// ***************************************************************************
-
-#if 0
-    #define THEOLIZER_INTERNAL_VER_DEBUG(dStatements)    THEOLIZER_INTERNAL_UNPAREN dStatements
-#else
-    #define THEOLIZER_INTERNAL_VER_DEBUG(dStatements)
-#endif
-
-// ***************************************************************************
-//      null参照検出
-//          null参照は未定義動作なので、プログラマの責任で回避するべきもの
-//          gcc 6で警告が出るため、null参照検出コードは無効化する
-// ***************************************************************************
-
-#define THEOLIZER_INTERNAL_DISABLE_NULL_REFERENCE
-
-// ***************************************************************************
 //          DLL用の警告禁止
 // ***************************************************************************
 
@@ -76,8 +58,23 @@
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
+//----------------------------------------------------------------------------
+//      TheolizerNonKeepStepとenum型のデバック用
+//----------------------------------------------------------------------------
 
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
+#if 0
+    #define THEOLIZER_INTERNAL_VER_DEBUG(dStatements)    THEOLIZER_INTERNAL_UNPAREN dStatements
+#else
+    #define THEOLIZER_INTERNAL_VER_DEBUG(dStatements)
+#endif
+
+//----------------------------------------------------------------------------
+//      null参照検出
+//          null参照は未定義動作なので、プログラマの責任で回避するべきもの
+//          gcc 6で警告が出るため、null参照検出コードは無効化する
+//----------------------------------------------------------------------------
+
+#define THEOLIZER_INTERNAL_DISABLE_NULL_REFERENCE
 
 // ***************************************************************************
 //      THEOLIZER_WRITE_CODE付随処理
@@ -86,9 +83,10 @@
 // ***************************************************************************
 
 #if !defined(THEOLIZER_NO_ANALYZE) && !defined(THEOLIZER_WRITE_CODE)
-    //! @todo T.B.D.
     #define THEOLIZER_WRITE_CODE
 #endif
+
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
 //      ソース自動生成制御

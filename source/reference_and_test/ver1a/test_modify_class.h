@@ -127,6 +127,9 @@ struct ModifyClassName :
     int             mInt;
     unsigned        mUnsigned;
 
+//  以下略
+//  ↑ドキュメント用のコメント
+
 //----------------------------------------------------------------------------
 //      デフォルト・コンストラクタ
 //----------------------------------------------------------------------------
@@ -190,7 +193,7 @@ struct ModifyClassName :
         THEOLIZER_EQUAL(mInt,      121);
         THEOLIZER_EQUAL(mUnsigned, 122);
     }
-//  THEOLIZER_INTRUSIVE(CS, (ModifyClassName), 1);
+//  THEOLIZER_INTRUSIVE(CS, (ModifyClassName), 1);  // 最初は非侵入型完全自動
 };
 #endif  // DISABLE_MODIFY_CLASS_TEST_NAME
 
@@ -214,6 +217,9 @@ struct ModifyClassOrder :
     short           mShort;
     int             mInt;
     unsigned        mUnsigned;
+
+//  以下略
+//  ↑ドキュメント用のコメント
 
 //----------------------------------------------------------------------------
 //      デフォルト・コンストラクタ
@@ -290,10 +296,14 @@ struct ModifyClassOrder :
 struct ArrayTest
 {
     // --- サイズ上限テスト用 ---
-    static const unsigned   kSize=kDefSize;
-    unsigned    mArray1D[kSize];
-    unsigned    mArray2D[kSize][kSize];
-    unsigned    mArray3D[kSize][kSize][kSize];
+    static const unsigned   kSizeA=2;
+    static const unsigned   kSizeB=3;
+    unsigned    mArray1D[kSizeA];
+    unsigned    mArray2D[kSizeA][kSizeB];
+    unsigned    mArray3D[kSizeA][kSizeB][kSizeA];
+
+//  以下略
+//  ↑ドキュメント用のコメント
 
 //----------------------------------------------------------------------------
 //      デフォルト・コンストラクタ
@@ -313,13 +323,13 @@ struct ArrayTest
     ArrayTest(bool)
     {
         // --- サイズ上限テスト用 ---
-        for (unsigned i=0; i < kSize; ++i)
+        for (unsigned i=0; i < kSizeA; ++i)
         {
             mArray1D[i]=i;
-            for (unsigned j=0; j < kSize; ++j)
+            for (unsigned j=0; j < kSizeB; ++j)
             {
                 mArray2D[i][j]=i*1000+j;
-                for (unsigned k=0; k < kSize; ++k)
+                for (unsigned k=0; k < kSizeA; ++k)
                 {
                     mArray3D[i][j][k]=(i*1000+j)*1000+k;
                 }
@@ -333,16 +343,25 @@ struct ArrayTest
 
     void check()
     {
-        // --- サイズ上限テスト用 ---
-        for (unsigned i=0; i < kSize; ++i)
+        unsigned   kSizeMin=2;
+        if (gVersionList[gDataIndex].mVersionEnum == VersionEnum::ver1a)
         {
-            THEOLIZER_EQUAL(mArray1D[i], i);
-            for (unsigned j=0; j < kSize; ++j)
+            kSizeMin=3;
+        }
+
+        // --- サイズ上限テスト用 ---
+        for (unsigned i=0; i < kSizeA; ++i)
+        {
+            bool aValued0=i < kSizeMin;
+            THEOLIZER_EQUAL(mArray1D[i], (aValued0)?i:0);
+            for (unsigned j=0; j < kSizeB; ++j)
             {
-                THEOLIZER_EQUAL(mArray2D[i][j], i*1000+j, i, j);
-                for (unsigned k=0; k < kSize; ++k)
+                bool aValued1=aValued0 && (j < kSizeMin);
+                THEOLIZER_EQUAL(mArray2D[i][j], (aValued1)?(i*1000+j):0, i, j);
+                for (unsigned k=0; k < kSizeA; ++k)
                 {
-                    THEOLIZER_EQUAL(mArray3D[i][j][k], (i*1000+j)*1000+k,
+                    bool aValued2=aValued1 && (k < kSizeMin);
+                    THEOLIZER_EQUAL(mArray3D[i][j][k], (aValued2)?((i*1000+j)*1000+k):0,
                         i, j, k);
                 }
             }
