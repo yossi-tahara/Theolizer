@@ -13,6 +13,7 @@ var files =
     [ "7d.destinations.h", "7d_8destinations_8h.html", null ],
     [ "7e.support_stl.h", "7e_8support__stl_8h.html", null ],
     [ "7f.modify_enum.h", "7f_8modify__enum_8h.html", null ],
+    [ "7g.modify_class.h", "7g_8modify__class_8h.html", null ],
     [ "8.reference.h", "8_8reference_8h.html", null ],
     [ "array.h", "array_8h_source.html", null ],
     [ "avoid-trouble.h", "avoid-trouble_8h_source.html", null ],

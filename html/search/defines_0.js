@@ -9,6 +9,5 @@ var searchData=
   ['theolizer_5fprovided_5fby',['THEOLIZER_PROVIDED_BY',['../core__assorted_8h.html#ab0ac70e7c9399a86f27b40f45e25d39f',1,'core_assorted.h']]],
   ['theolizer_5frequire',['THEOLIZER_REQUIRE',['../test__tool_8h.html#aed6a369542ce50a6f48dc6966b4482c7',1,'test_tool.h']]],
   ['theolizer_5frequire_5fexception',['THEOLIZER_REQUIRE_EXCEPTION',['../test__tool_8h.html#a90221382e5f374c7f976a2bd9088b427',1,'test_tool.h']]],
-  ['theolizer_5frequire_5fexception2',['THEOLIZER_REQUIRE_EXCEPTION2',['../test__tool_8h.html#a5ec5de25d814c9c3bb14354a2757f5d8',1,'test_tool.h']]],
-  ['theolizer_5fwrite_5fcode',['THEOLIZER_WRITE_CODE',['../core__assorted_8h.html#a48795b203045bc9895f4123ebf6678a4',1,'core_assorted.h']]]
+  ['theolizer_5frequire_5fexception2',['THEOLIZER_REQUIRE_EXCEPTION2',['../test__tool_8h.html#a5ec5de25d814c9c3bb14354a2757f5d8',1,'test_tool.h']]]
 ];

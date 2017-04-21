@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.4</span>
+   &#160;<span id="projectnumber">Version.0.5.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -118,7 +118,7 @@ $(document).ready(function(){initNavTree('_class_variation.html','');});
 <h1><a class="anchor" id="HalfAutoClass"></a>
 2.侵入型半自動クラス</h1>
 <h6></h6>
-<p>これはシリアライズするためにクラス定義への前準備が必要ですが、クラス定義のバージョン管理が可能になる使い方です。（バージョン管理については「<a class="el" href="_changing_class.html">クラス定義の変更方法、および、バージョン・アップ方法</a> 」を参照下さい。）<br />
+<p>これはシリアライズするためにクラス定義への前準備が必要ですが、クラス定義のバージョン管理が可能になる使い方です。（バージョン管理については「<a class="el" href="_changing_class.html">クラスのアップデート／バージョン・アップ方法</a> 」を参照下さい。）<br />
 </p>
 <p>クラス定義のバージョン管理が不要な間は原則として使う必要はありません。<br />
  例外は下記です。</p><ul>
@@ -153,8 +153,8 @@ $(document).ready(function(){initNavTree('_class_variation.html','');});
  自クラス名を指定します。C++はメンバ関数の外クラス定義内で自クラスにアクセスできないため、指定が必要なのです。クラス名の外側に必ず()を付けて下さい。<br />
 </li>
 <li><b>dLastVersionNo</b><br />
- 最新版のバージョン番号は指定します。最初は1を指定して下さい。<br />
- 「<a class="el" href="_changing_class.html">クラス定義の変更方法、および、バージョン・アップ方法</a> 」で使い方を説明します。<br />
+ 最新版のローカル・バージョン番号を指定します。最初は1を指定して下さい。<br />
+ 「<a class="el" href="_changing_class.html">クラスのアップデート／バージョン・アップ方法</a> 」で使い方を説明します。<br />
  <br />
 </li>
 </ul>
@@ -217,7 +217,7 @@ $(document).ready(function(){initNavTree('_class_variation.html','');});
 </li>
 <li><b>dLastVersionNo</b><br />
  最新版のバージョン番号は指定します。最初は1を指定して下さい。<br />
- 「<a class="el" href="_changing_class.html">クラス定義の変更方法、および、バージョン・アップ方法</a> 」で使い方を説明します。<br />
+ 「<a class="el" href="_changing_class.html">クラスのアップデート／バージョン・アップ方法</a> 」で使い方を説明します。<br />
  <br />
 </li>
 </ul>
@@ -379,13 +379,21 @@ $(document).ready(function(){initNavTree('_class_variation.html','');});
 </ol>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.8.12-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
+	<ul>
     <li class="navelem"><a class="el" href="index.html">--目次--</a></li><li class="navelem"><a class="el" href="_usage_individual.html">使用方法（個別）</a></li>
-    <li class="footer">構築:
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.12 </li>
+		<span style="color:#364D7C";>
+			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+		</span>
+    <li class="footer">
+			構築:
+    	<a href="http://www.doxygen.org/index.html">
+    		<img class="footer" src="doxygen.png" alt="doxygen"/>
+			</a>
+			1.8.12
+		</li>
   </ul>
 </div>
 </body>

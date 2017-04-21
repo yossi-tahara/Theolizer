@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.4</span>
+   &#160;<span id="projectnumber">Version.0.5.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -118,18 +118,17 @@ $(document).ready(function(){initNavTree('_object_tracking.html','');});
 <li>メンバ変数の場合は、THEOLIZER_ANNOTATE(FS:...&lt;...&gt;Pointee)</li>
 <li>THEOLIZER_PROCESS_POINTEE()マクロ</li>
 </ol>
-<p>クラスに対してこれらの指定は不要です。（指定しても問題はありません。）</p>
 <h2><a class="anchor" id="HowToObjectTracking12"></a>
 1-2.サンプル・ソース</h2>
-<p><b>サンプル用のクラス定義：(source/reference_and_test/basic/test_object_tracking.h）</b><br />
- （静的定義領域、動的生成領域については「<a class="el" href="_object_tracking.html#HowToObjectTracking33">3-3.オブジェクト追跡で用いる用語</a> 」を参照下さい。）</p>
+<p><b>サンプル用のクラス定義：(source/reference_and_test/basic2/test_object_tracking.h）</b><br />
+ （静的定義領域、動的生成領域については<a class="el" href="_object_tracking.html#HowToObjectTracking33">3-3.オブジェクト追跡で用いる用語</a> を参照下さい。）</p>
  <div class="fragment"><div class="line"><span class="keyword">class   </span>ObjectTrackingClass</div><div class="line">{</div><div class="line">    <span class="comment">// 静的定義領域</span></div><div class="line">    <span class="keywordtype">int</span>     mInt    THEOLIZER_ANNOTATE(FS:&lt;&gt;Pointee);</div><div class="line"></div><div class="line">    <span class="comment">// 動的生成領域</span></div><div class="line">    <span class="keywordtype">short</span>*  mShort  THEOLIZER_ANNOTATE(FS:&lt;&gt;Owner);</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    ObjectTrackingClass() :</div><div class="line">        mInt{0},</div><div class="line">        mShort{<span class="keyword">nullptr</span>}</div><div class="line">    { }</div><div class="line">    ObjectTrackingClass(<span class="keywordtype">int</span> iInt, <span class="keywordtype">short</span> iShort) :</div><div class="line">        mInt{iInt},</div><div class="line">        mShort{<span class="keyword">new</span> <span class="keywordtype">short</span>{iShort}}</div><div class="line">    { }</div><div class="line">    ~ObjectTrackingClass()</div><div class="line">    {</div><div class="line">        <span class="keyword">delete</span> mShort;</div><div class="line">    }</div><div class="line">    <span class="keywordtype">void</span> check(<span class="keywordtype">int</span> iInt, <span class="keywordtype">short</span> iShort)</div><div class="line">    {</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(mInt, iInt);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(*mShort, iShort);</div><div class="line">    }</div><div class="line">    <span class="keywordtype">int</span>*   getStatic()  { <span class="keywordflow">return</span> &amp;mInt;  }</div><div class="line">    <span class="keywordtype">short</span>* getDynamic() { <span class="keywordflow">return</span> mShort; }</div><div class="line"></div><div class="line">    THEOLIZER_INTRUSIVE(CS, (ObjectTrackingClass), 1);</div><div class="line">};</div></div><!-- fragment --></p>
 <p>ObjectTrackingClass全体はオブジェクト追跡するクラスのサンプルです。また、メンバ変数はTHEOLIZER_ANNOTATE()マクロによるオブジェクト追跡関連指定のサンプルです。<br />
 </p><ul>
 <li>mIntメンバ変数はオブジェクト追跡するよう指定されたメンバ変数です。</li>
 <li>mShortメンバ変数はオーナー指定されたメンバ変数です。</li>
 </ul>
-<p><b>保存処理：(source/reference_and_test/basic/test_object_tracking.cpp）</b></p>
+<p><b>保存処理：(source/reference_and_test/basic2/test_object_tracking.cpp）</b></p>
  <div class="fragment"><div class="line">    {</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; シリアライズ対象変数定義 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域(プリミティブ)</span></div><div class="line">        <span class="keywordtype">long</span>    aLong{100};</div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域(クラス)、動的生成領域(メンバ変数)</span></div><div class="line">        ObjectTrackingClass     aObjectTrackingClass{200, 300};</div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域を指すポインタ(非オーナー)</span></div><div class="line">        <span class="keywordtype">long</span>*                   aLongPtr=&amp;aLong;</div><div class="line">        ObjectTrackingClass*    aObjectTrackingClassPtr=&amp;aObjectTrackingClass;</div><div class="line"></div><div class="line">        <span class="comment">// 動的生成領域を指すオーナー・ポインタ</span></div><div class="line">        <span class="keywordtype">long</span>*                   aLongOwner=<span class="keyword">new</span> <span class="keywordtype">long</span>{101};</div><div class="line">        ObjectTrackingClass*    aObjectTrackingClassOwner=<span class="keyword">new</span> ObjectTrackingClass{201, 301};</div><div class="line"></div><div class="line">        <span class="keyword">auto</span> temp0=makeAutoRelease(aLongOwner);                 <span class="comment">// 自動解放設定</span></div><div class="line">        <span class="keyword">auto</span> temp1=makeAutoRelease(aObjectTrackingClassOwner);  <span class="comment">// 自動解放設定</span></div><div class="line"></div><div class="line">        <span class="comment">// 動的生成領域を指すポインタ(非オーナー)</span></div><div class="line">        <span class="keywordtype">long</span>*                   aLongPtr2=aLongOwner;</div><div class="line">        ObjectTrackingClass*    aObjectTrackingClassPtr2=aObjectTrackingClassOwner;</div><div class="line"></div><div class="line">        <span class="comment">// THEOLIZER_ANNOTATE()でオブジェクト追跡指定された静的定義領域を指すポインタ(非オーナー)</span></div><div class="line">        <span class="keywordtype">int</span>*                    aIntPtr=aObjectTrackingClassOwner-&gt;getStatic();</div><div class="line"></div><div class="line">        <span class="comment">// THEOLIZER_ANNOTATE()でオーナー指定された動的生成領域を指すポインタ(非オーナー)</span></div><div class="line">        <span class="keywordtype">short</span>*                  aShortPtr=aObjectTrackingClassOwner-&gt;getDynamic();</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 保存処理 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;tutorise_object_tracking.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域を指すポインタ(非オーナー)を保存</span></div><div class="line">        THEOLIZER_PROCESS(aSerializer, aLongPtr);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aObjectTrackingClassPtr);</div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域(プリミティブ)を保存</span></div><div class="line">        THEOLIZER_PROCESS_POINTEE(aSerializer, aLong);</div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域(クラス)、動的生成領域(メンバ変数mShort)を保存</span></div><div class="line">        THEOLIZER_PROCESS_POINTEE(aSerializer, aObjectTrackingClass);</div><div class="line"></div><div class="line">        <span class="comment">// 動的生成領域を指すオーナー・ポインタを保存</span></div><div class="line">        THEOLIZER_PROCESS_OWNER(aSerializer, aLongOwner);</div><div class="line">        THEOLIZER_PROCESS_OWNER(aSerializer, aObjectTrackingClassOwner);</div><div class="line"></div><div class="line">        <span class="comment">// 動的生成領域を指すポインタ(非オーナー)を保存</span></div><div class="line">        THEOLIZER_PROCESS(aSerializer, aLongPtr2);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aObjectTrackingClassPtr2);</div><div class="line"></div><div class="line">        <span class="comment">// THEOLIZER_ANNOTATE()で指定したインスタンスを指すボインタ(非オーナー／オーナー)を保存</span></div><div class="line">        THEOLIZER_PROCESS(aSerializer, aIntPtr);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aShortPtr);</div><div class="line"></div><div class="line">        <span class="comment">// オブジェクトIDテーブルのクリア</span></div><div class="line">        aSerializer.clearTracking();</div><div class="line">    }</div></div><!-- fragment --></p>
 <div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> <b>makeAutoRelease()</b><br />
  これはnewで獲得した領域を自動的にdeleteするためのヘルパー関数です。戻り値のインスタンスが解放されるタイミングでdeleteします。source/reference_and_test/basic/common.hで定義しています。たいへん小さいですので、興味のある方は覗いてみて下さい。 </div><p>これにより、下図のようなデータ構造が生成され、図の順序でデータが保存されます。</p>
@@ -157,7 +156,7 @@ $(document).ready(function(){initNavTree('_object_tracking.html','');});
 6                           // オブジェクトID=6へのポインタ(aObjectTrackingClassPtr2)
 7                           // オブジェクトID=7へのポインタ(aIntPtr)
 8                           // オブジェクトID=8へのポインタ(aShortPtr)
-</pre><p><b>回復処理：(source/reference_and_test/basic/test_object_tracking.cpp）</b><br />
+</pre><p><b>回復処理：(source/reference_and_test/basic2/test_object_tracking.cpp）</b><br />
  元のデータ構造を回復できていることをチェックしています。</p>
 <p><div class="fragment"><div class="line">    {</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 回復先変数定義 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域(プリミティブ)</span></div><div class="line">        <span class="keywordtype">long</span>    aLong{0};</div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域(クラス)、動的生成領域(メンバ変数)</span></div><div class="line">        ObjectTrackingClass     aObjectTrackingClass;</div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域を指すポインタ(非オーナー)</span></div><div class="line">        <span class="keywordtype">long</span>*                   aLongPtr=<span class="keyword">nullptr</span>;</div><div class="line">        ObjectTrackingClass*    aObjectTrackingClassPtr=<span class="keyword">nullptr</span>;</div><div class="line"></div><div class="line">        <span class="comment">// 動的生成領域を指すオーナー・ポインタ</span></div><div class="line">        <span class="keywordtype">long</span>*                   aLongOwner=<span class="keyword">nullptr</span>;</div><div class="line">        ObjectTrackingClass*    aObjectTrackingClassOwner=<span class="keyword">nullptr</span>;</div><div class="line"></div><div class="line">        <span class="keyword">auto</span> temp0=makeAutoRelease(aLongOwner);                 <span class="comment">// 自動解放設定</span></div><div class="line">        <span class="keyword">auto</span> temp1=makeAutoRelease(aObjectTrackingClassOwner);  <span class="comment">// 自動解放設定</span></div><div class="line"></div><div class="line">        <span class="comment">// 動的生成領域を指すポインタ(非オーナー)</span></div><div class="line">        <span class="keywordtype">long</span>*                   aLongPtr2=<span class="keyword">nullptr</span>;</div><div class="line">        ObjectTrackingClass*    aObjectTrackingClassPtr2=<span class="keyword">nullptr</span>;</div><div class="line"></div><div class="line">        <span class="comment">// THEOLIZER_ANNOTATE()でオブジェクト追跡指定された静的定義領域を指すポインタ(非オーナー)</span></div><div class="line">        <span class="keywordtype">int</span>*                    aIntPtr=<span class="keyword">nullptr</span>;</div><div class="line"></div><div class="line">        <span class="comment">// THEOLIZER_ANNOTATE()でオーナー指定された動的生成領域を指すポインタ(非オーナー)</span></div><div class="line">        <span class="keywordtype">short</span>*                  aShortPtr=<span class="keyword">nullptr</span>;</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 回復処理 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;tutorise_object_tracking.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域を指すポインタ(非オーナー)を回復</span></div><div class="line">        THEOLIZER_PROCESS(aSerializer, aLongPtr);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aObjectTrackingClassPtr);</div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域(プリミティブ)を回復</span></div><div class="line">        THEOLIZER_PROCESS_POINTEE(aSerializer, aLong);</div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域(クラス)、動的生成領域(メンバ変数mShort)を回復</span></div><div class="line">        THEOLIZER_PROCESS_POINTEE(aSerializer, aObjectTrackingClass);</div><div class="line"></div><div class="line">        <span class="comment">// 動的生成領域を指すオーナー・ポインタを回復</span></div><div class="line">        THEOLIZER_PROCESS_OWNER(aSerializer, aLongOwner);</div><div class="line">        THEOLIZER_PROCESS_OWNER(aSerializer, aObjectTrackingClassOwner);</div><div class="line"></div><div class="line">        <span class="comment">// 動的生成領域を指すポインタ(非オーナー)を回復</span></div><div class="line">        THEOLIZER_PROCESS(aSerializer, aLongPtr2);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aObjectTrackingClassPtr2);</div><div class="line"></div><div class="line">        <span class="comment">// THEOLIZER_ANNOTATE()で指定したインスタンスを指すボインタ(非オーナー／オーナー)を回復</span></div><div class="line">        THEOLIZER_PROCESS(aSerializer, aIntPtr);</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aShortPtr);</div><div class="line"></div><div class="line">        <span class="comment">// オブジェクトIDテーブルのクリア</span></div><div class="line">        aSerializer.clearTracking();</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 結果のチェック &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域を指すポインタ(非オーナー)</span></div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(aLongPtr, &amp;aLong);</div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(aObjectTrackingClassPtr, &amp;aObjectTrackingClass);</div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域(プリミティブ)</span></div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aLong, 100);</div><div class="line"></div><div class="line">        <span class="comment">// 静的定義領域(クラス)、動的生成領域(メンバ変数)</span></div><div class="line">        aObjectTrackingClass.check(200, 300);</div><div class="line"></div><div class="line">        <span class="comment">// 動的生成領域を指すオーナー・ポインタ</span></div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(*aLongOwner, 101);</div><div class="line">        aObjectTrackingClassOwner-&gt;check(201, 301);</div><div class="line"></div><div class="line">        <span class="comment">// 動的生成領域を指すポインタ(非オーナー)</span></div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(aLongPtr2, aLongOwner);</div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(aObjectTrackingClassPtr2, aObjectTrackingClassOwner);</div><div class="line"></div><div class="line">        <span class="comment">// THEOLIZER_ANNOTATE()で指定したインスタンスを指すボインタ(非オーナー／オーナー)</span></div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(aIntPtr,   aObjectTrackingClassOwner-&gt;getStatic());</div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(aShortPtr, aObjectTrackingClassOwner-&gt;getDynamic());</div><div class="line">    }</div></div><!-- fragment --></p>
 <p><br />
@@ -179,14 +178,14 @@ $(document).ready(function(){initNavTree('_object_tracking.html','');});
  指定漏れすると、シリアライズ処理する時に"Can not find the derived class for &lt;基底クラス&gt;."エラーになります。<br />
 </li>
 </ol>
-<p>また、「<a class="el" href="_specification.html#Basic164">1-6-4.ポリモーフィズムにおける制約事項</a> 」も参照下さい。</p>
-<p><b>サンプル用のクラス定義：(source/reference_and_test/basic/test_polymorphism.h）</b></p>
+<p>また、<a class="el" href="_specification.html#Basic164">1-6-4.ポリモーフィズムにおける制約事項</a> も参照下さい。</p>
+<p><b>サンプル用のクラス定義：(source/reference_and_test/basic2/test_polymorphism.h）</b></p>
  <div class="fragment"><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      基底クラス</span></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"></div><div class="line"><span class="keyword">struct </span>PolyBase</div><div class="line">{</div><div class="line">    <span class="keywordtype">int</span>     mInt;</div><div class="line">    PolyBase(<span class="keywordtype">int</span> iInt) : mInt(iInt) { }</div><div class="line">    <span class="keyword">virtual</span> ~PolyBase() { }</div><div class="line">    <span class="keyword">virtual</span> <span class="keywordtype">void</span> check()=0;</div><div class="line">};</div><div class="line"></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      派生クラス</span></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"></div><div class="line"><span class="keyword">struct </span>PolyDerived0 : <span class="keyword">public</span> PolyBase</div><div class="line">{</div><div class="line">    <span class="keywordtype">short</span>   mShort;</div><div class="line">    PolyDerived0() : PolyBase(0), mShort(0) { }</div><div class="line">    PolyDerived0(<span class="keywordtype">bool</span>) : PolyBase(100), mShort(200) { }</div><div class="line">    <span class="keywordtype">void</span> check()</div><div class="line">    {</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(mInt,   100);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(mShort, 200);</div><div class="line">    }</div><div class="line">};</div><div class="line">THEOLIZER_REGISTER_CLASS((PolyDerived0));</div><div class="line"></div><div class="line"><span class="keyword">struct </span>PolyDerived1 : <span class="keyword">public</span> PolyBase</div><div class="line">{</div><div class="line">    std::string mString;</div><div class="line">    PolyDerived1() : PolyBase(0), mString(<span class="stringliteral">&quot;&quot;</span>) { }</div><div class="line">    PolyDerived1(<span class="keywordtype">bool</span>) : PolyBase(1000), mString(<span class="stringliteral">&quot;string&quot;</span>) { }</div><div class="line">    <span class="keywordtype">void</span> check()</div><div class="line">    {</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(mInt,    1000);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(mString, <span class="stringliteral">&quot;string&quot;</span>);</div><div class="line">    }</div><div class="line">};</div><div class="line">THEOLIZER_REGISTER_CLASS((PolyDerived1));</div></div><!-- fragment --></p>
 <p><b>THEOLIZER_REGISTER_CLASS()</b>による派生クラスの指定を忘れないようにお願いします。<br />
  また、クラス名を()で囲って指定する必要が有りますのでご注意下さい。</p>
-<p><b>保存処理：(source/reference_and_test/basic/test_polymorphism.cpp）</b></p>
+<p><b>保存処理：(source/reference_and_test/basic2/test_polymorphism.cpp）</b></p>
  <div class="fragment"><div class="line">    {</div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; シリアライズ対象変数定義 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">        PolyBase*   aPolyBase0=<span class="keyword">new</span> PolyDerived0{<span class="keyword">true</span>};</div><div class="line">        PolyBase*   aPolyBase1=<span class="keyword">new</span> PolyDerived1{<span class="keyword">true</span>};</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 保存処理 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;tutorise_polymorphism.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="comment">// オーナーとして保存／回復する</span></div><div class="line">        THEOLIZER_PROCESS_OWNER(aSerializer, aPolyBase0);</div><div class="line">        THEOLIZER_PROCESS_OWNER(aSerializer, aPolyBase1);</div><div class="line"></div><div class="line">        <span class="comment">// オブジェクトIDテーブルのクリア</span></div><div class="line">        aSerializer.clearTracking();</div><div class="line">    }</div></div><!-- fragment --></p>
-<p><b>回復処理：(source/reference_and_test/basic/test_polymorphism.cpp）</b><br />
+<p><b>回復処理：(source/reference_and_test/basic2/test_polymorphism.cpp）</b><br />
  元のデータ構造を回復できていることをチェックしています。</p>
 <p><div class="fragment"><div class="line">    {</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 回復先変数定義 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">        PolyBase*   aPolyBase0=<span class="keyword">nullptr</span>;</div><div class="line">        PolyBase*   aPolyBase1=<span class="keyword">nullptr</span>;</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 回復処理 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;tutorise_polymorphism.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="comment">// オーナーとして保存／回復する</span></div><div class="line">        THEOLIZER_PROCESS_OWNER(aSerializer, aPolyBase0);</div><div class="line">        THEOLIZER_PROCESS_OWNER(aSerializer, aPolyBase1);</div><div class="line"></div><div class="line">        <span class="comment">// オブジェクトIDテーブルのクリア</span></div><div class="line">        aSerializer.clearTracking();</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 結果のチェック &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">        aPolyBase0-&gt;check();</div><div class="line">        aPolyBase1-&gt;check();</div><div class="line">    }</div></div><!-- fragment --></p>
 <p><b>tutorise_object_tracking.json</b>ファイルは下記となります。 </p><pre class="fragment">{
@@ -206,7 +205,10 @@ $(document).ready(function(){initNavTree('_object_tracking.html','');});
     },
     "mString":"string"
 }]
-</pre><p>メンバ変数名は"メンバ変数名"として記録されます。基底クラスにはメンバ変数名がないため、"(基底クラス名)"として記録しています。これにより、基底クラスの定義順序変更にも対応できます。</p>
+</pre><p>メンバ変数名は"メンバ変数名"として記録されます。基底クラスにはメンバ変数名がないため、"{基底クラス名}"として記録しています。これにより、基底クラスの定義順序変更にも対応できます。</p>
+<h2><a class="anchor" id="Polymorphism32"></a>
+3-2.参照を経由する場合</h2>
+<p>ポリモーフィックな基底クラスへの参照をシリアライズすることで、ポリモーフィックに回復されます。つまり、派生クラスのインスタンスを基底クラスへのポインタでポイントして保存して回復した場合、派生クラスのインスタンスとして回復されます。</p>
 <p><br />
  </p><h6></h6>
 <h1><a class="anchor" id="ClearTracking"></a>
@@ -290,12 +292,12 @@ $(document).ready(function(){initNavTree('_object_tracking.html','');});
  </p>
 <h2><a class="anchor" id="HowToObjectTracking34"></a>
 3-4.オブジェクト追跡対象について</h2>
-<p>静的定義領域は、全てのシリアライズ対象の変数がオブジェクト追跡候補になります。しかし、実際にポインタでポイントされる変数はその内の一部だけですので、全てをオブジェクト追跡するのは無駄が多いです。そこで、「<a class="el" href="_specification.html#Basic21">2-1.オブジェクト追跡する領域について</a> 」で示した方法でオブジェクト追跡対象を絞り込んでいます。</p>
+<p>静的定義領域は、全てのシリアライズ対象の変数がオブジェクト追跡候補になります。しかし、実際にポインタでポイントされる変数はその内の一部だけですので、全てをオブジェクト追跡するのは無駄が多いです。そこで、<a class="el" href="_specification.html#Basic21">2-1.オブジェクト追跡する領域について</a> で示した方法でオブジェクト追跡対象を絞り込んでいます。</p>
 <p><br />
  </p>
 <h2><a class="anchor" id="HowToObjectTracking35"></a>
 3-5.オブジェクト追跡単位について</h2>
-<p>「<a class="el" href="_specification.html#Basic22">2-2.オブジェクト追跡単位について</a> 」に示したオブジェクト追跡単位について少し詳しく説明します。</p>
+<p><a class="el" href="_specification.html#Basic22">2-2.オブジェクト追跡単位について</a> に示したオブジェクト追跡単位について少し詳しく説明します。</p>
 <p>これはオブジェクトIDテーブルの有効期間です。clearTracking()することで</p>
 <ol type="1">
 <li>オブジェクトIDテーブルにシリアライズされていないインスタンスが登録されていないか確認します</li>
@@ -311,7 +313,7 @@ $(document).ready(function(){initNavTree('_object_tracking.html','');});
  なお、clearTracking()することで「シリアライズした」と言う記録が全て破棄されますので、必要であれば、cleartTracking()後、最初のシリアライズまでの間ならばインスタンスを安全に破棄できます。 </div><p><br />
  </p><h6></h6>
 <h1><a class="anchor" id="TestObjectTracking"></a>
-4.網羅的な使用例（自動テスト）の説明</h1>
+4.オブジェクト追跡の網羅的な使用例（自動テスト）の説明</h1>
 <h6></h6>
 <h2><a class="anchor" id="TestObjectTracking41"></a>
 4-1.各種メモリへのポインタのテスト</h2>
@@ -346,7 +348,7 @@ Pointee指定プリミティブ型(long)　＋　Pointee指定なしクラス型
 <p>更に、動的生成領域(クラス)へのポインタ(非オーナー)のテストを実施する際に、std::shared_ptr&lt;&gt;を非侵入型手動対応しました。その時、<a href="https://github.com/yossi-tahara/Theolizer/issues/18">std::shared_ptr&lt;&gt;対応は意外に難しい</a>ことが分かり、いくつか複雑な対応を行いましたので、ここでその一部のテストも行っています。(後日、標準コンテナ対応する予定です。その時、網羅的な自動テストを実装します。)</p>
 <h3><a class="anchor" id="TestObjectTracking412"></a>
 4-1-2.ソース・コード</h3>
-<p><b>source/reference_and_test/basic/test_object_tracking.h</b>でテスト用のクラスを定義してます。<br />
+<p><b>source/reference_and_test/basic2/test_object_tracking.h</b>でテスト用のクラスを定義してます。<br />
 </p>
 <ol type="1">
 <li>２番目以降の基底クラスへのポインタの回復テスト用<ul>
@@ -366,8 +368,9 @@ Pointee指定プリミティブ型(long)　＋　Pointee指定なしクラス型
 </li>
 </ul>
 </li>
+<li>同じインスタンスを複数回シリアライズした時のテスト用 上記で定義したObjectTrackingDerivedを用います。</li>
 </ol>
-<p><b>source/reference_and_test/basic/test_object_tracking2.cpp</b>でテスト関数を定義してます。<br />
+<p><b>source/reference_and_test/basic2/test_object_tracking2.cpp</b>でテスト関数を定義してます。<br />
 </p>
 <ol type="1">
 <li>保存処理<br />
@@ -395,11 +398,11 @@ Pointee指定プリミティブ型(long)　＋　Pointee指定なしクラス型
 ポインタを先に保存　＋　インスタンスを先に保存
 </pre><h3><a class="anchor" id="TestObjectTracking422"></a>
 4-2-2.ソース・コード</h3>
-<p><b>source/reference_and_test/basic/test_object_tracking.h</b>でテスト用のクラスとマクロを定義してます。<br />
+<p><b>source/reference_and_test/basic2/test_object_tracking.h</b>でテスト用のクラスとマクロを定義してます。<br />
 </p>
 <ol type="1">
 <li>DEFINE_MEMBERS()マクロ<br />
- 各種の型に対応する、変数宣言や初期化を定義するためのマクロです。「<a class="el" href="_class_variation.html#SingleTest">5-1.単独テスト</a> 」と同じ名前ですが、少し異なるマクロです。定義している変数の型は同じですが、初期化値が異なります。<br />
+ 各種の型に対応する、変数宣言や初期化を定義するためのマクロです。<a class="el" href="_class_variation.html#SingleTest">5-1.単独テスト</a> と同じ名前ですが、少し異なるマクロです。定義している変数の型は同じですが、初期化値が異なります。<br />
  <br />
 </li>
 <li>PointeeListクラス<br />
@@ -419,7 +422,7 @@ Pointee指定プリミティブ型(long)　＋　Pointee指定なしクラス型
  <br />
 </li>
 </ol>
-<p><b>source/reference_and_test/basic/test_object_tracking2.cpp</b>でテスト関数を定義してます。<br />
+<p><b>source/reference_and_test/basic2/test_object_tracking2.cpp</b>でテスト関数を定義してます。<br />
 </p>
 <ol type="1">
 <li>保存処理<br />
@@ -443,7 +446,7 @@ Pointee指定プリミティブ型(long)　＋　Pointee指定なしクラス型
 全てのプリミティブ　＋　enum型　＋　scoped num型　＋　クラス　＋　各配列型
 </pre><h3><a class="anchor" id="TestObjectTracking432"></a>
 4-3-2.ソース・コード</h3>
-<p><b>source/reference_and_test/basic/test_object_tracking.h</b>でテスト用のクラスとマクロを定義してます。<br />
+<p><b>source/reference_and_test/basic2/test_object_tracking.h</b>でテスト用のクラスとマクロを定義してます。<br />
 </p>
 <ol type="1">
 <li>DEFINE_MEMBERS()マクロ<br />
@@ -465,27 +468,48 @@ Pointee指定プリミティブ型(long)　＋　Pointee指定なしクラス型
 </ol>
 <div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> (*4)「配列型へのポインタ」のサポート<br />
  以前、teratailで「<a href="https://teratail.com/questions/34266">配列型(サイズ含む)へのポインタをnewで生成したい</a>」旨を質問してraccyさんの回答をヒントに対応できました。<br />
- 遠いところからですが、raccyさん、ありがとうございました。 </div><p><b>source/reference_and_test/basic/test_object_tracking3.cpp</b>でテスト関数を定義してます。<br />
+ 遠いところからですが、raccyさん、ありがとうございました。 </div><p><b>source/reference_and_test/basic2/test_object_tracking3.cpp</b>でテスト関数を定義してます。<br />
 </p>
 <ol type="1">
 <li>保存処理<br />
  template&lt;class tSerializer&gt;<br />
- void saveObjectTracking3(tSerializer&amp; iSerializer)<br />
+ void saveObjectTracking3(tSerializer&amp; iSerializer)の前半<br />
  <br />
 </li>
 <li>回復処理<br />
  template&lt;class tSerializer&gt;<br />
- void loadObjectTracking3(tSerializer&amp; iSerializer)<br />
+ void loadObjectTracking3(tSerializer&amp; iSerializer)の前半<br />
 </li>
 </ol>
+<h2><a class="anchor" id="TestObjectTracking44"></a>
+4-4.同じインスタンスを複数回シリアライズするテスト</h2>
+<p>ObjectTrackingDerivedのインスタンスに対して、被ポインタ指定したものとしていないものについて保存／回復テストを行います。</p>
+<p><b>source/reference_and_test/basic2/test_object_tracking3.cpp</b>でテスト関数を定義してます。<br />
+</p>
+<ol type="1">
+<li>保存処理<br />
+ template&lt;class tSerializer&gt;<br />
+ void saveObjectTracking3(tSerializer&amp; iSerializer)の後半<br />
+ <br />
+</li>
+<li>回復処理<br />
+ template&lt;class tSerializer&gt;<br />
+ void loadObjectTracking3(tSerializer&amp; iSerializer)の後半<br />
+</li>
+</ol>
+<p>また、同じインスタンスを複数回保存し、それを異なるインスタンスへ回復しようとした時、WrongUsing例外が発生することのテストを行います。</p>
+<p><b>source/reference_and_test/basic2/test_object_tracking.cpp</b>でテスト関数を定義してます。<br />
+</p>
+<p>tutoriseObjectTracking()関数の最後の方、「複数回シリアライズ・データの回復エラーテスト」で行っています。<br />
+</p>
 <p><br />
  </p><h6></h6>
 <h1><a class="anchor" id="TestPolymorphism"></a>
-5.網羅的な使用例（自動テスト）の説明</h1>
+5.ポリモーフィズムの網羅的な使用例（自動テスト）の説明</h1>
 <h6></h6>
 <p>ここでは、基底クラスへのポインタでポイントされる異なる派生クラスを適切に回復できることを確認します。<br />
  非侵入型完全自動、侵入型半自動、非侵入型手動の３種類の基底クラスと派生クラスを用意し、派生クラスは３種類の基底クラスを全て継承しました。</p>
-<p><b>source/reference_and_test/basic/test_polymorphism.h</b>でテスト用のクラスを定義してます。<br />
+<p><b>source/reference_and_test/basic2/test_polymorphism.h</b>でテスト用のクラスを定義してます。<br />
 </p>
 <ol type="1">
 <li>基底クラス<ul>
@@ -503,7 +527,7 @@ Pointee指定プリミティブ型(long)　＋　Pointee指定なしクラス型
 </ul>
 </li>
 </ol>
-<p><b>source/reference_and_test/basic/test_polymorphism.cpp</b>でテスト関数を定義してます。<br />
+<p><b>source/reference_and_test/basic2/test_polymorphism.cpp</b>でテスト関数を定義してます。<br />
 </p>
 <ol type="1">
 <li>保存処理<br />
@@ -527,13 +551,21 @@ Pointee指定プリミティブ型(long)　＋　Pointee指定なしクラス型
  </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.8.12-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
+	<ul>
     <li class="navelem"><a class="el" href="index.html">--目次--</a></li><li class="navelem"><a class="el" href="_usage_individual.html">使用方法（個別）</a></li>
-    <li class="footer">構築:
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.12 </li>
+		<span style="color:#364D7C";>
+			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+		</span>
+    <li class="footer">
+			構築:
+    	<a href="http://www.doxygen.org/index.html">
+    		<img class="footer" src="doxygen.png" alt="doxygen"/>
+			</a>
+			1.8.12
+		</li>
   </ul>
 </div>
 </body>

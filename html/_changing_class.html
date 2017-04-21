@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.12"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Theolizer: クラス定義の変更方法、および、バージョン・アップ方法</title>
+<title>Theolizer: クラスのアップデート／バージョン・アップ方法</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.4</span>
+   &#160;<span id="projectnumber">Version.0.5.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -83,19 +83,712 @@ $(document).ready(function(){initNavTree('_changing_class.html','');});
 
 <div class="header">
   <div class="headertitle">
-<div class="title">クラス定義の変更方法、および、バージョン・アップ方法 </div>  </div>
+<div class="title">クラスのアップデート／バージョン・アップ方法 </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><h1>T.B.D.</h1>
+<div class="textblock"><p>ここでは、クラス(classとstruct)を修正した時、古いプログラムが保存したデータを回復するための各種指定方法を説明します。<br />
+</p>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="HowToModifyClass1"></a>
+1.バージョン番号を変えないでクラスを修正</h1>
+<h6></h6>
+<p>クラスのバージョン番号の更新無しで行う修正は、enum型と異なりTHEOLIZER_ANNOTATE()を用いて指定することは特にありません。通常通りクラス定義を変更するだけです。</p>
+<p>その際、<a class="el" href="_specification.html#Basic121">1-2-1.クラスについて</a> で説明した「名前対応」と「順序対応」でできることが異なります。<br />
+ また、Theolizerは考え方としては配列も一種のクラス（複数の変数の集まり）として取り扱います。<br />
+ 例えば2次元配列は1次元配列の配列とします。これはC++の考え方に準じます。<br />
+</p>
+<p><br />
+ </p>
+<h2><a class="anchor" id="HowToModifyClass11"></a>
+1-1.名前対応の場合</h2>
+<p>メンバ変数のメモリ上のデータとシリアライズ・データ間を変数名で対応しますので、柔軟な対応が可能です。<br />
+</p><ul>
+<li>メンバ変数の追加<br />
+ メンバ変数を任意の位置へ追加できます。古いシリアライズ・データを回復する時、新規追加したメンバ変数の値は変更せず、そのまま維持します。ただし、オーナー指定ポインタへ回復する際に領域を獲得した時はコンストラクタにて初期化された値となります。<br />
+ <br />
+</li>
+<li>メンバ変数の削除<br />
+ 任意の位置のメンバ変数を削除できます。古いシリアライズ・データには削除したメンバ変数に対応するデータが含まれていますが、そのデータは破棄されます。<br />
+ <br />
+</li>
+<li>メンバ変数の順序変更<br />
+ メンバ変数の定義順序の変更が可能です。メンバ変数名で対応付けて正しい変数へ回復します。<br />
+ <br />
+</li>
+<li>基底クラスについて<br />
+ 基底クラスの追加／削除／順序変更はメンバ変数の変更に準じます。<br />
+ なお、基底クラスは"{基底クラス名}"と言う名前でシリアライス・データへ記録します。<br />
+ <br />
+</li>
+</ul>
+<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> <b>注意事項：</b><br />
+ enum型はバージョン・アップ無しでのシンボル名／値変更に対応していましたが、メンバ変数名を変更する時はバージョン・アップが必要です。原理的には対応可能ですので要望があれば対応します。 </div><p><br />
+ </p>
+<h2><a class="anchor" id="HowToModifyClass12"></a>
+1-2.順序対応の場合</h2>
+<p>メンバ変数のメモリ上のデータとシリアライズ・データ間を双方の順序で対応します。例えば、先頭のメンバ変数はシリアライズ・データ先頭から回復されます。そのため、変更対応はあまりできません。<br />
+</p><ul>
+<li>メンバ変数の追加<br />
+ メンバ変数の並びの最後へのみ追加できます。古いシリアライズ・データを回復する時、新規追加したメンバ変数の値は変更せず、そのまま維持します。ただし、オーナー指定ポインタへ回復する際に領域を獲得した時はコンストラクタにて初期化された値となります。<br />
+ メンバ変数の削除と併用するのは危険です。順序だけで対応するため、シリアライズ・データに記録された旧メンバ変数を新メンバ変数へ回復しようとします。どうしても必要な場合はバージョン番号変更により対応して下さい。<br />
+ <br />
+</li>
+<li>メンバ変数の削除<br />
+ メンバ変数の並びの最後からのみ削除できます。（途中を削除することはできません。）古いシリアライズ・データには削除したメンバ変数に対応するデータが含まれていますが、そのデータは破棄されます。<br />
+ メンバ変数の追加と同様、メンバ変数の削除を追加と併用するのは危険です。<br />
+ <br />
+</li>
+<li>メンバ変数の順序変更<br />
+ 頭から順に回復しますので、定義順序の変更には対応できません。<br />
+ <br />
+</li>
+<li>基底クラスについて<br />
+ 基底クラスの追加／削除／順序変更はメンバ変数の変更に準じます。<br />
+ <br />
+</li>
+</ul>
+<p><br />
+ </p>
+<h2><a class="anchor" id="HowToModifyClass13"></a>
+1-3.配列の場合</h2>
+<ul>
+<li>考え方<br />
+ 配列は、順序対応に準じた考え方です。<br />
+ <br />
+</li>
+<li>要素数の増加<br />
+ 要素を増やすと、従来の要素列の最後に追加されます。古いシリアライズ・データを回復する時、新規追加された要素の値は変更せず、そのまま維持します。<br />
+ <br />
+</li>
+<li>要素数の減少<br />
+ 要素を減らすと、従来の要素列の際がから削除されます。古いシリアライズ・データには削除された要素に対応するデータが含まれていますが、そのデータは破棄されます。<br />
+ <br />
+</li>
+<li>配列の要素数の上限<br />
+ バージョン番号変更時に要素毎の引き継ぎが必要です。それをコンパイル時に再帰関数を用いて処理していますので、あまり大きな配列に対応できません。<br />
+ 現在、プリビルド版を提供している環境では要素数はsource/reference_and_test/all_common.hのkArrayMaxでテストしています。（v0.5.0では160）<br />
+ <br />
+</li>
+</ul>
+<p><br />
+ </p>
+<h2><a class="anchor" id="HowToModifyClass14"></a>
+1-4.違反した場</h2>
+<p>例えば、順序対応において変数の並び順を変更した場合、シリアライズ・データ内の変数と異なる変数へデータを回復しようとします。もしも、同じ型の変数であった場合はそのまま回復してしまいます。もしも、異なる型の変数だった場合、２つの事態があります。</p><ul>
+<li>シリアライザのコンストラクト時にTypeCheckかTypeCheckByIndexを指定した場合<br />
+ この場合は型チェックを行います。互換性のない型から回復しようとした場合、エラーになります。</li>
+<li>それ以外の場合<br />
+ 異常動作します。多くの場合はフォーマット・エラーが発生しますが、エラーになることを保証できません。<br />
+ <br />
+ <br />
+ </li>
+</ul>
+<h2><a class="anchor" id="HowToModifyClass15"></a>
+1-5.サンプル・ソース</h2>
+<h3><a class="anchor" id="HowToModifyClass111"></a>
+1-1-1.名前対応クラス</h3>
+<p><br />
+ <b>変更前のソース例：(source/reference_and_test/ver1a/test_modify_class.h）</b><br />
+</p>
+ <div class="fragment"><div class="line"><span class="keyword">struct </span>ModifyClassName :</div><div class="line">    <span class="comment">// --- 基底クラス ---</span></div><div class="line">    <span class="keyword">public</span> ModifyFullAuto,</div><div class="line">    <span class="keyword">public</span> ModifyHalfAuto,</div><div class="line">    <span class="keyword">public</span> ModifyManual</div><div class="line">{</div><div class="line">    <span class="comment">// --- クラス型メンバ変数 ---</span></div><div class="line">    ModifyFullAuto  mFullAutoMember;</div><div class="line">    ModifyHalfAuto  mHalfAutoMember;</div><div class="line">    ModifyManual    mManualMember;</div><div class="line"></div><div class="line">    <span class="comment">// --- 基本型メンバ変数 ---</span></div><div class="line">    <span class="keywordtype">short</span>           mShort;</div><div class="line">    <span class="keywordtype">int</span>             mInt;</div><div class="line">    <span class="keywordtype">unsigned</span>        mUnsigned;</div><div class="line"></div><div class="line"><span class="comment">//  以下略</span></div><div class="line">};</div></div><!-- fragment --></p>
+<p><br />
+ <b>変更後のソース例：(source/reference_and_test/ver1b/test_modify_class.h）</b><br />
+</p>
+ <div class="fragment"><div class="line"><span class="keyword">struct </span>ModifyClassName :</div><div class="line">    <span class="comment">// --- 基底クラス ---</span></div><div class="line">    <span class="keyword">public</span> ModifyManual,                <span class="comment">// 1b:順序変更</span></div><div class="line">    <span class="keyword">public</span> ModifyFullAuto,</div><div class="line"><span class="comment">//  public ModifyHalfAuto,              // 1b:削除</span></div><div class="line">    <span class="keyword">public</span> ModifyHalfAutoX              <span class="comment">// 1b:追加</span></div><div class="line">{</div><div class="line">    <span class="comment">// --- クラス型メンバ変数 ---</span></div><div class="line">    ModifyManual    mManualMember;      <span class="comment">// 1b:順序変更</span></div><div class="line">    ModifyFullAuto  mFullAutoMember;</div><div class="line"><span class="comment">//  ModifyHalfAuto  mHalfAutoMember;    // 1b:削除</span></div><div class="line">    ModifyHalfAutoX mHalfAutoXMember;   <span class="comment">// 1b:追加</span></div><div class="line"></div><div class="line">    <span class="comment">// --- 基本型メンバ変数 ---</span></div><div class="line">    <span class="keywordtype">unsigned</span>    mUnsigned;              <span class="comment">// 1b:順序変更</span></div><div class="line">    <span class="keywordtype">short</span>       mShort;</div><div class="line"><span class="comment">//  int         mInt;                   // 1b:削除</span></div><div class="line">    <span class="keywordtype">long</span>        mLong;                  <span class="comment">// 1b:追加</span></div><div class="line"></div><div class="line"><span class="comment">//  以下略</span></div><div class="line">};</div></div><!-- fragment --></p>
+<p><br />
+ <b>変更前(ver1a)にシリアライズされたModifyClassNameのデータ（該当データのみ抽出）：</b><br />
+</p>
+<div class="fragment"><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;{ModifyFullAuto}&quot;</span>:{</div><div class="line">        <span class="stringliteral">&quot;mFullAuto&quot;</span>:100</div><div class="line">    },</div><div class="line">    <span class="stringliteral">&quot;{ModifyHalfAuto}&quot;</span>:{</div><div class="line">        <span class="stringliteral">&quot;mHalfAuto&quot;</span>:101</div><div class="line">    },</div><div class="line">    <span class="stringliteral">&quot;{ModifyManual}&quot;</span>:[</div><div class="line">        102</div><div class="line">    ],</div><div class="line">    <span class="stringliteral">&quot;mFullAutoMember&quot;</span>:{</div><div class="line">        <span class="stringliteral">&quot;mFullAuto&quot;</span>:110</div><div class="line">    },</div><div class="line">    <span class="stringliteral">&quot;mHalfAutoMember&quot;</span>:{</div><div class="line">        <span class="stringliteral">&quot;mHalfAuto&quot;</span>:111</div><div class="line">    },</div><div class="line">    <span class="stringliteral">&quot;mManualMember&quot;</span>:[</div><div class="line">        112</div><div class="line">    ],</div><div class="line">    <span class="stringliteral">&quot;mShort&quot;</span>:120,</div><div class="line">    <span class="stringliteral">&quot;mInt&quot;</span>:121,</div><div class="line">    <span class="stringliteral">&quot;mUnsigned&quot;</span>:122</div><div class="line">}</div></div><!-- fragment --><p><br />
+ <b>それを変更後のプログラムで回復してJsonで出力：</b><br />
+</p>
+<div class="fragment"><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;SerialzierName&quot;</span>:<span class="stringliteral">&quot;JsonTheolizer&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;GlobalVersionNo&quot;</span>:1,</div><div class="line">    <span class="stringliteral">&quot;TypeInfoList&quot;</span>:[1]</div><div class="line">}</div><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;{ModifyManual}&quot;</span>:[</div><div class="line">        102</div><div class="line">    ],</div><div class="line">    <span class="stringliteral">&quot;{ModifyFullAuto}&quot;</span>:{</div><div class="line">        <span class="stringliteral">&quot;mFullAuto&quot;</span>:100</div><div class="line">    },</div><div class="line">    <span class="stringliteral">&quot;{ModifyHalfAutoX}&quot;</span>:{</div><div class="line">        <span class="stringliteral">&quot;mHalfAutoX&quot;</span>:<span class="stringliteral">&quot;&quot;</span></div><div class="line">    },</div><div class="line">    <span class="stringliteral">&quot;mManualMember&quot;</span>:[</div><div class="line">        112</div><div class="line">    ],</div><div class="line">    <span class="stringliteral">&quot;mFullAutoMember&quot;</span>:{</div><div class="line">        <span class="stringliteral">&quot;mFullAuto&quot;</span>:110</div><div class="line">    },</div><div class="line">    <span class="stringliteral">&quot;mHalfAutoXMember&quot;</span>:{</div><div class="line">        <span class="stringliteral">&quot;mHalfAutoX&quot;</span>:<span class="stringliteral">&quot;&quot;</span></div><div class="line">    },</div><div class="line">    <span class="stringliteral">&quot;mUnsigned&quot;</span>:122,</div><div class="line">    <span class="stringliteral">&quot;mShort&quot;</span>:120,</div><div class="line">    <span class="stringliteral">&quot;mLong&quot;</span>:0</div><div class="line">}</div></div><!-- fragment --><p>下記のように回復されます。</p>
+<ul>
+<li>ver1aとver1bの両方に存在するデータ<br />
+ これらはそのまま回復されます。基底クラスはクラス名、メンバ変数は変数名で対応しますので、定義順序を変更しても回復できます。<br />
+ <br />
+</li>
+<li>新規追加されたModifyHalfAutoX基底クラスとmHalfAutoXMemberとmLongメンバ変数<br />
+ ver1aのシリアライズ・データには存在しませんので、シリアライズ前の値が維持されます。<br />
+ サンプル・ソースでは0もしくは""（長さ0の文字列）でクリア後にデシリアライズしていますので0、""になっています。<br />
+ また、オーナー指定ポインタ経由で保存され、回復時にコンストラクトされた場合は、コンストラクタで設定した値が維持されます。<br />
+ <br />
+</li>
+<li>ver1bで削除された基底クラスModifyHalfAutoとメンバ変数mHalfAutoMember<br />
+ これらはシリアライズ・データ内に記録されていますが、回復先がありませんので破棄されます。 <br />
+</li>
+</ul>
+<p>ちなみに下記コードでJsonフォーマットで標準出力へ出力したものです。 </p><div class="fragment"><div class="line">{</div><div class="line">    <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> jos(std::cout);</div><div class="line">    THEOLIZER_PROCESS(jos, aModifyClassName);</div><div class="line">}</div></div><!-- fragment --><p><br />
+ </p>
+<h3><a class="anchor" id="HowToModifyClass152"></a>
+1-5-2.順序対応クラス</h3>
+<p><br />
+ <b>変更前のソース例：(source/reference_and_test/ver1a/test_modify_class.h）</b><br />
+</p>
+ <div class="fragment"><div class="line"><span class="keyword">struct </span>ModifyClassOrder :</div><div class="line">    <span class="comment">// --- 基底クラス ---</span></div><div class="line">    <span class="keyword">public</span> ModifyFullAuto,</div><div class="line">    <span class="keyword">public</span> ModifyHalfAuto,</div><div class="line">    <span class="keyword">public</span> ModifyManual</div><div class="line">{</div><div class="line">    <span class="comment">// --- クラス型メンバ変数 ---</span></div><div class="line">    ModifyFullAuto  mFullAutoMember;</div><div class="line">    ModifyHalfAuto  mHalfAutoMember;</div><div class="line">    ModifyManual    mManualMember;</div><div class="line"></div><div class="line">    <span class="comment">// --- 基本型メンバ変数 ---</span></div><div class="line">    <span class="keywordtype">short</span>           mShort;</div><div class="line">    <span class="keywordtype">int</span>             mInt;</div><div class="line">    <span class="keywordtype">unsigned</span>        mUnsigned;</div><div class="line"></div><div class="line"><span class="comment">//  以下略</span></div><div class="line">};</div></div><!-- fragment --></p>
+<p><br />
+ <b>変更後のソース例：(source/reference_and_test/ver1b/test_modify_class.h）</b><br />
+</p>
+ <div class="fragment"><div class="line"><span class="keyword">struct </span>ModifyClassOrder :</div><div class="line">    <span class="comment">// --- 基底クラス ---</span></div><div class="line">    <span class="keyword">public</span> ModifyFullAuto,</div><div class="line">    <span class="keyword">public</span> ModifyHalfAuto,</div><div class="line">    <span class="keyword">public</span> ModifyManual</div><div class="line">{</div><div class="line">    <span class="comment">// --- クラス型メンバ変数 ---</span></div><div class="line">    ModifyFullAuto  mFullAutoMember;</div><div class="line">    ModifyHalfAuto  mHalfAutoMember;</div><div class="line">    ModifyManual    mManualMember;</div><div class="line"></div><div class="line">    <span class="comment">// --- 基本型メンバ変数 ---</span></div><div class="line">    <span class="keywordtype">short</span>           mShort;</div><div class="line">    <span class="keywordtype">int</span>             mInt;</div><div class="line">    <span class="keywordtype">unsigned</span>        mUnsigned;</div><div class="line"></div><div class="line">    <span class="comment">// 1b:追加</span></div><div class="line">    ModifyHalfAutoX mHalfAutoXMember; </div><div class="line">    <span class="keywordtype">long</span>            mLong;</div><div class="line"></div><div class="line"><span class="comment">//  以下略</span></div><div class="line">};</div></div><!-- fragment --></p>
+<p><br />
+ <b>変更前(ver1a)のプログラムで保存されたModifyClassOrderのデータ（該当データのみ抽出）：</b><br />
+</p>
+<div class="fragment"><div class="line">[</div><div class="line">    {</div><div class="line">        <span class="stringliteral">&quot;mFullAuto&quot;</span>:200</div><div class="line">    },</div><div class="line">    {</div><div class="line">        <span class="stringliteral">&quot;mHalfAuto&quot;</span>:201</div><div class="line">    },</div><div class="line">    [</div><div class="line">        202</div><div class="line">    ],</div><div class="line">    {</div><div class="line">        <span class="stringliteral">&quot;mFullAuto&quot;</span>:210</div><div class="line">    },</div><div class="line">    {</div><div class="line">        <span class="stringliteral">&quot;mHalfAuto&quot;</span>:211</div><div class="line">    },</div><div class="line">    [</div><div class="line">        212</div><div class="line">    ],</div><div class="line">    220,</div><div class="line">    221,</div><div class="line">    222</div><div class="line">]</div></div><!-- fragment --><p><br />
+ <b>上記データを変更後のプログラムで回復してJson形式で出力：</b><br />
+</p>
+<div class="fragment"><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;SerialzierName&quot;</span>:<span class="stringliteral">&quot;JsonTheolizer&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;GlobalVersionNo&quot;</span>:1,</div><div class="line">    <span class="stringliteral">&quot;TypeInfoList&quot;</span>:[1]</div><div class="line">}</div><div class="line">[</div><div class="line">    {</div><div class="line">        <span class="stringliteral">&quot;mFullAuto&quot;</span>:200</div><div class="line">    },</div><div class="line">    {</div><div class="line">        <span class="stringliteral">&quot;mHalfAuto&quot;</span>:201</div><div class="line">    },</div><div class="line">    [</div><div class="line">        202</div><div class="line">    ],</div><div class="line">    {</div><div class="line">        <span class="stringliteral">&quot;mFullAuto&quot;</span>:210</div><div class="line">    },</div><div class="line">    {</div><div class="line">        <span class="stringliteral">&quot;mHalfAuto&quot;</span>:211</div><div class="line">    },</div><div class="line">    [</div><div class="line">        212</div><div class="line">    ],</div><div class="line">    220,</div><div class="line">    221,</div><div class="line">    222,</div><div class="line">    {</div><div class="line">        <span class="stringliteral">&quot;mHalfAutoX&quot;</span>:<span class="stringliteral">&quot;&quot;</span></div><div class="line">    },</div><div class="line">    0</div><div class="line">]</div></div><!-- fragment --><p>新規追加されたmHalfAutoXMemberとmLongメンバ変数はシリアライズ前のデータが維持されます。<br />
+ 同じバージョン内で可能な変更は、最後への追加、もしくは最後からの削除のどちらか一方のみですので、今回は追加してます。削除した場合は当該シリアライズ・データは単純に破棄されます。<br />
+ 基底クラス→メンバ変数の順序でシリアライズするため、メンバ変数が無い場合は、最後の基底クラスの後への基底クラスの追加、もしくは、最後の方からの基底クラスの削除のどちらかが可能です。<br />
+ <br />
+</p>
+<p>ちなみに下記コードでJsonフォーマットで標準出力へ出力しています。 </p><div class="fragment"><div class="line"><a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> jos(std::cout);</div><div class="line">THEOLIZER_PROCESS(jos, aModifyClassOrder);</div></div><!-- fragment --><p><br />
+ </p>
+<h3><a class="anchor" id="HowToModifyClass153"></a>
+1-5-3.配列の要素数の変更サンプル</h3>
+<p><br />
+ <b>変更前のソース例：(source/reference_and_test/ver1a/test_modify_class.h）</b><br />
+</p>
+ <div class="fragment"><div class="line"><span class="keyword">struct </span>ArrayTest</div><div class="line">{</div><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span>   kSizeA=2;</div><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span>   kSizeB=3;</div><div class="line">    <span class="keywordtype">unsigned</span>    mArray1D[kSizeA];</div><div class="line">    <span class="keywordtype">unsigned</span>    mArray2D[kSizeA][kSizeB];</div><div class="line">    <span class="keywordtype">unsigned</span>    mArray3D[kSizeA][kSizeB][kSizeA];</div><div class="line"></div><div class="line"><span class="comment">//  以下略</span></div><div class="line">};</div></div><!-- fragment --></p>
+<p><br />
+ <b>変更後のソース例：(source/reference_and_test/ver1b/test_modify_class.h）</b><br />
+</p>
+ <div class="fragment"><div class="line"><span class="keyword">struct </span>ArrayTest</div><div class="line">{</div><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span>   kSizeA=3;</div><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span>   kSizeB=2;</div><div class="line">    <span class="keywordtype">unsigned</span>    mArray1D[kSizeA];</div><div class="line">    <span class="keywordtype">unsigned</span>    mArray2D[kSizeA][kSizeB];</div><div class="line">    <span class="keywordtype">unsigned</span>    mArray3D[kSizeA][kSizeB][kSizeA];</div><div class="line"></div><div class="line"><span class="comment">//  以下略</span></div><div class="line">};</div></div><!-- fragment --></p>
+<p><br />
+ <b>変更前(ver1a)のプログラムで保存されたModifyClassOrderのデータ（該当データのみ抽出）：</b><br />
+ （長いのでmArray3Dを省略）</p>
+<div class="fragment"><div class="line">[</div><div class="line">    [1,<span class="stringliteral">&quot;ArrayTest&quot;</span>,{</div><div class="line">        <span class="stringliteral">&quot;mArray1D&quot;</span>:[</div><div class="line">            0,</div><div class="line">            1</div><div class="line">        ],</div><div class="line">        <span class="stringliteral">&quot;mArray2D&quot;</span>:[</div><div class="line">            [</div><div class="line">                0,</div><div class="line">                1,</div><div class="line">                2       <span class="comment">//★ver1bでは破棄</span></div><div class="line">            ],</div><div class="line">            [</div><div class="line">                1000,</div><div class="line">                1001,</div><div class="line">                1002    <span class="comment">//★ver1bでは破棄</span></div><div class="line">            ]</div><div class="line">        ],</div><div class="line">        <span class="stringliteral">&quot;mArray3D&quot;</span>:[</div><div class="line">            省略</div><div class="line">        ]</div><div class="line">    }]</div><div class="line">]</div></div><!-- fragment --><p><br />
+ <b>上記データを変更後のプログラムで回復してJson形式で出力：</b><br />
+ （長いのでmArray3Dを省略）</p>
+<div class="fragment"><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;SerialzierName&quot;</span>:<span class="stringliteral">&quot;JsonTheolizer&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;GlobalVersionNo&quot;</span>:1,</div><div class="line">    <span class="stringliteral">&quot;TypeInfoList&quot;</span>:[1]</div><div class="line">}</div><div class="line">[</div><div class="line">    [1,<span class="stringliteral">&quot;ArrayTest&quot;</span>,{</div><div class="line">        <span class="stringliteral">&quot;mArray1D&quot;</span>:[</div><div class="line">            0,</div><div class="line">            1,</div><div class="line">            0       <span class="comment">//★未変更</span></div><div class="line">        ],</div><div class="line">        <span class="stringliteral">&quot;mArray2D&quot;</span>:[</div><div class="line">            [</div><div class="line">                0,</div><div class="line">                1</div><div class="line">            ],</div><div class="line">            [</div><div class="line">                1000,</div><div class="line">                1001</div><div class="line">            ],</div><div class="line">            [</div><div class="line">                0,  <span class="comment">//★未変更</span></div><div class="line">                0   <span class="comment">//★未変更</span></div><div class="line">            ]</div><div class="line">        ],</div><div class="line">        <span class="stringliteral">&quot;mArray3D&quot;</span>:[</div><div class="line">            省略</div><div class="line">        ]</div><div class="line">    }]</div><div class="line">]</div></div><!-- fragment --><p>ver1bにあってver1aにない要素の内容は、ver1bで生成された時の0のまま変更されていません。<br />
+ また、ver1aになってver1bにない要素は破棄されています。</p>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="HowToMakeGlobalVersionNoTable2"></a>
+2.グローバル・バージョン番号テーブル生成</h1>
+<h6></h6>
+<p>クラスについてもバージョン・アップする際にはグローバル・バージョン番号テーブルが必要です。<br />
+ enum型の場合と同じですので、詳しくは<a class="el" href="_changing_enum.html#HowToMakeGlobalVersionNoTable">2.グローバル・バージョン番号テーブル生成</a> を参照下さい。</p>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="HowToModifyClass3"></a>
+3.バージョン番号を変えることで可能な修正</h1>
+<h6></h6>
+<p>enum型と同様に各クラスへバージョン番号を割り当てることで大きな修正を行うことができます。<br />
+</p>
+<h2><a class="anchor" id="HowToModifyClass31"></a>
+3-1.名前対応の場合</h2>
+<p>名前対応クラスは下記の変更に対応できます。</p>
+<ul>
+<li>メンバ変数、および、基底クラスの追加／削除／順序変更<br />
+ これらに付いてはバージョン番号を変えない場合と同じです。<br />
+ <br />
+</li>
+<li>メンバ変数名の変更<br />
+ 型を変更せず名前だけの変更であれば参照できますので、変更可能です。THEOLIZER_ANNOTATE()で指定します。<br />
+ <br />
+</li>
+<li>クラス名の変更<br />
+ 次の場合、シリアライズ・データ中に型名が記録されていますので、クラス名を変更すると通常は型チェックに通りません。<br />
+ しかし、適切にリファクタリングすればクラス名の変更も可能です。<br />
+<ul>
+<li>型チェック有り(TypeCheckByかTypeCheckByIndexを指定して派生シリアライザを生成した時)<br />
+</li>
+<li>クラスへのポインタをオーナー指定している時（ポリモーフィズム対応のため）<br />
+ <br />
+</li>
+</ul>
+</li>
+<li>順序対応への変更<br />
+ クラス定義が枯れてきたら効率の良い順序対応へ変更できます。<br />
+ <br />
+</li>
+</ul>
+<h2><a class="anchor" id="HowToModifyClass32"></a>
+3-2.順序対応の場合</h2>
+<p>順序対応クラスは下記の変更に対応できます。</p>
+<ul>
+<li>メンバ変数、および、基底クラスの追加／削除／順序変更<br />
+ これらに付いてはバージョン番号を変えない場合と同じです。<br />
+ <br />
+</li>
+<li>メンバ変数名の変更とクラス名の変更<br />
+ 名前対応の場合と同じです。<br />
+ <br />
+</li>
+<li>名前対応への変更<br />
+ クラスの大幅変更が必要になった時に一度名前対応へ変更すると効率良く開発できます。<br />
+ <br />
+</li>
+</ul>
+<h2><a class="anchor" id="HowToModifyClass33"></a>
+3-3.配列の場合</h2>
+<p>配列は下記の変更に対応できます。なお、基底の型はクラスに限りません。プリミティブやenum型を含む任意の型に対応しています。</p>
+<ul>
+<li>考え方<br />
+ 配列は、順序対応に準じた考え方です。 配列の要素数はバージョン番号変更無しで変更できますが、次元数はバージョン変更時にのみ可能です。ただし、配列単独ではバージョン番号を管理できる仕組みに対応していませんので、クラス・メンバとしての配列のみ次元数変更が可能です。<br />
+ <br />
+</li>
+<li>要素数の増加／減少<br />
+ これらに付いてはバージョン番号を変えない場合と同じです。<br />
+ <br />
+</li>
+<li>次元数の増加<br />
+ 最上位の次元へ追加されます。対応先がないものは無視されます。<br />
+ 例えば、int array[2][3];をint array[2][3][2];と増加した場合、次のように対応します。<br />
+ <table class="doxtable">
+<tr>
+<th align="center">変更前</th><th align="center">変更後  </th></tr>
+<tr>
+<td align="center">array[0][0]</td><td align="center">array[0][0][0] </td></tr>
+<tr>
+<td align="center">array[0][1]</td><td align="center">array[0][0][1] </td></tr>
+<tr>
+<td align="center">array[0][2]</td><td align="center">&mdash; </td></tr>
+<tr>
+<td align="center">array[1][0]</td><td align="center">array[0][1][0] </td></tr>
+<tr>
+<td align="center">array[1][1]</td><td align="center">array[0][1][1] </td></tr>
+<tr>
+<td align="center">array[1][2]</td><td align="center">&mdash; </td></tr>
+<tr>
+<td align="center">&mdash;</td><td align="center">array[0][2][0] </td></tr>
+<tr>
+<td align="center">&mdash;</td><td align="center">array[0][2][1] </td></tr>
+<tr>
+<td align="center">&mdash;</td><td align="center">array[1][0][0] </td></tr>
+<tr>
+<td align="center">&mdash;</td><td align="center">array[1][0][1] </td></tr>
+<tr>
+<td align="center">&mdash;</td><td align="center">array[1][1][0] </td></tr>
+<tr>
+<td align="center">&mdash;</td><td align="center">array[1][1][1] </td></tr>
+<tr>
+<td align="center">&mdash;</td><td align="center">array[1][2][0] </td></tr>
+<tr>
+<td align="center">&mdash;</td><td align="center">array[1][2][1] </td></tr>
+</table>
+<br />
+</li>
+<li>次元数の減少<br />
+ 最上位の次元から削除されます。対応先がないものは無視されます。<br />
+ 例えば、int array[2][2][3];をint array[3][2];と増加した場合、次のように対応します。<br />
+ <table class="doxtable">
+<tr>
+<th align="center">変更前</th><th align="center">変更後  </th></tr>
+<tr>
+<td align="center">array[0][0][0]</td><td align="center">array[0][0] </td></tr>
+<tr>
+<td align="center">array[0][0][1]</td><td align="center">array[0][1] </td></tr>
+<tr>
+<td align="center">&mdash;</td><td align="center">array[0][2] </td></tr>
+<tr>
+<td align="center">array[0][1][0]</td><td align="center">array[1][0] </td></tr>
+<tr>
+<td align="center">array[0][1][1]</td><td align="center">array[1][1] </td></tr>
+<tr>
+<td align="center">&mdash;</td><td align="center">array[1][2] </td></tr>
+<tr>
+<td align="center">array[0][0][2]</td><td align="center">&mdash; </td></tr>
+<tr>
+<td align="center">array[0][1][2]</td><td align="center">&mdash; </td></tr>
+<tr>
+<td align="center">array[1][0][0]</td><td align="center">&mdash; </td></tr>
+<tr>
+<td align="center">array[1][0][1]</td><td align="center">&mdash; </td></tr>
+<tr>
+<td align="center">array[1][0][2]</td><td align="center">&mdash; </td></tr>
+<tr>
+<td align="center">array[1][1][0]</td><td align="center">&mdash; </td></tr>
+<tr>
+<td align="center">array[1][1][1]</td><td align="center">&mdash; </td></tr>
+<tr>
+<td align="center">array[1][1][2]</td><td align="center">&mdash; </td></tr>
+</table>
+<br />
+</li>
+</ul>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="HowToModifyClass4"></a>
+4.バージョン番号を変えてクラス修正する仕組み概要</h1>
+<h6></h6>
+<h2><a class="anchor" id="HowToModifyClass41"></a>
+4-1.コア・データ構造</h2>
+<p>バージョン毎にシリアライズ対象のメンバ変数だけを集めたクラス(TheolizerVersion)を定義しています。これは、当該バージョンで持っていたメンバ変数を管理する内部クラスです。<br />
+</p>
+<p>各バージョンのTheolizerVersionは、次バージョンのTheolizerバージョンとの関係を管理します。バージョンnのTheolzierVersionの各メンバ変数には、バージョンn+1のTheolizerバージョンのどのメンバ変数と対応するのか記録され、自動的に引継ぎ処理が実行されます。<br />
+</p>
+<p>また、この自動引継ぎ処理は、メンバ変数のアドレスも引継ぎますので、旧バージョンでオブジェクト追跡されていた情報も回復できます。メンバ変数名を変更してもアドレス引継ぎは機能します。ただし、メンバ変数の型を変更した場合は、アドレスを引き継げません。<br />
+</p>
+<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> <b>重要事項：</b><br />
+ Theolizerドライバの主な役割はTheolizerVersionを自動生成することであり、*.theolzier.hppファイルには当該コンパイル単位でシリアライズ指定されているクラスとenum型のTheolizerVersionの定義が生成されます。旧バージョンのTheolizerVersion定義もここに入っていますので、*.theolzier.hppは自動生成ファイルですがバージョン管理システムの管理対象ソースとして登録して下さい。 </div><h2><a class="anchor" id="HowToModifyClass42"></a>
+4-2.補助データ構造</h2>
+<p><a class="el" href="_specification.html#Basic33">3-3.クラス・メンバ変数のKeep-step</a> で説明したように、足並みを揃えて(Keep-step)バージョン・アップ／ダウンする変数としない変数があります。<br />
+</p>
+<p>Keep-step処理する基底クラスやメンバ変数は、4-1.で説明したTheolizerVersionクラスにて管理されます。<br />
+ Keep-step処理しない（Non-keep-step）基底クラスやメンバ変数用には異なるクラスで管理しています。</p>
+<ul>
+<li>Non-keep-step基底クラス（非侵入型手動クラス）<br />
+ <code>TheolizerBase&lt;基底クラス&gt;</code>クラスを用いて、シリアライズ対象クラス・インスタンスへの参照を管理しています。<br />
+ <br />
+</li>
+<li>Non-keep-stepメンバ変数<br />
+ <code>TheolizerNonKeepStep&lt;型&gt;</code>クラスを用いています。</li>
+</ul>
+<p>更に<code>TheolizerNonKeepStep&lt;型&gt;</code>クラスは下記のような２種類を定義しています。</p>
+<ul>
+<li>部分特殊化　：　プリミティブ型(int型やstd::string型)</li>
+<li>プライマリ　：　その他のNon-keep-step全て(ポインタ、参照、非侵入型手動クラス）</li>
+</ul>
+<h2><a class="anchor" id="HowToModifyClass43"></a>
+4-3.侵入型半自動におけるバージョン・アップ／ダウン処理</h2>
+<ul>
+<li>旧バージョンのデータを保存する時の内部動作<br />
+ ターゲットのユーザ定義クラスから最新版のTheolizerVersionを生成後、次々とカスケードに１つ前のバージョンのTheolizerVersionをコンストラクトする際にメンバ変数を引き継ぎつつ、目的のバージョンのTheolizerVersionまで生成します。そして、そのバージョンのTheolizerVersionを使って保存処理を行います。<br />
+ この時、<b>１つ前のバージョンのTheolizerVersionを生成後、ユーザ定義のバージョン・ダウン処理（downVersion関数）が定義されていたら、それを呼び出します。</b><br />
+ <br />
+</li>
+<li>旧バージョンのデータから回復する時の内部動作<br />
+ 保存時と同様の流れで、目的のハージョンのTheolizerVersionまで生成します。目的のTheolizerVersionを使って回復処理を行い、生成時と逆の順序でTheolizerVersionをデストラクトしつつ、ターゲットのユーザ定義クラスへ値を戻します。<br />
+ この時、<b>１つ前バージョンのTheolizerVersionをデストラクトする時に、ユーザ定義のバージョン・アップ処理（upVersion関数）が定義されていたら、それを呼び出します。</b><br />
+ <br />
+</li>
+</ul>
+<h2><a class="anchor" id="HowToModifyClass44"></a>
+4-4.非侵入型手動におけるバージョン・アップ／ダウン処理</h2>
+<p>こちらは半自動型と異なり、カスケードにバージョン・アップ／ダウンを行うことはたいへん難しく、却ってあなたのプログラム開発の手間を増大させるため、カスケード処理は行いません。従って、各バージョン毎に保存処理と回復処理を記述する必要があります。<br />
+ しかし、対象クラスを変更する度にバージョン・アップが必要なわけではありません。対象クラスを回復する際に従来の保存データでは不足する場合にのみバージョン・アップが必要になります。<br />
+</p>
+<p>また、バージョン変更の際にシリアライズ対象クラスと保存／回復処理間のI/Fに変化がなければ、旧バージョンの保存／回復処理の変更は不要です。しかし、もし、このI/Fを変更された場合は、それに合わせて旧バージョンの保存／回復処理の修正も必要となります。ですので、他のクラスとのI/Fは自由ですが、保存／回復処理とのI/Fはできるだけ変更しないことをお勧めします。<br />
+ <br />
+</p>
+<h2><a class="anchor" id="HowToModifyClass45"></a>
+4-5.バージョン・アップ時の注意事項</h2>
+<p><a class="el" href="_specification.html#Modifying">3.クラスとenum型の変更対応について</a> にて記述した以下の点にご注意下さい。<br />
+</p>
+<ol type="1">
+<li>down/upVersion関数で変更可能な変数<br />
+ プリミティブ型とenum型変数のみです。<br />
+ クラス型メンバ変数にに含まれるプリミティブ型とenum型変数も変更可能です。更に、クラス型メンバ変数にに含まれるクラス型メンバ変数に含まれるプリミティブ型とenum型変数も変更可能です。（以下同様）<br />
+ <br />
+</li>
+<li>それ以外のものは変更してはいけません。<br />
+ <a class="el" href="_specification.html#Basic36">3-6.down/upVersion関数で変更可能な変数と変更してはいけない変数のまとめ</a> 参照<br />
+<ul>
+<li>ポインタ、および、参照が指す先のインスタンス</li>
+<li>非侵入型手動クラスの基底クラス、および、メンバ変数</li>
+<li>ポインタそれ自身<br />
+ <br />
+</li>
+</ul>
+</li>
+<li>upVersionで参照する変数は先に回復すること<br />
+ クラス分割により、異なるシリアライズ・データから回復される変数が存在します。<br />
+ それらをアクセスしてupVersion処理を行う場合、依存先のメンバ変数を先に回復する必要があります。<br />
+ 見落とし易いのでご注意下さい。<br />
+</li>
+</ol>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="HowToModifyClass5"></a>
+5.バージョン番号を変えてクラスを修正する方法</h1>
+<h6></h6>
+<p><br />
+ </p>
+<h2><a class="anchor" id="HowToModifyClass51"></a>
+5-1.メンバ変数名の変更</h2>
+<p>リファクタリングの際にメンバ変数名を変更したい場合があると思います。<br />
+ 単に変更するだけの場合、名前を変更した変数は削除して、別名の変数を追加された扱いとなり、変更前のプログラムで保存したシリアライズ・データから回復する際に、値を引き継ぐことができません。</p>
+<p>メンバ変数名を変更するにはTHEOLIZER_ANNOTATE(FS:)の第一パラメータを用いて対応つけます。<br />
+ 変更後のクラス定義で、変更前の変数名を指定します。</p>
+<div class="fragment"><div class="line">型 メンバ変数名 THEOLIZER_ANNOTATE(FS:旧メンバ変数名);</div></div><!-- fragment --><p>以下、名前対応クラス(ModifyClassName)と順序対応クラス(ModifyClassOrder)のmHalfAutoXMemberメンバ変数の変数名をmHalfAutoYMemberへ変更する例です。どちらのクラスの場合も同じです。<br />
+ なお、型変更には対応していません。変数名を変更して対応付ける各変数の型は同じにして下さい。<br />
+</p>
+<p>なお、下記の例ではクラス名を変更していますが、クラス自体は同じものです。<br />
+ クラス名をModifyHalfAutoXからModifyHalfAutoYへ変更しています。クラス名の変更については次節で説明します。<br />
+</p>
+<p><br />
+ <b>変更前のソース例：(source/reference_and_test/ver1c/test_modify_class.h）</b><br />
+</p>
+ <div class="fragment"><div class="line"><span class="keyword">struct </span>ModifyClassName :</div><div class="line">    <span class="comment">// --- 基底クラス ---</span></div><div class="line">    <span class="keyword">public</span> ModifyManual,                <span class="comment">// 1b:順序変更</span></div><div class="line">    <span class="keyword">public</span> ModifyFullAuto,</div><div class="line"><span class="comment">//  public ModifyHalfAuto,              // 1b:削除</span></div><div class="line">    <span class="keyword">public</span> ModifyHalfAutoX,             <span class="comment">// 1b:追加</span></div><div class="line">    <span class="keyword">public</span> OldFullAuto0                 <span class="comment">// 1c:追加(2aで削除)</span></div><div class="line">{</div><div class="line">    <span class="comment">// --- クラス型メンバ変数 ---</span></div><div class="line">    ModifyManual    mManualMember;      <span class="comment">// 1b:順序変更</span></div><div class="line">    ModifyFullAuto  mFullAutoMember;</div><div class="line"><span class="comment">//  ModifyHalfAuto  mHalfAutoMember;    // 1b:削除</span></div><div class="line">    ModifyHalfAutoX mHalfAutoXMember;   <span class="comment">// 1b:追加</span></div><div class="line">    <span class="comment">// クラス型メンバ変数削除テスト</span></div><div class="line">    OldFullAuto1    mOldFullAuto1;      <span class="comment">// 1c:追加(2aで削除)</span></div><div class="line">    <span class="comment">// enum型メンバ変数削除テスト</span></div><div class="line">    OldFullAutoEnum mOldFullAutoEnum;   <span class="comment">// 1c:追加(2aで削除)</span></div><div class="line"></div><div class="line">    <span class="comment">// --- 基本型メンバ変数 ---</span></div><div class="line">    <span class="keywordtype">unsigned</span>    mUnsigned;              <span class="comment">// 1b:順序変更</span></div><div class="line">    <span class="keywordtype">short</span>       mShort;</div><div class="line"><span class="comment">//  int         mInt;                   // 1b:削除</span></div><div class="line">    <span class="keywordtype">long</span>        mLong;                  <span class="comment">// 1b:追加</span></div><div class="line"></div><div class="line"><span class="comment">//  以下略</span></div><div class="line">    THEOLIZER_INTRUSIVE(CS, (ModifyClassName), 1);  <span class="comment">// 侵入型半自動へ変更後、バージョン・アップする</span></div><div class="line">};</div></div><!-- fragment --></p>
+ <div class="fragment"><div class="line"><span class="keyword">struct </span>ModifyClassOrder :</div><div class="line">    <span class="comment">// --- 基底クラス ---</span></div><div class="line">    <span class="keyword">public</span> ModifyFullAuto,</div><div class="line">    <span class="keyword">public</span> ModifyHalfAuto,</div><div class="line">    <span class="keyword">public</span> ModifyManual</div><div class="line">{</div><div class="line">    <span class="comment">// --- クラス型メンバ変数 ---</span></div><div class="line">    ModifyFullAuto  mFullAutoMember;</div><div class="line">    ModifyHalfAuto  mHalfAutoMember;</div><div class="line">    ModifyManual    mManualMember;</div><div class="line"></div><div class="line">    <span class="comment">// --- 基本型メンバ変数 ---</span></div><div class="line">    <span class="keywordtype">short</span>           mShort;</div><div class="line">    <span class="keywordtype">int</span>             mInt;</div><div class="line">    <span class="keywordtype">unsigned</span>        mUnsigned;</div><div class="line"></div><div class="line">    <span class="comment">// 1b:追加</span></div><div class="line">    ModifyHalfAutoX mHalfAutoXMember;</div><div class="line">    <span class="keywordtype">long</span>            mLong;</div><div class="line"></div><div class="line"><span class="comment">//  以下略</span></div><div class="line">    THEOLIZER_INTRUSIVE_ORDER(CS, (ModifyClassOrder), 1);</div><div class="line">};</div></div><!-- fragment --></p>
+<p><br />
+ <b>変更後のソース例：(source/reference_and_test/ver2a/test_modify_class.h）</b><br />
+</p>
+ <div class="fragment"><div class="line"><span class="keyword">struct </span>ModifyClassName :</div><div class="line">    <span class="comment">// --- 基底クラス ---</span></div><div class="line">    <span class="keyword">public</span> ModifyManual,                <span class="comment">// 1b:順序変更</span></div><div class="line">    <span class="keyword">public</span> ModifyFullAuto,</div><div class="line"><span class="comment">//  public ModifyHalfAuto,              // 1b:削除</span></div><div class="line">    <span class="keyword">public</span> ModifyHalfAutoY              <span class="comment">// 1b:追加→2a:名前変更</span></div><div class="line">{</div><div class="line">    <span class="comment">// --- クラス型メンバ変数 ---</span></div><div class="line">    ModifyManual    mManualMember;      <span class="comment">// 1b:順序変更</span></div><div class="line">    ModifyFullAuto  mFullAutoMember;</div><div class="line"><span class="comment">//  ModifyHalfAuto  mHalfAutoMember;    // 1b:削除</span></div><div class="line">    ModifyHalfAutoY mHalfAutoYMember THEOLIZER_ANNOTATE(FS:mHalfAutoXMember);<span class="comment">// 1b:追加→2a:名変更</span></div><div class="line"></div><div class="line">    <span class="comment">// --- 基本型メンバ変数 ---</span></div><div class="line">    <span class="keywordtype">unsigned</span>    mUnsigned;              <span class="comment">// 1b:順序変更</span></div><div class="line">    <span class="keywordtype">short</span>       mShort;</div><div class="line"><span class="comment">//  int         mInt;                   // 1b:削除</span></div><div class="line">    <span class="keywordtype">long</span>        mLong;                  <span class="comment">// 1b:追加</span></div><div class="line"></div><div class="line">    <span class="comment">// --- クラス配列型メンバ変数 ---</span></div><div class="line">    ModifyFullAuto  mFullAutoArray[2];  <span class="comment">// 2b:追加(3a:削除)</span></div><div class="line">    ModifyHalfAuto  mHalfAutoArray[2];  <span class="comment">// 2b:追加(3a:削除)</span></div><div class="line">    ModifyManual    mManualArray[2];    <span class="comment">// 2b:追加(3a:削除)</span></div><div class="line"></div><div class="line"><span class="comment">//  以下略</span></div><div class="line">    THEOLIZER_INTRUSIVE(CS, (ModifyClassName), 2);  <span class="comment">// ver.2へバージョン・アップ</span></div><div class="line">};</div></div><!-- fragment --></p>
+ <div class="fragment"><div class="line"><span class="keyword">struct </span>ModifyClassOrder :</div><div class="line">    <span class="comment">// --- 基底クラス ---</span></div><div class="line">    <span class="keyword">public</span> ModifyFullAuto,</div><div class="line">    <span class="keyword">public</span> ModifyHalfAuto,</div><div class="line">    <span class="keyword">public</span> ModifyManual</div><div class="line">{</div><div class="line">    <span class="comment">// --- クラス型メンバ変数 ---</span></div><div class="line">    ModifyFullAuto  mFullAutoMember;</div><div class="line">    ModifyHalfAuto  mHalfAutoMember;</div><div class="line">    ModifyManual    mManualMember;</div><div class="line"></div><div class="line">    <span class="comment">// --- 基本型メンバ変数 ---</span></div><div class="line">    <span class="keywordtype">short</span>           mShort;</div><div class="line">    <span class="keywordtype">int</span>             mInt;</div><div class="line">    <span class="keywordtype">unsigned</span>        mUnsigned;</div><div class="line"></div><div class="line">    <span class="comment">// 1b:追加</span></div><div class="line">    ModifyHalfAutoY mHalfAutoYMember THEOLIZER_ANNOTATE(FS:mHalfAutoXMember);<span class="comment">// 2a:名変更</span></div><div class="line">    <span class="keywordtype">long</span>            mLong;</div><div class="line"></div><div class="line"><span class="comment">//  以下略</span></div><div class="line">    THEOLIZER_INTRUSIVE_ORDER(CS, (ModifyClassOrder), 2);   <span class="comment">// ver.2へバージョン・アップ</span></div><div class="line">};</div></div><!-- fragment --></p>
+<p><br />
+ </p>
+<h2><a class="anchor" id="HowToModifyClass52"></a>
+5-2.クラス名の変更</h2>
+<p>リファクタリングを行う時、クラス名を変更したい場合もあると思います。<br />
+ 基本的には通常通り全てのソース・ファイルで使っているクラス名を変更します。<br />
+ その際、*.theolizer.hppで指定されているクラス名も変更します。ただし、旧バージョンのシリアライズ・データと対応付けるためのクラス名は変更してはいけません。<br />
+ 前者（リファクタリング対象）は<code>(クラス名)</code>のように()で括られています。後者（変更しないクラス名）は<code>u8"クラス名"</code>のように文字列として定義されていますので、<code>(クラス名)</code>を一括修正することで*.theolizer.hppを変更できます。<br />
+</p>
+<p>例えば、下記は「5-1.メンバ変数名の変更」で、クラス名をModifyHalfAutoXからModifyHalfAutoYへ変更する前の*.theolizer.hppファイル（複数あるので注意）の該当部分の一部です。<br />
+</p>
+<p><b>ModifyHalfAutoX</b>自動生成ソース部</p>
+<div style="padding: 5px; margin-bottom: 10px; border: 1px solid #c4cfe5; border-radius: 1px; background-color: #fbfcfd;"> #<code>ifdef THEOLIZER_WRITE_CODE // ###### ModifyHalfAutoX ######</code><br />
+ <br />
+ （中略）<br />
+ <br />
+ #<code>define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)</code><br />
+ #<code>define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN</code><b style="color: #ff0000;">(ModifyHalfAutoX)</b>``<br />
+ <br />
+ <code>// ---&lt;&lt;&lt; Version.1 &gt;&gt;&gt;---</code><br />
+ <br />
+ #<code>define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)</code><br />
+ #<code>define THEOLIZER_GENERATED_CLASS_NAME()\</code><br />
+ <code>　 THEOLIZER_INTERNAL_CLASS_NAME((u8"ModifyHalfAutoX"))</code><br />
+ #<code>define THEOLIZER_GENERATED_ELEMENT_MAP emName</code><br />
+ #<code>define THEOLIZER_GENERATED_ELEMENT_LIST()\</code><br />
+ <code>　 THEOLIZER_INTERNAL_ELEMENT_N((mHalfAutoX),mHalfAutoX,etmDefault,\</code><br />
+ <code>　 (theolizerD::All),\</code><br />
+ <code>　 (std::string))&lt;br&gt;</code> #<code>include &lt;theolizer/internal/version_auto.inc&gt;&lt;br&gt;</code> #<code>undef THEOLIZER_GENERATED_VERSION_NO&lt;br&gt;</code> <br />
+ #<code>endif //THEOLIZER_WRITE_CODE // ###### ModifyHalfAutoX ######&lt;br&gt;</code> </div><p><b>ModifyClassName</b>自動生成ソース部</p>
+<div style="padding: 5px; margin-bottom: 10px; border: 1px solid #c4cfe5; border-radius: 1px; background-color: #fbfcfd;"> #<code>ifdef THEOLIZER_WRITE_CODE // ###### ModifyClassName ######</code><br />
+ <br />
+ #<code>define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)</code><br />
+ #<code>define THEOLIZER_GENERATED_FULL_AUTO ModifyClassName</code><br />
+ <br />
+ <code>// ---&lt;&lt;&lt; Version.1 &gt;&gt;&gt;---</code><br />
+ <br />
+ #<code>define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)</code><br />
+ #<code>define THEOLIZER_GENERATED_CLASS_NAME()\</code><br />
+ 　 <code>THEOLIZER_INTERNAL_CLASS_NAME((u8"ModifyClassName"))</code><br />
+ #<code>define THEOLIZER_GENERATED_ELEMENT_MAP emName</code><br />
+ #<code>define THEOLIZER_GENERATED_BASE_LIST()\</code><br />
+ <code>　 THEOLIZER_INTERNAL_BASE_N(public,etmDefault,0,(ModifyManual),u8"ModifyManual")\</code><br />
+ <code>　 THEOLIZER_GENERATED_SEP\</code><br />
+ <code>　 THEOLIZER_INTERNAL_BASE_KN(public,etmDefault,1,(ModifyFullAuto),1,u8"ModifyFullAuto")\</code><br />
+ 　 THEOLIZER_GENERATED_SEP`<br />
+ <code>　 THEOLIZER_INTERNAL_BASE_KI(public,etmDefault,2,</code><b style="color: #ff0000;">(ModifyHalfAutoX)</b><code>,1,u8"ModifyHalfAutoX")</code><br />
+ #<code>define THEOLIZER_GENERATED_ELEMENT_LIST()\</code><br />
+ <code>　 THEOLIZER_INTERNAL_ELEMENT_N((mManualMember),mManualMember,etmDefault,\</code><br />
+ <code>　 (theolizerD::All),\</code><br />
+ <code>　 (ModifyManual))\</code><br />
+ <code>　 THEOLIZER_INTERNAL_ELEMENT_KN((mFullAutoMember),mFullAutoMember,etmDefault,\</code><br />
+ <code>　 (theolizerD::All),\</code><br />
+ <code>　 (ModifyFullAuto),1)\</code><br />
+ <code>　 THEOLIZER_INTERNAL_ELEMENT_KI((mHalfAutoXMember),mHalfAutoXMember,etmDefault,\</code><br />
+ <code>　 (theolizerD::All),\</code><br />
+ <code>　</code><b style="color: #ff0000;">(ModifyHalfAutoX)</b><code>,1)</code><br />
+ <code>　 THEOLIZER_INTERNAL_ELEMENT_N((mUnsigned),mUnsigned,etmDefault,\</code><br />
+ <code>　 (theolizerD::All),\</code><br />
+ <code>　 (unsigned int))\</code><br />
+ <code>　 THEOLIZER_INTERNAL_ELEMENT_N((mShort),mShort,etmDefault,\</code><br />
+ <code>　 (theolizerD::All),\</code><br />
+ <code>　 (short))\</code><br />
+ <code>　 THEOLIZER_INTERNAL_ELEMENT_N((mLong),mLong,etmDefault,\</code><br />
+ <code>　 (theolizerD::All),\</code><br />
+ <code>　 (long))</code><br />
+ #<code>include &lt;theolizer/internal/version_auto.inc&gt;</code><br />
+ #<code>undef THEOLIZER_GENERATED_VERSION_NO</code><br />
+ <br />
+ #<code>endif//THEOLIZER_WRITE_CODE // ###### ModifyClassName ######</code><br />
+ </div><p>ModifyHalfAutoXクラスの名前をModifyHalfAutoYへリファクタリングする際に*.theolizer.hppファイル内のu8"ModifyHalfAutoX"を除く(ModifyHalfAutoX)を(ModifyHalfAutoY)へ変更します。<br />
+</p>
+<p>上記の場合、赤く記した３箇所の(ModifyHalfAutoX)を(ModifyHalfAutoY)へ変更することになります。<br />
+ なお、コメントに含まれるModifyHalfAutoXは変更してもしなくても影響はありません。</p>
+<p><br />
+ </p>
+<h2><a class="anchor" id="HowToModifyClass53"></a>
+5-3.配列の次元数の変更</h2>
+<p>バージョン変更する際に配列の次元を増やしたり減らしたりすることができます。<br />
+ その際、特別な記述は不要です。<br />
+</p>
+<p><br />
+ <b>変更前のソース例：(source/reference_and_test/ver1c/test_modify_class.h）</b><br />
+</p>
+ <div class="fragment"><div class="line"><span class="keyword">struct </span>ArrayTest</div><div class="line">{</div><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span>   kSize1=2;</div><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span>   kSize0=3;</div><div class="line">    <span class="keywordtype">unsigned</span>    mArrayDim[kSize1][kSize0];</div><div class="line"></div><div class="line"><span class="comment">//  以下略</span></div><div class="line">};</div></div><!-- fragment --></p>
+<p><br />
+ <b>変更後のソース例：(source/reference_and_test/ver2a/test_modify_class.h）</b><br />
+</p>
+ <div class="fragment"><div class="line"><span class="keyword">struct </span>ArrayTest</div><div class="line">{</div><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span>   kSize2=2;</div><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span>   kSize1=3;</div><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">unsigned</span>   kSize0=2;</div><div class="line">    <span class="keywordtype">unsigned</span>    mArrayDim[kSize2][kSize1][kSize0];</div><div class="line"></div><div class="line"><span class="comment">//  以下略</span></div><div class="line">};</div></div><!-- fragment --></p>
+<p><br />
+ </p>
+<h2><a class="anchor" id="HowToModifyClass54"></a>
+5-4.バージョン・アップ／ダウン処理の記述方法</h2>
+<p>手順としては以下の通りです。</p>
+<ol type="1">
+<li>通常通り、グローバル・バージョン番号テーブルを定義<br />
+ 既に定義していたら、再定義は不要です。<br />
+ THEOLIZER_DEFINE_GLOBAL_VERSION_TABLE()マクロで定義します。<br />
+ 詳細は<a class="el" href="_changing_enum.html#HowToMakeGlobalVersionNoTable">2.グローバル・バージョン番号テーブル生成</a> を参照下さい。<br />
+ <br />
+</li>
+<li>対象のクラスが非侵入型完全自動クラスなら、侵入型半自動へ変更して、<b>一度ビルド</b><br />
+ 通常はTHEOLIZER_INTRUSIVE()マクロを対象クラス内に記述することで「侵入型半自動」であることを指定します。<br />
+ 詳細は<a class="el" href="_class_variation.html#HalfAutoClass">2.侵入型半自動クラス</a> を参照下さい。<br />
+ ここでビルドしてver.1の自動生成ソースを生成します。<br />
+ ビルドしない場合、突然ver.2へ上げられたことになり、コンパイルできない場合があります。<br />
+ <br />
+</li>
+<li>バージョン番号をインクリメント<br />
+<ul>
+<li>グローバル・バージョン番号<br />
+ <a class="el" href="_changing_enum.html#HowToMakeGlobalVersionNoTable">2.グローバル・バージョン番号テーブル生成</a> を参照下さい。<br />
+</li>
+<li>対象クラスのローカル・バージョン番号<br />
+ <a class="el" href="_specification.html#Basic321">3-1-1.ローカル・バージョン番号</a> 、および、<a class="el" href="_class_variation.html#HalfAutoClass">2.侵入型半自動クラス</a> を参照下さい。 <br />
+ <br />
+</li>
+</ul>
+</li>
+<li>down/upVersion関数雛形をコピー&amp;ペースト<br />
+ 後述します。<br />
+ <br />
+</li>
+<li>必要に応じてdown/upVersion関数の内容を記述<br />
+ 後述します。<br />
+</li>
+</ol>
+<h3><a class="anchor" id="HowToModifyClass541"></a>
+5-4-1.down/upVersion関数雛形のコピー&amp;ペースト</h3>
+<p>シリアライズ対象クラスのシリアライズ用のコードは*.theolizer.hppに自動生成されています。それと一緒にdown/upVersion関数の雛形も定義していますので、それをコピー&amp;ペーストして下さい。</p>
+<p>例えば、以下の通りです。</p>
+<p><br />
+ <b>対象クラスKeepStepTest：(source/reference_and_test/ver1c/test_modify_complex.h）</b><br />
+</p>
+ <div class="fragment"><div class="line"><span class="keyword">struct </span>KeepStepTest :</div><div class="line">    <span class="keyword">public</span> VersionUpDownTest,                                                   <span class="comment">// Keep-step</span></div><div class="line">    <span class="keyword">public</span> VersionFullAuto,                                                     <span class="comment">// FullAuto</span></div><div class="line">    <span class="keyword">public</span> VersionManual                                                        <span class="comment">// Manual</span></div><div class="line">{</div><div class="line">    VersionUpDownTest   mVersionUpDownTest;                                     <span class="comment">// Keep-step</span></div><div class="line">    VersionUpDownTest*  mVersionUpDownTestPtr;                                  <span class="comment">// Non-Keep-step</span></div><div class="line">    VersionUpDownTest&amp;  mVersionUpDownTestRef THEOLIZER_ANNOTATE(FS:&lt;&gt;Pointee); <span class="comment">// Non-Keep-step</span></div><div class="line">    VersionFullAuto     mVersionFullAuto;                                       <span class="comment">// FullAuto</span></div><div class="line">    VersionManual       mVersionManual;                                         <span class="comment">// Manual</span></div><div class="line"></div><div class="line">    KeepStepTest(VersionUpDownTest&amp; iVersionUpDownTest, <span class="keywordtype">bool</span> iValued=<span class="keyword">false</span>) :</div><div class="line">        VersionUpDownTest((iValued)?ClassKind::Kind1:ClassKind::Default),</div><div class="line">        VersionFullAuto(iValued),</div><div class="line">        VersionManual(iValued),</div><div class="line">        mVersionUpDownTest((iValued)?ClassKind::Kind1:ClassKind::Default),</div><div class="line">        mVersionUpDownTestPtr((iValued)?&amp;iVersionUpDownTest:nullptr),</div><div class="line">        mVersionUpDownTestRef(iVersionUpDownTest),</div><div class="line">        mVersionFullAuto(iValued),</div><div class="line">        mVersionManual(iValued)</div><div class="line">    { }</div><div class="line"></div><div class="line">    <span class="keywordtype">void</span> check(VersionUpDownTest&amp; iVersionUpDownTest)</div><div class="line">    {</div><div class="line">        VersionUpDownTest::check(ClassKind::Kind1);</div><div class="line">        VersionFullAuto::check();</div><div class="line">        VersionManual::check();</div><div class="line">        mVersionUpDownTest.check(ClassKind::Kind1);</div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>( mVersionUpDownTestPtr, &amp;iVersionUpDownTest);</div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(&amp;mVersionUpDownTestRef, &amp;iVersionUpDownTest);</div><div class="line">        mVersionFullAuto.check();</div><div class="line">        mVersionManual.check();</div><div class="line">    }</div><div class="line"></div><div class="line">    THEOLIZER_INTRUSIVE(CS, (KeepStepTest), 1); <span class="comment">// 侵入型半自動へ変更後、バージョン・アップする</span></div><div class="line">};</div></div><!-- fragment --></p>
+<p><br />
+ <b>KeepStepTestの自動生成ソース：(ビルド・フォルダ/reference_and_test/ver1c/test_modify_class.cpp.theolizer.hpp）</b><br />
+</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#ifdef  THEOLIZER_WRITE_CODE // ###### KeepStepTest ######</span></div><div class="line"></div><div class="line"><span class="preprocessor">#if false // Sample of up/downVersion function.</span></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> tTheolizerVersion, <span class="keyword">class</span> tNextVersion&gt;</div><div class="line"><span class="keyword">struct </span>KeepStepTest::TheolizerUserDefine&lt;tTheolizerVersion, tNextVersion, 1&gt;</div><div class="line">{</div><div class="line">    <span class="comment">// Members version down.</span></div><div class="line">    <span class="keyword">static</span> <span class="keywordtype">void</span> downVersion(tNextVersion <span class="keyword">const</span>&amp; iNextVersion, tTheolizerVersion&amp; oNowVersion)</div><div class="line">    {</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// Members version up.</span></div><div class="line">    <span class="keyword">static</span> <span class="keywordtype">void</span> upVersion(tTheolizerVersion <span class="keyword">const</span>&amp; iNowVersion, tNextVersion&amp; oNextVersion)</div><div class="line">    {</div><div class="line">    }</div><div class="line">};</div><div class="line"><span class="preprocessor">#endif // Sample of up/downVersion function.</span></div><div class="line"></div><div class="line"><span class="preprocessor">#define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)</span></div><div class="line"><span class="preprocessor">#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(KeepStepTest)</span></div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; Version.1 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">    中略</div><div class="line"></div><div class="line"><span class="preprocessor">#endif//THEOLIZER_WRITE_CODE // ###### KeepStepTest ######</span></div></div><!-- fragment --><p>この #<code>if</code> false ～ #<code>endif</code> までの間をコピーしてください。コピー先はKeepStepTestクラスの定義の後、自動生成ソースの前ならばどこでも良いです。KeepStepTestの定義直後をお勧めします。<br />
+</p>
+<p><b>コピー先ソース例：(source/reference_and_test/ver2a/test_modify_complex.h）</b><br />
+</p>
+ <div class="fragment"><div class="line"><span class="keyword">struct </span>KeepStepTest :</div><div class="line">    <span class="keyword">public</span> VersionUpDownTest,                                                   <span class="comment">// Keep-step</span></div><div class="line">    <span class="keyword">public</span> VersionFullAuto,                                                     <span class="comment">// FullAuto</span></div><div class="line">    <span class="keyword">public</span> VersionManual                                                        <span class="comment">// Manual</span></div><div class="line">{</div><div class="line">    VersionUpDownTest   mVersionUpDownTest;                                     <span class="comment">// Keep-step</span></div><div class="line">    VersionUpDownTest*  mVersionUpDownTestPtr;                                  <span class="comment">// Non-Keep-step</span></div><div class="line">    VersionUpDownTest&amp;  mVersionUpDownTestRef THEOLIZER_ANNOTATE(FS:&lt;&gt;Pointee); <span class="comment">// Non-Keep-step</span></div><div class="line">    VersionFullAuto     mVersionFullAuto;                                       <span class="comment">// FullAuto</span></div><div class="line">    VersionManual       mVersionManual;                                         <span class="comment">// Manual</span></div><div class="line"></div><div class="line">    KeepStepTest(VersionUpDownTest&amp; iVersionUpDownTest, <span class="keywordtype">bool</span> iValued=<span class="keyword">false</span>) :</div><div class="line">        VersionUpDownTest((iValued)?ClassKind::Kind2:ClassKind::Default),</div><div class="line">        VersionFullAuto(iValued),</div><div class="line">        VersionManual(iValued),</div><div class="line">        mVersionUpDownTest((iValued)?ClassKind::Kind2:ClassKind::Default),</div><div class="line">        mVersionUpDownTestPtr((iValued)?&amp;iVersionUpDownTest:nullptr),</div><div class="line">        mVersionUpDownTestRef(iVersionUpDownTest),</div><div class="line">        mVersionFullAuto(iValued),</div><div class="line">        mVersionManual(iValued)</div><div class="line">    { }</div><div class="line"></div><div class="line">    <span class="keywordtype">void</span> check(VersionUpDownTest&amp; iVersionUpDownTest)</div><div class="line">    {</div><div class="line">        VersionUpDownTest::check(ClassKind::Kind2, <span class="keyword">true</span>);</div><div class="line">        VersionFullAuto::check();</div><div class="line">        VersionManual::check();</div><div class="line">        mVersionUpDownTest.check(ClassKind::Kind2);</div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>( mVersionUpDownTestPtr, &amp;iVersionUpDownTest);</div><div class="line">        <a class="code" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(&amp;mVersionUpDownTestRef, &amp;iVersionUpDownTest);</div><div class="line">        mVersionFullAuto.check();</div><div class="line">        mVersionManual.check();</div><div class="line">    }</div><div class="line"></div><div class="line">    THEOLIZER_INTRUSIVE(CS, (KeepStepTest), 2);</div><div class="line">};</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; バージョン・アップ／ダウン処理 ver1 &lt;-&gt; ver2 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> tTheolizerVersion, <span class="keyword">class</span> tNextVersion&gt;</div><div class="line"><span class="keyword">struct </span>KeepStepTest::TheolizerUserDefine&lt;tTheolizerVersion, tNextVersion, 1&gt;</div><div class="line">{</div><div class="line">    <span class="comment">// Members version down.</span></div><div class="line">    <span class="keyword">static</span> <span class="keywordtype">void</span> downVersion(tNextVersion <span class="keyword">const</span>&amp; iNextVersion, tTheolizerVersion&amp; oNowVersion)</div><div class="line">    {</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// Members version up.</span></div><div class="line">    <span class="keyword">static</span> <span class="keywordtype">void</span> upVersion(tTheolizerVersion <span class="keyword">const</span>&amp; iNowVersion, tNextVersion&amp; oNextVersion)</div><div class="line">    {</div><div class="line">    }</div><div class="line">};</div></div><!-- fragment --></p>
+<p>以上のTheolizerUserDefineクラス・テンプレートの最後のテンプレート引数の1がローカル・バージョン番号です。1の時はver.1とver.2の間、2の時はver.2とver.3の間のdown/upVersion処理を定義します。</p>
+<p>バージョン・アップ／ダウン処理を記述する必要があるバージョンについてTheolizerUserDefineクラスを定義して下さい。</p>
+<h3><a class="anchor" id="HowToModifyClass542"></a>
+5-4-2.down/upVersion処理を記述する</h3>
+<p><b>static void downVersion(tNextVersion const&amp; iNextVersion, tTheolizerVersion&amp; oNowVersion)関数</b><br />
+ iNextVersion引数は次バージョンです。<br />
+ oNowVersionは現バージョン(テンプレート引数で指定したバージョン)です。<br />
+ それぞれ<a class="el" href="_changing_class.html#HowToModifyClass41">TheolizerVersionクラス</a> のインスタンスが渡ってきます。<br />
+ iNextVersionを参照しつつ、oNowVersionの<a class="el" href="_specification.html#Basic36">設定可能なメンバ</a> を設定して下さい。<br />
+ <br />
+ <b>設定例：</b> </p><div class="fragment"><div class="line">oNowVersion.mData0=iNextVersion.mData0-100;</div></div><!-- fragment --><p>なお、基底クラスは実装上の都合により、メンバ変数としてアクセスする必要が有ります。<br />
+ クラスAの基底クラスへアクセスする時は、クラス名にTheolizerBaseを連結したメンバ変数を使ってアクセスして下さい。<br />
+ 例えば、次バージョンの基底クラス<b>FooClass</b>のmBarメンバへアクセスする場合、iNextVersion.<b>FooClass</b>TheolizerBase.mBar でアクセスして下さい。<br />
+ <br />
+</p>
+<p><b>static void upVersion(tTheolizerVersion const&amp; iNowVersion, tNextVersion&amp; oNextVersion)関数</b><br />
+ iNowVersionは現バージョン(テンプレート引数で指定したバージョン)です。<br />
+ tNextVersion引数は次バージョンです。<br />
+ それぞれ<a class="el" href="_changing_class.html#HowToModifyClass41">TheolizerVersionクラス</a> のインスタンスが渡ってきます。<br />
+ iNextVersionを参照しつつ、oNowVersionの<a class="el" href="_specification.html#Basic36">設定可能なメンバ</a> を設定して下さい。<br />
+ <br />
+ <b>設定例：</b> </p><div class="fragment"><div class="line">oNextVersion.mData0=iNowVersion.mData0+100;</div></div><!-- fragment --><p>基底クラスのアクセス方法はdownVersion関数と同じです。<br />
+</p>
+<p>upVersion()関数の設定可能なメンバ変数は、set()関数を持っています。これは例えば、変数の型を変更したような場合に用います。（型変更された変数の自動引継ぎをTheolizerはサポートしていませんので、手動で引継ぎが必要だからです。）<br />
+ 例えば、ver.1ではint型であったmFooメンバ変数を、ver.2でlong型へ変更した場合、下記のような処理を記述して引継ぎして下さい。<br />
+ この時、set関数の第一パラメータの型は引継ぎ先の型となりますので、この例ではlong型です。<br />
+</p>
+<div class="fragment"><div class="line">oNextVersion.mFoo.set(iNextVersion.mFoo, iNextVersion.mFoo.getDoSucceed());</div></div><!-- fragment --><p>getDoSucceed()関数は、そのメンバ変数の引継ぎが必要かどうかを示します。通常はデシリアライズ時に回復された場合trueとなります。また、set(xxx, true)で設定された場合もtrueになります。最終的に最新版のTheolizerVersionでtrueだった場合、その変数の値がシリアライズ対象クラスの該当メンバへ設定されます。<br />
+ 従って、上記の文により、mFooがデシリアライズされていた場合に限り、その値が次バージョンのmFoo変数へ引き継がれます。<br />
+</p>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="HowToModifyClass6"></a>
+6.網羅的な使用例（自動テスト）の説明</h1>
+<h6></h6>
+<p><br />
+ </p>
+<h2><a class="anchor" id="HowToModifyClass61"></a>
+6-1.クラス変更のテスト</h2>
+<p>クラス変更の基本的な網羅的なテストは <a class="el" href="_usage_total.html#TestProgram">4.テスト・プログラムの構造</a> で説明した各フォルダの下記2つのファイルにて実装しています。</p>
+<ul>
+<li>test_modify_class.h</li>
+<li>test_modify_class.cpp</li>
+</ul>
+<p>名前対応クラス(ModifyClassName)、順序対応クラス(ModifyClassOrder)、配列メンバを持つクラス(ArrayTest)について下記の修正を行い、<a class="el" href="_usage_total.html#TestProgram412">4-1-2.テストの組み合わせ</a> の各バージョン間で正しく回復できることを確認しています。<br />
+ それぞれのメンバ変数の型は、非侵入型完全自動クラス、侵入型半自動クラス、非侵入型手動クラス、および、プリミティブ型をテストしています。<br />
+</p>
+<table class="doxtable">
+<tr>
+<th>バージョン</th><th>ModifyClassName</th><th>ModifyClassOrder</th><th>ArrayTest  </th></tr>
+<tr>
+<td>ver1a→ver1b</td><td>基底クラスとメンバ変数について<br />
+　順序変更、追加、削除</td><td>メンバ変数の追加</td><td>要素数の増加と減少 </td></tr>
+<tr>
+<td>ver1b→ver1c</td><td>基底クラス、メンバ変数(クラス、enum)について<br />
+　旧バージョンのみのシリアライズ</td><td>&mdash;</td><td>&mdash; </td></tr>
+<tr>
+<td>ver1c→ver2a</td><td>クラス名変更<br />
+クラス型メンバ変数名変更</td><td>クラス名変更<br />
+クラス型メンバ変数名変更</td><td>次元数増加 </td></tr>
+<tr>
+<td>ver2a→ver3a</td><td>プリミティブ型メンバ変数名変更<br />
+クラス配列型メンバ変数追加</td><td>プリミティブ型メンバ変数名変更</td><td>次元数減少 </td></tr>
+<tr>
+<td>ver3a→ver3b</td><td>基底クラスとメンバ変数について<br />
+　順序変更、追加、削除<br />
+クラス配列型メンバ変数削除</td><td>クラス型とプリミティブ型について<br />
+　メンバ変数削除</td><td>要素数上限 </td></tr>
+</table>
+<p><br />
+ </p>
+<h2><a class="anchor" id="HowToModifyClass62"></a>
+6-2.クラス変更の複合テスト</h2>
+<p>クラス変更の複合的で網羅的なテストは <a class="el" href="_usage_total.html#TestProgram">4.テスト・プログラムの構造</a> で説明した各フォルダの下記2つのファイルにて実装しています。</p>
+<ul>
+<li>test_modify_complex.h</li>
+<li>test_modify_complex.cpp</li>
+</ul>
+<p>ここでは、大きく下記の２種類についてテストしています。</p><ul>
+<li>オブジェクト追跡している時のバージョン変更<br />
+ 用いる主なクラスは、ポイントされる側のメンバ変数を持つクラス(PointeeInclude)、ポインタ型メンバ変数を持つクラス(PointerInclude)。<br />
+ ポイントされる変数について値だけでなく、アドレスも引き継がれることを確認しています。<br />
+ 変数名を変更した時に値だけでなく、アドレスも引き継がれることを確認しています。<br />
+ <br />
+</li>
+<li>バージョン・アップ／ダウン処理<br />
+ 用いる主なクラスは、主なdown/upVersionテスト用のVersionUpDownTestクラス、Keep-step変数のテストとNon-keep-step変数用の外側のupVersionテスト用のKeepStepTestクラスです。<br />
+ KeepStepTestはVersionUpDownTestを基底クラス、および、メンバ変数として含みます。<br />
+ 「upVersionの全組合せテスト」では、下記の全組合せをテストします。<br />
+<ul>
+<li>データ回復した場合、しなかった場合</li>
+<li>set()しなかった場合、DoSucceed=falseでset()した場合、DoSucceed=trueでset()した場合</li>
+<li>代入しなかった場合、代入した場合</li>
+</ul>
+</li>
+</ul>
+<table class="doxtable">
+<tr>
+<th>バージョン</th><th>オブジェクト追跡</th><th>バージョン・アップ／ダウン処理  </th></tr>
+<tr>
+<td>ver1a→ver1b</td><td>&mdash;</td><td>&mdash; </td></tr>
+<tr>
+<td>ver1b→ver1c</td><td>&mdash;</td><td>テスト準備 </td></tr>
+<tr>
+<td>ver1c→ver2a</td><td>被ポインタとポインタ追加</td><td>Non-keep-step(enum型とプリミティブ型)について<br />
+　upVersionの全組合せテスト </td></tr>
+<tr>
+<td>ver2a→ver3a</td><td>変数名変更</td><td>型変更対応<br />
+外側のupVersion()優先 </td></tr>
+<tr>
+<td>ver3a→ver3b</td><td>&mdash;</td><td>&mdash; </td></tr>
+</table>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.8.12-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
+	<ul>
     <li class="navelem"><a class="el" href="index.html">--目次--</a></li><li class="navelem"><a class="el" href="_usage_individual.html">使用方法（個別）</a></li>
-    <li class="footer">構築:
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.12 </li>
+		<span style="color:#364D7C";>
+			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+		</span>
+    <li class="footer">
+			構築:
+    	<a href="http://www.doxygen.org/index.html">
+    		<img class="footer" src="doxygen.png" alt="doxygen"/>
+			</a>
+			1.8.12
+		</li>
   </ul>
 </div>
 </body>

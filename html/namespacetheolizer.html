@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.4.4</span>
+   &#160;<span id="projectnumber">Version.0.5.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -190,11 +190,6 @@ THEOLIZER_INTERNAL_DLL std::string&#160;</td><td class="memItemRight" valign="bo
 <tr class="separator:a8710c4432d49833a36bf30d8f9de126b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7097c661ad7dc54337a7c094a3c89c41"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a7097c661ad7dc54337a7c094a3c89c41">operator&lt;&lt;</a> (std::ostream &amp;iOStream, <a class="el" href="namespacetheolizer.html#afedaabb9b299538fd08e2d2ae4ccde6e">CheckMode</a> iCheckMode)</td></tr>
 <tr class="separator:a7097c661ad7dc54337a7c094a3c89c41"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aea6981a4533ca03c2c944f88161b5765"><td class="memTemplParams" colspan="2"><a id="aea6981a4533ca03c2c944f88161b5765"></a>
-template&lt;typename tType &gt; </td></tr>
-<tr class="memitem:aea6981a4533ca03c2c944f88161b5765"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#aea6981a4533ca03c2c944f88161b5765">copySerializable</a> (tType const &amp;iSource, tType &amp;oDestination)</td></tr>
-<tr class="memdesc:aea6981a4533ca03c2c944f88161b5765"><td class="mdescLeft">&#160;</td><td class="mdescRight">シアライズ対象メンバをコピーする <br /></td></tr>
-<tr class="separator:aea6981a4533ca03c2c944f88161b5765"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1882553ed93e096447de1347c52ea42"><td class="memTemplParams" colspan="2">template&lt;template&lt; class tIterator &gt; class tRange, class tContainer , class tNextFunc  = internal::NopFunctor&gt; </td></tr>
 <tr class="memitem:af1882553ed93e096447de1347c52ea42"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#af1882553ed93e096447de1347c52ea42">getRBForAdaptor</a> (tContainer &amp;&amp;iContainer, tNextFunc &amp;&amp;iNextFunc=internal::NopFunctor()) -&gt; typename internal::MakeRBForAdaptor&lt; tRange, tContainer, tNextFunc &gt;::Type</td></tr>
 <tr class="separator:af1882553ed93e096447de1347c52ea42"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -220,6 +215,11 @@ THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" val
 THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#ad5f8deff598083ee3880ee5fa8935976">operator&lt;&lt;</a> (std::ostream &amp;iOStream, <a class="el" href="classtheolizer_1_1_error_info.html">ErrorInfo</a> iErrorInfo)</td></tr>
 <tr class="memdesc:ad5f8deff598083ee3880ee5fa8935976"><td class="mdescLeft">&#160;</td><td class="mdescRight">エラーの内容を出力する <br /></td></tr>
 <tr class="separator:ad5f8deff598083ee3880ee5fa8935976"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea6981a4533ca03c2c944f88161b5765"><td class="memTemplParams" colspan="2"><a id="aea6981a4533ca03c2c944f88161b5765"></a>
+template&lt;typename tType &gt; </td></tr>
+<tr class="memitem:aea6981a4533ca03c2c944f88161b5765"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#aea6981a4533ca03c2c944f88161b5765">copySerializable</a> (tType const &amp;iSource, tType &amp;oDestination)</td></tr>
+<tr class="memdesc:aea6981a4533ca03c2c944f88161b5765"><td class="mdescLeft">&#160;</td><td class="mdescRight">シアライズ対象メンバをコピーする <br /></td></tr>
+<tr class="separator:aea6981a4533ca03c2c944f88161b5765"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac82b5fe5fee0645c7d4a9e53e7da1756"><td class="memTemplParams" colspan="2">template&lt;typename tReleaser &gt; </td></tr>
 <tr class="memitem:ac82b5fe5fee0645c7d4a9e53e7da1756"><td class="memTemplItemLeft" align="right" valign="top">internal::ScopeExit&lt; tReleaser &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#ac82b5fe5fee0645c7d4a9e53e7da1756">makeScopeExit</a> (tReleaser &amp;&amp;iReleaser) noexcept</td></tr>
 <tr class="separator:ac82b5fe5fee0645c7d4a9e53e7da1756"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -302,7 +302,7 @@ THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" val
 </td></tr>
 </table>
 
-<p> <a class="el" href="core__assorted_8h_source.html">core_assorted.h</a> の <a class="el" href="core__assorted_8h_source.html#l00782">782</a> 行目に定義があります。</p>
+<p> <a class="el" href="core__assorted_8h_source.html">core_assorted.h</a> の <a class="el" href="core__assorted_8h_source.html#l00803">803</a> 行目に定義があります。</p>
 
 </div>
 </div>
@@ -325,9 +325,9 @@ THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" val
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000002">todo:</a></b></dt><dd>T.B.D. </dd></dl>
 
-<p> <a class="el" href="core__assorted_8h_source.html">core_assorted.h</a> の <a class="el" href="core__assorted_8h_source.html#l00375">375</a> 行目に定義があります。</p>
+<p> <a class="el" href="core__assorted_8h_source.html">core_assorted.h</a> の <a class="el" href="core__assorted_8h_source.html#l00390">390</a> 行目に定義があります。</p>
 
 </div>
 </div>
@@ -449,7 +449,7 @@ THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" val
 </div><div class="memdoc">
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000061">todo:</a></b></dt><dd>T.B.D. </dd></dl>
 
-<p> <a class="el" href="test__tool_8h_source.html">test_tool.h</a> の <a class="el" href="test__tool_8h_source.html#l00251">251</a> 行目に定義があります。</p>
+<p> <a class="el" href="test__tool_8h_source.html">test_tool.h</a> の <a class="el" href="test__tool_8h_source.html#l00219">219</a> 行目に定義があります。</p>
 
 </div>
 </div>
@@ -528,7 +528,7 @@ template&lt;template&lt; class tIterator &gt; class tRange, class tContainer , c
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000010">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000011">todo:</a></b></dt><dd>T.B.D. </dd></dl>
 
 <p> <a class="el" href="rbfor_8h_source.html">rbfor.h</a> の <a class="el" href="rbfor_8h_source.html#l00281">281</a> 行目に定義があります。</p>
 
@@ -562,7 +562,7 @@ template&lt;class tContainer , class tNextFunc  = internal::NopFunctor&gt; </div
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000012">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000013">todo:</a></b></dt><dd>T.B.D. </dd></dl>
 
 <p> <a class="el" href="rbfor_8h_source.html">rbfor.h</a> の <a class="el" href="rbfor_8h_source.html#l00310">310</a> 行目に定義があります。</p>
 
@@ -596,7 +596,7 @@ template&lt;class tContainer , class tNextFunc  = internal::NopFunctor&gt; </div
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000011">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000012">todo:</a></b></dt><dd>T.B.D. </dd></dl>
 
 <p> <a class="el" href="rbfor_8h_source.html">rbfor.h</a> の <a class="el" href="rbfor_8h_source.html#l00296">296</a> 行目に定義があります。</p>
 
@@ -714,7 +714,7 @@ template&lt;typename tReleaser &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">todo:</a></b></dt><dd>T.B.D. </dd></dl>
 
 </div>
 </div>
@@ -873,13 +873,21 @@ template&lt;typename... tParams&gt; </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.8.12-->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
+	<ul>
     <li class="navelem"><a class="el" href="namespacetheolizer.html">theolizer</a></li>
-    <li class="footer">構築:
-    <a href="http://www.doxygen.org/index.html">
-    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.12 </li>
+		<span style="color:#364D7C";>
+			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+		</span>
+    <li class="footer">
+			構築:
+    	<a href="http://www.doxygen.org/index.html">
+    		<img class="footer" src="doxygen.png" alt="doxygen"/>
+			</a>
+			1.8.12
+		</li>
   </ul>
 </div>
 </body>

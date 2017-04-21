@@ -1,7 +1,6 @@
 var core__assorted_8h =
 [
     [ "THEOLIZER_PROVIDED_BY", "core__assorted_8h.html#ab0ac70e7c9399a86f27b40f45e25d39f", null ],
-    [ "THEOLIZER_WRITE_CODE", "core__assorted_8h.html#a48795b203045bc9895f4123ebf6678a4", null ],
     [ "CheckMode", "core__assorted_8h.html#afedaabb9b299538fd08e2d2ae4ccde6e", [
       [ "InMemory", "core__assorted_8h.html#afedaabb9b299538fd08e2d2ae4ccde6ea5eeb5d43c7b4ff3dc586c8155071a098", null ],
       [ "NoTypeCheck", "core__assorted_8h.html#afedaabb9b299538fd08e2d2ae4ccde6eae63fe760095c2a8539e2961e09a0ead1", null ],

@@ -36,7 +36,8 @@ var _usage_individual =
         [ "1-2.サンプル・ソース", "_object_tracking.html#HowToObjectTracking12", null ]
       ] ],
       [ "2.ポリモーフィズムの使い方", "_object_tracking.html#Polymorphism", [
-        [ "3-1.使い方", "_object_tracking.html#Polymorphism31", null ]
+        [ "3-1.使い方", "_object_tracking.html#Polymorphism31", null ],
+        [ "3-2.参照を経由する場合", "_object_tracking.html#Polymorphism32", null ]
       ] ],
       [ "3.オブジェクト追跡の仕組み", "_object_tracking.html#ClearTracking", [
         [ "3-1.ポインタをシリアライズする仕組み", "_object_tracking.html#HowToObjectTracking31", null ],
@@ -45,7 +46,7 @@ var _usage_individual =
         [ "3-4.オブジェクト追跡対象について", "_object_tracking.html#HowToObjectTracking34", null ],
         [ "3-5.オブジェクト追跡単位について", "_object_tracking.html#HowToObjectTracking35", null ]
       ] ],
-      [ "4.網羅的な使用例（自動テスト）の説明", "_object_tracking.html#TestObjectTracking", [
+      [ "4.オブジェクト追跡の網羅的な使用例（自動テスト）の説明", "_object_tracking.html#TestObjectTracking", [
         [ "4-1.各種メモリへのポインタのテスト", "_object_tracking.html#TestObjectTracking41", [
           [ "4-1-1.概要", "_object_tracking.html#TestObjectTracking411", null ],
           [ "4-1-2.ソース・コード", "_object_tracking.html#TestObjectTracking412", null ]
@@ -57,9 +58,10 @@ var _usage_individual =
         [ "4-3.オーナー・ポインタのテスト", "_object_tracking.html#TestObjectTracking43", [
           [ "4-3-1.概要", "_object_tracking.html#TestObjectTracking431", null ],
           [ "4-3-2.ソース・コード", "_object_tracking.html#TestObjectTracking432", null ]
-        ] ]
+        ] ],
+        [ "4-4.同じインスタンスを複数回シリアライズするテスト", "_object_tracking.html#TestObjectTracking44", null ]
       ] ],
-      [ "5.網羅的な使用例（自動テスト）の説明", "_object_tracking.html#TestPolymorphism", null ]
+      [ "5.ポリモーフィズムの網羅的な使用例（自動テスト）の説明", "_object_tracking.html#TestPolymorphism", null ]
     ] ],
     [ "保存先指定について", "_destinations.html", [
       [ "1.指定方法", "_destinations.html#HowToSpecifySaving", [
@@ -105,7 +107,7 @@ var _usage_individual =
         [ "1-1.シンボル名保存の変更サンプル", "_changing_enum.html#HowToModifyEnum11", null ],
         [ "1-2.シンボル値保存の変更サンプル", "_changing_enum.html#HowToModifyEnum12", null ]
       ] ],
-      [ "2.グローバル・バージョン番号テーブル生成", "_changing_enum.html#HowToMakeGlobalVersionNoTable2", [
+      [ "2.グローバル・バージョン番号テーブル生成", "_changing_enum.html#HowToMakeGlobalVersionNoTable", [
         [ "2-1.グローバル・バージョン番号テーブルの宣言", "_changing_enum.html#HowToMakeGlobalVersionNoTable21", null ],
         [ "2-2.グローバル・バージョン番号テーブル実体定義", "_changing_enum.html#HowToMakeGlobalVersionNoTable22", null ]
       ] ],
@@ -120,6 +122,44 @@ var _usage_individual =
       ] ],
       [ "4.網羅的な使用例（自動テスト）の説明", "_changing_enum.html#HowToModifyEnum4", null ]
     ] ],
-    [ "クラス定義の変更方法、および、バージョン・アップ方法", "_changing_class.html", null ],
+    [ "クラスのアップデート／バージョン・アップ方法", "_changing_class.html", [
+      [ "1.バージョン番号を変えないでクラスを修正", "_changing_class.html#HowToModifyClass1", [
+        [ "1-1.名前対応の場合", "_changing_class.html#HowToModifyClass11", null ],
+        [ "1-2.順序対応の場合", "_changing_class.html#HowToModifyClass12", null ],
+        [ "1-3.配列の場合", "_changing_class.html#HowToModifyClass13", null ],
+        [ "1-4.違反した場", "_changing_class.html#HowToModifyClass14", null ],
+        [ "1-5.サンプル・ソース", "_changing_class.html#HowToModifyClass15", [
+          [ "1-1-1.名前対応クラス", "_changing_class.html#HowToModifyClass111", null ],
+          [ "1-5-2.順序対応クラス", "_changing_class.html#HowToModifyClass152", null ],
+          [ "1-5-3.配列の要素数の変更サンプル", "_changing_class.html#HowToModifyClass153", null ]
+        ] ]
+      ] ],
+      [ "2.グローバル・バージョン番号テーブル生成", "_changing_class.html#HowToMakeGlobalVersionNoTable2", null ],
+      [ "3.バージョン番号を変えることで可能な修正", "_changing_class.html#HowToModifyClass3", [
+        [ "3-1.名前対応の場合", "_changing_class.html#HowToModifyClass31", null ],
+        [ "3-2.順序対応の場合", "_changing_class.html#HowToModifyClass32", null ],
+        [ "3-3.配列の場合", "_changing_class.html#HowToModifyClass33", null ]
+      ] ],
+      [ "4.バージョン番号を変えてクラス修正する仕組み概要", "_changing_class.html#HowToModifyClass4", [
+        [ "4-1.コア・データ構造", "_changing_class.html#HowToModifyClass41", null ],
+        [ "4-2.補助データ構造", "_changing_class.html#HowToModifyClass42", null ],
+        [ "4-3.侵入型半自動におけるバージョン・アップ／ダウン処理", "_changing_class.html#HowToModifyClass43", null ],
+        [ "4-4.非侵入型手動におけるバージョン・アップ／ダウン処理", "_changing_class.html#HowToModifyClass44", null ],
+        [ "4-5.バージョン・アップ時の注意事項", "_changing_class.html#HowToModifyClass45", null ]
+      ] ],
+      [ "5.バージョン番号を変えてクラスを修正する方法", "_changing_class.html#HowToModifyClass5", [
+        [ "5-1.メンバ変数名の変更", "_changing_class.html#HowToModifyClass51", null ],
+        [ "5-2.クラス名の変更", "_changing_class.html#HowToModifyClass52", null ],
+        [ "5-3.配列の次元数の変更", "_changing_class.html#HowToModifyClass53", null ],
+        [ "5-4.バージョン・アップ／ダウン処理の記述方法", "_changing_class.html#HowToModifyClass54", [
+          [ "5-4-1.down/upVersion関数雛形のコピー&ペースト", "_changing_class.html#HowToModifyClass541", null ],
+          [ "5-4-2.down/upVersion処理を記述する", "_changing_class.html#HowToModifyClass542", null ]
+        ] ]
+      ] ],
+      [ "6.網羅的な使用例（自動テスト）の説明", "_changing_class.html#HowToModifyClass6", [
+        [ "6-1.クラス変更のテスト", "_changing_class.html#HowToModifyClass61", null ],
+        [ "6-2.クラス変更の複合テスト", "_changing_class.html#HowToModifyClass62", null ]
+      ] ]
+    ] ],
     [ "エラー処理", "_error_report.html", null ]
 ];

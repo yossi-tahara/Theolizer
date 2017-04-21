@@ -19,7 +19,8 @@ var index =
         [ "1-1.シリアライズ可能な型", "_specification.html#Basic11", null ],
         [ "1-2.シリアライズ可能な型についての補足事項", "_specification.html#Basic12", [
           [ "1-2-1.クラスについて", "_specification.html#Basic121", null ],
-          [ "1-2-2. enum型について", "_specification.html#Basic122", null ]
+          [ "1-2-2. enum型について", "_specification.html#Basic122", null ],
+          [ "1-2-3.参照について", "_specification.html#Basic123", null ]
         ] ],
         [ "1-3.保存先指定", "_specification.html#Basic13", null ],
         [ "1-4.現在対応しているフォーマット、STLなどについて", "_specification.html#Basic14", null ],
@@ -31,7 +32,7 @@ var index =
           [ "1-5-5.処理系間でのデータ交換について", "_specification.html#Basic155", null ]
         ] ],
         [ "1-6.制約事項", "_specification.html#Basic16", [
-          [ "1-6-1.デフォルト・コンストラクタが必要", "_specification.html#Basic161", null ],
+          [ "1-6-1.デフォルト・コンストラクタが必要なクラス", "_specification.html#Basic161", null ],
           [ "1-6-2.クラスのstatic変数について", "_specification.html#Basic162", null ],
           [ "1-6-3.仮想基底クラス", "_specification.html#Basic163", null ],
           [ "1-6-4.ポリモーフィズムにおける制約事項", "_specification.html#Basic164", null ]
@@ -40,7 +41,8 @@ var index =
       [ "2.オブジェクト追跡", "_specification.html#Tracking", [
         [ "2-1.オブジェクト追跡する領域について", "_specification.html#Basic21", null ],
         [ "2-2.オブジェクト追跡単位について", "_specification.html#Basic22", null ],
-        [ "2-3.ポリモーフィズム対応", "_specification.html#Basic23", null ]
+        [ "2-3.ポリモーフィズム対応", "_specification.html#Basic23", null ],
+        [ "2-4.同じ領域を複数回シリアライズする時の動作について特記事項", "_specification.html#Basic24", null ]
       ] ],
       [ "3.クラスとenum型の変更対応について", "_specification.html#Modifying", [
         [ "3-1.クラスとenum型のアップデート", "_specification.html#Basic31", null ],
@@ -48,10 +50,10 @@ var index =
           [ "3-1-1.ローカル・バージョン番号", "_specification.html#Basic321", null ],
           [ "3-1-2.グローバル・バージョン番号", "_specification.html#Basic322", null ]
         ] ],
-        [ "3-3.クラス・メンバ変数のキープ・ステップ", "_specification.html#Basic33", null ],
+        [ "3-3.クラス・メンバ変数のKeep-step", "_specification.html#Basic33", null ],
         [ "3-4.保存先指定等の要因で一部のメンバが回復されていない時", "_specification.html#Basic34", null ],
         [ "3-5.旧バージョン処理時、メンバが回復されなかった時に発生する問題点対応", "_specification.html#Basic35", null ],
-        [ "3-6.up/downVersion関数でポインタの先を変更してはいけません", "_specification.html#Basic36", null ]
+        [ "3-6.down/upVersion関数で変更可能な変数と変更してはいけない変数のまとめ", "_specification.html#Basic36", null ]
       ] ]
     ] ],
     [ "インストール／アンインストール", "_prepare.html", [
