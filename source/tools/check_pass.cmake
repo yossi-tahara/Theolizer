@@ -1,6 +1,7 @@
 #[[###########################################################################
-        Theolizerソースの修正後、ビルドされていことをチェックする
-            修正後ビルドされていない場合、1で終了する
+        Theolizerソースの修正後、テストにPASSしていることをチェックする
+            テストに通ったら、sources_hash.txtが更新されていることが必須。
+            修正後PASSしていない場合、1で終了する
 
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
 
@@ -17,51 +18,52 @@
 
 ]]############################################################################
 
-set(IS_DIRTY FALSE)
+message(STATUS "checking PASS or Not PASS")
+#message(STATUS "CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
+#message(STATUS "BINARY_DIR=${BINARY_DIR}")
 
-message(STATUS "CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR}")
-set(SOURCE_DIR "${CMAKE_SOURCE_DIR}/source")
+set(IS_NOT_PASS FALSE)
 
 # ライブラリのチェック
 message(STATUS "Library...")
-set(SOURCES_HASH_TXT "${SOURCE_DIR}/library/theolizer/internal/sources_hash.txt")
+set(SOURCES_HASH_TXT "${BINARY_DIR}/library/sources_hash.txt")
 if (NOT EXISTS "${SOURCES_HASH_TXT}")
     message(STATUS "no sources_hash.txt.")
-    set(IS_DIRTY TRUE)
+    set(IS_NOT_PASS TRUE)
 else()
-    set(CURRENT_SOURCE_DIR "${SOURCE_DIR}/library")
-    include("${SOURCE_DIR}/sources_hash.cmake")
+    set(CURRENT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/source/library")
+    include("${CMAKE_SOURCE_DIR}/source/tools/sources_hash.cmake")
 
     file(READ "${SOURCES_HASH_TXT}" SOURCES_HASH_BUILD OFFSET 3)
     string(STRIP "${SOURCES_HASH_BUILD}" SOURCES_HASH_BUILD)
     message(STATUS "${SOURCES_HASH_BUILD}")
 
     if (NOT "${SOURCES_HASH}" STREQUAL "${SOURCES_HASH_BUILD}")
-        set(IS_DIRTY TRUE)
+        set(IS_NOT_PASS TRUE)
     endif()
 endif()
 
 # ドライバのチェック
 message(STATUS "Driver...")
-set(SOURCES_HASH_TXT "${SOURCE_DIR}/driver/sources_hash.txt")
+set(SOURCES_HASH_TXT "${BINARY_DIR}/driver/sources_hash.txt")
 if (NOT EXISTS "${SOURCES_HASH_TXT}")
     message(STATUS "no sources_hash.txt.")
-    set(IS_DIRTY TRUE)
+    set(IS_NOT_PASS TRUE)
 else()
-    set(CURRENT_SOURCE_DIR "${SOURCE_DIR}/driver")
-    include("${SOURCE_DIR}/sources_hash.cmake")
+    set(CURRENT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/source/driver")
+    include("${CMAKE_SOURCE_DIR}/source/tools/sources_hash.cmake")
 
     file(READ "${SOURCES_HASH_TXT}" SOURCES_HASH_BUILD OFFSET 3)
     string(STRIP "${SOURCES_HASH_BUILD}" SOURCES_HASH_BUILD)
     message(STATUS "${SOURCES_HASH_BUILD}")
 
     if (NOT "${SOURCES_HASH}" STREQUAL "${SOURCES_HASH_BUILD}")
-        set(IS_DIRTY TRUE)
+        set(IS_NOT_PASS TRUE)
     endif()
 endif()
 
-if (IS_DIRTY)
-    message(SEND_ERROR "sources are dirty.")
+if (IS_NOT_PASS)
+    message(SEND_ERROR "No test passed.")
 else()
-    message(STATUS "sourcee are clean.")
+    message(STATUS "Test passed.")
 endif()

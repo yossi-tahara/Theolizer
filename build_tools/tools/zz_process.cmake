@@ -132,7 +132,7 @@ function(search LOG_FILE IS_PASSED_NUMBER REGEX_STRING)
     file(READ ${LOG_FILE} OUTPUT_STRING)
     string(REGEX MATCHALL "${REGEX_STRING}" FOUND_LIST  ${OUTPUT_STRING})
 
-    set(IS_FALSE FALSE)
+    set(IS_FAIL FALSE)
     foreach(LINE IN LISTS FOUND_LIST)
         message(STATUS "${LINE}")
         if (NOT "${SUMMARY}" STREQUAL "")
@@ -140,19 +140,21 @@ function(search LOG_FILE IS_PASSED_NUMBER REGEX_STRING)
         endif()
         if(IS_PASSED_NUMBER)
             if(NOT "${LINE}" MATCHES "100%")
-                set(IS_FALSE TRUE)
+                set(IS_FAIL TRUE)
             endif()
         endif()
     endforeach()
 
     if (NOT "${SUMMARY}" STREQUAL "")
         if(IS_PASSED_NUMBER)
-            if (IS_FALSE)
+            if (IS_FAIL)
                 file(APPEND ${SUMMARY} "Test failed!!\n")
+                set(IS_PASS FALSE PARENT_SCOPE)
             endif()
         else()
             if (NOT "${FOUND_LIST}" STREQUAL "")
                 file(APPEND ${SUMMARY} "Test failed!!\n")
+                set(IS_PASS FALSE PARENT_SCOPE)
             endif()
         endif()
     endif()
@@ -189,6 +191,7 @@ endmacro()
 
 macro(end LOG_FILE BREAK)
 
+    set(IS_PASS TRUE)
     string(REGEX REPLACE
             "warning: jobserver unavailable"
             "WARNING: jobserver unavailable"
@@ -212,7 +215,8 @@ macro(end LOG_FILE BREAK)
     else()
         message(STATUS "error: ${RETURN_CODE} ${NOW_TIME}")
         if (NOT "${SUMMARY}" STREQUAL "")
-            file(APPEND ${SUMMARY} "error: ${RETURN_CODE} ${NOW_TIME}\n")
+            file(APPEND ${SUMMARY} "Test failed!! : ${RETURN_CODE} ${NOW_TIME}\n")
+            set(IS_PASS FALSE)
         endif()
     endif()
 
@@ -236,9 +240,10 @@ macro(end LOG_FILE BREAK)
             string(REGEX MATCH "out of [0-9]+" NUMBER "${LINE}")
             string(SUBSTRING "${NUMBER}" 7 10 NUMBER)
             if (NOT ${NUMBER} EQUAL ${PASS_NUMBER})
-                message(STATUS "error: ${LINE} -> expected ${PASS_NUMBER}")
+                message(STATUS "Test failed!! : ${LINE} -> expected ${PASS_NUMBER}")
                 if (NOT "${SUMMARY}" STREQUAL "")
-                    file(APPEND ${SUMMARY} "error: ${LINE} -> expected ${PASS_NUMBER}\n")
+                    file(APPEND ${SUMMARY} "Test failed!! : ${LINE} -> expected ${PASS_NUMBER}\n")
+                    set(IS_PASS FALSE)
                 endif()
             endif()
         endforeach()
@@ -398,6 +403,23 @@ macro(get_pass_list)
 
 endmacro()
 
+#       ---<<< PASSならsources_hash.txt生成 >>>---
+
+function(check_pass)
+
+    if(IS_PASS)
+        execute_process(
+            COMMAND ${CMAKE_COMMAND}
+                --build . 
+                --config Release
+                --target makeHashTxt
+            OUTPUT_QUIET
+            WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
+        )
+    endif()
+
+endfunction()
+
 #-----------------------------------------------------------------------------
 #       実行
 #-----------------------------------------------------------------------------
@@ -465,6 +487,7 @@ elseif("${PROC}" STREQUAL "long")
     start("Long Test     ...")
     build(LongTest Release .)
     end("z2_long_test.log" FALSE)
+    check_pass()
 
 #       ---<<< full-test (build & test library and driver, install & test) >>>---
 
@@ -561,6 +584,7 @@ elseif("${PROC}" STREQUAL "full")
     # 終了
     set(OUTPUT_LOG "${TEMP_LOG}")
     end("z3_full_test-${PROC_ALL}.log" FALSE ${PASS_CHECK_LIST})
+    check_pass()
 
 #       ---<<< build document by Doxygen >>>---
 

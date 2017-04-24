@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./source/tools/make-theolizer-msg.sh $1

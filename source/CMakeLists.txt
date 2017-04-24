@@ -101,10 +101,14 @@ message(STATUS "CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
 #-----------------------------------------------------------------------------
 
 if (EXISTS "${CMAKE_SOURCE_DIR}/../.git")
-    message(STATUS "Copying commit-msg to .git/hooks")
+    message(STATUS "Copying applypatch-msg prepare-commit-msg to .git/hooks")
+    file(REMOVE
+        "${CMAKE_SOURCE_DIR}/../.git/hooks/commit-msg"
+        "${CMAKE_SOURCE_DIR}/../.git/hooks/pre-commit"
+    )
     file(COPY
-        "${CMAKE_SOURCE_DIR}/commit-msg"
-        "${CMAKE_SOURCE_DIR}/pre-commit"
+        "${CMAKE_SOURCE_DIR}/tools/applypatch-msg"
+        "${CMAKE_SOURCE_DIR}/tools/prepare-commit-msg"
         DESTINATION "${CMAKE_SOURCE_DIR}/../.git/hooks"
         FILE_PERMISSIONS
             OWNER_EXECUTE OWNER_WRITE OWNER_READ
@@ -176,7 +180,7 @@ file(WRITE ${CMAKE_BINARY_DIR}/config.hash ${CONFIG_HASH})
 #ビルド時のHashチェック
 add_custom_target(checkBuildSystem ALL
     COMMAND ${CMAKE_COMMAND} -E md5sum ${MAKE_LIST} >build.hash
-    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/compare_files.cmake
+    COMMAND ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/tools/compare_files.cmake
 )
 
 #-----------------------------------------------------------------------------
@@ -209,19 +213,26 @@ set(LIBRARY_LIST ${TheolizerLib} ${TheolizerTest})
 function(version_at_build TARGET_NAME VERSION_DIR SOURCES)
     #message(STATUS "SOURCES=${SOURCES}")
     add_custom_target(VersionOf${TARGET_NAME}
-        COMMAND ${CMAKE_COMMAND}
-            -D CURRENT_SOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"
-            -P \"${CMAKE_SOURCE_DIR}/sources_hash.cmake\"
-             > \"${VERSION_DIR}/sources_hash.txt\"
         COMMAND $<TARGET_FILE:remove_crlf> source.hash  -- ${SOURCES}
         COMMAND $<TARGET_FILE:remove_crlf> library.hash -- ${LIBRARY_HEADERS}
         COMMAND ${CMAKE_COMMAND}
             -D VERSION_STRING=\"${PROJECT_VERSION}${TEMPORARY_VERSION}\"
             -D SOURCE_DIR=\"${CMAKE_SOURCE_DIR}\"
-            -D VERSION_DIR=\"${VERSION_DIR}\"
-            -P ${CMAKE_SOURCE_DIR}/configure_file.cmake
+            -D VERSION_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}${VERSION_DIR}\"
+            -P ${CMAKE_SOURCE_DIR}/tools/configure_file.cmake
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
     )
+    add_dependencies(${TheolizerLib} VersionOf${TARGET_NAME})
+    add_dependencies(makeVersionH VersionOf${TARGET_NAME})
+
+    add_custom_target(HashOf${TARGET_NAME}
+        COMMAND ${CMAKE_COMMAND}
+            -D CURRENT_SOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"
+            -P \"${CMAKE_SOURCE_DIR}/tools/sources_hash.cmake\"
+             > \"${CMAKE_CURRENT_BINARY_DIR}/sources_hash.txt\"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
+    add_dependencies(makeHashTxt HashOf${TARGET_NAME})
 endfunction()
 
 #       ---<<< EXCLUDE sub >>>---
@@ -264,6 +275,11 @@ set_target_properties(LongTest PROPERTIES FOLDER "TestTargets")
 add_custom_target(ShortTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "Test.*S")
 set_target_properties(ShortTest PROPERTIES FOLDER "TestTargets")
 exclude_all_target(ShortTest)
+
+#       ---<<< for hash (version.h and checkPASS) >>>---
+
+add_custom_target(makeVersionH)
+add_custom_target(makeHashTxt)
 
 #       ---<<< test exe >>>---
 
@@ -401,5 +417,5 @@ endif()
 
 #       ---<<< CMake Helper >>>---
 
-install(FILES THEOLIZERConfig.cmake DESTINATION .)
+install(FILES tools/THEOLIZERConfig.cmake DESTINATION .)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${SAMPLES_DIR} DESTINATION .)

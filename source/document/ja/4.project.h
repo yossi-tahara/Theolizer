@@ -139,7 +139,7 @@ TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソ�
 
 |相対パス|ファイル種別|ファイル名|
 |-------|----------|--------|
-|ルート|CMake補助|THEOLIZERConfig.cmake|
+|ルート/tools|CMake補助|THEOLIZERConfig.cmake|
 ||ドライバ・インストール|replace.bat|
 ||ドライバ・アンインストール|restore.bat|
 |bin|ドライバ・インストール補助|internal.bat|
@@ -175,7 +175,7 @@ TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソ�
 
 |相対パス|ファイル種別|ファイル名|
 |-------|----------|--------|
-|ルート|CMake補助|THEOLIZERConfig.cmake|
+|ルート/tools|CMake補助|THEOLIZERConfig.cmake|
 |doc/ja|詳細ドキュメント|index.html, html/\*.\*|
 |lib/Relase|StaticWithBoost(Release)テスト用ライブラリ|libTheolizerTestStaticWithBoost.a|
 ||Static(Release)テスト用ライブラリ|libTheolizerTestStatic.a|

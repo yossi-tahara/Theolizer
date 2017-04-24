@@ -52,7 +52,7 @@ function(output_summary)
     file(READ ${SUMMARY} OUTPUT_STRING)
     message(STATUS ${OUTPUT_STRING})
 
-    string(REGEX MATCH "Test failed!!\n" RESULT "${OUTPUT_STRING}")
+    string(REGEX MATCH "Test failed!!" RESULT "${OUTPUT_STRING}")
     if("${RESULT}" STREQUAL "")
         message(STATUS "\n########## Test passed. ##########\n")
     else()

@@ -160,8 +160,7 @@ add_dependencies(${TheolizerLib} remove_crlf)
 add_dependencies(${TheolizerLib} checkBuildSystem)
 
 # version.h生成
-version_at_build(${TheolizerLib} "${CMAKE_CURRENT_SOURCE_DIR}/theolizer/internal" "${VERSION_SOURCE}")
-add_dependencies(${TheolizerLib} VersionOf${TheolizerLib})
+version_at_build(${TheolizerLib} "/theolizer/internal" "${VERSION_SOURCE}")
 
 # boostをTheolizerLibにパッケージする場合(MSVC)
 if (${IS_MSVC} AND ${STATIC_WITH_BOOST})

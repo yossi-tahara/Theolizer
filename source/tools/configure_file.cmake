@@ -30,6 +30,6 @@ file(MD5 library.hash LIBRARY_HASH)
 
 # version.h生成
 configure_file(
-    ${SOURCE_DIR}/version.h.in
+    ${SOURCE_DIR}/tools/version.h.in
     ${VERSION_DIR}/version.h
 )

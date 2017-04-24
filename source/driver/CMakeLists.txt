@@ -88,8 +88,7 @@ if (NOT IS_MSVC)
 endif()
 
 # version.h生成
-version_at_build(TheolizerDriver "${CMAKE_CURRENT_SOURCE_DIR}" "${VERSION_SOURCE}")
-add_dependencies(TheolizerDriver VersionOfTheolizerDriver)
+version_at_build(TheolizerDriver "" "${VERSION_SOURCE}")
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     foreach(link_lib IN LISTS LIBRARY_LIST)
