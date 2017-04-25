@@ -22,7 +22,7 @@
 #define DISABLE_TEST_H
 
 // ***************************************************************************
-//      basicテストの有効／無効
+//      テストの有効／無効
 // ***************************************************************************
 
 #define DISABLE_BASIC_PROCESS_TEST
@@ -35,16 +35,12 @@
 #define DISABLE_DESTINATIONS_TEST
 #define DISABLE_SUPPORT_STL_TEST
 
-// ***************************************************************************
-//      変更テストの有効／無効
-// ***************************************************************************
-
 #define DISABLE_MODIFY_ENUM_TEST
 #define DISABLE_MODIFY_CLASS_TEST
 #define DISABLE_MODIFY_CLASS_TEST_NAME
 #define DISABLE_MODIFY_CLASS_TEST_ORDER
 #define DISABLE_MODIFY_CLASS_TEST_ARRAY
 
-#define DISABLE_MODIFY_COMPLEX_TEST
+//#define DISABLE_MODIFY_COMPLEX_TEST
 
 #endif  // DISABLE_TEST_H

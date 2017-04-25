@@ -918,11 +918,20 @@ struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
     // Members version down.
     static void downVersion(tNextVersion const& iNextVersion, tTheolizerVersion& oNowVersion)
     {
+#ifdef ERROR1
+        oNowVersion.mVersionUpDownTestPtr=nullptr;
+        oNowVersion.mVersionManual=VersionManual();
+#endif // ERROR1
     }
 
     // Members version up.
     static void upVersion(tTheolizerVersion const& iNowVersion, tNextVersion& oNextVersion)
     {
+#ifdef ERROR2
+        oNextVersion.mVersionUpDownTestPtr=nullptr;
+        oNextVersion.mVersionManual=VersionManual();
+#endif // ERROR1
+
         // Keep-step/Non-keep-stepのテスト
         // Keep-step(バージョン・ダウンにより値が変化する)
         THEOLIZER_EQUAL(iNowVersion.mClassKind, kClassKind1Kind1);

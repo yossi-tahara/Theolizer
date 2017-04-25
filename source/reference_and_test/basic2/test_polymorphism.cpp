@@ -21,12 +21,6 @@
 #include "disable_test.h"
 #ifndef DISABLE_POLYMORPHISM_TEST
 
-namespace std
-{
-    template<class _Ty>
-    struct default_delete;
-}
-
 // ***************************************************************************
 //      インクルード
 // ***************************************************************************

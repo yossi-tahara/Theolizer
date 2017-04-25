@@ -23,11 +23,10 @@
 # 準備：フォルダ削除→フォルダ生成→コピー
 #       NOW_VERSION  : 現バージョン指定
 #       PREV_VERSION : 前バージョン指定  (先頭バージョンは"")
-#       LAST_VERSION : 最終バージョン指定(バージョン処理無しなら"")
-macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR_CHECK TEST_FL MS RS)
-    set(TEST_NAME ${TARGET_NAME}${NOW_VERSION})
+macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION ERROR_CHECK TEST_FL MS RS)
+    set(TEST_NAME ${TARGET_NAME}${NOW_VERSION}${ERROR_CHECK})
     set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/${NOW_VERSION}")
-    set(BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}")
+    set(BINARY_DIR "${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}${ERROR_CHECK}")
     if("${PREV_VERSION}" STREQUAL "")
         set(PREV_DIR "${SOURCE_DIR}")
     else()
@@ -55,6 +54,11 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR
 
         # Theolizerへ解析要求
         set(PARAMETERS ${PARAMETERS} /DTHEOLIZER_ANALYZE)
+
+        # コンパイル・エラー発生用マクロ定義
+        if (NOT "${ERROR_CHECK}" STREQUAL "")
+            set(PARAMETERS ${PARAMETERS} /D${ERROR_CHECK})
+        endif()
 
         # 追加パラメータ設定
         set(PARAMETERS ${PARAMETERS} ${ARGN})
@@ -97,6 +101,11 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR
 
         # Theolizerへ解析要求
         set(PARAMETERS ${PARAMETERS} -DTHEOLIZER_ANALYZE)
+
+        # コンパイル・エラー発生用マクロ定義
+        if (NOT "${ERROR_CHECK}" STREQUAL "")
+            set(PARAMETERS ${PARAMETERS} -D${ERROR_CHECK})
+        endif()
 
         # 追加パラメータ設定
         set(PARAMETERS ${PARAMETERS} ${ARGN})
@@ -192,8 +201,19 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR
     #exclude_all_target(${TEST_NAME})
 
     # ビルド
-    add_test_sub_base(${TEST_NAME}Build ${CMAKE_COMMAND}
-        --build ${CMAKE_BINARY_DIR} --config $<CONFIG> --target ${TEST_NAME})
+    if ("${ERROR_CHECK}" STREQUAL "")
+        add_test_sub_base(${TEST_NAME}Build ${CMAKE_COMMAND}
+            --build ${CMAKE_BINARY_DIR} --config $<CONFIG> --target ${TEST_NAME})
+    else()
+        add_test_sub_base(${TEST_NAME}Build ${CMAKE_COMMAND}
+            "-DBINARY_DIR=${CMAKE_BINARY_DIR}"
+            -DCONFIG=$<CONFIG>
+            -DTARGET_NAME=${TEST_NAME}
+            "-DERROR_MESSAGE=${ERROR_MESSAGE}"
+            -DERROR_NUMBER=${ERROR_NUMBER}
+            -P "${CMAKE_SOURCE_DIR}/tools/build_error_test.cmake"
+        )
+    endif()
     set_tests_properties(${TEST_NAME}Build PROPERTIES LABELS ${TEST_FL})
 
     # 前バージョンがあるなら、前バージョンのビルドへ依存
@@ -204,9 +224,9 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION LAST_VERSION ERROR
 
     # 追加パラメータがある時、ビルド・エラーが発生することをテストする
     if (NOT "${ERROR_CHECK}" STREQUAL "")
-        set_tests_properties(${TEST_NAME}Build PROPERTIES WILL_FAIL TRUE)
-        set_tests_properties(${TEST_NAME}Build PROPERTIES
-                             FAIL_REGULAR_EXPRESSION ${ERROR_CHECK})
+##      set_tests_properties(${TEST_NAME}Build PROPERTIES WILL_FAIL TRUE)
+##      set_tests_properties(${TEST_NAME}Build PROPERTIES
+##                           FAIL_REGULAR_EXPRESSION ${ERROR_CHECK})
 
     # 追加パラメータがない時、実行する(test)
     else()
@@ -268,8 +288,8 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_c
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_enum_variation.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "" ${TEST_LABEL}
     "" "" ${SOURCE_LIST})
 
 set(NOW_VERSION basic2)
@@ -283,8 +303,8 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_d
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_support_stl.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "" ${TEST_LABEL}
     "" "" ${SOURCE_LIST})
 
 endif()
@@ -309,8 +329,8 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_m
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_complex.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "" ${TEST_LABEL}
     "" "" ${SOURCE_LIST})
 
 #       ---<<< ver1b >>>---
@@ -323,8 +343,8 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_m
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_complex.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "" ${TEST_LABEL}
     "" "" ${SOURCE_LIST})
 
 #       ---<<< ver1c >>>---
@@ -337,8 +357,8 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_m
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_complex.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "" ${TEST_LABEL}
     "" "" ${SOURCE_LIST})
 
 #       ---<<< ver2a >>>---
@@ -351,8 +371,8 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_m
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_complex.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "" ${TEST_LABEL}
     "(ModifyHalfAutoX)" "(ModifyHalfAutoY)" ${SOURCE_LIST})
 
 #       ---<<< ver3a >>>---
@@ -365,8 +385,8 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_m
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_complex.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "" ${TEST_LABEL}
     "" "" ${SOURCE_LIST})
 
 #       ---<<< ver3b >>>---
@@ -379,8 +399,38 @@ set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_m
 set(SOURCE_LIST ${SOURCE_LIST} ${CMAKE_CURRENT_BINARY_DIR}/${NOW_VERSION}/test_modify_complex.cpp)
 
 message(STATUS "start of add_build_and_test("
-    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${LAST_VERSION}\" \"${TEST_LABEL}\")")
-add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "${LAST_VERSION}" "" ${TEST_LABEL}
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "" ${TEST_LABEL}
+    "" "" ${SOURCE_LIST})
+
+#       ---<<< ver3bERROR1 >>>---
+
+if (${IS_MSVC})
+    set(ERROR_MESSAGE " C2679")
+    set(ERROR_NUMBER 8)
+else()
+    set(ERROR_MESSAGE " no match for ")
+    set(ERROR_NUMBER 4)
+endif()
+
+message(STATUS "start of add_build_and_test("
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"ERROR1\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "ERROR1" ${TEST_LABEL}
+    "" "" ${SOURCE_LIST})
+
+#       ---<<< ver3bERROR2 >>>---
+
+if (${IS_MSVC})
+    set(ERROR_MESSAGE " C2679")
+    set(ERROR_NUMBER 8)
+else()
+    set(ERROR_MESSAGE " no match for ")
+    set(ERROR_NUMBER 4)
+endif()
+
+message(STATUS "start of add_build_and_test("
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"ERROR2\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "ERROR2" ${TEST_LABEL}
     "" "" ${SOURCE_LIST})
 
 #-----------------------------------------------------------------------------
