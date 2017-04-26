@@ -153,15 +153,15 @@ void saveBasic(tSerializer& iSerializer)
 {
     std::cout << "    saveBasic();\n";
 
-#ifndef DISABLE_MODIFY_ENUM_TEST
+#ifdef ENABLE_MODIFY_ENUM_TEST
     saveModifyEnum(iSerializer);
 #endif
 
-#ifndef DISABLE_MODIFY_CLASS_TEST
+#ifdef ENABLE_MODIFY_CLASS_TEST
     saveModifyClass(iSerializer);
 #endif
 
-#ifndef DISABLE_MODIFY_COMPLEX_TEST
+#ifdef ENABLE_MODIFY_COMPLEX_TEST
     saveModifyComplex(iSerializer);
 #endif
 }
@@ -171,15 +171,15 @@ void loadBasic(tSerializer& iSerializer)
 {
     std::cout << "    loadBasic();\n";
 
-#ifndef DISABLE_MODIFY_ENUM_TEST
+#ifdef ENABLE_MODIFY_ENUM_TEST
     loadModifyEnum(iSerializer);
 #endif
 
-#ifndef DISABLE_MODIFY_CLASS_TEST
+#ifdef ENABLE_MODIFY_CLASS_TEST
     loadModifyClass(iSerializer);
 #endif
 
-#ifndef DISABLE_MODIFY_COMPLEX_TEST
+#ifdef ENABLE_MODIFY_COMPLEX_TEST
     loadModifyComplex(iSerializer);
 #endif
 }
@@ -198,7 +198,7 @@ void callSaveDestinations
 {
     std::cout << "    callSaveDestinations();\n";
 
-#ifndef DISABLE_MODIFY_COMPLEX_TEST
+#ifdef ENABLE_MODIFY_COMPLEX_TEST
     saveDestinations(iSerializerA, iSerializerB, iSerializerAB);
 #endif
 }
@@ -213,7 +213,7 @@ void callLoadDestinations
 {
     std::cout << "    callLoadDestinations();\n";
 
-#ifndef DISABLE_MODIFY_COMPLEX_TEST
+#ifdef ENABLE_MODIFY_COMPLEX_TEST
     loadDestinations(iSerializerA, iSerializerB, iSerializerAB);
 #endif
 }

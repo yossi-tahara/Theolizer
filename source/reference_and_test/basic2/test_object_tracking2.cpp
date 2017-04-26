@@ -20,7 +20,7 @@
 //############################################################################
 
 #include "disable_test.h"
-#ifndef DISABLE_OBJECT_TRACKING2_TEST
+#ifdef ENABLE_OBJECT_TRACKING2_TEST
 
 // ***************************************************************************
 //      インクルード
@@ -604,4 +604,4 @@ void loadObjectTracking(tSerializer& iSerializer)
 
 INSTANTIATION_ALL(loadObjectTracking);
 
-#endif  // DISABLE_OBJECT_TRACKING2_TEST
+#endif  // ENABLE_OBJECT_TRACKING2_TEST

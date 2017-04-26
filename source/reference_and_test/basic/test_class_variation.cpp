@@ -19,7 +19,7 @@
 //############################################################################
 
 #include "disable_test.h"
-#ifndef DISABLE_CLASS_VARIATION_TEST
+#ifdef ENABLE_CLASS_VARIATION_TEST
 
 // ***************************************************************************
 //      インクルード
@@ -236,7 +236,7 @@ void saveClassVariation(tSerializer& iSerializer)
 
 //      ---<<< 非侵入型完全自動 >>>---
 
-#ifndef DISABLE_SINGLE_TEST
+#ifdef ENABLE_SINGLE_TEST
 
     {
         FullAuto    aFullAuto{true};
@@ -268,13 +268,13 @@ void saveClassVariation(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aManual);
     }
 
-#endif  // DISABLE_SINGLE_TEST
+#endif  // ENABLE_SINGLE_TEST
 
 //----------------------------------------------------------------------------
 //      ２重組み合わせテスト
 //----------------------------------------------------------------------------
 
-#ifndef DISABLE_COMBINATION_TEST
+#ifdef ENABLE_COMBINATION_TEST
 
 //      ---<<< 非侵入型完全自動 >>>---
 
@@ -304,7 +304,7 @@ void saveClassVariation(tSerializer& iSerializer)
 //      ３重組み合わせテスト
 //----------------------------------------------------------------------------
 
-#ifndef DISABLE_TRIPLED_TEST
+#ifdef ENABLE_TRIPLED_TEST
 
 //      ---<<< 非侵入型完全自動 >>>---
 
@@ -330,8 +330,8 @@ void saveClassVariation(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aTripledManual);
     }
 
-#endif  // DISABLE_TRIPLED_TEST
-#endif  // DISABLE_COMBINATION_TEST
+#endif  // ENABLE_TRIPLED_TEST
+#endif  // ENABLE_COMBINATION_TEST
 }
 //! [saveClassVariation]
 
@@ -351,7 +351,7 @@ void loadClassVariation(tSerializer& iSerializer)
 
 //      ---<<< 非侵入型完全自動 >>>---
 
-#ifndef DISABLE_SINGLE_TEST
+#ifdef ENABLE_SINGLE_TEST
 
     {
         FullAuto    aFullAuto{};
@@ -393,13 +393,13 @@ void loadClassVariation(tSerializer& iSerializer)
         aManual.checkPublic(true);
     }
 
-#endif  // DISABLE_SINGLE_TEST
+#endif  // ENABLE_SINGLE_TEST
 
 //----------------------------------------------------------------------------
 //      ２重組み合わせテスト
 //----------------------------------------------------------------------------
 
-#ifndef DISABLE_COMBINATION_TEST
+#ifdef ENABLE_COMBINATION_TEST
 
 //      ---<<< 非侵入型完全自動 >>>---
 
@@ -432,7 +432,7 @@ void loadClassVariation(tSerializer& iSerializer)
 //      ３重組み合わせテスト
 //----------------------------------------------------------------------------
 
-#ifndef DISABLE_TRIPLED_TEST
+#ifdef ENABLE_TRIPLED_TEST
 
 //      ---<<< 非侵入型完全自動 >>>---
 
@@ -461,11 +461,11 @@ void loadClassVariation(tSerializer& iSerializer)
         aTripledManual.check();
     }
 
-#endif  // DISABLE_TRIPLED_TEST
-#endif  // DISABLE_COMBINATION_TEST
+#endif  // ENABLE_TRIPLED_TEST
+#endif  // ENABLE_COMBINATION_TEST
 }
 //! [loadClassVariation]
 
 INSTANTIATION_ALL(loadClassVariation);
 
-#endif  // DISABLE_CLASS_VARIATION_TEST
+#endif  // ENABLE_CLASS_VARIATION_TEST

@@ -97,7 +97,7 @@ void loadPolymorphism(tSerializer& iSerializer);
 //      保存の有無と保存先
 //----------------------------------------------------------------------------
 
-#ifndef DISABLE_DESTINATIONS_TEST
+#ifdef ENABLE_DESTINATIONS_TEST
 
 //      ---<<< 使い方のサンプル・コード >>>---
 
@@ -126,13 +126,13 @@ void loadDestinations
     tSerializerB&  iSerializerB,
     tSerializerAB& iSerializerAB
 );
-#endif // DISABLE_DESTINATIONS_TEST
+#endif // ENABLE_DESTINATIONS_TEST
 
 //----------------------------------------------------------------------------
 //      標準コンテナ
 //----------------------------------------------------------------------------
 
-#ifndef DISABLE_SUPPORT_STL_TEST
+#ifdef ENABLE_SUPPORT_STL_TEST
 
 //      ---<<< 使い方のサンプル・コード >>>---
 
@@ -164,7 +164,7 @@ void loadSupportStlDestinations
     tSerializerAB& iSerializerAB
 );
 
-#endif // DISABLE_SUPPORT_STL_TEST
+#endif // ENABLE_SUPPORT_STL_TEST
 
 // ***************************************************************************
 //      各テスト呼び出し
@@ -178,16 +178,16 @@ void callTutorial()
 {
     std::cout << "callTutorial();\n";
 
-    #ifndef DISABLE_OBJECT_TRACKING_TEST
+    #ifdef ENABLE_OBJECT_TRACKING_TEST
         tutoriseObjectTracking();
     #endif
-    #ifndef DISABLE_POLYMORPHISM_TEST
+    #ifdef ENABLE_POLYMORPHISM_TEST
         tutorisePolymorphism();
     #endif
-    #ifndef DISABLE_DESTINATIONS_TEST
+    #ifdef ENABLE_DESTINATIONS_TEST
         tutoriseDestinations();
     #endif
-    #ifndef DISABLE_SUPPORT_STL_TEST
+    #ifdef ENABLE_SUPPORT_STL_TEST
         tutoriseSupportStl();
     #endif
 
@@ -205,19 +205,19 @@ void saveBasic(tSerializer& iSerializer)
 {
     std::cout << "saveBasic();\n";
 
-#ifndef DISABLE_OBJECT_TRACKING2_TEST
+#ifdef ENABLE_OBJECT_TRACKING2_TEST
     saveObjectTracking(iSerializer);
 #endif
-#ifndef DISABLE_OBJECT_TRACKING3_TEST
+#ifdef ENABLE_OBJECT_TRACKING3_TEST
     saveObjectTracking3(iSerializer);
 #endif
-#ifndef DISABLE_POLYMORPHISM_TEST
+#ifdef ENABLE_POLYMORPHISM_TEST
     savePolymorphism(iSerializer);
 #endif
-#ifndef DISABLE_DESTINATIONS_TEST
+#ifdef ENABLE_DESTINATIONS_TEST
     saveSpecifySaving(iSerializer);
 #endif
-#ifndef DISABLE_SUPPORT_STL_TEST
+#ifdef ENABLE_SUPPORT_STL_TEST
     saveSupportStl(iSerializer);
 #endif
 }
@@ -227,19 +227,19 @@ void loadBasic(tSerializer& iSerializer)
 {
     std::cout << "loadBasic();\n";
 
-#ifndef DISABLE_OBJECT_TRACKING2_TEST
+#ifdef ENABLE_OBJECT_TRACKING2_TEST
     loadObjectTracking(iSerializer);
 #endif
-#ifndef DISABLE_OBJECT_TRACKING3_TEST
+#ifdef ENABLE_OBJECT_TRACKING3_TEST
     loadObjectTracking3(iSerializer);
 #endif
-#ifndef DISABLE_POLYMORPHISM_TEST
+#ifdef ENABLE_POLYMORPHISM_TEST
     loadPolymorphism(iSerializer);
 #endif
-#ifndef DISABLE_DESTINATIONS_TEST
+#ifdef ENABLE_DESTINATIONS_TEST
     loadSpecifySaving(iSerializer);
 #endif
-#ifndef DISABLE_SUPPORT_STL_TEST
+#ifdef ENABLE_SUPPORT_STL_TEST
     loadSupportStl(iSerializer);
 #endif
 }
@@ -256,10 +256,10 @@ void callSaveDestinations
     tSerializerAB& iSerializerAB
 )
 {
-#ifndef DISABLE_DESTINATIONS_TEST
+#ifdef ENABLE_DESTINATIONS_TEST
     saveDestinations(iSerializerA, iSerializerB, iSerializerAB);
 #endif
-#ifndef DISABLE_SUPPORT_STL_TEST
+#ifdef ENABLE_SUPPORT_STL_TEST
     saveSupportStlDestinations(iSerializerA, iSerializerB, iSerializerAB);
 #endif
 }
@@ -272,10 +272,10 @@ void callLoadDestinations
     tSerializerAB& iSerializerAB
 )
 {
-#ifndef DISABLE_DESTINATIONS_TEST
+#ifdef ENABLE_DESTINATIONS_TEST
     loadDestinations(iSerializerA, iSerializerB, iSerializerAB);
 #endif
-#ifndef DISABLE_SUPPORT_STL_TEST
+#ifdef ENABLE_SUPPORT_STL_TEST
     loadSupportStlDestinations(iSerializerA, iSerializerB, iSerializerAB);
 #endif
 }

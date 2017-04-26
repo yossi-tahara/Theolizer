@@ -109,10 +109,10 @@ void callTutorial()
 {
     std::cout << "callTutorial();\n";
 
-    #ifndef DISABLE_CLASS_VARIATION_TEST
+    #ifdef ENABLE_CLASS_VARIATION_TEST
         tutoriseClassVariation();
     #endif
-    #ifndef DISABLE_ENUM_VARIATION_TEST
+    #ifdef ENABLE_ENUM_VARIATION_TEST
         tutoriseEnumVariation();
     #endif
 
@@ -130,13 +130,13 @@ void saveBasic(tSerializer& iSerializer)
 {
     std::cout << "saveBasic();\n";
 
-#ifndef DISABLE_BASIC_PROCESS_TEST
+#ifdef ENABLE_BASIC_PROCESS_TEST
     saveBasicProcess(iSerializer);
 #endif
-#ifndef DISABLE_CLASS_VARIATION_TEST
+#ifdef ENABLE_CLASS_VARIATION_TEST
     saveClassVariation(iSerializer);
 #endif
-#ifndef DISABLE_ENUM_VARIATION_TEST
+#ifdef ENABLE_ENUM_VARIATION_TEST
     saveEnumVariation(iSerializer);
 #endif
 }
@@ -146,13 +146,13 @@ void loadBasic(tSerializer& iSerializer)
 {
     std::cout << "loadBasic();\n";
 
-#ifndef DISABLE_BASIC_PROCESS_TEST
+#ifdef ENABLE_BASIC_PROCESS_TEST
     loadBasicProcess(iSerializer);
 #endif
-#ifndef DISABLE_CLASS_VARIATION_TEST
+#ifdef ENABLE_CLASS_VARIATION_TEST
     loadClassVariation(iSerializer);
 #endif
-#ifndef DISABLE_ENUM_VARIATION_TEST
+#ifdef ENABLE_ENUM_VARIATION_TEST
     loadEnumVariation(iSerializer);
 #endif
 }

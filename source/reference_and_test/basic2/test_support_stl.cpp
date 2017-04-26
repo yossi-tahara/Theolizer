@@ -19,7 +19,7 @@
 //############################################################################
 
 #include "disable_test.h"
-#ifndef DISABLE_SUPPORT_STL_TEST
+#ifdef ENABLE_SUPPORT_STL_TEST
 
 // ***************************************************************************
 //      インクルード
@@ -2032,4 +2032,4 @@ void loadSupportStlDestinations
 
 INSTANTIATION_DESTINATIONS(loadSupportStlDestinations);
 
-#endif  // DISABLE_SUPPORT_STL_TEST
+#endif  // ENABLE_SUPPORT_STL_TEST

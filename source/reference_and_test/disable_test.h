@@ -22,25 +22,37 @@
 #define DISABLE_TEST_H
 
 // ***************************************************************************
+//      一部機能のディセーブル制御
+// ***************************************************************************
+
+#if defined(ERROR1) || defined(ERROR2)
+    #define BUILD_ERROR_TEST
+#endif
+
+// ***************************************************************************
 //      テストの有効／無効
 // ***************************************************************************
 
-#define DISABLE_BASIC_PROCESS_TEST
-#define DISABLE_CLASS_VARIATION_TEST
-#define DISABLE_ENUM_VARIATION_TEST
-#define DISABLE_OBJECT_TRACKING_TEST
-#define DISABLE_OBJECT_TRACKING2_TEST
-#define DISABLE_OBJECT_TRACKING3_TEST
-#define DISABLE_POLYMORPHISM_TEST
-#define DISABLE_DESTINATIONS_TEST
-#define DISABLE_SUPPORT_STL_TEST
+#ifndef BUILD_ERROR_TEST
+    #define ENABLE_BASIC_PROCESS_TEST
+    #define ENABLE_CLASS_VARIATION_TEST
+        #define ENABLE_SINGLE_TEST
+        #define ENABLE_COMBINATION_TEST
+        #define ENABLE_TRIPLED_TEST
+//  #define ENABLE_ENUM_VARIATION_TEST
+//  #define ENABLE_OBJECT_TRACKING_TEST
+//  #define ENABLE_OBJECT_TRACKING2_TEST
+//  #define ENABLE_OBJECT_TRACKING3_TEST
+//  #define ENABLE_POLYMORPHISM_TEST
+//  #define ENABLE_DESTINATIONS_TEST
+//  #define ENABLE_SUPPORT_STL_TEST
+//  #define ENABLE_MODIFY_ENUM_TEST
+//  #define ENABLE_MODIFY_CLASS_TEST
+//      #define ENABLE_MODIFY_CLASS_TEST_NAME
+//      #define ENABLE_MODIFY_CLASS_TEST_ORDER
+//      #define ENABLE_MODIFY_CLASS_TEST_ARRAY
+#endif
 
-#define DISABLE_MODIFY_ENUM_TEST
-#define DISABLE_MODIFY_CLASS_TEST
-#define DISABLE_MODIFY_CLASS_TEST_NAME
-#define DISABLE_MODIFY_CLASS_TEST_ORDER
-#define DISABLE_MODIFY_CLASS_TEST_ARRAY
-
-//#define DISABLE_MODIFY_COMPLEX_TEST
+#define ENABLE_MODIFY_COMPLEX_TEST
 
 #endif  // DISABLE_TEST_H

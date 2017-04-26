@@ -19,7 +19,7 @@
 //############################################################################
 
 #include "disable_test.h"
-#ifndef DISABLE_OBJECT_TRACKING_TEST
+#ifdef ENABLE_OBJECT_TRACKING_TEST
 
 // ***************************************************************************
 //      インクルード
@@ -278,4 +278,4 @@ void tutoriseObjectTracking()
     std::cout << "tutoriseObjectTracking() end\n" << std::endl;
 }
 
-#endif  // DISABLE_OBJECT_TRACKING_TEST
+#endif  // ENABLE_OBJECT_TRACKING_TEST

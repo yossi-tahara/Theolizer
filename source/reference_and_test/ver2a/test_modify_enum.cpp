@@ -19,7 +19,7 @@
 //############################################################################
 
 #include "disable_test.h"
-#ifndef DISABLE_MODIFY_ENUM_TEST
+#ifdef ENABLE_MODIFY_ENUM_TEST
 
 // ***************************************************************************
 //      インクルード
@@ -681,4 +681,4 @@ void loadModifyEnum(tSerializer& iSerializer)
 
 INSTANTIATION_ALL(loadModifyEnum);
 
-#endif  // DISABLE_MODIFY_ENUM_TEST
+#endif  // ENABLE_MODIFY_ENUM_TEST

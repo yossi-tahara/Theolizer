@@ -21,7 +21,7 @@
 //############################################################################
 
 #include "disable_test.h"
-#ifndef DISABLE_MODIFY_COMPLEX_TEST
+#ifdef ENABLE_MODIFY_COMPLEX_TEST
 
 // ***************************************************************************
 //          警告抑止
@@ -244,4 +244,4 @@ void loadDestinations
 
 INSTANTIATION_DESTINATIONS(loadDestinations);
 
-#endif  // DISABLE_MODIFY_COMPLEX_TEST
+#endif  // ENABLE_MODIFY_COMPLEX_TEST

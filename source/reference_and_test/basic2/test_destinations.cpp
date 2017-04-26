@@ -19,7 +19,7 @@
 //############################################################################
 
 #include "disable_test.h"
-#ifndef DISABLE_DESTINATIONS_TEST
+#ifdef ENABLE_DESTINATIONS_TEST
 
 // ***************************************************************************
 //      インクルード
@@ -343,4 +343,4 @@ void loadDestinations
 
 INSTANTIATION_DESTINATIONS(loadDestinations);
 
-#endif  // DISABLE_DESTINATIONS_TEST
+#endif  // ENABLE_DESTINATIONS_TEST

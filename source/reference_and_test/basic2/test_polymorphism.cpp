@@ -19,7 +19,7 @@
 //############################################################################
 
 #include "disable_test.h"
-#ifndef DISABLE_POLYMORPHISM_TEST
+#ifdef ENABLE_POLYMORPHISM_TEST
 
 // ***************************************************************************
 //      インクルード
@@ -475,4 +475,4 @@ void loadPolymorphism(tSerializer& iSerializer)
 
 INSTANTIATION_ALL(loadPolymorphism);
 
-#endif  // DISABLE_POLYMORPHISM_TEST
+#endif  // ENABLE_POLYMORPHISM_TEST

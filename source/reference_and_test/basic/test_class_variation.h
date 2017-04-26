@@ -26,15 +26,6 @@
 // 基本のenum型とclassを使用する
 #include "test_basic_process.h"
 
-// 単独テストを無効にする
-//#define DISABLE_SINGLE_TEST
-
-// 組み合わせテスト全体を無効にする
-//#define DISABLE_COMBINATION_TEST
-
-// ３重組み合わせテストを無効にする
-//#define DISABLE_TRIPLED_TEST
-
 // ***************************************************************************
 //      使い方の説明
 // ***************************************************************************
@@ -199,7 +190,7 @@ public:
 //              メンバ変数の値チェック
 //----------------------------------------------------------------------------
 
-#ifndef DISABLE_SINGLE_TEST
+#ifdef ENABLE_SINGLE_TEST
 
 #ifndef SHRINK_FOR_MINGW            // MinGWにおけるFile too big回避用
 
@@ -1170,7 +1161,7 @@ struct TheolizerNonIntrusive<Manual>::TheolizerUserDefine<tBaseSerializer, tTheo
     }
 };
 
-#endif  // DISABLE_SINGLE_TEST
+#endif  // ENABLE_SINGLE_TEST
 
 // ***************************************************************************
 //      組み合わせテスト用基底クラス
@@ -1183,7 +1174,7 @@ struct TheolizerNonIntrusive<Manual>::TheolizerUserDefine<tBaseSerializer, tTheo
 //          現時点では非公開機能である。
 // ***************************************************************************
 
-#ifndef DISABLE_COMBINATION_TEST
+#ifdef ENABLE_COMBINATION_TEST
 
 //----------------------------------------------------------------------------
 //      非侵入型完全自動　基底クラス
@@ -1740,7 +1731,7 @@ struct TheolizerNonIntrusive<DerivedManual>::
 //      ３重組み合わせテスト
 // ***************************************************************************
 
-#ifndef DISABLE_TRIPLED_TEST
+#ifdef ENABLE_TRIPLED_TEST
 
 //----------------------------------------------------------------------------
 //      非侵入型完全自動
@@ -1982,8 +1973,8 @@ struct TheolizerNonIntrusive<TripledManual>::
     }
 };
 
-#endif  // DISABLE_TRIPLED_TEST
-#endif  // DISABLE_COMBINATION_TEST
+#endif  // ENABLE_TRIPLED_TEST
+#endif  // ENABLE_COMBINATION_TEST
 
 //----------------------------------------------------------------------------
 //      シリアライズしていない完全自動型を含む半自動型のテスト

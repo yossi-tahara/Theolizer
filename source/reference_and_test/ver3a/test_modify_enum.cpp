@@ -19,7 +19,7 @@
 //############################################################################
 
 #include "disable_test.h"
-#ifndef DISABLE_MODIFY_ENUM_TEST
+#ifdef ENABLE_MODIFY_ENUM_TEST
 
 // ***************************************************************************
 //      インクルード
@@ -768,4 +768,4 @@ std::cout << "&aEnumSymName8=" << &aEnumSymName8 << "\n";
 
 INSTANTIATION_ALL(loadModifyEnum);
 
-#endif  // DISABLE_MODIFY_ENUM_TEST
+#endif  // ENABLE_MODIFY_ENUM_TEST

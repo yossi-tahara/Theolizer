@@ -19,7 +19,7 @@
 //############################################################################
 
 #include "disable_test.h"
-#ifndef DISABLE_ENUM_VARIATION_TEST
+#ifdef ENABLE_ENUM_VARIATION_TEST
 
 // ***************************************************************************
 //      インクルード
@@ -171,4 +171,4 @@ void loadEnumVariation(tSerializer& iSerializer)
 
 INSTANTIATION_ALL(loadEnumVariation);
 
-#endif  // DISABLE_ENUM_VARIATION_TEST
+#endif  // ENABLE_ENUM_VARIATION_TEST

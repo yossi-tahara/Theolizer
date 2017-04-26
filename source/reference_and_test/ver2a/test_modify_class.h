@@ -146,7 +146,7 @@ struct TheolizerNonIntrusive<ModifyManual>::
 //      変更テスト用クラス（名前対応）
 // ***************************************************************************
 
-#ifndef DISABLE_MODIFY_CLASS_TEST_NAME
+#ifdef ENABLE_MODIFY_CLASS_TEST_NAME
 struct ModifyClassName :
     // --- 基底クラス ---
     public ModifyManual,                // 1b:順序変更
@@ -372,13 +372,13 @@ struct ModifyClassName :
     }
     THEOLIZER_INTRUSIVE(CS, (ModifyClassName), 2);  // ver.2へバージョン・アップ
 };
-#endif  // DISABLE_MODIFY_CLASS_TEST_NAME
+#endif  // ENABLE_MODIFY_CLASS_TEST_NAME
 
 // ***************************************************************************
 //      変更テスト用クラス（順序対応）  メンバ変数追加
 // ***************************************************************************
 
-#ifndef DISABLE_MODIFY_CLASS_TEST_ORDER
+#ifdef ENABLE_MODIFY_CLASS_TEST_ORDER
 struct ModifyClassOrder :
     // --- 基底クラス ---
     public ModifyFullAuto,
@@ -531,13 +531,13 @@ struct ModifyClassOrder :
     }
     THEOLIZER_INTRUSIVE_ORDER(CS, (ModifyClassOrder), 2);   // ver.2へバージョン・アップ
 };
-#endif  // DISABLE_MODIFY_CLASS_TEST_ORDER
+#endif  // ENABLE_MODIFY_CLASS_TEST_ORDER
 
 // ***************************************************************************
 //      配列の要素数上限テスト
 // ***************************************************************************
 
-#ifndef DISABLE_MODIFY_CLASS_TEST_ARRAY
+#ifdef ENABLE_MODIFY_CLASS_TEST_ARRAY
 struct ArrayTest
 {
     // --- 次元変更テスト用 ---
@@ -677,6 +677,6 @@ struct ArrayTest
 
     THEOLIZER_INTRUSIVE(CS, (ArrayTest), 2);
 };
-#endif  // DISABLE_MODIFY_CLASS_TEST_ARRAY
+#endif  // ENABLE_MODIFY_CLASS_TEST_ARRAY
 
 #endif  // TEST_MODIFY_CLASS_H
