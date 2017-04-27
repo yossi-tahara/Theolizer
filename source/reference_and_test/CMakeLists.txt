@@ -165,7 +165,7 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION ERROR_CHECK TEST_F
     message(STATUS "COMMON_LIST=${COMMON_LIST}")
 
     # ビルド準備とビルド実行(custom_target)
-    set(PARAMETERS ${PARAMETERS} "--theolizer-debug=${CMAKE_CXX_COMPILER}")
+    set(PARAMETERS ${PARAMETERS} "--theolizer-compiler=${CMAKE_CXX_COMPILER}")
     if(BUILD_DRIVER)
         add_custom_target(${TEST_NAME}
             COMMAND ${CMAKE_COMMAND} -E echo "${TEST_NAME}"

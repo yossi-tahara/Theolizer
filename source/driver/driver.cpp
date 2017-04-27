@@ -641,7 +641,7 @@ PARAMETER_OUTPUT("    aDoAnalyze");
         aDefining=false;
 
         // デバッグ動作(元コンパイラのパスを設定する)
-        if (StringRef(arg).startswith(kTheolizerDebugParam))
+        if (StringRef(arg).startswith(kTheolizerCompilerParam))
         {
             std::pair<StringRef, StringRef> aCurrent = StringRef(arg).split('=');
             if (aCurrent.second.empty())

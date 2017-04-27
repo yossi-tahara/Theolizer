@@ -35,11 +35,11 @@ char const* kTheolizerMarker = THEOLIZER_INTERNAL_PRODUCT_NAME;
 
 // TheolizerDriver専用パラメータ
 #define ARG_THEOLIZER   "--theolizer"                           // 継続パラメータ
-char const* kTheolizerAnalyzeParam = "THEOLIZER_ANALYZE";       // none
-char const* kTheolizerDebugParam   = ARG_THEOLIZER "-debug";    // =<OrigPath>
-char const* kTheolizerReplaceParam = ARG_THEOLIZER "-replace";  // =<Path>;<Path>;...
-char const* kTheolizerRestoreParam = ARG_THEOLIZER "-restore";  // =<Path>;<Path>;...
-char const* kTheolizerVersionParam = ARG_THEOLIZER "-version";  // none
+char const* kTheolizerAnalyzeParam  = "THEOLIZER_ANALYZE";      // none
+char const* kTheolizerCompilerParam = ARG_THEOLIZER "-compiler";// =<OrigPath>
+char const* kTheolizerReplaceParam  = ARG_THEOLIZER "-replace"; // =<Path>;<Path>;...
+char const* kTheolizerRestoreParam  = ARG_THEOLIZER "-restore"; // =<Path>;<Path>;...
+char const* kTheolizerVersionParam  = ARG_THEOLIZER "-version"; // none
 
 // エラー出力ヘッダ
 char const*  kDiagMarker = "[" THEOLIZER_INTERNAL_PRODUCT_NAME "] ";
