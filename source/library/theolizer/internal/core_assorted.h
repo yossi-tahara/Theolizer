@@ -488,7 +488,7 @@ public:
 //      一致判定
 //----------------------------------------------------------------------------
 
-    bool isMatch(Destinations const& iRhs) const
+    bool isMatch(Destinations const& iRhs, bool iIsJustMatch=false) const
     {
         auto aLhs=mDestinations.begin();
         bool aFirst=true;
@@ -497,8 +497,9 @@ public:
             if (aFirst)
             {
                 aFirst=false;
-                // どちらか一方のAlwayが1ならtrue
-                if ((*aLhs & 1) || (aRhs & 1)) {
+                // JustMatch出ない時は、どちらか一方のAlwayが1ならtrue
+                if ((!iIsJustMatch) && ((*aLhs & 1) || (aRhs & 1)))
+                {
     return true;
                 }
             }
@@ -811,6 +812,23 @@ enum class CheckMode
 
 //! @todo T.B.D.
 THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, CheckMode iCheckMode);
+
+// ***************************************************************************
+/*!
+@brief      シリアライザが提供する機能(プロパティ）のリスト
+@details    bool hasProperty()に指定するパラメータ<br>
+*/
+// ***************************************************************************
+
+enum class Property
+{
+    EncodedString,      // setCharIsMultiByte()をサポートし、文字列の互換がある
+    SupportModifying,   // 変更をサポート(FastSerializerは非対応)
+    LongDoubleIsDouble  // long doubleとdoubleが同じ
+};
+
+//! @todo T.B.D.
+THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, Property iProperty);
 
 namespace internal
 {

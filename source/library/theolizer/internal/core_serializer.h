@@ -569,7 +569,10 @@ public:
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
     //! @todo T.B.D.
-    static const bool                       kIsFastSerialzier=false;
+    virtual bool hasProperty(Property iProperty) = 0;
+
+    //! std::stringをマルチ・パイト文字コードとして処理することを指定する(NOP)
+    virtual void setCharIsMultiByte(bool) { }
 
 protected:
     // RegisterTypeコンストラクト時の余分なstruct定義回避
@@ -784,6 +787,10 @@ protected:
     bool                    mIsShared;
     int                     mIndent;
     bool                    mCancelPrettyPrint;
+
+public:
+    //! @todo T.B.D.
+    CheckMode getCheckMode() { return mCheckMode; }
 
 //----------------------------------------------------------------------------
 //      トップ・レベル処理補助クラス

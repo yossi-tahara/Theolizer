@@ -566,11 +566,11 @@ void TestNormalImpl2<theolizer::BinaryOSerializer<>, theolizer::BinaryISerialize
 // ---------------------------------------------------------------------------
 
 template<class tOSerialzer, class tISerializer>
-void TestNormal2(char const* iPreFix, bool iIsFast=false)
+void TestNormal2(char const* iPreFix)
 {
 //      ---<<< InMemory形式 >>>---
 
-    if (iIsFast)
+    if (!tOSerialzer::hasPropertyStatic(theolizer::Property::SupportModifying))
     {
         TestNormalImpl2<tOSerialzer, tISerializer>(string(iPreFix)+"_in_memory.log",
             4, theolizer::CheckMode::InMemory);
@@ -611,7 +611,7 @@ void TestNormalMain2()
 {
 //  theolizer::DisplayPass aDisplayPass;
 
-    TestNormal2<theolizer::FastOSerializer<>,  theolizer::FastISerializer<> >("test_fast2", true);
+    TestNormal2<theolizer::FastOSerializer<>,  theolizer::FastISerializer<> >("test_fast2");
     TestNormal2<theolizer::JsonOSerializer<>,  theolizer::JsonISerializer<> >("test_json2");
     TestNormal2<theolizer::BinaryOSerializer<>,theolizer::BinaryISerializer<> >("test_binary2");
 }

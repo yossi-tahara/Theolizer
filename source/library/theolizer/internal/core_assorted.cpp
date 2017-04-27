@@ -257,9 +257,29 @@ std::ostream& operator<<(std::ostream& iOStream, CheckMode iCheckMode)
     case CheckMode::MetaMode:
         iOStream << "MetaMode";
         break;
+    }
 
-    default:
-        THEOLIZER_INTERNAL_ABORT("Unknown CheckMode in operator<<(CheckMode)");
+    return iOStream;
+}
+
+// ***************************************************************************
+//      シリアライザが提供する機能(プロパティ）のリスト
+// ***************************************************************************
+
+std::ostream& operator<<(std::ostream& iOStream, Property iProperty)
+{
+    switch(iProperty)
+    {
+    case Property::EncodedString:
+        iOStream << "EncodedString";
+        break;
+
+    case Property::SupportModifying:
+        iOStream << "SupportModifying";
+        break;
+
+    case Property::LongDoubleIsDouble:
+        iOStream << "LongDoubleIsDouble";
         break;
     }
 

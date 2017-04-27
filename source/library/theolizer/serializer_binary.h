@@ -167,6 +167,35 @@ const static char kBinarySerializerName[]="BinaryTheolizer";
 const static unsigned kBinarySerializerVersionNo=1;
 
 // ***************************************************************************
+//      プロバティ返却
+//          必要な場合直接見えた方が良いのでここで定義
+// ***************************************************************************
+
+inline bool hasPropertyBinary(Property iProperty)
+{
+    bool ret=false;
+    switch(iProperty)
+    {
+    case Property::EncodedString:
+        ret=false;
+        break;
+
+    case Property::SupportModifying:
+        ret=true;
+        break;
+
+    case Property::LongDoubleIsDouble:
+        ret=true;
+        break;
+
+    default:
+        break;
+    }
+
+    return ret;
+}
+
+// ***************************************************************************
 //      プリミティブ(組み込み型)名生成
 // ***************************************************************************
 
@@ -329,6 +358,18 @@ public:
     //! 保存用なのでtrue
     static const bool       kIsSaver=true;
 
+    //! @todo T.B.D.
+    static bool hasPropertyStatic(Property iProperty)
+    {
+        return hasPropertyBinary(iProperty);
+    }
+
+    //! @todo T.B.D.
+    bool hasProperty(Property iProperty)
+    {
+        return hasPropertyStatic(iProperty);
+    }
+
 protected:
     BinaryMidOSerializer
     (
@@ -477,6 +518,18 @@ private:
 public:
     //! 回復用なのでfalse
     static const bool       kIsSaver=false;
+
+    //! @todo T.B.D.
+    static bool hasPropertyStatic(Property iProperty)
+    {
+        return hasPropertyBinary(iProperty);
+    }
+
+    //! @todo T.B.D.
+    bool hasProperty(Property iProperty)
+    {
+        return hasPropertyStatic(iProperty);
+    }
 
 protected:
     BinaryMidISerializer

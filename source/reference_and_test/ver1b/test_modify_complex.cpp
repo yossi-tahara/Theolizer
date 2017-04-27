@@ -58,6 +58,115 @@
 //############################################################################
 
 // ***************************************************************************
+//      型の不一致動作の確認
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      検証テスト
+//----------------------------------------------------------------------------
+
+template<class tSerializerSave, class tSerializerLoad>
+void testModifyComplex(std::string const& iFileName, theolizer::CheckMode iCheckMode)
+{
+    std::cout << "FileName=" << iFileName << "\n";
+
+//----------------------------------------------------------------------------
+//      回復
+//----------------------------------------------------------------------------
+
+    {
+        ChangeFromString    aChangeFromString;
+        ChangeFromWString   aChangeFromWString;
+        ChangeFromU16String aChangeFromU16String;
+        ChangeFromU32String aChangeFromU32String;
+
+        std::ifstream   aStream(iFileName);
+
+        // 文字列をエンコードするシリアライザの場合
+        if (tSerializerLoad::hasPropertyStatic(theolizer::Property::EncodedString))
+        {   // 適切に回復可能
+            tSerializerLoad aSerializer(aStream);
+
+            THEOLIZER_PROCESS(aSerializer, aChangeFromString);
+            THEOLIZER_PROCESS(aSerializer, aChangeFromWString);
+            THEOLIZER_PROCESS(aSerializer, aChangeFromU16String);
+            THEOLIZER_PROCESS(aSerializer, aChangeFromU32String);
+
+            aChangeFromString.check();
+            aChangeFromWString.check();
+            aChangeFromU16String.check();
+            aChangeFromU32String.check();
+        }
+
+        // 文字列をエンコードしない場合、適切に回復できないが、型チェックありなら例外
+        else if (iCheckMode != theolizer::CheckMode::NoTypeCheck)
+        {
+            THEOLIZER_CHECK_EXCEPTION2(
+                tSerializerLoad aSerializer(aStream);,                  // dStatements
+                theolizer::ErrorInfo& e,                                // dException
+                e.getErrorKind() == theolizer::ErrorKind::UnknownData,  // dJudge
+                e.getMessage());                                        // dResult
+        }
+
+        // そうでないなら文字化けするのでチェックしない
+        else
+        {
+        }
+    }
+}
+
+//----------------------------------------------------------------------------
+//      複数のシリアライザにて検証テスト呼び出し
+//----------------------------------------------------------------------------
+
+void tutoriseModifyComplex()
+{
+    std::cout << "tutoriseModifyComplex() start" << std::endl;
+
+//      ---<<< Json >>>---
+
+    testModifyComplex
+    <
+        theolizer::JsonOSerializer<theolizerD::TypeCheck>,
+        theolizer::JsonISerializer<theolizerD::TypeCheck>
+    >("json-change-NoTypeCheck.json", theolizer::CheckMode::NoTypeCheck);
+
+    testModifyComplex
+    <
+        theolizer::JsonOSerializer<theolizerD::TypeCheck>,
+        theolizer::JsonISerializer<theolizerD::TypeCheck>
+    >("json-change-TypeCheck.json", theolizer::CheckMode::TypeCheck);
+
+    testModifyComplex
+    <
+        theolizer::JsonOSerializer<theolizerD::TypeCheck>,
+        theolizer::JsonISerializer<theolizerD::TypeCheck>
+    >("json-change-TypeCheckByIndex.json", theolizer::CheckMode::TypeCheckByIndex);
+
+//      ---<<< Binary >>>---
+
+    testModifyComplex
+    <
+        theolizer::BinaryOSerializer<theolizerD::TypeCheck>,
+        theolizer::BinaryISerializer<theolizerD::TypeCheck>
+    >("binary-change-NoTypeCheck.bin", theolizer::CheckMode::NoTypeCheck);
+
+    testModifyComplex
+    <
+        theolizer::BinaryOSerializer<theolizerD::TypeCheck>,
+        theolizer::BinaryISerializer<theolizerD::TypeCheck>
+    >("binary-change-TypeCheck.bin", theolizer::CheckMode::TypeCheck);
+
+    testModifyComplex
+    <
+        theolizer::BinaryOSerializer<theolizerD::TypeCheck>,
+        theolizer::BinaryISerializer<theolizerD::TypeCheck>
+    >("binary-change-TypeCheckByIndex.bin", theolizer::CheckMode::TypeCheckByIndex);
+
+    std::cout << "tutoriseModifyComplex() end" << std::endl;
+}
+
+// ***************************************************************************
 //      保存
 // ***************************************************************************
 

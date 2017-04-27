@@ -278,14 +278,14 @@ std::cout << "TestISerializerNormal(" << iFileName << ", "
     THEOLIZER_PROCESS(aSerializer, aLongDouble);
 
     // TheolizerはFastSerializer以外はlong doubleをdoubleで処理するので、doubleで比較する
-    if (tISerializer::kIsFastSerialzier)
-    {
-        THEOLIZER_EQUAL(aLongDouble, 1.23456789012345L);
-    }
-    else
+    if (aSerializer.hasProperty(theolizer::Property::LongDoubleIsDouble))
     {
         double temp=static_cast<double>(aLongDouble);
         THEOLIZER_EQUAL(temp, 1.23456789012345);
+    }
+    else
+    {
+        THEOLIZER_EQUAL(aLongDouble, 1.23456789012345L);
     }
 
 //      ---<<< enum型 >>>---
@@ -483,11 +483,11 @@ void TestNormalImpl<theolizer::BinaryOSerializer<>, theolizer::BinaryISerializer
 // ---------------------------------------------------------------------------
 
 template<class tOSerialzer, class tISerializer>
-void TestNormal(char const* iPreFix, bool iIsFast=false)
+void TestNormal(char const* iPreFix)
 {
 //      ---<<< InMemory形式 >>>---
 
-    if (iIsFast)
+    if (!tOSerialzer::hasPropertyStatic(theolizer::Property::SupportModifying))
     {
         TestNormalImpl<tOSerialzer, tISerializer>(string(iPreFix)+"_in_memory.log",
             4, theolizer::CheckMode::InMemory);
@@ -528,7 +528,7 @@ void TestNormalMain()
 {
 //  theolizer::DisplayPass aDisplayPass;
 
-    TestNormal<theolizer::FastOSerializer<>,  theolizer::FastISerializer<> >("test_fast", true);
+    TestNormal<theolizer::FastOSerializer<>,  theolizer::FastISerializer<> >("test_fast");
     TestNormal<theolizer::JsonOSerializer<>,  theolizer::JsonISerializer<> >("test_json");
     TestNormal<theolizer::BinaryOSerializer<>,theolizer::BinaryISerializer<> >("test_binary");
 }

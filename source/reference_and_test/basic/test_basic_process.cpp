@@ -46,6 +46,151 @@
 //      プリミティブ、enum型、クラス、配列
 //############################################################################
 
+#if defined(_WIN32)
+    // CP932で"[こんにちは。]"
+    const char gHelloCP932[] = "\x5B\x82\xB1\x82\xF1\x82\xC9\x82\xBF\x82\xCD\x81\x42\x5D";
+#else
+    // UTF-8で"[こんにちは。]"  非Windows用
+    const char gHelloCP932[] = u8"[こんにちは。]";
+#endif
+
+// ***************************************************************************
+//      特別テスト  Jsonシリアライザ専用のテスト
+//          Shift-JISコード対応
+//          文字列変数の互換
+// ***************************************************************************
+
+void tutorialBasic()
+{
+    std::cout << "tutorisePolymorphism() start" << std::endl;
+
+//----------------------------------------------------------------------------
+//      保存
+//----------------------------------------------------------------------------
+
+    {
+        std::ofstream   aStream("tutorise_basic.json");
+        theolizer::JsonOSerializer<> aSerializer(aStream);
+
+//      ---<<< Shift-JISコードのテスト >>>---
+
+        // MultiByte指定
+        aSerializer.setCharIsMultiByte(true);
+        std::string aString = gHelloCP932;
+        THEOLIZER_PROCESS(aSerializer, aString);
+
+        // UTF-8へ戻す
+        aSerializer.setCharIsMultiByte(false);
+        aString = u8"ユニコードＵＴＦ－８";
+        THEOLIZER_PROCESS(aSerializer, aString);
+
+//      ---<<< 文字列互換テスト >>>---
+
+        // charをwchar_t, char16_t, char32_tへ回復
+        THEOLIZER_PROCESS(aSerializer, aString);
+        THEOLIZER_PROCESS(aSerializer, aString);
+        THEOLIZER_PROCESS(aSerializer, aString);
+
+        // wchar_tをchar, char16_t, char32_tへ回復
+        std::wstring aWString = L"ユニコードＵＴＦ－１６";
+        THEOLIZER_PROCESS(aSerializer, aWString);
+        THEOLIZER_PROCESS(aSerializer, aWString);
+        THEOLIZER_PROCESS(aSerializer, aWString);
+
+        // char16_tをchar, wchar_t, char32_tへ回復
+        std::u16string aU16String = u"ユニコードＵＴＦ－１６";
+        THEOLIZER_PROCESS(aSerializer, aU16String);
+        THEOLIZER_PROCESS(aSerializer, aU16String);
+        THEOLIZER_PROCESS(aSerializer, aU16String);
+
+        // char32_tをchar, wchar_t, char16_tへ回復
+        std::u32string aU32String = U"ユニコードＵＴＦ－３２";
+        THEOLIZER_PROCESS(aSerializer, aU32String);
+        THEOLIZER_PROCESS(aSerializer, aU32String);
+        THEOLIZER_PROCESS(aSerializer, aU32String);
+    }
+
+//----------------------------------------------------------------------------
+//      回復
+//----------------------------------------------------------------------------
+
+    {
+
+        std::ifstream   aStream("tutorise_basic.json");
+        theolizer::JsonISerializer<> aSerializer(aStream);
+
+//      ---<<< Shift-JISコードのテスト >>>---
+
+        // MultiByte指定
+        aSerializer.setCharIsMultiByte(true);
+        std::string aString = "";
+        THEOLIZER_PROCESS(aSerializer, aString);
+        THEOLIZER_EQUAL(aString, gHelloCP932);
+
+        // UTF-8へ戻す
+        aSerializer.setCharIsMultiByte(false);
+        aString = "";
+        THEOLIZER_PROCESS(aSerializer, aString);
+        THEOLIZER_EQUAL(aString, u8"ユニコードＵＴＦ－８");
+
+
+//      ---<<< 文字列互換テスト >>>---
+
+        std::wstring   aWString;
+        std::u16string aU16String;
+        std::u32string aU32String;
+
+        // charをwchar_t, char16_t, char32_tへ回復
+        THEOLIZER_PROCESS(aSerializer, aWString);
+        THEOLIZER_EQUAL(aWString, L"ユニコードＵＴＦ－８");
+
+        THEOLIZER_PROCESS(aSerializer, aU16String);
+        THEOLIZER_EQUAL(aU16String, u"ユニコードＵＴＦ－８");
+
+        THEOLIZER_PROCESS(aSerializer, aU32String);
+        THEOLIZER_EQUAL(aU32String, U"ユニコードＵＴＦ－８");
+
+        // wchar_tをchar, char16_t, char32_tへ回復
+        aWString.clear();
+        aU16String.clear();
+        aU32String.clear();
+        THEOLIZER_PROCESS(aSerializer, aWString);
+        THEOLIZER_EQUAL(aWString, L"ユニコードＵＴＦ－１６");
+
+        THEOLIZER_PROCESS(aSerializer, aU16String);
+        THEOLIZER_EQUAL(aU16String, u"ユニコードＵＴＦ－１６");
+
+        THEOLIZER_PROCESS(aSerializer, aU32String);
+        THEOLIZER_EQUAL(aU32String, U"ユニコードＵＴＦ－１６");
+
+        // char16_tをchar, wchar_t, char32_tへ回復
+        aWString.clear();
+        aU16String.clear();
+        aU32String.clear();
+        THEOLIZER_PROCESS(aSerializer, aWString);
+        THEOLIZER_EQUAL(aWString, L"ユニコードＵＴＦ－１６");
+
+        THEOLIZER_PROCESS(aSerializer, aU16String);
+        THEOLIZER_EQUAL(aU16String, u"ユニコードＵＴＦ－１６");
+
+        THEOLIZER_PROCESS(aSerializer, aU32String);
+        THEOLIZER_EQUAL(aU32String, U"ユニコードＵＴＦ－１６");
+
+        // char32_tをchar, wchar_t, char16_tへ回復
+        aWString.clear();
+        aU16String.clear();
+        aU32String.clear();
+        THEOLIZER_PROCESS(aSerializer, aWString);
+        THEOLIZER_EQUAL(aWString, L"ユニコードＵＴＦ－３２");
+
+        THEOLIZER_PROCESS(aSerializer, aU16String);
+        THEOLIZER_EQUAL(aU16String, u"ユニコードＵＴＦ－３２");
+
+        THEOLIZER_PROCESS(aSerializer, aU32String);
+        THEOLIZER_EQUAL(aU32String, U"ユニコードＵＴＦ－３２");
+    }
+}
+
 // ***************************************************************************
 //      保存
 // ***************************************************************************
@@ -616,4 +761,4 @@ void loadBasicProcess(tSerializer& iSerializer)
 
 INSTANTIATION_ALL(loadBasicProcess);
 
-#endif  // ENABLE_BASIC_PROCESS_TEST
+#endif  // DISABLE_BASIC_PROCESS_TEST

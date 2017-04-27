@@ -205,4 +205,92 @@ struct KeepStepTest :
 //  THEOLIZER_INTRUSIVE(CS, (KeepStepTest), 1); // 最初は非侵入型完全自動
 };
 
+// ***************************************************************************
+//      型違い検出テスト／文字型互換テスト
+// ***************************************************************************
+
+struct ChangeFromString
+{
+    std::string mStringToWString;
+    std::string mStringToU16String;
+    std::string mStringToU32String;
+
+    ChangeFromString() { }
+    ChangeFromString(bool) :
+        mStringToWString(  u8"ＵＴＦ－８a"),
+        mStringToU16String(u8"ＵＴＦ－８b"),
+        mStringToU32String(u8"ＵＴＦ－８c")
+    { }
+
+    void check()
+    {
+        THEOLIZER_EQUAL(mStringToWString,   u8"ＵＴＦ－８a");
+        THEOLIZER_EQUAL(mStringToU16String, u8"ＵＴＦ－８b");
+        THEOLIZER_EQUAL(mStringToU32String, u8"ＵＴＦ－８c");
+    }
+};
+
+struct ChangeFromWString
+{
+    std::wstring    mWStringToString;
+    std::wstring    mWStringToU16String;
+    std::wstring    mWStringToU32String;
+
+    ChangeFromWString() { }
+    ChangeFromWString(bool) :
+        mWStringToString(   L"ＵＴＦ－１６Ｌa"),
+        mWStringToU16String(L"ＵＴＦ－１６Ｌb"),
+        mWStringToU32String(L"ＵＴＦ－１６Ｌc")
+    { }
+
+    void check()
+    {
+        THEOLIZER_EQUAL(mWStringToString,    L"ＵＴＦ－１６Ｌa");
+        THEOLIZER_EQUAL(mWStringToU16String, L"ＵＴＦ－１６Ｌb");
+        THEOLIZER_EQUAL(mWStringToU32String, L"ＵＴＦ－１６Ｌc");
+    }
+};
+
+struct ChangeFromU16String
+{
+    std::u16string  mU16StringToString;
+    std::u16string  mU16StringToWString;
+    std::u16string  mU16StringToU32String;
+
+    ChangeFromU16String() { }
+    ChangeFromU16String(bool) :
+        mU16StringToString(   u"ＵＴＦ－１６ｕa"),
+        mU16StringToWString(  u"ＵＴＦ－１６ｕb"),
+        mU16StringToU32String(u"ＵＴＦ－１６ｕc")
+    { }
+
+    void check()
+    {
+        THEOLIZER_EQUAL(mU16StringToString,    u"ＵＴＦ－１６ｕa");
+        THEOLIZER_EQUAL(mU16StringToWString,   u"ＵＴＦ－１６ｕb");
+        THEOLIZER_EQUAL(mU16StringToU32String, u"ＵＴＦ－１６ｕc");
+    }
+};
+
+struct ChangeFromU32String
+{
+    std::u32string  mU32StringToString;
+    std::u32string  mU32StringToWString;
+    std::u32string  mU32StringToU16String;
+
+    ChangeFromU32String() { }
+    ChangeFromU32String(bool) :
+        mU32StringToString(   U"ＵＴＦ－３２a"),
+        mU32StringToWString(  U"ＵＴＦ－３２b"),
+        mU32StringToU16String(U"ＵＴＦ－３２c")
+    { }
+
+    void check()
+    {
+        THEOLIZER_EQUAL(mU32StringToString,    U"ＵＴＦ－３２a");
+        THEOLIZER_EQUAL(mU32StringToWString,   U"ＵＴＦ－３２b");
+        THEOLIZER_EQUAL(mU32StringToU16String, U"ＵＴＦ－３２c");
+    }
+};
+
 #endif  // TEST_MODIFY_COMPLEX_H

@@ -56,6 +56,35 @@ namespace internal
 
 const static unsigned kFastSerializerVersionNo=1;
 
+// ***************************************************************************
+//      プロバティ返却
+//          必要な場合直接見えた方が良いのでここで定義
+// ***************************************************************************
+
+inline bool hasPropertyFast(Property iProperty)
+{
+    bool ret=false;
+    switch(iProperty)
+    {
+    case Property::EncodedString:
+        ret=false;
+        break;
+
+    case Property::SupportModifying:
+        ret=false;
+        break;
+
+    case Property::LongDoubleIsDouble:
+        ret=false;
+        break;
+
+    default:
+        break;
+    }
+
+    return ret;
+}
+
 //############################################################################
 //      Fast Serializer実装部
 //
@@ -95,6 +124,18 @@ private:
 public:
     //! 保存用なのでtrue
     static const bool       kIsSaver=true;
+
+    //! @todo T.B.D.
+    static bool hasPropertyStatic(Property iProperty)
+    {
+        return hasPropertyFast(iProperty);
+    }
+
+    //! @todo T.B.D.
+    bool hasProperty(Property iProperty)
+    {
+        return hasPropertyStatic(iProperty);
+    }
 
 protected:
     FastMidOSerializer
@@ -200,6 +241,18 @@ private:
 public:
     //! 回復用なのでfalse
     static const bool       kIsSaver=false;
+
+    //! @todo T.B.D.
+    static bool hasPropertyStatic(Property iProperty)
+    {
+        return hasPropertyFast(iProperty);
+    }
+
+    //! @todo T.B.D.
+    bool hasProperty(Property iProperty)
+    {
+        return hasPropertyStatic(iProperty);
+    }
 
 protected:
     FastMidISerializer
@@ -326,9 +379,6 @@ public:
     static const bool                       kHasDestination=true;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
-    //! Fastシリアライザなのでtrue
-    static const bool                       kIsFastSerialzier=true;
-
     //! コンストラクタ
     FastOSerializer(std::ostream& iOStream, bool iNoThrowException=false) :
         FastMidOSerializer
@@ -372,9 +422,6 @@ public:
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
     static const bool                       kHasDestination=true;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
-
-    //! Fastシリアライザなのでtrue
-    static const bool                       kIsFastSerialzier=true;
 
     //! コンストラクタ
     FastISerializer(std::istream& iIStream, bool iNoThrowException=false) :

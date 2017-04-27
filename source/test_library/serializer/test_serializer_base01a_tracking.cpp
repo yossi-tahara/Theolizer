@@ -781,11 +781,11 @@ void TestObjectTrackingImpl<theolizer::BinaryOSerializer<>, theolizer::BinaryISe
 // ---------------------------------------------------------------------------
 
 template<class tOSerialzer, class tISerializer>
-void TestObjectTracking(char const* iPreFix, bool iIsFast=false)
+void TestObjectTracking(char const* iPreFix)
 {
 //      ---<<< InMemory形式 >>>---
 
-    if (iIsFast)
+    if (!tOSerialzer::hasPropertyStatic(theolizer::Property::SupportModifying))
     {
         string aFileName = string(iPreFix) + "_in_memory";
         TestObjectTrackingImpl<tOSerialzer, tISerializer>(aFileName,
@@ -833,7 +833,7 @@ void TestTrackingMain()
 //  theolizer::DisplayPass aDisplayPass;
 
     TestObjectTracking<theolizer::FastOSerializer<>, theolizer::FastISerializer<>>
-        ("test_fast", true);
+        ("test_fast");
 
     TestObjectTracking<theolizer::JsonOSerializer<>, theolizer::JsonISerializer<>>
         ("test_json");
