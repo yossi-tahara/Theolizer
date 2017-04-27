@@ -1704,3 +1704,9 @@ char const*const kEnumSaveType[]={"estName", "estValue"};
 #endif
 
 #endif
+
+//      ---<<< TMPファイル削除用 >>>---
+
+#if defined(_WIN32)
+    std::string     gTempFile;
+#endif

@@ -2424,10 +2424,16 @@ ASTANALYZE_OUTPUT("mModifiedFiles.size(2)=", mModifiedFiles.size());
         if ((mModifiedFiles.size() == 1) && (*(mModifiedFiles.begin()) == aFileId))
         {
             bool error=mRewriter.overwriteChangedFiles();
+
+#if defined(_WIN32)
+            // Windowsで残るTMPファイル情報獲得
+            gTempFile=gSourceManager->getFileEntryForID(aFileId)->getName();
+#endif
+
 ASTANALYZE_OUTPUT("Update default file only. : overwriteChangedFiles()=", error);
 
-        // 保存処理を実行したら、mRetryAST(最新版変更によるリトライ)をgRetryASTへ反映
-        gRetryAST = mRetryAST;
+            // 保存処理を実行したら、mRetryAST(最新版変更によるリトライ)をgRetryASTへ反映
+            gRetryAST = mRetryAST;
 ASTANALYZE_OUTPUT("gRetryAST=", gRetryAST);
     return;
         }

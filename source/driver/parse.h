@@ -1881,6 +1881,10 @@ if (StringRef(*arg).equals("-fms-compatibility-version=18"))
         PARAMETER_OUTPUT("    argv[", j, "] :  ", argv[j]);
     }
 
+#if defined(_WIN32) // TMPファイル削除準備
+    gTempFile.clear();
+#endif
+
     // パラメータ解析と実行
     clang::tooling::CommonOptionsParser op(argc, argv, MyToolCategory);
     clang::tooling::ClangTool Tool(op.getCompilations(), aSourceList);
@@ -1888,6 +1892,26 @@ if (StringRef(*arg).equals("-fms-compatibility-version=18"))
     TheolizerDiagnosticConsumer    DiagClient(llvm::errs(), &*diag_opts);
     Tool.setDiagnosticConsumer(&DiagClient);
     int ret=Tool.run(clang::tooling::newFrontendActionFactory<TheolizerFrontendAction>().get());
+
+#if defined(_WIN32) // TMPファイル削除
+    if (!gTempFile.empty())
+    {
+        boostF::path aPath=gTempFile;
+        std::string aDirectory=aPath.parent_path().generic_string();
+        std::string aFileName =aPath.filename().generic_string();
+        std::string aRegex=aFileName+"~RF.*\\.TMP";
+        ASTANALYZE_OUTPUT("aDirectory=", aDirectory);
+        ASTANALYZE_OUTPUT("aFileName =", aFileName);
+        ASTANALYZE_OUTPUT("aRegex    =", aRegex);
+        auto aFileList=theolizer::getFileList(aDirectory+"/", aRegex);
+        for (auto&& aFile : aFileList)
+        {
+            std::string aDelFile=aDirectory+"/"+aFile;
+            ASTANALYZE_OUTPUT("    remove(", aDelFile, ")");
+            boostF::remove(aDelFile);
+        }
+    }
+#endif
 
     return ret;
 }

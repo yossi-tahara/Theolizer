@@ -124,6 +124,10 @@ THEOLIZER_INTERNAL_DISABLE_WARNING()
 
 #include <theolizer/internal/base.h>
 
+#if defined(_WIN32)
+#include <theolizer/test_tool.h>    // getFileList()
+#endif
+
 //----------------------------------------------------------------------------
 //      頻繁に使う名称を短縮する
 //          当該名称の調査を容易にするため、namespace指令を使わないこと。
