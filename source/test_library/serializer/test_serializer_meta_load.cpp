@@ -46,11 +46,13 @@ int main(int argc, char** argv)
 //      メタ・デシリアライズ
 // ***************************************************************************
 
+#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
     {
         std::ifstream   aStream("test_meta_data.log");
         std::ofstream   aClassH("class.h");
         theolizer::JsonISerializer<>   js(aStream, aClassH);
     }
+#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 
     return 0;
 }

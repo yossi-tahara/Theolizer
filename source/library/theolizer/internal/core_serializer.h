@@ -1337,6 +1337,8 @@ private:
 //      メタ処理
 // ***************************************************************************
 
+#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
+
 //----------------------------------------------------------------------------
 //      メタ・シリアライズ
 //----------------------------------------------------------------------------
@@ -1391,6 +1393,7 @@ protected:
     {
         return "";
     }
+#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 };
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 

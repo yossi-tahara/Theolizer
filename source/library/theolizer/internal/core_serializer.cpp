@@ -201,12 +201,14 @@ void BaseSerializer::writeHeaderTypeInfo()
 //      型チェック処理分岐
 //----------------------------------------------------------------------------
 
+#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
     // メタ・データ保存
     if (mIsMetaMode)
     {
         writeMetaData();
 return;
     }
+#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 
     // 型チェックのモード出力
     writePreElement();
@@ -676,9 +678,11 @@ BaseSerializer::BaseSerializer
     mTypeIndexTable(),
     mObjectId(0),
     mSerializeList(nullptr),
-    mDeserializeList(nullptr),
-    mOStream(iOStream),
-    mIsMetaMode((iCheckMode == CheckMode::MetaMode) || (iOStream != nullptr))
+    mDeserializeList(nullptr)
+#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
+    , mOStream(iOStream)
+    , mIsMetaMode((iCheckMode == CheckMode::MetaMode) || (iOStream != nullptr))
+#endif // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 {
     THEOLIZER_INTERNAL_ASSERT(mGlobalVersionNoTable != nullptr,
         "GlobalVersionNoTable is illegal.");
@@ -1318,12 +1322,14 @@ void BaseSerializer::readHeaderTypeInfo()
 //      型チェックのモード情報回復
 //----------------------------------------------------------------------------
 
+#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
     // メタ・データ保存
     if (mIsMetaMode)
     {
         readMetaData();
 return;
     }
+#endif // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 
     std::underlying_type<CheckMode>::type   aCheckModeValue;
 
@@ -1690,6 +1696,8 @@ bool BaseSerializer::isMatchTypeIndex(size_t iSerializedTypeIndex, size_t iProgr
 //          そのため、各種ローカル変数を用いて、型定義を生成する。
 //          それが通常のシリアライザへ影響しないよう構造を分離している。
 //############################################################################
+
+#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 
 //----------------------------------------------------------------------------
 //      UniqueName記録
@@ -3440,6 +3448,8 @@ void MetaDeserializerBase::generateGlobalVersionNoTable()
 
     mOStream << "\n#endif//THEOLIZER_WRITE_CODE // ###### Global VersionNo. Table ######\n";
 }
+
+#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 
 //############################################################################
 //      End

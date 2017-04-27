@@ -210,8 +210,10 @@ THEOLIZER_INTERNAL_STRING(4,        "String");
 //      プリミティブ名からC++名へ変換
 //----------------------------------------------------------------------------
 
+#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 THEOLIZER_INTERNAL_DLL
 char const* getCppNameJson(std::string const& iPrimitiveName, unsigned iSerializerVersionNo);
+#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 
 //############################################################################
 //      Json Serializer実装部
@@ -343,13 +345,6 @@ private:
         return "";
     }
 
-//      ---<<< プリミティブ名からC++型名返却 >>>---
-
-    static char const* getCppName(std::string const& iPrimitiveName, unsigned iSerializerVersionNo)
-    {
-        return getCppNameJson(iPrimitiveName, iSerializerVersionNo);
-    }
-
 //      ---<<< Element名保存 >>>---
 //          名前対応時のみ保存する
 
@@ -370,6 +365,15 @@ private:
 //      ---<<< JSON文字列へエンコードして保存 >>>---
 
     void encodeJsonString(std::string const& iString);
+
+//      ---<<< プリミティブ名からC++型名返却 >>>---
+
+#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
+    static char const* getCppName(std::string const& iPrimitiveName, unsigned iSerializerVersionNo)
+    {
+        return getCppNameJson(iPrimitiveName, iSerializerVersionNo);
+    }
+#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 };
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
@@ -527,13 +531,6 @@ private:
         return "";
     }
 
-//      ---<<< プリミティブ名からC++型名返却 >>>---
-
-    static char const* getCppName(std::string const& iPrimitiveName, unsigned iSerializerVersionNo)
-    {
-        return getCppNameJson(iPrimitiveName, iSerializerVersionNo);
-    }
-
 //      ---<<< Element名回復 >>>---
 //          ヘッダが有る時はElementsMappingの値に関係なく名前対応可能である。
 //              そのような派生Serializerに対応するためのI/Fである。
@@ -573,6 +570,15 @@ private:
 //          戻り値は最後に読み出した文字
 
     char find_not_of(std::string const& iSkipChars);
+
+//      ---<<< プリミティブ名からC++型名返却 >>>---
+
+#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
+    static char const* getCppName(std::string const& iPrimitiveName, unsigned iSerializerVersionNo)
+    {
+        return getCppNameJson(iPrimitiveName, iSerializerVersionNo);
+    }
+#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 };
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 

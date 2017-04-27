@@ -72,10 +72,12 @@ int main(int argc, char** argv)
 //      メタ・シリアライズ
 // ***************************************************************************
 
+#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
         {
             std::ofstream   aStream("test_meta_data.log");
             theolizer::JsonOSerializer<>   aSerializer(aStream, theolizer::CheckMode::MetaMode);
         }
+#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 
 // ***************************************************************************
 //      基本的テスト

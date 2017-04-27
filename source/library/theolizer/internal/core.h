@@ -523,7 +523,6 @@ public:
         mVersionNo   (iRhs.mVersionNo)
     { }
 
-
 //      ---<<< 基本サービス関数 >>>---
 
     const bool isSentinel() const       {return mName == nullptr;}
