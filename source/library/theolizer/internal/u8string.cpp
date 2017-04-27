@@ -338,10 +338,12 @@ std::basic_string<tCharOut> Converter<tCharOut, MultiByte>::conv(char const* iIn
 #if defined(_WIN32)
     const int len = ::MultiByteToWideChar(MultiByteManager::getInstance().mCodePage,
                                           0, iIn, -1, NULL, 0);
-    std::unique_ptr<wchar_t[]> aUtf16(new wchar_t[len]);
+    std::wstring aUtf16;
+    aUtf16.resize(len);
     ::MultiByteToWideChar(MultiByteManager::getInstance().mCodePage,
-                          0, iIn, -1, aUtf16.get(), len);
-    return boostLC::utf_to_utf<tCharOut, wchar_t>(aUtf16.get());
+                          0, iIn, -1, &*aUtf16.begin(), len);
+    aUtf16.resize(len-1);
+    return boostLC::utf_to_utf<tCharOut, wchar_t>(aUtf16);
 #else
     return boostLC::utf_to_utf<tCharOut, char>(iIn);
 #endif
@@ -367,10 +369,12 @@ std::string Converter<MultiByte, tCharIn>::conv(const tCharIn* iIn) noexcept
     std::wstring aWstring = boostLC::utf_to_utf<wchar_t, tCharIn>(iIn);
     const int len=::WideCharToMultiByte(MultiByteManager::getInstance().mCodePage,
                                         0, aWstring.c_str(), -1, NULL, 0, NULL, NULL);
-    std::unique_ptr<char[]> aMultiByte(new char[len]);
+    std::string aMultiByte;
+    aMultiByte.resize(len);
     ::WideCharToMultiByte(MultiByteManager::getInstance().mCodePage,
-                          0, aWstring.c_str(), -1, aMultiByte.get(), len, NULL, NULL);
-    return aMultiByte.get();
+                          0, aWstring.c_str(), -1, &*aMultiByte.begin(), len, NULL, NULL);
+    aMultiByte.resize(len-1);
+    return aMultiByte;
 #else
     return boostLC::utf_to_utf<char, tCharIn>(iIn);;
 #endif
