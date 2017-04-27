@@ -365,7 +365,11 @@ class FastOSerializer : public internal::FastMidOSerializer
 
     void AbstructSerializer() { }       // インスタンス生成許可
 
-    static const internal::Destinations     kDestinations;  // クラス外で定義
+    static internal::Destinations const&    getDestinations()
+    {
+        static const internal::Destinations destinations{uDefault, uDestinations...};
+        return destinations;
+    }
 
     // グローバル・バージョン番号テーブルへのポインタへのポインタ
     constexpr static internal::GlobalVersionNoTableBase const*const*const
@@ -384,19 +388,13 @@ public:
         FastMidOSerializer
         (
             iOStream,
-            kDestinations,
+            getDestinations(),
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
             iNoThrowException
         )
     { }
 };
-
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
-template<Destination uDefault, Destination... uDestinations>
-internal::Destinations const FastOSerializer<uDefault, uDestinations...>::
-    kDestinations=internal::Destinations{uDefault, uDestinations...};
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
 //!     回復用FastSerializer
@@ -409,7 +407,11 @@ class FastISerializer : public internal::FastMidISerializer
 
     void AbstructSerializer() { }       // インスタンス生成許可
 
-    static const internal::Destinations     kDestinations;  // クラス外で定義
+    static internal::Destinations const&    getDestinations()
+    {
+        static const internal::Destinations destinations{uDefault, uDestinations...};
+        return destinations;
+    }
 
     // グローバル・バージョン番号テーブルへのポインタへのポインタ
     constexpr static internal::GlobalVersionNoTableBase const*const*const
@@ -428,19 +430,13 @@ public:
         FastMidISerializer
         (
             iIStream,
-            kDestinations,
+            getDestinations(),
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
             iNoThrowException
         )
     { }
 };
-
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
-template<Destination uDefault, Destination... uDestinations>
-internal::Destinations const FastISerializer<uDefault, uDestinations...>::
-    kDestinations=internal::Destinations{uDefault, uDestinations...};
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 //############################################################################
 //      FastSerializerを用いたユーティリティ

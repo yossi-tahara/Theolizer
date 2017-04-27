@@ -1248,8 +1248,8 @@ std::cout << "RegisterType<" << THEOLIZER_INTERNAL_TYPE_NAME(tSerializer) << ",\
         // 保存先があるTopLevelシリアライザなら、TypeInfoに保存先を登録する
         if (tSerializer::kHasDestination)
         {
-//std::cout << "    addDestination(" << tSerializer::kDestinations << ")\n";
-            mBaseTypeInfo->addDestination(tSerializer::kDestinations);
+//std::cout << "    addDestination(" << tSerializer::getDestinations() << ")\n";
+            mBaseTypeInfo->addDestination(tSerializer::getDestinations());
         }
 
         // 未登録なら、TypeInfoListへBaseTypeInfoを登録する

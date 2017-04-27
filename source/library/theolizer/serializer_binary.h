@@ -697,7 +697,11 @@ class BinaryOSerializer : public internal::BinaryMidOSerializer
 
     void AbstructSerializer() { }       // インスタンス生成許可
 
-    static const internal::Destinations     kDestinations;  // クラス外で定義
+    static internal::Destinations const&    getDestinations()
+    {
+        static const internal::Destinations destinations{uDefault, uDestinations...};
+        return destinations;
+    }
 
     // グローバル・バージョン番号テーブルへのポインタへのポインタ
     //  グローバル・バージョン番号テーブルへのポインタの値は初期化時、
@@ -726,7 +730,7 @@ public:
     ) : BinaryMidOSerializer
         (
             iOStream,
-            kDestinations,
+            getDestinations(),
             internal::sGlobalVersionNoTable,
             iGlobalVersionNo,
             kLastGlobalVersionNo,
@@ -744,7 +748,7 @@ public:
     ) : BinaryMidOSerializer
         (
             iOStream,
-            kDestinations,
+            getDestinations(),
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
             kLastGlobalVersionNo,
@@ -755,10 +759,6 @@ public:
 };
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
-template<Destination uDefault, Destination... uDestinations>
-internal::Destinations const BinaryOSerializer<uDefault, uDestinations...>::
-    kDestinations=internal::Destinations{uDefault, uDestinations...};
-
 // MidSerializer登録(トライバ処理用)
 THEOLIZER_INTERNAL_REGISTER_MID_SERIALIZER(BinaryOSerializer);
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
@@ -774,7 +774,11 @@ class BinaryISerializer : public internal::BinaryMidISerializer
 
     void AbstructSerializer() { }       // インスタンス生成許可
 
-    static const internal::Destinations     kDestinations;  // クラス外で定義
+    static internal::Destinations const&    getDestinations()
+    {
+        static const internal::Destinations destinations{uDefault, uDestinations...};
+        return destinations;
+    }
 
     // グローバル・バージョン番号テーブルへのポインタへのポインタ
     constexpr static internal::GlobalVersionNoTableBase const*const*const
@@ -796,7 +800,7 @@ public:
     ) : BinaryMidISerializer
         (
             iIStream,
-            kDestinations,
+            getDestinations(),
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
             nullptr,
@@ -820,7 +824,7 @@ public:
     ) : BinaryMidISerializer
         (
             iIStream,
-            kDestinations,
+            getDestinations(),
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
             &iOStream,
@@ -831,10 +835,6 @@ public:
 };
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
-template<Destination uDefault, Destination... uDestinations>
-internal::Destinations const BinaryISerializer<uDefault, uDestinations...>::
-    kDestinations=internal::Destinations{uDefault, uDestinations...};
-
 // MidSerializer登録(トライバ処理用)
 THEOLIZER_INTERNAL_REGISTER_MID_SERIALIZER(BinaryISerializer);
 #endif  // THEOLIZER_INTERNAL_DOXYGEN

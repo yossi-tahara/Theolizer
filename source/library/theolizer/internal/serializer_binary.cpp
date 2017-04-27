@@ -363,7 +363,8 @@ void BinaryMidOSerializer::saveByteString(std::string const& iString)
     std::size_t size=iString.size();
     saveUnsigned(size, BinaryTag::TagCode::ByteString);
     mOStream.write(iString.data(), size);
-    if (!mOStream.good()) {
+    if (!mOStream.good())
+    {
         THEOLIZER_INTERNAL_IO_ERROR(u8"Write Error(size=%1%).", size);
     }
 }
@@ -899,7 +900,8 @@ return false;
 
 void BinaryMidISerializer::loadByteString(std::string& iString)
 {
-    if (!mBinaryTag.isByteString()) {
+    if (!mBinaryTag.isByteString())
+    {
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
     }
 
@@ -908,7 +910,8 @@ void BinaryMidISerializer::loadByteString(std::string& iString)
     if (size) {
         mIStream.read(&(*iString.begin()), size);
     }
-    if (!mIStream.good()) {
+    if (!mIStream.good())
+    {
         THEOLIZER_INTERNAL_IO_ERROR(u8"Read Error.");
     }
 }
@@ -921,13 +924,7 @@ uint8_t BinaryMidISerializer::readByte()
 {
     char    in;
     mIStream.get(in);
-    if ((!mIStream.good()) || (mIStream.gcount() != 1)) {
-        if ((mIStream.rdstate() & std::istream::eofbit)) {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"EOF occured.");
-        } else {
-            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");
-        }
-    }
+    checkStreamError(mIStream.rdstate());
 
     return static_cast<uint8_t>(in);
 }

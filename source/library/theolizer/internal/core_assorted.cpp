@@ -114,6 +114,9 @@ void BitString::add(unsigned iIndex, unsigned iData)
 
 bool BitString::isOne(unsigned iBitNo) const
 {
+    if (mDataCount == 0)
+return false;
+
     THEOLIZER_INTERNAL_ASSERT(iBitNo < mDataCount*kUnsignedSize,
         theolizer::print("iBitNo(%1%) is too large in BitString::isOne().", iBitNo));
 

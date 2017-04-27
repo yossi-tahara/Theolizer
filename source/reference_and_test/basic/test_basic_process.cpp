@@ -55,10 +55,14 @@
 #endif
 
 // ***************************************************************************
-//      特別テスト  Jsonシリアライザ専用のテスト
+//      使い方サンプル・ソース
 //          Shift-JISコード対応
 //          文字列変数の互換
+//          エラー・ログ
 // ***************************************************************************
+
+// エラー・ログ・ファイルの指定
+THEOLIZER_ERRORLOG_FILE("ErrorLogSample%1%.log");
 
 void tutorialBasic()
 {
@@ -115,7 +119,6 @@ void tutorialBasic()
 //----------------------------------------------------------------------------
 
     {
-
         std::ifstream   aStream("tutorise_basic.json");
         theolizer::JsonISerializer<> aSerializer(aStream);
 
@@ -189,6 +192,36 @@ void tutorialBasic()
         THEOLIZER_PROCESS(aSerializer, aU32String);
         THEOLIZER_EQUAL(aU32String, U"ユニコードＵＴＦ－３２");
     }
+
+//----------------------------------------------------------------------------
+//      エラー・ログ出力
+//----------------------------------------------------------------------------
+
+    theolizer::removeFile("ErrorLogSample0.log");
+    theolizer::removeFile("ErrorLogSample1.log");
+
+    {
+        std::ifstream   aStream("tutorise_basic.json");
+        theolizer::JsonISerializer<> aSerializer(aStream);
+
+        int aInt;
+        THEOLIZER_CHECK_EXCEPTION2(
+            THEOLIZER_PROCESS(aSerializer, aInt);,                  // dStatements
+            theolizer::ErrorInfo& e,                                // dException
+            e.getErrorKind() == theolizer::ErrorKind::UnknownData,  // dJudge
+            e.getMessage());                                        // dResult
+    }
+
+    theolizer::u8string aErrorLog = "ErrorLogSample0.log";
+    std::cout << "------------- " << aErrorLog << " ------------- start\n";
+    std::ifstream ifs(aErrorLog.get_fstring());
+    while(ifs)
+    {
+        std::string aString;
+        std::getline(ifs, aString);
+        std::cout << aString << "\n";
+    }
+    std::cout << "------------- " << aErrorLog << " ------------- end\n";
 }
 
 // ***************************************************************************

@@ -189,9 +189,7 @@ struct Decimal<long double>
         } else {                                                            \
             mOStream << static_cast<unsigned long long>(iPrimitive);        \
         }                                                                   \
-        if (!mOStream.good()) {                                             \
-            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                    \
-        }                                                                   \
+        checkStreamError(mOStream.rdstate());                               \
     }
 
 //      ---<<< 浮動小数点型 >>>---
@@ -203,9 +201,7 @@ struct Decimal<long double>
         mOStream.precision(Decimal<dType>::kDigit);                         \
         mOStream << iPrimitive;                                             \
         mOStream.precision(precision);                                      \
-        if (!mOStream.good()) {                                             \
-            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                    \
-        }                                                                   \
+        checkStreamError(mOStream.rdstate());                               \
     }
 
 //      ---<<< 文字列型 >>>---
@@ -339,6 +335,7 @@ void JsonMidOSerializer::encodeJsonString(std::string const& iString)
         }
     }
     mOStream << "\"";
+    checkStreamError(mOStream.rdstate());
 }
 
 //############################################################################
@@ -511,9 +508,7 @@ bool JsonMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
     {                                                                       \
         long long data(0);                                                  \
         mIStream >> data;                                                   \
-        if (!mIStream.good()) {                                             \
-            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                    \
-        }                                                                   \
+        checkStreamError(mIStream.rdstate());                               \
         long long min = std::numeric_limits<bool>::min();                   \
         long long max = std::numeric_limits<bool>::max();                   \
         if ((data < min) || (max < data)) {                                 \
@@ -531,13 +526,11 @@ bool JsonMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
         {                                                                   \
             long long data(0);                                              \
             mIStream >> data;                                               \
-            if (!mIStream.good()) {                                         \
-            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                    \
-            }                                                               \
+            checkStreamError(mIStream.rdstate());                           \
             long long min = std::numeric_limits<dType>::min();              \
             long long max = std::numeric_limits<dType>::max();              \
             if ((data < min) || (max < data)) {                             \
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Data overflow.");              \
+                THEOLIZER_INTERNAL_DATA_ERROR(u8"Data overflow.");          \
             }                                                               \
             oPrimitive = static_cast<dType>(data);                          \
         }                                                                   \
@@ -545,12 +538,10 @@ bool JsonMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
         {                                                                   \
             unsigned long long data(0);                                     \
             mIStream >> data;                                               \
-            if (!mIStream.good()) {                                         \
-                THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                \
-            }                                                               \
+            checkStreamError(mIStream.rdstate());                           \
             unsigned long long max = std::numeric_limits<dType>::max();     \
             if (max < data) {                                               \
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Data overflow.");              \
+                THEOLIZER_INTERNAL_DATA_ERROR(u8"Data overflow.");          \
             }                                                               \
             oPrimitive = static_cast<dType>(data);                          \
         }                                                                   \
@@ -562,9 +553,7 @@ bool JsonMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
     void JsonMidISerializer::loadPrimitive(dType& oPrimitive)               \
     {                                                                       \
         mIStream >> oPrimitive;                                             \
-        if (!mIStream.good()) {                                             \
-            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                    \
-        }                                                                   \
+        checkStreamError(mIStream.rdstate());                               \
     }
 
 //      ---<<< 文字列型 >>>---
@@ -828,17 +817,7 @@ char JsonMidISerializer::getChar()
 {
     char    in;
     mIStream.get(in);
-    if ((!mIStream.good()) || (mIStream.gcount() != 1))
-    {
-        if ((mIStream.rdstate() & std::istream::eofbit))
-        {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"EOF occured.");
-        }
-        else
-        {
-            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");
-        }
-    }
+    checkStreamError(mIStream.rdstate());
 
     return in;
 }

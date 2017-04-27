@@ -140,9 +140,7 @@ void FastMidOSerializer::writeHeader()
     void FastMidOSerializer::savePrimitive(dType const& iPrimitive)         \
     {                                                                       \
         mOStream.write(reinterpret_cast<char const*>(&iPrimitive), sizeof(iPrimitive));\
-        if (!mOStream.good()) {                                             \
-            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                    \
-        }                                                                   \
+        checkStreamError(mOStream.rdstate());                               \
     }
 
 //      ---<<< 文字列型 >>>---
@@ -172,10 +170,7 @@ void FastMidOSerializer::saveString(std::string const& iString)
 {
     savePrimitive(iString.size());
     mOStream.write(iString.c_str(), iString.size());
-//std::cout << "### saveString(" << iString.size() << ":" << iString << ");\n";
-    if (!mOStream.good()) {
-        THEOLIZER_INTERNAL_IO_ERROR(u8"保存時IOエラー");
-    }
+    checkStreamError(mOStream.rdstate());
 }
 
 //############################################################################
@@ -274,9 +269,7 @@ bool FastMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
     void FastMidISerializer::loadPrimitive(dType& oPrimitive)               \
     {                                                                       \
         mIStream.read(reinterpret_cast<char*>(&oPrimitive), sizeof(oPrimitive));\
-        if (!mIStream.good()) {                                             \
-            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");                    \
-        }                                                                   \
+        checkStreamError(mIStream.rdstate());                               \
     }
 
 #define THEOLIZER_INTERNAL_DEF_SIGNED_INT(dType, dSimbol)
@@ -284,11 +277,8 @@ bool FastMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
     void FastMidISerializer::loadPrimitive(int& oPrimitive)
     {
         mIStream.read(reinterpret_cast<char*>(&oPrimitive), sizeof(oPrimitive));
-        if (!mIStream.good()) {
-            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");
-        }
+        checkStreamError(mIStream.rdstate());
     }
-
 
 //      ---<<< 文字列型 >>>---
 
@@ -302,9 +292,7 @@ bool FastMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
         if (size) {                                                         \
             mIStream.read(reinterpret_cast<char*>(&oPrimitive[0]), size);   \
         }                                                                   \
-        if (!mIStream.good()) {                                             \
-            THEOLIZER_INTERNAL_IO_ERROR(u8"oPrimitive");                    \
-        }                                                                   \
+        checkStreamError(mIStream.rdstate());                               \
     }
 
 //      ---<<< 実体定義 >>>---
@@ -327,10 +315,7 @@ void FastMidISerializer::loadString(std::string& iString)
     if (size) {
         mIStream.read(&(*iString.begin()), size);
     }
-//std::cout << "### loadString(" << size << ":" << iString << ");\n";
-    if (!mIStream.good()) {
-        THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");
-    }
+    checkStreamError(mIStream.rdstate());
 }
 
 //############################################################################

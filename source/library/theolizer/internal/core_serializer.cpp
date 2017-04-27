@@ -777,6 +777,30 @@ std::string BaseSerializer::getDataElementName(std::size_t iDataTypeIndex, std::
 }
 
 // ***************************************************************************
+//      エラー処理
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      プリミティブ処理後のエラー・チェック
+//----------------------------------------------------------------------------
+
+void BaseSerializer::checkStreamError(std::ios::iostate iIoState)
+{
+    if (iIoState & std::istream::eofbit)
+    {
+        THEOLIZER_INTERNAL_DATA_ERROR(u8"EOF occured.");
+    }
+    else if (iIoState & std::istream::failbit)
+    {
+        THEOLIZER_INTERNAL_DATA_ERROR(u8"Logical Error on stream.");
+    }
+    else if (iIoState & std::istream::badbit)
+    {
+        THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");
+    }
+}
+
+// ***************************************************************************
 //      シリアライズ機能群
 // ***************************************************************************
 
@@ -1654,12 +1678,6 @@ bool BaseSerializer::isMatchTypeIndex(size_t iSerializedTypeIndex, size_t iProgr
     }
     return aIsMatch;
 }
-
-// ***************************************************************************
-//      RegisterTypeコンストラクト時の余分なstruct定義回避
-// ***************************************************************************
-
-Destinations const BaseSerializer::kDestinations=Destinations();
 
 //############################################################################
 //      メタ処理

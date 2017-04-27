@@ -222,20 +222,13 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION ERROR_CHECK TEST_F
         message(STATUS "DEPENDS : ${TEST_NAME}Build depends to ${PREV_NAME}Build")
     endif()
 
-    # 追加パラメータがある時、ビルド・エラーが発生することをテストする
-    if (NOT "${ERROR_CHECK}" STREQUAL "")
-##      set_tests_properties(${TEST_NAME}Build PROPERTIES WILL_FAIL TRUE)
-##      set_tests_properties(${TEST_NAME}Build PROPERTIES
-##                           FAIL_REGULAR_EXPRESSION ${ERROR_CHECK})
-
-    # 追加パラメータがない時、実行する(test)
-    else()
+    # 追加パラメータがない時のみ、実行する
+    #  (追加パラメータが有るときはビルド・エラーを発生させているため)
+    if ("${ERROR_CHECK}" STREQUAL "")
         # 1回目の実行
         add_test_sub_base(${TEST_NAME}Exec ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME})
         set_tests_properties(${TEST_NAME}Exec PROPERTIES LABELS ${TEST_FL})
         set_tests_properties(${TEST_NAME}Exec PROPERTIES FOLDER "TestTargets")
-##        set_tests_properties(${TEST_NAME}Exec PROPERTIES DEPENDS ${TEST_NAME}Build)
-##        message(STATUS "DEPENDS : ${TEST_NAME}Exec depends to ${TEST_NAME}Build")
         # 前バージョンがあるなら、1回目実行の前バージョンへ依存
         if(NOT "${PREV_VERSION}" STREQUAL "")
             set_tests_properties(${TEST_NAME}Exec PROPERTIES DEPENDS ${PREV_NAME}Exec)

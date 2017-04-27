@@ -578,7 +578,10 @@ protected:
     // RegisterTypeコンストラクト時の余分なstruct定義回避
     constexpr static GlobalVersionNoTableBase const*const*const
         kPtrGlobalVersionNoTable=nullptr;
-    static Destinations const               kDestinations;
+    static internal::Destinations   getDestinations()
+    {
+        return internal::Destinations{};
+    }
 
     BaseSerializer
     (
@@ -648,6 +651,9 @@ protected:
 
     // 例外許可獲得
     bool getNoThrowException() const {return mNoThrowException;}
+
+    // プリミティブ処理後のエラー・チェック
+    void checkStreamError(std::ios::iostate iIoState);
 
 // ***************************************************************************
 //      オブジェクト・トラッキング処理
@@ -1131,7 +1137,8 @@ std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
             std::size_t aTypeIndex = getTypeIndex<typename tVersionType::TheolizerTarget>();
             aDataTypeIndex=mTypeIndexTable[aTypeIndex];
             THEOLIZER_INTERNAL_ASSERT(aDataTypeIndex != kInvalidSize,
-                "aTypeIndex=%d aDataTypeIndex=%d", aTypeIndex, aDataTypeIndex);
+                "aTypeIndex=%d aDataTypeIndex=%d TypeName=%s", aTypeIndex, aDataTypeIndex,
+                THEOLIZER_INTERNAL_TYPE_NAME(typename tVersionType::TheolizerTarget));
         }
         std::size_t aDataIndex=0;   // シリアライデ・データ側クラスの要素Index
         size_t aIndex=0;            // プログラム側クラスの要素Index
