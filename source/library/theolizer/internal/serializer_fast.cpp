@@ -49,7 +49,8 @@ namespace internal
 //          なので、デフォルトのテーブルをここで実体化する。
 //----------------------------------------------------------------------------
 
-namespace{
+namespace
+{
     GlobalVersionNoTableBase const*const sGlobalVersionNoTable=
         GlobalVersionNoTable<1>::getInstance();;
 }   // namespace

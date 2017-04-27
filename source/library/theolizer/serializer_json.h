@@ -356,7 +356,8 @@ private:
     void saveElementName(ElementsMapping iElementsMapping,
                          u8string const& iElementName)
     {
-        if (iElementsMapping == emName) {
+        if (iElementsMapping == emName)
+        {
             encodeJsonString(iElementName.str());
             mOStream << ":";
         }

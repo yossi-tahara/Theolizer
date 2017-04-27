@@ -126,7 +126,8 @@ public:
     bool registerStream(std::istream* iIStream)
     {
         IStreams::iterator found; 
-        if (find(iIStream, found)) {
+        if (find(iIStream, found))
+        {
     return false;
         }
 
@@ -137,7 +138,8 @@ public:
     bool unregisterStream(std::istream* iIStream)
     {
         IStreams::iterator found; 
-        if (!find(iIStream, found)) {
+        if (!find(iIStream, found))
+        {
     return false;
         }
 
@@ -159,7 +161,8 @@ public:
     bool registerStream(std::ostream* iOStream)
     {
         OStreams::iterator found; 
-        if (find(iOStream, found)) {
+        if (find(iOStream, found))
+        {
     return false;
         }
 
@@ -170,7 +173,8 @@ public:
     bool unregisterStream(std::ostream* iOStream)
     {
         OStreams::iterator found; 
-        if (!find(iOStream, found)) {
+        if (!find(iOStream, found))
+        {
     return false;
         }
 
@@ -206,7 +210,8 @@ bool setACP(unsigned iCodePage)
 #if defined(_WIN32)
     const int len = ::MultiByteToWideChar(iCodePage,
                                           0, "Dummy", -1, NULL, 0);
-    if (len == 0) {
+    if (len == 0)
+    {
 return false;
     }
     MultiByteManager::getInstance().mCodePage = iCodePage;

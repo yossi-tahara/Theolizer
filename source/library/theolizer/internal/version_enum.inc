@@ -672,17 +672,20 @@ THEOLIZER_INTERNAL_VER_DEBUG((std::cout << "    (4)mValue=" << mValue << "\n";))
         unsigned    ret=0;
 
         // signed/unsigned
-        if (!std::is_signed<BaseType>::value) {
+        if (!std::is_signed<BaseType>::value)
+        {
             ret |= theolizer::internal::eefUnsigned;
         }
 
         // scoped/unscoped
-        if (!std::is_convertible<THEOLIZER_GENERATED_ENUM_TYPE, BaseType>::value) {
+        if (!std::is_convertible<THEOLIZER_GENERATED_ENUM_TYPE, BaseType>::value)
+        {
             ret |= theolizer::internal::eefScoped;
         }
 
         // Value/Name
-        if (Theolizer::kEnumSaveType == theolizer::internal::estValue) {
+        if (Theolizer::kEnumSaveType == theolizer::internal::estValue)
+        {
             ret |= theolizer::internal::eefValue;
         }
 
@@ -751,7 +754,8 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 {
 //  typedef THEOLIZER_INTERNAL_DERIVED::
 //      TheolizerVersion<tBaseSerializer,THEOLIZER_GENERATED_VERSION_NO+1> This;
-    if (iVersionNo < (THEOLIZER_GENERATED_VERSION_NO+1)) {
+    if (iVersionNo < (THEOLIZER_GENERATED_VERSION_NO+1))
+    {
         THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         <
             tBaseSerializer,
@@ -759,7 +763,9 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         > aVersion(*this);
         aVersion.saveEnum(iSerializer, iVersionNo);
 return;
-    } else {
+    }
+    else
+    {
         saveEnumImpl(iSerializer);
     }
 }
@@ -804,7 +810,8 @@ char const* THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
     THEOLIZER_GENERATED_VERSION_NO+1
 >::getEnumName(unsigned iVersionNo)
 {
-    if (iVersionNo < (THEOLIZER_GENERATED_VERSION_NO+1)) {
+    if (iVersionNo < (THEOLIZER_GENERATED_VERSION_NO+1))
+    {
         return THEOLIZER_INTERNAL_DERIVED::
             TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO>::
                 getEnumName(iVersionNo);

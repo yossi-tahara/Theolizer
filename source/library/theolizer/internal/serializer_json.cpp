@@ -298,7 +298,8 @@ void JsonMidOSerializer::saveClassEnd(bool iIsTop)
 
 void JsonMidOSerializer::writeCommaIndent(bool iWriteComma)
 {
-    if (iWriteComma) {
+    if (iWriteComma)
+    {
         mOStream << ",";
     }
 
@@ -609,7 +610,8 @@ std::string JsonMidISerializer::loadElementName(ElementsMapping iElementsMapping
     {
         decodeJsonString(aElementName);
         char in = find_not_of(" \t\n");
-        if (in != ':') {
+        if (in != ':')
+        {
             THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
         }
     }
@@ -774,18 +776,21 @@ void JsonMidISerializer::decodeJsonString(std::string& iString)
 //      ---<<< "までスキップ >>>---
 
     char in = find_not_of(" \t\n");
-    if (in != '\"') {
+    if (in != '\"')
+    {
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
     }
 
 //      ---<<< "の直前までを追加する >>>---
 
     iString.clear();
-    while(1) {
+    while(1)
+    {
         in=getChar();
 
         // Escape文字
-        if (in == '\\') {
+        if (in == '\\')
+        {
             in=getChar();
             switch (in)
             {
@@ -802,7 +807,9 @@ void JsonMidISerializer::decodeJsonString(std::string& iString)
                 break;
             }
         // "(終了文字)
-        } else if (in == '\"') {
+        }
+        else if (in == '\"')
+        {
     break;
         }
         iString += in;

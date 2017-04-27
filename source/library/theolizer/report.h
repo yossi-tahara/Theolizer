@@ -278,7 +278,8 @@ public:
     {
         getInstance();
         if ((tWeakData->get() != tData())
-         && (tWeakData->get() != iData)) {
+         && (tWeakData->get() != iData))
+        {
             std::cout << "\n" << iFile << "(" << iLineNo << ")"
                       << " : Multiple setup the WeakData.\n";
     exit(1);

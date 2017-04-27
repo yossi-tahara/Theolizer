@@ -86,12 +86,14 @@ void DriverAbort(char const* iDate, char const* iFile, const int iLine,
     va_start(args, iFormat);
     aOutputNum = snprintf(aBuff, aBuffSize, "%s(%d) [%s] ", iFile, iLine, iDate);
     aOutputString = aBuff;
-    if ((aOutputNum < 0) || (aBuffSize <= aOutputNum)) {
+    if ((aOutputNum < 0) || (aBuffSize <= aOutputNum))
+    {
         aOutputString += "[[TRANCATED]]";
     }
     aOutputNum = vsnprintf(aBuff, aBuffSize, iFormat, args);
     aOutputString += aBuff;
-    if ((aOutputNum < 0) || (aBuffSize <= aOutputNum)) {
+    if ((aOutputNum < 0) || (aBuffSize <= aOutputNum))
+    {
         aOutputString += "[[TRANCATED]]";
     }
     va_end(args);
@@ -208,7 +210,8 @@ public:
         {
             mLockingFile.mFileLock.lock();
 
-            if (mLockingFile.mValid) {
+            if (mLockingFile.mValid)
+            {
                 boost::posix_time::time_duration  now
                     = boost::posix_time::microsec_clock::local_time().time_of_day();
                 long msec=now.total_milliseconds() % 1000;
@@ -432,7 +435,8 @@ unsigned AutoPrint::mLevel=0;
 //          使用例
 //              std::map<int, std::string> foo;
 //              Iterator<std::map<int, std::string> > found(fool.find(10), foo);
-//              if (!found) {
+//              if (!found)
+//              {
 //                  // 見つからなかった時の処理
 //              }
 //----------------------------------------------------------------------------
@@ -548,7 +552,8 @@ public:
         while (aContext && clang::isa<NamedDecl>(aContext))
         {
             clang::NamespaceDecl const* nsd = dyn_cast<clang::NamespaceDecl>(aContext);
-            if (nsd) {
+            if (nsd)
+            {
                 if (iSuppressUnwrittenScope)
                 {
                     if (!(nsd->isAnonymousNamespace()) && (!(nsd->isInline())))
@@ -556,9 +561,12 @@ public:
                 }
                 else
                 {
-                    if (nsd->isAnonymousNamespace()) {
+                    if (nsd->isAnonymousNamespace())
+                    {
                         mVector.push_back(NamespaceInfo(false, StringRef("")));
-                    } else {
+                    }
+                    else
+                    {
                         mVector.push_back(NamespaceInfo(nsd->isInline(), nsd->getName()));
                     }
                 }
@@ -721,7 +729,8 @@ public:
     bool try_lock_upgradable()
     {
         DRIVER_OUTPUT("ExclusiveControl : try_lock_upgradable()");
-        if (mFileLockUpgradable.try_lock()) {
+        if (mFileLockUpgradable.try_lock())
+        {
             DRIVER_OUTPUT("ExclusiveControl : ->success!! mRedoRequest=",
                           mRedoRequest);
             mUpgradableLocked = true;
@@ -1091,20 +1100,6 @@ enum struct AnnotateType
 
 AnnotationInfo getAnnotationInfo(const Decl *iDecl, AnnotateType iAnnotateType)
 {
-#if 0
-if (IS_ASTANALYZE_OUTPUT) {
-ASTANALYZE_OUTPUT("------------------------------------");
-// ソース上の場所表示
-ASTANALYZE_OUTPUT(" (", iDecl->getLocation().printToString(*gSourceManager), ")");
-const NamedDecl *named_decl = dyn_cast<NamedDecl>(iDecl);
-if (named_decl && named_decl->getIdentifier()) {
-    ASTANALYZE_OUTPUT(iDecl->getDeclKindName(), " ", named_decl->getQualifiedNameAsString());
-} else {
-    ASTANALYZE_OUTPUT(iDecl->getDeclKindName(), " ", "<No Name>");
-}
-}
-#endif
-
     if (!iDecl->hasAttrs())
 return AnnotationInfo();
 
@@ -1114,17 +1109,20 @@ return AnnotationInfo();
     AnnotateAttr* aTheolizerAttr = nullptr;
 
     const AttrVec &Attrs = iDecl->getAttrs();
-    for (auto attr : Attrs) {
+    for (auto attr : Attrs)
+    {
         AnnotateAttr *aAnnotateAttr = dyn_cast<AnnotateAttr>(attr);
         if (!aAnnotateAttr)
     continue;
 
         temp = aAnnotateAttr->getAnnotation().split(':');
-        if (temp.first.equals("THEORIDE")) {
+        if (temp.first.equals("THEORIDE"))
+        {
 ASTANALYZE_OUTPUT("annotate = ", aAnnotateAttr->getAnnotation());
 
             // 2つ目ならば、エラー
-            if (aTheolizerAttr) {
+            if (aTheolizerAttr)
+            {
                 gCustomDiag.ErrorReport(attr->getLocation(),
                     "THEOLIZER_INTERNAL_ANNOTATE() cannot appear multiple times");
 return AnnotationInfo(AnnotationInfo::Error);
@@ -1142,7 +1140,8 @@ return AnnotationInfo();
 
     temp=temp.second.split(':');
     ret.setAnnotation(temp.first);
-    if (ret.mAnnotate == AnnotationInfo::Error) {
+    if (ret.mAnnotate == AnnotationInfo::Error)
+    {
         gCustomDiag.ErrorReport(aTheolizerAttr->getLocation(),
                 "\"%0\" is unknown parameter for THEOLIZER_ANNOTATE()")
                 << temp.first;
@@ -1155,7 +1154,8 @@ return AnnotationInfo(AnnotationInfo::Error);
     case AnnotationInfo::CM:
     case AnnotationInfo::CS:
     case AnnotationInfo::FN:
-        if (!temp.second.empty()) {
+        if (!temp.second.empty())
+        {
             gCustomDiag.ErrorReport(aTheolizerAttr->getLocation(),
                     "%0 can not have any distination(%1).")
                     << temp.first << temp.second;
@@ -1347,7 +1347,7 @@ private:
     MapType mMap;
 
 public:
-    SerializeList() : mDeclIndex(0) {}
+    SerializeList() : mDeclIndex(0) { }
 
     // clear
     void clear() { mDeclIndex=0; mDeclMap.clear(); mMap.clear(); }

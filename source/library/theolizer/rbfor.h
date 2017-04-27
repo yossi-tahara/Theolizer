@@ -137,7 +137,7 @@ public:
 
 struct NopFunctor
 {
-    void operator()(...){}
+    void operator()(...) { }
 };
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
@@ -171,7 +171,8 @@ public:
 */
     void drop_front()
     {
-        if (empty()) {
+        if (empty())
+        {
     throw std::out_of_range("BasicRange::drop_front()");
         }
         ++mBegin;

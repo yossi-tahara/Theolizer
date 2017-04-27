@@ -139,7 +139,8 @@ public:
     {}
     ~ScopeExit() noexcept(noexcept(mReleaser()))
     {
-        if (!mMoved) {
+        if (!mMoved)
+        {
             mReleaser();
         }
     }

@@ -325,9 +325,12 @@ struct TypeNameImpl
 {
     static char const* get(bool iIsRough=false)
     {
-        if (iIsRough) {
+        if (iIsRough)
+        {
             return  getTypeNameImpl<tType>();
-        } else {
+        }
+        else
+        {
             char const* aName=getTypeNameImpl<TypeNameImpl>();
             char const* p;
             for (p=aName; (*p != '<') && (*p != 0); ++p)

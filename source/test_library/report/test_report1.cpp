@@ -406,7 +406,8 @@ int main(int argc, char** argv)
                 vector<theolizer::ThreadGuard> aThreads;
 
                 // 実行
-                for (int i=0; i < kThreadCount; ++i) {
+                for (int i=0; i < kThreadCount; ++i)
+                {
                     aThreads.emplace_back(
                         theolizer::ThreadGuard(Thread(), &aWorkingLog,
                                                 &aCounter, kNumber*(aSetNo+1))

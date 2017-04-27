@@ -385,7 +385,8 @@ bool ErrorReporter::writeErrorLog
 )
 {
     u8string aAdditionalInfo;
-    if (mAdditionalInfo) {
+    if (mAdditionalInfo)
+    {
         aAdditionalInfo=mAdditionalInfo->getString();
     }
 
@@ -425,7 +426,8 @@ return true;
     }
     log << iErrorKind << ")," << aAdditionalInfo << " : " << iMessage;
     if (mProcessing) log << "[under exception]";
-    if (iFileName) {
+    if (iFileName)
+    {
         log << "{" << iFileName << "(" << iLineNo << ")}";
     }
 
@@ -622,10 +624,13 @@ struct WorkingLog::Impl
             unsigned aFileNumber = mNowNumber % mFileCount;
             u8string aFileName=std::move((boost::format(mPath.str())% aFileNumber).str());
 
-            if (iFirst) {
+            if (iFirst)
+            {
                 mOfstream.open(aFileName.get_fstring(),
                                std::ofstream::out | std::ofstream::app);
-            } else {
+            }
+            else
+            {
                 mOfstream.open(aFileName.get_fstring(),
                                std::ofstream::out | std::ofstream::trunc);
             }
@@ -909,7 +914,8 @@ return false;
         iLineHeader.mThereadId = iLine.substr(aPos, aPos2-aPos);
 
         // ログ文字列先頭取出し
-        if (iPos) {
+        if (iPos)
+        {
             *iPos = aPos2+1;
         }
         return true;

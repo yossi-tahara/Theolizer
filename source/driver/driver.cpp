@@ -419,7 +419,8 @@ return includes;
 
     // パスを取り出す
     std::pair<StringRef, StringRef> aCurrent = aResult.substr(start, end-start).split('\n');
-    while (true) {
+    while (true)
+    {
         if (aCurrent.second.empty())
     break;
         aCurrent = aCurrent.second.split('\n');
@@ -470,7 +471,8 @@ vector<string> GetCompilerInfo(const string& iExePath,
     else
     {
         char const* env = ::getenv("INCLUDE");
-        if (env) {
+        if (env)
+        {
             std::pair<StringRef, StringRef> aCurrent = StringRef(env).split(';');
             while (!aCurrent.second.empty())
             {

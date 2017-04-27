@@ -715,7 +715,8 @@ THEOLIZER_INTERNAL_VER_DEBUG((
     {
         unsigned ret=0;
 
-        if (THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::kIsFullAuto) {
+        if (THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::kIsFullAuto)
+        {
             ret |= theolizer::internal::ecfFullAuto;
         }
 

@@ -87,7 +87,8 @@ std::size_t TypeInfoList::registerType(BaseTypeInfo* iTypeInfo)
 
     // プリミティブなら、そのTypeIndexを記録する
     //  上書きするので最後のものが有効
-    if (iTypeInfo->mTypeCategory == etcPrimitiveType) {
+    if (iTypeInfo->mTypeCategory == etcPrimitiveType)
+    {
         mPrimitiveTypeIndex=ret;
     }
     return ret;

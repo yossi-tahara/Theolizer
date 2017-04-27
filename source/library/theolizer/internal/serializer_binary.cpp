@@ -907,7 +907,8 @@ void BinaryMidISerializer::loadByteString(std::string& iString)
 
     std::size_t size=static_cast<std::size_t>(loadUnsigned(BinaryTag::TagCode::ByteString));
     iString.resize(size);
-    if (size) {
+    if (size)
+    {
         mIStream.read(&(*iString.begin()), size);
     }
     if (!mIStream.good())

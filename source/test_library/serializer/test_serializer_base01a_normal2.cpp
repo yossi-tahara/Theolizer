@@ -111,7 +111,8 @@ std::cout << "TestOSerializerNormal2(" << iFileName << ", "
             }
         }
     }
-    for (std::size_t i=0; i < std::extent<decltype(aArrayClass.mClassArrayDec), 0>::value; ++i) {
+    for (std::size_t i=0; i < std::extent<decltype(aArrayClass.mClassArrayDec), 0>::value; ++i)
+    {
         aArrayClass.mClassArrayDec[i].mShort=static_cast<short>(4000+i);
     }
 

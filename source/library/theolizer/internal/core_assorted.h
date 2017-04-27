@@ -702,7 +702,8 @@ public:
 //          名前空間は、theolizer::internal::匿名::
 //----------------------------------------------------------------------------
 
-namespace{
+namespace
+{
     extern GlobalVersionNoTableBase const*const sGlobalVersionNoTable;
 }   // namespace
 

@@ -1872,7 +1872,8 @@ struct ParameterName<tClass, tRest...>
     static std::string get(VersionNoList const& iVersionNoList)
     {
         std::string aName=Switcher2<tClass>::getTypeName(iVersionNoList);
-        if (sizeof...(tRest)) {
+        if (sizeof...(tRest))
+        {
             aName = aName+","+ParameterName<tRest...>::get(iVersionNoList);
         }
         return aName;
@@ -1887,7 +1888,8 @@ struct ParameterName<NonType<tType, tValue>, tRest...>
     static std::string get(VersionNoList const& iVersionNoList)
     {
         std::string aName=NonType<tType, tValue>::get();
-        if (sizeof...(tRest)) {
+        if (sizeof...(tRest))
+        {
             aName = aName+","+ParameterName<tRest...>::get(iVersionNoList);
         }
         return aName;
@@ -1947,7 +1949,8 @@ struct ParameterName<void, tRest...>
     {
         std::string aName;
         aName="void";
-        if (sizeof...(tRest)) {
+        if (sizeof...(tRest))
+        {
             aName = aName+","+ParameterName<tRest...>::get(iSerializer);
         }
         return aName;

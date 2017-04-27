@@ -45,7 +45,8 @@ private:
         bool aEndIsLF=aString.endswith(kLineEnding);
         for (std::pair<StringRef, StringRef> aParsing=aString.split(kLineEnding);
              true;
-             aParsing=aParsing.second.split(kLineEnding)) {
+             aParsing=aParsing.second.split(kLineEnding))
+        {
             ret.append(aParsing.first);
             if (aParsing.second.empty())
         break;
@@ -69,7 +70,8 @@ private:
         bool aEndIsLF=aString.endswith("\n");
         for (std::pair<StringRef, StringRef> aParsing=aString.split('\n');
              true;
-             aParsing=aParsing.second.split('\n')) {
+             aParsing=aParsing.second.split('\n'))
+        {
             ret.append(aParsing.first);
             if (aParsing.second.empty())
         break;
@@ -96,7 +98,8 @@ private:
     string getDeclSource(Decl const* iDecl)
     {
         string  ret;
-        if (iDecl) {
+        if (iDecl)
+        {
             ret = normalizeLF(std::move(mRewriter.getRewrittenText(iDecl->getSourceRange())));
         }
         return ret;
@@ -112,7 +115,8 @@ private:
         auto found = std::lower_bound(mModifiedFiles.begin(),
                                       mModifiedFiles.end(),
                                       aFileId);
-        if ((found == mModifiedFiles.end()) || (*found != aFileId)) {
+        if ((found == mModifiedFiles.end()) || (*found != aFileId))
+        {
             mModifiedFiles.insert(found, aFileId);
         }
     }
@@ -178,16 +182,20 @@ ASTANALYZE_OUTPUT("instertString");
         if (found && !iIsManual)
         {
             // 侵入型と完全自動型のみKeep-step
-            if (found->second.mIsFullAuto || !found->second.mNonIntrusive) {
+            if (found->second.mIsFullAuto || !found->second.mNonIntrusive)
+            {
                 aIsKeepStep=true;
             }
         }
 
         if (aIsKeepStep)
         {
-            if (found->second.mIsFullAuto) {
+            if (found->second.mIsFullAuto)
+            {
                 mLastVersion << "    THEOLIZER_INTERNAL_BASE_KN(";
-            } else {
+            }
+            else
+            {
                 mLastVersion << "    THEOLIZER_INTERNAL_BASE_KI(";
             }
         }
@@ -527,7 +535,8 @@ ASTANALYZE_OUTPUT("modifyEnum(", aClassName, ")");
 
         // 処理中のターゲット設定
         mTarget=iSerializeInfo.mNonIntrusive;
-        if (!mTarget) {
+        if (!mTarget)
+        {
             mTarget = iSerializeInfo.mTheolizerTarget;
         }
 ASTANALYZE_OUTPUT("(1)mTarget=", mTarget->getName());
@@ -739,7 +748,8 @@ ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsSt
                 if (!crd || !crd->getIdentifier())
             continue;
 
-                if (crd->getName().equals("Theolizer")) {
+                if (crd->getName().equals("Theolizer"))
+                {
                     aTheolizer=crd;
             break;
                 }
@@ -949,7 +959,8 @@ ASTANALYZE_OUTPUT("genarateClassLastVersion");
     void getFieldParameter(string const& iParameter, clang::FieldDecl const* iFieldDecl)
     {
         std::pair<StringRef, StringRef> temp=StringRef(iParameter).split('<');
-        if (!temp.first.empty()) {
+        if (!temp.first.empty())
+        {
             mPrevName=temp.first;
         }
         temp=temp.second.rsplit('>');
@@ -996,7 +1007,8 @@ ASTANALYZE_OUTPUT("    mAnnotationInfoTS=", iSerializeInfo.mAnnotationInfoTS.mPa
 
         // 処理中のターゲット設定
         mTheolizerClass=iSerializeInfo.mNonIntrusive;
-        if (!mTheolizerClass) {
+        if (!mTheolizerClass)
+        {
             mTheolizerClass = iSerializeInfo.mTheolizerTarget;
         }
         mTarget=mTheolizerClass;
@@ -1479,7 +1491,8 @@ ASTANALYZE_OUTPUT("    mObjectTracking=", mObjectTracking);
                     WARNING_CONT(!createEnum(field->getName(), qt, et), field);
                 }
             }
-            if (!aIsFirst) {
+            if (!aIsFirst)
+            {
                 mLastVersion << "\n";
             }
             mLastVersion << "#include <theolizer/internal/version_auto.inc>\n";
@@ -1538,7 +1551,8 @@ ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsSt
                 if (!crd || !crd->getIdentifier())
             continue;
 
-                if (crd->getName().equals("Theolizer")) {
+                if (crd->getName().equals("Theolizer"))
+                {
                     aTheolizer=crd;
             break;
                 }
@@ -1579,12 +1593,15 @@ ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsSt
                     {
                         mPrevVersion << "    THEOLIZER_INTERNAL_"
                                      << aAnnotation.mParameter << "\n";
-                    } else {
+                    }
+                    else
+                    {
                         mPrevVersion << "    THEOLIZER_INTERNAL_CLASS_NAME(("
                                      << aAnnotation.mParameter << "))\n";
                     }
                     // 手動型は順序固定なので出力しない
-                    if (!iSerializeInfo.mIsManual) {
+                    if (!iSerializeInfo.mIsManual)
+                    {
                         mPrevVersion << "#define THEOLIZER_GENERATED_ELEMENT_MAP "
                                      << kElementsMapping[aElementsMapping] << "\n";
                     }
@@ -1605,10 +1622,13 @@ ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsSt
                 if (!cmd)
             break;
 
-                if (aIsFirst) {
+                if (aIsFirst)
+                {
                     aIsFirst=false;
                     mPrevVersion << "#define THEOLIZER_GENERATED_BASE_LIST()\\\n";
-                } else {
+                }
+                else
+                {
                     mPrevVersion << "\\\n        THEOLIZER_GENERATED_SEP\\\n";
                 }
 

@@ -138,7 +138,8 @@ PrepareDir::PrepareDir(std::string const& iDirPath, bool iIsNoDelete) :
 
 PrepareDir::~PrepareDir()
 {
-    if (!mIsNoDelete) {
+    if (!mIsNoDelete)
+    {
         boost::system::error_code error;
         boostF::remove_all(mDirPath, error);
     }

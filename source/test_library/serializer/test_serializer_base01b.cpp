@@ -334,7 +334,8 @@ void TestEof(const theolizer::CheckMode iCheckMode)
         THEOLIZER_PROCESS(js, mIntrusiveBase2);
     }
 
-    for (std::size_t i=1; i < aStream.str().size()-1; i+=3) {
+    for (std::size_t i=1; i < aStream.str().size()-1; i+=3)
+    {
         std::stringstream ss(aStream.str().substr(0, i));
 
         THEOLIZER_CHECK_EXCEPTION(

@@ -406,7 +406,8 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 >::loadClass(tBaseSerializer& iSerializer, unsigned iVersionNo)
 {
     // 旧バージョン処理
-    if (iVersionNo < (THEOLIZER_GENERATED_VERSION_NO+1)) {
+    if (iVersionNo < (THEOLIZER_GENERATED_VERSION_NO+1))
+    {
         THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         <
             tBaseSerializer,

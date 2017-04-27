@@ -271,7 +271,8 @@ return;
             if (aTypeInfo->mTypeCategory == etcPointerType)
             {
                 BaseTypeInfo* aPointeeTypeInfo = aTypeInfo->getPointeeTypeInfo();
-                if (aPointeeTypeInfo->setSaving(*this, aSaveStatList)) {
+                if (aPointeeTypeInfo->setSaving(*this, aSaveStatList))
+                {
                     aAgain=true;   // 自分より前のものなら、再ループ
                 }
             }
@@ -298,7 +299,8 @@ return;
             AutoRestoreSave aAutoRestoreSave2(*this, emOrder, true);
 
             // TypeIndex
-            if (mCheckMode == CheckMode::TypeCheckByIndex) {
+            if (mCheckMode == CheckMode::TypeCheckByIndex)
+            {
                 writePreElement();
                 saveControl(aTypeIndex);
             }
@@ -2631,9 +2633,12 @@ private:
             {
                 pos=iTypeName.find_first_of("><", pos+1);
                 THEOLIZER_INTERNAL_ASSERT(pos != std::string::npos, THEOLIZER_INTERNAL_BUG);
-                if (iTypeName[pos] == '<') {
+                if (iTypeName[pos] == '<')
+                {
                     ++cnt;
-                } else {
+                }
+                else
+                {
                     --cnt;
                 }
             }
@@ -2852,7 +2857,8 @@ void MetaDeserializerBase::generateEnum()
 
         // enum定義
         mOStream << "\nenum " << ((mTypeFlags & eefScoped)?"struct ":"") << aEnumName;
-        if (!mBaseType.empty()) {
+        if (!mBaseType.empty())
+        {
             mOStream << " : " << mBaseType;
         }
         mOStream << "\n{";
@@ -2860,9 +2866,12 @@ void MetaDeserializerBase::generateEnum()
         bool aIsFirst=true;
         for (auto&& symbol : mEnumSymbols)
         {
-            if (aIsFirst) {
+            if (aIsFirst)
+            {
                 aIsFirst=false;
-            } else {
+            }
+            else
+            {
                 mOStream << ",";
             }
             mOStream << "\n    " << symbol.mSymbols[0];
@@ -2875,9 +2884,12 @@ void MetaDeserializerBase::generateEnum()
                     bool aIsFirst2=true;
                     for (std::size_t i=1; i < symbol.mSymbols.size(); ++i)
                     {
-                        if (aIsFirst2) {
+                        if (aIsFirst2)
+                        {
                             aIsFirst2=false;
-                        } else {
+                        }
+                        else
+                        {
                             mOStream << ",";
                         }
                         mOStream << symbol.mSymbols[i];
@@ -2889,9 +2901,12 @@ void MetaDeserializerBase::generateEnum()
                     bool aIsFirst2=true;
                     for (std::size_t i=1; i < symbol.mValues.size(); ++i)
                     {
-                        if (aIsFirst2) {
+                        if (aIsFirst2)
+                        {
                             aIsFirst2=false;
-                        } else {
+                        }
+                        else
+                        {
                             mOStream << ",";
                         }
                         mOStream << symbol.mValues[i];
@@ -2929,9 +2944,12 @@ void MetaDeserializerBase::generateEnum()
     bool aIsFirst=true;
     for (auto&& symbol : mEnumSymbols)
     {
-        if (aIsFirst) {
+        if (aIsFirst)
+        {
             aIsFirst=false;
-        } else {
+        }
+        else
+        {
             mOStream << "\\\n";
         }
 
@@ -2940,9 +2958,12 @@ void MetaDeserializerBase::generateEnum()
             bool aIsFirst2=true;
             for (std::size_t i=0; i < symbol.mSymbols.size(); ++i)
             {
-                if (aIsFirst2) {
+                if (aIsFirst2)
+                {
                     aIsFirst2=false;
-                } else {
+                }
+                else
+                {
                     mOStream << ",";
                 }
                 mOStream << "u8\"" << symbol.mSymbols[i] << "\"";
@@ -2953,9 +2974,12 @@ void MetaDeserializerBase::generateEnum()
             bool aIsFirst2=true;
             for (std::size_t i=0; i < symbol.mValues.size(); ++i)
             {
-                if (aIsFirst2) {
+                if (aIsFirst2)
+                {
                     aIsFirst2=false;
-                } else {
+                }
+                else
+                {
                     mOStream << ",";
                 }
                 mOStream << symbol.mValues[i];
@@ -2964,7 +2988,8 @@ void MetaDeserializerBase::generateEnum()
         mOStream << ")," << symbol.mPrevValue << ")";
     }
     std::string aDefault="0";
-    if (mEnumSymbols.size()) {
+    if (mEnumSymbols.size())
+    {
         aDefault=mEnumSymbols[0].mValues[0];
     }
     mOStream << "\n"
@@ -3191,14 +3216,16 @@ void MetaDeserializerBase::generateClass
                            return element.mName == iRhs.mName;
                         }
                     );
-                if (found == mClassElements.end()) {
+                if (found == mClassElements.end())
+                {
                     aDel="_DEL";
                 }
             }
             // 要素
             else
             {
-                if (element.mNextName.empty()) {
+                if (element.mNextName.empty())
+                {
                     aDel="_DEL";
                 }
             }

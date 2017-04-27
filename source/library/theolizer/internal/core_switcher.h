@@ -337,7 +337,8 @@ struct Switcher
 
             // オブジェクトID回復
             size_t aObjectId;
-            if (!iSerializer.readPreElement()) {
+            if (!iSerializer.readPreElement())
+            {
                 THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
             }
             iSerializer.loadControl(aObjectId);
@@ -647,7 +648,8 @@ struct Switcher
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
 
             size_t aObjectId;
-            if (!iSerializer.readPreElement()) {
+            if (!iSerializer.readPreElement())
+            {
                 THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
             }
             iSerializer.loadControl(aObjectId);
@@ -666,7 +668,8 @@ struct Switcher
             // 未回復の時のみ回復する
             if (!aIsLoaded)
             {
-                if (!iSerializer.readPreElement()) {
+                if (!iSerializer.readPreElement())
+                {
                     THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
                 }
                 IntrusiveType::Theolizer::loadClass(iSerializer, aInstancePtr, aVersionNo);
@@ -1104,7 +1107,8 @@ struct Switcher
                 &aIsLoaded
             );
             // 未回復の時のみ回復する
-            if (!aIsLoaded) {
+            if (!aIsLoaded)
+            {
                 iSerializer.readPreElement();
                 TheolizerNonIntrusive<tEnumType>::Theolizer::
                     loadEnum(iSerializer, oInstance, aVersionNo);
@@ -1425,7 +1429,8 @@ struct BranchedProcess
         catch (ErrorInfo&)
         {
             // 例外要求なら再throw
-            if (!iSerializer.getNoThrowException()) {
+            if (!iSerializer.getNoThrowException())
+            {
 throw;
             }
         }

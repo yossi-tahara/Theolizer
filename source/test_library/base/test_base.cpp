@@ -143,7 +143,8 @@ void testTestClass(tContainer&& iContainer, bool iIsConst=false)
             THEOLIZER_EQUAL(kTestDataClass[aIndex].second, aData.second);
             ++aIndex;
 
-            if (aIndex == STOP_INDEX) {
+            if (aIndex == STOP_INDEX)
+            {
                 aSeparator.drop_front();
         break;
             }

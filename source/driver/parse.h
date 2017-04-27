@@ -175,9 +175,12 @@ private:
             if (arg && arg->isLiteral())
             {
                 StringRef aArg=StringRef(arg->getLiteralData(), arg->getLength());
-                if (!gDeveloper.empty() && aArg.startswith(gDeveloper)) {
+                if (!gDeveloper.empty() && aArg.startswith(gDeveloper))
+                {
                     mUpdateEnabled.top()=true;
-                } else {
+                }
+                else
+                {
                     mUpdateEnabled.top()=false;
                 }
                 ASTANALYZE_OUTPUT("--- MacroExpands : ", aMacroName,
@@ -368,7 +371,8 @@ ASTANALYZE_OUTPUT("      kind=", oTargetClass->getTemplateSpecializationKind(),
                 // プライマリー・テンプレート展開を試みる
                 ClassTemplateSpecializationDecl const* ctsd = 
                     dyn_cast<ClassTemplateSpecializationDecl>(oTargetClass);
-                if (ctsd) {
+                if (ctsd)
+                {
                     ClassTemplateDecl* ctd = ctsd->getSpecializedTemplate();
                     oTargetClass = ctd->getTemplatedDecl();
 ASTANALYZE_OUTPUT("      Record-> Primary");
@@ -388,7 +392,8 @@ ASTANALYZE_OUTPUT("      Record-> Primary");
                 TemplateSpecializationType const* tst=qt->getAs<TemplateSpecializationType>();
 
 #if 0   // テンプレート仮パラメータ表示
-                for (unsigned i=0; i < tst->getNumArgs(); ++i) {
+                for (unsigned i=0; i < tst->getNumArgs(); ++i)
+                {
                     ASTANALYZE_OUTPUT("     [", i, "]=",
                             tst->getArg(i).getAsType().getAsString());
                 }
@@ -483,7 +488,8 @@ ASTANALYZE_OUTPUT("    ::Theolizer does not process.");
             if (aBaseDecl
              && (aBaseDecl->getName().equals("GlobalVersionNoTable")))
             {
-                if (mAstInterface.mGlobalVersionNoTableDecl) {
+                if (mAstInterface.mGlobalVersionNoTableDecl)
+                {
                     gCustomDiag.ErrorReport(iCXXRecordDecl->getLocation(),
                         "Multiple definition of THEOLIZER_DEFINE_GLOBAL_VERSION_TABLE().");
 
@@ -607,14 +613,17 @@ return true;
                 aTargetClass=nullptr;   // 非侵入型はTheolizerTargetから生成する
                 ERROR(!getNonIntrusiveTarget(aTheolizerTarget, aTargetClass, aTargetEnum),
                      aTheolizerTarget, true);
-if (aTargetClass) {
-    ASTANALYZE_OUTPUT("    aTargetClass=", aTargetClass->getQualifiedNameAsString(),
-                      " ", aTargetClass);
-}
-if (aTargetEnum) {
-    ASTANALYZE_OUTPUT("    aTargetEnum=", aTargetEnum->getQualifiedNameAsString(),
-                      " ", aTargetEnum);
-}
+
+                if (aTargetClass)
+                {
+                    ASTANALYZE_OUTPUT("    aTargetClass=",
+                        aTargetClass->getQualifiedNameAsString(), " ", aTargetClass);
+                }
+                if (aTargetEnum)
+                {
+                    ASTANALYZE_OUTPUT("    aTargetEnum=",
+                        aTargetEnum->getQualifiedNameAsString(), " ", aTargetEnum);
+                }
             }
 
             // Theolizerクラスまで送る(途中TheolizerClassがあったらアノテーションを取り出す)
@@ -640,7 +649,8 @@ ASTANALYZE_OUTPUT("    aAnnotation=", aAnnotation.c_str());
                 if (!crd->getIdentifier())
             continue;
 
-                if (crd->getName().equals("Theolizer")) {
+                if (crd->getName().equals("Theolizer"))
+                {
                     aTheolizer=crd;
             break;
                 }
@@ -1716,7 +1726,8 @@ struct SkipList
 
 int check_skip(char const* iArg)
 {
-  static const SkipList skip_list[] = {
+    static const SkipList skip_list[] =
+    {
         // unsupported
         {"--dependent-lib", 1},
 
@@ -1838,19 +1849,25 @@ return 0;
             skip_num=2;
         }
 
-// これがないと、char16_t, char32_tについて未定義エラーとなる(llvm 3.7.0+MSVC 2015)
-if (StringRef(*arg).equals("-fms-compatibility-version=18"))
-{
-    aArgStringList.push_back("-fms-compatibility-version=19");
-    skip_num=1;
-}
+        // これがないと、char16_t, char32_tについて未定義エラーとなる(llvm 3.7.0+MSVC 2015)
+        if (StringRef(*arg).equals("-fms-compatibility-version=18"))
+        {
+            aArgStringList.push_back("-fms-compatibility-version=19");
+            skip_num=1;
+        }
+
         // 解析スキップ処理しつつ、パラメータ登録
         if (!skip_num)
+        {
             skip_num = check_skip(*arg);
+        }
 
-        if (skip_num) {
+        if (skip_num)
+        {
             --skip_num;
-        } else {
+        }
+        else
+        {
             aArgStringList.push_back(*arg);
         }
     }
@@ -1877,7 +1894,8 @@ if (StringRef(*arg).equals("-fms-compatibility-version=18"))
 
     int argc = static_cast<int>(aArgStringList.size());
     char const** argv = aArgStringList.begin();
-    for (int j = 0; j < argc; ++j) {
+    for (int j = 0; j < argc; ++j)
+    {
         PARAMETER_OUTPUT("    argv[", j, "] :  ", argv[j]);
     }
 
