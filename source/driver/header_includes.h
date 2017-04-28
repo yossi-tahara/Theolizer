@@ -133,11 +133,6 @@ THEOLIZER_INTERNAL_DISABLE_WARNING()
 //          当該名称の調査を容易にするため、namespace指令を使わないこと。
 //----------------------------------------------------------------------------
 
-using std::string;
-using std::vector;
-using std::size_t;
-using std::move;
-
 using clang::DiagnosticsEngine;
 using clang::DiagnosticBuilder;
 using clang::DiagnosticIDs;

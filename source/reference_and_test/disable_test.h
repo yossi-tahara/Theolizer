@@ -48,8 +48,8 @@
 //    #define ENABLE_SUPPORT_STL_TEST
 
 //    #define ENABLE_MODIFY_ENUM_TEST
-//    #define ENABLE_MODIFY_CLASS_TEST
-//        #define ENABLE_MODIFY_CLASS_TEST_NAME
+    #define ENABLE_MODIFY_CLASS_TEST
+        #define ENABLE_MODIFY_CLASS_TEST_NAME
 //        #define ENABLE_MODIFY_CLASS_TEST_ORDER
 //        #define ENABLE_MODIFY_CLASS_TEST_ARRAY
 #endif

@@ -531,7 +531,7 @@ ASTANALYZE_OUTPUT("-------- decl list start");
 for (auto&& aDecl : iCXXRecordDecl->decls())
 {
     NamedDecl* nd = dyn_cast<NamedDecl>(aDecl);
-    string name;
+    std::string name;
     if (nd && nd->getIdentifier()) name = nd->getName();
     ASTANALYZE_OUTPUT("    decl=", name);
 }
@@ -544,7 +544,7 @@ ASTANALYZE_OUTPUT("-------- decl list end");
         for (auto&& aDecl : aDecls)
         {
 NamedDecl* nd=dyn_cast<NamedDecl>(aDecl.front());
-string name;
+std::string name;
 if (nd && nd->getIdentifier()) name=nd->getName();
 ASTANALYZE_OUTPUT("    decl=", name);
             if (aDecl.front()->getKind() != Decl::Typedef)
@@ -1454,7 +1454,7 @@ ASTANALYZE_OUTPUT("          base : ", aBaseDecl->getQualifiedNameAsString());
             if (!field->getIdentifier())
         continue;
 
-// getCanonicalType()を取ることで、string→basic_stringへ展開される。
+// getCanonicalType()を取ることで、std::string→basic_stringへ展開される。
 ASTANALYZE_OUTPUT("          field : ", field->getType().getCanonicalType().getAsString(),
                   " ", field->getName());
 
@@ -1762,7 +1762,7 @@ int check_skip(char const* iArg)
 //      {"-internal-isystem", 2},   // システム・インクルード指定だが使ってない模様
     };
 
-    for (size_t i = 0; i < llvm::array_lengthof(skip_list); ++i)
+    for (std::size_t i = 0; i < llvm::array_lengthof(skip_list); ++i)
     {
         if (StringRef(iArg).startswith(skip_list[i].name))
 return skip_list[i].skip_num;
@@ -1776,9 +1776,12 @@ return skip_list[i].skip_num;
 // ***************************************************************************
 
 static llvm::cl::OptionCategory MyToolCategory("Theolizer Driver");
-int parse(string const& iExecPath,
-          llvm::opt::ArgStringList const& iArgs,
-          string const& iTarget)
+int parse
+(
+    std::string const&              iExecPath,
+    llvm::opt::ArgStringList const& iArgs,
+    std::string const&              iTarget
+)
 {
     gProcessingTime.GetmSec();  // 計測開始
 
@@ -1796,7 +1799,7 @@ int parse(string const& iExecPath,
     aArgStringList.push_back("--");
 
     // デフォルトの自動生成先ファイル名
-    gCompilingSourceName=string(*aFileArg);
+    gCompilingSourceName=std::string(*aFileArg);
     gDefaultSourceName=boostF::absolute(gCompilingSourceName+".theolizer.hpp");
     DRIVER_OUTPUT("gDefaultSourceName=", gDefaultSourceName.string());
 
@@ -1804,13 +1807,13 @@ int parse(string const& iExecPath,
     // 内部にstaticにソース・リストを保持しており、
     // コンストラクトされる度にソース・リストへ追加される。
     // 対策のため、別途ソース・リストを用意する。
-    vector<string>  aSourceList;
+    std::vector<std::string>  aSourceList;
     aSourceList.push_back(*aFileArg);
 
-    bool    x_flag = false;
-    int     skip_num = 0;                       // 解析スキップするargvの数
-    string  error_limit;                        // -error-limit記憶領域(最後のみ有効)
-    string  message_length;                     // -message-length記憶領域(最後のみ有効)
+    bool        x_flag = false;
+    int         skip_num = 0;                       // 解析スキップするargvの数
+    std::string error_limit;                        // -error-limit記憶領域(最後のみ有効)
+    std::string message_length;                     // -message-length記憶領域(最後のみ有効)
     for (auto arg = iArgs.begin(); arg != iArgs.end(); ++arg)
     {
         // ファイル名はスキップする。
@@ -1914,9 +1917,8 @@ return 0;
 #if defined(_WIN32) // TMPファイル削除
     if (!gTempFile.empty())
     {
-        boostF::path aPath=gTempFile;
-        std::string aDirectory=aPath.parent_path().generic_string();
-        std::string aFileName =aPath.filename().generic_string();
+        std::string aDirectory=llvmS::path::parent_path(gTempFile).str();
+        std::string aFileName =llvmS::path::filename(gTempFile).str();
         std::string aRegex=aFileName+"~RF.*\\.TMP";
         ASTANALYZE_OUTPUT("aDirectory=", aDirectory);
         ASTANALYZE_OUTPUT("aFileName =", aFileName);

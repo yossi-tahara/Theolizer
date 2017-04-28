@@ -51,7 +51,7 @@ enum DriverMode {
 
 DriverMode getDriverMode(std::string const& iStem, std::string& oDefineParam)
 {
-    std::string  aStem = StringRef(iStem).rtrim("-0123456789.").lower();
+    std::string aStem = StringRef(iStem).rtrim("-0123456789.").lower();
 
     DriverMode  ret = none;
     oDefineParam="-D";
@@ -77,9 +77,9 @@ DriverMode getDriverMode(std::string const& iStem, std::string& oDefineParam)
 //      元コンパイラのリネーム時フル・パス生成
 // ***************************************************************************
 
-string makeRenamePath(string const& iExePath)
+std::string makeRenamePath(std::string const& iExePath)
 {
-    string aRenamePath = llvmS::path::parent_path(iExePath);
+    std::string aRenamePath = llvmS::path::parent_path(iExePath);
     aRenamePath.append("/");
     aRenamePath.append(llvmS::path::stem(iExePath));
     aRenamePath.append("RenamedByTheolizer");
@@ -99,15 +99,14 @@ class ExecuteMan
 {
     SmallString<128>    mTempFilePath;
     bool                mError;
-    string              mErrorMessage;
-    string              mResult;
+    std::string         mErrorMessage;
+    std::string         mResult;
     char*               mCurrentDir;
 
 public:
     // コンストラクタ(指定コマンド実行)
-    ExecuteMan(string const& iExePath, llvm::opt::ArgStringList& ioArgv)
+    ExecuteMan(std::string const& iExePath, llvm::opt::ArgStringList& ioArgv)
     {
-
         mError=true;
         mErrorMessage="Unknown error";
         mResult = "";
@@ -123,7 +122,7 @@ public:
 
         DRIVER_OUTPUT("ExecuteMan");
         DRIVER_OUTPUT("    iExePath = ", iExePath);
-        DRIVER_OUTPUT("    mTempFilePath = ", mTempFilePath.begin());
+        DRIVER_OUTPUT("    mTempFilePath = ", mTempFilePath.str());
 
         // リダイレクト
         const StringRef *aRedirects[3];
@@ -136,7 +135,7 @@ public:
         ioArgv.push_back(nullptr);
 
         // 実行
-        string aCurrentDir = llvmS::path::parent_path(iExePath);
+        std::string aCurrentDir = llvmS::path::parent_path(iExePath);
         if (chdir(aCurrentDir.c_str()))
         {
             mErrorMessage="Can not chdir.";
@@ -156,7 +155,7 @@ public:
 
         // 結果読み出し
         {
-            std::ifstream ifs(mTempFilePath.begin());
+            std::ifstream ifs(mTempFilePath.str());
             if (ifs.fail())
             {
                 mErrorMessage="Temporary file read error!";
@@ -166,7 +165,7 @@ public:
 
             std::istreambuf_iterator<char> it(ifs);
             std::istreambuf_iterator<char> last;
-            mResult = string(it, last);
+            mResult = std::string(it, last);
         }
 
         DRIVER_OUTPUT("------------------------- mResult");
@@ -179,7 +178,9 @@ public:
     {
         // 一時ファイル削除
         if (!mError)
-            remove(mTempFilePath.begin());
+        {
+            llvmS::fs::remove(mTempFilePath);
+        }
 
         // カレント・フォルダを元に戻しておく
         chdir(mCurrentDir);
@@ -187,9 +188,9 @@ public:
     }
 
     // 結果返却
-    string const& GetResult()       const { return mResult; }
-    bool GetError()                 const { return mError; }
-    string const& GetErrorMessage() const { return mErrorMessage; }
+    std::string const& GetResult()       const { return mResult; }
+    bool GetError()                      const { return mError; }
+    std::string const& GetErrorMessage() const { return mErrorMessage; }
 };
 
 // ***************************************************************************
@@ -203,7 +204,7 @@ enum CheckResult
     ecrNotTheolizer
 };
 
-CheckResult CheckTheolizer(const string &iExePath)
+CheckResult CheckTheolizer(std::string const& iExePath)
 {
     // パラメータ生成
     llvm::opt::ArgStringList aArgv;
@@ -219,7 +220,7 @@ return ecrExecError;
     }
 
     // 結果判定
-    if (aExecuteMan.GetResult().find(kTheolizerMarker) != string::npos)
+    if (aExecuteMan.GetResult().find(kTheolizerMarker) != std::string::npos)
 return ecrIsTheolizer;
 
     return ecrNotTheolizer;
@@ -246,7 +247,7 @@ std::string getCanonicalPath(std::string const& iPath)
 //      TheolizerDriver専用処理
 // ***************************************************************************
 
-int TheolizerProc(string const& iExePath, char const* iArg)
+int TheolizerProc(std::string const& iExePath, char const* iArg)
 {
     bool    aDoReplace=false;
     bool    aDoRestore=false;
@@ -288,13 +289,13 @@ return 1;
 
         aCurrent = aCurrent.second.split(';');
 
-        string aTargetPath = aCurrent.first;
+        std::string aTargetPath = aCurrent.first;
         DRIVER_OUTPUT("aTargetPath                = ", aTargetPath);
         aTargetPath=getCanonicalPath(aTargetPath);
     if (aTargetPath.empty())
 return 1;
         DRIVER_OUTPUT("aTargetPath(CanonicalPath) = ", aTargetPath);
-        string aReplacePath = makeRenamePath(aTargetPath);
+        std::string aReplacePath = makeRenamePath(aTargetPath);
         CheckResult cr=CheckTheolizer(aTargetPath);
         std::error_code ec;
         switch (cr)
@@ -318,7 +319,7 @@ return 1;
 return 1;
                 }
                 llvm::outs() << "    Renamed " << aTargetPath << " to "
-                             << llvmS::path::filename(aReplacePath).begin() << "\n";
+                             << llvmS::path::filename(aReplacePath).str() << "\n";
 
                 // TheolizerDriver.exeをターゲットへコピーする
                 ec=llvmS::fs::copy_file(iExePath, aTargetPath);
@@ -332,7 +333,7 @@ return 1;
                 boostF::file_status file_status=boostF::status(iExePath);
                 boostF::permissions(aTargetPath, file_status.permissions());
                 llvm::outs() << "    Copied " << iExePath << " to "
-                             << llvmS::path::filename(aTargetPath).begin() << "\n";
+                             << llvmS::path::filename(aTargetPath).str() << "\n";
                 llvm::outs() << "Completed !\n";
             }
             else
@@ -367,13 +368,13 @@ return 1;
 return 1;
                 }
                 llvm::outs() << "    Renamed " << aReplacePath << " to "
-                             << llvmS::path::filename(aTargetPath).begin() << "\n";
+                             << llvmS::path::filename(aTargetPath).str() << "\n";
                 llvm::outs() << "Completed !\n";
             }
             else
             {
                 llvm::outs() << "Already replaced " << aTargetPath << " by "
-                             << llvmS::path::filename(iExePath).begin() << "\n";
+                             << llvmS::path::filename(iExePath).str() << "\n";
             }
             break;
 
@@ -388,9 +389,9 @@ return 1;
 //      g++の情報取り出し
 // ***************************************************************************
 
-vector<string> getGppInfo(string const& iExePath, string& oTarget)
+std::vector<std::string> getGppInfo(std::string const& iExePath, std::string& oTarget)
 {
-    vector<string> includes;
+    std::vector<std::string> includes;
 
     // パラメータ生成
     llvm::opt::ArgStringList aArgv;
@@ -403,17 +404,17 @@ vector<string> getGppInfo(string const& iExePath, string& oTarget)
 
     ExecuteMan  aExecuteMan(iExePath, aArgv);
     DRIVER_ASSERT(!aExecuteMan.GetError(),
-                        "Execution %s error : %s\n", 
-                        llvmS::path::filename(iExePath).begin(),
-                        aExecuteMan.GetErrorMessage().c_str());
+                  "Execution %s error : %s\n", 
+                  llvmS::path::filename(iExePath).str(),
+                  aExecuteMan.GetErrorMessage().c_str());
 
     // システム・インクルード開始位置
     StringRef aResult = aExecuteMan.GetResult();
-    size_t start = aResult.find("#include <...>");
+    std::size_t start = aResult.find("#include <...>");
     if (start == StringRef::npos)
 return includes;
 
-    size_t end = aResult.find("End of search list.", start);
+    std::size_t end = aResult.find("End of search list.", start);
     if (end == StringRef::npos)
 return includes;
 
@@ -433,8 +434,8 @@ return includes;
 
     // ターゲットを取り出す
     static const char aTargetString[]="Target: ";
-    static const size_t aTargetSringLen=sizeof(aTargetString)-1;
-    size_t aTargetPos = aResult.find(aTargetString);
+    static const std::size_t aTargetSringLen=sizeof(aTargetString)-1;
+    std::size_t aTargetPos = aResult.find(aTargetString);
     if (aTargetPos != StringRef::npos)
     {
         aCurrent = aResult.substr(aTargetPos+aTargetSringLen).split('\n');
@@ -454,11 +455,14 @@ return includes;
 //              ターゲット            ："無し
 // ***************************************************************************
 
-vector<string> GetCompilerInfo(const string& iExePath,
-                                    DriverMode iDriverMode,
-                                    string& oTarget)
+std::vector<std::string> GetCompilerInfo
+(
+    std::string const& iExePath,
+    DriverMode iDriverMode,
+    std::string& oTarget
+)
 {
-    vector<string> aIncludes;
+    std::vector<std::string> aIncludes;
     oTarget = "";
 
     // g++なら、-vにて取り出す
@@ -489,22 +493,41 @@ vector<string> GetCompilerInfo(const string& iExePath,
 }
 
 // ***************************************************************************
+//      ログ出力指定判定
+// ***************************************************************************
+
+void setupDebugLog()
+{
+    // 設定ファイルのパス生成
+    std::string aSetupFilePath(TemporaryDir::get()); 
+    aSetupFilePath.append(kTheolizerSetupFile);
+
+    std::ifstream   ifs(aSetupFilePath);
+    if (ifs)
+    {
+        ENABLE_OUTPUT(KIND(Time)|KIND(Driver)|KIND(Parameter)|KIND(AstAnalyze));
+        ifs >> gAutoDeleteSec;
+    }
+    else
+    {
+        DISABLE_OUTPUT();
+    }
+}
+
+// ***************************************************************************
 //      メイン
 // ***************************************************************************
 
 int callParse
 (
-    string const&                   iExecPath,
+    std::string const&              iExecPath,
     llvm::opt::ArgStringList const& iArgs,
-    string const&                   iTarget
+    std::string const&              iTarget
 );
 
 int main(int iArgc, const char **iArgv)
 {
-//  DISABLE_OUTPUT();
-//  ENABLE_OUTPUT(KIND(Time));
-//  ENABLE_OUTPUT(KIND(Time)|KIND(Parameter));
-    ENABLE_OUTPUT(KIND(Time)|KIND(Driver)|KIND(Parameter)|KIND(AstAnalyze));
+    setupDebugLog();
 
     struct Auto
     {
@@ -518,6 +541,7 @@ int main(int iArgc, const char **iArgv)
         }
     } aAuto;
 
+    PARAMETER_OUTPUT("gAutoDeleteSec=", gAutoDeleteSec);
     FineTimer   ft;
     int i;
 
@@ -556,7 +580,7 @@ int main(int iArgc, const char **iArgv)
 
     // 自モジュールのパスを自exeのフル・パスとする
     void *aFuncPtr = (void*)(intptr_t)main;
-    string aExePath = llvmS::fs::getMainExecutable(iArgv[0], &aFuncPtr);
+    std::string aExePath = llvmS::fs::getMainExecutable(iArgv[0], &aFuncPtr);
     DRIVER_OUTPUT("aExePath                = ", aExePath);
     aExePath=getCanonicalPath(aExePath);
     if (aExePath.empty())
@@ -619,7 +643,7 @@ return 1;
     bool aIsNostdinc = false;
     bool aIsNostdincpp = false;
     bool aIsOptionv = false;
-    string aOriginalPath;
+    std::string aOriginalPath;
 
     for (auto&& arg : aArgv)
     {
@@ -758,8 +782,9 @@ return TheolizerProc(aExePath, arg);
             if ((aDriverMode != cl) && !aIsNostdincpp)  aArgv.push_back("-nostdinc++");
 
             // システム・インクルード・パス生成
-            string  aTarget;
-            vector<string>  aIncludes = GetCompilerInfo(aOriginalPath, aDriverMode, aTarget);
+            std::string  aTarget;
+            std::vector<std::string> aIncludes=
+                GetCompilerInfo(aOriginalPath, aDriverMode, aTarget);
 
             // インクルード・パス追加
             for(auto& include : aIncludes)
@@ -839,7 +864,8 @@ return TheolizerProc(aExePath, arg);
 
                     // AST解析とソース修正
                     ret=callParse(aExePath, args, aTarget);
-                } while(gExclusiveControl.getRedoRequest() || gRetryAST);
+                }
+                while(gExclusiveControl.getRedoRequest() || gRetryAST);
                 if (ret) aRet=ret;
 
                 if (IS_TIME_OUTPUT)
@@ -884,7 +910,7 @@ return aRet;
 
     char* aCurrentDir = GetCurrentDirName();
     PARAMETER_OUTPUT("Current Dir : ", aCurrentDir);
-    string error_essage;
+    std::string error_essage;
     bool execution_failed;
 
     int ret=0;
@@ -969,9 +995,9 @@ struct ParseCaller
 {
     ParseCaller
     (
-        string const&                   iExecPath,
+        std::string const&              iExecPath,
         llvm::opt::ArgStringList const& iArgs,
-        string const&                   iTarget
+        std::string const&              iTarget
     ) : mExecPath(iExecPath),
         mArgs(iArgs),
         mTarget(iTarget)
@@ -980,9 +1006,9 @@ struct ParseCaller
     int operator()() { return parse(mExecPath, mArgs, mTarget); }
 
 private:
-    string const&                   mExecPath;
+    std::string const&              mExecPath;
     llvm::opt::ArgStringList const& mArgs;
-    string const&                   mTarget;
+    std::string const&              mTarget;
 };
 
 // ***************************************************************************
@@ -991,9 +1017,9 @@ private:
 
 int callParse
 (
-    string const&                   iExecPath,
+    std::string const&              iExecPath,
     llvm::opt::ArgStringList const& iArgs,
-    string const&                   iTarget
+    std::string const&              iTarget
 )
 {
     int result=0;

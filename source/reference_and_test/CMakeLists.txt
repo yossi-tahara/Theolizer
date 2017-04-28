@@ -306,7 +306,7 @@ endif()
 #       バージョン変更テスト
 #-----------------------------------------------------------------------------
 
-if(TRUE)
+if(FALSE)
 
 set(FIRST_VERSION "ver1a")
 set(LAST_VERSION  "ver3b")

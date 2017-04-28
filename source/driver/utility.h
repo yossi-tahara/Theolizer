@@ -27,8 +27,11 @@
 //      各種定義
 //----------------------------------------------------------------------------
 
+// ログ出力設定ファイル名
+char const* kTheolizerSetupFile = "driver.txt";
+
 // ログ・ファイル名
-char const* kTheolizerLogFile = "Debug.log";
+char const* kTheolizerLogFile = "debug.log";
 
 // TheolizerDriver.exe判定用文字列
 char const* kTheolizerMarker = THEOLIZER_INTERNAL_PRODUCT_NAME;
@@ -45,7 +48,7 @@ char const* kTheolizerVersionParam  = ARG_THEOLIZER "-version"; // none
 char const*  kDiagMarker = "[" THEOLIZER_INTERNAL_PRODUCT_NAME "] ";
 
 // 排他制御用リソース名
-char const* kTheolizerFileLock = "FileLock";
+char const* kTheolizerFileLock = "file_lock";
 
 //############################################################################
 //      コンパイラの相違点を吸収する
@@ -68,7 +71,8 @@ char const* kTheolizerFileLock = "FileLock";
 //      汎用ルーチン
 //############################################################################
 
-extern SourceManager*          gSourceManager;  // デバッグ用
+extern SourceManager*           gSourceManager; // デバッグ用
+extern unsigned                 gAutoDeleteSec; // Logファイルの自動削除経過秒数
 
 // ***************************************************************************
 //      ASSERT群
@@ -77,7 +81,7 @@ extern SourceManager*          gSourceManager;  // デバッグ用
 void DriverAbort(char const* iDate, char const* iFile, const int iLine, 
                      const char *iFormat, ...)
 {
-    string      aOutputString;
+    std::string      aOutputString;
     int         aOutputNum;
     char        aBuff[2048];
     const int   aBuffSize((int)sizeof(aBuff));
@@ -172,15 +176,15 @@ class LogFile
 private:
     struct LockingFile
     {
-        string                          mLogPath;
-        string                          mLockPath;
-        llvm::raw_fd_ostream            mRawFdOStream;
-        boostI::file_lock               mFileLock;
-        bool                            mValid;
+        std::string             mLogPath;
+        std::string             mLockPath;
+        llvm::raw_fd_ostream    mRawFdOStream;
+        boostI::file_lock       mFileLock;
+        bool                    mValid;
 
-        LockingFile(const string& iLogPath, std::error_code& iError) :
+        LockingFile(std::string const& iLogPath, std::error_code& iError) :
             mLogPath(iLogPath),
-            mLockPath(mLogPath+"-Lock"),
+            mLockPath(mLogPath+"_lock"),
             mRawFdOStream(mLogPath, iError, llvmS::fs::F_Append | llvmS::fs::F_Text),
             mFileLock(),
             mValid(!iError)
@@ -262,14 +266,25 @@ public:
 //      ---<<< 生成と削除 >>>---
 
 private:
-    LogFile() : mLogKindSet(LogKindSet().set())
+    LogFile() : mLogKindSet(LogKindSet().set()), mInitialized(false) { }
+    LogFile(const LogFile&) = delete;
+    void operator =(const LogFile&) = delete;
+
+    void initialize()
     {
+        // 最初に出力指定された時、ファイル生成する
+        if (mInitialized)
+    return;
+        if (!mLogKindSet.any())
+    return;
+        mInitialized=true;
+
         // ログ・ファイルのパス生成
-        string aLogPath(TemporaryDir::get()); 
+        std::string aLogPath(TemporaryDir::get()); 
         aLogPath.append(kTheolizerLogFile);
 
         // ログ・ファイルがあれば、更新した日付時刻を取り出して、
-        // 10分以上経過していたら、削除する。
+        // gAutoDeleteSec秒以上経過していたら、削除する。
         if (llvmS::fs::exists(aLogPath))
         {
             llvmS::fs::file_status  result;
@@ -279,7 +294,7 @@ private:
                 llvmS::TimeValue last = result.getLastModificationTime();
                 llvmS::TimeValue diff = now - last;
 
-                if (diff.seconds() >= 600)
+                if (diff.seconds() >= gAutoDeleteSec)
                 {
                     llvmS::fs::remove(aLogPath);
                 }
@@ -296,8 +311,6 @@ private:
                          << "    Error: " << error.message() << "\n";
         }
     }
-    LogFile(const LogFile&) = delete;
-    void operator =(const LogFile&) = delete;
 
 public:
     static LogFile& getInstance()
@@ -322,9 +335,14 @@ public:
 
 private:
     LogKindSet  mLogKindSet;            // 出力先集合
+    bool        mInitialized;           // 初期化済
 
 public:
-    void        setLogKindSet(LogKindSet iLogKindSet){mLogKindSet=iLogKindSet;}
+    void        setLogKindSet(LogKindSet iLogKindSet)
+    {
+        mLogKindSet=iLogKindSet;
+        initialize();
+    }
     LogKindSet  getLogKindSet() {return mLogKindSet;}
 
 //      ---<<< raw_ostream生成と返却 >>>---
@@ -414,17 +432,17 @@ struct AutoFalse
 struct AutoPrint
 {
     static unsigned mLevel;
-    string  mString;
-    AutoPrint(const string& iString) :
+    std::string mString;
+    AutoPrint(std::string const& iString) :
         mString(iString)
     {
-        ASTANALYZE_OUTPUT(string(mLevel*2, ' '), "Start of ", mString);
+        ASTANALYZE_OUTPUT(std::string(mLevel*2, ' '), "Start of ", mString);
         mLevel++;
     }
     ~AutoPrint()
     {
         mLevel--;
-        ASTANALYZE_OUTPUT(string(mLevel*2, ' '), "End of   ", mString);
+        ASTANALYZE_OUTPUT(std::string(mLevel*2, ' '), "End of   ", mString);
     }
 };
 unsigned AutoPrint::mLevel=0;
@@ -583,9 +601,9 @@ public:
 //      名前空間付きの名前獲得
 //----------------------------------------------------------------------------
 
-string getQualifiedName(NamedDecl const* iNamedDecl, bool iSuppressUnwrittenScope=true)
+std::string getQualifiedName(NamedDecl const* iNamedDecl, bool iSuppressUnwrittenScope=true)
 {
-    string ret;
+    std::string ret;
     for (auto aNameSpace : NameSpaces(iNamedDecl, iSuppressUnwrittenScope))
     {
         ret.append(aNameSpace.mName.str());
@@ -635,25 +653,21 @@ private:
                         mFilePathUpgradable(TemporaryDir::get())
         {
             mFilePathSharable += iPrefix;
-            mFilePathSharable += "Sharable";
+            mFilePathSharable += "_sharable";
 
             mFilePathUpgradable += iPrefix;
-            mFilePathUpgradable += "Upgradable";
+            mFilePathUpgradable += "_upgradable";
 
             int result_fd;
             llvmS::fs::openFileForWrite(StringRef(mFilePathSharable),
                                         result_fd, llvmS::fs::F_Append);
             llvmS::Process::SafelyCloseFileDescriptor(result_fd);
-            setPermissions(mFilePathSharable.begin());
-//          std::string aFilePathSharable(mFilePathSharable.begin());
-//          chmod(aFilePathSharable.c_str(), 0777);
+            setPermissions(mFilePathSharable.c_str());
 
             llvmS::fs::openFileForWrite(StringRef(mFilePathUpgradable),
                                         result_fd, llvmS::fs::F_Append);
             llvmS::Process::SafelyCloseFileDescriptor(result_fd);
-            setPermissions(mFilePathUpgradable.begin());
-//          std::string aFilePathUpgradable(mFilePathUpgradable.begin());
-//          chmod(aFilePathUpgradable.c_str(), 0777);
+            setPermissions(mFilePathUpgradable.c_str());
         }
     };
     FileCreator             mFileCreator;
@@ -834,7 +848,7 @@ public:
     {
         mMessage.clear();
         iInfo.FormatDiagnostic(mMessage);
-        string aMessage(mMessage.begin(), mMessage.size());
+        std::string aMessage(mMessage.begin(), mMessage.size());
 
         ASTANALYZE_OUTPUT("### HandleDiagnostic ###");
         ASTANALYZE_OUTPUT("    DiagLevel = ", iDiagLevel);
@@ -885,8 +899,8 @@ private:
                                                 iLevel, StringRef(iFormat));
         return mDiags->Report(iLoc, custom_id);
     }
-    string  mBuff;
-    char const* getFormat(string const& iFormat)
+    std::string mBuff;
+    char const* getFormat(std::string const& iFormat)
     {
         mBuff = kDiagMarker;
         mBuff.append(iFormat);
@@ -917,27 +931,27 @@ public:
         return mClient->hasErrorOccurred();
     }
 
-    DiagnosticBuilder IgnoredReport(SourceLocation iLoc, string const& iFormat)
+    DiagnosticBuilder IgnoredReport(SourceLocation iLoc, std::string const& iFormat)
     {
         return Report(DiagnosticIDs::Ignored, iLoc, getFormat(iFormat));
     }
-    DiagnosticBuilder NoteReport(SourceLocation iLoc, string const& iFormat)
+    DiagnosticBuilder NoteReport(SourceLocation iLoc, std::string const& iFormat)
     {
         return Report(DiagnosticIDs::Note, iLoc, getFormat(iFormat));
     }
-    DiagnosticBuilder RemarkReport(SourceLocation iLoc, string const& iFormat)
+    DiagnosticBuilder RemarkReport(SourceLocation iLoc, std::string const& iFormat)
     {
         return Report(DiagnosticIDs::Remark, iLoc, getFormat(iFormat));
     }
-    DiagnosticBuilder WarningReport(SourceLocation iLoc, string const& iFormat)
+    DiagnosticBuilder WarningReport(SourceLocation iLoc, std::string const& iFormat)
     {
         return Report(DiagnosticIDs::Warning, iLoc, getFormat(iFormat));
     }
-    DiagnosticBuilder ErrorReport(SourceLocation iLoc, string const& iFormat)
+    DiagnosticBuilder ErrorReport(SourceLocation iLoc, std::string const& iFormat)
     {
         return Report(DiagnosticIDs::Error, iLoc, getFormat(iFormat));
     }
-    DiagnosticBuilder FatalReport(SourceLocation iLoc, string const& iFormat)
+    DiagnosticBuilder FatalReport(SourceLocation iLoc, std::string const& iFormat)
     {
         return Report(DiagnosticIDs::Fatal, iLoc, getFormat(iFormat));
     }
@@ -1267,7 +1281,7 @@ struct SerializeInfo
     CXXRecordDecl const*    mTheolizerVersionPrev;  // １つ前のTheolizerVersion<>
     std::forward_list<CXXRecordDecl const*>         // 全てのTheolizerVersion<>のリスト
                             mTheolizerVersionList;
-    string const            mClassName;             // クラス名
+    std::string const       mClassName;             // クラス名
     FullSourceLoc           mLastVersionNoLoc;      // kLastVersionNo定義位置
     FullSourceLoc           mVersionNoLastLoc;      // 最新版のkVersionNo定義位置
     FullSourceLoc           mVersionNoPrevLoc;      // １つ前のkVersionNo定義位置
@@ -1658,7 +1672,7 @@ struct AstInterface
 
 //      ---<<< 開発主体名 >>>---
 
-string                  gDeveloper;
+std::string             gDeveloper;
 
 //      ---<<< コンパイル対象ファイル >>>---
 
@@ -1705,8 +1719,12 @@ char const*const kEnumSaveType[]={"estName", "estValue"};
 
 #endif
 
+// Logファイルの自動削除経過秒数(デフォルトは10分)
+unsigned            gAutoDeleteSec=600;
+
 //      ---<<< TMPファイル削除用 >>>---
 
 #if defined(_WIN32)
     std::string     gTempFile;
 #endif
+

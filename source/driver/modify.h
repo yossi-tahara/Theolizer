@@ -35,12 +35,12 @@ private:
 //      文字列の改行を正規化する
 //----------------------------------------------------------------------------
 
-    string normalizeLF(string&& iString)
+    std::string normalizeLF(std::string&& iString)
     {
         if (kLineEnding.equals("\n"))
     return iString;
 
-        string  ret;
+        std::string ret;
         StringRef aString(iString);
         bool aEndIsLF=aString.endswith(kLineEnding);
         for (std::pair<StringRef, StringRef> aParsing=aString.split(kLineEnding);
@@ -60,12 +60,12 @@ private:
 //      文字列の改行をOSに合わせる
 //----------------------------------------------------------------------------
 
-    string reverseLF(string&& iString)
+    std::string reverseLF(std::string&& iString)
     {
         if (kLineEnding.equals("\n"))
     return iString;
 
-        string  ret;
+        std::string ret;
         StringRef aString(iString);
         bool aEndIsLF=aString.endswith("\n");
         for (std::pair<StringRef, StringRef> aParsing=aString.split('\n');
@@ -85,7 +85,7 @@ private:
 //      指定位置の現ソース獲得
 //----------------------------------------------------------------------------
 
-    string getNowSource(SourceLocation iBegin, SourceLocation iEnd)
+    std::string getNowSource(SourceLocation iBegin, SourceLocation iEnd)
     {
          return normalizeLF(
             std::move(mRewriter.getRewrittenText(clang::SourceRange(iBegin, iEnd))));
@@ -95,9 +95,9 @@ private:
 //      指定Declの現ソース獲得
 //----------------------------------------------------------------------------
 
-    string getDeclSource(Decl const* iDecl)
+    std::string getDeclSource(Decl const* iDecl)
     {
-        string  ret;
+        std::string ret;
         if (iDecl)
         {
             ret = normalizeLF(std::move(mRewriter.getRewrittenText(iDecl->getSourceRange())));
@@ -125,7 +125,7 @@ private:
 //      文字列置き換え
 //----------------------------------------------------------------------------
 
-    void replaceString(SourceLocation iBegin, SourceLocation iEnd, string&& iString)
+    void replaceString(SourceLocation iBegin, SourceLocation iEnd, std::string&& iString)
     {
 ASTANALYZE_OUTPUT("replaceString");
 ASTANALYZE_OUTPUT("    iBegin : ", iBegin.printToString(*gSourceManager));
@@ -145,7 +145,7 @@ ASTANALYZE_OUTPUT("end of replaceString");
 //      文字列挿入
 //----------------------------------------------------------------------------
 
-    void instertString(SourceLocation iLocation, string&& iString)
+    void instertString(SourceLocation iLocation, std::string&& iString)
     {
 ASTANALYZE_OUTPUT("instertString");
 
@@ -168,11 +168,11 @@ ASTANALYZE_OUTPUT("instertString");
 
     void createBaseClass
     (
-        clang::AccessSpecifier iAccSpec,
-        CXXRecordDecl const* iBase,
-        std::string const& iBaseName,
-        unsigned iId,
-        bool iIsManual
+        clang::AccessSpecifier  iAccSpec,
+        CXXRecordDecl const*    iBase,
+        std::string const&      iBaseName,
+        unsigned                iId,
+        bool                    iIsManual
     )
     {
         // Keep-step or Non-keep-step判定
@@ -364,7 +364,7 @@ ASTANALYZE_OUTPUT("  Array : ", iType.getDesugaredType(*gASTContext).getAsString
             {
                 clang::DependentSizedArrayType  const* aDependentSizedArrayType =
                     cast<clang::DependentSizedArrayType>(aArrayType);
-                string  expr;
+                std::string expr;
                 llvm::raw_string_ostream aRawSS(expr);
                 // llvm\tools\clang\lib\AST\TypePrinter.cppの
                 // printDependentSizedArrayAfter()によると
@@ -530,7 +530,7 @@ ASTANALYZE_OUTPUT("genarateClassLastVersion");
 
     SourceStatus modifyEnum(SerializeInfo<EnumDecl> const& iSerializeInfo)
     {
-        const string aClassName(iSerializeInfo.mClassName);
+        std::string const aClassName(iSerializeInfo.mClassName);
 ASTANALYZE_OUTPUT("modifyEnum(", aClassName, ")");
 
         // 処理中のターゲット設定
@@ -841,8 +841,8 @@ ASTANALYZE_OUTPUT("-------- mPrevVersion\n", mPrevVersion.str());
     void genarateClassLastVersion
     (
         SerializeInfo<CXXRecordDecl> const& iSerializeInfo,
-        string const& iClassName,
-        string const& iParameterList
+        std::string const& iClassName,
+        std::string const& iParameterList
     )
     {
 ASTANALYZE_OUTPUT("genarateClassLastVersion");
@@ -956,7 +956,7 @@ ASTANALYZE_OUTPUT("genarateClassLastVersion");
 //              mObjectTracking オブジェクト追跡指定
 // ***************************************************************************
 
-    void getFieldParameter(string const& iParameter, clang::FieldDecl const* iFieldDecl)
+    void getFieldParameter(std::string const& iParameter, clang::FieldDecl const* iFieldDecl)
     {
         std::pair<StringRef, StringRef> temp=StringRef(iParameter).split('<');
         if (!temp.first.empty())
@@ -995,7 +995,7 @@ ASTANALYZE_OUTPUT("genarateClassLastVersion");
 
     SourceStatus modifyClass(SerializeInfo<CXXRecordDecl> const& iSerializeInfo)
     {
-        string aClassName(iSerializeInfo.mClassName);
+        std::string aClassName(iSerializeInfo.mClassName);
 ASTANALYZE_OUTPUT("modifyClass(", aClassName, ")##########\n",
                   " mTheolizerTarget=", iSerializeInfo.mTheolizerTarget,
                   " mUniqueClass=", iSerializeInfo.mUniqueClass,
@@ -1046,8 +1046,8 @@ ASTANALYZE_OUTPUT("    Theolizer does not modify source "
 //      クラス・テンプレート対応
 //----------------------------------------------------------------------------
 
-        string aParameterList;      // template<...>
-        string aAddClassName;       // <...>
+        std::string aParameterList;      // template<...>
+        std::string aAddClassName;       // <...>
 
         bool aIsTemplate=false;
         bool aMakeTempalteName=false;
@@ -1323,7 +1323,7 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
             { }
         };
         // キーは前バージョンの要素名(通常は最新版の要素名と同じ)
-        std::map<string, ElementInfo>   aElementList;
+        std::map<std::string, ElementInfo>   aElementList;
 
 //      ---<<< 基底クラスのリスト(THEOLIZER_GENERATED_BASE_LIST)生成 >>>---
 
@@ -1369,7 +1369,7 @@ ASTANALYZE_OUTPUT("    Base : ", aBaseName, " hasDefinition()=", aBase->hasDefin
                     iSerializeInfo.mIsManual
                 );
                 // 要素リストへ登録
-                aElementList.emplace(string("@")+aBase->getName().str(), ElementInfo(qt));
+                aElementList.emplace(std::string("@")+aBase->getName().str(), ElementInfo(qt));
             }
         }
         if (!aIsFirst)
@@ -1637,7 +1637,7 @@ ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsSt
                 clang::ParmVarDecl const* aParam=cmd->getParamDecl(0);
                 QualType qt = aParam->getType().getCanonicalType();
                 CXXRecordDecl const* aBase = qt->getAsCXXRecordDecl();
-                string aKey = string("@")+aBase->getName().str();
+                std::string aKey = std::string("@")+aBase->getName().str();
                 auto found = aElementList.find(aKey);           // 最新版にあるか確認
                 bool aDeleted=true;
                 if (found != aElementList.end())
@@ -1723,7 +1723,7 @@ ASTANALYZE_OUTPUT("    Base = ", found->first, " : ", found->second.mType == qt,
 
                 // メンバ変数が削除されているかどうか判定する
                 QualType qt=td->getUnderlyingType().getDesugaredType(*gASTContext);
-                string aKey = td->getName().substr(1).str();    // 衝突防止用の'_'を取り除く
+                std::string aKey = td->getName().substr(1).str();    // 衝突防止用の'_'を取り除く
                 auto found = aElementList.find(aKey);           // 最新版にあるか確認
                 bool aDeleted=true;
                 if (found != aElementList.end())
@@ -2141,7 +2141,7 @@ ASTANALYZE_OUTPUT("--- Source ---\n", mTheolizerHpp.str().substr(offset), "-----
 ASTANALYZE_OUTPUT(iGlobalVersionNoTableDecl->getQualifiedNameAsString());
         unsigned aLastGlobalVersionNo=0;
 
-        string  aTableName=iGlobalVersionNoTableDecl->getName();
+        std::string aTableName=iGlobalVersionNoTableDecl->getName();
         for (auto decl : iGlobalVersionNoTableDecl->decls())
         {
             if (decl->getKind() != Decl::Var)
@@ -2473,11 +2473,11 @@ ASTANALYZE_OUTPUT("post lock_try");
         {
             const FileEntry* file = gSourceManager->getFileEntryForID(aFileId2);
 ASTANALYZE_OUTPUT(file->getName(), " ==============================================\n");
-            string  file_data;
+            std::string file_data;
             llvm::raw_string_ostream ss(file_data);
             mRewriter.getEditBuffer(aFileId2).write(ss);
             ss.flush();
-            string file_body=normalizeLF(std::move(file_data));
+            std::string file_body=normalizeLF(std::move(file_data));
 ASTANALYZE_OUTPUT(file_body);
 ASTANALYZE_OUTPUT("==============================================");
         }
@@ -2503,7 +2503,7 @@ private:
 
     // 処理用メンバ
     Rewriter                mRewriter;              // ソース修正用
-    vector<FileID>          mModifiedFiles;         // 修正したソース
+    std::vector<FileID>     mModifiedFiles;         // 修正したソース
 
     std::stringstream       mLastVersion;           // 最新版マクロ定義ソース
     std::stringstream       mPrevVersion;           // １つ前の版マクロ定義ソース
@@ -2511,9 +2511,9 @@ private:
 
     AstInterface::LocationMap::iterator    mLastVersionNoLoc;
 
-    string                  mPrevName;              // 前バージョンの要素名
-    string                  mDestination;           // 保存先指定
-    string                  mObjectTracking;        // オブジェクト追跡指定
+    std::string             mPrevName;              // 前バージョンの要素名
+    std::string             mDestination;           // 保存先指定
+    std::string             mObjectTracking;        // オブジェクト追跡指定
 
     int                     mNamespaceNestCount;    // 名前空間のネスト数
     CXXRecordDecl const*    mTheolizerClass;        // 処理中のターゲット・クラス
