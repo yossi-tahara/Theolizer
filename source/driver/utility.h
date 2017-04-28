@@ -137,15 +137,11 @@ private:
         mTemporaryDir = temp_dir;
         mTemporaryDir += "/theolizer/";
 
-        // テンポラリ・フォルダ自身の生成
-#if 0
-        llvmS::fs::create_directories(StringRef(mTemporaryDir));
-#else
+        // テンポラリ・フォルダの生成
         std::string aTemporaryDir(mTemporaryDir.begin());
         boost::system::error_code error;
         boostF::create_directories(aTemporaryDir, error);
         setPermissions(aTemporaryDir.c_str());
-#endif
     }
     TemporaryDir(const TemporaryDir&) = delete;
     void operator =(const TemporaryDir&) = delete;
@@ -369,12 +365,7 @@ public:
 #define KIND(Kind)              LogFile::LogKindSet().set(LogFile::Kind)
 #define KIND_ALL                LogFile::LogKindSet().set()
 #define TOUT(Kind)              LogFile::getInstance().getRawOStream(LogFile::Kind)
-
-#if 1
-    #define JUDGE(Kind)         LogFile::getInstance().getLogKindSet().test(Kind)
-#else
-    #define JUDGE(Kind)         false
-#endif
+#define JUDGE(Kind)             LogFile::getInstance().getLogKindSet().test(Kind)
 
 template<typename Type>
 LogFile::LogOStream& operator,(LogFile::LogOStream& iOStream, Type iObject)
@@ -562,6 +553,7 @@ class NameSpaces
     typedef typename Vector::const_reverse_iterator Iterator;
 
     Vector  mVector;
+
 public:
     NameSpaces() { }
     NameSpaces(NamedDecl const* iNamedDecl, bool iSuppressUnwrittenScope=true)
@@ -877,7 +869,7 @@ public:
         {
             clang::TextDiagnosticPrinter::HandleDiagnostic(iDiagLevel, iInfo);
             mHasErrorOccurred=true;
-ASTANALYZE_OUTPUT("mHasErrorOccurred=true;");
+            ASTANALYZE_OUTPUT("mHasErrorOccurred=true;");
         }
     }
 };
@@ -1132,8 +1124,6 @@ return AnnotationInfo();
         temp = aAnnotateAttr->getAnnotation().split(':');
         if (temp.first.equals("THEORIDE"))
         {
-ASTANALYZE_OUTPUT("annotate = ", aAnnotateAttr->getAnnotation());
-
             // 2つ目ならば、エラー
             if (aTheolizerAttr)
             {
@@ -1326,12 +1316,10 @@ CXXRecordDecl const* getPrimary(CXXRecordDecl const* iTheolizerTarget)
     {
         ClassTemplateDecl* ctd = ctsd->getSpecializedTemplate();
         iTheolizerTarget = ctd->getMostRecentDecl()->getTemplatedDecl();
-ASTANALYZE_OUTPUT("      CXXRecordDecl -> Primary ctd=", ctd,
-                  " : ", iTheolizerTarget->getQualifiedNameAsString(),
-                  " : ", ctd->getMostRecentDecl()->getTemplatedDecl(),
-                  " : ", iTheolizerTarget->getCanonicalDecl ());
-//      gCustomDiag.RemarkReport(iTheolizerTarget->getLocation(),
-//          "getNonIntrusiveTarget(CXXRecordDecl -> Primary template)") ;
+        ASTANALYZE_OUTPUT("      CXXRecordDecl -> Primary ctd=", ctd,
+                          " : ", iTheolizerTarget->getQualifiedNameAsString(),
+                          " : ", ctd->getMostRecentDecl()->getTemplatedDecl(),
+                          " : ", iTheolizerTarget->getCanonicalDecl ());
     }
     return iTheolizerTarget;
 }
@@ -1369,9 +1357,9 @@ public:
     // シリアライズ候補登録
     void addCandidate(tDecl const* iCandidate)
     {
-ASTANALYZE_OUTPUT("addCandidate(", iCandidate->getQualifiedNameAsString(),
-                  " : ", iCandidate,
-                  ") : ", mDeclIndex);
+        ASTANALYZE_OUTPUT("addCandidate(", iCandidate->getQualifiedNameAsString(),
+                          " : ", iCandidate,
+                          ") : ", mDeclIndex);
         mDeclMap.emplace(iCandidate, mDeclIndex++);
     }
     // 指定シリアライズ候補のインデックス獲得
@@ -1380,9 +1368,9 @@ ASTANALYZE_OUTPUT("addCandidate(", iCandidate->getQualifiedNameAsString(),
         auto pos=mDeclMap.find(iCandidate);
         if (pos == mDeclMap.end())
         {
-ASTANALYZE_OUTPUT("getIndex(", iCandidate->getQualifiedNameAsString(),
-                  " : ", iCandidate,
-                  ") Error");
+            ASTANALYZE_OUTPUT("getIndex(", iCandidate->getQualifiedNameAsString(),
+                              " : ", iCandidate,
+                              ") Error");
             gCustomDiag.FatalReport(iCandidate->getLocation(),
                 "Can not find decl. %0") << iCandidate->getQualifiedNameAsString();
     return kInvalidIndex;
@@ -1410,8 +1398,9 @@ ASTANALYZE_OUTPUT("getIndex(", iCandidate->getQualifiedNameAsString(),
             //  なお、enum型はNonIntrusiveのiIsManual=falseにて登録している。
             if (iIsFullAuto && !pos->second.mIsManual && (pos->second.mLastVersionNo <= 2))
             {
-ASTANALYZE_OUTPUT("addSerializable(", iTheolizerTarget->getQualifiedNameAsString(), ")"
-                  " is changed FullAuto to HalfAuto.");
+                ASTANALYZE_OUTPUT("addSerializable(",
+                                  iTheolizerTarget->getQualifiedNameAsString(), ")"
+                                  " is changed FullAuto to HalfAuto.");
                   pos->second.mIsChanged=true;
             }
             else
@@ -1424,15 +1413,15 @@ ASTANALYZE_OUTPUT("addSerializable(", iTheolizerTarget->getQualifiedNameAsString
             }
     return;
         }
-ASTANALYZE_OUTPUT("SerializeList::addSerializable(",
-                        iTheolizerTarget->getQualifiedNameAsString(),
-                  " ",  iTheolizerTarget,
-                  ", ", iAnnotationInfo.c_str(),
-                  ", ", iAnnotationInfoTS.c_str(),
-                  ", ", (iNonIntrusive)?iNonIntrusive->getQualifiedNameAsString():"<NULL>",
-                  ", iIsManual=", iIsManual,
-                  ", iIsFullAuto=", iIsFullAuto,
-                  ");");
+        ASTANALYZE_OUTPUT("SerializeList::addSerializable(",
+                                iTheolizerTarget->getQualifiedNameAsString(),
+                          " ",  iTheolizerTarget,
+                          ", ", iAnnotationInfo.c_str(),
+                          ", ", iAnnotationInfoTS.c_str(),
+                          ", ", (iNonIntrusive)?iNonIntrusive->getQualifiedNameAsString():"<NULL>",
+                          ", iIsManual=", iIsManual,
+                          ", iIsFullAuto=", iIsFullAuto,
+                          ");");
 
         mMap.emplace_hint
         (
@@ -1474,23 +1463,26 @@ ASTANALYZE_OUTPUT("SerializeList::addSerializable(",
         // 登録済の時の処理
         if ((pos != mMap.end()) && (pos->first == iTheolizerTarget))
         {
-ASTANALYZE_OUTPUT("      SerializeList::addSaveLoad(",iTheolizerTarget->getQualifiedNameAsString(),
-                  " ", (void*)iTheolizerTarget,
-                  ") : alreay registered. Stat=", static_cast<int>(pos->second.mSerializeStat));
+            ASTANALYZE_OUTPUT("      SerializeList::addSaveLoad(",
+                              iTheolizerTarget->getQualifiedNameAsString(),
+                              " ", (void*)iTheolizerTarget,
+                              ") : alreay registered. Stat=",
+                              static_cast<int>(pos->second.mSerializeStat));
             pos->second.mIsRegisteredClass=iIsRegisteredClass;
             if (pos->second.mSerializeStat == esSerializeOnly)
             {
-ASTANALYZE_OUTPUT("      set esBoth");
+                ASTANALYZE_OUTPUT("      set esBoth");
                 pos->second.mSerializeStat=esBoth;
     return !pos->second.mIsManual;
             }
 
-ASTANALYZE_OUTPUT("      return false;");
+            ASTANALYZE_OUTPUT("      return false;");
     return false;
         }
-ASTANALYZE_OUTPUT("      SerializeList::addSaveLoad(",iTheolizerTarget->getQualifiedNameAsString(),
-                  " ", (void*)iTheolizerTarget,
-                  ") : register.");
+        ASTANALYZE_OUTPUT("      SerializeList::addSaveLoad(",
+                          iTheolizerTarget->getQualifiedNameAsString(),
+                          " ", (void*)iTheolizerTarget,
+                          ") : register.");
 
         // 未登録時の処理
         //  シリアライズ指定がないので、完全自動型である。
@@ -1530,10 +1522,11 @@ ASTANALYZE_OUTPUT("      SerializeList::addSaveLoad(",iTheolizerTarget->getQuali
 
         if (pos->second.mLastVersionNo == iVersionNo)
         {
-ASTANALYZE_OUTPUT("SerializeList::annexVersion(", iTheolizerTarget->getQualifiedNameAsString(),
-                  " ", (void*)iTheolizerTarget,
-                  ", ", iTheolizerVersion->getQualifiedNameAsString(), ", ", iVersionNo,
-                  ") : last ", (void*)iTheolizerVersion);
+            ASTANALYZE_OUTPUT("SerializeList::annexVersion(",
+                              iTheolizerTarget->getQualifiedNameAsString(),
+                              " ", (void*)iTheolizerTarget,
+                              ", ", iTheolizerVersion->getQualifiedNameAsString(), ", ",
+                              iVersionNo, ") : last ", (void*)iTheolizerVersion);
             pos->second.mTheolizerVersionLast=iTheolizerVersion;
             pos->second.mVersionNoLastLoc=iVersionNoLoc;
             if (iLastVersionNoLoc.isValid())
@@ -1543,10 +1536,11 @@ ASTANALYZE_OUTPUT("SerializeList::annexVersion(", iTheolizerTarget->getQualified
         }
         else if ((pos->second.mLastVersionNo-1) == iVersionNo)
         {
-ASTANALYZE_OUTPUT("SerializeList::annexVersion(", iTheolizerTarget->getQualifiedNameAsString(),
-                  " ", (void*)iTheolizerTarget,
-                  ", ", iTheolizerVersion->getQualifiedNameAsString(), ", ", iVersionNo,
-                  ") : prev ", (void*)iTheolizerVersion);
+            ASTANALYZE_OUTPUT("SerializeList::annexVersion(",
+                              iTheolizerTarget->getQualifiedNameAsString(),
+                              " ", (void*)iTheolizerTarget,
+                              ", ", iTheolizerVersion->getQualifiedNameAsString(), ", ",
+                              iVersionNo, ") : prev ", (void*)iTheolizerVersion);
             pos->second.mTheolizerVersionPrev=iTheolizerVersion;
             pos->second.mVersionNoPrevLoc=iVersionNoLoc;
             if (iLastVersionNoLoc.isValid())

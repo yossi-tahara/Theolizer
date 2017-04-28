@@ -127,17 +127,12 @@ private:
 
     void replaceString(SourceLocation iBegin, SourceLocation iEnd, std::string&& iString)
     {
-ASTANALYZE_OUTPUT("replaceString");
-ASTANALYZE_OUTPUT("    iBegin : ", iBegin.printToString(*gSourceManager));
-ASTANALYZE_OUTPUT("    iEnd   : ", iEnd.printToString(*gSourceManager));
-
         if (mRewriter.ReplaceText(clang::SourceRange(iBegin, iEnd), reverseLF(std::move(iString))))
         {
             gCustomDiag.FatalReport(iBegin,
                 "Fatal error. Can not replace source.");
     return;
         }
-ASTANALYZE_OUTPUT("end of replaceString");
         addFileID(iBegin);
     }
 
@@ -147,8 +142,6 @@ ASTANALYZE_OUTPUT("end of replaceString");
 
     void instertString(SourceLocation iLocation, std::string&& iString)
     {
-ASTANALYZE_OUTPUT("instertString");
-
         if (mRewriter.InsertText(iLocation, reverseLF(std::move(iString))))
         {
             gCustomDiag.FatalReport(iLocation,
@@ -260,9 +253,10 @@ ASTANALYZE_OUTPUT("instertString");
 
     bool createArray(StringRef iName, QualType iType, clang::ArrayType const* iArray)
     {
-ASTANALYZE_OUTPUT("  Array : ", iType.getDesugaredType(*gASTContext).getAsString(mPrintingPolicy),
-                  " SizeModifier=", iArray->getSizeModifier(),
-                  " TypeClass=" ,iArray->getTypeClass());
+        ASTANALYZE_OUTPUT("  Array : ",
+                          iType.getDesugaredType(*gASTContext).getAsString(mPrintingPolicy),
+                          " SizeModifier=", iArray->getSizeModifier(),
+                          " TypeClass=" ,iArray->getTypeClass());
 
         // 不完全型([])やCの可変長配列はサポートしない
         if ((iArray->getTypeClass() == Type::IncompleteArray)
@@ -531,7 +525,7 @@ ASTANALYZE_OUTPUT("genarateClassLastVersion");
     SourceStatus modifyEnum(SerializeInfo<EnumDecl> const& iSerializeInfo)
     {
         std::string const aClassName(iSerializeInfo.mClassName);
-ASTANALYZE_OUTPUT("modifyEnum(", aClassName, ")");
+        ASTANALYZE_OUTPUT("modifyEnum(", aClassName, ")");
 
         // 処理中のターゲット設定
         mTarget=iSerializeInfo.mNonIntrusive;
@@ -539,7 +533,6 @@ ASTANALYZE_OUTPUT("modifyEnum(", aClassName, ")");
         {
             mTarget = iSerializeInfo.mTheolizerTarget;
         }
-ASTANALYZE_OUTPUT("(1)mTarget=", mTarget->getName());
 
         // バージョンが2以上なのに前バージョン無しは禁止
         if ((iSerializeInfo.mLastVersionNo >= 2)
@@ -598,7 +591,7 @@ return eAborted;
                      << iSerializeInfo.mLastVersionNo << ")\n";
 
         // 自動生成ソース内、かつ、save/loadしてない時は、コンパイルしないように指示する
-#if 0   // 最新版ではsave/loadしてなくても旧バージョンでしている時、ビルドできなくなるので一旦保留
+#if 0   // 最新版ではsave/loadしてなくても旧バージョンでしている時、ビルドできなくなるので保留
         if (aIsTheolizerHpp && (iSerializeInfo.mSerializeStat == esSerializeOnly))
         {
             mLastVersion << "#define THEOLIZER_GENERATED_NO_COMPILE\n";
@@ -640,8 +633,6 @@ return eAborted;
         {
             // アノテーション獲得
             AnnotationInfo aEnumAnno=getAnnotationInfo(symbol,AnnotateType::Enum);
-ASTANALYZE_OUTPUT("    Enum : ", symbol->getName(),
-              " ", aEnumAnno.c_str(), ":", aEnumAnno.mParameter);
 
             // シンボル・リスト生成
             mLastVersion << "\\\n"
@@ -665,7 +656,6 @@ ASTANALYZE_OUTPUT("    Enum : ", symbol->getName(),
             int64_t aNowValue=symbol->getInitVal().getExtValue();
             mLastVersion << "),(" << aNowValue;
 
-ASTANALYZE_OUTPUT("    aNowValue=", aNowValue, " aIsFirst=", aIsFirst);
             // デフォルト値獲得
             if (aIsFirst)
             {
@@ -727,7 +717,7 @@ ASTANALYZE_OUTPUT("    aNowValue=", aNowValue, " aIsFirst=", aIsFirst);
                          << aClassName << " ######\n\n";
         }
 
-ASTANALYZE_OUTPUT("--------mLastVersion\n", mLastVersion.str(), "\n----------");
+        ASTANALYZE_OUTPUT("--------mLastVersion\n", mLastVersion.str(), "\n----------");
 
 //----------------------------------------------------------------------------
 //      １つ前の版生成
@@ -738,7 +728,8 @@ ASTANALYZE_OUTPUT("--------mLastVersion\n", mLastVersion.str(), "\n----------");
         CXXRecordDecl const* aTheolizerVersionPrev = iSerializeInfo.mTheolizerVersionPrev;
         if (aTheolizerVersionPrev)
         {
-ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsString());
+            ASTANALYZE_OUTPUT("Prev Version : ",
+                              aTheolizerVersionPrev->getQualifiedNameAsString());
 
             // struct Theolizerを探す(ついでにBaseTypeを取り出す)
             CXXRecordDecl const* aTheolizer=nullptr;
@@ -825,7 +816,7 @@ ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsSt
             mPrevVersion << "#include <theolizer/internal/version_enum.inc>\n"
                          << "#undef  THEOLIZER_GENERATED_VERSION_NO";
 
-ASTANALYZE_OUTPUT("-------- mPrevVersion\n", mPrevVersion.str());
+            ASTANALYZE_OUTPUT("-------- mPrevVersion\n", mPrevVersion.str());
         }
 
         return aSourceStatus;
@@ -845,7 +836,7 @@ ASTANALYZE_OUTPUT("-------- mPrevVersion\n", mPrevVersion.str());
         std::string const& iParameterList
     )
     {
-ASTANALYZE_OUTPUT("genarateClassLastVersion");
+        ASTANALYZE_OUTPUT("genarateClassLastVersion");
 
         mNamespaceNestCount=0;
 
@@ -904,12 +895,8 @@ ASTANALYZE_OUTPUT("genarateClassLastVersion");
 
         if (iSerializeInfo.mNonIntrusive)
         {
-#if 1
             mLastVersion << "#if false // Sample of save/load function.\n"
-#else   // お手軽デバッグ用(Ver.0用を有効にする)
-            mLastVersion << "#if true // Sample of save/load function.\n"
-#endif
-             << iParameterList <<
+                << iParameterList <<
                 "template<class tBaseSerializer, class tTheolizerVersion>\n"
                 "struct TheolizerNonIntrusive<" << iClassName << ">"
                 "::TheolizerUserDefine<tBaseSerializer, tTheolizerVersion, 1>\n"
@@ -996,14 +983,14 @@ ASTANALYZE_OUTPUT("genarateClassLastVersion");
     SourceStatus modifyClass(SerializeInfo<CXXRecordDecl> const& iSerializeInfo)
     {
         std::string aClassName(iSerializeInfo.mClassName);
-ASTANALYZE_OUTPUT("modifyClass(", aClassName, ")##########\n",
-                  " mTheolizerTarget=", iSerializeInfo.mTheolizerTarget,
-                  " mUniqueClass=", iSerializeInfo.mUniqueClass,
-                  " NumTemplateParameterLists=",
-                  iSerializeInfo.mTheolizerTarget->getNumTemplateParameterLists());
-ASTANALYZE_OUTPUT("    mAnnotationInfo=", iSerializeInfo.mAnnotationInfo.c_str(),
-                  ":", iSerializeInfo.mAnnotationInfo.mParameter);
-ASTANALYZE_OUTPUT("    mAnnotationInfoTS=", iSerializeInfo.mAnnotationInfoTS.mParameter);
+        ASTANALYZE_OUTPUT("modifyClass(", aClassName, ")##########\n",
+                          " mTheolizerTarget=", iSerializeInfo.mTheolizerTarget,
+                          " mUniqueClass=", iSerializeInfo.mUniqueClass,
+                          " NumTemplateParameterLists=",
+                          iSerializeInfo.mTheolizerTarget->getNumTemplateParameterLists());
+        ASTANALYZE_OUTPUT("    mAnnotationInfo=", iSerializeInfo.mAnnotationInfo.c_str(),
+                          ":", iSerializeInfo.mAnnotationInfo.mParameter);
+        ASTANALYZE_OUTPUT("    mAnnotationInfoTS=", iSerializeInfo.mAnnotationInfoTS.mParameter);
 
         // 処理中のターゲット設定
         mTheolizerClass=iSerializeInfo.mNonIntrusive;
@@ -1029,8 +1016,8 @@ return eAborted;
         switch(iSerializeInfo.mAnnotationInfo.mAnnotate)
         {
         case AnnotationInfo::CM:
-ASTANALYZE_OUTPUT("    Theolizer does not modify source "
-                  "because this is manual serialization class.");
+            ASTANALYZE_OUTPUT("    Theolizer does not modify source "
+                              "because this is manual serialization class.");
     return eAborted;
 
         case AnnotationInfo::None:
@@ -1100,7 +1087,7 @@ ASTANALYZE_OUTPUT("    Theolizer does not modify source "
                 temp=temp.first.split('<');
                 temp=temp.second.rsplit('>');
                 temp=temp.first.split(',');
-ASTANALYZE_OUTPUT("    temp=[", temp.first, "],[", temp.second, "]");
+                ASTANALYZE_OUTPUT("    temp=[", temp.first, "],[", temp.second, "]");
             }
             else
             {
@@ -1125,8 +1112,8 @@ ASTANALYZE_OUTPUT("    temp=[", temp.first, "],[", temp.second, "]");
                     std::size_t pos=temp2.find_first_of(" \t\n\v\f\r");
                     aType=temp2.substr(0, pos).trim();
                     aName=temp2.substr(pos+1).trim();
-ASTANALYZE_OUTPUT("    aType=", aType);
-ASTANALYZE_OUTPUT("    aName=", aName);
+                    ASTANALYZE_OUTPUT("    aType=", aType);
+                    ASTANALYZE_OUTPUT("    aName=", aName);
                     temp=temp.second.split(',');
                 }
                 else
@@ -1188,8 +1175,8 @@ ASTANALYZE_OUTPUT("    aName=", aName);
                 aParameterList.append(">\n");
                 aAddClassName.append(">");
             }
-ASTANALYZE_OUTPUT("    aParameterList=", aParameterList);
-ASTANALYZE_OUTPUT("    aAddClassName=", aAddClassName);
+            ASTANALYZE_OUTPUT("    aParameterList=", aParameterList);
+            ASTANALYZE_OUTPUT("    aAddClassName=", aAddClassName);
         }
         else if (aMakeTempalteName)
         {
@@ -1208,8 +1195,8 @@ ASTANALYZE_OUTPUT("    aAddClassName=", aAddClassName);
         mNamespaceNestCount=0;
 ////    bool aIsTheolizerHpp=true;
 
-ASTANALYZE_OUTPUT("    mTheolizerVersionLast=", iSerializeInfo.mTheolizerVersionLast);
-ASTANALYZE_OUTPUT("    mTheolizerVersionPrev=", iSerializeInfo.mTheolizerVersionPrev);
+        ASTANALYZE_OUTPUT("    mTheolizerVersionLast=", iSerializeInfo.mTheolizerVersionLast);
+        ASTANALYZE_OUTPUT("    mTheolizerVersionPrev=", iSerializeInfo.mTheolizerVersionPrev);
         // 最新版のTheolizerVersion無し、もしくは、完全自動型から半自動型へ変更
         if (!iSerializeInfo.mTheolizerVersionLast || iSerializeInfo.mIsChanged)
         {
@@ -1341,7 +1328,8 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
             continue;
 
                 std::string aBaseName = qt.getCanonicalType().getAsString(mPrintingPolicy);
-ASTANALYZE_OUTPUT("    Base : ", aBaseName, " hasDefinition()=", aBase->hasDefinition());
+                ASTANALYZE_OUTPUT("    Base : ", aBaseName, " hasDefinition()=",
+                                  aBase->hasDefinition());
 
                 // 完全自動型のprivateなら、スキップする
                 if ((iSerializeInfo.mIsFullAuto) && (base.getAccessSpecifier()==clang::AS_private))
@@ -1385,7 +1373,7 @@ ASTANALYZE_OUTPUT("    Base : ", aBaseName, " hasDefinition()=", aBase->hasDefin
             aIsFirst=true;
             for (auto&& field : iSerializeInfo.mTheolizerTarget->fields())
             {
-ASTANALYZE_OUTPUT("  Element Name=", field->getName());
+                ASTANALYZE_OUTPUT("  Element Name=", field->getName());
                 mPrevName=field->getName();
                 mDestination="(theolizerD::All)";
                 mObjectTracking="etmDefault";
@@ -1426,10 +1414,11 @@ ASTANALYZE_OUTPUT("  Element Name=", field->getName());
             continue;
                     }
                 }
-ASTANALYZE_OUTPUT("    sugared type name=", field->getType().getAsString(mPrintingPolicy));
-ASTANALYZE_OUTPUT("    mPrevName=", mPrevName);
-ASTANALYZE_OUTPUT("    mDestination=", mDestination);
-ASTANALYZE_OUTPUT("    mObjectTracking=", mObjectTracking);
+                ASTANALYZE_OUTPUT("    sugared type name=",
+                                  field->getType().getAsString(mPrintingPolicy));
+                ASTANALYZE_OUTPUT("    mPrevName=", mPrevName);
+                ASTANALYZE_OUTPUT("    mDestination=", mDestination);
+                ASTANALYZE_OUTPUT("    mObjectTracking=", mObjectTracking);
 
                 // 先頭行 or 改行処理
                 if (aIsFirst)
@@ -1521,14 +1510,13 @@ ASTANALYZE_OUTPUT("    mObjectTracking=", mObjectTracking);
                          << aClassName << " ######\n\n";
         }
 
-ASTANALYZE_OUTPUT("--------mLastVersion\n", mLastVersion.str(), "\n----------");
-
-for (auto element : aElementList)
-{
-    ASTANALYZE_OUTPUT("    Element : ", element.first,
-                      ", ", element.second.mNextName,
-                      ", ", element.second.mType.getAsString());
-}
+        ASTANALYZE_OUTPUT("--------mLastVersion\n", mLastVersion.str(), "\n----------");
+        for (auto element : aElementList)
+        {
+            ASTANALYZE_OUTPUT("    Element : ", element.first,
+                              ", ", element.second.mNextName,
+                              ", ", element.second.mType.getAsString());
+        }
 
 //----------------------------------------------------------------------------
 //      １つ前の版生成
@@ -1539,7 +1527,8 @@ for (auto element : aElementList)
         CXXRecordDecl const* aTheolizerVersionPrev = iSerializeInfo.mTheolizerVersionPrev;
         if (aTheolizerVersionPrev)
         {
-ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsString());
+            ASTANALYZE_OUTPUT("Prev Version : ",
+                              aTheolizerVersionPrev->getQualifiedNameAsString());
 
 //      ---<<< 管理情報取り出し >>>---
 
@@ -1644,8 +1633,8 @@ ASTANALYZE_OUTPUT("Prev Version : ", aTheolizerVersionPrev->getQualifiedNameAsSt
                 {
                     ERROR(found->second.mType != qt, aParam, eAborted);
                     aDeleted=false;
-ASTANALYZE_OUTPUT("    Base = ", found->first, " : ", found->second.mType == qt,
-                  " : ", qt.getAsString());
+                    ASTANALYZE_OUTPUT("    Base = ", found->first, " : ",
+                                      found->second.mType == qt, " : ", qt.getAsString());
                 }
 
                 // アノテーション文字列を加工して出力
@@ -1729,10 +1718,10 @@ ASTANALYZE_OUTPUT("    Base = ", found->first, " : ", found->second.mType == qt,
                 if (found != aElementList.end())
                 {
                     aDeleted=false;
-ASTANALYZE_OUTPUT("    Element = ", found->first,
-                  ", ",  found->second.mNextName,
-                  " : ", found->second.mType == qt,
-                  " : ", qt.getAsString());
+                    ASTANALYZE_OUTPUT("    Element = ", found->first,
+                                      ", ",  found->second.mNextName,
+                                      " : ", found->second.mType == qt,
+                                      " : ", qt.getAsString());
 
 #if 0
                     // 型が変化していたらエラー(配列なら基底クラスで比較する)
@@ -1809,11 +1798,9 @@ ASTANALYZE_OUTPUT("    Element = ", found->first,
                 // 第２パラメータ(dNextName)を置き換える
                 std::size_t pos2=temp.first.find(',', pos+1);
                 ERROR(pos2 == StringRef::npos, td, eAborted);
-ASTANALYZE_OUTPUT("    Previouse(1) : ", temp.first.substr(pos+1, pos2-pos));
                 mPrevVersion << temp.first.substr(pos+1, pos2-pos).str();
                 std::size_t pos3=temp.first.find(',', pos2+1);
                 ERROR(pos3 == StringRef::npos, td, eAborted);
-ASTANALYZE_OUTPUT("    Previouse(2) : ", temp.first.substr(pos3));
                 if (found == aElementList.end())
                 {
                     mPrevVersion << temp.first.substr(pos3).str();
@@ -1848,7 +1835,7 @@ ASTANALYZE_OUTPUT("    Previouse(2) : ", temp.first.substr(pos3));
             }
             mPrevVersion << "#undef  THEOLIZER_GENERATED_VERSION_NO";
 
-ASTANALYZE_OUTPUT("-------- mPrevVersion\n", mPrevVersion.str());
+            ASTANALYZE_OUTPUT("-------- mPrevVersion\n", mPrevVersion.str());
         }
 
         return aSourceStatus;
@@ -1861,13 +1848,13 @@ ASTANALYZE_OUTPUT("-------- mPrevVersion\n", mPrevVersion.str());
     template<class tSerializeInfo>
     void modifySource(tSerializeInfo const& iSerializeInfo, SourceStatus iSourceStatus)
     {
-ASTANALYZE_OUTPUT("modifySource(", iSerializeInfo.mClassName, ");");
+        ASTANALYZE_OUTPUT("modifySource(", iSerializeInfo.mClassName, ");");
 
 //      ---<<< 新規生成なら直接記録する >>>---
 
         if (iSourceStatus == eNew)
         {
-ASTANALYZE_OUTPUT("--------eNew : \n", mLastVersion.str(), "\n----------");
+            ASTANALYZE_OUTPUT("--------eNew : \n", mLastVersion.str(), "\n----------");
             mTheolizerHpp << mLastVersion.str();
     return;
         }
@@ -1879,10 +1866,10 @@ ASTANALYZE_OUTPUT("--------eNew : \n", mLastVersion.str(), "\n----------");
         //  アップデートの時はクラス定義部と最新版の定義部を含む範囲
         SourceLocation  aLastVersionNoBegin=iSerializeInfo.mLastVersionNoLoc;
         SourceLocation  aLastVersionNoEnd  =mLastVersionNoLoc->first;
-ASTANALYZE_OUTPUT("--- LastVersionNo ---");
-ASTANALYZE_OUTPUT("    ", aLastVersionNoBegin.printToString(*gSourceManager));
-ASTANALYZE_OUTPUT("    ", aLastVersionNoEnd.printToString(*gSourceManager));
-ASTANALYZE_OUTPUT("    mIsTheolizerHpp=", mLastVersionNoLoc->second.mIsTheolizerHpp);
+        ASTANALYZE_OUTPUT("--- LastVersionNo ---");
+        ASTANALYZE_OUTPUT("    ", aLastVersionNoBegin.printToString(*gSourceManager));
+        ASTANALYZE_OUTPUT("    ", aLastVersionNoEnd.printToString(*gSourceManager));
+        ASTANALYZE_OUTPUT("    mIsTheolizerHpp=", mLastVersionNoLoc->second.mIsTheolizerHpp);
 
         // 1つ前のバージョン定義部(VersionNo)
         SourceLocation  aPrevVersionNoBegin;
@@ -1897,11 +1884,11 @@ ASTANALYZE_OUTPUT("    mIsTheolizerHpp=", mLastVersionNoLoc->second.mIsTheolizer
                 iSerializeInfo.mTheolizerVersionPrev);
             aPrevVersionNoEnd  =found->first;
             aIsUpdateAllowedPrev=found->second.mIsUpdateAllowed;
-ASTANALYZE_OUTPUT("--- PrevVersionNo ---");
-ASTANALYZE_OUTPUT("    ", aPrevVersionNoBegin.printToString(*gSourceManager));
-ASTANALYZE_OUTPUT("    ", aPrevVersionNoEnd.printToString(*gSourceManager));
-ASTANALYZE_OUTPUT("    ", aIsUpdateAllowedPrev);
-ASTANALYZE_OUTPUT("    mIsTheolizerHpp=", found->second.mIsTheolizerHpp);
+            ASTANALYZE_OUTPUT("--- PrevVersionNo ---");
+            ASTANALYZE_OUTPUT("    ", aPrevVersionNoBegin.printToString(*gSourceManager));
+            ASTANALYZE_OUTPUT("    ", aPrevVersionNoEnd.printToString(*gSourceManager));
+            ASTANALYZE_OUTPUT("    ", aIsUpdateAllowedPrev);
+            ASTANALYZE_OUTPUT("    mIsTheolizerHpp=", found->second.mIsTheolizerHpp);
         }
 
 //      ---<<< 修正対象がユーザ・ソースならここで修正する >>>---
@@ -1913,7 +1900,7 @@ ASTANALYZE_OUTPUT("    mIsTheolizerHpp=", found->second.mIsTheolizerHpp);
             // バージョンアップなら最新版を置き換え
             if (iSourceStatus == eVersionUp)
             {
-ASTANALYZE_OUTPUT("--- eVersionUp ---");
+                ASTANALYZE_OUTPUT("--- eVersionUp ---");
                 // ただし、変更禁止ならエラー
                 if (!(mLastVersionNoLoc->second.mIsUpdateAllowed))
                 {
@@ -1928,7 +1915,7 @@ ASTANALYZE_OUTPUT("--- eVersionUp ---");
             // アップデートなら、最新版に変更があれば置き換え
             else if (getNowSource(aLastVersionNoBegin, aLastVersionNoEnd) != mLastVersion.str())
             {
-ASTANALYZE_OUTPUT("--- eUpdate ---");
+                ASTANALYZE_OUTPUT("--- eUpdate ---");
                 // ただし、変更禁止ならエラー
                 if (!(mLastVersionNoLoc->second.mIsUpdateAllowed))
                 {
@@ -1946,7 +1933,7 @@ ASTANALYZE_OUTPUT("--- eUpdate ---");
             if ((iSerializeInfo.mTheolizerVersionPrev)
              && (getNowSource(aPrevVersionNoBegin, aPrevVersionNoEnd) != mPrevVersion.str()))
             {
-ASTANALYZE_OUTPUT("--- modify prev-version ---");
+                ASTANALYZE_OUTPUT("--- modify prev-version ---");
                 // ただし、変更禁止ならエラー
                 if (!aIsUpdateAllowedPrev)
                 {
@@ -1964,28 +1951,28 @@ ASTANALYZE_OUTPUT("--- modify prev-version ---");
 
         // クラス定義全体(#ifdef THEOLIZER_WRITE_CODEと#endif)位置獲得
         FullSourceLoc   aLoc = iSerializeInfo.mLastVersionNoLoc.getExpansionLoc();
-ASTANALYZE_OUTPUT("    Location : ", aLoc.printToString(*gSourceManager));
+        ASTANALYZE_OUTPUT("    Location : ", aLoc.printToString(*gSourceManager));
 
         auto found=mAstInterface.mLocations.lower_bound(aLoc);
-if (found == mAstInterface.mLocations.end())
-{
-    ASTANALYZE_OUTPUT("        not found");
-}
-else
-{
-    ASTANALYZE_OUTPUT("        start : ", found->second.printToString(*gSourceManager));
-    ASTANALYZE_OUTPUT("        end   : ", found->first.printToString(*gSourceManager));
-}
+        if (found == mAstInterface.mLocations.end())
+        {
+            ASTANALYZE_OUTPUT("        not found");
+        }
+        else
+        {
+            ASTANALYZE_OUTPUT("        start : ", found->second.printToString(*gSourceManager));
+            ASTANALYZE_OUTPUT("        end   : ", found->first.printToString(*gSourceManager));
+        }
         ERROR_LOC((found == mAstInterface.mLocations.end())
            || (aLoc < found->second) || (found->first < aLoc), iSerializeInfo.mLastVersionNoLoc);
         SourceLocation  aTotalBegin=found->second;
         SourceLocation  aTotalEnd  =found->first;
-ASTANALYZE_OUTPUT("--- Total ---");
-ASTANALYZE_OUTPUT("    ", aTotalBegin.printToString(*gSourceManager));
-ASTANALYZE_OUTPUT("    ", aTotalEnd.printToString(*gSourceManager));
+        ASTANALYZE_OUTPUT("--- Total ---");
+        ASTANALYZE_OUTPUT("    ", aTotalBegin.printToString(*gSourceManager));
+        ASTANALYZE_OUTPUT("    ", aTotalEnd.printToString(*gSourceManager));
 
         // --- #ifdef THEOLIZER_WRITE_CODE～クラス用マクロ定義開始まで ---
-std::size_t offset=mTheolizerHpp.str().size();
+        std::size_t offset=mTheolizerHpp.str().size();
         mTheolizerHpp << getNowSource(aTotalBegin, aLastVersionNoBegin.getLocWithOffset(-1));
 
         // --- 最新版 ---
@@ -2009,7 +1996,7 @@ std::size_t offset=mTheolizerHpp.str().size();
             mTheolizerHpp << getNowSource(aLastVersionNoEnd, aTotalEnd) << "\n";
         }
 
-ASTANALYZE_OUTPUT("--- Source ---\n", mTheolizerHpp.str().substr(offset), "--------");
+        ASTANALYZE_OUTPUT("--- Source ---\n", mTheolizerHpp.str().substr(offset), "--------");
     }
 
 // ***************************************************************************
@@ -2138,7 +2125,7 @@ ASTANALYZE_OUTPUT("--- Source ---\n", mTheolizerHpp.str().substr(offset), "-----
 
 //      ---<<< 最新のグローバル・バージョン番号取り出し >>>---
 
-ASTANALYZE_OUTPUT(iGlobalVersionNoTableDecl->getQualifiedNameAsString());
+        ASTANALYZE_OUTPUT(iGlobalVersionNoTableDecl->getQualifiedNameAsString());
         unsigned aLastGlobalVersionNo=0;
 
         std::string aTableName=iGlobalVersionNoTableDecl->getName();
@@ -2157,7 +2144,7 @@ ASTANALYZE_OUTPUT(iGlobalVersionNoTableDecl->getQualifiedNameAsString());
             APValue* apvalue = vd->getEvaluatedValue();
             if (!apvalue)  apvalue=vd->evaluateValue();
             ERROR(!getVersionNumber(apvalue, aLastGlobalVersionNo), iGlobalVersionNoTableDecl);
-ASTANALYZE_OUTPUT("aLastGlobalVersionNo=", aLastGlobalVersionNo);
+            ASTANALYZE_OUTPUT("aLastGlobalVersionNo=", aLastGlobalVersionNo);
         break;
         }
 
@@ -2177,14 +2164,14 @@ ASTANALYZE_OUTPUT("aLastGlobalVersionNo=", aLastGlobalVersionNo);
 //      ---<<< 定義があるなら内容を取り出す >>>---
 
         GlobalTable aGlobalTable=getGlobalTableInfo(aConstructor);
-for (auto& data : aGlobalTable)
-{
-    ASTANALYZE_OUTPUT(data.first->getQualifiedNameAsString());
-    for (auto ver : data.second)
-    {
-        ASTANALYZE_OUTPUT("    ", ver);
-    }
-}
+        for (auto& data : aGlobalTable)
+        {
+            ASTANALYZE_OUTPUT(data.first->getQualifiedNameAsString());
+            for (auto ver : data.second)
+            {
+                ASTANALYZE_OUTPUT("    ", ver);
+            }
+        }
 
 //      ---<<< ソース生成 >>>---
 
@@ -2207,7 +2194,7 @@ for (auto& data : aGlobalTable)
 
             CXXRecordDecl const* aSerializer = qt->getAsCXXRecordDecl();
             ERROR(aSerializer == nullptr, mAstInterface.mMidSerializerDecl);
-ASTANALYZE_OUTPUT("BaseTypeInfo<", aSerializer->getQualifiedNameAsString(), ">");
+            ASTANALYZE_OUTPUT("BaseTypeInfo<", aSerializer->getQualifiedNameAsString(), ">");
 
             // 最新版のバージョン番号取り出し
             unsigned aLastVersionNo=0;
@@ -2226,7 +2213,7 @@ ASTANALYZE_OUTPUT("BaseTypeInfo<", aSerializer->getQualifiedNameAsString(), ">")
                 APValue* apvalue = vd->getEvaluatedValue();
                 if (!apvalue)  apvalue=vd->evaluateValue();
                 ERROR(!getVersionNumber(apvalue, aLastVersionNo),mAstInterface.mMidSerializerDecl);
-ASTANALYZE_OUTPUT("aLastVersionNo=", aLastVersionNo);
+                ASTANALYZE_OUTPUT("aLastVersionNo=", aLastVersionNo);
             break;
             }
 
@@ -2292,7 +2279,7 @@ public:
 
 //          ---<<< ソース修正 >>>---
 
-ASTANALYZE_OUTPUT("============ enum sorting ====================");
+        ASTANALYZE_OUTPUT("============ enum sorting ====================");
         std::map<unsigned, SerializeInfo<EnumDecl>* > aEnumList;
         for (auto&& aSerializeInfo : mAstInterface.mSerializeListEnum.getList())
         {
@@ -2309,14 +2296,14 @@ ASTANALYZE_OUTPUT("============ enum sorting ====================");
             aEnumList.emplace(index, &(aSerializeInfo.second));
         }
 
-ASTANALYZE_OUTPUT("============ enum processing =================");
+        ASTANALYZE_OUTPUT("============ enum processing =================");
         for (auto&& aSerializeInfo : aEnumList)
         {
-ASTANALYZE_OUTPUT("enum processing : ",
-                  aSerializeInfo.second->mTheolizerTarget->getQualifiedNameAsString(),
-                  "=", aSerializeInfo.first);
+            ASTANALYZE_OUTPUT("enum processing : ",
+                              aSerializeInfo.second->mTheolizerTarget->getQualifiedNameAsString(),
+                              "=", aSerializeInfo.first);
             SourceStatus aSourceStatus=modifyEnum(*(aSerializeInfo.second));
-ASTANALYZE_OUTPUT("    aSourceStatus=", aSourceStatus);
+            ASTANALYZE_OUTPUT("    aSourceStatus=", aSourceStatus);
             if (aSourceStatus != eAborted)
             {
                 modifySource(*(aSerializeInfo.second), aSourceStatus);
@@ -2324,7 +2311,7 @@ ASTANALYZE_OUTPUT("    aSourceStatus=", aSourceStatus);
         }
         aEnumList.clear();  // 不要メモリ解放
 
-ASTANALYZE_OUTPUT("============ class sorting ===================");
+        ASTANALYZE_OUTPUT("============ class sorting ===================");
         std::map<unsigned, SerializeInfo<CXXRecordDecl>* > aClassList;
         for (auto&& aSerializeInfo : mAstInterface.mSerializeListClass.getList())
         {
@@ -2340,14 +2327,14 @@ ASTANALYZE_OUTPUT("============ class sorting ===================");
 
             aClassList.emplace(index, &(aSerializeInfo.second));
         }
-ASTANALYZE_OUTPUT("============ class processing ================");
+        ASTANALYZE_OUTPUT("============ class processing ================");
         for (auto&& aSerializeInfo : aClassList)
         {
-ASTANALYZE_OUTPUT("class processing : ",
-                  aSerializeInfo.second->mTheolizerTarget->getQualifiedNameAsString(),
-                  "=", aSerializeInfo.first);
+            ASTANALYZE_OUTPUT("class processing : ",
+                              aSerializeInfo.second->mTheolizerTarget->getQualifiedNameAsString(),
+                              "=", aSerializeInfo.first);
             SourceStatus aSourceStatus=modifyClass(*(aSerializeInfo.second));
-ASTANALYZE_OUTPUT("    aSourceStatus=", aSourceStatus);
+            ASTANALYZE_OUTPUT("    aSourceStatus=", aSourceStatus);
             if (aSourceStatus != eAborted)
             {
                 modifySource(*(aSerializeInfo.second), aSourceStatus);
@@ -2355,9 +2342,10 @@ ASTANALYZE_OUTPUT("    aSourceStatus=", aSourceStatus);
         }
         aClassList.clear(); // 不要メモリ解放
 
-ASTANALYZE_OUTPUT("============ GlobalVersionNoTable ============");
-ASTANALYZE_OUTPUT("mGlobalVersionNoTableDecl=", mAstInterface.mGlobalVersionNoTableDecl);
-ASTANALYZE_OUTPUT("mAstInterface.mLocationDefault=", mAstInterface.mLocationDefault.isInvalid());
+        ASTANALYZE_OUTPUT("============ GlobalVersionNoTable ============");
+        ASTANALYZE_OUTPUT("mGlobalVersionNoTableDecl=", mAstInterface.mGlobalVersionNoTableDecl);
+        ASTANALYZE_OUTPUT("mAstInterface.mLocationDefault=",
+                          mAstInterface.mLocationDefault.isInvalid());
         // グローバル・バージョン番号テーブル無し
         if (mAstInterface.mGlobalVersionNoTableDecl == nullptr)
         {
@@ -2376,13 +2364,13 @@ ASTANALYZE_OUTPUT("mAstInterface.mLocationDefault=", mAstInterface.mLocationDefa
         {
             addGlobalVersionNoTable(mAstInterface.mGlobalVersionNoTableDecl);
         }
-ASTANALYZE_OUTPUT("==============================================");
+        ASTANALYZE_OUTPUT("==============================================");
 
         //  デフォルト自動生成されたコードがないなら、ファイル保存なし
         mAstInterface.mDoSaveTheolizerHpp=true;
-ASTANALYZE_OUTPUT("hpp generation : tellp()=", mTheolizerHpp.tellp(),
-                  " isInvalid()=", mAstInterface.mLocationDefault.isInvalid(),
-                  " source=", gCompilingSourceName);
+        ASTANALYZE_OUTPUT("hpp generation : tellp()=", mTheolizerHpp.tellp(),
+                          " isInvalid()=", mAstInterface.mLocationDefault.isInvalid(),
+                          " source=", gCompilingSourceName);
         // 空、かつ、インクルードされていないなら、保存しない
         if ((mTheolizerHpp.tellp() <= 0) && (mAstInterface.mLocationDefault.isInvalid()))
         {
@@ -2406,17 +2394,18 @@ ASTANALYZE_OUTPUT("hpp generation : tellp()=", mTheolizerHpp.tellp(),
             aFileId=mAstInterface.mLocationDefault.getFileID();
             SourceLocation start = gSourceManager->getLocForStartOfFile(aFileId);
             SourceLocation end   = gSourceManager->getLocForEndOfFile(aFileId);
-ASTANALYZE_OUTPUT("--------new\n", mTheolizerHpp.str(), "\n----------");
-ASTANALYZE_OUTPUT("--------now\n", getNowSource(start, end), "\n----------");
+            ASTANALYZE_OUTPUT("--------new\n", mTheolizerHpp.str(), "\n----------");
+            ASTANALYZE_OUTPUT("--------now\n", getNowSource(start, end), "\n----------");
             if (getNowSource(start, end) != mTheolizerHpp.str())
             {
-ASTANALYZE_OUTPUT("    Not same!! ###############################");
+                ASTANALYZE_OUTPUT("    Not same!! ###############################");
                 replaceString(start, end, mTheolizerHpp.str());
             }
         }
 
 //          ---<<< ソース保存 >>>---
-ASTANALYZE_OUTPUT("mModifiedFiles.size(0)=", mModifiedFiles.size());
+
+        ASTANALYZE_OUTPUT("mModifiedFiles.size()=", mModifiedFiles.size());
 
         // 致命的エラーが発生していたら保存しない
         if (gCustomDiag.getDiags().hasFatalErrorOccurred())
@@ -2431,15 +2420,12 @@ ASTANALYZE_OUTPUT("mModifiedFiles.size(0)=", mModifiedFiles.size());
     return;
         }
 
-ASTANALYZE_OUTPUT("mModifiedFiles.size()=", mModifiedFiles.size());
         // 修正ファイルがないなら保存しない
         if (!mModifiedFiles.size())
     return;
-ASTANALYZE_OUTPUT("mModifiedFiles.size(1)=", mModifiedFiles.size());
 
 //      ---<<< 保存処理 >>>---
 
-ASTANALYZE_OUTPUT("mModifiedFiles.size(2)=", mModifiedFiles.size());
         // 自動生成ファイルのみの更新ならば、排他制御なし
         if ((mModifiedFiles.size() == 1) && (*(mModifiedFiles.begin()) == aFileId))
         {
@@ -2450,21 +2436,23 @@ ASTANALYZE_OUTPUT("mModifiedFiles.size(2)=", mModifiedFiles.size());
             gTempFile=gSourceManager->getFileEntryForID(aFileId)->getName();
 #endif
 
-ASTANALYZE_OUTPUT("Update default file only. : overwriteChangedFiles()=", error);
+            ASTANALYZE_OUTPUT("Update default file only. : overwriteChangedFiles()=", error);
 
             // 保存処理を実行したら、mRetryAST(最新版変更によるリトライ)をgRetryASTへ反映
             gRetryAST = mRetryAST;
-ASTANALYZE_OUTPUT("gRetryAST=", gRetryAST);
+            ASTANALYZE_OUTPUT("gRetryAST=", gRetryAST);
     return;
         }
-ASTANALYZE_OUTPUT("mModifiedFiles.size(3)=", mModifiedFiles.size());
 
         // 修正開始してみる。他が修正していたら、再処理する
         boostI::upgradable_lock<ExclusiveControl> lock_try(gExclusiveControl, boostI::try_to_lock);
-ASTANALYZE_OUTPUT("pre lock_try");
+        ASTANALYZE_OUTPUT("pre lock_try");
         if (!lock_try)
+        {
+            ASTANALYZE_OUTPUT("post lock_try(1)");
     return;
-ASTANALYZE_OUTPUT("post lock_try");
+        }
+        ASTANALYZE_OUTPUT("post lock_try(2)");
 
         // 他のプロセスのファイル開放待ち
         boostI::scoped_lock<ExclusiveControl> lock(gExclusiveControl);
@@ -2472,23 +2460,23 @@ ASTANALYZE_OUTPUT("post lock_try");
         for (auto aFileId2 : mModifiedFiles)
         {
             const FileEntry* file = gSourceManager->getFileEntryForID(aFileId2);
-ASTANALYZE_OUTPUT(file->getName(), " ==============================================\n");
+            ASTANALYZE_OUTPUT(file->getName(), " ==============================================\n");
             std::string file_data;
             llvm::raw_string_ostream ss(file_data);
             mRewriter.getEditBuffer(aFileId2).write(ss);
             ss.flush();
             std::string file_body=normalizeLF(std::move(file_data));
-ASTANALYZE_OUTPUT(file_body);
-ASTANALYZE_OUTPUT("==============================================");
+            ASTANALYZE_OUTPUT(file_body);
+            ASTANALYZE_OUTPUT("==============================================");
         }
 
         // 保存処理
         bool error=mRewriter.overwriteChangedFiles();
-ASTANALYZE_OUTPUT("overwriteChangedFiles()=", error);
+        ASTANALYZE_OUTPUT("overwriteChangedFiles()=", error);
 
         // 保存処理を実行したら、mRetryAST(最新版変更によるリトライ)をgRetryASTへ反映
         gRetryAST = mRetryAST;
-ASTANALYZE_OUTPUT("gRetryAST=", gRetryAST);
+        ASTANALYZE_OUTPUT("gRetryAST=", gRetryAST);
     }
 
 // ***************************************************************************

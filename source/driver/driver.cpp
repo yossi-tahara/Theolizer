@@ -292,7 +292,7 @@ return 1;
         std::string aTargetPath = aCurrent.first;
         DRIVER_OUTPUT("aTargetPath                = ", aTargetPath);
         aTargetPath=getCanonicalPath(aTargetPath);
-    if (aTargetPath.empty())
+        if (aTargetPath.empty())
 return 1;
         DRIVER_OUTPUT("aTargetPath(CanonicalPath) = ", aTargetPath);
         std::string aReplacePath = makeRenamePath(aTargetPath);
@@ -611,10 +611,12 @@ return 1;
     }
 
     // 応答ファイルをaArgvへ展開する
-#if 0   // 3.7.0
+#if (LLVM_VERSION_MAJOR < 3) || ((LLVM_VERSION_MAJOR == 3) && (LLVM_VERSION_MINOR < 7))
+    #error "Not support LLVM Version"
+#elif (LLVM_VERSION_MAJOR == 3) && (LLVM_VERSION_MINOR == 7)    // 3.7.0
     llvm::BumpPtrAllocator aAllocator;
     llvm::BumpPtrStringSaver Saver(aAllocator);
-#else   // 3.8.0(2015/12/20)
+#else
     llvm::BumpPtrAllocator A;
     llvm::StringSaver Saver(A);
 #endif
@@ -654,7 +656,7 @@ return 1;
         if ((aDefining && StringRef(arg).equals(kTheolizerAnalyzeParam))
          || (StringRef(arg).equals(aTheolizerAnalyze)))
         {
-PARAMETER_OUTPUT("    aDoAnalyze");
+            PARAMETER_OUTPUT("aDoAnalyze");
             aDoAnalyze=true;
     continue;
         }
@@ -676,7 +678,7 @@ PARAMETER_OUTPUT("    aDoAnalyze");
                              << "error: debug mode path is null.\n";
 return 1;
             }
-PARAMETER_OUTPUT("    aDoAnalyze and Debug");
+            PARAMETER_OUTPUT("aDoAnalyze and Debug");
             aDoAnalyze=true;
             aOriginalPath=aCurrent.second;
             DRIVER_OUTPUT("aOriginalPath                = ", aOriginalPath);
@@ -692,9 +694,7 @@ return 1;
         }
 
         if (StringRef(arg).startswith(ARG_THEOLIZER))
-        {
 return TheolizerProc(aExePath, arg);
-        }
 
         if (StringRef(arg).equals("-help"))         aIsClangHelp  = true;
         if (StringRef(arg).equals("--help"))        aIsClangHelp  = true;

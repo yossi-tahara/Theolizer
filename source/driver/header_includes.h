@@ -75,6 +75,7 @@ THEOLIZER_INTERNAL_DISABLE_WARNING()
 #include <llvm/Support/Program.h>
 #include <llvm/Support/StringSaver.h>
 #include <llvm/Support/raw_ostream.h>
+#include <llvm/Config/llvm-config.h>    // for LLVM_VERSION_*
 
 #define BOOST_ALL_NO_LIB
 #include <boost/interprocess/sync/file_lock.hpp>

@@ -69,7 +69,8 @@ private:
         if (iReason == EnterFile)
         {
             mUpdateEnabled.push(true);
-//ASTANALYZE_OUTPUT("Enter file : ", aFileName.string(), " size()=", mUpdateEnabled.size());
+            ASTANALYZE_OUTPUT("Enter file : ", aFileName.string(),
+                              " size()=", mUpdateEnabled.size());
 
             // 既に解析中なら、++ネスト
             if (mTheolizerHpp)
@@ -90,7 +91,8 @@ private:
             {
                 --mTheolizerHpp;
             }
-//ASTANALYZE_OUTPUT("Exit file : ", aFileName.string(), " size()=", mUpdateEnabled.size());
+            ASTANALYZE_OUTPUT("Exit file : ", aFileName.string(),
+                              " size()=", mUpdateEnabled.size());
             mUpdateEnabled.pop();
         }
 
@@ -256,8 +258,6 @@ private:
                 unsigned aLineNo=aLoc.getSpellingLineNumber();
                 aMacroLoc=gSourceManager->translateLineCol(aFileId, aLineNo+1, 1);
                 aMacroLoc=aMacroLoc.getLocWithOffset(-1);
-ASTANALYZE_OUTPUT("    aMacroLoc : ", aMacroLoc.printToString(*gSourceManager));
-ASTANALYZE_OUTPUT("    mLastVersionNoLoc : ", mLastVersionNoLoc.printToString(*gSourceManager));
                 mAstInterface.mLastVersionNoLocations.emplace
                 (
                     gASTContext->getFullLoc(aMacroLoc),
@@ -334,11 +334,6 @@ private:
                                EnumDecl const*& oTargetEnum)
     {
         QualType qt=iTypedefDecl->getUnderlyingType().getDesugaredType(*gASTContext);
-
-ASTANALYZE_OUTPUT("    getNonIntrusiveTarget() ", qt.getAsString(), 
-                  " : ", qt->getTypeClass(),
-                  ", ", Type::Record, ", ", Type::Enum, ", ", Type::TemplateSpecialization);
-
         switch (qt->getTypeClass())
         {
         case Type::Enum:
@@ -359,15 +354,6 @@ ASTANALYZE_OUTPUT("    getNonIntrusiveTarget() ", qt.getAsString(),
                 if (!oTargetClass)
     return false;
 
-#if 0
-ASTANALYZE_OUTPUT("      kind=", oTargetClass->getTemplateSpecializationKind(),
-                  " : ", clang::TSK_Undeclared,
-                  ", ",  clang::TSK_ImplicitInstantiation,
-                  ", ",  clang::TSK_ExplicitSpecialization,
-                  ", ",  clang::TSK_ExplicitInstantiationDeclaration,
-                  ", ",  clang::TSK_ExplicitInstantiationDefinition);
-#endif
-
                 // プライマリー・テンプレート展開を試みる
                 ClassTemplateSpecializationDecl const* ctsd = 
                     dyn_cast<ClassTemplateSpecializationDecl>(oTargetClass);
@@ -375,9 +361,6 @@ ASTANALYZE_OUTPUT("      kind=", oTargetClass->getTemplateSpecializationKind(),
                 {
                     ClassTemplateDecl* ctd = ctsd->getSpecializedTemplate();
                     oTargetClass = ctd->getTemplatedDecl();
-ASTANALYZE_OUTPUT("      Record-> Primary");
-//gCustomDiag.RemarkReport(oTargetClass->getLocation(),
-//                     "getNonIntrusiveTarget(Record -> Primary template)") ;
                 }
             }
             break;
@@ -407,9 +390,6 @@ ASTANALYZE_OUTPUT("      Record-> Primary");
                 oTargetClass = ctd->getTemplatedDecl();
                 if (!oTargetClass)
     return false;
-ASTANALYZE_OUTPUT("      TemplateSpecialization -> Primary");
-//gCustomDiag.RemarkReport(oTargetClass->getLocation(),
-//                     "getNonIntrusiveTarget(TemplateSpecialization -> Primary template)") ;
             }
             break;
 
@@ -472,7 +452,7 @@ ASTANALYZE_OUTPUT("    Def=" ,iCXXRecordDecl->isThisDeclarationADefinition(),
                 if (aClassName.compare(
                     pos+sizeof("::Theolizer")-1, sizeof("Version")-1, "Version") != 0)
                 {
-ASTANALYZE_OUTPUT("    ::Theolizer does not process.");
+                    ASTANALYZE_OUTPUT("    ::Theolizer does not process.");
     return true;
                 }
             }
@@ -497,7 +477,8 @@ ASTANALYZE_OUTPUT("    ::Theolizer does not process.");
                         "previous definition here");
                 }
                 mAstInterface.mGlobalVersionNoTableDecl = iCXXRecordDecl;
-ASTANALYZE_OUTPUT("    mGlobalVersionNoTableDecl=", iCXXRecordDecl->getQualifiedNameAsString());
+                ASTANALYZE_OUTPUT("    mGlobalVersionNoTableDecl=",
+                                  iCXXRecordDecl->getQualifiedNameAsString());
     return true;
             }
         }
@@ -526,27 +507,12 @@ ASTANALYZE_OUTPUT("    mGlobalVersionNoTableDecl=", iCXXRecordDecl->getQualified
         FullSourceLoc           aLastVersionNoLoc;
         FullSourceLoc           aVersionNoLoc;
 
-#if 0
-ASTANALYZE_OUTPUT("-------- decl list start");
-for (auto&& aDecl : iCXXRecordDecl->decls())
-{
-    NamedDecl* nd = dyn_cast<NamedDecl>(aDecl);
-    std::string name;
-    if (nd && nd->getIdentifier()) name = nd->getName();
-    ASTANALYZE_OUTPUT("    decl=", name);
-}
-ASTANALYZE_OUTPUT("-------- decl list end");
-#endif
         // TheolizerTarget(シリアライズ対象クラス)とTheolizerClass(処理用クラス)取り出し
         //  TheolizerTargetが定義されていたら、シリアライズ指定有りとする
         TypedefDecl* aTheolizerTarget=nullptr;
         auto&& aDecls = theolizer::getRBForIndexer(iCXXRecordDecl->decls());
         for (auto&& aDecl : aDecls)
         {
-NamedDecl* nd=dyn_cast<NamedDecl>(aDecl.front());
-std::string name;
-if (nd && nd->getIdentifier()) name=nd->getName();
-ASTANALYZE_OUTPUT("    decl=", name);
             if (aDecl.front()->getKind() != Decl::Typedef)
         continue;
 
@@ -555,13 +521,7 @@ ASTANALYZE_OUTPUT("    decl=", name);
             {
                 aTheolizerTarget=td;
                 aIsSerialize = true;
-ASTANALYZE_OUTPUT("    iCXXRecordDecl=", iCXXRecordDecl->getQualifiedNameAsString());
                 aAnnotationTS=getAnnotationInfo(aTheolizerTarget, AnnotateType::TS);
-
-clang::SourceLocation sl=aTheolizerTarget->getTypeSourceInfo()->getTypeLoc().getBeginLoc();
-clang::FullSourceLoc aLoc = gASTContext->getFullLoc(sl)/*.getSpellingLoc()*/;
-ASTANALYZE_OUTPUT("    aTheolizerTarget=", aLoc.printToString(*gSourceManager));
-ASTANALYZE_OUTPUT("    aAnnotationTS=", aAnnotationTS.mParameter);
         break;
             }
             // 自動生成禁止なら処理中断
@@ -570,7 +530,7 @@ ASTANALYZE_OUTPUT("    aAnnotationTS=", aAnnotationTS.mParameter);
         break;
             }
         }
-ASTANALYZE_OUTPUT("    aIsSerialize=", aIsSerialize);
+        ASTANALYZE_OUTPUT("    aIsSerialize=", aIsSerialize);
 
         // iCXXRecordDeclの種別判定
         if (aIsSerialize)
@@ -578,7 +538,7 @@ ASTANALYZE_OUTPUT("    aIsSerialize=", aIsSerialize);
             aTargetClass=iCXXRecordDecl;
             if (aTargetClass->getName() == "TheolizerVersion")
             {
-ASTANALYZE_OUTPUT("++++Version : ", aClassName);
+                ASTANALYZE_OUTPUT("++++Version : ", aClassName);
                 aIsVertion=true;
 
                 // 親クラス取り出し
@@ -591,12 +551,12 @@ ASTANALYZE_OUTPUT("++++Version : ", aClassName);
             }
             if (aTargetClass->getName() == "TheolizerNonIntrusive")
             {
-ASTANALYZE_OUTPUT("++++NonIntrusive");
+                ASTANALYZE_OUTPUT("++++NonIntrusive");
                 aIsNonIntrusive=true;
             }
             else
             {
-ASTANALYZE_OUTPUT("++++Intrusive : ", aClassName);
+                ASTANALYZE_OUTPUT("++++Intrusive : ", aClassName);
                 // class/structのみサポート
                 if ((aTargetClass->getTagKind() != clang::TTK_Struct)
                  && (aTargetClass->getTagKind() != clang::TTK_Class))
@@ -637,7 +597,6 @@ return true;
                     {
                         // クラスへのアノテーション取り出し
                         aAnnotation = getAnnotationInfo(td, AnnotateType::Class);
-ASTANALYZE_OUTPUT("    aAnnotation=", aAnnotation.c_str());
                     }
             continue;
                 }
@@ -677,7 +636,7 @@ ASTANALYZE_OUTPUT("    aAnnotation=", aAnnotation.c_str());
                         APValue* apvalue = vd->getEvaluatedValue();
                         if (!apvalue)  apvalue=vd->evaluateValue();
                         ERROR(!getVersionNumber(apvalue, aVersionNo),iCXXRecordDecl,true);
-ASTANALYZE_OUTPUT("    aVersionNo=", aVersionNo);
+                        ASTANALYZE_OUTPUT("    aVersionNo=", aVersionNo);
                     }
 
                     // kLastVersionNo
@@ -686,14 +645,10 @@ ASTANALYZE_OUTPUT("    aVersionNo=", aVersionNo);
                     {
                         aLastVersionNoLoc = gASTContext->getFullLoc(vd->getLocation()).
                             getSpellingLoc();
-ASTANALYZE_OUTPUT("aLastVersionNoLoc=", aLastVersionNoLoc.printToString(*gSourceManager));
 
                         APValue* apvalue = vd->getEvaluatedValue();
                         if (!apvalue)  apvalue=vd->evaluateValue();
                         ERROR(!getVersionNumber(apvalue, aLastVersionNo),iCXXRecordDecl,true);
-ASTANALYZE_OUTPUT("    aLastVersionNo=", aLastVersionNo);
-clang::FullSourceLoc aLoc = gASTContext->getFullLoc(vd->getLocStart()).getSpellingLoc();
-ASTANALYZE_OUTPUT("    kLastVersionNo=", aLoc.printToString(*gSourceManager));
                     }
 
                     // kIsFullAuto(完全自動なら登録しない)
@@ -702,7 +657,7 @@ ASTANALYZE_OUTPUT("    kLastVersionNo=", aLoc.printToString(*gSourceManager));
                         APValue* apvalue = vd->getEvaluatedValue();
                         if (!apvalue)  apvalue=vd->evaluateValue();
                         ERROR(!getBool(apvalue, aIsFullAuto),iCXXRecordDecl,true);
-ASTANALYZE_OUTPUT("    aIsFullAuto=", aIsFullAuto);
+                        ASTANALYZE_OUTPUT("    aIsFullAuto=", aIsFullAuto);
                     }
 
                     // kElementsMapping
@@ -711,7 +666,7 @@ ASTANALYZE_OUTPUT("    aIsFullAuto=", aIsFullAuto);
                         APValue* apvalue = vd->getEvaluatedValue();
                         if (!apvalue)  apvalue=vd->evaluateValue();
                         ERROR(!getVersionNumber(apvalue, aElementsMapping),iCXXRecordDecl,true);
-ASTANALYZE_OUTPUT("    aElementsMapping=", aElementsMapping);
+                        ASTANALYZE_OUTPUT("    aElementsMapping=", aElementsMapping);
             break;
                     }
 
@@ -721,7 +676,7 @@ ASTANALYZE_OUTPUT("    aElementsMapping=", aElementsMapping);
                         APValue* apvalue = vd->getEvaluatedValue();
                         if (!apvalue)  apvalue=vd->evaluateValue();
                         ERROR(!getVersionNumber(apvalue, aEnumSaveType),iCXXRecordDecl,true);
-ASTANALYZE_OUTPUT("    aEnumSaveType=", aEnumSaveType);
+                        ASTANALYZE_OUTPUT("    aEnumSaveType=", aEnumSaveType);
             break;
                     }
                 }
@@ -735,9 +690,10 @@ ASTANALYZE_OUTPUT("    aEnumSaveType=", aEnumSaveType);
                     QualType qt = tsi->getType();
                     aUniqueClass = qt->getAsCXXRecordDecl();
                     ERROR(!aUniqueClass, fd, true);
-ASTANALYZE_OUTPUT("    aUniqueClass=", aUniqueClass->getQualifiedNameAsString(),
-                  " ", aUniqueClass,
-                  " : Definition=", aUniqueClass->getDefinition());
+                    ASTANALYZE_OUTPUT("    aUniqueClass=",
+                                      aUniqueClass->getQualifiedNameAsString(),
+                                      " ", aUniqueClass,
+                                      " : Definition=", aUniqueClass->getDefinition());
                     // もし、friend指定クラスが未定義なら、getDefinition()は0になる
                 }
             }
@@ -782,7 +738,8 @@ ASTANALYZE_OUTPUT("    aUniqueClass=", aUniqueClass->getQualifiedNameAsString(),
                         !aIsFullAuto,
                         aIsFullAuto
                     );
-ASTANALYZE_OUTPUT("----NonIntrusive aTargetClass=", aTargetClass, " aUniqueClass=", aUniqueClass);
+                    ASTANALYZE_OUTPUT("----NonIntrusive aTargetClass=", aTargetClass,
+                                      " aUniqueClass=", aUniqueClass);
                 }
                 if (aTargetEnum)
                 {
@@ -799,7 +756,7 @@ ASTANALYZE_OUTPUT("----NonIntrusive aTargetClass=", aTargetClass, " aUniqueClass
                         false,
                         aIsFullAuto
                     );
-ASTANALYZE_OUTPUT("----NonIntrusive aTargetEnum=", aTargetEnum);
+                    ASTANALYZE_OUTPUT("----NonIntrusive aTargetEnum=", aTargetEnum);
                 }
             }
 
@@ -822,7 +779,8 @@ ASTANALYZE_OUTPUT("----NonIntrusive aTargetEnum=", aTargetEnum);
                     false,
                     aIsFullAuto
                 );
-ASTANALYZE_OUTPUT("----Intrusive aTargetClass=", aTargetClass, " aUniqueClass=", aUniqueClass);
+                ASTANALYZE_OUTPUT("----Intrusive aTargetClass=", aTargetClass,
+                                  " aUniqueClass=", aUniqueClass);
             }
 
 //      ---<<< TheolizerVersion<>追加登録 >>>---
@@ -843,14 +801,14 @@ ASTANALYZE_OUTPUT("----Intrusive aTargetClass=", aTargetClass, " aUniqueClass=",
                     mAstInterface.mSerializeListClass.annexVersion(
                         aTargetClass, iCXXRecordDecl, aVersionNo,
                         aLastVersionNoLoc, aVersionNoLoc);
-ASTANALYZE_OUTPUT("----Version aTargetClass=", aTargetClass);
+                    ASTANALYZE_OUTPUT("----Version aTargetClass=", aTargetClass);
                 }
                 if (aTargetEnum)
                 {
                     mAstInterface.mSerializeListEnum.annexVersion(
                         aTargetEnum, iCXXRecordDecl, aVersionNo,
                         aLastVersionNoLoc, aVersionNoLoc);
-ASTANALYZE_OUTPUT("----Version aTargetEnum=", aTargetEnum);
+                    ASTANALYZE_OUTPUT("----Version aTargetEnum=", aTargetEnum);
                 }
             }
         }
@@ -870,9 +828,10 @@ ASTANALYZE_OUTPUT("----Version aTargetEnum=", aTargetEnum);
 
     virtual bool VisitClassTemplateDecl(ClassTemplateDecl *iClassTemplateDecl)
     {
-ASTANALYZE_OUTPUT("VisitClassTemplateDecl(", iClassTemplateDecl->getQualifiedNameAsString(),
-                  " : ",  iClassTemplateDecl,
-                  " : ",  iClassTemplateDecl->getCanonicalDecl(), ")");
+        ASTANALYZE_OUTPUT("VisitClassTemplateDecl(",
+                          iClassTemplateDecl->getQualifiedNameAsString(),
+                          " : ",  iClassTemplateDecl,
+                          " : ",  iClassTemplateDecl->getCanonicalDecl(), ")");
         getAnnotationInfo(iClassTemplateDecl, AnnotateType::None);
 
         if (mIsTheolizerSpace)
@@ -933,8 +892,6 @@ return true;
          && (iFunctionTemplateDecl->getName() != "load"))
     return true;
 
-//ASTANALYZE_OUTPUT("VisitFunctionTemplateDecl : ", iFunctionTemplateDecl->getName());
-
         // spec(特殊化)はclang::FunctionDecl*型
         for (auto spec : iFunctionTemplateDecl->specializations())
         {
@@ -948,26 +905,20 @@ return true;
             // テンプレート・パラメータ取り出し
             TemplateArgument const& ta = tal->get(3);
             QualType qt = ta.getAsType();
-//ASTANALYZE_OUTPUT("    ", qt.getAsString());
             switch (qt->getTypeClass())
             {
             case Type::Record:
-//ASTANALYZE_OUTPUT("    ->Record");
                 mHasSaveLoad=true;
                 break;
 
             case Type::Enum:
-//ASTANALYZE_OUTPUT("    ->Enum");
                 mHasSaveLoad=true;
                 break;
 
             default:
-//ASTANALYZE_OUTPUT("    ->another");
                 break;
             }
         }
-ASTANALYZE_OUTPUT("VisitFunctionTemplateDecl(", iFunctionTemplateDecl->getName(),
-                  ") : mHasSaveLoad=", mHasSaveLoad);
 
         return true;
     }
@@ -1170,19 +1121,13 @@ private:
         // 名前確認
         CXXRecordDecl const* aInstanciatedClass = iQualType->getAsCXXRecordDecl();
         ERROR(!aInstanciatedClass, iErrorPos, false);
-ASTANALYZE_OUTPUT("isString()" , aInstanciatedClass->getQualifiedNameAsString(),
-                  " : ", aInstanciatedClass->getName().str());
-#if 0
-        if (!(aInstanciatedClass->getQualifiedNameAsString() == "std::basic_string"))
-    return false;
-#else
+
         // gccの場合、"std::__cxx11::basic_string"となっていた。
         //  名前空間でバージョンを切り替えている。
         if (aInstanciatedClass->getQualifiedNameAsString().find("std::") != 0)
     return false;
         if (aInstanciatedClass->getName() != "basic_string")
     return false;
-#endif
 
         // テンプレート情報取り出し
         ClassTemplateSpecializationDecl const* ctsd=
@@ -1210,7 +1155,6 @@ ASTANALYZE_OUTPUT("isString()" , aInstanciatedClass->getQualifiedNameAsString(),
         case clang::BuiltinType::WChar_S:
         case clang::BuiltinType::Char16:
         case clang::BuiltinType::Char32:
-ASTANALYZE_OUTPUT("          This is primitive.(", qt.getAsString(), ")");
     return true;
         default:
             break;
@@ -1249,20 +1193,19 @@ ASTANALYZE_OUTPUT("          This is primitive.(", qt.getAsString(), ")");
 
             TemplateArgument const& ta = tal.get(0);
             qt = ta.getAsType();
-ASTANALYZE_OUTPUT("    TheolizerNonKeepStep::Type=", qt.getAsString());
         }
         while(0);
 
-ASTANALYZE_OUTPUT("    processElement() ", qt.getAsString());
-ASTANALYZE_OUTPUT("      ", qt->getTypeClass(),
-                  " : ", Type::Builtin,
-                  ", ", Type::ConstantArray,
-                  ", ", Type::Record,
-                  ", ", Type::Enum,
-                  ", ", Type::TemplateTypeParm,
-                  ", ", Type::TemplateSpecialization,
-                  ", ", Type::InjectedClassName,
-                  ", ", Type::DependentName);
+        ASTANALYZE_OUTPUT("    processElement() ", qt.getAsString());
+        ASTANALYZE_OUTPUT("      ", qt->getTypeClass(),
+                          " : ", Type::Builtin,
+                          ", ", Type::ConstantArray,
+                          ", ", Type::Record,
+                          ", ", Type::Enum,
+                          ", ", Type::TemplateTypeParm,
+                          ", ", Type::TemplateSpecialization,
+                          ", ", Type::InjectedClassName,
+                          ", ", Type::DependentName);
 
         switch (qt->getTypeClass())
         {
@@ -1307,9 +1250,6 @@ ASTANALYZE_OUTPUT("      ", qt->getTypeClass(),
 
                 EnumDecl const* aTargetEnum = et->getDecl();
                 ERROR(!aTargetEnum, iErrorPos);
-
-ASTANALYZE_OUTPUT("          aTargetEnum=", aTargetEnum->getQualifiedNameAsString(),
-                  " ", aTargetEnum);
                 mAstInterface.mSerializeListEnum.addSaveLoad(aTargetEnum);
             }
             break;
@@ -1330,7 +1270,7 @@ ASTANALYZE_OUTPUT("          aTargetEnum=", aTargetEnum->getQualifiedNameAsStrin
     return;
                     if (qt.getBaseTypeIdentifier()->getName().equals("TheolizerVersion"))
                     {
-ASTANALYZE_OUTPUT("++++++++++++++++++processElement(TheolizerVersion)");
+                        ASTANALYZE_OUTPUT("++++++++++++++++++processElement(TheolizerVersion)");
                         for (auto&& aDecl : aInstanciatedClass->decls())
                         {
                             if (aDecl->getKind() != Decl::Typedef)
@@ -1357,14 +1297,15 @@ ASTANALYZE_OUTPUT("++++++++++++++++++processElement(TheolizerVersion)");
                                 if (!aTargetEnum)
     return;
 
-ASTANALYZE_OUTPUT("          aTargetEnum=", aTargetEnum->getQualifiedNameAsString(),
-                  " ", aTargetEnum);
+                                ASTANALYZE_OUTPUT("          aTargetEnum=",
+                                                  aTargetEnum->getQualifiedNameAsString(),
+                                                  " ", aTargetEnum);
                                 mAstInterface.mSerializeListEnum.addSaveLoad(aTargetEnum);
     return;
                             }
                         }
-ASTANALYZE_OUTPUT("------------------processElement(TheolizerVersion) aTargetClass=",
-    aTargetClass);
+                        ASTANALYZE_OUTPUT("------------------processElement(TheolizerVersion)"
+                                          " aTargetClass=", aTargetClass);
                         if (!aTargetClass)
     return;
                     }
@@ -1379,8 +1320,9 @@ ASTANALYZE_OUTPUT("------------------processElement(TheolizerVersion) aTargetCla
                         aTargetClass=aInstanciatedClass;
                     }
                 }
-ASTANALYZE_OUTPUT("          aTargetClass=", aTargetClass->getQualifiedNameAsString(),
-                  " ", aTargetClass);
+                ASTANALYZE_OUTPUT("          aTargetClass=",
+                                  aTargetClass->getQualifiedNameAsString(),
+                                  " ", aTargetClass);
 
                 if (mAstInterface.mSerializeListClass.addSaveLoad(aTargetClass, iIsRegisterdClass))
                 {
@@ -1393,7 +1335,7 @@ ASTANALYZE_OUTPUT("          aTargetClass=", aTargetClass->getQualifiedNameAsStr
         // コンストラクトの記述ミス時ここに来る
         //  デフォルト・コンストラクタを呼ぶつもりで()を付けると、関数として解釈されるため
         case Type::FunctionProto:
-ASTANALYZE_OUTPUT("Theolizer unkown pattern.(Type::FunctionProto)");
+            ASTANALYZE_OUTPUT("Theolizer unkown pattern.(Type::FunctionProto)");
             gCustomDiag.ErrorReport(iErrorPos->getLocation(),
                 "Illigal format. Please construct %0 by {} instead of ().(%1)")
                 << qt.getAsString()
@@ -1402,7 +1344,7 @@ ASTANALYZE_OUTPUT("Theolizer unkown pattern.(Type::FunctionProto)");
 
         // 不明ケースも警告
         default:
-ASTANALYZE_OUTPUT("Theolizer unkown pattern.", qt->getTypeClass());
+            ASTANALYZE_OUTPUT("Theolizer unkown pattern.", qt->getTypeClass());
             WARNING(true, iErrorPos);
         }
     }
@@ -1418,7 +1360,7 @@ ASTANALYZE_OUTPUT("Theolizer unkown pattern.", qt->getTypeClass());
         AnnotationInfo const* iAnnotationInfo=nullptr
     )
     {
-ASTANALYZE_OUTPUT("++++++++++++ enumerateClass(", iClass->getQualifiedNameAsString(), ")");
+        ASTANALYZE_OUTPUT("++++++++++++ enumerateClass(", iClass->getQualifiedNameAsString(), ")");
 
 //      ---<<< 基底クラス処理 >>>---
 
@@ -1432,7 +1374,7 @@ ASTANALYZE_OUTPUT("++++++++++++ enumerateClass(", iClass->getQualifiedNameAsStri
                 if ((aBaseDecl->getName().equals("TheolizerBase")))
             continue;
 
-ASTANALYZE_OUTPUT("          base : ", aBaseDecl->getQualifiedNameAsString());
+                ASTANALYZE_OUTPUT("          base : ", aBaseDecl->getQualifiedNameAsString());
                 // 基底クラスを登録する
                 if (mAstInterface.mSerializeListClass.addSaveLoad(aBaseDecl))
                 {
@@ -1454,9 +1396,10 @@ ASTANALYZE_OUTPUT("          base : ", aBaseDecl->getQualifiedNameAsString());
             if (!field->getIdentifier())
         continue;
 
-// getCanonicalType()を取ることで、std::string→basic_stringへ展開される。
-ASTANALYZE_OUTPUT("          field : ", field->getType().getCanonicalType().getAsString(),
-                  " ", field->getName());
+            // getCanonicalType()を取ることで、std::string→basic_stringへ展開される。
+            ASTANALYZE_OUTPUT("          field : ",
+                              field->getType().getCanonicalType().getAsString(),
+                              " ", field->getName());
 
             // privateは処理しない
             if (field->getAccess() == clang::AS_private)
@@ -1499,7 +1442,7 @@ ASTANALYZE_OUTPUT("          field : ", field->getType().getCanonicalType().getA
 
             processElement(field->getType(), iClass);
         }
-ASTANALYZE_OUTPUT("------------ enumerateClass(", iClass->getQualifiedNameAsString(), ")");
+        ASTANALYZE_OUTPUT("------------ enumerateClass(", iClass->getQualifiedNameAsString(), ")");
     }
 
 //----------------------------------------------------------------------------
@@ -1511,7 +1454,7 @@ ASTANALYZE_OUTPUT("------------ enumerateClass(", iClass->getQualifiedNameAsStri
 
     void enumerateNonFullAuto()
     {
-ASTANALYZE_OUTPUT("++++++++++++ enumerateNonFullAuto()");
+        ASTANALYZE_OUTPUT("++++++++++++ enumerateNonFullAuto()");
         for (auto&& aSerializeInfo : mAstInterface.mSerializeListClass.getList())
         {
             if ((!aSerializeInfo.second.mIsFullAuto)
@@ -1529,11 +1472,12 @@ ASTANALYZE_OUTPUT("++++++++++++ enumerateNonFullAuto()");
                 for (auto&& aTheolizerVersion : aSerializeInfo.second.mTheolizerVersionList)
                 {
                     enumerateClass(aTheolizerVersion, true);
-ASTANALYZE_OUTPUT("    enumerateClass(", aTheolizerVersion->getQualifiedNameAsString(), ")");
+                    ASTANALYZE_OUTPUT("    enumerateClass(",
+                                      aTheolizerVersion->getQualifiedNameAsString(), ")");
                 }
             }
         }
-ASTANALYZE_OUTPUT("------------ enumerateNonFullAuto()");
+        ASTANALYZE_OUTPUT("------------ enumerateNonFullAuto()");
     }
 
 //----------------------------------------------------------------------------
@@ -1542,7 +1486,7 @@ ASTANALYZE_OUTPUT("------------ enumerateNonFullAuto()");
 
     void processRegisterToBaseClass(ClassTemplateDecl* iRegisterToBaseClass)
     {
-ASTANALYZE_OUTPUT("============ RegisterToBaseClass ===========================");
+        ASTANALYZE_OUTPUT("============ RegisterToBaseClass ===========================");
 
         // 特殊化を枚挙する
         for (auto spec : iRegisterToBaseClass->specializations())
@@ -1554,7 +1498,7 @@ ASTANALYZE_OUTPUT("============ RegisterToBaseClass ==========================="
             // テンプレート・パラメータ取り出し
             TemplateArgument const& ta = tal.get(0);
             QualType qt = ta.getAsType();
-ASTANALYZE_OUTPUT("$$$$ RegisterToBaseClass() : ", qt.getAsString());
+            ASTANALYZE_OUTPUT("$$$$ RegisterToBaseClass() : ", qt.getAsString());
 
             processElement(qt, iRegisterToBaseClass, true);
         }
@@ -1566,7 +1510,7 @@ ASTANALYZE_OUTPUT("$$$$ RegisterToBaseClass() : ", qt.getAsString());
 
     void processSwitcher(ClassTemplateDecl* iSwitcher)
     {
-ASTANALYZE_OUTPUT("============ processSwitcher ===========================");
+        ASTANALYZE_OUTPUT("============ processSwitcher ===========================");
 
         // 特殊化を枚挙する
         for (auto spec : iSwitcher->specializations())
@@ -1578,7 +1522,7 @@ ASTANALYZE_OUTPUT("============ processSwitcher ===========================");
             // テンプレート・パラメータ取り出し
             TemplateArgument const& ta = tal.get(1);
             QualType qt = ta.getAsType();
-ASTANALYZE_OUTPUT("$$$$ processSwitcher() : ", qt.getAsString());
+            ASTANALYZE_OUTPUT("$$$$ processSwitcher() : ", qt.getAsString());
 
             processElement(qt, iSwitcher);
         }
@@ -1667,8 +1611,8 @@ public:
         {
             std::error_code error;
             llvm::raw_fd_ostream temp(gDefaultSourceName.string(), error, llvmS::fs::F_None);
-ASTANALYZE_OUTPUT("hpp generation : make source:"
-                  " source=", gDefaultSourceName.string());
+            ASTANALYZE_OUTPUT("hpp generation : make source:"
+                              " source=", gDefaultSourceName.string());
             if (error)
             {
                 gCustomDiag.FatalReport(SourceLocation(),
@@ -1690,8 +1634,8 @@ ASTANALYZE_OUTPUT("hpp generation : make source:"
             // 保存されなければ削除する
             if (!mAstInterface.mDoSaveTheolizerHpp)
             {
-ASTANALYZE_OUTPUT("hpp generation : remove(", gDefaultSourceName.string(), ")");
-                llvmS::fs::remove(gDefaultSourceName.string());
+                ASTANALYZE_OUTPUT("hpp generation : remove(", gDefaultSourceName.string(), ")");
+                                llvmS::fs::remove(gDefaultSourceName.string());
             }
         }
 
