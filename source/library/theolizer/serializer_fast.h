@@ -61,11 +61,15 @@ const static unsigned kFastSerializerVersionNo=1;
 //          必要な場合直接見えた方が良いのでここで定義
 // ***************************************************************************
 
-inline bool hasPropertyFast(Property iProperty)
+inline bool hasPropertyFast(Property iProperty, bool iIsSaver)
 {
     bool ret=false;
     switch(iProperty)
     {
+    case Property::IsSaver:
+        ret=iIsSaver;
+        break;
+
     case Property::EncodedString:
         ret=false;
         break;
@@ -76,9 +80,6 @@ inline bool hasPropertyFast(Property iProperty)
 
     case Property::LongDoubleIsDouble:
         ret=false;
-        break;
-
-    default:
         break;
     }
 
@@ -122,13 +123,10 @@ private:
     static char const* const    kSerializerName;
 
 public:
-    //! 保存用なのでtrue
-    static const bool       kIsSaver=true;
-
     //! @todo T.B.D.
     static bool hasPropertyStatic(Property iProperty)
     {
-        return hasPropertyFast(iProperty);
+        return hasPropertyFast(iProperty, true);
     }
 
     //! @todo T.B.D.
@@ -239,13 +237,10 @@ private:
     static char const* const    kSerializerName;
 
 public:
-    //! 回復用なのでfalse
-    static const bool       kIsSaver=false;
-
     //! @todo T.B.D.
     static bool hasPropertyStatic(Property iProperty)
     {
-        return hasPropertyFast(iProperty);
+        return hasPropertyFast(iProperty, false);
     }
 
     //! @todo T.B.D.

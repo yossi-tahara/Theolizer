@@ -273,6 +273,10 @@ std::ostream& operator<<(std::ostream& iOStream, Property iProperty)
 {
     switch(iProperty)
     {
+    case Property::IsSaver:
+        iOStream << "IsSaver";
+        break;
+
     case Property::EncodedString:
         iOStream << "EncodedString";
         break;

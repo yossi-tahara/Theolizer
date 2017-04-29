@@ -49,8 +49,7 @@
 //      MinGW/gccとboostの組み合わせで発生する問題
 // ***************************************************************************
 
-#define THEOLIZER_INTERNAL_PRAGMA(x)    THEOLIZER_INTERNAL_PRAGMA_I(x)
-#define THEOLIZER_INTERNAL_PRAGMA_I(x)  _Pragma(#x)
+#define THEOLIZER_INTERNAL_PRAGMA(x)    _Pragma(#x)
 
 //----------------------------------------------------------------------------
 //      boostの一部(format.hpp等)をインクルードすると

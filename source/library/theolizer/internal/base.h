@@ -109,8 +109,7 @@ namespace internal
 //      先頭取り出し
 // ***************************************************************************
 
-#define THEOLIZER_INTERNAL_FIRST(dFirst, ...)   THEOLIZER_INTERNAL_FIRST_I(dFirst)
-#define THEOLIZER_INTERNAL_FIRST_I(dFirst)      dFirst
+#define THEOLIZER_INTERNAL_FIRST(dFirst, ...)   dFirst
 
 // ***************************************************************************
 //      マクロ展開処理
