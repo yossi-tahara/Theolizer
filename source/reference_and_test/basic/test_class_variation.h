@@ -214,7 +214,7 @@ public:
     /* 浮動小数点型 */                                                                  \
     DEFINE(float,               mFloat,         0.0F,   2.23456F)                       \
     DEFINE(double,              mDouble,        0.0,    2.23456789012345)               \
-    DEFINE(long double,         mLongDouble,    0.0L,   2.23456789012345L)              \
+    DEFINE(long double,         mLongDouble,    0.0L,   2.23456789012345678L)           \
     /* 文字列型 */                                                                      \
     DEFINE(std::string,         mString,        u8"",   u8"ＵＴＦ－８a")                \
     DEFINE(std::wstring,        mWstring,       L"",    L"ＵＴＦ－１６／３２a")         \
@@ -246,7 +246,7 @@ public:
     /* 浮動小数点型 */                                                                  \
     ARRAY(float,                mFloat,     5,  0.0F,   3.23456F)                       \
     ARRAY(double,               mDouble,    6,  0.0,    3.23456789012345)               \
-    ARRAY(long double,          mLongDouble,7,  0.0L,   3.23456789012345L)              \
+    ARRAY(long double,          mLongDouble,7,  0.0L,   3.23456789012345678L)           \
     /* 文字列型 */                                                                      \
     ARRAY(std::string,          mString,    5,  u8"",   u8"ＵＴＦ－８a")                \
     ARRAY(std::wstring,         mWstring,   6,  L"",    L"ＵＴＦ－１６／３２a")         \
@@ -293,7 +293,7 @@ public:
     ARRAY(long long,            mLongLong,  11, 0LL,    -5200LL)                        \
     ARRAY(unsigned long long,   mULongLong, 12, 0ULL,    5200ULL)                       \
     /* 浮動小数点型 */                                                                  \
-    ARRAY(long double,          mLongDouble,7,  0.0L,   3.23456789012345L)              \
+    ARRAY(long double,          mLongDouble,7,  0.0L,   3.23456789012345678L)           \
     /* 文字列型 */                                                                      \
     ARRAY(std::u16string,       mU16string, 7,  u"",    u"ＵＴＦ－１６a")               \
     ARRAY(std::u32string,       mU32string, 8,  U"",    U"ＵＴＦ－３２a")               \

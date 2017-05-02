@@ -281,7 +281,7 @@ void saveBasicProcess(tSerializer& iSerializer)
     double      aDouble    =1.23456789012345;
     THEOLIZER_PROCESS(iSerializer, aDouble);
 
-    long double aLongDouble=1.23456789012345L;
+    long double aLongDouble=1.23456789012345678L;
     THEOLIZER_PROCESS(iSerializer, aLongDouble);
 
 //      ---<<< 文字列型 >>>---
@@ -322,7 +322,7 @@ void saveBasicProcess(tSerializer& iSerializer)
 
     THEOLIZER_PROCESS(iSerializer, 2.23456F);
     THEOLIZER_PROCESS(iSerializer, 2.23456789012345);
-    THEOLIZER_PROCESS(iSerializer, 2.23456789012345L);
+    THEOLIZER_PROCESS(iSerializer, 2.23456789012345678L);
 
     THEOLIZER_PROCESS(iSerializer, std::string(u8"rvalue:ＵＴＦ－８"));
     THEOLIZER_PROCESS(iSerializer, std::wstring(L"rvalue:ＵＴＦ－１６／３２"));
@@ -558,7 +558,7 @@ void loadBasicProcess(tSerializer& iSerializer)
 
     long double aLongDouble;
     THEOLIZER_PROCESS(iSerializer, aLongDouble);
-    THEOLIZER_EQUAL(aLongDouble, 1.23456789012345L);
+    THEOLIZER_EQUAL(aLongDouble, 1.23456789012345678L);
 
 //      ---<<< 文字列型 >>>---
 
@@ -620,7 +620,7 @@ void loadBasicProcess(tSerializer& iSerializer)
     THEOLIZER_EQUAL(aDouble, 2.23456789012345);
 
     THEOLIZER_PROCESS(iSerializer, aLongDouble);
-    THEOLIZER_EQUAL(aLongDouble, 2.23456789012345L);
+    THEOLIZER_EQUAL(aLongDouble, 2.23456789012345678L);
 
     THEOLIZER_PROCESS(iSerializer, aString);
     THEOLIZER_EQUAL(aString, u8"rvalue:ＵＴＦ－８");

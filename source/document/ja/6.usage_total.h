@@ -1,4 +1,4 @@
-//############################################################################
+﻿//############################################################################
 /*!
     @brief      ドキュメント・ファイル－使用方法（全体）
     @ingroup    Documents
@@ -243,17 +243,78 @@ TypeCheckByIndexはデータ量が多い時は３種のCheckModeの中で最大�
 
 回復時に回復先の変数の型と上記の情報と照らし合わせることで型チェックを行います。<br>
 
-@subsubsection DerivedMembers 3-1-2.派生メンバ
-各シリアライザが継承しているメンバの内、公開しているものは下記です。
+@subsubsection MemberFunctions 3-1-2.メンバ関数
+幾つかの制御のため、各シリアライザは下記のメンバ関数を公開しています。
 
 |メンバ名|意味|
 |--------|----|
-|static const bool kIsSaver ;|保存用はtrue／回復用はfalse|
-|static const bool kIsFastSerialzier ;|FastSerializerのみtrue|
+|unsigned getGlobalVersionNo() const ;|処理中のグローバル・バージョン番号を返却します。|
 |void clearTracking() ;|オブジェクト追跡の区切り（@ref ObjectTracking 参照）|
-|theolizer::ErrorInfo const& getError() ;|エラー情報返却|
-|void resetError() ;|エラー状態解除|
+|bool getRequireClearTracking() const ;|clearTracking()が必要な時trueを返却します。|
+|theolizer::ErrorInfo const& getError() ;|エラー情報を返却します。|
+|bool isError() const ;|エラーが発生している時trueを返却します。|
+|void resetError() ;|エラー状態を解除します。|
 |bool isTerminated() const ;|処理中のクラスの読み出しが終了(mTerminated)していたらtrueを返却します。<br>非侵入型手動クラスで回復処理を実装する際に使用します。|
+|void setCharIsMultiByte() ;|Windowsにおいて、EncodedStringがtrueのシリアライザにおいて<br>std::string変数の文字エンコードをMultiByte文字列として処理するかどうかを指定します。|
+
+@subsubsection Property 3-1-3.プロパティ
+各シリアライザは、その属性をプロバティとして提供しています。
+
+|プロバティ名|意味|Json|Binary|Fast|
+|------------|----|----|------|----|
+|IsSaver|保存処理用ならtrue、回復処理用ならfalse|--|--|--|
+|EncodedString|文字列のエンコードを処理する|true|false|false|
+|SupportModifying|クラスやenum型の定義変更に対応する|true|true|false|
+
+プロパテイは以下の構文で受け取ります。
+
+@code
+bool property = <シリアライザ・クラス>::hasProperty(theolizer::Property::<プロパティ名>);
+@endcode
+<br>
+
+@subsubsection EncodedString 3-1-4.EncodedStringについて補足
+テキスト型のシリアライザは、文字列を読める形式で記録されます。<br>
+そのため、例えばJsonフォーマットはデフォルトではUTF-8でエンコードすると規定されています。<br>
+そして、C++の各`std::string`シリーズもUnicodeでエンコードされることが期待されます。（そうしないことも可能です。）
+
+そこで、TheolizerのEncodedStringプロパティをサポートしたシリアライザ（現在はJsonのみ）は、下記のように`std::string`シリーズを処理します。
+
+- <b>setCharIsMultiByte(false)</b>（デフォルト）<br>
+全ての文字列を特定のUnicodeエンコードで記録する。(JsonシリアライザはUTF-8)<br>
+`std::string`はUnicodeでエンコードされているものとして処理する。（そのまま保存／回復する。）<br>
+以下は全てUnicodeへ変換して保存し、読み出し後当該エンコードへ変換する。<br>
+`std::wstring`はUTF-16かUTF-32(wchar_tのサイズによる）でエンコードされているものとして処理する。<br>
+`std::u16string`はUTF-16でエンコードされているものとして処理する。<br>
+`std::u32string`はUTF-32でエンコードされているものとして処理する。<br>
+<br>
+
+- <b>setCharIsMultiByte(true)</b><br>
+std::stringはMultiByte文字列としてエンコードされているものとして処理する。(Unicodeへ変換して保存／回復する。）<br>
+その他は、デフォルトと同じ。<br>
+
+つまり、例えば、UTF-8でエンコードされた`std::string`型の変数を保存し、それをUTF-16でエンコードされた`std::u16string`型の変数へ回復できます。
+
+<b>サンプル・ソース（source/reference_and_test/basic/test_basic_process.cpp）</b><br>
+
+@dontinclude test_basic_process.cpp
+@skip #if defined(_WIN32)
+@until #endif
+@skip void tutoriseBasic()
+@until {
+@skip //-
+@until // char
+@until THEOLIZER_PROCESS(aSerializer, aString);
+@until THEOLIZER_PROCESS(aSerializer, aString);
+@until THEOLIZER_PROCESS(aSerializer, aString);
+@skip }
+@until }
+@until THEOLIZER_EQUAL(aU32String
+@skip }
+@until }
+@skip "tutoriseBasic() end"
+@skip }
+@until }
 
 <br>
 // ***************************************************************************

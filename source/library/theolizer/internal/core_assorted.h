@@ -825,8 +825,7 @@ enum class Property
 {
     IsSaver,            // 保存処理を行う
     EncodedString,      // setCharIsMultiByte()をサポートし、文字列の互換がある
-    SupportModifying,   // 変更をサポート(FastSerializerは非対応)
-    LongDoubleIsDouble  // long doubleとdoubleが同じ
+    SupportModifying    // 変更をサポート(FastSerializerは非対応)
 };
 
 //! @todo T.B.D.

@@ -157,22 +157,48 @@ void JsonMidOSerializer::writeHeader()
 //          ここで、pはその二進形式の仮数のビット数で、例えば binary32なら24ビットである。
 //----------------------------------------------------------------------------
 
-template<typename tType>
+template<typename tType, class tEnable=void>
 struct Decimal
-{
-    static const int    kDigit=17;
-};
-
-template<>
-struct Decimal<float>
 {
     static const int    kDigit=9;
 };
 
-template<>
-struct Decimal<long double>
+template<typename tType>
+struct Decimal
+<
+    tType,
+    EnableIf
+    <
+            (24 < std::numeric_limits<tType>::digits)
+         && (std::numeric_limits<tType>::digits <= 53)
+    >
+>
 {
-    static const int    kDigit=21 ;
+    static const int    kDigit=17;
+};
+
+template<typename tType>
+struct Decimal
+<
+    tType,
+    EnableIf
+    <
+            (53 < std::numeric_limits<tType>::digits)
+         && (std::numeric_limits<tType>::digits <= 64)
+    >
+>
+{
+    static const int    kDigit=21;
+};
+
+template<typename tType>
+struct Decimal
+<
+    tType,
+    EnableIf<(64 < std::numeric_limits<tType>::digits)>
+>
+{
+    static_assert(Ignore<tType>::kFalse, "This is not supported floating point type.");
 };
 
 //----------------------------------------------------------------------------

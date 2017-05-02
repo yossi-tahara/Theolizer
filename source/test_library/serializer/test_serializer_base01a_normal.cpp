@@ -110,7 +110,7 @@ std::cout << "TestOSerializerNormal(" << iFileName << ", "
     double      aDouble=1.23456789012345;
     THEOLIZER_PROCESS(aSerializer, aDouble);
 
-    long double aLongDouble=1.23456789012345L;
+    long double aLongDouble=1.23456789012345678L;
     THEOLIZER_PROCESS(aSerializer, aLongDouble);
 
 //      ---<<< enum型 >>>---
@@ -276,17 +276,7 @@ std::cout << "TestISerializerNormal(" << iFileName << ", "
 
     long double aLongDouble;
     THEOLIZER_PROCESS(aSerializer, aLongDouble);
-
-    // TheolizerはFastSerializer以外はlong doubleをdoubleで処理するので、doubleで比較する
-    if (tISerializer::hasProperty(theolizer::Property::LongDoubleIsDouble))
-    {
-        double temp=static_cast<double>(aLongDouble);
-        THEOLIZER_EQUAL(temp, 1.23456789012345);
-    }
-    else
-    {
-        THEOLIZER_EQUAL(aLongDouble, 1.23456789012345L);
-    }
+    THEOLIZER_EQUAL(aLongDouble, 1.23456789012345678L);
 
 //      ---<<< enum型 >>>---
 

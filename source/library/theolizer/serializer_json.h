@@ -85,10 +85,6 @@ inline bool hasPropertyJson(Property iProperty, bool iIsSaver)
     case Property::SupportModifying:
         ret=true;
         break;
-
-    case Property::LongDoubleIsDouble:
-        ret=true;
-        break;
     }
 
     return ret;

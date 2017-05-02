@@ -284,10 +284,6 @@ std::ostream& operator<<(std::ostream& iOStream, Property iProperty)
     case Property::SupportModifying:
         iOStream << "SupportModifying";
         break;
-
-    case Property::LongDoubleIsDouble:
-        iOStream << "LongDoubleIsDouble";
-        break;
     }
 
     return iOStream;

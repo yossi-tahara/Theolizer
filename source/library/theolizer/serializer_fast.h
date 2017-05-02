@@ -77,10 +77,6 @@ inline bool hasPropertyFast(Property iProperty, bool iIsSaver)
     case Property::SupportModifying:
         ret=false;
         break;
-
-    case Property::LongDoubleIsDouble:
-        ret=false;
-        break;
     }
 
     return ret;
