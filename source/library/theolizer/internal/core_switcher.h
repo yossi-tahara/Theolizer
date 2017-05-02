@@ -303,7 +303,7 @@ struct Switcher
                 aSerializeInfo.mStatus=etsProcessed;
             }
         }
-        iSerializer.mRequireCheckTracking=true;
+        iSerializer.mRequireClearTracking=true;
     }
     // 回復
     static void load(tBaseSerializer& iSerializer, tPointerType& oPointer)
@@ -366,7 +366,7 @@ struct Switcher
                 tTrackingMode
             );
         }
-        iSerializer.mRequireCheckTracking=true;
+        iSerializer.mRequireClearTracking=true;
     }
 };
 

@@ -338,7 +338,7 @@ char const* getCppNameBinary(std::string const& iPrimitiveName, unsigned iSerial
 */
 // ***************************************************************************
 
-class THEOLIZER_INTERNAL_DLL BinaryMidOSerializer : public BaseSerializer
+class THEOLIZER_INTERNAL_DLL BinaryMidOSerializer : protected BaseSerializer
 {
 private:
     friend class BaseSerializer;
@@ -359,16 +359,17 @@ private:
 
 public:
     //! @todo T.B.D.
-    static bool hasPropertyStatic(Property iProperty)
+    static bool hasProperty(Property iProperty)
     {
         return hasPropertyBinary(iProperty, true);
     }
 
-    //! @todo T.B.D.
-    bool hasProperty(Property iProperty)
-    {
-        return hasPropertyStatic(iProperty);
-    }
+    using BaseSerializer::getGlobalVersionNo;
+    using BaseSerializer::clearTracking;
+    using BaseSerializer::getRequireClearTracking;
+    using ErrorBase::getErrorInfo;
+    using ErrorBase::isError;
+    using ErrorBase::resetError;
 
 protected:
     BinaryMidOSerializer
@@ -497,7 +498,7 @@ private:
 */
 // ***************************************************************************
 
-class THEOLIZER_INTERNAL_DLL BinaryMidISerializer : public BaseSerializer
+class THEOLIZER_INTERNAL_DLL BinaryMidISerializer : protected BaseSerializer
 {
 private:
     friend class BaseSerializer;
@@ -520,16 +521,17 @@ private:
 
 public:
     //! @todo T.B.D.
-    static bool hasPropertyStatic(Property iProperty)
+    static bool hasProperty(Property iProperty)
     {
         return hasPropertyBinary(iProperty, false);
     }
 
-    //! @todo T.B.D.
-    bool hasProperty(Property iProperty)
-    {
-        return hasPropertyStatic(iProperty);
-    }
+    using BaseSerializer::getGlobalVersionNo;
+    using BaseSerializer::clearTracking;
+    using BaseSerializer::getRequireClearTracking;
+    using ErrorBase::getErrorInfo;
+    using ErrorBase::isError;
+    using ErrorBase::resetError;
 
 protected:
     BinaryMidISerializer

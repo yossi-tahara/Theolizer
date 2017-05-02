@@ -83,7 +83,7 @@ void testModifyComplex(std::string const& iFileName, theolizer::CheckMode iCheck
         std::ifstream   aStream(iFileName);
 
         // 文字列をエンコードするシリアライザの場合
-        if (tSerializerLoad::hasPropertyStatic(theolizer::Property::EncodedString))
+        if (tSerializerLoad::hasProperty(theolizer::Property::EncodedString))
         {   // 適切に回復可能
             tSerializerLoad aSerializer(aStream);
 

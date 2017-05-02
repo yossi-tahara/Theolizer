@@ -57,7 +57,7 @@ void TestPoly(tSerializer &iSerializer)
 //      シリアライズ用準備
 //----------------------------------------------------------------------------
 
-    if (tSerializer::hasPropertyStatic(theolizer::Property::IsSaver))
+    if (tSerializer::hasProperty(theolizer::Property::IsSaver))
     {
         Derived2Class* aDerived2Class=new Derived2Class;
         aDerived2Class->mInt =10;
@@ -77,7 +77,7 @@ void TestPoly(tSerializer &iSerializer)
 //      デシリアライズ結果検証
 //----------------------------------------------------------------------------
 
-    if (!tSerializer::hasPropertyStatic(theolizer::Property::IsSaver))
+    if (!tSerializer::hasProperty(theolizer::Property::IsSaver))
     {
         Derived2Class* aDerived2Class=dynamic_cast<Derived2Class*>(aBaseClass);
         THEOLIZER_REQUIRE(aDerived2Class != nullptr, aDerived2Class);

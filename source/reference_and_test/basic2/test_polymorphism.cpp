@@ -322,7 +322,7 @@ void savePolymorphism(tSerializer& iSerializer)
         THEOLIZER_PROCESS(iSerializer, aPolyBaseManualRef);
 
         // オブジェクト追跡されていないことを確認する
-        THEOLIZER_EQUAL(iSerializer.getRequireCheckTracking(), false);
+        THEOLIZER_EQUAL(iSerializer.getRequireClearTracking(), false);
     }
 
     {
@@ -342,7 +342,7 @@ void savePolymorphism(tSerializer& iSerializer)
         THEOLIZER_PROCESS_POINTEE(iSerializer, aPolyBaseManualRef);
 
         // オブジェクト追跡されていることを確認する
-        THEOLIZER_EQUAL(iSerializer.getRequireCheckTracking(), true);
+        THEOLIZER_EQUAL(iSerializer.getRequireClearTracking(), true);
 
         // 基底クラスで派生クラスをシリアライズすると、オブジェクト追跡されるので要クリア
         iSerializer.clearTracking();
@@ -441,7 +441,7 @@ void loadPolymorphism(tSerializer& iSerializer)
         aPolyBaseManualRef.check(true);
 
         // オブジェクト追跡されていないことを確認する
-        THEOLIZER_EQUAL(iSerializer.getRequireCheckTracking(), false);
+        THEOLIZER_EQUAL(iSerializer.getRequireClearTracking(), false);
 
         // 基底クラスで派生クラスをシリアライズすると、オブジェクト追跡されるので要クリア
         iSerializer.clearTracking();
@@ -466,7 +466,7 @@ void loadPolymorphism(tSerializer& iSerializer)
         aPolyBaseManualRef.check(true);
 
         // オブジェクト追跡されていることを確認する
-        THEOLIZER_EQUAL(iSerializer.getRequireCheckTracking(), true);
+        THEOLIZER_EQUAL(iSerializer.getRequireClearTracking(), true);
 
         // 基底クラスで派生クラスをシリアライズすると、オブジェクト追跡されるので要クリア
         iSerializer.clearTracking();

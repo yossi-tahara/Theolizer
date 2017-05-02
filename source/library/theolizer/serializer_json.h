@@ -236,7 +236,7 @@ char const* getCppNameJson(std::string const& iPrimitiveName, unsigned iSerializ
 */
 // ***************************************************************************
 
-class THEOLIZER_INTERNAL_DLL JsonMidOSerializer : public BaseSerializer
+class THEOLIZER_INTERNAL_DLL JsonMidOSerializer : protected BaseSerializer
 {
 private:
     friend class BaseSerializer;
@@ -260,22 +260,24 @@ private:
 
 public:
     //! @todo T.B.D.
-    static bool hasPropertyStatic(Property iProperty)
+    static bool hasProperty(Property iProperty)
     {
         return hasPropertyJson(iProperty, true);
     }
 
     //! @todo T.B.D.
-    bool hasProperty(Property iProperty)
-    {
-        return hasPropertyStatic(iProperty);
-    }
-
     //! std::stringをマルチ・パイト文字コードとして処理することを指定する
     void setCharIsMultiByte(bool iCharIsMultiByte)
     {
         mCharIsMultiByte=iCharIsMultiByte;
     }
+
+    using BaseSerializer::getGlobalVersionNo;
+    using BaseSerializer::clearTracking;
+    using BaseSerializer::getRequireClearTracking;
+    using ErrorBase::getErrorInfo;
+    using ErrorBase::isError;
+    using ErrorBase::resetError;
 
 protected:
     JsonMidOSerializer
@@ -396,7 +398,7 @@ private:
 */
 // ***************************************************************************
 
-class THEOLIZER_INTERNAL_DLL JsonMidISerializer : public BaseSerializer
+class THEOLIZER_INTERNAL_DLL JsonMidISerializer : protected BaseSerializer
 {
 private:
     friend class BaseSerializer;
@@ -420,15 +422,9 @@ private:
 
 public:
     //! @todo T.B.D.
-    static bool hasPropertyStatic(Property iProperty)
+    static bool hasProperty(Property iProperty)
     {
         return hasPropertyJson(iProperty, false);
-    }
-
-    //! @todo T.B.D.
-    bool hasProperty(Property iProperty)
-    {
-        return hasPropertyStatic(iProperty);
     }
 
     //! std::stringをマルチ・パイト文字コードとして処理することを指定する
@@ -436,6 +432,13 @@ public:
     {
         mCharIsMultiByte=iCharIsMultiByte;
     }
+
+    using BaseSerializer::getGlobalVersionNo;
+    using BaseSerializer::clearTracking;
+    using BaseSerializer::getRequireClearTracking;
+    using ErrorBase::getErrorInfo;
+    using ErrorBase::isError;
+    using ErrorBase::resetError;
 
 protected:
     JsonMidISerializer

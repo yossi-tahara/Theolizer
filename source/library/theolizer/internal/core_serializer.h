@@ -557,24 +557,21 @@ protected:
 
 private:
     size_t                                  mTypeIndexCount;
-    bool                                    mRequireCheckTracking;
+    bool                                    mRequireClearTracking;
 
 public:
-    //! @todo T.B.D.
-    bool getRequireCheckTracking() { return mRequireCheckTracking; }
-
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
     // デフォルトは保存先無し
     static const bool                       kHasDestination=false;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
-    //! @todo T.B.D.
-    virtual bool hasProperty(Property iProperty) = 0;
-
     //! std::stringをマルチ・パイト文字コードとして処理することを指定する(NOP)
     virtual void setCharIsMultiByte(bool) { }
 
 protected:
+    // clearTrackingの必要性返却
+    bool getRequireClearTracking() { return mRequireClearTracking; }
+
     // RegisterTypeコンストラクト時の余分なstruct定義回避
     constexpr static GlobalVersionNoTableBase const*const*const
         kPtrGlobalVersionNoTable=nullptr;
@@ -604,12 +601,10 @@ protected:
 //      シリアライズ／デシリアライズ補助API
 // ***************************************************************************
 
-public:
+protected:
     // 最新版処理
-    //! @todo T.B.D.
     unsigned getGlobalVersionNo() const {return mGlobalVersionNo;}
 
-protected:
     // ClassType終了状態返却(デフォルト)
     virtual bool isTerminated() const {return false;}
 
@@ -730,8 +725,7 @@ private:
 private:
     void clearTrackingImpl();
 
-public:
-    //! @todo T.B.D.
+protected:
     void clearTracking();
 
 //----------------------------------------------------------------------------

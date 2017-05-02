@@ -659,7 +659,7 @@ BaseSerializer::BaseSerializer
     mLastGlobalVersionNo(iLastGlobalVersionNo),
     mTypeInfoList(TypeInfoList::getInstance().getList()),
     mTypeIndexCount(mTypeInfoList.size()),
-    mRequireCheckTracking(false),
+    mRequireClearTracking(false),
     mAdditionalInfo(*this),
     mBaseProcessing(false),
     mClassTracking(false),
@@ -746,7 +746,7 @@ BaseSerializer::~BaseSerializer() noexcept
     // かつ、例外処理中でなければ、プロセス停止する。
     //  なお、FastSerializer(ImMemory)についてはチェックしない。
     if (!std::uncaught_exception()
-     && mRequireCheckTracking
+     && mRequireClearTracking
      && (mCheckMode != CheckMode::InMemory))
     {
         THEOLIZER_INTERNAL_ABORT
@@ -1216,7 +1216,7 @@ void BaseSerializer::clearTracking()
     // エラー情報登録準備
     theolizer::internal::ApiBoundary aApiBoundary(&mAdditionalInfo);
 
-    mRequireCheckTracking=false;
+    mRequireClearTracking=false;
     if (mNoThrowException)
     {
         try

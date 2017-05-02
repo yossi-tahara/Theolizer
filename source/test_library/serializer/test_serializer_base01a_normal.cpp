@@ -278,7 +278,7 @@ std::cout << "TestISerializerNormal(" << iFileName << ", "
     THEOLIZER_PROCESS(aSerializer, aLongDouble);
 
     // TheolizerはFastSerializer以外はlong doubleをdoubleで処理するので、doubleで比較する
-    if (aSerializer.hasProperty(theolizer::Property::LongDoubleIsDouble))
+    if (tISerializer::hasProperty(theolizer::Property::LongDoubleIsDouble))
     {
         double temp=static_cast<double>(aLongDouble);
         THEOLIZER_EQUAL(temp, 1.23456789012345);
@@ -487,7 +487,7 @@ void TestNormal(char const* iPreFix)
 {
 //      ---<<< InMemory形式 >>>---
 
-    if (!tOSerialzer::hasPropertyStatic(theolizer::Property::SupportModifying))
+    if (!tOSerialzer::hasProperty(theolizer::Property::SupportModifying))
     {
         TestNormalImpl<tOSerialzer, tISerializer>(string(iPreFix)+"_in_memory.log",
             4, theolizer::CheckMode::InMemory);

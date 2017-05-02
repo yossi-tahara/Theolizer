@@ -103,7 +103,7 @@ class FastMidISerializer;
 */
 // ***************************************************************************
 
-class THEOLIZER_INTERNAL_DLL FastMidOSerializer : public BaseSerializer
+class THEOLIZER_INTERNAL_DLL FastMidOSerializer : protected BaseSerializer
 {
 private:
     friend class BaseSerializer;
@@ -124,16 +124,17 @@ private:
 
 public:
     //! @todo T.B.D.
-    static bool hasPropertyStatic(Property iProperty)
+    static bool hasProperty(Property iProperty)
     {
         return hasPropertyFast(iProperty, true);
     }
 
-    //! @todo T.B.D.
-    bool hasProperty(Property iProperty)
-    {
-        return hasPropertyStatic(iProperty);
-    }
+    using BaseSerializer::getGlobalVersionNo;
+    using BaseSerializer::clearTracking;
+    using BaseSerializer::getRequireClearTracking;
+    using ErrorBase::getErrorInfo;
+    using ErrorBase::isError;
+    using ErrorBase::resetError;
 
 protected:
     FastMidOSerializer
@@ -217,7 +218,7 @@ private:
 */
 // ***************************************************************************
 
-class THEOLIZER_INTERNAL_DLL FastMidISerializer : public BaseSerializer
+class THEOLIZER_INTERNAL_DLL FastMidISerializer : protected BaseSerializer
 {
 private:
     friend class BaseSerializer;
@@ -238,16 +239,17 @@ private:
 
 public:
     //! @todo T.B.D.
-    static bool hasPropertyStatic(Property iProperty)
+    static bool hasProperty(Property iProperty)
     {
         return hasPropertyFast(iProperty, false);
     }
 
-    //! @todo T.B.D.
-    bool hasProperty(Property iProperty)
-    {
-        return hasPropertyStatic(iProperty);
-    }
+    using BaseSerializer::getGlobalVersionNo;
+    using BaseSerializer::clearTracking;
+    using BaseSerializer::getRequireClearTracking;
+    using ErrorBase::getErrorInfo;
+    using ErrorBase::isError;
+    using ErrorBase::resetError;
 
 protected:
     FastMidISerializer

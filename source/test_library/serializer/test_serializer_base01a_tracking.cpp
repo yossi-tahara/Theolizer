@@ -785,7 +785,7 @@ void TestObjectTracking(char const* iPreFix)
 {
 //      ---<<< InMemory形式 >>>---
 
-    if (!tOSerialzer::hasPropertyStatic(theolizer::Property::SupportModifying))
+    if (!tOSerialzer::hasProperty(theolizer::Property::SupportModifying))
     {
         string aFileName = string(iPreFix) + "_in_memory";
         TestObjectTrackingImpl<tOSerialzer, tISerializer>(aFileName,

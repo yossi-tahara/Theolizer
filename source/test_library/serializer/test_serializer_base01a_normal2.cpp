@@ -571,7 +571,7 @@ void TestNormal2(char const* iPreFix)
 {
 //      ---<<< InMemory形式 >>>---
 
-    if (!tOSerialzer::hasPropertyStatic(theolizer::Property::SupportModifying))
+    if (!tOSerialzer::hasProperty(theolizer::Property::SupportModifying))
     {
         TestNormalImpl2<tOSerialzer, tISerializer>(string(iPreFix)+"_in_memory.log",
             4, theolizer::CheckMode::InMemory);
