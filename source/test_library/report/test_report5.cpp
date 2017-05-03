@@ -493,18 +493,34 @@ int main(int argc, char** argv)
             !aAPISimulator.getErrorInfo(),
             aAPISimulator.getErrorInfo().getString()
         );
-        THEOLIZER_EQUAL     // ErrorReporterのエラーはクリアされない
+
+        // ErrorReporterのエラーはクリアされない
+        THEOLIZER_EQUAL
         (
             theolizer::ErrorReporter::getErrorInfo().getErrorKind(),
             ErrorKind::WrongUsing
         );
 
+        // isError()テスト(true)
+        THEOLIZER_EQUAL
+        (
+            theolizer::ErrorReporter::isError(),
+            true
+        );
+
         // エラー・クリアと確認(ErrorReporter)
-        aAPISimulator.stubAPI(APISimulator::NoError);
+        theolizer::ErrorReporter::resetError();
         THEOLIZER_CHECK
         (
             !theolizer::ErrorReporter::getErrorInfo(),
             theolizer::ErrorReporter::getErrorInfo().getString()
+        );
+
+        // isError()テスト(false)
+        THEOLIZER_EQUAL
+        (
+            theolizer::ErrorReporter::isError(),
+            false
         );
 
         // second関数で例外

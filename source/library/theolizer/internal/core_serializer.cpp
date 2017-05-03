@@ -1163,7 +1163,7 @@ void BaseSerializer::clearTrackingImpl()
                 {
                     if (mCheckMode != CheckMode::InMemory)
                     {
-                        THEOLIZER_INTERNAL_ERROR
+                        THEOLIZER_INTERNAL_WRONG_USING
                         (
                             u8"Some pointed data does not save.(%1%)",
                             getNameByTypeInfo(element.first.mStdTypeIndex)
@@ -1194,7 +1194,7 @@ void BaseSerializer::clearTrackingImpl()
             {
                 if (mCheckMode != CheckMode::InMemory)
                 {
-                    THEOLIZER_INTERNAL_ERROR(u8"Can not resolve the address of pointer.");
+                    THEOLIZER_INTERNAL_WRONG_USING(u8"Can not resolve the address of pointer.");
                 }
                 else
                 {

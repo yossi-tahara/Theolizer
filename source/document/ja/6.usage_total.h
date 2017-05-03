@@ -248,14 +248,14 @@ TypeCheckByIndexはデータ量が多い時は３種のCheckModeの中で最大�
 
 |メンバ名|意味|
 |--------|----|
-|unsigned getGlobalVersionNo() const ;|処理中のグローバル・バージョン番号を返却します。|
+|unsigned getGlobalVersionNo() const;|処理中のグローバル・バージョン番号を返却します。|
 |void clearTracking() ;|オブジェクト追跡の区切り（@ref ObjectTracking 参照）|
-|bool getRequireClearTracking() const ;|clearTracking()が必要な時trueを返却します。|
-|theolizer::ErrorInfo const& getError() ;|エラー情報を返却します。|
-|bool isError() const ;|エラーが発生している時trueを返却します。|
-|void resetError() ;|エラー状態を解除します。|
-|bool isTerminated() const ;|処理中のクラスの読み出しが終了(mTerminated)していたらtrueを返却します。<br>非侵入型手動クラスで回復処理を実装する際に使用します。|
-|void setCharIsMultiByte() ;|Windowsにおいて、EncodedStringがtrueのシリアライザにおいて<br>std::string変数の文字エンコードをMultiByte文字列として処理するかどうかを指定します。|
+|bool getRequireClearTracking() const;|clearTracking()が必要な時trueを返却します。|
+|bool isTerminated() const;|処理中のクラスの読み出しが終了(mTerminated)していたらtrueを返却します。<br>非侵入型手動クラスで回復処理を実装する際に使用します。|
+|void setCharIsMultiByte();|Windowsにおいて、EncodedStringがtrueのシリアライザにおいて<br>std::string変数の文字エンコードをMultiByte文字列として処理するかどうかを指定します。|
+|theolizer::ErrorInfo const& getErrorInfo() const;|エラー情報を返却します。|
+|bool isError() const;|エラーが発生している時trueを返却します。|
+|void resetError();|エラー状態を解除します。|
 
 @subsubsection Property 3-1-3.プロパティ
 各シリアライザは、その属性をプロバティとして提供しています。

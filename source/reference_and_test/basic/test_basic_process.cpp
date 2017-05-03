@@ -210,6 +210,7 @@ void tutoriseBasic()
             theolizer::ErrorInfo& e,                                // dException
             e.getErrorKind() == theolizer::ErrorKind::UnknownData,  // dJudge
             e.getMessage());                                        // dResult
+        std::cout << "ErrorInfo.getString()=" << aSerializer.getErrorInfo().getString() << "\n";
     }
 
     theolizer::u8string aErrorLog = "ErrorLogSample0.log";

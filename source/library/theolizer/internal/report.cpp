@@ -315,11 +315,11 @@ std::ostream& operator<<(std::ostream& iOStream, ErrorKind iErrorKind)
 std::string ErrorInfo::getString() const
 {
     std::stringstream ss;
-    ss << getFileName() << "(" << getLineNo() << ") : "
-       << getErrorType()
-       << " / " << getErrorKind()
-       << " : " << getMessage();
-
+    ss << mErrorType;
+    if (mErrorType != ErrorType::None)
+    {
+        ss << "(" << mErrorKind << ")," << mAdditionalInfo << " : " << mMessage;
+    }
     return ss.str();
 }
 
@@ -410,25 +410,18 @@ return false;
     // エラー・ログ出力
     static WorkingLog instance(aErrorLogPath);
     WorkingLog::LogStream log=instance.getLogStream();
-    switch(iErrorType)
+    log << iErrorType;
+    if (iErrorType != ErrorType::None)
     {
-    case ErrorType::None:
-        log << "None";
-return true;
-
-    case ErrorType::Warning:
-        log << "Warning(";
-        break;
-
-    case ErrorType::Error:
-        log << "Error(";
-        break;
-    }
-    log << iErrorKind << ")," << aAdditionalInfo << " : " << iMessage;
-    if (mProcessing) log << "[under exception]";
-    if (iFileName)
-    {
-        log << "{" << iFileName << "(" << iLineNo << ")}";
+        log << "(" << iErrorKind << ")," << aAdditionalInfo << " : " << iMessage;
+        if (mProcessing)
+        {
+            log << "[under exception]";
+        }
+        if (iFileName)
+        {
+            log << "{" << iFileName << "(" << iLineNo << ")}";
+        }
     }
 
     return true;
@@ -475,10 +468,10 @@ throw mErrorInfo;
 
 bool ErrorReporter::writeWarningImpl
 (
-    u8string const&  iMessage,
-    ErrorKind           iErrorKind,
-    char const*         iFileName,
-    unsigned            iLineNo
+    u8string const& iMessage,
+    ErrorKind       iErrorKind,
+    char const*     iFileName,
+    unsigned        iLineNo
 ) noexcept
 {
     // mErrorInfo設定とログ出力

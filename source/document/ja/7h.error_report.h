@@ -32,6 +32,7 @@
 @section ErrorReport1 1.Theolizerエラー・クラス
 //############################################################################
 
+@subsection ErrorInfo 1-1.ErrorInfoクラス
 Theolzierのエラーは report.h で定義している theolizer::ErrorInfo クラスで表現します。<br>
 主な公開メンバは以下の通りです。<br>
 
@@ -44,6 +45,8 @@ Theolzierのエラーは report.h で定義している theolizer::ErrorInfo ク
 |operator bool() const;|エラーか警告ならtrue|
 |bool operator!() const;|エラーも警告もないならtrue|
 
+
+@subsection ErrorType 1-2.ErrorType枚挙型
 <b>theolizer::ErrorType</b>はenum型で以下のシンボルを持ちます。
 |シンボル名|意味|
 |----------|----|
@@ -51,6 +54,7 @@ Theolzierのエラーは report.h で定義している theolizer::ErrorInfo ク
 |Warning|警告|
 |Error|エラー|
 
+@subsection ErrorKind 1-3.ErrorKind枚挙型
 <b>theolizer::ErrorKind</b>はenum型で以下のシンボルを持ちます。
 |シンボル名|意味|
 |----------|----|
@@ -60,25 +64,102 @@ Theolzierのエラーは report.h で定義している theolizer::ErrorInfo ク
 |UnknownData|非対応シリアライズ・データ・フォーマット|
 |UnknownVerson|非対応バージョン（未知のグローバル・バージョン番号）|
 
+@subsection getString 1-4.ErrorInfoのgetString()のフォーマット
+ErrorInfoのgetString()で取得できる文字列は次のようなフォーマットです。<br>
+@code
+ErrorType(ErrorKind),エラーを検出したインスタンス{ソース・ファイル名(行番号)} : エラー・メッセージ
+@endcode
+"{ソース・ファイル名(行番号)}"は表示可能な時のみ表示されます。
 
+<b>シリアライザのコンストラクタでエラー検出した時（型チェック・エラー）の例</b><br>
+この時表示されるソース・ファイルと行番号はTheolizerのソースです。（ユーザ・ソースの情報をTheolzierが保持していないため）
+@code
+Error(UnknownData),IntrusiveBase2.mULongLong : Unmatch type.{core_serializer.cpp(1570)}
+@endcode
+
+<b>THEOLIZER_PROCESS()等のマクロ内でエラー検出した時の例</b><br>
+@code
+Error(UnknownData),aInt{test_basic_process.cpp(212)} : Logical Error on stream.
+@endcode
 
 <br>
 //############################################################################
-@section ErrorReport2 2.Theolizerで検出したエラーの記録場所
+@section ErrorReport2 2.Theolizerで検出したエラーの記録
 //############################################################################
 
-Theolizerは大きく２つのエラー記録場所を持っています。
+Theolizerは２種類のエラー記録を持っています。
+どちらとも複数回エラーか警告が発生した場合、最後のエラーが記録されます。<br>
+ただし、エラー記録を優先するため、エラー発生後の警告はエラーが解除(resetError)されるまで記録されません。
 
-1. シリアライザのインスタンス<br>
-シリアライザ・インスタンス.getError()で取得できます。<br>
+@subsection SerializerInstance 2-1.シリアライザのインスタンス
+シリアライザ・インスタンス毎に当該シリアライザで発生したエラー（もしくは警告）を保持します。<br>
+警告ではないエラーが発生している場合、シリアライザへの要求は全て処理されず、WrongUsingとなります。<br>
+回復するためには、ストリームの再同期とresetError()呼び出しが必要です。<br>
+<br>
+エラー情報に関するメンバ関数は「@ref MemberFunctions 」を参照下さい。<br>
 
-2. theolizer::ErrorReporterのstatic領域<br>
-theolizer::ErrorReproter::getError()で取得できます。<br>
-このstatic領域はthread_localですのでスレッド毎に唯一存在します。<br>
+@subsection ErrorReporter 2-2.ErrorReporterシングルトン
+theolizer::ErrorReporterはthread_localなシングルトンですのでスレッド毎に一つだけ存在します。<br>
+当該スレッドで発生した最後のエラーか警告を保持します。<br>
+シングルトンですのでコンストラクト、コピー、ムーブできません。<br>
+<br>
+以下のstatic関数が公開されています。<br>
 
+|メンバ名|意味|
+|--------|----|
+|static theolizer::ErrorInfo const& getErrorInfo() noexcept;|エラー情報を返却します。|
+|static bool isError() noexcept;|エラーが発生している時trueを返却します。|
+|static void resetError() noexcept;|エラー状態を解除します。|
 
+<br>
+//############################################################################
+@section ErrorReport3 3.Theolizerで検出したエラーの通知方法
+//############################################################################
 
+シリアライザからのエラー通知方法は２つあります。
 
+1. 例外許可<br>
+iNoThrowExceptionバラメータをfalse（デフォルト）として、シリアライザをコンストラクトすると例外が許可されます。<br>
+エラーを検出した時に theolizer::ErrorInfo を投げます。<br>
+<br>
+2. 例外禁止<br>
+iNoThrowExceptionバラメータをtrueにして、シリアライザをコンストラクトすると例外が禁止されます。<br>
+エラーを検出しても例外を投げません。<br>
+
+<br>
+//############################################################################
+@section ErrorReport4 4.エラー状態の回復方法
+//############################################################################
+
+シリアライザのエラー状態を解除するには、下記の手順で行います。<br>
+
+1. シリアライザへ渡しているストリームを同期する。<br>
+次に読むべきデータ先頭から読み出せる状態にします。<br>
+この処理はユーザ・プログラムにて行って下さい。<br>
+<br>
+2. シリアライザのエラーをリセットする。<br>
+シリアライザ・インスタンス.resetError()により行います。<br>
+<br>
+
+ただし、一般にファイルからの回復時にエラーが発生した時の原因は下記ですので、ファイルへの保存／回復の場合はストリームをオープンしたままエラー回復する操作を行うことは原則としてありません。<br>
+
+- プログラムのバグ(Theolizerが非対応な変更をしたプログラムで回復しようとした。)
+- ファイル指定ミス(指定したフォーマットと実際のフォーマットの不一致)
+- ファイル破壊
+
+通信による受信時にエラーが発生した時は、再同期することでリカバリすることが可能です。<br>
+なお、通信回線の同期はTheolizerによるサポートはありません。ユーザ・プログラムにて再同期して下さい。<br>
+<br>
+
+<br>
+//############################################################################
+@section ErrorReport5 5.エラー・ログ
+//############################################################################
+
+<br>
+//############################################################################
+@section ErrorReport6 6.サンプル・ソース
+//############################################################################
 
 <br>
 @subsection ErrorNotify11 1-1.
