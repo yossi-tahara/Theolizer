@@ -507,7 +507,7 @@ return 2;
     try
     {
         // 使い方解説用ルーチン呼び出し
-        if (aDoSave)
+        if (!aDoSave)
         {
             callTutorial();
         }

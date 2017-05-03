@@ -485,7 +485,7 @@ enum class ErrorKind
     Unclassified=0, //!< 未分類
     WrongUsing,     //!< 使い方エラー
 
-    // 動作エラー
+    // I/O動作エラー
     IOError,        //!< Read/Write時のI/Oエラー
 
     // デシリアイズ時のエラー
@@ -517,8 +517,7 @@ class THEOLIZER_INTERNAL_DLL ErrorInfo
     unsigned    mLineNo;                // 行番号
 
 public:
-    // コンストラクタ
-    //! @todo   T.B.D.
+    //! デフォルト・コンストラクタ
     ErrorInfo() :
         mErrorType(ErrorType::None),
         mErrorKind(ErrorKind::Unclassified),
@@ -528,44 +527,39 @@ public:
         mAdditionalInfo()
     { }
 
-    // メッセージと追加情報設定／取り出し
-    //! @todo   T.B.D.
+    //! メッセージ設定
     void setMessage(u8string const& iMessage);
-    //! @todo   T.B.D.
+    //! 追加情報設定
     void setAdditionalInfo(u8string const& iAdditionalInfo);
 
-    // エラー情報取り出し
-    //! @todo   T.B.D.
+    //! エラー種別コード返却
     ErrorType   getErrorType() const {return mErrorType;}
-    //! @todo   T.B.D.
+    //! エラー分類コード返却
     ErrorKind   getErrorKind() const {return mErrorKind;}
-    //! @todo   T.B.D.
+    //! エラーを検出したソース・ファイル名返却
     char const* getFileName()  const {return (mFileName)?mFileName:"<none>";}
-    //! @todo   T.B.D.
+    //! エラーを検出したソース・ファイルの行番号返却
     unsigned    getLineNo()    const {return mLineNo;}
-    //! @todo   T.B.D.
+    //! メッセージ返却
 #if defined(__MINGW32__)
     u8string const getMessage()         const { return mMessage; }
 #else
     u8string const& getMessage()        const { return mMessage; }
 #endif
-    //! @todo   T.B.D.
+    //! 追加情報返却
 #if defined(__MINGW32__)
     u8string const getAdditionalInfo()  const { return mAdditionalInfo; }
 #else
     u8string const& getAdditionalInfo() const { return mAdditionalInfo; }
 #endif
-    // 全エラー情報
-    //! @todo   T.B.D.
+    //! 全エラー情報を含むエラー・メッセージ返却
     std::string getString() const;
 
-    // boolへ変換(エラーか警告があったらtrue)
-    //! @todo   T.B.D.
+    //! エラーか警告ならtrue
     operator bool() const  { return mErrorType != ErrorType::None; }
-    //! @todo   T.B.D.
+    //! エラーも警告もないならtrue
     bool operator!() const { return mErrorType == ErrorType::None; }
-    // エラー発生
-    //! @todo   T.B.D.
+    //! エラーならtrue
     bool isError() const
     {
         if (!*this)

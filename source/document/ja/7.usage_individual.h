@@ -127,28 +127,3 @@ enum型は従来のenum型と、C++11で追加されたscoped enum型の２つ�
 @snippet  basic/common.h loadTestArray
 
 */
-
-/*!
-    @page ErrorReport エラー処理
-
-    エラー状態の解除は、下記のように、resetError()で行って下さい。<br>
-
-@code
-{
-    std::ofstream   aStream("example.json");
-    theolizer::JsonOSerializer<> js(aStream, theolizer::CheckMode::NoTypeCheck, false, true);
-
-    THEOLIZER_PROCESS(js, ...);
-
-    // エラー・チェック(例外を禁止している場合に必要)
-    theolizer::ErrorInfo aErrorInfo=js.getError();
-    if (aErrorInfo)
-    {
-        std::cout << aErrorInfo.getMessage() << std::endl;
-        js.resetError();    // エラー状態を解除する
-    }
-}
-@endcode
-
-# T.B.D.
-*/

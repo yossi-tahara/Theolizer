@@ -650,10 +650,14 @@ public:
     //  未登録クラスは1を返却する(完全自動型なので)
     unsigned getLocalVersionNo(unsigned iGlobalVersionNo, std::type_index iStdTypeIndex) const
     {
-        THEOLIZER_INTERNAL_ASSERT(iGlobalVersionNo != 0,
-            "GlobalVersionNoTable::getLocalVersionNo() : iGlobalVersionNo is illegal(0).");
-        THEOLIZER_INTERNAL_ASSERT(iGlobalVersionNo <= uLastGlobalVersionNo,
-            "GlobalVersionNoTable::getLocalVersionNo() : iGlobalVersionNo is too big.");
+        if (iGlobalVersionNo == 0 )
+        {
+            THEOLIZER_INTERNAL_VERSION_ERROR("GlobalVersionNo(%1%) is illegal.", iGlobalVersionNo);
+        }
+        if (uLastGlobalVersionNo < iGlobalVersionNo)
+        {
+            THEOLIZER_INTERNAL_VERSION_ERROR("GlobalVersionNo(%1%) is too big.", iGlobalVersionNo);
+        }
 
         std::size_t aListIndex;
         if (!findGlobalVersionKey(mKeyList, iStdTypeIndex, aListIndex))

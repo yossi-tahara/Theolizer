@@ -162,6 +162,21 @@ void tutoriseModifyComplex()
         theolizer::BinaryISerializer<theolizerD::TypeCheck>
     >("binary-change-TypeCheckByIndex.bin", theolizer::CheckMode::TypeCheckByIndex);
 
+//      ---<<< GlobalVersionNoエラーのテスト >>>---
+
+    {
+        std::cout << "GlobalVersionNo Error" << std::endl;
+        std::string filename = "json-ver2a.json";
+        std::cout << "  JsonSerializer(" << filename << ")\n";
+
+        std::ifstream   aStream(filename);
+        THEOLIZER_CHECK_EXCEPTION2(
+            theolizer::JsonISerializer<> jis(aStream);,             // dStatements
+            theolizer::ErrorInfo& e,                                // dException
+            e.getErrorKind() == theolizer::ErrorKind::UnknownVerson,// dJudge
+            e.getMessage());                                        // dResult
+    }
+
     std::cout << "tutoriseModifyComplex() end" << std::endl;
 }
 
