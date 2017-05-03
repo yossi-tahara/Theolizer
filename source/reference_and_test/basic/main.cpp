@@ -59,7 +59,7 @@
 //      基本テスト
 //----------------------------------------------------------------------------
 
-void tutorialBasic();
+void tutoriseBasic();
 
 //----------------------------------------------------------------------------
 //      THEOLIZER_PROCESS()の基本的な使い方
@@ -116,7 +116,7 @@ void callTutorial()
     std::cout << "callTutorial();\n";
 
     #ifdef ENABLE_BASIC_PROCESS_TEST
-        tutorialBasic();
+        tutoriseBasic();
     #endif
     #ifdef ENABLE_CLASS_VARIATION_TEST
         tutoriseClassVariation();

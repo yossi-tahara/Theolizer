@@ -64,9 +64,9 @@
 // エラー・ログ・ファイルの指定
 THEOLIZER_ERRORLOG_FILE("ErrorLogSample%1%.log");
 
-void tutorialBasic()
+void tutoriseBasic()
 {
-    std::cout << "tutorisePolymorphism() start" << std::endl;
+    std::cout << "tutoriseBasic() start" << std::endl;
 
 //----------------------------------------------------------------------------
 //      保存
@@ -222,6 +222,8 @@ void tutorialBasic()
         std::cout << aString << "\n";
     }
     std::cout << "------------- " << aErrorLog << " ------------- end\n";
+
+    std::cout << "tutoriseBasic() end" << std::endl;
 }
 
 // ***************************************************************************
