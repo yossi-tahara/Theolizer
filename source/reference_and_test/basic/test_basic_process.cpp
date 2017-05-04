@@ -224,6 +224,51 @@ void tutoriseBasic()
     }
     std::cout << "------------- " << aErrorLog << " ------------- end\n";
 
+//----------------------------------------------------------------------------
+//      エラー通知の使い方
+//----------------------------------------------------------------------------
+
+//! [ErrorReport]
+
+//      ---<<< 例外許可 >>>---
+
+    try
+    {
+        std::ifstream   aStream("tutorise_basic.json");
+        theolizer::JsonISerializer<> aSerializer(aStream);
+
+        int aInt;
+        THEOLIZER_PROCESS(aSerializer, aInt);   // Type mismatch発生
+    }
+    catch (theolizer::ErrorInfo& e)
+    {
+        std::cout << "exception    : " << e.getString() << std::endl;
+    }
+
+//      ---<<< 例外禁止 >>>---
+
+    try
+    {
+        std::ifstream   aStream("tutorise_basic.json");
+        theolizer::JsonISerializer<> aSerializer(aStream, true);
+
+        short ashort;
+        THEOLIZER_PROCESS(aSerializer, ashort); // Type mismatch発生
+
+        theolizer::ErrorInfo aErrorInfo=aSerializer.getErrorInfo();
+        if (aErrorInfo)
+        {
+            std::cout << "no-exception : " << aErrorInfo.getString() << std::endl;
+            aSerializer.resetError();           // エラー状態を解除する
+        }
+    }
+    catch (theolizer::ErrorInfo& e)
+    {
+        std::cout << "exception    : " << e.getString() << std::endl;
+    }
+
+//! [ErrorReport]
+
     std::cout << "tutoriseBasic() end" << std::endl;
 }
 

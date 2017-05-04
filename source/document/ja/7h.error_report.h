@@ -126,6 +126,13 @@ iNoThrowExceptionバラメータをfalse（デフォルト）として、シリ�
 iNoThrowExceptionバラメータをtrueにして、シリアライザをコンストラクトすると例外が禁止されます。<br>
 エラーを検出しても例外を投げません。<br>
 
+<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
+<b>シリアライザにエラー状態が残ったままデストラクトしないで下さい</b><br>
+例外を禁止している時は、必ずエラーを受け取りresetError()してからデストラクトするようにして下さい。「@ref ErrorReport6 」参照<br>
+エラーの受け取り忘れを防止するため、エラーが発生しているのにresetError()せずにデストラクトするとプログラムを強制終了させています。<br>
+なお、例外許可時はエラーの受け取り損ないは発生しないためresetError()してなくても強制終了しません。
+</div>
+
 <br>
 //############################################################################
 @section ErrorReport4 4.エラー状態の回復方法
@@ -217,27 +224,14 @@ unsigned型で循環します。<br>
 @section ErrorReport6 6.サンプル・ソース
 //############################################################################
 
-<br>
-@subsection ErrorNotify11 1-1.
+<b>サンプル・ソース（source/reference_and_test/basic/test_basic_process.cpp）</b><br>
+@snippet  basic/test_basic_process.cpp ErrorReport
 
-    エラー状態の解除は、下記のように、resetError()で行って下さい。<br>
+これの出力は以下のようになります。
 
 @code
-{
-    std::ofstream   aStream("example.json");
-    theolizer::JsonOSerializer<> js(aStream, theolizer::CheckMode::NoTypeCheck, false, true);
-
-    THEOLIZER_PROCESS(js, ...);
-
-    // エラー・チェック(例外を禁止している場合に必要)
-    theolizer::ErrorInfo aErrorInfo=js.getError();
-    if (aErrorInfo)
-    {
-        std::cout << aErrorInfo.getMessage() << std::endl;
-        js.resetError();    // エラー状態を解除する
-    }
-}
+exception    : Error(UnknownData),aInt{test_basic_process.cpp(241)} : Logical Error on stream.
+no-exception : Error(UnknownData),ashort{test_basic_process.cpp(256)} : Logical Error on stream.
 @endcode
 
-# T.B.D.
 */
