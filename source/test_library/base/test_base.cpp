@@ -97,7 +97,17 @@ public:
     }
 
     // イテレータ的にアクセスできるようにする
-    THEOLIZER_INCREMENT_OPERATOR(AnotherRange)
+    AnotherRange& operator++()
+    {
+        drop_front();
+        return *this;
+    }
+    AnotherRange operator++(int)
+    {
+        AnotherRange ret(*this);
+        drop_front();
+        return ret;
+    }
 };
 
 //----------------------------------------------------------------------------

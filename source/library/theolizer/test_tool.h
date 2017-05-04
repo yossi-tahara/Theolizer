@@ -67,10 +67,7 @@ THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, signed c
 THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, unsigned char iUChar);
 
 // ***************************************************************************
-//      scoped enum型表示補助
-/*!
-    @todo   T.B.D.
-*/
+//!     scoped enum型表示補助
 // ***************************************************************************
 
 template<typename tEnum, THEOLIZER_INTERNAL_OVERLOAD((std::is_enum<tEnum>::value))>
@@ -119,8 +116,8 @@ THEOLIZER_INTERNAL_DLL std::ostream& getOStream();
 THEOLIZER_INTERNAL_DLL void throwAbort();
 
 // ***************************************************************************
-//      開放時、関数呼び出し
-//          ほぼN4189のscope_exitの名前を変えただけ。
+//!     開放時、関数呼び出し
+//!         ほぼN4189のscope_exitの名前を変えただけ。
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
@@ -166,10 +163,7 @@ public:
 //      本体
 //----------------------------------------------------------------------------
 
-// ファクトリ
-/*!
-    @todo   T.B.D.
-*/
+//! ScopeExitファクトリ
 template <typename tReleaser>
 internal::ScopeExit<tReleaser> makeScopeExit(tReleaser &&iReleaser) noexcept
 {
@@ -180,38 +174,27 @@ internal::ScopeExit<tReleaser> makeScopeExit(tReleaser &&iReleaser) noexcept
 }
 
 // ***************************************************************************
-//      PASS結果表示の有無指定
-//          trueにするとPASS結果も表示する
+//!     @brief      PASS結果表示の有無指定
+//!     @details    trueにするとPASS結果も表示する
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
 //      本体
 //----------------------------------------------------------------------------
 
-// 自動回復
-/*!
-    @todo   T.B.D.
-*/
 struct THEOLIZER_INTERNAL_DLL DisplayPass : public internal::AutoRestore<bool>
 {
-/*!
-    @todo   T.B.D.
-*/
+    //! デフォルト・コンストラクタ
     explicit DisplayPass();
 
-/*!
-    @todo   T.B.D.
-*/
+    //! PASS結果表示の状態を返却する
     static bool on();
 };
 
 // ***************************************************************************
-//      MinGW不具合対処
-//          関数テンプレートで浮動小数点を取り扱う時、最適化上の不具合がある模様
-//          処理に割り込んで最適化させないためのダミー関数
-/*!
-    @todo   T.B.D.
-*/
+//!     @brief      MinGW不具合対処
+//!     @details    関数テンプレートで浮動小数点を取り扱う時、最適化上の不具合がある模様<br>
+//!                 処理に割り込んで最適化させないためのダミー関数
 // ***************************************************************************
 
 #if defined(__MINGW32__)
@@ -222,25 +205,15 @@ struct THEOLIZER_INTERNAL_DLL DisplayPass : public internal::AutoRestore<bool>
 
 // ***************************************************************************
 //      テスト結果集計用
-//
-/*!
-    @todo   T.B.D.
-*/
 // ***************************************************************************
 
-/*!
-    @todo   T.B.D.
-*/
+//! テスト集計初期化
 THEOLIZER_INTERNAL_DLL void initResult();
 
-/*!
-    @todo   T.B.D.
-*/
+//! テスト結果のFAIL数をインクリメントする
 THEOLIZER_INTERNAL_DLL void incrementFailCount();
 
-/*!
-    @todo   T.B.D.
-*/
+//! テスト結果を表示する
 THEOLIZER_INTERNAL_DLL bool printResult(char const* iTitle=nullptr);
 
 //############################################################################
@@ -248,15 +221,13 @@ THEOLIZER_INTERNAL_DLL bool printResult(char const* iTitle=nullptr);
 //############################################################################
 
 // ***************************************************************************
-//      テスト用フォルダの準備
-//          もし、iDirPathフォルダが既に存在していたら削除する。
-//          次に、iDirPathフォルダを作成する。
-//          デストラクタにてiIsNoDeleteがfalseなら、iDirPathフォルダを削除する。
-//
-//          iDirPathフォルダを生成できなかったら、std::runtime_errorを投げるので、
-//          catchしないことにより、テストが中断される。
 /*!
-    @todo   T.B.D.
+    @brief      テスト用フォルダの準備
+    @details    もし、iDirPathフォルダが既に存在していたら削除する。<br>
+                次に、iDirPathフォルダを作成する。<br>
+                デストラクタにてiIsNoDeleteがfalseなら、iDirPathフォルダを削除する。<br>
+                iDirPathフォルダを生成できなかったら、std::runtime_errorを投げるので、<br>
+                catchしないことにより、テストが中断される。<br>
 */
 // ***************************************************************************
 
@@ -267,71 +238,64 @@ private:
     bool        mIsNoDelete;
 
 public:
-/*!
-    @todo   T.B.D.
-*/
+    //! コンストラクタ
     PrepareDir(std::string const& iDirPath, bool iIsNoDelete=false);
+
+    //! デストラクタ
     ~PrepareDir();
 };
 
 // ***************************************************************************
-//      ファイル／フォルダの有無チェック
+//!     ファイル／フォルダの有無チェック
 // ***************************************************************************
 
-/*!
-    @todo   T.B.D.
-*/
 THEOLIZER_INTERNAL_DLL bool isExist(u8string const& iFilePath);
 
 // ***************************************************************************
-//      ファイルの削除
-//          指定ファイルが無くても正常終了する。
-//          iFilePathがフォルダの場合何もしない。
+/*!
+    @brief      ファイルの削除
+    @details    指定ファイルが無くても正常終了する。
+                iFilePathがフォルダの場合何もしない。
+*/
 // ***************************************************************************
 
-/*!
-    @todo   T.B.D.
-*/
 THEOLIZER_INTERNAL_DLL void removeFile(u8string const& iFilePath);
 
 // ***************************************************************************
-//      ファイル・リスト獲得
-//          指定フォルダ内のファイル(フォルダ除く)のリストを返却する。
-//          ファイル名(拡張子含む)が正規表現iRegexとマッチするもののみ。
-//          iRegex=""の時は全て返却。
-//          リスト取得後、std:sort()でソートして返却する。
-//
-//      注意事項
-//          正規表現のマッチング処理はstd::wregexとregex_matchにより実装。
-//          MSVC 2015とMinGW 4.9.2は、サロゲートペアに非対応なので注意。
+/*!
+    @brief      ファイル・リスト獲得
+    @details    指定フォルダ内のファイル(フォルダ除く)のリストを返却する。<br>
+                　　ファイル名(拡張子含む)が正規表現iRegexとマッチするもののみ。<br>
+                　　iRegex=""の時は全て返却。<br>
+                　　リスト取得後、std:sort()でソートして返却する。<br>
+<br>
+                注意事項<br>
+                　　正規表現のマッチング処理はstd::wregexとregex_matchにより実装。<br>
+                　　MSVC 2015とMinGW 4.9.2は、サロゲートペアに非対応なので注意。<br>
+*/
 // ***************************************************************************
 
-/*!
-    @todo   T.B.D.
-*/
 THEOLIZER_INTERNAL_DLL
 std::vector<std::string> getFileList(std::string const& iDirPath, std::string const& iRegex="");
 
 // ***************************************************************************
-//      アクセス許可設定
-//          ownerの書き込み許可をセット／クリアする
+/*!
+    @brief      アクセス許可設定
+    @details    ownerの書き込み許可をセット／クリアする
+*/
 // ***************************************************************************
 
-/*!
-    @todo   T.B.D.
-*/
 THEOLIZER_INTERNAL_DLL void setWritePermission(const u8string& iPath, bool iIsEnable);
 
 // ***************************************************************************
-//      スレッド・オブジェクト
-//          コンストラクタで指定スレッドを生成し、
-//          デストラクタでそのスレッドの終了を待つ。
-//
-//          ThreadIdは、boost::interprocess::ipcdetail::get_current_thread_id()
-//          にて取得する。
-//          std::this_thread::get_id()が返す型は扱いにくいため。
 /*!
-    @todo   T.B.D.
+    @brief      スレッド・オブジェクト<br>
+    @details    コンストラクタで指定スレッドを生成し、<br>
+                デストラクタでそのスレッドの終了を待つ。<br>
+<br>
+                ThreadIdは、boost::interprocess::ipcdetail::get_current_thread_id()<br>
+                にて取得する。<br>
+                std::this_thread::get_id()が返す型は扱いにくいため。<br>
 */
 // ***************************************************************************
 
@@ -347,19 +311,13 @@ private:
     }
 
 public :
-    // デフォルト・コンストラクタ
-/*!
-    @todo   T.B.D.
-*/
+    //! デフォルト・コンストラクタ
     ThreadGuard() noexcept
     {
         setThreadId();
     }
 
-    // コンストラクタ
-/*!
-    @todo   T.B.D.
-*/
+    //! 汎用コンストラクタ
     template <class Fn, class... Args>
     ThreadGuard(Fn&& fn, Args&&... args) : thread(fn, args...)
     { setThreadId(); }
@@ -368,17 +326,13 @@ public :
     ThreadGuard           (const ThreadGuard&)  = delete;
     ThreadGuard& operator=(const ThreadGuard&)  = delete;
 
-    // ムーブ有効
-/*!
-    @todo   T.B.D.
-*/
+    //! ムーブ可
     ThreadGuard(ThreadGuard&& iThread) noexcept :
             thread(static_cast<std::thread&&>(iThread)),
             mThreadId(std::move(iThread.mThreadId))
     { }
-/*!
-    @todo   T.B.D.
-*/
+
+    //! ムーブ演算子
     ThreadGuard& operator=(ThreadGuard&& iTheread)
     {
         static_cast<std::thread&>(*this)=static_cast<std::thread&&>(iTheread);
@@ -386,12 +340,10 @@ public :
         return *this;
     }
 
-    // デストラクタ
+    //! デストラクタ
     ~ThreadGuard () {if (thread::joinable()) thread::join();}
 
-/*!
-    @todo   T.B.D.
-*/
+    //! スレッドID返却
     std::string const& getThreadId() {return mThreadId;}
 };
 
@@ -532,9 +484,7 @@ namespace internal
 //      ---<<< 等しいことをチェックする(Fail時、処理継続) >>>---
 //          最も良く使うので専用で用意する
 
-/*! @def    THEOLIZER_EQUAL
-    @todo   T.B.D.
-*/
+//! 値が一致することをテストする。（ポインタ以外）
 #define THEOLIZER_EQUAL(dLhs, ...)                                          \
     do                                                                      \
     {                                                                       \
@@ -558,9 +508,7 @@ namespace internal
 //      char型へのポインタの値を出力しようとすると文字列として出力される。
 //      ポインタ値がnullptrだったら落ちる。
 
-/*! @def    THEOLIZER_EQUAL_PTR
-    @todo   T.B.D.
-*/
+//! ポインタの値が一致することをテストする。
 #define THEOLIZER_EQUAL_PTR(dLhs, dRhs)                                     \
     do                                                                      \
     {                                                                       \
@@ -581,9 +529,7 @@ namespace internal
 
 //      ---<<< 結果をチェックする(Fail時、処理継続) >>>---
 
-/*! @def    THEOLIZER_CHECK
-    @todo   T.B.D.
-*/
+//! 結果がtrueになることをテストする。
 #define THEOLIZER_CHECK(dJudge, ...)                                        \
     do                                                                      \
     {                                                                       \
@@ -596,9 +542,7 @@ namespace internal
 
 //      ---<<< 結果をチェックする(Fail時、処理中断) >>>---
 
-/*! @def    THEOLIZER_REQUIRE
-    @todo   T.B.D.
-*/
+//! 結果がtrueになることをテストする。（Fail時、以降の処理を中断する）
 #define THEOLIZER_REQUIRE(dJudge, ...)                                      \
     do                                                                      \
     {                                                                       \
@@ -612,9 +556,7 @@ namespace internal
 
 //      ---<<< 例外が発生することをチェックする(Fail時、処理継続) >>>---
 
-/*! @def    THEOLIZER_CHECK_EXCEPTION
-    @todo   T.B.D.
-*/
+//! 例外が発生することをチェックする(Fail時、処理継続)
 #define THEOLIZER_CHECK_EXCEPTION(dStatements, dException)                  \
     do                                                                      \
     {                                                                       \
@@ -635,9 +577,7 @@ namespace internal
 
 //      ---<<< 例外が発生することをチェックする(Fail時、処理中断) >>>---
 
-/*! @def    THEOLIZER_REQUIRE_EXCEPTION
-    @todo   T.B.D.
-*/
+//! 例外が発生することをチェックする(Fail時、処理中断)
 #define THEOLIZER_REQUIRE_EXCEPTION(dStatements, dException)                \
     do                                                                      \
     {                                                                       \
@@ -659,9 +599,7 @@ namespace internal
 
 //      ---<<< 例外が発生することと結果をチェックする(Fail時、処理継続) >>>---
 
-/*! @def    THEOLIZER_CHECK_EXCEPTION2
-    @todo   T.B.D.
-*/
+//! 例外が発生することをチェックする(Fail時、処理継続)
 #define THEOLIZER_CHECK_EXCEPTION2(dStatement, dException, dJudge, dResult) \
     do                                                                      \
     {                                                                       \
@@ -683,9 +621,7 @@ namespace internal
 
 //      ---<<< 例外が発生することと結果をチェックする(Fail時、処理中断) >>>---
 
-/*! @def    THEOLIZER_REQUIRE_EXCEPTION2
-    @todo   T.B.D.
-*/
+//! 例外が発生することをチェックする(Fail時、処理中断)
 #define THEOLIZER_REQUIRE_EXCEPTION2(dStatement, dException, dJudge, dResult)\
     do                                                                      \
     {                                                                       \

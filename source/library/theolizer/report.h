@@ -1,16 +1,15 @@
 ﻿//############################################################################
-//      
 /*!
     @brief      Theolizerシステム部
-    @details    ①Theolizerからのエラー返却
-                    エラー・コード
-                    エラー通知用構造体
-                    エラー・ログ
-                    エラー通知用例外(エラー・ログが無い時、例外で通知)
-                ②Theolizerの稼働記録
-                    Theolizerログ
-                ③デバッグ・ツール
-                    ASSERT/ABORTマクロ
+    @details    ①Theolizerからのエラー返却<br>
+                　　エラー・コード<br>
+                　　エラー通知用構造体<br>
+                　　エラー・ログ<br>
+                　　エラー通知用例外(エラー・ログが無い時、例外で通知)<br>
+                ②Theolizerの稼働記録<br>
+                　　Theolizerログ<br>
+                ③デバッグ・ツール<br>
+                　　ASSERT/ABORTマクロ<br>
     @ingroup    TheolizerLib
     @file       report.h
     @author     Yoshinori Tahara
@@ -328,7 +327,7 @@ public:
 //      クラス本体
 // ***************************************************************************
 
-//! @todo   T.B.D.
+//! 動作ログ用のクラス
 class THEOLIZER_INTERNAL_DLL WorkingLog
 {
 //----------------------------------------------------------------------------
@@ -337,7 +336,7 @@ class THEOLIZER_INTERNAL_DLL WorkingLog
 //----------------------------------------------------------------------------
 
 public:
-    //! @todo   T.B.D.
+    //! ログ出力用のストリーム・クラス
     class THEOLIZER_INTERNAL_DLL LogStream
     {
     private:
@@ -348,13 +347,16 @@ public:
         void operator =(const LogStream&) = delete;
 
     public:
-        //! @todo   T.B.D.
+        //! 動作ログへの出力用コンストラクタ
         explicit LogStream(WorkingLog* iWorkingLog);
-        //! @todo   T.B.D.
+
+        //! コピー・コンストラクタ
         LogStream(LogStream&&);
+
+        //! デストラクタ
         ~LogStream() noexcept;
 
-        //! @todo   T.B.D.
+        //! 出力演算子
         template<typename Type>
         LogStream& operator<<(Type iObject)
         {
@@ -385,33 +387,30 @@ private:
 
     // スレッドセーフ化
 public:
-    // コンストラクタ／デストラクタ
-    // iPath        ログ・ファイルのパス。
-    //              ファイル名には1つの%1%が必要。%1%はファイル番号に展開される
-    // iFileCount   ログ・ファイル数
-    // iFileSize    1ファイルのサイズ(バイト)
-    //! @todo   T.B.D.
-    WorkingLog(const u8string& iPath, size_t iFileSize=1024*1024, unsigned iFileCount=2);
+    //! コンストラクタ
+    WorkingLog
+    (
+        const u8string& iPath,      //!< ログ・ファイルのパス。
+            //!<（ファイル名には1つの%1%が必要。%1%はファイル番号に展開される。）
+        size_t iFileSize=1024*1024, //!< ログ・ファイル数
+        unsigned iFileCount=2       //!< 1ファイルのサイズ(バイト)
+    );
      ~WorkingLog() noexcept;
 
-    // 行ヘッダの時刻を設定する(UTCタイム or ローカルタイム)
-    //! @todo   T.B.D.
+    //! 行ヘッダの時刻を設定する(UTCタイム or ローカルタイム)
     void setUTCTime(bool iIsUTC) {mIsUTC = iIsUTC;}
 
-    // ログ出力用ストリーム返却
-    //  LogStreamのインスタンスでロックする
-    //! @todo   T.B.D.
+    //! ログ出力用ストリーム返却(有効な間LogStreamのインスタンスでロックする)
     LogStream getLogStream();
 
-    // 現在時刻獲得(ログ・システムと同じ時間計測方法で獲得する)
-    //! @todo   T.B.D.
+    //! 現在時刻獲得(ログ・システムと同じ時間計測方法で獲得する)
     static time_t getTime(bool iIsUTC=false);
 
 //----------------------------------------------------------------------------
 //      行ヘッダ解析
 //----------------------------------------------------------------------------
 
-    //! @todo   T.B.D.
+    //! 行ヘッダ情報
     struct LineHeader
     {
         time_t      mDateTime;              //!< Mutex獲得直後の日付時刻(秒単位)
@@ -420,10 +419,9 @@ public:
         std::string mThereadId;             //!< ThreadId
     };
 
-    // 行ヘッダを解析する
-    //  行ヘッダを取り出せたら、iLineHeaderに返却し、trueが返る。
-    //  その時、*iPosにはログ文字列の先頭Indexが返る。
-    //! @todo   T.B.D.
+    //! 行ヘッダを解析する
+    //!　　行ヘッダを取り出せたら、iLineHeaderに返却し、trueが返る。
+    //!　　その時、*iPosにはログ文字列の先頭Indexが返る。
     static bool getLineHeader
     (
         std::string const& iLine,
@@ -504,7 +502,7 @@ THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, ErrorKin
 //              デストラクタを呼ばないで良いようstd::stringを使わず固定長とする。
 // ***************************************************************************
 
-//! @todo   T.B.D.
+//! エラー情報
 class THEOLIZER_INTERNAL_DLL ErrorInfo
 {
     friend class ErrorReporter;
@@ -594,7 +592,7 @@ THEOLIZER_INTERNAL_DLL extern WeakData<char const*> gErrorLogPath;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
 
-//! @todo   T.B.D.
+//! エラー・ログの有効化
 #define THEOLIZER_ERRORLOG_FILE(dErrorLogName)                              \
     THEOLIZER_INTERNAL_SET_WEAK_DATA(theolizer::internal::gErrorLogPath,    \
                             char const*, dErrorLogName, ErrorLogPathDummy)
@@ -622,7 +620,8 @@ bool  writeWarning(u8string const&, ErrorKind, char const*, unsigned) noexcept;
 //              多重例外を防ぐため投げない。
 // ***************************************************************************
 
-//! @todo   T.B.D.
+//! エラー管理シングルトン
+//!　　スレッド毎に１つ存在する
 class THEOLIZER_INTERNAL_DLL ErrorReporter
 {
     friend  class internal::Releasing;
@@ -820,7 +819,7 @@ public:
 //      エラー管理用基底クラス
 // ***************************************************************************
 
-//! @todo   T.B.D.
+//! エラー管理用クラス（シリアライザが継承する）
 class THEOLIZER_INTERNAL_DLL ErrorBase
 {
 //      ---<<< 発生したエラーの管理 >>>---
@@ -846,10 +845,10 @@ protected:
     void checkError();
 
 public:
-    //! エラー情報返却
+    //! エラー情報返却（@ref MemberFunctions 参照）
     ErrorInfo const& getErrorInfo() const {return mErrorInfo;}
 
-    //! エラー発生ならtrue
+    //! エラー発生ならtrue（@ref MemberFunctions 参照）
     bool isError()
     {
         return mErrorInfo.isError();
@@ -857,7 +856,7 @@ public:
     }
 
     /*!
-        エラー状態を解除する
+        エラー状態を解除する（@ref MemberFunctions 参照）
 
         なお、例外不許可の場合、コンストラクト中にエラーが発生すると、エラー状態となる。
         このコンストラクト中のエラーは解除できない。（解除しても動作できないため）

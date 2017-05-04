@@ -1,8 +1,14 @@
 ﻿//############################################################################
-//      TheolizerライブラリのAPI部
-//          下記をTheolizer(Theolizer Serializer)のAPI定義
-//              標準派生Serializer
-//              標準Serializableクラス
+/*!
+    @brief      TheolizerライブラリのAPI部
+    @details    下記Theolizer(Theolizer Serializer)のAPI定義<br>
+                　　標準派生Serializer<br>
+                　　標準Serializableクラス<br>
+    @ingroup    TheolizerLib
+    @file       serializer.h
+    @author     Yoshinori Tahara
+    @date       2016/03/21 Created
+*/
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
 
@@ -45,6 +51,7 @@ namespace theolizer
 
 //      ---<<< 通常 >>>---
 
+//! 通常の保存／回復処理マクロ（@ref Request 参照）
 #define THEOLIZER_PROCESS(dSerializer, dInstance)                           \
     theolizer::internal::process<theolizer::internal::etmDefault,tTheolizerVersion>\
         (dSerializer, dInstance, #dInstance, THEOLIZER_INTERNAL_FILE, __LINE__)
@@ -53,6 +60,7 @@ namespace theolizer
 //          非ポインタ(静的定義領域)の追跡を指定する。
 //          (なお、Theolizerは参照を静的定義領域として取り扱うので注意。)
 
+//! 被ポインタ用の保存／回復処理マクロ（@ref Request 参照）
 #define THEOLIZER_PROCESS_POINTEE(dSerializer, dInstance)                   \
     do {                                                                    \
         typedef typename std::remove_reference<decltype(dInstance)>::type Type;\
@@ -67,6 +75,7 @@ namespace theolizer
 //          デシリアライズ時、nullptrや型が違う場合、
 //              ポイントされている領域を開放し、正しい領域を獲得する。
 
+//! オーナ・ポインタ用の保存／回復処理マクロ（@ref Request 参照）
 #define THEOLIZER_PROCESS_OWNER(dSerializer, dInstance)                     \
     do {                                                                    \
         typedef typename std::remove_reference<decltype(dInstance)>::type Type;\
@@ -78,6 +87,7 @@ namespace theolizer
 
 //      ---<<< 基底クラス（非侵入型手動専用） >>>---
 
+//! 非侵入型手動クラスの保存／回復処理で、基底クラスを保存／回復するためのマクロ（@ref WriteManualClass 参照）
 #define THEOLIZER_PROCESS_BASE(dSerializer, dBase, dInstance)               \
     {                                                                       \
         theolizer::internal::BaseSerializer::AutoBaseProcessing             \
@@ -106,6 +116,7 @@ namespace theolizer
 
 //      ---<<<< 対応方法=フィールド名) >>>---
 
+//! 侵入型半自動クラス（名前対応）指定（@ref HalfAutoClass 参照）
 #define THEOLIZER_INTRUSIVE(dAnno, dClass, dLastVersionNo)                  \
     private:                                                                \
     THEOLIZER_INTERNAL_SERIALIZABLE_AUTO(                                   \
@@ -114,6 +125,7 @@ namespace theolizer
 
 //      ---<<<< 対応方法=順序) >>>---
 
+//! 侵入型半自動クラス（順序対応）指定（@ref HalfAutoClass 参照）
 #define THEOLIZER_INTRUSIVE_ORDER(dAnno, dClass, dLastVersionNo)            \
     private:                                                                \
     THEOLIZER_INTERNAL_SERIALIZABLE_AUTO(                                   \
@@ -123,6 +135,8 @@ namespace theolizer
 //----------------------------------------------------------------------------
 //      侵入型(テンプレート)
 //----------------------------------------------------------------------------
+
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 //      ---<<<< 対応方法=フィールド名) >>>---
 
@@ -144,12 +158,15 @@ namespace theolizer
         THEOLIZER_ANNOTATE(dAnno:), dClass, dClass, dLastVersionNo,         \
         (friend struct dUniqueClass;), theolizer::internal::emOrder, false, false)
 
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
+
 //----------------------------------------------------------------------------
 //      非侵入型(手動)
 //----------------------------------------------------------------------------
 
 //      ---<<<< 対応方法=順序(ノーマル) >>>---
 
+//! 非侵入型手動クラス指定（@ref ManualClass 参照）
 #define THEOLIZER_NON_INTRUSIVE_ORDER(dClass, dLastVersionNo)               \
     template<>                                                              \
     struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_UNPAREN dClass> :       \
@@ -161,6 +178,8 @@ namespace theolizer
     }
 
 //      ---<<<< 対応方法=順序(テンプレート) >>>---
+
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 #define THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER(dList, dClass, dLastVersionNo,dUniqueClass)\
     THEOLIZER_INTERNAL_UNPAREN dList                                        \
@@ -174,20 +193,25 @@ namespace theolizer
             (friend struct dUniqueClass;), theolizer::internal::emOrder, true);\
     }
 
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
+
 // ***************************************************************************
 //      enum型のシリアライズ指定
 // ***************************************************************************
 
+//! enum型シリアライズ（シンボル名保存）指定（@ref HalfAutoEnum 参照）
 #define THEOLIZER_ENUM(dEnum, dLastVersionNo)                               \
     THEOLIZER_INTERNAL_ENUM(dEnum, dLastVersionNo, theolizer::internal::estName, false)
 
+//! enum型シリアライズ（シンボル値保存）指定（@ref HalfAutoEnum 参照）
 #define THEOLIZER_ENUM_VALUE(dEnum, dLastVersionNo)                         \
     THEOLIZER_INTERNAL_ENUM(dEnum, dLastVersionNo, theolizer::internal::estValue, false)
 
 // ***************************************************************************
-//      ポリモーフィズム派生クラス登録
+//      ポリモーフィズム用派生クラス登録
 // ***************************************************************************
 
+//! ポリモーフィズム用派生クラス登録（@ref Polymorphism31 参照）
 #define THEOLIZER_REGISTER_CLASS(dClass)                                    \
     namespace theolizer{namespace internal{                                 \
     template                                                                \
@@ -202,6 +226,19 @@ namespace theolizer
     #define THEOLIZER_ANNOTATE(...)                                         \
         __attribute__((annotate("THEORIDE:" THEOLIZER_INTERNAL_STRINGIZE(__VA_ARGS__))))
 #else
+    /*!
+        @brief      アノテーション用マクロ
+        @details    @see @ref Basic11
+                    @see @ref Basic21
+                    @see @ref HowToObjectTracking11
+                    @see @ref HowToObjectTracking12
+                    @see @ref HowToSpecifySaving133
+                    @see @ref ChangingEnum
+                    @see @ref HowToModifyEnum1
+                    @see @ref HowToModifyEnum31
+                    @see @ref HowToModifyClass3
+                    @see @ref HowToModifyClass5
+    */
     #define THEOLIZER_ANNOTATE(...)
 #endif
 
@@ -215,6 +252,8 @@ namespace theolizer
 //          しかし、std::default_delete<T>はシリアライズ対象ではないため、自動的には
 //          登録されないため、当マクロを用いて登録する。
 // ***************************************************************************
+
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 //----------------------------------------------------------------------------
 //      クラス・テンプレートのパラメータのみのクラス
@@ -246,6 +285,8 @@ namespace theolizer
 #define THEOLIZER_REGISTER_TEMPLATE_PARAMETER(dClass)                       \
     theolizer::internal::RegisterType<tMidSerializer,dClass,tTheolizerVersion>::getInstance()
 
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
+
 //############################################################################
 //      オプション機能指定
 //          保存先
@@ -261,9 +302,7 @@ namespace theolizer
 //              最後の新規シンボルを指定する。
 // ***************************************************************************
 
-/*!
-    @todo   T.B.D.
-*/
+//! 保存先定義用マクロ
 #define THEOLIZER_DESTINATIONS(dPrevSymbol, ...)                            \
     namespace theolizer{                                                    \
     namespace internal{namespace{namespace bits{                            \
@@ -286,9 +325,8 @@ namespace theolizer
 //----------------------------------------------------------------------------
 
 #ifdef THEOLIZER_WRITE_CODE
-/*!
-    @todo   T.B.D.
-*/
+
+//! グローバル・バージョン番号テーブル定義用マクロ
 #define THEOLIZER_DEFINE_GLOBAL_VERSION_TABLE(dName, dLastGlobalVersionNo)  \
     namespace theolizer{namespace internal{namespace global_table{          \
     class dName final : public internal::GlobalVersionNoTable<dLastGlobalVersionNo>\
@@ -312,6 +350,7 @@ namespace theolizer
     unsigned const kLastGlobalVersionNo=dLastGlobalVersionNo;               \
     }}  /* namespace theolizer */
 #else
+//! グローバル・バージョン番号テーブル定義用マクロ
 #define THEOLIZER_DEFINE_GLOBAL_VERSION_TABLE(dName, dLastGlobalVersionNo)
 #endif
 

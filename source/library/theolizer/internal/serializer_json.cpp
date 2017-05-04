@@ -401,8 +401,8 @@ JsonMidISerializer::JsonMidISerializer
     ),
     mIStream(iIStream),
     mReadComma(false),
-    mCharIsMultiByte(false),
-    mTerminated(false)
+    mTerminated(false),
+    mCharIsMultiByte(false)
 {
     // エラー情報登録準備
     theolizer::internal::ApiBoundary aApiBoundary(&mAdditionalInfo, true);

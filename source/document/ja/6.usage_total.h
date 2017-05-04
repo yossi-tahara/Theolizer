@@ -167,12 +167,20 @@ Theolizerは、バージョンを上げた時に古いクラス定義やenum型�
 
 <b>THEOLIZER_PROCESS(dSerializer, dInstance)</b>
   - dSerializer : シリアライザのインスタンスを指定します。<br>
-  - dInstance   : 保存するインスタンスを指定します。<br>
+  - dInstance   : 保存／回復するインスタンスを指定します。<br>
 
 dInstanceを保存／回復します。<br>
 ポインタ型を指定した場合は、アドレス回復のためにポイント先のオブジェクト追跡を行います。<br>
 
-他にTHEOLIZER_PROCESS_POINTEE()とTHEOLIZER_PROCESS_OWNER()がありますが、これらについては@ref ObjectTracking で説明します。
+<b>THEOLIZER_PROCESS_POINTEE(dSerializer, dInstance)</b>
+  - dSerializer : シリアライザのインスタンスを指定します。<br>
+  - dInstance   : 保存／回復する被ポインタでもあるインスタンスを指定します。<br>
+
+<b>THEOLIZER_PROCESS_OWNER(dSerializer, dInstance)</b>
+  - dSerializer : シリアライザのインスタンスを指定します。<br>
+  - dInstance   : 保存／回復する所有権を持つインスタンスへのポインタを指定します。<br>
+
+@see @ref ObjectTracking
 
 <div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
 このようにシリアライザを問わず、全て同じマクロでシリアライズ処理できます。<br>
@@ -251,11 +259,11 @@ TypeCheckByIndexはデータ量が多い時は３種のCheckModeの中で最大�
 |unsigned getGlobalVersionNo() const;|処理中のグローバル・バージョン番号を返却します。|
 |void clearTracking() ;|オブジェクト追跡の区切り（@ref ObjectTracking 参照）|
 |bool getRequireClearTracking() const;|clearTracking()が必要な時trueを返却します。|
-|bool isTerminated() const;|処理中のクラスの読み出しが終了(mTerminated)していたらtrueを返却します。<br>非侵入型手動クラスで回復処理を実装する際に使用します。|
+|theolizer::CheckMode getCheckMode() const;|現在のCheckModeを返却します。|
 |void setCharIsMultiByte();|Windowsにおいて、EncodedStringがtrueのシリアライザにおいて<br>std::string変数の文字エンコードをMultiByte文字列として処理するかどうかを指定します。|
 |theolizer::ErrorInfo const& getErrorInfo() const;|エラー情報を返却します。|
 |bool isError() const;|エラーが発生している時trueを返却します。|
-|void resetError();|エラー状態を解除します。|
+|void resetError();|エラー状態を解除します。（@ref ErrorReport3 参照）|
 
 @subsubsection Property 3-1-3.プロパティ
 各シリアライザは、その属性をプロバティとして提供しています。

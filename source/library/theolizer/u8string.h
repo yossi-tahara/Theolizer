@@ -7,27 +7,24 @@
     @author     Yoshinori Tahara
     @date       2015/09/02 Created
 
-    @todo T.B.D.
-*/
-/*
 @par ①u8string：下記文字エンコード間のコンバート機能を提供する
-    char            UTF-8\n
-    wchar_t         UTF-16/32\n
-    char16_t        UTF-16\n
-    char32_t        UTF-32\n
+    char            UTF-8<br>
+    wchar_t         UTF-16/32<br>
+    char16_t        UTF-16<br>
+    char32_t        UTF-32<br>
 
-@par ②Windows用Multi Byte対応機能を提供する
-    registerStream()にて登録したiostreamに対して、
-    Windows APIを用いてu8stringのMulti Byteとのコンバートを行う。\n
-    デフォルトにて、std::cint, std::cout, std::cerrを登録している。\n
-    - std::istream : ulti Byte → UTF-8, UTF-16, UTF-32\n
-    - std::ostream : UTF-8, UTF-16, UTF-32 → Multi Byte\n
+@par ②Windows用Multi Byte対応機能を提供する<br>
+    registerStream()にて登録したiostreamに対して、<br>
+    Windows APIを用いてu8stringのMulti Byteとのコンバートを行う。<br>
+    デフォルトにて、std::cint, std::cout, std::cerrを登録している。<br>
+    - std::istream : ulti Byte → UTF-8, UTF-16, UTF-32<br>
+    - std::ostream : UTF-8, UTF-16, UTF-32 → Multi Byte<br>
 
 @par ③コンバート・エラー発生時、ConvertError例外を投げる
 
 @note
-Visual Studioのchar型文字列リテラルは、デフォルトではMulti Byte文字エンコードである。\n
-Visual Studio 2015以降ならば、u8"任意文字列"の書式にてUTF-8文字エンコードできる。\n
+Visual Studioのchar型文字列リテラルは、デフォルトではMulti Byte文字エンコードである。<br>
+Visual Studio 2015以降ならば、u8"任意文字列"の書式にてUTF-8文字エンコードできる。<br>
 
 */
 
@@ -93,76 +90,63 @@ namespace theolizer
 //              非Windowsの場合、65001(UTF-8)固定
 // ***************************************************************************
 
-/*!
-    @todo   T.B.D.
-*/
-extern const THEOLIZER_INTERNAL_DLL unsigned kCP_ACP;   // WindowsのCP_ACPと同じ値
-/*!
-    @todo   T.B.D.
-*/
-extern const THEOLIZER_INTERNAL_DLL unsigned kCP_UTF8;  // WindowsのCP_UTF8と同じ値
+//! @ingroup Unicode
+//! WindowsのCP_ACPと同じ値
+extern const THEOLIZER_INTERNAL_DLL unsigned kCP_ACP;
 
-/*!
-    @todo   T.B.D.
-*/
+//! @ingroup Unicode
+//! WindowsのCP_UTF8と同じ値
+extern const THEOLIZER_INTERNAL_DLL unsigned kCP_UTF8;
+
+//! @ingroup Unicode
+//! 現在のコード・ページ獲得
 unsigned THEOLIZER_INTERNAL_DLL getACP();
-/*!
-    @todo   T.B.D.
-*/
-bool THEOLIZER_INTERNAL_DLL setACP(unsigned iCodePage); // 失敗時false返却(非Windowsは常にtrue)
+
+//! @ingroup Unicode
+//! コード・ページ設定：失敗時false返却(非Windowsは常にtrue)
+bool THEOLIZER_INTERNAL_DLL setACP(unsigned iCodePage); 
 
 // ***************************************************************************
 //      istream/ostream管理
-//          Multi Byte変換するistream/ostreamを登録する。
+//          
 // ***************************************************************************
 
 //      ---<<< i/ostreamの登録 >>>---
 
-/*!
-    @ingroup Unicode
-    @todo   T.B.D.
-*/
+//! @ingroup Unicode
+//! Multi Byte変換する対象としてstd::istreamを登録する。
 bool THEOLIZER_INTERNAL_DLL registerStream(std::istream* iIStream);
-/*!
-    @ingroup Unicode
-    @todo   T.B.D.
-*/
+
+//! @ingroup Unicode
+//! Multi Byte変換する対象としてstd::ostreamを登録する。
 bool THEOLIZER_INTERNAL_DLL registerStream(std::ostream* iOStream);
-/*!
-    @ingroup Unicode
-    @todo   T.B.D.
-*/
+
+//! @ingroup Unicode
+//! Multi Byte変換する対象としてstd::iostreamを登録する。
 bool THEOLIZER_INTERNAL_DLL registerStream(std::iostream* iIOStream);
 
 //      ---<<< i/ostreamの解除 >>>---
 
-/*!
-    @ingroup Unicode
-    @todo   T.B.D.
-*/
+//! @ingroup Unicode
+//! std::istreamをMulti Byte変換する対象から解除する。
 bool THEOLIZER_INTERNAL_DLL unregisterStream(std::istream* iIStream);
-/*!
-    @ingroup Unicode
-    @todo   T.B.D.
-*/
+
+//! @ingroup Unicode
+//! std::ostreamをMulti Byte変換する対象から解除する。
 bool THEOLIZER_INTERNAL_DLL unregisterStream(std::ostream* iOStream);
-/*!
-    @ingroup Unicode
-    @todo   T.B.D.
-*/
+
+//! @ingroup Unicode
+//! std::iostreamをMulti Byte変換する対象から解除する。
 bool THEOLIZER_INTERNAL_DLL unregisterStream(std::iostream* iIOStream);
 
 //      ---<<< UTF-8でやりとりするi/ostream判定 >>>---
 
-/*!
-    @ingroup Unicode
-    @todo   T.B.D.
-*/
+//! @ingroup Unicode
+//! Multi Byte変換しない（UTF-8で入力する）時、true返却。
 bool THEOLIZER_INTERNAL_DLL isInputByUtf8(std::istream* iIStream);
-/*!
-    @ingroup Unicode
-    @todo   T.B.D.
-*/
+
+//! @ingroup Unicode
+//! Multi Byte変換しない（UTF-8で出力する）時、true返却。
 bool THEOLIZER_INTERNAL_DLL isOutputByUtf8(std::ostream* iOStream);
 
 //############################################################################
@@ -177,11 +161,8 @@ bool THEOLIZER_INTERNAL_DLL isOutputByUtf8(std::ostream* iOStream);
 //              char32_t    UTF-32
 //############################################################################
 
-// Multi Byte(char)を指定するマーカー・クラス
-/*!
-    @ingroup Unicode
-    @todo   T.B.D.
-*/
+//! @ingroup Unicode
+//! Multi Byteを指定するマーカー・クラス
 struct MultiByte { };
 
 // ***************************************************************************
@@ -234,47 +215,43 @@ struct Converter<MultiByte, tCharIn>
 }   // namespace internal
 
 //############################################################################
-//      Unicode記録用文字列クラスu8string
 /*!
     @section u8string UTF-8文字列クラス
 
-    @todo   T.B.D.
-*/
-/*
-    std::stringを派生し、Unicode間のエンコード変換機能を追加
-    また、Multi Byte文字エンコードとの変換も提供する
-    テンプレート・パラメータとして、下記を使用可能。
-        char        UTF-8
-        wchar_t     UTF-16/32
-        char16_t    UTF-16
-        char32_t    UTF-32
+    @brief      Unicode記録用文字列クラスu8string
+    @details    std::stringを派生し、Unicode間のエンコード変換機能を追加したクラス<br>
+                Multi Byte文字エンコードとの変換も提供する。<br>
+                テンプレート・パラメータとして、下記を使用可能。<br>
+                　　char        UTF-8<br>
+                　　wchar_t     UTF-16/32<br>
+                　　char16_t    UTF-16<br>
+                　　char32_t    UTF-32<br>
 
-    下記コンバート機能を追加する
-        コンストラクタ
-        代入演算子
-        明示的basic_string\<他char型\>取出し
-            std::string     get_string() const;
-            std::wstring    get_wstring() const;
-            std::u16string  get_u16string() const;
-            std::u32string  get_u32string() const;
-        basic_string\<他char型\>へのキャスト演算子
-            operator std::string() const;
-            operator std::wstring() const;
-            operator std::u16string() const;
-            operator std::u32string() const;
-        Multi Byte用コンバータ
-            basic_string<char>      getMultiByte() const;
-            void setMultiByte(char const*);
-        fstream用ファイル名返却
-            ?string getXString() const;
-
-スレッド・セーフ性：basic_string<>と同等
-    const指定されている関数同士は別スレッドからアクセスしても問題ない。
-    しかし、そうでない関数を別スレッドから呼び出してはいけない。
-
-備忘録：
-    各中継マクロは、mStringデータ・メンバのみの前提で作っている。
-
+                下記コンバート機能を追加する<br>
+                　　コンストラクタ<br>
+                　　代入演算子<br>
+                　　明示的basic_string\<他char型\>取出し<br>
+                　　　　std::string     get_string() const;<br>
+                　　　　std::wstring    get_wstring() const;<br>
+                　　　　std::u16string  get_u16string() const;<br>
+                　　　　std::u32string  get_u32string() const;<br>
+                　　basic_string\<他char型\>へのキャスト演算子<br>
+                　　　　operator std::string() const;<br>
+                　　　　operator std::wstring() const;<br>
+                　　　　operator std::u16string() const;<br>
+                　　　　operator std::u32string() const;<br>
+                　　Multi Byte用コンバータ<br>
+                　　　　basic_string<char>      getMultiByte() const;<br>
+                　　　　void setMultiByte(char const*);<br>
+                　　fstream用ファイル名返却<br>
+                　　　　?string getXString() const;<br>
+<br>
+            スレッド・セーフ性：basic_string<>と同等<br>
+                const指定されている関数同士は別スレッドからアクセスしても問題ない。<br>
+                しかし、そうでない関数を別スレッドから呼び出してはいけない。<br>
+<br>
+            備忘録：<br>
+                各中継マクロは、mStringデータ・メンバのみの前提で作っている。<br>
 */
 //############################################################################
 

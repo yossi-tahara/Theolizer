@@ -232,7 +232,7 @@ char const* getCppNameJson(std::string const& iPrimitiveName, unsigned iSerializ
 */
 // ***************************************************************************
 
-class THEOLIZER_INTERNAL_DLL JsonMidOSerializer : protected BaseSerializer
+class THEOLIZER_INTERNAL_DLL JsonMidOSerializer : public BaseSerializer
 {
 private:
     friend class BaseSerializer;
@@ -245,37 +245,17 @@ private:
     std::ostream&           mOStream;
     bool                    mNoPrettyPrint;
     bool                    mWriteComma;
-    bool                    mCharIsMultiByte;
 
     static const unsigned   kLastVersionNo=kJsonSerializerVersionNo;
 
     typedef JsonMidOSerializer  MidSerializer;
     typedef JsonMidOSerializer  MetaOSerializer;    // メタ・シリアライザ
     typedef JsonMidISerializer  MetaISerializer;    // メタ・デシリアライザ
-    static char const* const    kSerializerName;
-
-public:
-    //! @todo T.B.D.
-    static bool hasProperty(Property iProperty)
-    {
-        return hasPropertyJson(iProperty, true);
-    }
-
-    //! @todo T.B.D.
-    //! std::stringをマルチ・パイト文字コードとして処理することを指定する
-    void setCharIsMultiByte(bool iCharIsMultiByte)
-    {
-        mCharIsMultiByte=iCharIsMultiByte;
-    }
-
-    using BaseSerializer::getGlobalVersionNo;
-    using BaseSerializer::clearTracking;
-    using BaseSerializer::getRequireClearTracking;
-    using ErrorBase::getErrorInfo;
-    using ErrorBase::isError;
-    using ErrorBase::resetError;
 
 protected:
+    bool                        mCharIsMultiByte;
+    static char const* const    kSerializerName;
+
     JsonMidOSerializer
     (
         std::ostream& iOStream,
@@ -394,7 +374,7 @@ private:
 */
 // ***************************************************************************
 
-class THEOLIZER_INTERNAL_DLL JsonMidISerializer : protected BaseSerializer
+class THEOLIZER_INTERNAL_DLL JsonMidISerializer : public BaseSerializer
 {
 private:
     friend class BaseSerializer;
@@ -406,7 +386,6 @@ private:
 
     std::istream&           mIStream;
     bool                    mReadComma;
-    bool                    mCharIsMultiByte;
     bool                    mTerminated;
 
     static const unsigned   kLastVersionNo=kJsonSerializerVersionNo;
@@ -414,29 +393,11 @@ private:
     typedef JsonMidISerializer  MidSerializer;
     typedef JsonMidOSerializer  MetaOSerializer;    // メタ・シリアライザ
     typedef JsonMidISerializer  MetaISerializer;    // メタ・デシリアライザ
-    static char const* const    kSerializerName;
-
-public:
-    //! @todo T.B.D.
-    static bool hasProperty(Property iProperty)
-    {
-        return hasPropertyJson(iProperty, false);
-    }
-
-    //! std::stringをマルチ・パイト文字コードとして処理することを指定する
-    void setCharIsMultiByte(bool iCharIsMultiByte)
-    {
-        mCharIsMultiByte=iCharIsMultiByte;
-    }
-
-    using BaseSerializer::getGlobalVersionNo;
-    using BaseSerializer::clearTracking;
-    using BaseSerializer::getRequireClearTracking;
-    using ErrorBase::getErrorInfo;
-    using ErrorBase::isError;
-    using ErrorBase::resetError;
 
 protected:
+    bool                        mCharIsMultiByte;
+    static char const* const    kSerializerName;
+
     JsonMidISerializer
     (
         std::istream& iIStream,
@@ -494,14 +455,6 @@ private:
 //      ---<<< 要素破棄処理 >>>---
 
     void disposeElement();
-
-//      ---<<< ClassType終了状態返却 >>>---
-//          処理中のClassTypeの読み出しが終了(mTerminated)していたら、
-//          trueを返却する。その後、falseへ戻る。
-
-public:
-    //! @todo T.B.D.
-    bool isTerminated() const {return mTerminated;}
 
 //----------------------------------------------------------------------------
 //      内部処理
@@ -610,7 +563,7 @@ private:
 //      ---<<< 通常用 >>>---
 
 template<Destination uDefault=theolizerD::All, Destination... uDestinations>
-class JsonOSerializer : public internal::JsonMidOSerializer
+class JsonOSerializer : protected internal::JsonMidOSerializer
 {
     THEOLIZER_INTERNAL_FRIENDS;
     void AbstructSerializer() { }       // インスタンス生成許可
@@ -632,6 +585,10 @@ class JsonOSerializer : public internal::JsonMidOSerializer
 
     typedef JsonOSerializer                 DestOSerializer;
     typedef internal::JsonMidOSerializer    MidSerializer;
+
+    // Switcherアクセス用
+    using MidSerializer::kSerializerName;
+    using BaseSerializer::mIsSaver;
 
 public:
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
@@ -678,6 +635,26 @@ public:
             iNoThrowException
         )
     { }
+
+    //! JsonOSerializerのプロパティ返却（@ref Property 参照）
+    static bool hasProperty(Property iProperty)
+    {
+        return internal::hasPropertyJson(iProperty, true);
+    }
+
+    //! std::stringをマルチ・パイト文字コードとして処理するかどうか指定する
+    void setCharIsMultiByte(bool iCharIsMultiByte)
+    {
+        mCharIsMultiByte=iCharIsMultiByte;
+    }
+
+    using BaseSerializer::getGlobalVersionNo;
+    using BaseSerializer::clearTracking;
+    using BaseSerializer::getRequireClearTracking;
+    using BaseSerializer::getCheckMode;
+    using ErrorBase::getErrorInfo;
+    using ErrorBase::isError;
+    using ErrorBase::resetError;
 };
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
@@ -692,7 +669,7 @@ THEOLIZER_INTERNAL_REGISTER_MID_SERIALIZER(JsonOSerializer);
 //      ---<<< 通常用 >>>---
 
 template<Destination uDefault=theolizerD::All, Destination... uDestinations>
-class JsonISerializer : public internal::JsonMidISerializer
+class JsonISerializer : protected internal::JsonMidISerializer
 {
     THEOLIZER_INTERNAL_FRIENDS;
     void AbstructSerializer() { }       // インスタンス生成許可
@@ -709,6 +686,10 @@ class JsonISerializer : public internal::JsonMidISerializer
 
     typedef JsonISerializer                 DestISerializer;
     typedef internal::JsonMidISerializer    MidSerializer;
+
+    // Switcherアクセス用
+    using MidSerializer::kSerializerName;
+    using BaseSerializer::mIsSaver;
 
 public:
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
@@ -730,6 +711,26 @@ public:
             iNoThrowException
         )
     { }
+
+    //! JsonISerializerのプロパティ返却（@ref Property 参照）
+    static bool hasProperty(Property iProperty)
+    {
+        return internal::hasPropertyJson(iProperty, false);
+    }
+
+    //! std::stringをマルチ・パイト文字コードとして処理することを指定する
+    void setCharIsMultiByte(bool iCharIsMultiByte)
+    {
+        mCharIsMultiByte=iCharIsMultiByte;
+    }
+
+    using BaseSerializer::getGlobalVersionNo;
+    using BaseSerializer::clearTracking;
+    using BaseSerializer::getRequireClearTracking;
+    using BaseSerializer::getCheckMode;
+    using ErrorBase::getErrorInfo;
+    using ErrorBase::isError;
+    using ErrorBase::resetError;
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
     // メタ・デシリアライズ用

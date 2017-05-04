@@ -176,7 +176,6 @@ struct SupportVectorPointee
     {
         THEOLIZER_PROCESS_POINTEE(iSerializer, iValue);
     }
-    //! @todo T.B.D.
     template<class tSerializer>
     static void load(tSerializer& iSerializer, typename tVector::reference oValue)
     {

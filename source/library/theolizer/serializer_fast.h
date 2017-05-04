@@ -99,7 +99,7 @@ class FastMidISerializer;
 */
 // ***************************************************************************
 
-class THEOLIZER_INTERNAL_DLL FastMidOSerializer : protected BaseSerializer
+class THEOLIZER_INTERNAL_DLL FastMidOSerializer : public BaseSerializer
 {
 private:
     friend class BaseSerializer;
@@ -116,23 +116,10 @@ private:
     typedef FastMidOSerializer  MidSerializer;
     typedef FastMidOSerializer  MetaOSerializer;    // メタ・シリアライザ
     typedef FastMidISerializer  MetaISerializer;    // メタ・デシリアライザ
-    static char const* const    kSerializerName;
-
-public:
-    //! @todo T.B.D.
-    static bool hasProperty(Property iProperty)
-    {
-        return hasPropertyFast(iProperty, true);
-    }
-
-    using BaseSerializer::getGlobalVersionNo;
-    using BaseSerializer::clearTracking;
-    using BaseSerializer::getRequireClearTracking;
-    using ErrorBase::getErrorInfo;
-    using ErrorBase::isError;
-    using ErrorBase::resetError;
 
 protected:
+    static char const* const    kSerializerName;
+
     FastMidOSerializer
     (
         std::ostream& iOStream,
@@ -231,23 +218,10 @@ private:
     typedef FastMidISerializer  MidSerializer;
     typedef FastMidOSerializer  MetaOSerializer;    // メタ・シリアライザ
     typedef FastMidISerializer  MetaISerializer;    // メタ・デシリアライザ
-    static char const* const    kSerializerName;
-
-public:
-    //! @todo T.B.D.
-    static bool hasProperty(Property iProperty)
-    {
-        return hasPropertyFast(iProperty, false);
-    }
-
-    using BaseSerializer::getGlobalVersionNo;
-    using BaseSerializer::clearTracking;
-    using BaseSerializer::getRequireClearTracking;
-    using ErrorBase::getErrorInfo;
-    using ErrorBase::isError;
-    using ErrorBase::resetError;
 
 protected:
+    static char const* const    kSerializerName;
+
     FastMidISerializer
     (
         std::istream& iIStream,
@@ -352,7 +326,7 @@ private:
 // ***************************************************************************
 
 template<Destination uDefault=theolizerD::All, Destination... uDestinations>
-class FastOSerializer : public internal::FastMidOSerializer
+class FastOSerializer : protected internal::FastMidOSerializer
 {
     THEOLIZER_INTERNAL_FRIENDS;
 
@@ -371,6 +345,10 @@ class FastOSerializer : public internal::FastMidOSerializer
     typedef FastOSerializer                 DestOSerializer;
     typedef internal::FastMidOSerializer    MidSerializer;
 
+    // Switcherアクセス用
+    using MidSerializer::kSerializerName;
+    using BaseSerializer::mIsSaver;
+
 public:
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
     static const bool                       kHasDestination=true;
@@ -387,6 +365,20 @@ public:
             iNoThrowException
         )
     { }
+
+    //! FastOSerializerのプロパティ返却（@ref Property 参照）
+    static bool hasProperty(Property iProperty)
+    {
+        return internal::hasPropertyFast(iProperty, true);
+    }
+
+    using BaseSerializer::getGlobalVersionNo;
+    using BaseSerializer::clearTracking;
+    using BaseSerializer::getRequireClearTracking;
+    using BaseSerializer::getCheckMode;
+    using ErrorBase::getErrorInfo;
+    using ErrorBase::isError;
+    using ErrorBase::resetError;
 };
 
 // ***************************************************************************
@@ -394,7 +386,7 @@ public:
 // ***************************************************************************
 
 template<Destination uDefault=theolizerD::All, Destination... uDestinations>
-class FastISerializer : public internal::FastMidISerializer
+class FastISerializer : protected internal::FastMidISerializer
 {
     THEOLIZER_INTERNAL_FRIENDS;
 
@@ -413,6 +405,10 @@ class FastISerializer : public internal::FastMidISerializer
     typedef FastISerializer                 DestISerializer;
     typedef internal::FastMidISerializer    MidSerializer;
 
+    // Switcherアクセス用
+    using MidSerializer::kSerializerName;
+    using BaseSerializer::mIsSaver;
+
 public:
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
     static const bool                       kHasDestination=true;
@@ -429,6 +425,20 @@ public:
             iNoThrowException
         )
     { }
+
+    //! FastISerializerのプロパティ返却（@ref Property 参照）
+    static bool hasProperty(Property iProperty)
+    {
+        return internal::hasPropertyFast(iProperty, false);
+    }
+
+    using BaseSerializer::getGlobalVersionNo;
+    using BaseSerializer::clearTracking;
+    using BaseSerializer::getRequireClearTracking;
+    using BaseSerializer::getCheckMode;
+    using ErrorBase::getErrorInfo;
+    using ErrorBase::isError;
+    using ErrorBase::resetError;
 };
 
 //############################################################################

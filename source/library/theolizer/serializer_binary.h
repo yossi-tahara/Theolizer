@@ -334,7 +334,7 @@ char const* getCppNameBinary(std::string const& iPrimitiveName, unsigned iSerial
 */
 // ***************************************************************************
 
-class THEOLIZER_INTERNAL_DLL BinaryMidOSerializer : protected BaseSerializer
+class THEOLIZER_INTERNAL_DLL BinaryMidOSerializer : public BaseSerializer
 {
 private:
     friend class BaseSerializer;
@@ -351,23 +351,10 @@ private:
     typedef BinaryMidOSerializer  MidSerializer;
     typedef BinaryMidOSerializer  MetaOSerializer;   // メタ・シリアライザ
     typedef BinaryMidISerializer  MetaISerializer;   // メタ・デシリアライザ
-    static char const* const    kSerializerName;
-
-public:
-    //! @todo T.B.D.
-    static bool hasProperty(Property iProperty)
-    {
-        return hasPropertyBinary(iProperty, true);
-    }
-
-    using BaseSerializer::getGlobalVersionNo;
-    using BaseSerializer::clearTracking;
-    using BaseSerializer::getRequireClearTracking;
-    using ErrorBase::getErrorInfo;
-    using ErrorBase::isError;
-    using ErrorBase::resetError;
 
 protected:
+    static char const* const    kSerializerName;
+
     BinaryMidOSerializer
     (
         std::ostream& iOStream,
@@ -494,7 +481,7 @@ private:
 */
 // ***************************************************************************
 
-class THEOLIZER_INTERNAL_DLL BinaryMidISerializer : protected BaseSerializer
+class THEOLIZER_INTERNAL_DLL BinaryMidISerializer : public BaseSerializer
 {
 private:
     friend class BaseSerializer;
@@ -513,23 +500,10 @@ private:
     typedef BinaryMidISerializer  MidSerializer;
     typedef BinaryMidOSerializer  MetaOSerializer;   // メタ・シリアライザ
     typedef BinaryMidISerializer  MetaISerializer;   // メタ・デシリアライザ
-    static char const* const  kSerializerName;
-
-public:
-    //! @todo T.B.D.
-    static bool hasProperty(Property iProperty)
-    {
-        return hasPropertyBinary(iProperty, false);
-    }
-
-    using BaseSerializer::getGlobalVersionNo;
-    using BaseSerializer::clearTracking;
-    using BaseSerializer::getRequireClearTracking;
-    using ErrorBase::getErrorInfo;
-    using ErrorBase::isError;
-    using ErrorBase::resetError;
 
 protected:
+    static char const* const  kSerializerName;
+
     BinaryMidISerializer
     (
         std::istream& iIStream,
@@ -595,14 +569,6 @@ private:
 //      ---<<< 要素破棄処理 >>>---
 
     void disposeElement();
-
-//      ---<<< ClassType終了状態返却 >>>---
-//          処理中のClassTypeの読み出しが終了(mTerminated)していたら、
-//          trueを返却する。その後、falseへ戻る。
-
-public:
-    //! @todo T.B.D.
-    bool isTerminated() const {return mTerminated;}
 
 //----------------------------------------------------------------------------
 //      内部処理
@@ -691,7 +657,7 @@ private:
 // ***************************************************************************
 
 template<Destination uDefault=theolizerD::All, Destination... uDestinations>
-class BinaryOSerializer : public internal::BinaryMidOSerializer
+class BinaryOSerializer : protected internal::BinaryMidOSerializer
 {
     THEOLIZER_INTERNAL_FRIENDS;
 
@@ -714,6 +680,10 @@ class BinaryOSerializer : public internal::BinaryMidOSerializer
 
     typedef BinaryOSerializer               DestOSerializer;
     typedef internal::BinaryMidOSerializer  MidSerializer;
+
+    // Switcherアクセス用
+    using MidSerializer::kSerializerName;
+    using BaseSerializer::mIsSaver;
 
 public:
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
@@ -756,6 +726,19 @@ public:
             iNoThrowException
         )
     { }
+
+    //! BinaryOSerializerのプロパティ返却（@ref Property 参照）
+    static bool hasProperty(Property iProperty)
+    {
+        return internal::hasPropertyBinary(iProperty, true);
+    }
+
+    using BaseSerializer::getGlobalVersionNo;
+    using BaseSerializer::clearTracking;
+    using BaseSerializer::getRequireClearTracking;
+    using ErrorBase::getErrorInfo;
+    using ErrorBase::isError;
+    using ErrorBase::resetError;
 };
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
@@ -768,7 +751,7 @@ THEOLIZER_INTERNAL_REGISTER_MID_SERIALIZER(BinaryOSerializer);
 // ***************************************************************************
 
 template<Destination uDefault=theolizerD::All, Destination... uDestinations>
-class BinaryISerializer : public internal::BinaryMidISerializer
+class BinaryISerializer : protected internal::BinaryMidISerializer
 {
     THEOLIZER_INTERNAL_FRIENDS;
 
@@ -786,6 +769,10 @@ class BinaryISerializer : public internal::BinaryMidISerializer
 
     typedef BinaryISerializer               DestISerializer;
     typedef internal::BinaryMidISerializer  MidSerializer;
+
+    // Switcherアクセス用
+    using MidSerializer::kSerializerName;
+    using BaseSerializer::mIsSaver;
 
 public:
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
@@ -807,6 +794,21 @@ public:
             iNoThrowException
         )
     { }
+
+    //! BinaryISerializerのプロパティ返却（@ref Property 参照）
+    static bool hasProperty(Property iProperty)
+    {
+        return internal::hasPropertyBinary(iProperty, false);
+    }
+
+    // 継承メンバー関数群
+    using BaseSerializer::getGlobalVersionNo;
+    using BaseSerializer::clearTracking;
+    using BaseSerializer::getRequireClearTracking;
+    using BaseSerializer::getCheckMode;
+    using ErrorBase::getErrorInfo;
+    using ErrorBase::isError;
+    using ErrorBase::resetError;
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
     // メタ・デシリアライズ用

@@ -1,5 +1,22 @@
 ﻿//############################################################################
-//      範囲ベースfor拡張
+/*!
+    @brief      範囲ベースfor拡張
+    @details    ①RBForAdaptor：範囲ベースfor専用の便利ツール
+                　　コンテナやレンジを受け取り、指定の「レンジ」へ設定して保持する。<br>
+                　　begin(), end()はRangeReferencerを返却する<br>
+                ②RBForReferencer:範囲ベースfor専用のiterator(かなり特殊）<br>
+                　　RBForAdaptorへの参照のみを保持する<br>
+                　　　　operator*()は「レンジ」を返却<br>
+                　　　　operator++()はRBForAdaptorのdrop_front()を呼ぶ<br>
+                　　　　operator!=()はRBForAdaptorのempty()を呼ぶ<br>
+                ※特記事項<br>
+                　　RBForAdaptor::end()が返却したインスタンスのメンバ関数は呼び出し禁止。<br>
+                ※注意事項：名前空間internalのアイテムは直接使わないこと<br>
+    @ingroup    TheolizerLib
+    @file       rbfor.h
+    @author     Yoshinori Tahara
+    @date       2017/07/14 Created
+*/
 /*
     Copyright (c) 2016 Yohinori Tahara(Theoride Technology) - http://theolizer.com/
 
@@ -43,18 +60,6 @@ namespace internal
 
 //############################################################################
 //      範囲ベースfor拡張(ループ分割とインデックス番号他)
-//          RBForAdaptor：範囲ベースfor専用の便利ツール
-//              コンテナやレンジを受け取り、指定の「レンジ」へ設定して保持する。
-//              begin(), end()はRangeReferencerを返却する
-//          RBForReferencer:範囲ベースfor専用のiterator(かなり特殊）
-//              RBForAdaptorへの参照のみを保持する
-//                  operator*()は「レンジ」を返却
-//                  operator++()はRBForAdaptorのdrop_front()を呼ぶ
-//                  operator!=()はRBForAdaptorのempty()を呼ぶ
-//          特記事項
-//              RBForAdaptor::end()が返却したインスタンスのメンバ関数は呼び出し禁止。
-//
-//      注意事項：名前空間internalのアイテムは直接使わないこと
 //############################################################################
 
 // ***************************************************************************
@@ -82,17 +87,6 @@ public:
         return !mRBForAdaptor.empty();
     }
 };
-
-#define THEOLIZER_INCREMENT_OPERATOR(dThis)                                 \
-    dThis& operator++() {                                                   \
-        drop_front();                                                       \
-        return *this;                                                       \
-    }                                                                       \
-    dThis operator++(int) {                                                 \
-        dThis ret(*this);                                                   \
-        drop_front();                                                       \
-        return ret;                                                         \
-    }
 
 // ***************************************************************************
 //      RBForAdaptor
@@ -144,9 +138,10 @@ struct NopFunctor
 }   // namespace internal
 
 // ---------------------------------------------------------------------------
-//      基本的なレンジ・クラス(公開クラス)
 /*!
-    @todo   T.B.D.
+@brief      範囲ベースfor用のRageを管理する基底クラス
+@details    for(auto&& aLoop : getRBForIndexer(コンテナ))
+            とした時のaLoopの型の基底クラスである。
 */
 // ---------------------------------------------------------------------------
 
@@ -159,16 +154,13 @@ class BasicRange
     tIterator   mBegin;
     tIterator   mEnd;
 public:
-/*!
-    @todo   T.B.D.
-*/
+    //! コンストラクタ（範囲開始と終了を設定する）
     BasicRange(tIterator&& iBegin, tIterator&& iEnd) :
         mBegin(std::forward<tIterator>(iBegin)),
         mEnd  (std::forward<tIterator>(iEnd))
     { }
-/*!
-    @todo   T.B.D.
-*/
+
+    //! １つ次へ進める
     void drop_front()
     {
         if (empty())
@@ -177,36 +169,39 @@ public:
         }
         ++mBegin;
     }
-/*!
-    @todo   T.B.D.
-*/
+
+    //! 先頭要素を取り出す
     ValueType& front()      {return *mBegin;}
-/*!
-    @todo   T.B.D.
-*/
+
+    //! 開始位置と終了位置が一致している時empty
     bool empty()      const {return mBegin == mEnd;}
-/*!
-    @todo   T.B.D.
-*/
+
+    //! 開始位置取り出し(範囲ベースfor専用)
     tIterator begin() const {return mBegin;}
-/*!
-    @todo   T.B.D.
-*/
+
+    //! 終了位置取り出し(範囲ベースfor専用)
     tIterator end()   const {return mEnd;}
 
-    // イテレータ的I/F
-/*!
-    @todo   T.B.D.
-*/
+    //! ポイント先メンバ取り出し(イテレータ的I/F)
     tIterator operator->()  {return mBegin;}
-/*!
-    @todo   T.B.D.
-*/
+
+    //! ポイント先取り出し(イテレータ的I/F)
     ValueType& operator*()  {return front();}
-/*!
-    @todo   T.B.D.
-*/
-    THEOLIZER_INCREMENT_OPERATOR(BasicRange)
+
+    //! 前置インクリメント(イテレータ的I/F)
+    BasicRange& operator++()
+    {
+        drop_front();
+        return *this;
+    }
+
+    //! 後置インクリメント(イテレータ的I/F)
+    BasicRange operator++(int)
+    {
+        BasicRange ret(*this);
+        drop_front();
+        return ret;
+    }
 };
 
 // ---------------------------------------------------------------------------
@@ -237,8 +232,20 @@ public:
     }
     std::size_t getIndex() const    {return mIndex;}
 
-    // イテレータ的I/F
-    THEOLIZER_INCREMENT_OPERATOR(Indexer)
+    //! 前置インクリメント(イテレータ的I/F)
+    Indexer& operator++()
+    {
+        drop_front();
+        return *this;
+    }
+
+    //! 後置インクリメント(イテレータ的I/F)
+    Indexer operator++(int)
+    {
+        Indexer ret(*this);
+        drop_front();
+        return ret;
+    }
 };
 
 // ---------------------------------------------------------------------------
@@ -267,9 +274,8 @@ public:
 // ***************************************************************************
 
 // ---------------------------------------------------------------------------
-//      汎用
 /*!
-    @todo   T.B.D.
+    @brief      汎用の範囲ベースfor用レンジ生成
 */
 // ---------------------------------------------------------------------------
 
@@ -287,9 +293,8 @@ auto getRBForAdaptor(tContainer&& iContainer, tNextFunc&& iNextFunc=internal::No
 }
 
 // ---------------------------------------------------------------------------
-//      分割専用
 /*!
-    @todo   T.B.D.
+    @brief      範囲ベースforを分割できるようにするためのレンジ生成
 */
 // ---------------------------------------------------------------------------
 
@@ -301,9 +306,8 @@ auto getRBForSeparator(tContainer&& iContainer, tNextFunc&& iNextFunc=internal::
 }
 
 // ---------------------------------------------------------------------------
-//      分割とインデックス用
 /*!
-    @todo   T.B.D.
+    @brief      範囲ベースforを分割できるようにし、かつ、インデックス番号用レンジ生成
 */
 // ---------------------------------------------------------------------------
 

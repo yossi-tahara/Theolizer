@@ -617,9 +617,7 @@ Keep-step処理しない（Non-keep-step）基底クラスやメンバ変数用�
 変更後のクラス定義で、変更前の変数名を指定します。
 
 @code
-
 型 メンバ変数名 THEOLIZER_ANNOTATE(FS:旧メンバ変数名);
-
 @endcode
 
 以下、名前対応クラス(ModifyClassName)と順序対応クラス(ModifyClassOrder)のmHalfAutoXMemberメンバ変数の変数名をmHalfAutoYMemberへ変更する例です。どちらのクラスの場合も同じです。<br>

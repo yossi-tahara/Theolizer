@@ -520,18 +520,21 @@ struct SharedPtrTable
     template<internal::TrackingMode, class, class, typename, class>                         \
         friend struct internal::BranchedProcess;                                            \
     template<internal::TrackingMode, class, class tSerializer, typename tType>              \
-        friend void process(tSerializer&, tType const&, char const*, char const*, size_t);  \
+        friend void internal::process(tSerializer&,tType const&,char const*,char const*,size_t);\
     template<internal::TrackingMode, class, class tSerializer, typename tType>              \
-        friend void process(tSerializer&, tType&, char const*, char const*, size_t);        \
+        friend void internal::process(tSerializer&,tType&,char const*,char const*,size_t);  \
+    template<class>                             friend class internal::TypeFunctions;       \
     template<class, class, class, bool, bool>   friend class internal::RegisterType;        \
     template<class>                             friend int internal::registerMidSerializer()
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 //############################################################################
-//      基底Serializer
+/*!
+    @brief      基底Serializer
+    @details    各シリアライザがprotected継承する<br>
+*/
 //############################################################################
 
-//! @todo T.B.D.
 class THEOLIZER_INTERNAL_DLL BaseSerializer : public ErrorBase
 {
 // ***************************************************************************
@@ -569,7 +572,7 @@ public:
     virtual void setCharIsMultiByte(bool) { }
 
 protected:
-    // clearTrackingの必要性返却
+    //! clearTracking()が必要な時true返却（@ref MemberFunctions 参照）
     bool getRequireClearTracking() { return mRequireClearTracking; }
 
     // RegisterTypeコンストラクト時の余分なstruct定義回避
@@ -601,12 +604,9 @@ protected:
 //      シリアライズ／デシリアライズ補助API
 // ***************************************************************************
 
-protected:
-    // 最新版処理
+public:
+    //! 処理中のグローバル・バージョン番号返却（@ref MemberFunctions 参照）
     unsigned getGlobalVersionNo() const {return mGlobalVersionNo;}
-
-    // ClassType終了状態返却(デフォルト)
-    virtual bool isTerminated() const {return false;}
 
 // ***************************************************************************
 //      エラー処理用
@@ -725,7 +725,8 @@ private:
 private:
     void clearTrackingImpl();
 
-protected:
+public:
+    //! オブジェクト追跡の区切り（@ref MemberFunctions 参照）
     void clearTracking();
 
 //----------------------------------------------------------------------------
@@ -739,7 +740,7 @@ private:
     SharedPtrTable& registerSharedPtrTable(std::type_index iTypeIndex);
 
 public:
-    //! @todo T.B.D.
+    //! 共有ポインタ(例えばstd::shared_ptr)回復用のテーブル
     template<typename tTypeList>
     tTypeList& getSharedPtrTable(std::type_index iTypeIndex)
     {
@@ -789,7 +790,7 @@ protected:
     bool                    mCancelPrettyPrint;
 
 public:
-    //! @todo T.B.D.
+    //! 現在のCheckMode返却（@ref MemberFunctions 参照）
     CheckMode getCheckMode() { return mCheckMode; }
 
 //----------------------------------------------------------------------------

@@ -253,8 +253,23 @@ struct TheolizerNonIntrusive<ManualTutorial>::TheolizerUserDefine<tBaseSerialize
 @subsection CopyManualClass 3-4.クラス定義雛形のコピー
 上記雛形の <b>#%if false // Sample of save/load function.</b> の次の行から、 <b>#%endif // Sample of save/load function.</b> の前の行までを、THEOLIZER_NON_INTRUSIVE_ORDER((ManualTutorial), 1);の直後へコピーします。
 
-@subsection WriteManualClass 3-5.保存／回復処理関数の記述例 
-下記はTHEOLIZER_NON_INTRUSIVE_ORDER()マクロによるシリアライズ指定から、コピーした雛形に保存／回復処理を記述したサンプルです。
+@subsection WriteManualClass 3-5.保存／回復処理関数の記述 
+雛形をコピーしたsave/load関数にトップ・レベルと同じく下記マクロ群を用いて、必要な情報を保存／回復します。<br>
+
+- THEOLIZER_PROCESS
+- THEOLIZER_PROCESS_POINTEE
+- THEOLIZER_PROCESS_OWNER
+
+また、非侵入型手動専用のシリアライズ・マクロがあります。
+
+- THEOLIZER_PROCESS_BASE
+
+<b>THEOLIZER_PROCESS_BASE(dSerializer, dBase, dInstance)</b>
+  - dSerializer : シリアライザのインスタンスを指定します。<br>
+  - dBase       : 保存／回復する基底クラスをクラス名で指定します。<br>
+  - dInstance   : 保存／回復するインスタンスを指定します。<br>
+
+保存／回復処理のサンプルです。
 
 @dontinclude basic/test_class_variation.h
 @skip ManualTutorial

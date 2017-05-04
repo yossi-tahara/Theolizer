@@ -69,13 +69,13 @@ ErrorInfoのgetString()で取得できる文字列は次のようなフォーマ
 @code
 ErrorType(ErrorKind),エラーを検出したインスタンス{ソース・ファイル名(行番号)} : エラー・メッセージ
 @endcode
-"{ソース・ファイル名(行番号)}"は表示可能な時のみ表示されます。
+エラーを検出したインスタンス直後の"{ソース・ファイル名(行番号)}"は可能な時のみ表示されます。
 
 <b>シリアライザのコンストラクタでエラー検出した時（型チェック・エラー）の例</b><br>
-この時表示されるソース・ファイルと行番号はTheolizerのソースです。（ユーザ・ソースの情報をTheolzierが保持していないため）
 @code
 Error(UnknownData),IntrusiveBase2.mULongLong : Unmatch type.{core_serializer.cpp(1570)}
 @endcode
+なお、エラー・メッセージ含まれるソース・ファイルと行番号は、当該エラーを検出したTheolizerのソースと行番号です。
 
 <b>THEOLIZER_PROCESS()等のマクロ内でエラー検出した時の例</b><br>
 @code
@@ -109,7 +109,7 @@ theolizer::ErrorReporterはthread_localなシングルトンですのでスレ�
 |--------|----|
 |static theolizer::ErrorInfo const& getErrorInfo() noexcept;|エラー情報を返却します。|
 |static bool isError() noexcept;|エラーが発生している時trueを返却します。|
-|static void resetError() noexcept;|エラー状態を解除します。|
+|static void resetError() noexcept;|エラー状態を解除します。（@ref ErrorReport3 参照）|
 
 <br>
 //############################################################################

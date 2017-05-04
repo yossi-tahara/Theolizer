@@ -211,7 +211,7 @@ enum型をバージョン・アップする時の手順は次の通りです。
 @ref HowToMakeGlobalVersionNoTable21 参照。<br>
 <br>
 5. 対象enum型のローカル・バージョン番号をインクリメントします。<br>
-@ref HalfAutoEnumSymName 参照。<br>
+@ref HalfAutoEnum 参照。<br>
 この時、バージョン・アップ前のバージョンで付けていたTHEOLIZER_ANNOTATE()を一旦全て削除します。<br>
 前バージョンで付けていたものは全て前バージョンへ指定ですので、次のバージョンでは指定内容が完全に異なります。<br>
 <br>

@@ -93,7 +93,7 @@
 
 /*!
     @defgroup TheolizerDriver Sources of TheolizerDriver
-    @defgroup TheolizerLib Sources of TheolizerLib/Test
+    @defgroup TheolizerLib Sources of TheolizerLib/TheolizerTest
     @defgroup Documents Sources of documents
 */
 
