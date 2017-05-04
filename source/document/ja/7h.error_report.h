@@ -156,6 +156,62 @@ iNoThrowExceptionバラメータをtrueにして、シリアライザをコン�
 @section ErrorReport5 5.エラー・ログ
 //############################################################################
 
+TheolizerはTheolizerで検出したエラーをログ・ファイルへ記録する機能をサポートしています。<br>
+
+@subsection THEOLIZER_ERRORLOG_FILE 5-1.THEOLIZER_ERRORLOG_FILE()マクロの指定方法
+
+THEOLIZER_ERRORLOG_FILE()マクロをユーザ・プログラム内で１箇所だけ書くことで有効になります。<br>
+
+グローバル名前空間で以下を記述します。
+@code
+THEOLIZER_ERRORLOG_FILE("LogFilePath%1%.log");
+@endcode
+
+- "LogFilePath"の部分でエラー・ログのパスを指定します。<br>
+相対パスで指定した場合、プログラム起動時のカレント・フォルダからの相対になります。<br>
+<br>
+- "%1%"はTheolizerがログ・ファイルの番号として使います。<br>
+ログ・ファイル番号は0開始です。<br>
+ログ・ファイルはデフォルトでは1MBytesを超えると次のログ・ファイルへ切り替わります。その時、ログ・ファイル番号をインクリメントします。<br>
+ただし、デフォルトでは最大2個までに制限していますので、ログ・ファイル番号1の次は0のログ・ファイルへ「上書き」します。<br>
+これにより、ほっておいてもログ・ファイルが無限に増えることを防止しています。<br>
+<br>
+- ".log"は自由に指定して下さい。<br>
+<br>
+
+@subsection LogFileFormat 5-2.ログ・ファイルのフォーマット
+
+ログ・ファイルは後処理するのに便利のため簡易的なcsvフォーマットにしています。以下の通りです。<br>
+
+- 先頭行<br>
+シーケンシャル番号です。これはログ・ファイルを生成する度に1つ増えます。<br>
+unsigned型で循環します。<br>
+<br>
+- ２行目以降<br>
+@code
+,年-月-日,時間:分:秒.mSec,同期待ち時間(uSec),スレッドID,ErrorType(ErrorKind),エラー検出インスタンス : エラー・メッセージ
+@endcode
+
+<b>ログ・ファイル例：</b><br>
+@code
+0
+,2017-05-04,13:32:38.671,000001,___________12712,Error(UnknownData),IntrusiveBase2.mULongLong : Unmatch type.{core_serializer.cpp(1570)}
+,2017-05-04,13:32:38.673,000000,___________12712,Error(UnknownData),IntrusiveBase2.mULongLong : Unmatch type.{core_serializer.cpp(1570)}
+,2017-05-04,13:32:38.673,000000,___________12712,Error(WrongUsing),mIntrusiveBase2{test_serializer_base02.cpp(91)} : Unmatch type.
+,2017-05-04,13:32:38.673,000000,___________12712,Error(UnknownData),IntrusiveBase2.mULongLong : Unmatch type.{core_serializer.cpp(1654)}
+,2017-05-04,13:32:38.674,000000,___________12712,Error(UnknownData),IntrusiveBase2.mULongLong : Unmatch type.{core_serializer.cpp(1654)}
+,2017-05-04,13:32:38.674,000000,___________12712,Error(WrongUsing),mIntrusiveBase2{test_serializer_base02.cpp(123)} : Unmatch type.
+@endcode
+
+@subsection WaitSync 5-3.同期待ち時間について
+エラー・ログ出力は、マルチ・スレッドに対応しています。<br>
+他のスレッドがエラー・ログ出力処理中に出力しようとした場合、後から出力する方は待たされます。<br>
+その待ち時間を uSec で記録します。<br>
+<br>
+
+@subsection ThreadId 5-4.スレッドIDについて
+当該ログを出力したスレッドIDを`std::this_thread::get_id()`で獲得して記録します。<br>
+
 <br>
 //############################################################################
 @section ErrorReport6 6.サンプル・ソース

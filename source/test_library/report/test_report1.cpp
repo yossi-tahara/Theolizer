@@ -224,21 +224,21 @@ int main(int argc, char** argv)
         char const* aNoFile = "Folder/";
         expected=theolizer::print
             (
-                u8"WorkingLog : iPath(%1%)にはファイル名も入れて下さい。", aNoFile
+                u8"WorkingLog : Please specify file name in \"%1%\".", aNoFile
             );
         THEOLIZER_EQUAL(execute(command+aNoFile), expected);
 
         char const* aNoField = "Folder/Test.log";
         expected=theolizer::print
             (
-                u8"WorkingLog : iPath(%1%)に%%1%%を１つ含めて下さい。", aNoField
+                u8"WorkingLog : Please include %%1%% in \"%1%\".", aNoField
             );
         THEOLIZER_EQUAL(execute(command+aNoField), expected);
 
         char const* aIllField = "Folder%1%/Test%1%.log";
         expected=theolizer::print
             (
-                u8"WorkingLog : iPath(%1%)のフォルダ・パスに%%1%%を含めないで下さい。", aIllField
+                u8"WorkingLog : Do not include %%1%% in path-string in \"%1%\".", aIllField
             );
         THEOLIZER_EQUAL(execute(command+aIllField), expected);
     }
@@ -266,7 +266,7 @@ int main(int argc, char** argv)
         // 指定パスにフォルダを作れないことを確認する
         expected=theolizer::print
             (
-                u8"WorkingLog : %1%がフォルダではありません。", aFolder
+                u8"WorkingLog : \"%1%\" is not folder.", aFolder
             );
         THEOLIZER_EQUAL(execute(command+aPath), expected);
 
@@ -281,7 +281,7 @@ int main(int argc, char** argv)
             // 不正なファイルを検知することを確認する
             expected=theolizer::print
                 (
-                    u8"WorkingLog : %1%がファイルではありません。取り除いて下さい。", aIllFile
+                    u8"WorkingLog : \"%1%\" is not file. Please delete it.", aIllFile
                 );
             THEOLIZER_EQUAL(execute(command+aPath), expected);
         }

@@ -630,7 +630,7 @@ struct WorkingLog::Impl
             THEOLIZER_INTERNAL_ASSERT
             (
                 ((mOfstream.rdstate() & std::ifstream::failbit) == 0),
-                u8"WorkingLog : ログ・ファイル<%1%>を開けませんでした。", aFileName
+                u8"WorkingLog : Can not open \"%1%\".", aFileName
             );
             mOfstream.seekp(0, std::ios_base::end);
             if (static_cast<long>(mOfstream.tellp()) == 0) {
@@ -658,7 +658,7 @@ struct WorkingLog::Impl
         THEOLIZER_INTERNAL_ASSERT
         (
             (aFileName.native() != u8string(".")),
-            u8"WorkingLog : iPath(%1%)にはファイル名も入れて下さい。", iPath
+            u8"WorkingLog : Please specify file name in \"%1%\".", iPath
         );
 
         // %1%が含まれることをチェック
@@ -666,7 +666,7 @@ struct WorkingLog::Impl
         THEOLIZER_INTERNAL_ASSERT
         (
             (found != std::string::npos),
-            u8"WorkingLog : iPath(%1%)に%%1%%を１つ含めて下さい。", iPath
+            u8"WorkingLog : Please include %%1%% in \"%1%\".", iPath
         );
 
         // フォルダ・パス取出し
@@ -681,7 +681,7 @@ struct WorkingLog::Impl
         THEOLIZER_INTERNAL_ASSERT
         (
             (found == std::string::npos),
-            u8"WorkingLog : iPath(%1%)のフォルダ・パスに%%1%%を含めないで下さい。", iPath
+            u8"WorkingLog : Do not include %%1%% in path-string in \"%1%\".", iPath
         );
 
         // フォルダが存在しない時のために、フォルダを生成しておく
@@ -692,7 +692,7 @@ struct WorkingLog::Impl
             THEOLIZER_INTERNAL_ASSERT
             (
                 !error,
-                u8"WorkingLog : %1%がフォルダではありません。", u8string(aFolder.native())
+                u8"WorkingLog : \"%1%\" is not folder.", u8string(aFolder.native())
             );
         }
 
@@ -710,14 +710,14 @@ struct WorkingLog::Impl
             THEOLIZER_INTERNAL_ASSERT
             (
                 (boostF::is_regular_file(temp)),
-                u8"WorkingLog : %1%がファイルではありません。取り除いて下さい。", aFileName2
+                u8"WorkingLog : \"%1%\" is not file. Please delete it.", aFileName2
             );
             // オープンして先頭行チェック
             std::ifstream ifs(aFileName2.get_fstring());
             unsigned    aNowNumber;
             ifs >> aNowNumber;
-            if (aIsFirst
-             || ((aNowNumber-mNowNumber) == 1)) {
+            if (aIsFirst || ((aNowNumber-mNowNumber) == 1))
+            {
                 aIsFirst=false;
                 mNowNumber=aNowNumber;
             }
