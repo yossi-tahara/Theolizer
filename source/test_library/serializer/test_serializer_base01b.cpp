@@ -332,31 +332,62 @@ void TestEof(const theolizer::CheckMode iCheckMode)
     std::stringstream aStream;
 
     {
-        theolizer::JsonOSerializer<theolizerD::Document>
-            js(aStream, iCheckMode, false);
+        theolizer::JsonOSerializer<> js(aStream, iCheckMode, false);
 
-        int                  aInt=101;
+        int                   aInt=101;
         THEOLIZER_PROCESS(js, aInt);
 
-        IntrusiveBase2  mIntrusiveBase2;
-        mIntrusiveBase2.mLong     =201;
-        mIntrusiveBase2.mLongLong =202;
-        mIntrusiveBase2.mULong    =203;
-        mIntrusiveBase2.mULongLong=204;
-        THEOLIZER_PROCESS(js, mIntrusiveBase2);
+        IntrusiveBase2  aIntrusiveBase2;
+        aIntrusiveBase2.mLong     =201;
+        aIntrusiveBase2.mLongLong =202;
+        aIntrusiveBase2.mULong    =203;
+        aIntrusiveBase2.mULongLong=204;
+        THEOLIZER_PROCESS(js, aIntrusiveBase2);
     }
+
+    std::cout << aStream.str() << std::endl;
 
     for (std::size_t i=1; i < aStream.str().size()-1; i+=3)
     {
+        // エラー発生
         std::stringstream ss(aStream.str().substr(0, i));
+        bool aDoConstructing=true;
+        std::size_t aPos=0;
 
-        THEOLIZER_CHECK_EXCEPTION(
-            theolizer::JsonISerializer<>    js(ss);
-            int                  aInt;
+        theolizer::JsonISerializer<>    js(ss, true);
+        if (!js.isError())
+        {
+            aDoConstructing=false;
+            aPos=ss.tellg();            // リカバリ時の同期位置保存
+
+            int                   aInt=0;
             THEOLIZER_PROCESS(js, aInt);
 
-            IntrusiveBase2  mIntrusiveBase2;
-            THEOLIZER_PROCESS(js, mIntrusiveBase2); ,
-            theolizer::ErrorInfo);
+            IntrusiveBase2  aIntrusiveBase2{};
+            THEOLIZER_PROCESS(js, aIntrusiveBase2);
+        }
+
+        // エラーが発生していない場合、FAIL
+        THEOLIZER_CHECK(js.isError(), "No exception");
+
+        // リカバリ
+        if (aDoConstructing)    // コンストラクト中のリカバリは不可能
+    continue;
+
+        ss.clear();
+        ss.str(aStream.str());
+        ss.seekg(aPos);
+        js.resetError();
+
+        int                   aInt=0;
+        THEOLIZER_PROCESS(js, aInt);
+        THEOLIZER_EQUAL(aInt, 101);
+
+        IntrusiveBase2  aIntrusiveBase2{};
+        THEOLIZER_PROCESS(js, aIntrusiveBase2);
+        THEOLIZER_EQUAL(aIntrusiveBase2.mLong,      201);
+        THEOLIZER_EQUAL(aIntrusiveBase2.mLongLong,  202);
+        THEOLIZER_EQUAL(aIntrusiveBase2.mULong,     203);
+        THEOLIZER_EQUAL(aIntrusiveBase2.mULongLong, 204);
     }
 }

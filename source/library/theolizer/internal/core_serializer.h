@@ -818,7 +818,7 @@ protected:
         bool                mCancelPrettyPrint;
 
         AutoRestoreSaveProcess(BaseSerializer& iSerializer, size_t iTypeIndex);
-        ~AutoRestoreSaveProcess() noexcept;
+        ~AutoRestoreSaveProcess() noexcept(false);
     };
 
 //----------------------------------------------------------------------------
@@ -836,7 +836,7 @@ protected:
         AutoRestoreSave(BaseSerializer& iSerializer,
                     ElementsMapping iElementsMapping=emOrder,
                     bool iCancelPrettyPrint=false);
-        ~AutoRestoreSave() noexcept;
+        ~AutoRestoreSave() noexcept(false);
     };
 
 //----------------------------------------------------------------------------
@@ -979,7 +979,7 @@ protected:
         BaseSerializer&     mSerializer;
 
         AutoRestoreLoadProcess(BaseSerializer& iSerializer, size_t iTypeIndex);
-        ~AutoRestoreLoadProcess() noexcept;
+        ~AutoRestoreLoadProcess() noexcept(false);
     };
 
 //----------------------------------------------------------------------------
@@ -994,7 +994,7 @@ protected:
 
         AutoRestoreLoad(BaseSerializer& iSerializer,
                         ElementsMapping iElementsMapping=emOrder);
-        ~AutoRestoreLoad() noexcept;
+        ~AutoRestoreLoad() noexcept(false);
     };
 
 //----------------------------------------------------------------------------

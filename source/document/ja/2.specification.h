@@ -44,19 +44,26 @@
 
 ---
 
+<b>まず、「シリアライズ」という用語について</b><br>
+シリアライズ(Serialize)の逆はデシリアライズ(Deserialize)なのですが、この資料ではデシリアライズも含めて「シリアライズ」と呼んでいます。<br>
+シリアライザも同様にデシリアライザを含めて呼んでいます。<br>
+両方を含めた用語が欲しいため、このようにしました。ご了承下さい。<br>
+区別したい時は、シリアライズを保存、デシリアライズを回復と呼んでいます。<br>
+
 // ***************************************************************************
 @subsection Basic11 1-1.シリアライズ可能な型
 // ***************************************************************************
 __① プリミティブ型__<br>
 基本的な型をプリミティブ型と呼んでいます。下記がプリミティブ型です。
-- C++のint型等の組込み型全て
+- C++のint型等の組込み型全て<br>
+bool, char, signed char, unsigned char, wchar_t, char16_t, char32_t, short, unsigned short, int, unsigned int, long, unsigned long, long long, unsigned long long, float, double, long double
 - std::string, std::wstring, std::u16string, std::u32string
 
 __② enum型__<br>
 通常のenum型、および、scoped enum型の両方に対応しています。
 
 __③ class、struct__<br>
-class、および、structは同じ扱いです。
+class、および、structは同じ扱いで、両方に対応しています。
 
 __④ C++静的配列__<br>
 ①～④のC++静的配列に対応しています。（多次元配列も対応しています。）

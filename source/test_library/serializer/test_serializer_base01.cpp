@@ -439,7 +439,7 @@ int main(int argc, char** argv)
 //      フォーマット異常(データ途切れ)テスト
 // ***************************************************************************
 
-#if 0
+#if 1
         TestEof(theolizer::CheckMode::NoTypeCheck);
         TestEof(theolizer::CheckMode::TypeCheck);
         TestEof(theolizer::CheckMode::TypeCheckByIndex);

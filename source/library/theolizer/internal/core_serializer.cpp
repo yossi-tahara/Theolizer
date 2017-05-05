@@ -840,7 +840,7 @@ BaseSerializer::AutoRestoreSaveProcess::AutoRestoreSaveProcess
     mSerializer.saveProcessStart(iTypeIndex);
 }
 
-BaseSerializer::AutoRestoreSaveProcess::~AutoRestoreSaveProcess() noexcept
+BaseSerializer::AutoRestoreSaveProcess::~AutoRestoreSaveProcess() noexcept(false)
 {
     theolizer::internal::Releasing aReleasing{};
     try
@@ -878,7 +878,7 @@ BaseSerializer::AutoRestoreSave::AutoRestoreSave(
     mSerializer.saveClassStart();
 }
 
-BaseSerializer::AutoRestoreSave::~AutoRestoreSave() noexcept
+BaseSerializer::AutoRestoreSave::~AutoRestoreSave() noexcept(false)
 {
     theolizer::internal::Releasing aReleasing{};
     try
@@ -911,7 +911,7 @@ BaseSerializer::AutoRestoreLoadProcess::AutoRestoreLoadProcess
     mSerializer.loadProcessStart(iTypeIndex);
 }
 
-BaseSerializer::AutoRestoreLoadProcess::~AutoRestoreLoadProcess() noexcept
+BaseSerializer::AutoRestoreLoadProcess::~AutoRestoreLoadProcess() noexcept(false)
 {
     theolizer::internal::Releasing aReleasing{};
     try
@@ -942,7 +942,7 @@ BaseSerializer::AutoRestoreLoad::AutoRestoreLoad(
     mSerializer.loadClassStart();
 }
 
-BaseSerializer::AutoRestoreLoad::~AutoRestoreLoad() noexcept
+BaseSerializer::AutoRestoreLoad::~AutoRestoreLoad() noexcept(false)
 {
     theolizer::internal::Releasing aReleasing{};
     try

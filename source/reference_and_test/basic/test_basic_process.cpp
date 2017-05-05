@@ -313,6 +313,8 @@ void saveBasicProcess(tSerializer& iSerializer)
 
 //      ---<<< 整数型 >>>---
 
+    bool            aBool  =true;
+    THEOLIZER_PROCESS(iSerializer, aBool);
     short           aShort =-2000;
     THEOLIZER_PROCESS(iSerializer, aShort);
     unsigned short  aUShort= 2000;
@@ -429,6 +431,11 @@ void saveBasicProcess(tSerializer& iSerializer)
     );
 
     // 整数型
+    saveTestArray<bool, 4>
+    (
+        iSerializer,
+        [](std::size_t){return static_cast<bool>(true);}
+    );
     saveTestArray<short, 5>
     (
         iSerializer,
@@ -578,6 +585,9 @@ void loadBasicProcess(tSerializer& iSerializer)
 
 //      ---<<< 整数型 >>>---
 
+    bool            aBool=false;
+    THEOLIZER_PROCESS(iSerializer, aBool);
+    THEOLIZER_EQUAL(aBool, true);
     short           aShort=0;
     THEOLIZER_PROCESS(iSerializer, aShort);
     THEOLIZER_EQUAL(aShort, -2000);
@@ -740,6 +750,11 @@ void loadBasicProcess(tSerializer& iSerializer)
     );
 
     // 整数型
+    loadTestArray<bool, 4>
+    (
+        iSerializer,
+        [](std::size_t){return static_cast<bool>(true);}
+    );
     loadTestArray<short, 5>
     (
         iSerializer,

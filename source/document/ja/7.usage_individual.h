@@ -53,7 +53,7 @@
 */
 
 /*!
-    @page BasicProcess THEOLIZER_PROCESS()の使用例
+    @page BasicProcess THEOLIZER_PROCESS()の使用方法
 
 ここでは、THEOLIZER_PROCESS()による保存／回復の網羅的な使用例（自動テスト）について説明します。<br>
 クラスは単純なものを使います。クラスの詳細な使い方は@ref ClassVariation で説明します。<br>

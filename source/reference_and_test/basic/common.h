@@ -164,7 +164,7 @@ void loadTestArray(tSerializer& iSerializer, tFunc iFunc)
               << THEOLIZER_INTERNAL_TYPE_NAME(tType) << ", " << N << ">\n";
 
     // 1次元配列
-    tType aArray1[N];
+    tType aArray1[N]={};
     THEOLIZER_PROCESS(iSerializer, aArray1);
     for (std::size_t i=0; i < N; ++i)
     {
@@ -174,7 +174,7 @@ void loadTestArray(tSerializer& iSerializer, tFunc iFunc)
     }
 
     // 2次元配列
-    tType aArray2[2][N];
+    tType aArray2[2][N]={};
     THEOLIZER_PROCESS(iSerializer, aArray2);
     for (std::size_t j=0; j < 2; ++j)
     {
@@ -187,7 +187,7 @@ void loadTestArray(tSerializer& iSerializer, tFunc iFunc)
     }
 
     // 3次元配列
-    tType aArray3[3][2][N];
+    tType aArray3[3][2][N]={};
     THEOLIZER_PROCESS(iSerializer, aArray3);
     for (std::size_t k=0; k < 3; ++k)
     {

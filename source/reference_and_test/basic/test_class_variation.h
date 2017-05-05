@@ -215,6 +215,7 @@ public:
     DEFINE(char16_t,            mChar16,        0U,      1101U)                         \
     DEFINE(char32_t,            mChar32,        0U,      1102U)                         \
     /* 整数型 */                                                                        \
+    DEFINE(bool,                mBool,          false,   true)                          \
     DEFINE(short,               mShort,         0,      -2100)                          \
     DEFINE(unsigned short,      mUShort,        0U,      2100U)                         \
     DEFINE(int,                 mInt,           0,      -3100)                          \
@@ -247,6 +248,7 @@ public:
     ARRAY(char16_t,             mChar16,    9,  0U,      1101U)                         \
     ARRAY(char32_t,             mChar32,    10, 0U,      1102U)                         \
     /* 整数型 */                                                                        \
+    ARRAY(bool,                 mBool,      4,  false,   true)                          \
     ARRAY(short,                mShort,     5,  0,      -2200)                          \
     ARRAY(unsigned short,       mUShort,    6,  0U,      2200U)                         \
     ARRAY(int,                  mInt,       7,  0,      -3200)                          \
