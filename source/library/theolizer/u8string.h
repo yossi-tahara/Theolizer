@@ -1,7 +1,6 @@
 ﻿//############################################################################
 /*!
     @brief      Unicode文字列用補助ツール群
-    @defgroup   Unicode Unicode Helper
     @ingroup    TheolizerLib
     @file       u8string.h
     @author     Yoshinori Tahara
@@ -264,6 +263,7 @@ struct Converter<MultiByte, tCharIn>
 <br>
             備忘録：<br>
                 各中継マクロは、mStringデータ・メンバのみの前提で作っている。<br>
+    @ingroup    Unicode
 */
 //############################################################################
 
@@ -273,7 +273,6 @@ struct Converter<MultiByte, tCharIn>
 
 class THEOLIZER_INTERNAL_DLL u8string
 {
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
 //----------------------------------------------------------------------------
 //      データ実体
 //----------------------------------------------------------------------------
@@ -288,35 +287,48 @@ public:
 
 //      ---<<< mStringのコンストラクタへ中継 >>>---
 
+    /*! コンストラクタ */
     u8string()                                  : mString() { }
+    /*! コンストラクタ */
     u8string(std::string const& str)            : mString(str) { }
+    /*! コンストラクタ */
     u8string(std::string const& str, std::size_t pos, std::size_t len = std::string::npos)
                                                 : mString(str, pos, len) { }
+    /*! コンストラクタ */
     u8string(char const* s)                     : mString(s) { }
+    /*! コンストラクタ */
     u8string(char const* s, std::size_t n)      : mString(s, n) { }
+    /*! コンストラクタ */
     u8string(std::size_t n, char c)             : mString(n, c) { }
+    /*! コンストラクタ */
     template <class InputIterator>
     u8string(InputIterator first, InputIterator last)
                                                 : mString(first, last) { }
+    /*! コンストラクタ */
     u8string(std::initializer_list<char> il)    : mString(il) { }
+    /*! コンストラクタ */
     u8string(std::string&& str) noexcept        : mString(str) { }
 
 //      ---<<< コンバーター・コンストラクタ >>>---
 
+    /*! 内部マクロ */
     #define THEOLIZER_INTERNAL_CONSTRUCTOR(dFromChar)                       \
-    u8string(const dFromChar* iIn) :                                        \
-                mString(internal::Converter<char, dFromChar>::conv(iIn)) { }\
-    u8string(const std::basic_string<dFromChar>& iIn) :                     \
-                mString(internal::Converter<char, dFromChar>::conv(iIn)) { }
+        /*! コンストラクタ */                                               \
+        u8string(const dFromChar* iIn) :                                    \
+            mString(internal::Converter<char, dFromChar>::conv(iIn)) { }    \
+        /*! コンストラクタ */                                               \
+        u8string(const std::basic_string<dFromChar>& iIn) :                 \
+            mString(internal::Converter<char, dFromChar>::conv(iIn)) { }
 
     THEOLIZER_INTERNAL_CONSTRUCTOR(wchar_t);
     THEOLIZER_INTERNAL_CONSTRUCTOR(char16_t);
     THEOLIZER_INTERNAL_CONSTRUCTOR(char32_t);
     #undef THEOLIZER_INTERNAL_CONSTRUCTOR
 
-    // Multi Byteからコンバート生成
+    /*! Multi Byte文字列からコンストラクト */
     u8string(char const* iIn, MultiByte) :
                 mString(internal::Converter<char, MultiByte>::conv(iIn)) { }
+    /*! Multi Byte文字列からコンストラクト */
     u8string(std::string const& iIn, MultiByte) :
                 mString(internal::Converter<char, MultiByte>::conv(iIn)) { }
 
@@ -328,42 +340,54 @@ public:
 
 //      ---<<< メンバ関数 >>>---
 
+    /*! 内部マクロ */
     #define THEOLIZER_INTERNAL_FUNCTION(dFunc)                              \
         u8string& dFunc(const u8string& iIn) {                              \
             mString.dFunc(iIn.mString);                                     \
             return *this;                                                   \
         }
 
+    /*! 代入演算子 */
     THEOLIZER_INTERNAL_FUNCTION(operator=);
+    /*! 代入演算子 */
     THEOLIZER_INTERNAL_FUNCTION(operator+=);
+    /*! 代入演算子 */
     THEOLIZER_INTERNAL_FUNCTION(append);
+    /*! 代入演算子 */
     THEOLIZER_INTERNAL_FUNCTION(assign);
     #undef THEOLIZER_INTERNAL_FUNCTION
 
 //      ---<<< フレンド関数 >>>---
 
+    /*! 連結演算子 */
     friend u8string operator+(u8string const& lhs, u8string const& rhs)
     {
         return std::operator+(lhs.mString, rhs.mString);
     }
+    /*! 連結演算子 */
     friend u8string operator+(u8string const& lhs, char const* rhs)
     {
         return std::operator+(lhs.mString, rhs);
     }
+    /*! 連結演算子 */
     friend u8string operator+(char const* lhs, u8string const& rhs)
     {
         return std::operator+(lhs, rhs.mString);
     }
 
+    /*! 内部マクロ */
     #define THEOLIZER_INTERNAL_FRIEND_RELATIONAL_OPERATOR(dFunc)            \
+        /*! 比較演算子 */                                                   \
         friend bool dFunc(const u8string& lhs, const u8string& rhs)         \
         {                                                                   \
             return std::dFunc(lhs.mString, rhs.mString);                    \
         }                                                                   \
+        /*! 比較演算子 */                                                   \
         friend bool dFunc(const u8string& lhs, char const* rhs)             \
         {                                                                   \
             return std::dFunc(lhs.mString, rhs);                            \
         }                                                                   \
+        /*! 比較演算子 */                                                   \
         friend bool dFunc(char const* lhs, const u8string& rhs)             \
         {                                                                   \
             return std::dFunc(lhs, rhs.mString);                            \
@@ -377,11 +401,13 @@ public:
     THEOLIZER_INTERNAL_FRIEND_RELATIONAL_OPERATOR(operator>=);
     #undef THEOLIZER_INTERNAL_FRIEND_RELATIONAL_OPERATOR
 
+    /*! 交換 */
     friend void swap(u8string& lhs, u8string& rhs)
     {
         std::swap(lhs.mString, rhs.mString);
     }
 
+    /*! 入力演算子 */
     friend std::istream& operator>>(std::istream& iIStream, u8string& rhs)
     {
         if (theolizer::isInputByUtf8(&iIStream))
@@ -397,6 +423,7 @@ public:
         return iIStream;
     }
 
+    /*! 出力演算子 */
     friend std::ostream& operator<<(std::ostream& iOStream, u8string const& rhs)
     {
         if (theolizer::isOutputByUtf8(&iOStream))
@@ -415,24 +442,32 @@ public:
 //      明示的string取り出し
 //----------------------------------------------------------------------------
 
+    /*! std::string変換 */
     std::string&       str()       {return mString;}
+    /*! std::string変換 */
     std::string const& str() const {return mString;}
 
+    /*! C言語文字列変換 */
     char const* c_str() const {return mString.c_str();}
 
 //----------------------------------------------------------------------------
 //      明示的basic_string<他char型>取出し
 //----------------------------------------------------------------------------
 
+    /*! 内部マクロ */
     #define THEOLIZER_INTERNAL_GET_STRING(dToChar, dName)                   \
     std::dName get_##dName() const                                          \
     {                                                                       \
         return internal::Converter<dToChar, char>::conv(mString);           \
     }
 
+    /*! std::string変換 */
     THEOLIZER_INTERNAL_GET_STRING(char,       string);
+    /*! std::wstring変換 */
     THEOLIZER_INTERNAL_GET_STRING(wchar_t,    wstring);
+    /*! std::u16string変換 */
     THEOLIZER_INTERNAL_GET_STRING(char16_t,   u16string);
+    /*! std::u32string変換 */
     THEOLIZER_INTERNAL_GET_STRING(char32_t,   u32string);
     #undef THEOLIZER_INTERNAL_GET_STRING
 
@@ -440,19 +475,24 @@ public:
 //      basic_string<>へのキャスト演算子
 //----------------------------------------------------------------------------
 
+    /*! キャスト演算子 */
     operator std::string()    const {return get_string();}
+    /*! キャスト演算子 */
     operator std::wstring()   const {return get_wstring();}
+    /*! キャスト演算子 */
     operator std::u16string() const {return get_u16string();}
+    /*! キャスト演算子 */
     operator std::u32string() const {return get_u32string();}
 
 //----------------------------------------------------------------------------
-//      各char*型へのキャスト
+//      各char*型への変換
 //
 //          注意事項：
 //              b_str()から取り出した各ポインタは、その文の終わり(;)まで有効。
 //              ;を超えて使うことは想定していない。
 //----------------------------------------------------------------------------
 
+    /*! 各char*型への変換補助クラス */
     class b_string
     {
     private:
@@ -462,14 +502,20 @@ public:
         std::u16string  mU16string;
         std::u32string  mU32string;
     public:
+        /*! コンストラクタ */
         b_string(u8string const& iString) : mString(iString) { }
 
+        /*! キャスト演算子 */
         operator char const*()     {mMBstring =mString.getMultiByte(); return mMBstring.c_str();}
+        /*! キャスト演算子 */
         operator const wchar_t*()  {mWstring  =mString.get_wstring();  return mWstring.c_str();}
+        /*! キャスト演算子 */
         operator const char16_t*() {mU16string=mString.get_u16string();return mU16string.c_str();}
+        /*! キャスト演算子 */
         operator const char32_t*() {mU32string=mString.get_u32string();return mU32string.c_str();}
     };
 
+    /*! 各char*型への変換関数 */
     b_string b_str() {return b_string(*this);}
 
 //----------------------------------------------------------------------------
@@ -482,26 +528,30 @@ public:
 
 //      ---<<< Multi Byte文字列 >>>---
 
+    /*! MultiByte文字列を返却 */
     std::string getMultiByte() const
     {
         return internal::Converter<MultiByte, char>::conv(mString);
     }
 
+    /*! MultiByte文字列を設定 */
     u8string& setMultiByte(char const* iIn)
     {
         *this = internal::Converter<char, MultiByte>::conv(iIn);
         return *this;
     }
+
+    /*! MultiByte文字列を設定 */
     u8string& setMultiByte(std::string const& iIn)
     {
         *this = internal::Converter<char, MultiByte>::conv(iIn);
         return *this;
     }
 
-//      ---<<< std::fstream対応 >>>---
-//      MSVC    : stkd::wstring(UTF-16)返却
-//      MinGW   : std::string(Multi Byte)返却
-//      その他  : std::string(UTF-8)返却
+//!     std::fstream対応
+//!     MSVC    : stkd::wstring(UTF-16)返却
+//!     MinGW   : std::string(Multi Byte)返却
+//!     その他  : std::string(UTF-8)返却
 
 #if defined(_WIN32)
     #if defined(_MSC_VER)
@@ -513,9 +563,9 @@ public:
         std::string  get_fstring() const {return get_string();}
 #endif
 
-//      ---<<< boost::filesystem::path対応 >>>---
-//      Windows : std::wstring(UTF-16)返却
-//      その他  : std::string(UTF-8)返却
+//!     boost::filesystem::path対応
+//!     Windows : std::wstring(UTF-16)返却
+//!     その他  : std::string(UTF-8)返却
 
 #if defined(_WIN32)
         std::wstring get_bstring() const {return get_wstring();}
@@ -523,9 +573,7 @@ public:
         std::string  get_bstring() const {return get_string();}
 #endif
 
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
 };
-
 }   // theolizer ------------------- 注意。以降はグローバル名前空間
 
 //############################################################################

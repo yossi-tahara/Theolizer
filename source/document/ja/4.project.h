@@ -45,10 +45,10 @@
 ---
 Theolizerは下記ライブラリを用意しています。
 
-| リンク種別名 | Theolizer | boost | 標準ランタイム |お薦めの選択|
+| リンク種別名 | Theolizer | boost | 標準<br>ランタイム |お薦めの選択|
 |--------------|-----------|-------|----------------|------------|
-|StaticWithBoost|静的リンク|静的リンク(同梱)|動的リンク|あなたのプログラムが[boost](https://ja.wikipedia.org/wiki/Boost)を使っていない時|
-|Static|静的リンク|静的リンク(非同梱)|動的リンク|あなたのプログラムが[boost](https://ja.wikipedia.org/wiki/Boost)を使っている時 <b>(*1)</b> |
+|StaticWithBoost|静的リンク|静的リンク（同梱）|動的リンク|あなたのプログラムが[boost](https://ja.wikipedia.org/wiki/Boost)を使っていない時|
+|Static|静的リンク|静的リンク（非同梱）|動的リンク|あなたのプログラムが[boost](https://ja.wikipedia.org/wiki/Boost)を使っている時 <b>(*1)</b> |
 |Shared|動的リンク|静的リンク|動的リンク|あなたのプログラムが[boost](https://ja.wikipedia.org/wiki/Boost)を使っていて<br>Theolizerライブラリのビルドを避けたい時 <b>(*2)</b> |
 <b>(*1)</b> お使いの[boost](https://ja.wikipedia.org/wiki/Boost)のバージョンがTholizerの[boost](https://ja.wikipedia.org/wiki/Boost)のバージョンと異なる場合、[Theolizerライブラリのビルド](_how_to_build_theolizer.html#HowToBuildLibrary)が必要になります。<br>
 <b>(*2)</b> Theolizerの動的リンク・ライブラリをパスの通ったフォルダへ置いて下さい

@@ -1,5 +1,11 @@
 ﻿//############################################################################
-//      std::deque<>のシリアライズ
+/*!
+    @brief      std::deque<>のシリアライズ
+    @ingroup    SerializationStl
+    @file       deque.h
+    @author     Yoshinori Tahara(Theoride Technology)
+    @date       2017/02/02 Created
+*/
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.

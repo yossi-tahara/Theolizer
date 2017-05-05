@@ -1,5 +1,11 @@
 ﻿//############################################################################
-//      std::list<>のシリアライズ
+/*!
+    @brief      std::list<>のシリアライズ
+    @ingroup    SerializationStl
+    @file       list.h
+    @author     Yoshinori Tahara(Theoride Technology)
+    @date       2016/09/07 Created
+*/
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.

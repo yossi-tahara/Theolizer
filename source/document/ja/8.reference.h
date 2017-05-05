@@ -35,11 +35,9 @@
 //############################################################################
 
 /*!
-    @page ApiReference APIリファレンス
-        @ref u8string \n
-        @ref Unicode \n
-
-# T.B.D.
-あなたへ提供するTheolizerの各種クラスや関数のリファレンスをここへ記載します。
+    @page ApiReference その他のAPI
+        @ref Unicode <br>
+        @ref RbFor <br>
+        @ref Test <br>
 
 */

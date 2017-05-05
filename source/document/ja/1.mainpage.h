@@ -37,76 +37,80 @@
 /*!
     @mainpage  --目次--
 
-    @subpage Abstract \n
+    @subpage Abstract <br>
         @par
-        @ref What \n
-        @ref Platforms \n
-        @ref Features \n
-        @ref Mechanism \n
+        @ref What <br>
+        @ref Platforms <br>
+        @ref Features <br>
+        @ref Mechanism <br>
         @par ""
 
-    @subpage Specification \n
+    @subpage Specification <br>
         @par
-        @ref Basic \n
-        @ref Tracking \n
-        @ref Modifying \n
+        @ref Basic <br>
+        @ref Tracking <br>
+        @ref Modifying <br>
         @par ""
 
-    @subpage Prepare \n
+    @subpage Prepare <br>
         @par
-        @ref Install \n
-        @ref Uninstall \n
+        @ref Install <br>
+        @ref Uninstall <br>
         @par ""
 
-    @subpage HowToMakeProject \n
+    @subpage HowToMakeProject <br>
         @par
-        @ref Selecting \n
-        @ref CMake \n
-        @ref Example \n
-        @ref NonCMake \n
-        @ref FileStructure \n
+        @ref Selecting <br>
+        @ref CMake <br>
+        @ref Example <br>
+        @ref NonCMake <br>
+        @ref FileStructure <br>
         @par ""
 
-    @subpage HowToBuildTheolizer \n
+    @subpage HowToBuildTheolizer <br>
         @par
-        @ref HowToBuildLibrary \n
-        @ref HowToBuildDriver \n
-        @ref VersionNo \n
-        @ref Documents \n
+        @ref HowToBuildLibrary <br>
+        @ref HowToBuildDriver <br>
+        @ref VersionNo <br>
+        @ref Documents <br>
         @par ""
 
-    @subpage UsageTotal \n
+    @subpage UsageTotal <br>
         @par
-        @ref Naming \n
-        @ref BasicUsage \n
-        @ref Serializers \n
-        @ref TestProgram \n
+        @ref Naming <br>
+        @ref BasicUsage <br>
+        @ref Serializers <br>
+        @ref TestProgram <br>
         @par ""
 
-    @subpage UsageIndividual \n
+    @subpage UsageIndividual <br>
         @par
-        @ref BasicProcess \n
-        @ref ClassVariation \n
-        @ref EnumVariation \n
-        @ref ObjectTracking \n
-        @ref Destinations \n
-        @ref SupportSTL \n
-        @ref ChangingClass \n
-        @ref ChangingEnum \n
+        @ref BasicProcess <br>
+        @ref ClassVariation <br>
+        @ref EnumVariation <br>
+        @ref ObjectTracking <br>
+        @ref Destinations <br>
+        @ref SupportSTL <br>
+        @ref ChangingEnum <br>
+        @ref ChangingClass <br>
+        @ref ErrorReport <br>
         @par ""
 
-    @subpage ApiReference \n
+    @subpage ApiReference <br>
         @par
-        T.B.D.\n
-        @ref u8string \n
-        @ref Unicode \n
+        @ref u8string <br>
+        @ref Unicode <br>
+        @ref Test <br>
         @par ""
 */
 
 /*!
-    @defgroup TheolizerDriver Sources of TheolizerDriver
-    @defgroup TheolizerLib Sources of TheolizerLib/TheolizerTest
     @defgroup Documents Sources of documents
+    @defgroup TheolizerLib Theolizer Library(main)
+    @defgroup SerializationStl Serialization STL
+    @defgroup Unicode Unicode Helper
+    @defgroup RbFor Range-based-for Helper
+    @defgroup Test Test Tools
 */
 
 /*!

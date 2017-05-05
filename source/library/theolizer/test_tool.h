@@ -1,11 +1,11 @@
 ﻿//############################################################################
 /*!
-@brief      テスト用ツール群
-@details    各種テスト用マクロとツールを提供する。
-@ingroup    TheolizerLib
-@file       test_tool.h
-@author     Yoshinori Tahara(Theoride Technology)
-@date       2015/08/08 Created
+    @brief      テスト用ツール群
+    @details    各種テスト用マクロとツールを提供する。
+    @ingroup    TheolizerLib
+    @file       test_tool.h
+    @author     Yoshinori Tahara(Theoride Technology)
+    @date       2015/08/08 Created
 */
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
@@ -69,16 +69,20 @@
 //      文字型の表示補助
 // ***************************************************************************
 
+//! @ingroup Test
 //! char型を数値として出力する
 THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, char iChar);
 
+//! @ingroup Test
 //! signed char型を数値として出力する
 THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, signed char iSChar);
 
+//! @ingroup Test
 //! unsgined char型を数値として出力する
 THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, unsigned char iUChar);
 
 // ***************************************************************************
+//!     @ingroup Test
 //!     scoped enum型表示補助
 // ***************************************************************************
 
@@ -91,10 +95,10 @@ std::ostream& operator<<(std::ostream& iOStream, tEnum iEnum)
 }
 
 // ***************************************************************************
-//      type_info型表示補助
+//!     @ingroup Test
+//!     type_info型を型名へ変換して表示する
 // ***************************************************************************
 
-//! type_info型を型名へ変換して表示する
 THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, std::type_info const&);
 
 //############################################################################
@@ -128,6 +132,7 @@ THEOLIZER_INTERNAL_DLL std::ostream& getOStream();
 THEOLIZER_INTERNAL_DLL void throwAbort();
 
 // ***************************************************************************
+//!     @ingroup Test
 //!     開放時、関数呼び出し
 //!         ほぼN4189のscope_exitの名前を変えただけ。
 // ***************************************************************************
@@ -175,6 +180,7 @@ public:
 //      本体
 //----------------------------------------------------------------------------
 
+//! @ingroup Test
 //! ScopeExitファクトリ
 template <typename tReleaser>
 internal::ScopeExit<tReleaser> makeScopeExit(tReleaser &&iReleaser) noexcept
@@ -196,14 +202,17 @@ internal::ScopeExit<tReleaser> makeScopeExit(tReleaser &&iReleaser) noexcept
 
 struct THEOLIZER_INTERNAL_DLL DisplayPass : public internal::AutoRestore<bool>
 {
+    //! @ingroup Test
     //! デフォルト・コンストラクタ
     explicit DisplayPass();
 
+    //! @ingroup Test
     //! PASS結果表示の状態を返却する
     static bool on();
 };
 
 // ***************************************************************************
+//!     @ingroup Test
 //!     @brief      MinGW不具合対処
 //!     @details    関数テンプレートで浮動小数点を取り扱う時、最適化上の不具合がある模様<br>
 //!                 処理に割り込んで最適化させないためのダミー関数
@@ -219,12 +228,15 @@ struct THEOLIZER_INTERNAL_DLL DisplayPass : public internal::AutoRestore<bool>
 //      テスト結果集計用
 // ***************************************************************************
 
+//! @ingroup Test
 //! テスト集計初期化
 THEOLIZER_INTERNAL_DLL void initResult();
 
+//! @ingroup Test
 //! テスト結果のFAIL数をインクリメントする
 THEOLIZER_INTERNAL_DLL void incrementFailCount();
 
+//! @ingroup Test
 //! テスト結果を表示する
 THEOLIZER_INTERNAL_DLL bool printResult(char const* iTitle=nullptr);
 
@@ -234,6 +246,7 @@ THEOLIZER_INTERNAL_DLL bool printResult(char const* iTitle=nullptr);
 
 // ***************************************************************************
 /*!
+    @ingroup Test
     @brief      テスト用フォルダの準備
     @details    もし、iDirPathフォルダが既に存在していたら削除する。<br>
                 次に、iDirPathフォルダを作成する。<br>
@@ -250,9 +263,11 @@ private:
     bool        mIsNoDelete;
 
 public:
+    //! @ingroup Test
     //! コンストラクタ
     PrepareDir(std::string const& iDirPath, bool iIsNoDelete=false);
 
+    //! @ingroup Test
     //! デストラクタ
     ~PrepareDir();
 };
@@ -265,6 +280,7 @@ THEOLIZER_INTERNAL_DLL bool isExist(u8string const& iFilePath);
 
 // ***************************************************************************
 /*!
+    @ingroup    Test
     @brief      ファイルの削除
     @details    指定ファイルが無くても正常終了する。
                 iFilePathがフォルダの場合何もしない。
@@ -275,6 +291,7 @@ THEOLIZER_INTERNAL_DLL void removeFile(u8string const& iFilePath);
 
 // ***************************************************************************
 /*!
+    @ingroup    Test
     @brief      ファイル・リスト獲得
     @details    指定フォルダ内のファイル(フォルダ除く)のリストを返却する。<br>
                 　　ファイル名(拡張子含む)が正規表現iRegexとマッチするもののみ。<br>
@@ -292,6 +309,7 @@ std::vector<std::string> getFileList(std::string const& iDirPath, std::string co
 
 // ***************************************************************************
 /*!
+    @ingroup    Test
     @brief      アクセス許可設定
     @details    ownerの書き込み許可をセット／クリアする
 */
@@ -301,6 +319,7 @@ THEOLIZER_INTERNAL_DLL void setWritePermission(const u8string& iPath, bool iIsEn
 
 // ***************************************************************************
 /*!
+    @ingroup    Test
     @brief      スレッド・オブジェクト<br>
     @details    コンストラクタで指定スレッドを生成し、<br>
                 デストラクタでそのスレッドの終了を待つ。<br>
@@ -323,27 +342,32 @@ private:
     }
 
 public :
+    //! @ingroup Test
     //! デフォルト・コンストラクタ
     ThreadGuard() noexcept
     {
         setThreadId();
     }
 
+    //! @ingroup Test
     //! 汎用コンストラクタ
     template <class Fn, class... Args>
     ThreadGuard(Fn&& fn, Args&&... args) : thread(fn, args...)
     { setThreadId(); }
 
-    // コピー禁止
+    //! @ingroup Test
+    //! コピー禁止
     ThreadGuard           (const ThreadGuard&)  = delete;
     ThreadGuard& operator=(const ThreadGuard&)  = delete;
 
+    //! @ingroup Test
     //! ムーブ可
     ThreadGuard(ThreadGuard&& iThread) noexcept :
             thread(static_cast<std::thread&&>(iThread)),
             mThreadId(std::move(iThread.mThreadId))
     { }
 
+    //! @ingroup Test
     //! ムーブ演算子
     ThreadGuard& operator=(ThreadGuard&& iTheread)
     {
@@ -352,9 +376,11 @@ public :
         return *this;
     }
 
+    //! @ingroup Test
     //! デストラクタ
     ~ThreadGuard () {if (thread::joinable()) thread::join();}
 
+    //! @ingroup Test
     //! スレッドID返却
     std::string const& getThreadId() {return mThreadId;}
 };
@@ -496,6 +522,7 @@ namespace internal
 //      ---<<< 等しいことをチェックする(Fail時、処理継続) >>>---
 //          最も良く使うので専用で用意する
 
+//! @ingroup Test
 //! 値が一致することをテストする。（ポインタ以外）
 #define THEOLIZER_EQUAL(dLhs, ...)                                          \
     do                                                                      \
@@ -520,6 +547,7 @@ namespace internal
 //      char型へのポインタの値を出力しようとすると文字列として出力される。
 //      ポインタ値がnullptrだったら落ちる。
 
+//! @ingroup Test
 //! ポインタの値が一致することをテストする。
 #define THEOLIZER_EQUAL_PTR(dLhs, dRhs)                                     \
     do                                                                      \
@@ -541,6 +569,7 @@ namespace internal
 
 //      ---<<< 結果をチェックする(Fail時、処理継続) >>>---
 
+//! @ingroup Test
 //! 結果がtrueになることをテストする。
 #define THEOLIZER_CHECK(dJudge, ...)                                        \
     do                                                                      \
@@ -554,6 +583,7 @@ namespace internal
 
 //      ---<<< 結果をチェックする(Fail時、処理中断) >>>---
 
+//! @ingroup Test
 //! 結果がtrueになることをテストする。（Fail時、以降の処理を中断する）
 #define THEOLIZER_REQUIRE(dJudge, ...)                                      \
     do                                                                      \
@@ -568,6 +598,7 @@ namespace internal
 
 //      ---<<< 例外が発生することをチェックする(Fail時、処理継続) >>>---
 
+//! @ingroup Test
 //! 例外が発生することをチェックする(Fail時、処理継続)
 #define THEOLIZER_CHECK_EXCEPTION(dStatements, dException)                  \
     do                                                                      \
@@ -589,6 +620,7 @@ namespace internal
 
 //      ---<<< 例外が発生することをチェックする(Fail時、処理中断) >>>---
 
+//! @ingroup Test
 //! 例外が発生することをチェックする(Fail時、処理中断)
 #define THEOLIZER_REQUIRE_EXCEPTION(dStatements, dException)                \
     do                                                                      \
@@ -611,6 +643,7 @@ namespace internal
 
 //      ---<<< 例外が発生することと結果をチェックする(Fail時、処理継続) >>>---
 
+//! @ingroup Test
 //! 例外が発生することをチェックする(Fail時、処理継続)
 #define THEOLIZER_CHECK_EXCEPTION2(dStatement, dException, dJudge, dResult) \
     do                                                                      \
@@ -633,6 +666,7 @@ namespace internal
 
 //      ---<<< 例外が発生することと結果をチェックする(Fail時、処理中断) >>>---
 
+//! @ingroup Test
 //! 例外が発生することをチェックする(Fail時、処理中断)
 #define THEOLIZER_REQUIRE_EXCEPTION2(dStatement, dException, dJudge, dResult)\
     do                                                                      \

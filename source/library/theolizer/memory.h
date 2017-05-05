@@ -1,8 +1,11 @@
 ﻿//############################################################################
-//      スマート・ポインタ群のシリアライズ
-//
-//      対応済のスマート・ポインタ
-//          std::unique_ptr<>
+/*!
+    @brief      スマート・ポインタ群のシリアライズ
+    @ingroup    SerializationStl
+    @file       memory.h
+    @author     Yoshinori Tahara(Theoride Technology)
+    @date       2016/09/03 Created
+*/
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.

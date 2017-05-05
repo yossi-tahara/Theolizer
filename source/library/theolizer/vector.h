@@ -1,5 +1,11 @@
 ﻿//############################################################################
-//      std::vector<>のシリアライズ
+/*!
+    @brief      std::vector<>のシリアライズ
+    @ingroup    SerializationStl
+    @file       vector.h
+    @author     Yoshinori Tahara(Theoride Technology)
+    @date       2016/08/30 Created
+*/
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.

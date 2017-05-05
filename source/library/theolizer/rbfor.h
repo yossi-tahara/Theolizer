@@ -166,12 +166,14 @@ class BasicRange
     tIterator   mBegin;
     tIterator   mEnd;
 public:
+    //! @ingroup RbFor
     //! コンストラクタ（範囲開始と終了を設定する）
     BasicRange(tIterator&& iBegin, tIterator&& iEnd) :
         mBegin(std::forward<tIterator>(iBegin)),
         mEnd  (std::forward<tIterator>(iEnd))
     { }
 
+    //! @ingroup RbFor
     //! １つ次へ進める
     void drop_front()
     {
@@ -182,24 +184,31 @@ public:
         ++mBegin;
     }
 
+    //! @ingroup RbFor
     //! 先頭要素を取り出す
     ValueType& front()      {return *mBegin;}
 
+    //! @ingroup RbFor
     //! 開始位置と終了位置が一致している時empty
     bool empty()      const {return mBegin == mEnd;}
 
+    //! @ingroup RbFor
     //! 開始位置取り出し(範囲ベースfor専用)
     tIterator begin() const {return mBegin;}
 
+    //! @ingroup RbFor
     //! 終了位置取り出し(範囲ベースfor専用)
     tIterator end()   const {return mEnd;}
 
+    //! @ingroup RbFor
     //! ポイント先メンバ取り出し(イテレータ的I/F)
     tIterator operator->()  {return mBegin;}
 
+    //! @ingroup RbFor
     //! ポイント先取り出し(イテレータ的I/F)
     ValueType& operator*()  {return front();}
 
+    //! @ingroup RbFor
     //! 前置インクリメント(イテレータ的I/F)
     BasicRange& operator++()
     {
@@ -207,6 +216,7 @@ public:
         return *this;
     }
 
+    //! @ingroup RbFor
     //! 後置インクリメント(イテレータ的I/F)
     BasicRange operator++(int)
     {
@@ -244,6 +254,7 @@ public:
     }
     std::size_t getIndex() const    {return mIndex;}
 
+    //! @ingroup RbFor
     //! 前置インクリメント(イテレータ的I/F)
     Indexer& operator++()
     {
@@ -251,6 +262,7 @@ public:
         return *this;
     }
 
+    //! @ingroup RbFor
     //! 後置インクリメント(イテレータ的I/F)
     Indexer operator++(int)
     {

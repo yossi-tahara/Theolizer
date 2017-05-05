@@ -1,5 +1,11 @@
 ﻿//############################################################################
-//      std::unordered_set<>のシリアライズ
+/*!
+    @brief      std::unordered_set<>のシリアライズ
+    @ingroup    SerializationStl
+    @file       unordered_set.h
+    @author     Yoshinori Tahara(Theoride Technology)
+    @date       2017/02/07 Created
+*/
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.

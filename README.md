@@ -296,3 +296,7 @@ return 2;
     できれば、不具合が発生する最小のソースをご提供頂ければ助かります。
 5. **その他、追加情報があれば記載下さい**  
   何か気になったことや、不具合原因の推測等、なんでもよいので関連しそうな追加情報を頂けると助かります。
+
+---
+Copyright (c) 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>)
+Theolizer is registered trademark of Theoride Technology.

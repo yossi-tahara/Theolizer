@@ -1,10 +1,10 @@
 ﻿//############################################################################
 /*!
-@brief      バージョン番号を自動生成
-@ingroup    TheolizerLib
-@file       version.h
-@author     Yoshinori Tahara(Theoride Technology)
-@date       2015/09/20 Created
+    @brief      バージョン番号を自動生成
+    @ingroup    TheolizerLib
+    @file       version.h
+    @author     Yoshinori Tahara(Theoride Technology)
+    @date       2015/09/20 Created
 */
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.

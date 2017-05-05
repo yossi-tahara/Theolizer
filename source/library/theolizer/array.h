@@ -1,5 +1,11 @@
 ﻿//############################################################################
-//      std::array<>のシリアライズ
+/*!
+    @brief      std::array<>のシリアライズ
+    @ingroup    SerializationStl
+    @file       array.h
+    @author     Yoshinori Tahara(Theoride Technology)
+    @date       2017/02/02 Created
+*/
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.

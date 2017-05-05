@@ -1,5 +1,11 @@
 ﻿//############################################################################
-//      std::map<>のシリアライズ
+/*!
+    @brief      std::map<>のシリアライズ
+    @ingroup    SerializationStl
+    @file       map.h
+    @author     Yoshinori Tahara(Theoride Technology)
+    @date       2017/02/06 Created
+*/
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.

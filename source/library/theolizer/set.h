@@ -1,5 +1,11 @@
 ﻿//############################################################################
-//      std::set<>のシリアライズ
+/*!
+    @brief      std::set<>のシリアライズ
+    @ingroup    SerializationStl
+    @file       set.h
+    @author     Yoshinori Tahara(Theoride Technology)
+    @date       2017/02/05 Created
+*/
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
