@@ -1,5 +1,7 @@
 #[[###########################################################################
-        テスト
+        Theolizer全体テストのソース・リストを作成する
+            CURRENT_SOURCE_DIR      : (in) カレントのソース・フォルダのパス
+            VERSION_SOURCE          : (out)ソース・リスト
 
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
@@ -28,25 +30,9 @@
 
 ]]############################################################################
 
-#-----------------------------------------------------------------------------
-#       Test-Projects
-#-----------------------------------------------------------------------------
+file(GLOB_RECURSE VERSION_SOURCE ${CURRENT_SOURCE_DIR}/CMakeLists.txt ${CURRENT_SOURCE_DIR}/*.cmake ${CURRENT_SOURCE_DIR}/*.h ${CURRENT_SOURCE_DIR}/*.cpp ${CURRENT_SOURCE_DIR}/*.inc)
 
-add_subdirectory(base)
-add_subdirectory(report)
-add_subdirectory(serializer)
-add_subdirectory(test_tool)
-add_subdirectory(u8string)
+foreach(FILE IN LISTS VERSION_SOURCE)
+#   message(STATUS "FILE=${FILE}")
+endforeach()
 
-#-----------------------------------------------------------------------------
-#       make hash for check Pass
-#-----------------------------------------------------------------------------
-
-add_custom_target(HashOfTestLibrary
-    COMMAND ${CMAKE_COMMAND}
-        -D CURRENT_SOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"
-        -P \"${CMAKE_SOURCE_DIR}/tools/sources_hash.cmake\"
-         > \"${CMAKE_CURRENT_BINARY_DIR}/sources_hash.txt\"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    )
-add_dependencies(makeHashTxt HashOfTestLibrary)

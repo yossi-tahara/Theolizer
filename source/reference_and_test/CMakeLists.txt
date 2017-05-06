@@ -318,7 +318,7 @@ endif()
 #       バージョン変更テスト
 #-----------------------------------------------------------------------------
 
-if(TRUE)
+if(FALSE)
 
 set(FIRST_VERSION "ver1a")
 set(LAST_VERSION  "ver3b")
@@ -452,3 +452,16 @@ set_tests_properties(${TARGET_NAME}${FIRST_VERSION}Exec2
 message(STATUS "DEPENDS : ${TARGET_NAME}${FIRST_VERSION}Exec2 depends to ${TARGET_NAME}${LAST_VERSION}Exec")
 
 endif()
+
+#-----------------------------------------------------------------------------
+#       make hash for check Pass
+#-----------------------------------------------------------------------------
+
+add_custom_target(HashOfReferenceAndTest
+    COMMAND ${CMAKE_COMMAND}
+        -D CURRENT_SOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"
+        -P \"${CMAKE_SOURCE_DIR}/tools/sources_hash.cmake\"
+         > \"${CMAKE_CURRENT_BINARY_DIR}/sources_hash.txt\"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+    )
+add_dependencies(makeHashTxt HashOfReferenceAndTest)

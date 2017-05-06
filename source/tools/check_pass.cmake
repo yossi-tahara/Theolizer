@@ -74,6 +74,44 @@ else()
     endif()
 endif()
 
+# test_libraryのチェック
+message(STATUS "test_library...")
+set(SOURCES_HASH_TXT "${BINARY_DIR}/test_library/sources_hash.txt")
+if (NOT EXISTS "${SOURCES_HASH_TXT}")
+    message(STATUS "no sources_hash.txt.")
+    set(IS_NOT_PASS TRUE)
+else()
+    set(CURRENT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/source/test_library")
+    include("${CMAKE_SOURCE_DIR}/source/tools/sources_hash.cmake")
+
+    file(READ "${SOURCES_HASH_TXT}" SOURCES_HASH_BUILD OFFSET 3)
+    string(STRIP "${SOURCES_HASH_BUILD}" SOURCES_HASH_BUILD)
+    message(STATUS "${SOURCES_HASH_BUILD}")
+
+    if (NOT "${SOURCES_HASH}" STREQUAL "${SOURCES_HASH_BUILD}")
+        set(IS_NOT_PASS TRUE)
+    endif()
+endif()
+
+# reference_and_testのチェック
+message(STATUS "reference_and_test...")
+set(SOURCES_HASH_TXT "${BINARY_DIR}/reference_and_test/sources_hash.txt")
+if (NOT EXISTS "${SOURCES_HASH_TXT}")
+    message(STATUS "no sources_hash.txt.")
+    set(IS_NOT_PASS TRUE)
+else()
+    set(CURRENT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/source/reference_and_test")
+    include("${CMAKE_SOURCE_DIR}/source/tools/sources_hash.cmake")
+
+    file(READ "${SOURCES_HASH_TXT}" SOURCES_HASH_BUILD OFFSET 3)
+    string(STRIP "${SOURCES_HASH_BUILD}" SOURCES_HASH_BUILD)
+    message(STATUS "${SOURCES_HASH_BUILD}")
+
+    if (NOT "${SOURCES_HASH}" STREQUAL "${SOURCES_HASH_BUILD}")
+        set(IS_NOT_PASS TRUE)
+    endif()
+endif()
+
 if (IS_NOT_PASS)
     message(SEND_ERROR "No test passed.")
 else()
