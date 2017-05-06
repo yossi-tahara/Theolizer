@@ -246,4 +246,39 @@ exception    : Error(UnknownData),aInt{test_basic_process.cpp(241)} : Logical Er
 no-exception : Error(UnknownData),ashort{test_basic_process.cpp(256)} : Logical Error on stream.
 @endcode
 
+<br>
+//############################################################################
+@section ErrorReport7 7.エラー検出の網羅的テスト
+//############################################################################
+
+@subsection ErrorReport71 7-1.エラー報告全体
+テスト用のソース・コードは、source/test_library/reportフォルダに置いています。<br>
+下記の組合せでテストしています。
+
+|ソース・ファイル|テスト内容|
+|----------------|----------|
+|test_report1.cpp |エラー・ログが適切に保存されること<br>エラー・ログ・ファイルの指定ミス<br>マルチ・スレッドに対応できていること |
+|test_report1_child.cpp |エラー・ログ・ファイル指定ミスのテスト用の子プロセス |
+|test_report2.cpp |THEOLIZER_ERRORLOG_FILE未指定 |
+|test_report3.cpp<br>test_report4.cpp |THEOLIZER_ERRORLOG_FILE多重登録 |
+|test_report4.cpp |ErrorReproterのAPIテスト |
+
+@subsection ErrorReport72 7-2.downVersion/upVersionのコンパイル・エラー
+プリミティブ型とenum型以外のメンバ変数への値設定が禁止できていることをテストしています。
+
+ソース・コードは、source/reference_and_test/ver3b/test_modify_complex.hにて、ERROR1, ERROR2マクロが定義されている時にコンパイル・エラーになるように定義しています。そして、source/reference_and_test/CMakeLists.txtのver3bERROR1, ver3bERROR2にてコンパイル・エラーが発生することをチェックしています。
+
+@subsection ErrorReport73 7-3.グローバル・バージョン番号テーブルのエラー検出
+バージョン・アップに伴い、一度シリアライズ指定したクラスやenum型をソース・コードから完全に削除した場合に、グローバル・バージョン番号テーブルから手動で削除する必要があります。（@ref Basic372 参照。）<br>
+その削除を忘れた場合にコンパイル・エラーになることを確認しています。
+
+ソース・コードは、source/reference_and_test/ver3b/test_modify_complex.hにて、ERROR3マクロが定義されている時にコンパイル・エラーになるように定義しています。そして、source/reference_and_test/CMakeLists.txtのver3bERROR3にてコンパイル・エラーが発生することをチェックしています。
+
+@subsection ErrorReport74 7-4.エラー・リカバリ
+デシリアライズ中のエラー発生後にリカバリするテストを行っています。
+Json, BinaryシリアライザのNoTypCheck, TypeCheck, TypeCheckByIndexについて、現バージョンと１つ前のバージョンからの回復についてリカバリできることを確認しています。
+
+ソース・コードは、source/reference_and_test/ver2a/test_modify_complex.cppのtutoriseModifyComplex()関数です。
+
+
 */

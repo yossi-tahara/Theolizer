@@ -107,9 +107,9 @@ namespace theolizer{namespace internal{
 namespace global_table{
     MyGVNT::MyGVNT()
     {
-        add(typeid(theolizer::internal::JsonMidOSerializer), 1u, 1u, 1u, 2u);
-        add(typeid(theolizer::internal::JsonMidISerializer), 1u, 1u, 1u, 2u);
-        add(typeid(IntrusiveBase2),                          1u, 1u, 1u, 1u);
+        THEOLIZER_INTERNAL_ADD(theolizer::internal::JsonMidOSerializer, 1u, 1u, 1u, 2u);
+        THEOLIZER_INTERNAL_ADD(theolizer::internal::JsonMidISerializer, 1u, 1u, 1u, 2u);
+        THEOLIZER_INTERNAL_ADD(IntrusiveBase2,                          1u, 1u, 1u, 1u);
     }
 }   // namespace global_table
 }}  // namespace theolizer

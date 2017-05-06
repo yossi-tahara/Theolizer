@@ -1071,4 +1071,11 @@ struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 2>
     }
 };
 
+#ifndef ERROR3
+class TestRecovery
+{
+    THEOLIZER_INTRUSIVE(CS, (TestRecovery), 2);
+};
+#endif
+
 #endif  // TEST_MODIFY_COMPLEX_H

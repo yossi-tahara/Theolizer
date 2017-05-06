@@ -366,6 +366,11 @@ namespace theolizer
 #define THEOLIZER_DEFINE_GLOBAL_VERSION_TABLE(dName, dLastGlobalVersionNo)
 #endif
 
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+    #define THEOLIZER_INTERNAL_ADD(dType, ...)  add(typeid(::dType),__VA_ARGS__)
+
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
+
 //############################################################################
 //      End
 //############################################################################

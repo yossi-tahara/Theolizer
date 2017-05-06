@@ -977,4 +977,43 @@ struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
     }
 };
 
+// ***************************************************************************
+//      リカバリー・テスト用
+// ***************************************************************************
+
+class TestRecovery
+{
+    int     mInt;
+    int     mShort;
+public:
+    TestRecovery() : mInt(0), mShort(0)
+    { }
+
+    TestRecovery(bool) : mInt(10001), mShort(10002)
+    { }
+
+    void check(unsigned aVersionNo)
+    {
+        THEOLIZER_EQUAL(mInt, 10001);
+
+        switch(aVersionNo)
+        {
+        case 1:
+            THEOLIZER_EQUAL(mShort, 0);
+            break;
+
+        case 2:
+            THEOLIZER_EQUAL(mShort, 10002);
+            break;
+
+        default:
+            // FAILさせる
+            THEOLIZER_CHECK(false, aVersionNo);
+            break;
+        }
+    }
+
+    THEOLIZER_INTRUSIVE(CS, (TestRecovery), 2);
+};
+
 #endif  // TEST_MODIFY_COMPLEX_H

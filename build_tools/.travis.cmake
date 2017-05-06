@@ -129,7 +129,7 @@ if("$ENV{PARALLEL_TEST}" STREQUAL "1")
 elseif("$ENV{PARALLEL_TEST}" STREQUAL "2")
     build_by_gcc(gcc540 64 StaticWithBoost TRUE FALSE "14 1" "11 1")
 else()
-    build_by_gcc(gcc540 64 StaticWithBoost TRUE FALSE "31 1" "11 1")
+    build_by_gcc(gcc540 64 StaticWithBoost TRUE FALSE "32 1" "11 1")
 endif()
 
 #output_title("****** Static ******")

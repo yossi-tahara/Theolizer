@@ -318,7 +318,7 @@ endif()
 #       バージョン変更テスト
 #-----------------------------------------------------------------------------
 
-if(FALSE)
+if(TRUE)
 
 set(FIRST_VERSION "ver1a")
 set(LAST_VERSION  "ver3b")
@@ -436,6 +436,16 @@ endif()
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"ERROR2\" \"${TEST_LABEL}\")")
 add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "ERROR2" ${TEST_LABEL}
+    "" "" ${SOURCE_LIST})
+
+#       ---<<< ver3bERROR3 >>>---
+
+set(ERROR_MESSAGE "Please check deleted class or enum.")
+set(ERROR_NUMBER 1)
+
+message(STATUS "start of add_build_and_test("
+    "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"ERROR2\" \"${TEST_LABEL}\")")
+add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "ERROR3" ${TEST_LABEL}
     "" "" ${SOURCE_LIST})
 
 #-----------------------------------------------------------------------------

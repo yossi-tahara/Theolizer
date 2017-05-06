@@ -37,30 +37,30 @@ namespace theolizer{namespace internal{
 namespace global_table{
     MyGVNT::MyGVNT()
     {
-        add(typeid(theolizer::internal::JsonMidOSerializer),1u,1u,1u,1u);
-        add(typeid(theolizer::internal::JsonMidISerializer),1u,1u,1u,1u);
-        add(typeid(IntrusiveBase),                      1u,1u,2u,2u);
-        add(typeid(IntrusiveBase2),                     1u,1u,1u,1u);
-        add(typeid(IntrusiveDerived),                   1u,2u,3u,4u);
-        add(typeid(IntrusiveDerived2),                  1u,1u,1u,1u);
-        add(typeid(DerivedChange),                      1u,1u,1u,1u);
-        add(typeid(change_order::dummy::DerivedChange), 1u,1u,1u,1u);
-        add(typeid(DerivedDelete),                      1u,1u,1u,1u);
-        add(typeid(EnumTest),                           1u,2u,2u,2u);
-        add(typeid(another::EnumTest),                  1u,1u,1u,1u);
-        add(typeid(DestinationTest),                    1u,1u,1u,1u);
-        add(typeid(Included1),                          1u,1u,1u,1u);
-        add(typeid(Included2),                          1u,1u,1u,1u);
-        add(typeid(Tracking),                           1u,1u,1u,1u);
-        add(typeid(Dynamic),                            1u,1u,1u,1u);
-        add(typeid(ArrayClass),                         1u,1u,2u,2u);
-        add(typeid(NonIntrusiveBase),                   1u,1u,1u,1u);
-        add(typeid(NonIntrusiveDrived),                 1u,1u,1u,1u);
-        add(typeid(ArrayClassTemplatePrimary),          1u,1u,1u,1u);
-        add(typeid(Pointers),                           1u,1u,1u,1u);
-        add(typeid(vectorTheolizer),                    1u,1u,1u,1u);
-        add(typeid(listTheolizer),                      1u,1u,1u,1u);
-        add(typeid(unique_ptrTheolizer),                1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(theolizer::internal::JsonMidOSerializer,1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(theolizer::internal::JsonMidISerializer,1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(IntrusiveBase,                      1u,1u,2u,2u);
+        THEOLIZER_INTERNAL_ADD(IntrusiveBase2,                     1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(IntrusiveDerived,                   1u,2u,3u,4u);
+        THEOLIZER_INTERNAL_ADD(IntrusiveDerived2,                  1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(DerivedChange,                      1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(change_order::dummy::DerivedChange, 1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(DerivedDelete,                      1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(EnumTest,                           1u,2u,2u,2u);
+        THEOLIZER_INTERNAL_ADD(another::EnumTest,                  1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(DestinationTest,                    1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(Included1,                          1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(Included2,                          1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(Tracking,                           1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(Dynamic,                            1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(ArrayClass,                         1u,1u,2u,2u);
+        THEOLIZER_INTERNAL_ADD(NonIntrusiveBase,                   1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(NonIntrusiveDrived,                 1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(ArrayClassTemplatePrimary,          1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(Pointers,                           1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(vectorTheolizer,                    1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(listTheolizer,                      1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(unique_ptrTheolizer,                1u,1u,1u,1u);
     }
 }   // namespace global_table
 }}  // namespace theolizer

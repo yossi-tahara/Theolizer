@@ -111,7 +111,7 @@ void loadModifyClass(tSerializer& iSerializer);
 
 //      ---<<< 使い方のサンプル・コード >>>---
 
-//void tutoriseModifyComplex();
+void tutoriseModifyComplex();
 
 //      ---<<< 自動テスト >>>---
 
@@ -150,6 +150,10 @@ void loadDestinations
 void callTutorial()
 {
     std::cout << "    callTutorial();\n";
+
+#ifdef ENABLE_MODIFY_COMPLEX_TEST
+    tutoriseModifyComplex();
+#endif
 
     // ここまでの中間結果表示
     theolizer::printResult("------------- Result of tutorial samples ----------");

@@ -332,7 +332,7 @@ void TestEof(const theolizer::CheckMode iCheckMode)
     std::stringstream aStream;
 
     {
-        theolizer::JsonOSerializer<> js(aStream, iCheckMode, false);
+        theolizer::JsonOSerializer<theolizerD::Document> js(aStream, iCheckMode, false);
 
         int                   aInt=101;
         THEOLIZER_PROCESS(js, aInt);
@@ -347,14 +347,14 @@ void TestEof(const theolizer::CheckMode iCheckMode)
 
     std::cout << aStream.str() << std::endl;
 
-    for (std::size_t i=1; i < aStream.str().size()-1; i+=3)
+    for (std::size_t i=1; i < aStream.str().size()-1; ++i)
     {
         // エラー発生
         std::stringstream ss(aStream.str().substr(0, i));
         bool aDoConstructing=true;
-        std::size_t aPos=0;
+        std::streampos  aPos=0;
 
-        theolizer::JsonISerializer<>    js(ss, true);
+        theolizer::JsonISerializer<theolizerD::Document>    js(ss, true);
         if (!js.isError())
         {
             aDoConstructing=false;
@@ -368,7 +368,7 @@ void TestEof(const theolizer::CheckMode iCheckMode)
         }
 
         // エラーが発生していない場合、FAIL
-        THEOLIZER_CHECK(js.isError(), "No exception");
+        THEOLIZER_CHECK(js.isError(), "No error");
 
         // リカバリ
         if (aDoConstructing)    // コンストラクト中のリカバリは不可能

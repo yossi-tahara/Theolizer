@@ -2036,7 +2036,6 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
         ERROR(stmt0->getStmtClass() != clang::Stmt::CompoundStmtClass,
             iConstructor, aGlobalTable);
         clang::CompoundStmt* compound_stmt = cast<clang::CompoundStmt>(stmt0);
-//compound_stmt->dump();
 
         if (compound_stmt->body_empty())
     return aGlobalTable;
@@ -2096,9 +2095,8 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
         unsigned iLastVersionNo
     )
     {
-        mTheolizerHpp << "        add(typeid(::"
-            << getQualifiedName(iTagDecl)
-            << ")";
+        mTheolizerHpp << "        THEOLIZER_INTERNAL_ADD("
+            << getQualifiedName(iTagDecl);
 
         auto found = iGlobalTable.find(iTagDecl);
         std::size_t aVersionCount=(found!= iGlobalTable.end())?found->second.size():0;
@@ -2183,6 +2181,19 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
             {
                 ASTANALYZE_OUTPUT("    ", ver);
             }
+        }
+
+//      ---<<< エラー・チェック >>>---
+
+        // バージョン2以上なのに必要なGVNTがない
+        if ((aGlobalTable.size() == 0) && (2 <= aLastGlobalVersionNo))
+        {
+            gCustomDiag.ErrorReport(
+                (aConstructor)?
+                    aConstructor->getLocation()
+                    :
+                    iGlobalVersionNoTableDecl->getLocation(),
+                "Global Version No. Table error. Please check deleted class or enum.");
         }
 
 //      ---<<< ソース生成 >>>---

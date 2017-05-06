@@ -1062,4 +1062,13 @@ struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 2>
     }
 };
 
+// ***************************************************************************
+//      リカバリー・テスト用
+// ***************************************************************************
+
+class TestRecovery
+{
+    THEOLIZER_INTRUSIVE(CS, (TestRecovery), 2);
+};
+
 #endif  // TEST_MODIFY_COMPLEX_H

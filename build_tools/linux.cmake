@@ -121,12 +121,12 @@ set(ENV{LC_ALL} "C")
 #-----------------------------------------------------------------------------
 
 output_title("****** StaticWithBoost ******")
-build_by_gcc(gcc540 64 StaticWithBoost TRUE TRUE "37 1" "11 1")
+build_by_gcc(gcc540 64 StaticWithBoost TRUE TRUE "38 1" "11 1")
 
 output_title("****** Static ******")
-build_by_gcc(gcc540 64 Static FALSE FALSE "37 1" "11 1")
+build_by_gcc(gcc540 64 Static FALSE FALSE "38 1" "11 1")
 
 output_title("****** Shared ******")
-build_by_gcc(gcc540 64 Shared FALSE FALSE "37 1" "11 1")
+build_by_gcc(gcc540 64 Shared FALSE FALSE "38 1" "11 1")
 
 output_summary()

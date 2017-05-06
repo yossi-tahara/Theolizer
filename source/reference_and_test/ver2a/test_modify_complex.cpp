@@ -70,6 +70,204 @@
 //############################################################################
 
 // ***************************************************************************
+//      エラー・リカバリ
+// ***************************************************************************
+
+template<class tSerializerSave, class tSerializerLoad>
+void testModifyComplex(unsigned iGlobalVersionNo, theolizer::CheckMode iCheckMode)
+{
+    std::cout << "testModifyComplex(" << iGlobalVersionNo << ", " << iCheckMode << ");\n";
+
+    std::stringstream aStream;
+
+//----------------------------------------------------------------------------
+//      データ生成
+//----------------------------------------------------------------------------
+
+    {
+        tSerializerSave aSerializer(aStream, iGlobalVersionNo, iCheckMode);
+
+        TestRecovery    aTestRecovery{true};
+        THEOLIZER_PROCESS(aSerializer, aTestRecovery);
+    }
+
+    if (tSerializerSave::hasProperty(theolizer::Property::EncodedString))
+    {
+        std::cout << aStream.str() << std::endl;
+    }
+
+//----------------------------------------------------------------------------
+//      エラー発生とリカバリ（例外禁止）
+//----------------------------------------------------------------------------
+
+    for (std::size_t i=1; i < aStream.str().size()-1; ++i)
+    {
+        // エラー発生
+        std::stringstream ss(aStream.str().substr(0, i));
+        bool aDoConstructing=true;
+        std::streampos  aPos=0;
+
+        tSerializerLoad aSerializer(ss, true);
+        if (!aSerializer.isError())
+        {
+            aDoConstructing=false;
+            aPos=ss.tellg();            // リカバリ時の同期位置保存
+
+            TestRecovery    aTestRecovery;
+            THEOLIZER_PROCESS(aSerializer, aTestRecovery);
+        }
+
+        // エラーが発生していない場合、FAIL
+        THEOLIZER_CHECK(aSerializer.isError(), "No error");
+
+        // リカバリ
+        if (aDoConstructing)    // コンストラクト中のリカバリは不可能
+    continue;
+
+        ss.clear();
+        ss.str(aStream.str());
+        ss.seekg(aPos);
+        aSerializer.resetError();
+
+        TestRecovery    aTestRecovery;
+        THEOLIZER_PROCESS(aSerializer, aTestRecovery);
+        aTestRecovery.check(iGlobalVersionNo);
+    }
+
+//----------------------------------------------------------------------------
+//      エラー発生とリカバリ（例外許可）
+//----------------------------------------------------------------------------
+
+    for (std::size_t i=1; i < aStream.str().size()-1; ++i)
+    {
+        // コンストラクト中のエラー・キャッチ
+        try
+        {
+            std::stringstream ss(aStream.str().substr(0, i));
+            std::streampos  aPos=0;
+            tSerializerLoad aSerializer(ss);
+            aPos=ss.tellg();            // リカバリ時の同期位置保存
+
+            // 回復処理中のエラー・キャッチ
+            try
+            {
+                TestRecovery    aTestRecovery;
+                THEOLIZER_PROCESS(aSerializer, aTestRecovery);
+
+                // エラーが発生していない場合、FAIL
+                THEOLIZER_CHECK(aSerializer.isError(), "No error");
+            }
+            catch (theolizer::ErrorInfo&)
+            {
+                // リカバリ
+                ss.clear();
+                ss.str(aStream.str());
+                ss.seekg(aPos);
+                aSerializer.resetError();
+
+                TestRecovery    aTestRecovery;
+                THEOLIZER_PROCESS(aSerializer, aTestRecovery);
+                aTestRecovery.check(iGlobalVersionNo);
+            }
+        }
+        catch (theolizer::ErrorInfo&)
+        {
+        }
+    }
+}
+
+//----------------------------------------------------------------------------
+//      複数のシリアライザにて検証テスト呼び出し
+//----------------------------------------------------------------------------
+
+void tutoriseModifyComplex()
+{
+    std::cout << "tutoriseModifyComplex() start" << std::endl;
+
+//      ---<<< Json-ver1c >>>---
+
+    testModifyComplex
+    <
+        theolizer::JsonOSerializer<theolizerD::Master>,
+        theolizer::JsonISerializer<theolizerD::Master>
+    >(1, theolizer::CheckMode::NoTypeCheck);
+
+    testModifyComplex
+    <
+        theolizer::JsonOSerializer<theolizerD::Master>,
+        theolizer::JsonISerializer<theolizerD::Master>
+    >(1, theolizer::CheckMode::TypeCheck);
+
+    testModifyComplex
+    <
+        theolizer::JsonOSerializer<theolizerD::Master>,
+        theolizer::JsonISerializer<theolizerD::Master>
+    >(1, theolizer::CheckMode::TypeCheckByIndex);
+
+//      ---<<< Json-ver2a >>>---
+
+    testModifyComplex
+    <
+        theolizer::JsonOSerializer<theolizerD::Master>,
+        theolizer::JsonISerializer<theolizerD::Master>
+    >(2, theolizer::CheckMode::NoTypeCheck);
+
+    testModifyComplex
+    <
+        theolizer::JsonOSerializer<theolizerD::Master>,
+        theolizer::JsonISerializer<theolizerD::Master>
+    >(2, theolizer::CheckMode::TypeCheck);
+
+    testModifyComplex
+    <
+        theolizer::JsonOSerializer<theolizerD::Master>,
+        theolizer::JsonISerializer<theolizerD::Master>
+    >(2, theolizer::CheckMode::TypeCheckByIndex);
+
+//      ---<<< Binary-ver1c >>>---
+
+    testModifyComplex
+    <
+        theolizer::BinaryOSerializer<theolizerD::Master>,
+        theolizer::BinaryISerializer<theolizerD::Master>
+    >(1, theolizer::CheckMode::NoTypeCheck);
+
+    testModifyComplex
+    <
+        theolizer::BinaryOSerializer<theolizerD::Master>,
+        theolizer::BinaryISerializer<theolizerD::Master>
+    >(1, theolizer::CheckMode::TypeCheck);
+
+    testModifyComplex
+    <
+        theolizer::BinaryOSerializer<theolizerD::Master>,
+        theolizer::BinaryISerializer<theolizerD::Master>
+    >(1, theolizer::CheckMode::TypeCheckByIndex);
+
+//      ---<<< Binary-ver2a >>>---
+
+    testModifyComplex
+    <
+        theolizer::BinaryOSerializer<theolizerD::Master>,
+        theolizer::BinaryISerializer<theolizerD::Master>
+    >(2, theolizer::CheckMode::NoTypeCheck);
+
+    testModifyComplex
+    <
+        theolizer::BinaryOSerializer<theolizerD::Master>,
+        theolizer::BinaryISerializer<theolizerD::Master>
+    >(2, theolizer::CheckMode::TypeCheck);
+
+    testModifyComplex
+    <
+        theolizer::BinaryOSerializer<theolizerD::Master>,
+        theolizer::BinaryISerializer<theolizerD::Master>
+    >(2, theolizer::CheckMode::TypeCheckByIndex);
+
+    std::cout << "tutoriseModifyComplex() end" << std::endl;
+}
+
+// ***************************************************************************
 //      保存
 // ***************************************************************************
 

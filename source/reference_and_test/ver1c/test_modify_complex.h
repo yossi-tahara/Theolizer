@@ -438,4 +438,26 @@ struct KeepStepTest :
     THEOLIZER_INTRUSIVE(CS, (KeepStepTest), 1); // 侵入型半自動へ変更後、バージョン・アップする
 };
 
+// ***************************************************************************
+//      リカバリー・テスト用
+// ***************************************************************************
+
+class TestRecovery
+{
+    int     mInt;
+public:
+    TestRecovery() : mInt(0)
+    { }
+
+    TestRecovery(bool) : mInt(10001)
+    { }
+
+    void check()
+    {
+        THEOLIZER_EQUAL(mInt, 10001);
+    }
+
+    THEOLIZER_INTRUSIVE(CS, (TestRecovery), 1);
+};
+
 #endif  // TEST_MODIFY_COMPLEX_H
