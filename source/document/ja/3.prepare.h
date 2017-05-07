@@ -74,6 +74,10 @@ Theolizerを解凍、もしくは、インストールしたフォルダを以�
 
     TheolizerDriver.exe "--theolizer-replace=C:\mingw-w64\x86_64-5.4.0-posix-seh-rt_v5-rev0\mingw64\bin\g++.exe"
 
+例えば、ubuntu 16.04 LTSの場合、次のコマンドでコンパイラをリプレースします。
+
+    sudo ./TheolizerDriver "--theolizer-restore=/usr/bin/g++"
+
 <br>
 <div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
 Visual Strudio C++については、<b>Theolizerルート・フォルダ</b>にreplace.batを用意しています。これを起動することで上記のリプレース操作を行います。

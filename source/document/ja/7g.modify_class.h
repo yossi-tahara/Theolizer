@@ -605,7 +605,7 @@ Keep-step処理しない（Non-keep-step）基底クラスやメンバ変数用�
 クラス型メンバ変数にに含まれるプリミティブ型とenum型変数も変更可能です。更に、クラス型メンバ変数にに含まれるクラス型メンバ変数に含まれるプリミティブ型とenum型変数も変更可能です。（以下同様）<br>
 <br>
 2. それ以外のものは変更してはいけません。<br>
-@ref Basic36 参照<br>
+@ref Basic343 参照<br>
   - ポインタ、および、参照が指す先のインスタンス
   - 非侵入型手動クラスの基底クラス、および、メンバ変数
   - ポインタそれ自身<br>
@@ -877,7 +877,7 @@ struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
 iNextVersion引数は次バージョンです。<br>
 oNowVersionは現バージョン(テンプレート引数で指定したバージョン)です。<br>
 それぞれ@link HowToModifyClass41 TheolizerVersionクラス@endlink のインスタンスが渡ってきます。<br>
-iNextVersionを参照しつつ、oNowVersionの@link Basic36 設定可能なメンバ@endlink を設定して下さい。<br>
+iNextVersionを参照しつつ、oNowVersionの@link Basic343 設定可能なメンバ@endlink を設定して下さい。<br>
 <br>
 <b>設定例：</b>
 @code
@@ -893,7 +893,7 @@ oNowVersion.mData0=iNextVersion.mData0-100;
 iNowVersionは現バージョン(テンプレート引数で指定したバージョン)です。<br>
 tNextVersion引数は次バージョンです。<br>
 それぞれ@link HowToModifyClass41 TheolizerVersionクラス@endlink のインスタンスが渡ってきます。<br>
-iNextVersionを参照しつつ、oNowVersionの@link Basic36 設定可能なメンバ@endlink を設定して下さい。<br>
+iNextVersionを参照しつつ、oNowVersionの@link Basic343 設定可能なメンバ@endlink を設定して下さい。<br>
 <br>
 <b>設定例：</b>
 @code

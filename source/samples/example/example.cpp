@@ -1,74 +1,37 @@
-﻿//############################################################################
-/*!
-    @brief      Theolizer紹介用サンプル・プログラム
-    @ingroup    Documents
-    @file       example.cpp
-    @author     Yoshinori Tahara
-    @date       2016/11/03 Created
-*/
-//############################################################################
-
-// ***************************************************************************
-//      インクルード
-// ***************************************************************************
-
+﻿#include <iostream>
 #include <fstream>
-#include "example.h"
-#include "example.cpp.theolizer.hpp"                // Theolizer自動生成先
+#include <string>
+#include <theolizer/serializer_json.h>
 
-// ***************************************************************************
-//      メイン
-// ***************************************************************************
+struct Foo
+{
+    std::string name;
+    int age;
+};
+
+#include "example.cpp.theolizer.hpp"            // Theolizer自動生成先
 
 int main(int argc, char* argv[])
 {
-//----------------------------------------------------------------------------
-//      保存
-//----------------------------------------------------------------------------
-
-    try
+    // 保存
     {
-        // データを生成する
-        StructType aStructType;
-        aStructType.mEnum   = EnumB;
-        aStructType.mInt    = 1001;
-        aStructType.mString = u8"ＵＴＦ－８　ｓｔｒｉｎｇ";
+        Foo foo;
+        foo.name="Yossi Tahara";
+        foo.age=55;
 
-        std::ofstream   aStream("example.json");    // 保存先のファイルをオープンする
-        theolizer::JsonOSerializer<> js(aStream);   // シリアライザを用意する
-        THEOLIZER_PROCESS(js, aStructType);         // example.jsonファイルへ保存する
-    }
-    catch(theolizer::ErrorInfo& e)
-    {
-        std::cerr << e.getString() << "\n";
-return 1;
+        std::ofstream ofs("sample.txt");
+        theolizer::JsonOSerializer<> jos(ofs);  // シリアライザを生成
+        THEOLIZER_PROCESS(jos, foo);            // ファイルへfooを保存
     }
 
-//----------------------------------------------------------------------------
-//      回復
-//----------------------------------------------------------------------------
-
-    try
+    // 回復
     {
-        StructType aStructType;                     // データ領域を獲得する
-        std::ifstream   aStream("example.json");    // 回復元のファイルをオープンする
-        theolizer::JsonISerializer<> js(aStream);   // シリアライザを用意する
-        THEOLIZER_PROCESS(js, aStructType);         // example.jsonファイルから回復する
+        Foo foo;
+        std::ifstream ifs("sample.txt");
+        theolizer::JsonISerializer<> jis(ifs);  // デシリアライザを生成
+        THEOLIZER_PROCESS(jis, foo);            // ファイルからfooを回復
 
-        // 回復結果を表示する
-        std::cout <<theolizer::print
-                    (
-                        u8"mEnum=%d mInt=%d mString=[%s]\n",
-                        aStructType.mEnum,
-                        aStructType.mInt,
-                        aStructType.mString
-                    );
+        theolizer::JsonOSerializer<> jos(std::cout);
+        THEOLIZER_PROCESS(jos, foo);            // 回復結果の簡易表示
     }
-    catch(theolizer::ErrorInfo& e)
-    {
-        std::cerr << e.getString() << "\n";
-return 2;
-    }
-
-    return 0;
 }

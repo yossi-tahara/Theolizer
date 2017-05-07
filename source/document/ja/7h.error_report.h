@@ -269,7 +269,7 @@ no-exception : Error(UnknownData),ashort{test_basic_process.cpp(256)} : Logical 
 ソース・コードは、source/reference_and_test/ver3b/test_modify_complex.hにて、ERROR1, ERROR2マクロが定義されている時にコンパイル・エラーになるように定義しています。そして、source/reference_and_test/CMakeLists.txtのver3bERROR1, ver3bERROR2にてコンパイル・エラーが発生することをチェックしています。
 
 @subsection ErrorReport73 7-3.グローバル・バージョン番号テーブルのエラー検出
-バージョン・アップに伴い、一度シリアライズ指定したクラスやenum型をソース・コードから完全に削除した場合に、グローバル・バージョン番号テーブルから手動で削除する必要があります。（@ref Basic372 参照。）<br>
+バージョン・アップに伴い、一度シリアライズ指定したクラスやenum型をソース・コードから完全に削除した場合に、グローバル・バージョン番号テーブルから手動で削除する必要があります。（@ref Basic344 参照。）<br>
 その削除を忘れた場合にコンパイル・エラーになることを確認しています。
 
 ソース・コードは、source/reference_and_test/ver3b/test_modify_complex.hにて、ERROR3マクロが定義されている時にコンパイル・エラーになるように定義しています。そして、source/reference_and_test/CMakeLists.txtのver3bERROR3にてコンパイル・エラーが発生することをチェックしています。

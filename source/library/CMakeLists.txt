@@ -200,6 +200,12 @@ else()
     install(TARGETS ${TheolizerLib} DESTINATION ${LIB_DIR})
 endif()
 
+if (${IS_MSVC})
+    file(GLOB_RECURSE PDBS ${CMAKE_CURRENT_BINARY_DIR}/*.dir/Debug/*.pdb)
+    message(STATUS "PDBS=${PDBS}")
+    install(FILES ${PDBS} DESTINATION ${LIB_DIR})
+endif()
+
 #       ---<<< TheolizerTest >>>---
 
 add_library(${TheolizerTest} ${THEOLIZER_TEST_LIST})

@@ -90,7 +90,7 @@ enum型は従来のenum型と、C++11で追加されたscoped enum型の２つ�
 //############################################################################
 以下のアイテムを保存し、回復して保存した値と同じ値が回復できたことを、全てのシリアライザの全ての書式指定オプションに対して確認しています。（@ref TestProgram 参照）
 
-  - C++言語がサポートする組み込み型全て<br>
+  - C++言語がサポートする基本型全て<br>
     char, signed char, unsigned char, wchar_t, u16char, u32char,<br>
     short, int, long, long long,<br>
     unsigned short, unsigned int, unsigned long, unsigned long long,<br>

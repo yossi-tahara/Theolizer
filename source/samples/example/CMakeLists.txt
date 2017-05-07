@@ -10,28 +10,26 @@ cmake_minimum_required(VERSION ${CMAKE_VERSION})
 message(STATUS "BOOST_ROOT=${BOOST_ROOT}")
 
 #-----------------------------------------------------------------------------
-#       MSVCの通常使わないビルド・モードとZERO_CHECKプロジェクトの削除
-#-----------------------------------------------------------------------------
-
-set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
-set(CMAKE_SUPPRESS_REGENERATION TRUE)
-
-#-----------------------------------------------------------------------------
 #       プロジェクト設定
 #-----------------------------------------------------------------------------
 
-#プロジェクト定義
 set(TARGET_NAME example)
-project(${TARGET_NAME}  VERSION 1.0.0)
-set(SOURCE_LIST example.cpp example.h)
+set(SOURCE_LIST example.cpp)
 
-# Theolizer
-find_package(THEOLIZER)
+project(${TARGET_NAME}  VERSION 1.0.0)
 
 #-----------------------------------------------------------------------------
 #       ビルド設定
 #-----------------------------------------------------------------------------
 
+# MSVCの通常使わないビルド・モードとZERO_CHECKプロジェクトの削除
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
+set(CMAKE_SUPPRESS_REGENERATION TRUE)
+
+# Theolizer
+find_package(THEOLIZER)
+
+# Options
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
     add_definitions(-D_UNICODE -DUNICODE)
     set(CMAKE_DEBUG_POSTFIX "d")
@@ -46,15 +44,15 @@ else()
 endif()
 
 # example
-add_executable(example ${SOURCE_LIST})
-setup_theolizer(example StaticWithBoost)
+add_executable(${TARGET_NAME} ${SOURCE_LIST})
+setup_theolizer(${TARGET_NAME} StaticWithBoost)
 
 #-----------------------------------------------------------------------------
 #       テスト実行
 #-----------------------------------------------------------------------------
 
 enable_testing()
-add_test(NAME example COMMAND $<TARGET_FILE:example>)
+add_test(NAME ${TARGET_NAME} COMMAND $<TARGET_FILE:${TARGET_NAME}>)
 
 add_custom_target(BuildTest COMMAND "ctest" "-V" "-C" $<CONFIG>)
-add_dependencies(BuildTest example)
+add_dependencies(BuildTest ${TARGET_NAME})

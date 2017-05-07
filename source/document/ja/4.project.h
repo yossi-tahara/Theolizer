@@ -86,29 +86,38 @@ CMakeLists.txt作成後、THEOLIZER_DIRに <b>Theolizerルート・フォルダ<
 
 ---
 
-TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソース・コードとCMakeLists.txtを <b>source/samples/example</b> に置いています。これは「2.CMakeを使う場合」のサンプルとなります。\n
-適切なビルド・フォルダを作成して、そこで下記コマンドを実行することで、プロジェクト生成→ビルド→テスト実行が行われます。\n
+TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソース・コードとCMakeLists.txtを <b>source/samples/example</b> に置いています。これは「2.CMakeを使う場合」のサンプルとなります。<br>
+適切なビルド・フォルダを作成して、そこで下記コマンドを実行することで、プロジェクト生成→ビルド→テスト実行が行われます。<br>
 
-なお、下記は全てReleaseビルドの例です。Debugビルドする時は、Releaseの代わりにDebugを指定して下さい。\n
+全てsource/samples/exampleフォルダで作業して下さい。<br>
+なお、下記は全てReleaseビルドの例です。Debugビルドする時は、Releaseの代わりにDebugを指定して下さい。<br>
 
 #### Visual Studio 2015(32bits版)の場合
 
-    cmake -G "Visual Studio 14" <source/samples/exampleフォルダ> -DTHEOLIZER_DIR=<Theolizerルート・フォルダ>
+    mkdir msvc32
+    cd msvc32
+    cmake -G "Visual Studio 14" .. -DTHEOLIZER_DIR=<Theolizerルート・フォルダ>
     cmake --build . --config Release --target BuildTest
 
 #### Visual Studio 2015(64bits版)の場合
 
-    cmake -G "Visual Studio 14 Win64" <source/samples/exampleフォルダ> -DTHEOLIZER_DIR=<Theolizerルート・フォルダ>
+    mkdir msvc64
+    cd msvc64
+    cmake -G "Visual Studio 14 Win64" .. -DTHEOLIZER_DIR=<Theolizerルート・フォルダ>
     cmake --build . --config Release --target BuildTest
 
 #### MiGWの場合（事前にMinGWへのパスを設定下さい）
 
-    cmake -G "MinGW Makefiles" <source/samples/exampleフォルダ> -DTHEOLIZER_DIR=<Theolizerルート・フォルダ> -DCMAKE_BUILD_TYPE=Release
+    mkdir mingw
+    cd mingw
+    cmake -G "MinGW Makefiles" .. -DTHEOLIZER_DIR=<Theolizerルート・フォルダ> -DCMAKE_BUILD_TYPE=Release
     make BuildTest
 
 #### gcc(Linux)の場合
 
-    cmake -G "Unix Makefiles" <source/samples/exampleフォルダ> -DTHEOLIZER_DIR=<Theolizerルート・フォルダ> -DCMAKE_BUILD_TYPE=Release
+    mkdir gcc
+    cd gcc
+    cmake -G "Unix Makefiles" .. -DTHEOLIZER_DIR=<Theolizerルート・フォルダ> -DCMAKE_BUILD_TYPE=Release
     make BuildTest
 
 <br>
