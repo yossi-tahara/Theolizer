@@ -1,0 +1,542 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.12"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Theolizer: serializer.h ファイル</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<script type="text/javascript">
+  $(document).ready(initResizable);
+</script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+<link href="my_style.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">Theolizer
+   &#160;<span id="projectnumber">Version.1.0.0</span>
+   </div>
+   <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 構築: Doxygen 1.8.12 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'検索');
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','検索');
+  $(document).ready(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('serializer_8h.html','');});
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="summary">
+<a href="#namespaces">名前空間</a> &#124;
+<a href="#define-members">マクロ定義</a>  </div>
+  <div class="headertitle">
+<div class="title">serializer.h ファイル<div class="ingroups"><a class="el" href="group___theolizer_lib.html">Theolizer Library(main)</a></div></div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>TheolizerライブラリのAPI部  
+<a href="#details">[詳解]</a></p>
+<div class="textblock"><code>#include &quot;internal/core.h&quot;</code><br />
+</div><div class="textblock"><div class="dynheader">
+serializer.h の依存先関係図:</div>
+<div class="dyncontent">
+<div class="center"><img src="serializer_8h__incl.png" border="0" usemap="#serializer_8h" alt=""/></div>
+<map name="serializer_8h" id="serializer_8h">
+<area shape="rect" id="node2" href="core_8h_source.html" title="internal/core.h" alt="" coords="360,80,464,107"/>
+<area shape="rect" id="node3" href="core__switcher_8h_source.html" title="core_switcher.h" alt="" coords="355,155,469,181"/>
+<area shape="rect" id="node5" href="core__serializer_8h_source.html" title="core_serializer.h" alt="" coords="420,229,537,256"/>
+<area shape="rect" id="node6" href="core__type__info_8h_source.html" title="core_type_info.h" alt="" coords="283,304,400,331"/>
+<area shape="rect" id="node24" href="version__array_8h_source.html" title="version_array.h" alt="" coords="424,304,533,331"/>
+<area shape="rect" id="node7" href="core__assorted_8h.html" title="Theolizerライブラリのコア部(型情報リスト) " alt="" coords="284,379,399,405"/>
+<area shape="rect" id="node9" href="report_8h.html" title="Theolizerシステム部 " alt="" coords="347,453,426,480"/>
+<area shape="rect" id="node10" href="u8string_8h.html" title="Unicode文字列用補助ツール群 " alt="" coords="187,528,266,555"/>
+<area shape="rect" id="node14" href="base_8h_source.html" title="internal/base.h" alt="" coords="449,528,556,555"/>
+<area shape="rect" id="node11" href="external_8h_source.html" title="internal/external.h" alt="" coords="5,603,131,629"/>
+<area shape="rect" id="node15" href="rbfor_8h.html" title="範囲ベースfor拡張 " alt="" coords="817,603,887,629"/>
+<area shape="rect" id="node23" href="version_8h.html" title="バージョン番号を自動生成 " alt="" coords="719,603,793,629"/>
+</map>
+</div>
+</div>
+<p><a href="serializer_8h_source.html">[ソースコード]</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
+名前空間</h2></td></tr>
+<tr class="memitem:namespacetheolizer"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html">theolizer</a></td></tr>
+<tr class="memdesc:namespacetheolizer"><td class="mdescLeft">&#160;</td><td class="mdescRight">theolizer名前空間 <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+マクロ定義</h2></td></tr>
+<tr class="memitem:a111b2020794cbf2649488f2030c49f7b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(dSerializer,  dInstance)</td></tr>
+<tr class="memdesc:a111b2020794cbf2649488f2030c49f7b"><td class="mdescLeft">&#160;</td><td class="mdescRight">通常の保存／回復処理マクロ（<a class="el" href="_usage_total.html#Request">2-4-2.シリアライズ処理要求</a> 参照）  <a href="#a111b2020794cbf2649488f2030c49f7b">[詳解]</a><br /></td></tr>
+<tr class="separator:a111b2020794cbf2649488f2030c49f7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a97d7bdcabf66a9a84a5aa0241b9db848"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#a97d7bdcabf66a9a84a5aa0241b9db848">THEOLIZER_PROCESS_POINTEE</a>(dSerializer,  dInstance)</td></tr>
+<tr class="memdesc:a97d7bdcabf66a9a84a5aa0241b9db848"><td class="mdescLeft">&#160;</td><td class="mdescRight">被ポインタ用の保存／回復処理マクロ（<a class="el" href="_usage_total.html#Request">2-4-2.シリアライズ処理要求</a> 参照）  <a href="#a97d7bdcabf66a9a84a5aa0241b9db848">[詳解]</a><br /></td></tr>
+<tr class="separator:a97d7bdcabf66a9a84a5aa0241b9db848"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a82673dbf10780d386eb1003543d5816b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#a82673dbf10780d386eb1003543d5816b">THEOLIZER_PROCESS_OWNER</a>(dSerializer,  dInstance)</td></tr>
+<tr class="memdesc:a82673dbf10780d386eb1003543d5816b"><td class="mdescLeft">&#160;</td><td class="mdescRight">オーナ・ポインタ用の保存／回復処理マクロ（<a class="el" href="_usage_total.html#Request">2-4-2.シリアライズ処理要求</a> 参照）  <a href="#a82673dbf10780d386eb1003543d5816b">[詳解]</a><br /></td></tr>
+<tr class="separator:a82673dbf10780d386eb1003543d5816b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d8729a95725219bbe4ef9329a981787"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#a3d8729a95725219bbe4ef9329a981787">THEOLIZER_PROCESS_BASE</a>(dSerializer,  dBase,  dInstance)</td></tr>
+<tr class="memdesc:a3d8729a95725219bbe4ef9329a981787"><td class="mdescLeft">&#160;</td><td class="mdescRight">非侵入型手動クラスの保存／回復処理で、基底クラスを保存／回復するためのマクロ（<a class="el" href="_class_variation.html#WriteManualClass">3-5.保存／回復処理関数の記述</a> 参照）  <a href="#a3d8729a95725219bbe4ef9329a981787">[詳解]</a><br /></td></tr>
+<tr class="separator:a3d8729a95725219bbe4ef9329a981787"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7265fc4db9b57e28e813430083a84634"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#a7265fc4db9b57e28e813430083a84634">THEOLIZER_INTRUSIVE</a>(dAnno,  dClass,  dLastVersionNo)</td></tr>
+<tr class="memdesc:a7265fc4db9b57e28e813430083a84634"><td class="mdescLeft">&#160;</td><td class="mdescRight">侵入型半自動クラス（名前対応）指定（<a class="el" href="_class_variation.html#HalfAutoClass">2.侵入型半自動クラス</a> 参照）  <a href="#a7265fc4db9b57e28e813430083a84634">[詳解]</a><br /></td></tr>
+<tr class="separator:a7265fc4db9b57e28e813430083a84634"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6ff72aec12d013eae158d4ab63d369e4"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#a6ff72aec12d013eae158d4ab63d369e4">THEOLIZER_INTRUSIVE_ORDER</a>(dAnno,  dClass,  dLastVersionNo)</td></tr>
+<tr class="memdesc:a6ff72aec12d013eae158d4ab63d369e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">侵入型半自動クラス（順序対応）指定（<a class="el" href="_class_variation.html#HalfAutoClass">2.侵入型半自動クラス</a> 参照）  <a href="#a6ff72aec12d013eae158d4ab63d369e4">[詳解]</a><br /></td></tr>
+<tr class="separator:a6ff72aec12d013eae158d4ab63d369e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a443066446fbe73fb3169c35552b51f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#a4a443066446fbe73fb3169c35552b51f">THEOLIZER_NON_INTRUSIVE_ORDER</a>(dClass,  dLastVersionNo)</td></tr>
+<tr class="memdesc:a4a443066446fbe73fb3169c35552b51f"><td class="mdescLeft">&#160;</td><td class="mdescRight">非侵入型手動クラス指定（<a class="el" href="_class_variation.html#ManualClass">3.非侵入型手動クラス</a> 参照）  <a href="#a4a443066446fbe73fb3169c35552b51f">[詳解]</a><br /></td></tr>
+<tr class="separator:a4a443066446fbe73fb3169c35552b51f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b69c6bb89a295c8c3e5a289bd9d4f20"><td class="memItemLeft" align="right" valign="top"><a id="a6b69c6bb89a295c8c3e5a289bd9d4f20"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#a6b69c6bb89a295c8c3e5a289bd9d4f20">THEOLIZER_ENUM</a>(dEnum,  dLastVersionNo)&#160;&#160;&#160;THEOLIZER_INTERNAL_ENUM(dEnum, dLastVersionNo, theolizer::internal::estName, false)</td></tr>
+<tr class="memdesc:a6b69c6bb89a295c8c3e5a289bd9d4f20"><td class="mdescLeft">&#160;</td><td class="mdescRight">enum型シリアライズ（シンボル名保存）指定（<a class="el" href="_enum_variation.html#HalfAutoEnum">2.非侵入型半自動enum型</a> 参照） <br /></td></tr>
+<tr class="separator:a6b69c6bb89a295c8c3e5a289bd9d4f20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2bd28fd8daca6b3d9ea66246f19bfc1"><td class="memItemLeft" align="right" valign="top"><a id="af2bd28fd8daca6b3d9ea66246f19bfc1"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#af2bd28fd8daca6b3d9ea66246f19bfc1">THEOLIZER_ENUM_VALUE</a>(dEnum,  dLastVersionNo)&#160;&#160;&#160;THEOLIZER_INTERNAL_ENUM(dEnum, dLastVersionNo, theolizer::internal::estValue, false)</td></tr>
+<tr class="memdesc:af2bd28fd8daca6b3d9ea66246f19bfc1"><td class="mdescLeft">&#160;</td><td class="mdescRight">enum型シリアライズ（シンボル値保存）指定（<a class="el" href="_enum_variation.html#HalfAutoEnum">2.非侵入型半自動enum型</a> 参照） <br /></td></tr>
+<tr class="separator:af2bd28fd8daca6b3d9ea66246f19bfc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1996231f409bd2e158c7e42efa4afbb6"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#a1996231f409bd2e158c7e42efa4afbb6">THEOLIZER_REGISTER_CLASS</a>(dClass)</td></tr>
+<tr class="memdesc:a1996231f409bd2e158c7e42efa4afbb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">ポリモーフィズム用派生クラス登録（<a class="el" href="_object_tracking.html#Polymorphism31">3-1.使い方</a> 参照）  <a href="#a1996231f409bd2e158c7e42efa4afbb6">[詳解]</a><br /></td></tr>
+<tr class="separator:a1996231f409bd2e158c7e42efa4afbb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a821fd2ce199c257be53dcd891f93cf2b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a>(...)</td></tr>
+<tr class="memdesc:a821fd2ce199c257be53dcd891f93cf2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">アノテーション用マクロ  <a href="#a821fd2ce199c257be53dcd891f93cf2b">[詳解]</a><br /></td></tr>
+<tr class="separator:a821fd2ce199c257be53dcd891f93cf2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace6a9d9f791104f6119fe9c8a61658e1"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#ace6a9d9f791104f6119fe9c8a61658e1">THEOLIZER_DESTINATIONS</a>(dPrevSymbol, ...)</td></tr>
+<tr class="memdesc:ace6a9d9f791104f6119fe9c8a61658e1"><td class="mdescLeft">&#160;</td><td class="mdescRight">保存先定義用マクロ  <a href="#ace6a9d9f791104f6119fe9c8a61658e1">[詳解]</a><br /></td></tr>
+<tr class="separator:ace6a9d9f791104f6119fe9c8a61658e1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed67475e426a84a276f60ae416b6fea1"><td class="memItemLeft" align="right" valign="top"><a id="aed67475e426a84a276f60ae416b6fea1"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html#aed67475e426a84a276f60ae416b6fea1">THEOLIZER_DEFINE_GLOBAL_VERSION_TABLE</a>(dName,  dLastGlobalVersionNo)</td></tr>
+<tr class="memdesc:aed67475e426a84a276f60ae416b6fea1"><td class="mdescLeft">&#160;</td><td class="mdescRight">グローバル・バージョン番号テーブル定義用マクロ <br /></td></tr>
+<tr class="separator:aed67475e426a84a276f60ae416b6fea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">詳解</h2>
+<div class="textblock"><p>TheolizerライブラリのAPI部 </p>
+<p>下記Theolizer(Theolizer Serializer)のAPI定義<br />
+ 　　標準派生Serializer<br />
+ 　　標準Serializableクラス<br />
+</p>
+<dl class="section author"><dt>著者</dt><dd>Yoshinori Tahara </dd></dl>
+<dl class="section date"><dt>日付</dt><dd>2016/03/21 Created </dd></dl>
+
+<p> <a class="el" href="serializer_8h_source.html">serializer.h</a> に定義があります。</p>
+</div><h2 class="groupheader">マクロ定義詳解</h2>
+<a id="a821fd2ce199c257be53dcd891f93cf2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a821fd2ce199c257be53dcd891f93cf2b">&sect;&nbsp;</a></span>THEOLIZER_ANNOTATE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THEOLIZER_ANNOTATE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>アノテーション用マクロ </p>
+<dl class="section see"><dt>参照</dt><dd><a class="el" href="_specification.html#Basic11">1-1.シリアライズ可能な型</a> </dd>
+<dd>
+<a class="el" href="_specification.html#Basic21">2-1.オブジェクト追跡する領域について</a> </dd>
+<dd>
+<a class="el" href="_object_tracking.html#HowToObjectTracking11">1-1.指定方法</a> </dd>
+<dd>
+<a class="el" href="_object_tracking.html#HowToObjectTracking12">1-2.サンプル・ソース</a> </dd>
+<dd>
+<a class="el" href="_destinations.html#HowToSpecifySaving133">1-3-3.メンバ変数への指定方法</a> </dd>
+<dd>
+<a class="el" href="_changing_enum.html">enum型のアップデート／バージョン・アップ方法</a> </dd>
+<dd>
+<a class="el" href="_changing_enum.html#HowToModifyEnum1">1.バージョン番号を変えないでenum型を修正</a> </dd>
+<dd>
+<a class="el" href="_changing_enum.html#HowToModifyEnum31">3-1.バージョン・アップ手順</a> </dd>
+<dd>
+<a class="el" href="_changing_class.html#HowToModifyClass3">3.バージョン番号を変えることで可能な修正</a> </dd>
+<dd>
+<a class="el" href="_changing_class.html#HowToModifyClass5">5.バージョン番号を変えてクラスを修正する方法</a> </dd></dl>
+
+<p> <a class="el" href="serializer_8h_source.html">serializer.h</a> の <a class="el" href="serializer_8h_source.html#l00254">254</a> 行目に定義があります。</p>
+
+</div>
+</div>
+<a id="ace6a9d9f791104f6119fe9c8a61658e1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace6a9d9f791104f6119fe9c8a61658e1">&sect;&nbsp;</a></span>THEOLIZER_DESTINATIONS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THEOLIZER_DESTINATIONS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dPrevSymbol, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>値:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span><a class="code" href="namespacetheolizer.html">theolizer</a>{                                                    \</div><div class="line">    namespace <span class="keyword">internal</span>{<span class="keyword">namespace</span>{<span class="keyword">namespace </span>bits{                            \</div><div class="line">    enum : <span class="keywordtype">unsigned</span> {                                                       \</div><div class="line">        THEOLIZER_INTERNAL_CAT(dPrevSymbol, Cont)=                          \</div><div class="line">            static_cast&lt;<span class="keywordtype">unsigned</span>&gt;(theolizerD::dPrevSymbol),                 \</div><div class="line">        __VA_ARGS__                                                         \</div><div class="line">    };                                                                      \</div><div class="line">    }}} <span class="comment">/* namespace internal */</span>                                            \</div><div class="line">    THEOLIZER_INTERNAL_FOR(THEOLIZER_INTERNAL_DESTINATION, __VA_ARGS__);\</div><div class="line">    }   <span class="comment">/* namespace theolizer */</span></div><div class="ttc" id="namespacetheolizer_html"><div class="ttname"><a href="namespacetheolizer.html">theolizer</a></div><div class="ttdoc">theolizer名前空間 </div><div class="ttdef"><b>Definition:</b> <a href="base_8h_source.html#l00053">base.h:53</a></div></div>
+</div><!-- fragment -->
+<p>保存先定義用マクロ </p>
+
+<p> <a class="el" href="serializer_8h_source.html">serializer.h</a> の <a class="el" href="serializer_8h_source.html#l00318">318</a> 行目に定義があります。</p>
+
+</div>
+</div>
+<a id="a7265fc4db9b57e28e813430083a84634"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7265fc4db9b57e28e813430083a84634">&sect;&nbsp;</a></span>THEOLIZER_INTRUSIVE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THEOLIZER_INTRUSIVE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dAnno, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dClass, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dLastVersionNo&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>値:</b><div class="fragment"><div class="line"><span class="keyword">private</span>:                                                                \</div><div class="line">    THEOLIZER_INTERNAL_SERIALIZABLE_AUTO(                                   \</div><div class="line">        <a class="code" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a>(dAnno:), dClass, dClass, dLastVersionNo,         \</div><div class="line">        (), theolizer::internal::emName, <span class="keyword">false</span>, <span class="keyword">false</span>)</div><div class="ttc" id="serializer_8h_html_a821fd2ce199c257be53dcd891f93cf2b"><div class="ttname"><a href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a></div><div class="ttdeci">#define THEOLIZER_ANNOTATE(...)</div><div class="ttdoc">アノテーション用マクロ </div><div class="ttdef"><b>Definition:</b> <a href="serializer_8h_source.html#l00254">serializer.h:254</a></div></div>
+</div><!-- fragment -->
+<p>侵入型半自動クラス（名前対応）指定（<a class="el" href="_class_variation.html#HalfAutoClass">2.侵入型半自動クラス</a> 参照） </p>
+
+<p> <a class="el" href="serializer_8h_source.html">serializer.h</a> の <a class="el" href="serializer_8h_source.html#l00132">132</a> 行目に定義があります。</p>
+
+</div>
+</div>
+<a id="a6ff72aec12d013eae158d4ab63d369e4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ff72aec12d013eae158d4ab63d369e4">&sect;&nbsp;</a></span>THEOLIZER_INTRUSIVE_ORDER</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THEOLIZER_INTRUSIVE_ORDER</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dAnno, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dClass, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dLastVersionNo&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>値:</b><div class="fragment"><div class="line"><span class="keyword">private</span>:                                                                \</div><div class="line">    THEOLIZER_INTERNAL_SERIALIZABLE_AUTO(                                   \</div><div class="line">        <a class="code" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a>(dAnno:), dClass, dClass, dLastVersionNo,         \</div><div class="line">        (), theolizer::internal::emOrder, <span class="keyword">false</span>, <span class="keyword">false</span>)</div><div class="ttc" id="serializer_8h_html_a821fd2ce199c257be53dcd891f93cf2b"><div class="ttname"><a href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a></div><div class="ttdeci">#define THEOLIZER_ANNOTATE(...)</div><div class="ttdoc">アノテーション用マクロ </div><div class="ttdef"><b>Definition:</b> <a href="serializer_8h_source.html#l00254">serializer.h:254</a></div></div>
+</div><!-- fragment -->
+<p>侵入型半自動クラス（順序対応）指定（<a class="el" href="_class_variation.html#HalfAutoClass">2.侵入型半自動クラス</a> 参照） </p>
+
+<p> <a class="el" href="serializer_8h_source.html">serializer.h</a> の <a class="el" href="serializer_8h_source.html#l00141">141</a> 行目に定義があります。</p>
+
+</div>
+</div>
+<a id="a4a443066446fbe73fb3169c35552b51f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a443066446fbe73fb3169c35552b51f">&sect;&nbsp;</a></span>THEOLIZER_NON_INTRUSIVE_ORDER</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THEOLIZER_NON_INTRUSIVE_ORDER</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dClass, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dLastVersionNo&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>値:</b><div class="fragment"><div class="line"><span class="keyword">template</span>&lt;&gt;                                                              \</div><div class="line">    struct TheolizerNonIntrusive&lt;THEOLIZER_INTERNAL_UNPAREN dClass&gt; :       \</div><div class="line">                        public THEOLIZER_INTERNAL_UNPAREN dClass            \</div><div class="line">    {                                                                       \</div><div class="line">    private:                                                                \</div><div class="line">        THEOLIZER_INTERNAL_SERIALIZABLE_MANUAL(dClass, dLastVersionNo,      \</div><div class="line">            (), theolizer::internal::emOrder, <span class="keyword">true</span>);                        \</div><div class="line">    }</div></div><!-- fragment -->
+<p>非侵入型手動クラス指定（<a class="el" href="_class_variation.html#ManualClass">3.非侵入型手動クラス</a> 参照） </p>
+
+<p> <a class="el" href="serializer_8h_source.html">serializer.h</a> の <a class="el" href="serializer_8h_source.html#l00182">182</a> 行目に定義があります。</p>
+
+</div>
+</div>
+<a id="a111b2020794cbf2649488f2030c49f7b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a111b2020794cbf2649488f2030c49f7b">&sect;&nbsp;</a></span>THEOLIZER_PROCESS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THEOLIZER_PROCESS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dSerializer, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dInstance&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>値:</b><div class="fragment"><div class="line">theolizer::internal::process&lt;theolizer::internal::etmDefault,tTheolizerVersion&gt;\</div><div class="line">        (dSerializer, dInstance, #dInstance, THEOLIZER_INTERNAL_FILE, __LINE__)</div></div><!-- fragment -->
+<p>通常の保存／回復処理マクロ（<a class="el" href="_usage_total.html#Request">2-4-2.シリアライズ処理要求</a> 参照） </p>
+
+<p> <a class="el" href="serializer_8h_source.html">serializer.h</a> の <a class="el" href="serializer_8h_source.html#l00067">67</a> 行目に定義があります。</p>
+
+</div>
+</div>
+<a id="a3d8729a95725219bbe4ef9329a981787"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d8729a95725219bbe4ef9329a981787">&sect;&nbsp;</a></span>THEOLIZER_PROCESS_BASE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THEOLIZER_PROCESS_BASE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dSerializer, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dBase, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dInstance&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>値:</b><div class="fragment"><div class="line">{                                                                       \</div><div class="line">        theolizer::internal::BaseSerializer::AutoBaseProcessing             \</div><div class="line">            aAutoBaseProcessing(dSerializer);                               \</div><div class="line">        theolizer::internal::process&lt;theolizer::internal::etmDefault,tTheolizerVersion&gt;\</div><div class="line">        (                                                                   \</div><div class="line">            dSerializer,                                                    \</div><div class="line">            const_cast&lt;dBase&amp;&gt;(<span class="keyword">static_cast&lt;</span>dBase const&amp;<span class="keyword">&gt;</span>(*dInstance)),      \</div><div class="line">            <span class="stringliteral">&quot;(&quot;</span> #dBase <span class="stringliteral">&quot;)&quot;</span>, THEOLIZER_INTERNAL_FILE, __LINE__               \</div><div class="line">        );                                                                  \</div><div class="line">    }</div></div><!-- fragment -->
+<p>非侵入型手動クラスの保存／回復処理で、基底クラスを保存／回復するためのマクロ（<a class="el" href="_class_variation.html#WriteManualClass">3-5.保存／回復処理関数の記述</a> 参照） </p>
+
+<p> <a class="el" href="serializer_8h_source.html">serializer.h</a> の <a class="el" href="serializer_8h_source.html#l00103">103</a> 行目に定義があります。</p>
+
+</div>
+</div>
+<a id="a82673dbf10780d386eb1003543d5816b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a82673dbf10780d386eb1003543d5816b">&sect;&nbsp;</a></span>THEOLIZER_PROCESS_OWNER</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THEOLIZER_PROCESS_OWNER</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dSerializer, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dInstance&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>値:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                                                    \</div><div class="line">        typedef <span class="keyword">typename</span> std::remove_reference&lt;decltype(dInstance)&gt;::type Type;\</div><div class="line">        static_assert(std::is_pointer&lt;<span class="keyword">typename</span> std::remove_all_extents&lt;Type&gt;::type&gt;::value,\</div><div class="line">            <span class="stringliteral">&quot;THEOLIZER_PROCESS_OWNER() support a pointer only.&quot;</span>);           \</div><div class="line">        theolizer::internal::process&lt;theolizer::internal::etmOwner,tTheolizerVersion&gt;\</div><div class="line">            (dSerializer, dInstance, #dInstance, THEOLIZER_INTERNAL_FILE, __LINE__);\</div><div class="line">    } <span class="keywordflow">while</span>(0)</div></div><!-- fragment -->
+<p>オーナ・ポインタ用の保存／回復処理マクロ（<a class="el" href="_usage_total.html#Request">2-4-2.シリアライズ処理要求</a> 参照） </p>
+
+<p> <a class="el" href="serializer_8h_source.html">serializer.h</a> の <a class="el" href="serializer_8h_source.html#l00091">91</a> 行目に定義があります。</p>
+
+</div>
+</div>
+<a id="a97d7bdcabf66a9a84a5aa0241b9db848"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a97d7bdcabf66a9a84a5aa0241b9db848">&sect;&nbsp;</a></span>THEOLIZER_PROCESS_POINTEE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THEOLIZER_PROCESS_POINTEE</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dSerializer, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dInstance&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>値:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span> {                                                                    \</div><div class="line">        typedef <span class="keyword">typename</span> std::remove_reference&lt;decltype(dInstance)&gt;::type Type;\</div><div class="line">        static_assert(!std::is_pointer&lt;Type&gt;::value,                        \</div><div class="line">            <span class="stringliteral">&quot;THEOLIZER_PROCESS_POINTEE() does not support a pointer.&quot;</span>);     \</div><div class="line">        theolizer::internal::process&lt;theolizer::internal::etmPointee,tTheolizerVersion&gt;\</div><div class="line">            (dSerializer, dInstance, #dInstance, THEOLIZER_INTERNAL_FILE, __LINE__);\</div><div class="line">    } <span class="keywordflow">while</span>(0)</div></div><!-- fragment -->
+<p>被ポインタ用の保存／回復処理マクロ（<a class="el" href="_usage_total.html#Request">2-4-2.シリアライズ処理要求</a> 参照） </p>
+
+<p> <a class="el" href="serializer_8h_source.html">serializer.h</a> の <a class="el" href="serializer_8h_source.html#l00076">76</a> 行目に定義があります。</p>
+
+</div>
+</div>
+<a id="a1996231f409bd2e158c7e42efa4afbb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1996231f409bd2e158c7e42efa4afbb6">&sect;&nbsp;</a></span>THEOLIZER_REGISTER_CLASS</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THEOLIZER_REGISTER_CLASS</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dClass</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>値:</b><div class="fragment"><div class="line"><span class="keyword">namespace </span><a class="code" href="namespacetheolizer.html">theolizer</a>{<span class="keyword">namespace </span>internal{                                 \</div><div class="line">    template                                                                \</div><div class="line">    class RegisterToBaseClass&lt;THEOLIZER_INTERNAL_UNPAREN dClass&gt;;           \</div><div class="line">    }}</div><div class="ttc" id="namespacetheolizer_html"><div class="ttname"><a href="namespacetheolizer.html">theolizer</a></div><div class="ttdoc">theolizer名前空間 </div><div class="ttdef"><b>Definition:</b> <a href="base_8h_source.html#l00053">base.h:53</a></div></div>
+</div><!-- fragment -->
+<p>ポリモーフィズム用派生クラス登録（<a class="el" href="_object_tracking.html#Polymorphism31">3-1.使い方</a> 参照） </p>
+
+<p> <a class="el" href="serializer_8h_source.html">serializer.h</a> の <a class="el" href="serializer_8h_source.html#l00227">227</a> 行目に定義があります。</p>
+
+</div>
+</div>
+</div><!-- contents -->
+</div><!-- doc-content -->
+<!-- HTML footer for doxygen 1.8.12-->
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+	<ul>
+    <li class="navelem"><a class="el" href="dir_c0d7a5ea99cf056952ad9da006ee7797.html">Theolizer</a></li><li class="navelem"><a class="el" href="dir_24d94dfed046822834595a2e9d704119.html">source</a></li><li class="navelem"><a class="el" href="dir_0926a58a984fcb95b11cbd1e9cbca827.html">library</a></li><li class="navelem"><a class="el" href="dir_2b37ca5ca333dba6f36d09342e237e3e.html">theolizer</a></li><li class="navelem"><a class="el" href="serializer_8h.html">serializer.h</a></li>
+		<span style="color:#364D7C";>
+			&nbsp;&nbsp;&copy; 2016 <a href="http://theolizer.com/">Theoride Technology</a> All Rights Reserved.
+      &nbsp;&nbsp;"Theolizer" is a registered trademark of Theoride Technology.
+		</span>
+    <li class="footer">
+			構築:
+    	<a href="http://www.doxygen.org/index.html">
+    		<img class="footer" src="doxygen.png" alt="doxygen"/>
+			</a>
+			1.8.12
+		</li>
+  </ul>
+</div>
+</body>
+</html>

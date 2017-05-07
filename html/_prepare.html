@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.5.0</span>
+   &#160;<span id="projectnumber">Version.1.0.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -109,6 +109,7 @@ $(document).ready(function(){initNavTree('_prepare.html','');});
  コンパイラを置き換えますが、これによる悪影響はない筈です。<a class="el" href="_abstract.html#Mechanism">4.Theolizerの仕組み</a> の「ドライバ動作の補足」をご参照下さい。<br />
  （もし、悪影響か見つかった場合は、お手数ですがその再現手順を含めて当リボジトリのIssuesへご報告頂けますようお願い致します。）</p>
 <p>例えば、<b><code>C:\mingw-w64\x86_64-5.4.0-posix-seh-rt_v5-rev0\mingw64\bin</code></b>にMinGW 5.4.0がインストールされている場合、下記コマンドでにてコンパイラをリプレースします。 </p><pre class="fragment">TheolizerDriver.exe "--theolizer-replace=C:\mingw-w64\x86_64-5.4.0-posix-seh-rt_v5-rev0\mingw64\bin\g++.exe"
+</pre><p>例えば、ubuntu 16.04 LTSの場合、次のコマンドでコンパイラをリプレースします。 </p><pre class="fragment">sudo ./TheolizerDriver "--theolizer-restore=/usr/bin/g++"
 </pre><p><br />
  </p><div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> Visual Strudio C++については、<b>Theolizerルート・フォルダ</b>にreplace.batを用意しています。これを起動することで上記のリプレース操作を行います。 </div><div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> linuxにてコンパイラのパスとしてシンボリック・リンクを指定した場合、シンボリック・リンクを追跡してコンパイラ実体のファイルを置き換えます。 </div><p><br />
  </p><h6></h6>
@@ -137,7 +138,8 @@ $(document).ready(function(){initNavTree('_prepare.html','');});
 	<ul>
     <li class="navelem"><a class="el" href="index.html">--目次--</a></li>
 		<span style="color:#364D7C";>
-			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+			&nbsp;&nbsp;&copy; 2016 <a href="http://theolizer.com/">Theoride Technology</a> All Rights Reserved.
+      &nbsp;&nbsp;"Theolizer" is a registered trademark of Theoride Technology.
 		</span>
     <li class="footer">
 			構築:

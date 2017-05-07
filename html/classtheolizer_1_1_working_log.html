@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.5.0</span>
+   &#160;<span id="projectnumber">Version.1.0.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -92,35 +92,47 @@ $(document).ready(function(){initNavTree('classtheolizer_1_1_working_log.html','
 </div><!--header-->
 <div class="contents">
 
+<p>動作ログ用のクラス  
+ <a href="classtheolizer_1_1_working_log.html#details">[詳解]</a></p>
+
 <p><code>#include &lt;<a class="el" href="report_8h_source.html">report.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 クラス</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtheolizer_1_1_working_log_1_1_line_header.html">LineHeader</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">行ヘッダ情報  <a href="structtheolizer_1_1_working_log_1_1_line_header.html#details">[詳解]</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_working_log_1_1_log_stream.html">LogStream</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">ログ出力用のストリーム・クラス  <a href="classtheolizer_1_1_working_log_1_1_log_stream.html#details">[詳解]</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 公開メンバ関数</h2></td></tr>
 <tr class="memitem:abdce4397f5728ca1a442fd5f9ac984c5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_working_log.html#abdce4397f5728ca1a442fd5f9ac984c5">WorkingLog</a> (const <a class="el" href="classtheolizer_1_1u8string.html">u8string</a> &amp;iPath, size_t iFileSize=1024 *1024, unsigned iFileCount=2)</td></tr>
+<tr class="memdesc:abdce4397f5728ca1a442fd5f9ac984c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">コンストラクタ  <a href="#abdce4397f5728ca1a442fd5f9ac984c5">[詳解]</a><br /></td></tr>
 <tr class="separator:abdce4397f5728ca1a442fd5f9ac984c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a55c36c70e9d82c067d01a3c3d383686e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_working_log.html#a55c36c70e9d82c067d01a3c3d383686e">setUTCTime</a> (bool iIsUTC)</td></tr>
+<tr class="memitem:a55c36c70e9d82c067d01a3c3d383686e"><td class="memItemLeft" align="right" valign="top"><a id="a55c36c70e9d82c067d01a3c3d383686e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_working_log.html#a55c36c70e9d82c067d01a3c3d383686e">setUTCTime</a> (bool iIsUTC)</td></tr>
+<tr class="memdesc:a55c36c70e9d82c067d01a3c3d383686e"><td class="mdescLeft">&#160;</td><td class="mdescRight">行ヘッダの時刻を設定する(UTCタイム or ローカルタイム) <br /></td></tr>
 <tr class="separator:a55c36c70e9d82c067d01a3c3d383686e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aced4faafaec077387c5018fdb9d60a1c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtheolizer_1_1_working_log_1_1_log_stream.html">LogStream</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_working_log.html#aced4faafaec077387c5018fdb9d60a1c">getLogStream</a> ()</td></tr>
+<tr class="memitem:aced4faafaec077387c5018fdb9d60a1c"><td class="memItemLeft" align="right" valign="top"><a id="aced4faafaec077387c5018fdb9d60a1c"></a>
+<a class="el" href="classtheolizer_1_1_working_log_1_1_log_stream.html">LogStream</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_working_log.html#aced4faafaec077387c5018fdb9d60a1c">getLogStream</a> ()</td></tr>
+<tr class="memdesc:aced4faafaec077387c5018fdb9d60a1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">ログ出力用ストリーム返却(有効な間LogStreamのインスタンスでロックする) <br /></td></tr>
 <tr class="separator:aced4faafaec077387c5018fdb9d60a1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 静的公開メンバ関数</h2></td></tr>
-<tr class="memitem:ab82c3f455a516d0ee6f49fc8a4b1e6be"><td class="memItemLeft" align="right" valign="top">static time_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_working_log.html#ab82c3f455a516d0ee6f49fc8a4b1e6be">getTime</a> (bool iIsUTC=false)</td></tr>
+<tr class="memitem:ab82c3f455a516d0ee6f49fc8a4b1e6be"><td class="memItemLeft" align="right" valign="top"><a id="ab82c3f455a516d0ee6f49fc8a4b1e6be"></a>
+static time_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_working_log.html#ab82c3f455a516d0ee6f49fc8a4b1e6be">getTime</a> (bool iIsUTC=false)</td></tr>
+<tr class="memdesc:ab82c3f455a516d0ee6f49fc8a4b1e6be"><td class="mdescLeft">&#160;</td><td class="mdescRight">現在時刻獲得(ログ・システムと同じ時間計測方法で獲得する) <br /></td></tr>
 <tr class="separator:ab82c3f455a516d0ee6f49fc8a4b1e6be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ec0b5ca8d3647520502859d4bdc6674"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_working_log.html#a8ec0b5ca8d3647520502859d4bdc6674">getLineHeader</a> (std::string const &amp;iLine, <a class="el" href="structtheolizer_1_1_working_log_1_1_line_header.html">LineHeader</a> &amp;iLineHeader, size_t *iPos=nullptr) noexcept</td></tr>
 <tr class="separator:a8ec0b5ca8d3647520502859d4bdc6674"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">詳解</h2>
-<div class="textblock"><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000023">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<div class="textblock"><p>動作ログ用のクラス </p>
 
-<p> <a class="el" href="report_8h_source.html">report.h</a> の <a class="el" href="report_8h_source.html#l00331">331</a> 行目に定義があります。</p>
+<p> <a class="el" href="report_8h_source.html">report.h</a> の <a class="el" href="report_8h_source.html#l00343">343</a> 行目に定義があります。</p>
 </div><h2 class="groupheader">構築子と解体子</h2>
 <a id="abdce4397f5728ca1a442fd5f9ac984c5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abdce4397f5728ca1a442fd5f9ac984c5">&sect;&nbsp;</a></span>WorkingLog()</h2>
@@ -153,7 +165,16 @@ $(document).ready(function(){initNavTree('classtheolizer_1_1_working_log.html','
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000028">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+
+<p>コンストラクタ </p>
+<dl class="params"><dt>引数</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">iPath</td><td>ログ・ファイルのパス。 （ファイル名には1つの%1が必要。%1はファイル番号に展開される。） </td></tr>
+    <tr><td class="paramname">iFileSize</td><td>ログ・ファイル数 </td></tr>
+    <tr><td class="paramname">iFileCount</td><td>1ファイルのサイズ(バイト) </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>
@@ -197,81 +218,7 @@ $(document).ready(function(){initNavTree('classtheolizer_1_1_working_log.html','
   </tr>
 </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000033">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-</div>
-</div>
-<a id="aced4faafaec077387c5018fdb9d60a1c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aced4faafaec077387c5018fdb9d60a1c">&sect;&nbsp;</a></span>getLogStream()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtheolizer_1_1_working_log_1_1_log_stream.html">LogStream</a> theolizer::WorkingLog::getLogStream </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000030">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-</div>
-</div>
-<a id="ab82c3f455a516d0ee6f49fc8a4b1e6be"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab82c3f455a516d0ee6f49fc8a4b1e6be">&sect;&nbsp;</a></span>getTime()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static time_t theolizer::WorkingLog::getTime </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>iIsUTC</em> = <code>false</code></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000031">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-</div>
-</div>
-<a id="a55c36c70e9d82c067d01a3c3d383686e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a55c36c70e9d82c067d01a3c3d383686e">&sect;&nbsp;</a></span>setUTCTime()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void theolizer::WorkingLog::setUTCTime </td>
-          <td>(</td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>iIsUTC</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000029">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-<p> <a class="el" href="report_8h_source.html">report.h</a> の <a class="el" href="report_8h_source.html#l00398">398</a> 行目に定義があります。</p>
+<p>行ヘッダを解析する 　　行ヘッダを取り出せたら、iLineHeaderに返却し、trueが返る。 　　その時、*iPosにはログ文字列の先頭Indexが返る。 </p>
 
 </div>
 </div>
@@ -286,7 +233,8 @@ $(document).ready(function(){initNavTree('classtheolizer_1_1_working_log.html','
 	<ul>
     <li class="navelem"><a class="el" href="namespacetheolizer.html">theolizer</a></li><li class="navelem"><a class="el" href="classtheolizer_1_1_working_log.html">WorkingLog</a></li>
 		<span style="color:#364D7C";>
-			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+			&nbsp;&nbsp;&copy; 2016 <a href="http://theolizer.com/">Theoride Technology</a> All Rights Reserved.
+      &nbsp;&nbsp;"Theolizer" is a registered trademark of Theoride Technology.
 		</span>
     <li class="footer">
 			構築:

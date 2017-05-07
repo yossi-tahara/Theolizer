@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.5.0</span>
+   &#160;<span id="projectnumber">Version.1.0.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -85,12 +85,16 @@ $(document).ready(function(){initNavTree('u8string_8h.html','');});
   <div class="summary">
 <a href="#nested-classes">クラス</a> &#124;
 <a href="#namespaces">名前空間</a> &#124;
+<a href="#define-members">マクロ定義</a> &#124;
 <a href="#func-members">関数</a> &#124;
 <a href="#var-members">変数</a>  </div>
   <div class="headertitle">
-<div class="title">u8string.h ファイル</div>  </div>
+<div class="title">u8string.h ファイル<div class="ingroups"><a class="el" href="group___theolizer_lib.html">Theolizer Library(main)</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>Unicode文字列用補助ツール群  
+<a href="#details">[詳解]</a></p>
 <div class="textblock"><code>#include &quot;internal/external.h&quot;</code><br />
 <code>#include &lt;string&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
@@ -110,6 +114,9 @@ u8string.h の依存先関係図:</div>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtheolizer_1_1_multi_byte.html">theolizer::MultiByte</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1u8string.html">theolizer::u8string</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unicode記録用文字列クラスu8string.  <a href="classtheolizer_1_1u8string.html#details">[詳解]</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1u8string_1_1b__string.html">theolizer::u8string::b_string</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -118,12 +125,23 @@ u8string.h の依存先関係図:</div>
 <tr class="memdesc:namespacetheolizer"><td class="mdescLeft">&#160;</td><td class="mdescRight">theolizer名前空間 <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+マクロ定義</h2></td></tr>
+<tr class="memitem:a298eced3b3cd7e4a6420acb65a7148e9"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="u8string_8h.html#a298eced3b3cd7e4a6420acb65a7148e9">THEOLIZER_INTERNAL_CONSTRUCTOR</a>(dFromChar)</td></tr>
+<tr class="separator:a298eced3b3cd7e4a6420acb65a7148e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a709cabb052248df3e5dafdb152671b2e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="u8string_8h.html#a709cabb052248df3e5dafdb152671b2e">THEOLIZER_INTERNAL_FUNCTION</a>(dFunc)</td></tr>
+<tr class="separator:a709cabb052248df3e5dafdb152671b2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad203d16413bd1d278b2c69d8372364d8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="u8string_8h.html#ad203d16413bd1d278b2c69d8372364d8">THEOLIZER_INTERNAL_FRIEND_RELATIONAL_OPERATOR</a>(dFunc)</td></tr>
+<tr class="separator:ad203d16413bd1d278b2c69d8372364d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9124db80534d4228b87c19300aaa779c"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="u8string_8h.html#a9124db80534d4228b87c19300aaa779c">THEOLIZER_INTERNAL_GET_STRING</a>(dToChar,  dName)</td></tr>
+<tr class="separator:a9124db80534d4228b87c19300aaa779c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 関数</h2></td></tr>
-<tr class="memitem:aaff928d5b9f4d2b1be1206edc8119a2d"><td class="memItemLeft" align="right" valign="top">unsigned THEOLIZER_INTERNAL_DLL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#aaff928d5b9f4d2b1be1206edc8119a2d">theolizer::getACP</a> ()</td></tr>
-<tr class="separator:aaff928d5b9f4d2b1be1206edc8119a2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa09517ed7cbf36ab3f9a551a616c81eb"><td class="memItemLeft" align="right" valign="top">bool THEOLIZER_INTERNAL_DLL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#aa09517ed7cbf36ab3f9a551a616c81eb">theolizer::setACP</a> (unsigned iCodePage)</td></tr>
-<tr class="separator:aa09517ed7cbf36ab3f9a551a616c81eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaaff928d5b9f4d2b1be1206edc8119a2d"><td class="memItemLeft" align="right" valign="top">unsigned THEOLIZER_INTERNAL_DLL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___unicode.html#gaaff928d5b9f4d2b1be1206edc8119a2d">theolizer::getACP</a> ()</td></tr>
+<tr class="separator:gaaff928d5b9f4d2b1be1206edc8119a2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa09517ed7cbf36ab3f9a551a616c81eb"><td class="memItemLeft" align="right" valign="top">bool THEOLIZER_INTERNAL_DLL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___unicode.html#gaa09517ed7cbf36ab3f9a551a616c81eb">theolizer::setACP</a> (unsigned iCodePage)</td></tr>
+<tr class="separator:gaa09517ed7cbf36ab3f9a551a616c81eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5b50c2df37efb2ba7c669355c5e0fd3f"><td class="memItemLeft" align="right" valign="top">bool THEOLIZER_INTERNAL_DLL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___unicode.html#ga5b50c2df37efb2ba7c669355c5e0fd3f">theolizer::registerStream</a> (std::istream *iIStream)</td></tr>
 <tr class="separator:ga5b50c2df37efb2ba7c669355c5e0fd3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad4a4d2ac76feba196ae50620d6f9c8de"><td class="memItemLeft" align="right" valign="top">bool THEOLIZER_INTERNAL_DLL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___unicode.html#gad4a4d2ac76feba196ae50620d6f9c8de">theolizer::registerStream</a> (std::ostream *iOStream)</td></tr>
@@ -143,18 +161,132 @@ u8string.h の依存先関係図:</div>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 変数</h2></td></tr>
-<tr class="memitem:a4f11c1cc04093914d973d9753a55627b"><td class="memItemLeft" align="right" valign="top">const THEOLIZER_INTERNAL_DLL unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a4f11c1cc04093914d973d9753a55627b">theolizer::kCP_ACP</a></td></tr>
-<tr class="separator:a4f11c1cc04093914d973d9753a55627b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c1f72dc495c26a0775f7b3e84208007"><td class="memItemLeft" align="right" valign="top">const THEOLIZER_INTERNAL_DLL unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a8c1f72dc495c26a0775f7b3e84208007">theolizer::kCP_UTF8</a></td></tr>
-<tr class="separator:a8c1f72dc495c26a0775f7b3e84208007"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga4f11c1cc04093914d973d9753a55627b"><td class="memItemLeft" align="right" valign="top">const THEOLIZER_INTERNAL_DLL unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___unicode.html#ga4f11c1cc04093914d973d9753a55627b">theolizer::kCP_ACP</a></td></tr>
+<tr class="separator:ga4f11c1cc04093914d973d9753a55627b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8c1f72dc495c26a0775f7b3e84208007"><td class="memItemLeft" align="right" valign="top">const THEOLIZER_INTERNAL_DLL unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___unicode.html#ga8c1f72dc495c26a0775f7b3e84208007">theolizer::kCP_UTF8</a></td></tr>
+<tr class="separator:ga8c1f72dc495c26a0775f7b3e84208007"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">詳解</h2>
-<div class="textblock"><dl class="section author"><dt>著者</dt><dd>Yoshinori Tahara </dd></dl>
+<div class="textblock"><p>Unicode文字列用補助ツール群 </p>
+<dl class="section author"><dt>著者</dt><dd>Yoshinori Tahara </dd></dl>
 <dl class="section date"><dt>日付</dt><dd>2015/09/02 Created</dd></dl>
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000088">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<dl class="section user"><dt>①u8string：下記文字エンコード間のコンバート機能を提供する</dt><dd>char UTF-8<br />
+ wchar_t UTF-16/32<br />
+ char16_t UTF-16<br />
+ char32_t UTF-32<br />
+</dd></dl>
+<dl class="section user"><dt>②Windows用Multi Byte対応機能を提供する</dt><dd><a class="el" href="group___unicode.html#ga8fec88e3cc3bcd4682ab9c6b957311f0">registerStream()</a>にて登録したiostreamに対して、<br />
+ Windows APIを用いてu8stringのMulti Byteとのコンバートを行う。<br />
+ デフォルトにて、std::cint, std::cout, std::cerrを登録している。<br />
+<ul>
+<li>std::istream : ulti Byte → UTF-8, UTF-16, UTF-32<br />
+</li>
+<li>std::ostream : UTF-8, UTF-16, UTF-32 → Multi Byte<br />
+</li>
+</ul>
+</dd></dl>
+<dl class="section user"><dt>③コンバート・エラー発生時、ConvertError例外を投げる</dt><dd></dd></dl>
+<dl class="section note"><dt>覚え書き</dt><dd>Visual Studioのchar型文字列リテラルは、デフォルトではMulti Byte文字エンコードである。<br />
+ Visual Studio 2015以降ならば、u8"任意文字列"の書式にてUTF-8文字エンコードできる。<br />
+ </dd></dl>
 
 <p> <a class="el" href="u8string_8h_source.html">u8string.h</a> に定義があります。</p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">マクロ定義詳解</h2>
+<a id="a298eced3b3cd7e4a6420acb65a7148e9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a298eced3b3cd7e4a6420acb65a7148e9">&sect;&nbsp;</a></span>THEOLIZER_INTERNAL_CONSTRUCTOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THEOLIZER_INTERNAL_CONSTRUCTOR</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dFromChar</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>値:</b><div class="fragment"><div class="line"><span class="comment">/*! コンストラクタ */</span>                                               \</div><div class="line">        u8string(<span class="keyword">const</span> dFromChar* iIn) :                                    \</div><div class="line">            mString(internal::Converter&lt;char, dFromChar&gt;::conv(iIn)) { }    \<span class="comment"></span></div><div class="line"><span class="comment">        /*! コンストラクタ */</span>                                               \</div><div class="line">        u8string(<span class="keyword">const</span> std::basic_string&lt;dFromChar&gt;&amp; iIn) :                 \</div><div class="line">            mString(internal::Converter&lt;char, dFromChar&gt;::conv(iIn)) { }</div></div><!-- fragment --><p>内部マクロ </p>
+
+<p> <a class="el" href="u8string_8h_source.html">u8string.h</a> の <a class="el" href="u8string_8h_source.html#l00315">315</a> 行目に定義があります。</p>
+
+</div>
+</div>
+<a id="ad203d16413bd1d278b2c69d8372364d8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad203d16413bd1d278b2c69d8372364d8">&sect;&nbsp;</a></span>THEOLIZER_INTERNAL_FRIEND_RELATIONAL_OPERATOR</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THEOLIZER_INTERNAL_FRIEND_RELATIONAL_OPERATOR</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dFunc</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>値:</b><div class="fragment"><div class="line"><span class="comment">/*! 比較演算子 */</span>                                                   \</div><div class="line">        friend <span class="keywordtype">bool</span> dFunc(<span class="keyword">const</span> u8string&amp; lhs, <span class="keyword">const</span> u8string&amp; rhs)         \</div><div class="line">        {                                                                   \</div><div class="line">            return std::dFunc(lhs.mString, rhs.mString);                    \</div><div class="line">        }                                                                   \<span class="comment"></span></div><div class="line"><span class="comment">        /*! 比較演算子 */</span>                                                   \</div><div class="line">        friend <span class="keywordtype">bool</span> dFunc(<span class="keyword">const</span> u8string&amp; lhs, <span class="keywordtype">char</span> <span class="keyword">const</span>* rhs)             \</div><div class="line">        {                                                                   \</div><div class="line">            return std::dFunc(lhs.mString, rhs);                            \</div><div class="line">        }                                                                   \<span class="comment"></span></div><div class="line"><span class="comment">        /*! 比較演算子 */</span>                                                   \</div><div class="line">        friend <span class="keywordtype">bool</span> dFunc(<span class="keywordtype">char</span> <span class="keyword">const</span>* lhs, <span class="keyword">const</span> u8string&amp; rhs)             \</div><div class="line">        {                                                                   \</div><div class="line">            return std::dFunc(lhs, rhs.mString);                            \</div><div class="line">        }</div></div><!-- fragment --><p>内部マクロ </p>
+
+<p> <a class="el" href="u8string_8h_source.html">u8string.h</a> の <a class="el" href="u8string_8h_source.html#l00379">379</a> 行目に定義があります。</p>
+
+</div>
+</div>
+<a id="a709cabb052248df3e5dafdb152671b2e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a709cabb052248df3e5dafdb152671b2e">&sect;&nbsp;</a></span>THEOLIZER_INTERNAL_FUNCTION</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THEOLIZER_INTERNAL_FUNCTION</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dFunc</td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>値:</b><div class="fragment"><div class="line">u8string&amp; dFunc(<span class="keyword">const</span> u8string&amp; iIn) {                              \</div><div class="line">            mString.dFunc(iIn.mString);                                     \</div><div class="line">            return *<span class="keyword">this</span>;                                                   \</div><div class="line">        }</div></div><!-- fragment --><p>内部マクロ </p>
+
+<p> <a class="el" href="u8string_8h_source.html">u8string.h</a> の <a class="el" href="u8string_8h_source.html#l00344">344</a> 行目に定義があります。</p>
+
+</div>
+</div>
+<a id="a9124db80534d4228b87c19300aaa779c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9124db80534d4228b87c19300aaa779c">&sect;&nbsp;</a></span>THEOLIZER_INTERNAL_GET_STRING</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define THEOLIZER_INTERNAL_GET_STRING</td>
+          <td>(</td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dToChar, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname">dName&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>値:</b><div class="fragment"><div class="line">std::dName get_##dName() const                                          \</div><div class="line">    {                                                                       \</div><div class="line">        return internal::Converter&lt;dToChar, char&gt;::conv(mString);           \</div><div class="line">    }</div></div><!-- fragment --><p>内部マクロ </p>
+
+<p> <a class="el" href="u8string_8h_source.html">u8string.h</a> の <a class="el" href="u8string_8h_source.html#l00458">458</a> 行目に定義があります。</p>
+
+</div>
+</div>
+</div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.12-->
 <!-- start footer part -->
@@ -162,7 +294,8 @@ u8string.h の依存先関係図:</div>
 	<ul>
     <li class="navelem"><a class="el" href="dir_c0d7a5ea99cf056952ad9da006ee7797.html">Theolizer</a></li><li class="navelem"><a class="el" href="dir_24d94dfed046822834595a2e9d704119.html">source</a></li><li class="navelem"><a class="el" href="dir_0926a58a984fcb95b11cbd1e9cbca827.html">library</a></li><li class="navelem"><a class="el" href="dir_2b37ca5ca333dba6f36d09342e237e3e.html">theolizer</a></li><li class="navelem"><a class="el" href="u8string_8h.html">u8string.h</a></li>
 		<span style="color:#364D7C";>
-			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+			&nbsp;&nbsp;&copy; 2016 <a href="http://theolizer.com/">Theoride Technology</a> All Rights Reserved.
+      &nbsp;&nbsp;"Theolizer" is a registered trademark of Theoride Technology.
 		</span>
     <li class="footer">
 			構築:

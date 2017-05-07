@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.5.0</span>
+   &#160;<span id="projectnumber">Version.1.0.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -91,7 +91,7 @@ $(document).ready(function(){initNavTree('_changing_enum.html','');});
 <h3>デフォルト値について</h3>
 <p>最初にデフォルト値について説明します。<br />
  enumのシンボルを定義している先頭のシンボルの値をTheolizerは「デフォルト値」として用います。<br />
- THEOLIZER_ANNOTATE(ES)による指定を間違った場合、enum値保存／回復やバージョン・アップ／ダウン時に対応するシンボルが見つからない場合があります。その時、警告を報告(例外にはなりません。)し、変換先の値を「デフォルト値」にします。</p>
+ <a class="el" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b" title="アノテーション用マクロ ">THEOLIZER_ANNOTATE(ES)</a>による指定を間違った場合、enum値保存／回復やバージョン・アップ／ダウン時に対応するシンボルが見つからない場合があります。その時、警告を報告(例外にはなりません。)し、変換先の値を「デフォルト値」にします。</p>
 <p><br />
  </p><h6></h6>
 <h1><a class="anchor" id="HowToModifyEnum1"></a>
@@ -133,10 +133,10 @@ $(document).ready(function(){initNavTree('_changing_enum.html','');});
 </li>
 </ol>
 <p>注：シンボル値保存／シンボル名保存の指定方法については<a class="el" href="_enum_variation.html">enum型のバリエーション</a> を参照下さい。</p>
-<p>THEOLIZER_ANNOTATE(ES:)の指定方法は以下の通りです。</p>
-<div class="fragment"><div class="line">enumシンボル THEOLIZER_ANNOTATE(ES:シンボル名リスト:シンボル値リスト)=値,</div><div class="line">    :</div></div><!-- fragment --><p> 「シンボル名リスト」はシンボル名保存時に指定します。<br />
+<p><a class="el" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b" title="アノテーション用マクロ ">THEOLIZER_ANNOTATE(ES:)</a>の指定方法は以下の通りです。</p>
+<div class="fragment"><div class="line">enumシンボル <a class="code" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a>(ES:シンボル名リスト:シンボル値リスト)=値,</div><div class="line">    :</div></div><!-- fragment --><p> 「シンボル名リスト」はシンボル名保存時に指定します。<br />
  「シンボル値リスト」はシンボル値保存時に指定します。 「=値」は通常のenum型と同じく省略可能です。</p>
-<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> <b>THEOLIZER_ANNOTATE(ES:)を記述する位置が直感的な位置ではないですので、ご注意下さい。</b><br />
+<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> <b><a class="el" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b" title="アノテーション用マクロ ">THEOLIZER_ANNOTATE(ES:)</a>を記述する位置が直感的な位置ではないですので、ご注意下さい。</b><br />
  シンボルの<b>直後</b>です。この機能の実装にclangの属性指定(<b>attribute</b>())機能を使っていますが、enum型のシンボルの属性指定は、この位置のみ書けます。 </div><p><br />
  </p>
 <h2><a class="anchor" id="HowToModifyEnum11"></a>
@@ -150,7 +150,7 @@ $(document).ready(function(){initNavTree('_changing_enum.html','');});
 <p><b>変更前(ver1a)のソース</b>(source/reference_and_test/ver1a/test_modify_enum.h)</p>
  <div class="fragment"><div class="line"><span class="keyword">enum</span> EnumSymName</div><div class="line">{</div><div class="line">    eesnName11,             <span class="comment">// 単にシンボル変更</span></div><div class="line">    eesnName20,             <span class="comment">// 3つのシンボルを先頭の1つへ統合する</span></div><div class="line">    eesnName21,</div><div class="line">    eesnName22,</div></div><!-- fragment --> (後略)</p>
 <p><b>変更後(ver1b)のソース</b>(source/reference_and_test/ver1b/test_modify_enum.h)</p>
- <div class="fragment"><div class="line"><span class="keyword">enum</span> EnumSymName</div><div class="line">{</div><div class="line">    eesnName10  THEOLIZER_ANNOTATE(ES:eesnName11),</div><div class="line"></div><div class="line">    <span class="comment">// 3つのシンボルを先頭の1つへ統合する</span></div><div class="line">    eesnName20  THEOLIZER_ANNOTATE(ES:eesnName21,eesnName22),</div></div><!-- fragment --> (後略)</p>
+ <div class="fragment"><div class="line"><span class="keyword">enum</span> EnumSymName</div><div class="line">{</div><div class="line">    eesnName10  <a class="code" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a>(ES:eesnName11),</div><div class="line"></div><div class="line">    <span class="comment">// 3つのシンボルを先頭の1つへ統合する</span></div><div class="line">    eesnName20  <a class="code" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a>(ES:eesnName21,eesnName22),</div></div><!-- fragment --> (後略)</p>
 <p><br />
  </p>
 <h2><a class="anchor" id="HowToModifyEnum12"></a>
@@ -159,7 +159,7 @@ $(document).ready(function(){initNavTree('_changing_enum.html','');});
 <p><b>変更前(ver1a)のソース</b>(source/reference_and_test/ver1a/test_modify_enum.h)</p>
  <div class="fragment"><div class="line"><span class="keyword">enum</span> EnumSymVal</div><div class="line">{</div><div class="line">    eesvValue11=11,         <span class="comment">// 単にシンボル変更</span></div><div class="line">    eesvValue20=20,         <span class="comment">// 3つのシンボルを先頭の1つへ統合する</span></div><div class="line">    eesvValue21=21,</div><div class="line">    eesvValue22=22,</div></div><!-- fragment --> (後略)</p>
 <p><b>変更後(ver1b)のソース</b>(source/reference_and_test/ver1b/test_modify_enum.h)</p>
- <div class="fragment"><div class="line"><span class="keyword">enum</span> EnumSymVal</div><div class="line">{</div><div class="line">    eesvValue10     THEOLIZER_ANNOTATE(ES::11)=10,</div><div class="line"></div><div class="line">    <span class="comment">// 3つのシンボルを先頭の1つへ統合する</span></div><div class="line">    eesvValue20     THEOLIZER_ANNOTATE(ES::21,22)=20,</div></div><!-- fragment --> (後略)</p>
+ <div class="fragment"><div class="line"><span class="keyword">enum</span> EnumSymVal</div><div class="line">{</div><div class="line">    eesvValue10     <a class="code" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a>(ES::11)=10,</div><div class="line"></div><div class="line">    <span class="comment">// 3つのシンボルを先頭の1つへ統合する</span></div><div class="line">    eesvValue20     <a class="code" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a>(ES::21,22)=20,</div></div><!-- fragment --> (後略)</p>
 <p><br />
  </p><h6></h6>
 <h1><a class="anchor" id="HowToMakeGlobalVersionNoTable"></a>
@@ -177,11 +177,11 @@ $(document).ready(function(){initNavTree('_changing_enum.html','');});
 2-1.グローバル・バージョン番号テーブルの宣言</h2>
 <p>シリライズ処理するコンパイル単位全てがインクルードするヘッダファイルで宣言して下さい。<br />
  具体的には下記書式で宣言します。</p>
-<div class="fragment"><div class="line">THEOLIZER_DEFINE_GLOBAL_VERSION_TABLE(テーブル名, グローバル・バージョン番号);</div></div><!-- fragment --><p>テーブル名は任意の識別子です。これはtheolizer::internal::global_table名前空間内で必要なコードを定義する時の識別子の一部として用いられます。<br />
+<div class="fragment"><div class="line"><a class="code" href="serializer_8h.html#aed67475e426a84a276f60ae416b6fea1">THEOLIZER_DEFINE_GLOBAL_VERSION_TABLE</a>(テーブル名, グローバル・バージョン番号);</div></div><!-- fragment --><p>テーブル名は任意の識別子です。これはtheolizer::internal::global_table名前空間内で必要なコードを定義する時の識別子の一部として用いられます。<br />
  グローバル・バージョン番号は最初は必ず1として下さい。その後、バージョンを上げる度に1づつインクリメントして下さい。</p>
 <div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> グローバル・バージョン番号が１つ増える度にクラスやenum型のローカル・バージョン番号も最大1つ上げることができます。既に現在のグローバル・バージョン番号でクラスかenum型のローカル・バージョンを上げており、それを更に上げる場合はグローバル・バージョン番号も上げる必要があります。<br />
  グローバル・バージョン番号が決まればクラスやenum型のローカル・バージョン番号も決まるようにする必要があるためです。</div><p><b>サンプルをver1cに用意してます。</b>(source/reference_and_test/ver1c/common.h)</p>
- <div class="fragment"><div class="line">THEOLIZER_DEFINE_GLOBAL_VERSION_TABLE(MyGVNT, 1);</div></div><!-- fragment --></p>
+ <div class="fragment"><div class="line"><a class="code" href="serializer_8h.html#aed67475e426a84a276f60ae416b6fea1">THEOLIZER_DEFINE_GLOBAL_VERSION_TABLE</a>(MyGVNT, 1);</div></div><!-- fragment --></p>
 <p><br />
  </p>
 <h2><a class="anchor" id="HowToMakeGlobalVersionNoTable22"></a>
@@ -225,7 +225,7 @@ $(document).ready(function(){initNavTree('_changing_enum.html','');});
  <br />
 </li>
 <li>対象enum型のローカル・バージョン番号をインクリメントします。<br />
- <a class="el" href="_enum_variation.html#HalfAutoEnumSymName">2.非侵入型半自動enum型</a> 参照。<br />
+ <a class="el" href="_enum_variation.html#HalfAutoEnum">2.非侵入型半自動enum型</a> 参照。<br />
  この時、バージョン・アップ前のバージョンで付けていたTHEOLIZER_ANNOTATE()を一旦全て削除します。<br />
  前バージョンで付けていたものは全て前バージョンへ指定ですので、次のバージョンでは指定内容が完全に異なります。<br />
  <br />
@@ -247,14 +247,14 @@ $(document).ready(function(){initNavTree('_changing_enum.html','');});
  test_modify_enum.hで定義しているEnumFullAutoとScopedEnumFullAutoはver1a, ver1bまでは非侵入型完全自動ですが、ver1cにて非侵入型半自動へ修正しています。<br />
 </p>
 <p><b>半自動型へ変更した(ver1c)のソース</b>(source/reference_and_test/ver1c/test_modify_enum.h)</p>
-<div class="fragment"><div class="line"><span class="keyword">enum</span> EnumFullAuto</div><div class="line">{</div><div class="line">    <span class="comment">// 中略</span></div><div class="line">};</div><div class="line">THEOLIZER_ENUM(EnumFullAuto, 1);            <span class="comment">// バージョン・アップに備え半自動型へ変更</span></div><div class="line"></div><div class="line"><span class="keyword">enum class</span> ScopedEnumFullAuto : long</div><div class="line">{</div><div class="line">    <span class="comment">// 中略</span></div><div class="line">};</div><div class="line">THEOLIZER_ENUM(ScopedEnumFullAuto, 1);      <span class="comment">// バージョン・アップに備え半自動型へ変更</span></div></div><!-- fragment --><p><br />
+<div class="fragment"><div class="line"><span class="keyword">enum</span> EnumFullAuto</div><div class="line">{</div><div class="line">    <span class="comment">// 中略</span></div><div class="line">};</div><div class="line"><a class="code" href="serializer_8h.html#a6b69c6bb89a295c8c3e5a289bd9d4f20">THEOLIZER_ENUM</a>(EnumFullAuto, 1);            <span class="comment">// バージョン・アップに備え半自動型へ変更</span></div><div class="line"></div><div class="line"><span class="keyword">enum class</span> ScopedEnumFullAuto : long</div><div class="line">{</div><div class="line">    <span class="comment">// 中略</span></div><div class="line">};</div><div class="line"><a class="code" href="serializer_8h.html#a6b69c6bb89a295c8c3e5a289bd9d4f20">THEOLIZER_ENUM</a>(ScopedEnumFullAuto, 1);      <span class="comment">// バージョン・アップに備え半自動型へ変更</span></div></div><!-- fragment --><p><br />
  </p>
 <h2><a class="anchor" id="HowToModifyEnum33"></a>
 3-3.バージョン・アップ時のシンボル対応</h2>
 <p>enum型はバージョン・アップする時、前バージョンと現バージョン間のシンボル値の対応を指定することができます。現バージョンのシンボルに対して、対応する前バージョンのシンボル値を指定します。<br />
 </p>
 <p>この場合、THEOLIZER_ANNOTATE(ES:)の第３パラメータで指定します。</p>
-<div class="fragment"><div class="line">enumシンボル THEOLIZER_ANNOTATE(ES:::対応する前バージョンのシンボル値)=値,</div><div class="line">    :</div></div><!-- fragment --><p>「対応する前バージョンのシンボル値」はenumシンボルではなく直接数値で指定して下さい。前バージョンのenum型そのものは存在しません。しかし、旧版のenum型シンホルの値を変更することも有りえませんので指定可能です。<br />
+<div class="fragment"><div class="line">enumシンボル <a class="code" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a>(ES:::対応する前バージョンのシンボル値)=値,</div><div class="line">    :</div></div><!-- fragment --><p>「対応する前バージョンのシンボル値」はenumシンボルではなく直接数値で指定して下さい。前バージョンのenum型そのものは存在しません。しかし、旧版のenum型シンホルの値を変更することも有りえませんので指定可能です。<br />
  また、前バージョンとシンボル値が変化していない場合は「対応する前バージョンのシンボル値」の指定を省略できます。 <br />
  </p>
 <h3><a class="anchor" id="HowToModifyEnum331"></a>
@@ -289,9 +289,9 @@ $(document).ready(function(){initNavTree('_changing_enum.html','');});
 <li>以前使っていたeesnName11を新しいバージョンのenum型へ新規追加する</li>
 </ul>
 <p><b>バージョン・アップ前(ver1c)のソース</b>(source/reference_and_test/ver1c/test_modify_enum.h)</p>
- <div class="fragment"><div class="line"><span class="keyword">enum</span> EnumSymName</div><div class="line">{</div><div class="line">    eesnDefault,</div><div class="line">    eesnValue1=10,</div><div class="line">    eesnName10  THEOLIZER_ANNOTATE(ES:eesnName11),</div><div class="line">    eesnName20  THEOLIZER_ANNOTATE(ES:eesnName21,eesnName22),</div><div class="line">    eesnName41,</div><div class="line">    eesnName42,</div><div class="line">    eesnName30  THEOLIZER_ANNOTATE(ES:eesnName31,eesnName32,eesnName33),</div><div class="line">    eesnName51,</div><div class="line">    eesnName52,</div><div class="line">    eesnDeleted THEOLIZER_ANNOTATE(ES:eesnDelete)</div><div class="line">};</div></div><!-- fragment --></p>
+ <div class="fragment"><div class="line"><span class="keyword">enum</span> EnumSymName</div><div class="line">{</div><div class="line">    eesnDefault,</div><div class="line">    eesnValue1=10,</div><div class="line">    eesnName10  <a class="code" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a>(ES:eesnName11),</div><div class="line">    eesnName20  <a class="code" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a>(ES:eesnName21,eesnName22),</div><div class="line">    eesnName41,</div><div class="line">    eesnName42,</div><div class="line">    eesnName30  <a class="code" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a>(ES:eesnName31,eesnName32,eesnName33),</div><div class="line">    eesnName51,</div><div class="line">    eesnName52,</div><div class="line">    eesnDeleted <a class="code" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a>(ES:eesnDelete)</div><div class="line">};</div></div><!-- fragment --></p>
 <p><b>バージョン・アップ後(ver2a)のソース</b>(source/reference_and_test/ver2a/test_modify_enum.h)</p>
- <div class="fragment"><div class="line"><span class="keyword">enum</span> EnumSymName</div><div class="line">{</div><div class="line">    <span class="comment">// 変更無し</span></div><div class="line">    eesnDefault,</div><div class="line">    eesnValue1=10,</div><div class="line">    eesnName10,</div><div class="line">    eesnName20,</div><div class="line">    eesnName41,</div><div class="line">    eesnName42,</div><div class="line">    eesnName30,</div><div class="line">    eesnName51,</div><div class="line">    eesnName52,</div><div class="line">    eesnDeleted,</div><div class="line"></div><div class="line">    <span class="comment">// 追加(前バージョンのeesnDefaultに対応させる)</span></div><div class="line">    eesnName11  THEOLIZER_ANNOTATE(ES:::0)</div><div class="line">};</div></div><!-- fragment --></p>
+ <div class="fragment"><div class="line"><span class="keyword">enum</span> EnumSymName</div><div class="line">{</div><div class="line">    <span class="comment">// 変更無し</span></div><div class="line">    eesnDefault,</div><div class="line">    eesnValue1=10,</div><div class="line">    eesnName10,</div><div class="line">    eesnName20,</div><div class="line">    eesnName41,</div><div class="line">    eesnName42,</div><div class="line">    eesnName30,</div><div class="line">    eesnName51,</div><div class="line">    eesnName52,</div><div class="line">    eesnDeleted,</div><div class="line"></div><div class="line">    <span class="comment">// 追加(前バージョンのeesnDefaultに対応させる)</span></div><div class="line">    eesnName11  <a class="code" href="serializer_8h.html#a821fd2ce199c257be53dcd891f93cf2b">THEOLIZER_ANNOTATE</a>(ES:::0)</div><div class="line">};</div></div><!-- fragment --></p>
 <p><br />
  </p>
 <h3><a class="anchor" id="HowToModifyEnum34"></a>
@@ -311,9 +311,9 @@ $(document).ready(function(){initNavTree('_changing_enum.html','');});
 <li>旧バージョンのシンボル名保存enum型をシンボル値保存enum型へ変更(EnumSymName)</li>
 </ul>
 <p><b>バージョン・アップ前(ver2a)のソース</b>(source/reference_and_test/ver2a/test_modify_enum.h)</p>
- <div class="fragment"><div class="line">THEOLIZER_ENUM(EnumSymName, 2);</div></div><!-- fragment --></p>
+ <div class="fragment"><div class="line"><a class="code" href="serializer_8h.html#a6b69c6bb89a295c8c3e5a289bd9d4f20">THEOLIZER_ENUM</a>(EnumSymName, 2);</div></div><!-- fragment --></p>
 <p><b>バージョン・アップ後(ver3a)のソース</b>(source/reference_and_test/ver3a/test_modify_enum.h)</p>
- <div class="fragment"><div class="line">THEOLIZER_ENUM_VALUE(EnumSymName, 3);</div></div><!-- fragment --> <br />
+ <div class="fragment"><div class="line"><a class="code" href="serializer_8h.html#af2bd28fd8daca6b3d9ea66246f19bfc1">THEOLIZER_ENUM_VALUE</a>(EnumSymName, 3);</div></div><!-- fragment --> <br />
  </p><h6></h6>
 <h1><a class="anchor" id="HowToModifyEnum4"></a>
 4.網羅的な使用例（自動テスト）の説明</h1>
@@ -363,7 +363,8 @@ $(document).ready(function(){initNavTree('_changing_enum.html','');});
 	<ul>
     <li class="navelem"><a class="el" href="index.html">--目次--</a></li><li class="navelem"><a class="el" href="_usage_individual.html">使用方法（個別）</a></li>
 		<span style="color:#364D7C";>
-			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+			&nbsp;&nbsp;&copy; 2016 <a href="http://theolizer.com/">Theoride Technology</a> All Rights Reserved.
+      &nbsp;&nbsp;"Theolizer" is a registered trademark of Theoride Technology.
 		</span>
     <li class="footer">
 			構築:

@@ -1,0 +1,14 @@
+<map id="serializer.h" name="serializer.h">
+<area shape="rect" id="node2" href="$core_8h_source.html" title="internal/core.h" alt="" coords="360,80,464,107"/>
+<area shape="rect" id="node3" href="$core__switcher_8h_source.html" title="core_switcher.h" alt="" coords="355,155,469,181"/>
+<area shape="rect" id="node5" href="$core__serializer_8h_source.html" title="core_serializer.h" alt="" coords="420,229,537,256"/>
+<area shape="rect" id="node6" href="$core__type__info_8h_source.html" title="core_type_info.h" alt="" coords="283,304,400,331"/>
+<area shape="rect" id="node24" href="$version__array_8h_source.html" title="version_array.h" alt="" coords="424,304,533,331"/>
+<area shape="rect" id="node7" href="$core__assorted_8h.html" title="Theolizerライブラリのコア部(型情報リスト) " alt="" coords="284,379,399,405"/>
+<area shape="rect" id="node9" href="$report_8h.html" title="Theolizerシステム部 " alt="" coords="347,453,426,480"/>
+<area shape="rect" id="node10" href="$u8string_8h.html" title="Unicode文字列用補助ツール群 " alt="" coords="187,528,266,555"/>
+<area shape="rect" id="node14" href="$base_8h_source.html" title="internal/base.h" alt="" coords="449,528,556,555"/>
+<area shape="rect" id="node11" href="$external_8h_source.html" title="internal/external.h" alt="" coords="5,603,131,629"/>
+<area shape="rect" id="node15" href="$rbfor_8h.html" title="範囲ベースfor拡張 " alt="" coords="817,603,887,629"/>
+<area shape="rect" id="node23" href="$version_8h.html" title="バージョン番号を自動生成 " alt="" coords="719,603,793,629"/>
+</map>

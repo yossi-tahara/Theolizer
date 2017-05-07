@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.12"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Theolizer: Sources of TheolizerLib/Test</title>
+<title>Theolizer: Theolizer Library(main)</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.5.0</span>
+   &#160;<span id="projectnumber">Version.1.0.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -83,19 +83,12 @@ $(document).ready(function(){initNavTree('group___theolizer_lib.html','');});
 
 <div class="header">
   <div class="summary">
-<a href="#groups">モジュール</a> &#124;
 <a href="#files">ファイル</a>  </div>
   <div class="headertitle">
-<div class="title">Sources of TheolizerLib/Test</div>  </div>
+<div class="title">Theolizer Library(main)</div>  </div>
 </div><!--header-->
 <div class="contents">
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="groups"></a>
-モジュール</h2></td></tr>
-<tr class="memitem:group___unicode"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___unicode.html">Unicode Helper</a></td></tr>
-<tr class="memdesc:group___unicode"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unicode文字列用補助ツール群 <br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="files"></a>
 ファイル</h2></td></tr>
 <tr class="memitem:version_8h"><td class="memItemLeft" align="right" valign="top">ファイル &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="version_8h.html">version.h</a></td></tr>
@@ -110,14 +103,23 @@ $(document).ready(function(){initNavTree('group___theolizer_lib.html','');});
 <tr class="memitem:version_8h"><td class="memItemLeft" align="right" valign="top">ファイル &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="version_8h.html">version.h</a></td></tr>
 <tr class="memdesc:version_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">バージョン番号を自動生成 <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:rbfor_8h"><td class="memItemLeft" align="right" valign="top">ファイル &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="rbfor_8h.html">rbfor.h</a></td></tr>
+<tr class="memdesc:rbfor_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">範囲ベースfor拡張 <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:report_8h"><td class="memItemLeft" align="right" valign="top">ファイル &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="report_8h.html">report.h</a></td></tr>
 <tr class="memdesc:report_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Theolizerシステム部 <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:serializer_8h"><td class="memItemLeft" align="right" valign="top">ファイル &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer_8h.html">serializer.h</a></td></tr>
+<tr class="memdesc:serializer_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">TheolizerライブラリのAPI部 <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:serializer__json_8h"><td class="memItemLeft" align="right" valign="top">ファイル &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="serializer__json_8h.html">serializer_json.h</a></td></tr>
 <tr class="memdesc:serializer__json_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Jsonシリアライザ <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:test__tool_8h"><td class="memItemLeft" align="right" valign="top">ファイル &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__tool_8h.html">test_tool.h</a></td></tr>
 <tr class="memdesc:test__tool_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">テスト用ツール群 <br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:u8string_8h"><td class="memItemLeft" align="right" valign="top">ファイル &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="u8string_8h.html">u8string.h</a></td></tr>
+<tr class="memdesc:u8string_8h"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unicode文字列用補助ツール群 <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">詳解</h2>
@@ -128,7 +130,8 @@ $(document).ready(function(){initNavTree('group___theolizer_lib.html','');});
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
 	<ul>
 		<span style="color:#364D7C";>
-			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+			&nbsp;&nbsp;&copy; 2016 <a href="http://theolizer.com/">Theoride Technology</a> All Rights Reserved.
+      &nbsp;&nbsp;"Theolizer" is a registered trademark of Theoride Technology.
 		</span>
     <li class="footer">
 			構築:

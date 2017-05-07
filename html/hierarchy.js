@@ -3,6 +3,7 @@ var hierarchy =
     [ "AutoRestore", null, [
       [ "theolizer::DisplayPass", "structtheolizer_1_1_display_pass.html", null ]
     ] ],
+    [ "theolizer::u8string::b_string", "classtheolizer_1_1u8string_1_1b__string.html", null ],
     [ "theolizer::BasicRange< tIterator >", "classtheolizer_1_1_basic_range.html", null ],
     [ "theolizer::internal::ErrorBase", "classtheolizer_1_1internal_1_1_error_base.html", [
       [ "theolizer::internal::BaseSerializer", "classtheolizer_1_1internal_1_1_base_serializer.html", [

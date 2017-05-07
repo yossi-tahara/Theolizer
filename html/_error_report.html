@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.12"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Theolizer: エラー処理</title>
+<title>Theolizer: エラー報告</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.5.0</span>
+   &#160;<span id="projectnumber">Version.1.0.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -83,12 +83,251 @@ $(document).ready(function(){initNavTree('_error_report.html','');});
 
 <div class="header">
   <div class="headertitle">
-<div class="title">エラー処理 </div>  </div>
+<div class="title">エラー報告 </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>エラー状態の解除は、下記のように、resetError()で行って下さい。<br />
+<div class="textblock"><p>ここではTheolizerが検出するエラーの受け取り方とその後処理について説明します。</p>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="ErrorReport1"></a>
+1.Theolizerエラー・クラス</h1>
+<h6></h6>
+<h2><a class="anchor" id="ErrorInfo"></a>
+1-1.ErrorInfoクラス</h2>
+<p>Theolzierのエラーは <a class="el" href="report_8h.html" title="Theolizerシステム部 ">report.h</a> で定義している <a class="el" href="classtheolizer_1_1_error_info.html" title="エラー情報 ">theolizer::ErrorInfo</a> クラスで表現します。<br />
+ 主な公開メンバは以下の通りです。<br />
 </p>
-<div class="fragment"><div class="line">{</div><div class="line">    std::ofstream   aStream(<span class="stringliteral">&quot;example.json&quot;</span>);</div><div class="line">    <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> js(aStream, <a class="code" href="namespacetheolizer.html#afedaabb9b299538fd08e2d2ae4ccde6eae63fe760095c2a8539e2961e09a0ead1">theolizer::CheckMode::NoTypeCheck</a>, <span class="keyword">false</span>, <span class="keyword">true</span>);</div><div class="line"></div><div class="line">    THEOLIZER_PROCESS(js, ...);</div><div class="line"></div><div class="line">    <span class="comment">// エラー・チェック(例外を禁止している場合に必要)</span></div><div class="line">    <a class="code" href="classtheolizer_1_1_error_info.html">theolizer::ErrorInfo</a> aErrorInfo=js.getError();</div><div class="line">    <span class="keywordflow">if</span> (aErrorInfo)</div><div class="line">    {</div><div class="line">        std::cout &lt;&lt; aErrorInfo.<a class="code" href="classtheolizer_1_1_error_info.html#a23aad5c4f46ae4d6aa55d3320ef68a7f">getMessage</a>() &lt;&lt; std::endl;</div><div class="line">        js.resetError();    <span class="comment">// エラー状態を解除する</span></div><div class="line">    }</div><div class="line">}</div></div><!-- fragment --><h1>T.B.D.</h1>
+<table class="doxtable">
+<tr>
+<th>メンバ名</th><th>意味  </th></tr>
+<tr>
+<td><a class="el" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7b" title="エラー種別 ">theolizer::ErrorType</a> getErrorType() const;</td><td>エラー種別コード返却 </td></tr>
+<tr>
+<td><a class="el" href="namespacetheolizer.html#a64f24f288f49b55ce44b7b1438bf7789" title="エラー分類 ">theolizer::ErrorKind</a> getErrorKind() const;</td><td>エラー分類コード返却 </td></tr>
+<tr>
+<td>std::string getString() const;</td><td>全エラー情報を含むエラー・メッセージ返却 </td></tr>
+<tr>
+<td>bool isError() const;</td><td>エラーならtrue </td></tr>
+<tr>
+<td>operator bool() const;</td><td>エラーか警告ならtrue </td></tr>
+<tr>
+<td>bool operator!() const;</td><td>エラーも警告もないならtrue </td></tr>
+</table>
+<h2><a class="anchor" id="ErrorType"></a>
+1-2.ErrorType枚挙型</h2>
+<p><b><a class="el" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7b" title="エラー種別 ">theolizer::ErrorType</a></b>はenum型で以下のシンボルを持ちます。 </p><table class="doxtable">
+<tr>
+<th>シンボル名</th><th>意味  </th></tr>
+<tr>
+<td>None</td><td>エラーでも警告でも無い </td></tr>
+<tr>
+<td>Warning</td><td>警告 </td></tr>
+<tr>
+<td>Error</td><td>エラー </td></tr>
+</table>
+<h2><a class="anchor" id="ErrorKind"></a>
+1-3.ErrorKind枚挙型</h2>
+<p><b><a class="el" href="namespacetheolizer.html#a64f24f288f49b55ce44b7b1438bf7789" title="エラー分類 ">theolizer::ErrorKind</a></b>はenum型で以下のシンボルを持ちます。 </p><table class="doxtable">
+<tr>
+<th>シンボル名</th><th>意味  </th></tr>
+<tr>
+<td>Unclassified</td><td>未分類 </td></tr>
+<tr>
+<td>WrongUsing</td><td>使い方間違い </td></tr>
+<tr>
+<td>IOError</td><td>I/O動作エラー </td></tr>
+<tr>
+<td>UnknownData</td><td>非対応シリアライズ・データ・フォーマット </td></tr>
+<tr>
+<td>UnknownVerson</td><td>非対応バージョン（未知のグローバル・バージョン番号） </td></tr>
+</table>
+<h2><a class="anchor" id="getString"></a>
+1-4.ErrorInfoのgetString()のフォーマット</h2>
+<p>ErrorInfoのgetString()で取得できる文字列は次のようなフォーマットです。<br />
+ </p><div class="fragment"><div class="line"><a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7b">ErrorType</a>(<a class="code" href="namespacetheolizer.html#a64f24f288f49b55ce44b7b1438bf7789">ErrorKind</a>),エラーを検出したインスタンス{ソース・ファイル名(行番号)} : エラー・メッセージ</div></div><!-- fragment --><p> エラーを検出したインスタンス直後の"{ソース・ファイル名(行番号)}"は可能な時のみ表示されます。</p>
+<p><b>シリアライザのコンストラクタでエラー検出した時（型チェック・エラー）の例</b><br />
+ </p><div class="fragment"><div class="line"><a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba902b0d55fddef6f8d651fe1035b7d4bd">Error</a>(UnknownData),IntrusiveBase2.mULongLong : Unmatch type.{core_serializer.cpp(1570)}</div></div><!-- fragment --><p> なお、このエラー・メッセージに含まれるソース・ファイルと行番号は、当該エラーを検出したTheolizerのソースと行番号です。</p>
+<p><b><a class="el" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b" title="通常の保存／回復処理マクロ（2-4-2.シリアライズ処理要求 参照） ">THEOLIZER_PROCESS()</a>等のマクロ内でエラー検出した時の例</b><br />
+ </p><div class="fragment"><div class="line"><a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba902b0d55fddef6f8d651fe1035b7d4bd">Error</a>(UnknownData),aInt{test_basic_process.cpp(212)} : Logical <a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba902b0d55fddef6f8d651fe1035b7d4bd">Error</a> on stream.</div></div><!-- fragment --><p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="ErrorReport2"></a>
+2.Theolizerで検出したエラーの記録</h1>
+<h6></h6>
+<p>Theolizerは２種類のエラー記録を持っています。 どちらとも複数回エラーか警告が発生した場合、最後のエラーが記録されます。<br />
+ ただし、エラー記録を優先するため、エラー発生後の警告はエラーが解除(resetError)されるまで記録されません。</p>
+<h2><a class="anchor" id="SerializerInstance"></a>
+2-1.シリアライザのインスタンス</h2>
+<p>シリアライザ・インスタンス毎に当該シリアライザで発生したエラー（もしくは警告）を保持します。<br />
+ 警告ではないエラーが発生している場合、シリアライザへの要求は全て処理されず、WrongUsingとなります。<br />
+ 回復するためには、ストリームの再同期とresetError()呼び出しが必要です。<br />
+ <br />
+ エラー情報に関するメンバ関数は「<a class="el" href="_usage_total.html#MemberFunctions">3-1-2.メンバ関数</a> 」を参照下さい。<br />
+</p>
+<h2><a class="anchor" id="ErrorReporter"></a>
+2-2.ErrorReporterシングルトン</h2>
+<p>theolizer::ErrorReporterはthread_localなシングルトンですのでスレッド毎に一つだけ存在します。<br />
+ 当該スレッドで発生した最後のエラーか警告を保持します。<br />
+ シングルトンですのでコンストラクト、コピー、ムーブできません。<br />
+ <br />
+ 以下のstatic関数が公開されています。<br />
+</p>
+<table class="doxtable">
+<tr>
+<th>メンバ名</th><th>意味  </th></tr>
+<tr>
+<td>static <a class="el" href="classtheolizer_1_1_error_info.html" title="エラー情報 ">theolizer::ErrorInfo</a> const&amp; getErrorInfo() noexcept;</td><td>エラー情報を返却します。 </td></tr>
+<tr>
+<td>static bool isError() noexcept;</td><td>エラーが発生している時trueを返却します。 </td></tr>
+<tr>
+<td>static void resetError() noexcept;</td><td>エラー状態を解除します。 </td></tr>
+</table>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="ErrorReport3"></a>
+3.Theolizerで検出したエラーの通知方法</h1>
+<h6></h6>
+<p>シリアライザからのエラー通知方法は２つあります。</p>
+<ol type="1">
+<li>例外許可の場合<br />
+ シリアライザ・コンストラクタのiNoThrowExceptionパラメータをfalse（デフォルト）として、シリアライザをコンストラクトすると例外が許可されます。<br />
+ エラーを検出した時に <a class="el" href="classtheolizer_1_1_error_info.html" title="エラー情報 ">theolizer::ErrorInfo</a> 例外を throw します。<br />
+ <br />
+</li>
+<li>例外禁止の場合<br />
+ シリアライザ・コンストラクタのiNoThrowExceptionパラメータをtrueにして、シリアライザをコンストラクトすると例外が禁止されます。<br />
+ エラーを検出しても例外を投げません。getErrorInfo()等でエラー情報を受け取って下さい。<br />
+</li>
+</ol>
+<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> <b>シリアライザにエラー状態が残ったままデストラクトしないで下さい</b><br />
+ エラーの受け取り忘れを防止するため、エラーが発生しているのにresetError()せずにデストラクトするとプログラムを強制終了させていますので、例外を禁止している時は、必ずエラーを受け取りresetError()してからデストラクトするようにして下さい。（<a class="el" href="_error_report.html#ErrorReport6">6.サンプル・ソース</a> 参照）<br />
+ <br />
+ なお、例外許可時はエラーの受け取り損ないは発生しないためresetError()してなくても強制終了しません。 </div><p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="ErrorReport4"></a>
+4.エラー状態の回復方法</h1>
+<h6></h6>
+<p>シリアライザのエラー状態を解除するには、下記の手順で行います。<br />
+</p>
+<ol type="1">
+<li>シリアライザへ渡しているストリームを同期する。<br />
+ 次に読むべきデータ先頭から読み出せる状態にします。<br />
+ この処理はユーザ・プログラムにて行って下さい。<br />
+ <br />
+</li>
+<li>シリアライザのエラーをリセットする。<br />
+ シリアライザ・インスタンス.resetError()により行います。<br />
+ <br />
+</li>
+</ol>
+<p>ただし、一般にファイルからの回復時にエラーが発生した時の原因は下記ですので、ファイルへの保存／回復の場合はストリームをオープンしたままエラー回復する操作を行うことは原則としてありません。<br />
+</p>
+<ul>
+<li>プログラムのバグ（Theolizerが非対応な変更をしたプログラムで回復しようとした。）</li>
+<li>ファイル指定ミス（指定したフォーマットと実際のフォーマットの不一致）</li>
+<li>ファイル破壊</li>
+</ul>
+<p>通信による受信時にエラーが発生した時は、再同期することでリカバリすることが可能です。<br />
+ なお、通信回線の同期はTheolizerによるサポートはありません。ユーザ・プログラムにて再同期して下さい。<br />
+ <br />
+</p>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="ErrorReport5"></a>
+5.エラー・ログ</h1>
+<h6></h6>
+<p>TheolizerはTheolizerで検出したエラーをログ・ファイルへ記録する機能をサポートしています。<br />
+</p>
+<h2><a class="anchor" id="THEOLIZER_ERRORLOG_FILE"></a>
+5-1.THEOLIZER_ERRORLOG_FILE()マクロの指定方法</h2>
+<p><a class="el" href="report_8h.html#a5831e292a261d5955669c584a5035d14" title="エラー・ログの有効化 ">THEOLIZER_ERRORLOG_FILE()</a>マクロをユーザ・プログラム内で１箇所だけ書くことで有効になります。<br />
+</p>
+<p>グローバル名前空間で以下を記述します。 </p><div class="fragment"><div class="line"><a class="code" href="report_8h.html#a5831e292a261d5955669c584a5035d14">THEOLIZER_ERRORLOG_FILE</a>(<span class="stringliteral">&quot;LogFilePath%1%.log&quot;</span>);</div></div><!-- fragment --><ul>
+<li>"LogFilePath"の部分でエラー・ログのパスを指定します。<br />
+ 相対パスで指定した場合、プログラム起動時のカレント・フォルダからの相対になります。<br />
+ <br />
+</li>
+<li>"%1%"はTheolizerがログ・ファイルの番号として使います。<br />
+ ログ・ファイル番号は0開始です。<br />
+ ログ・ファイルはデフォルトでは1MBytesを超えると次のログ・ファイルへ切り替わります。その時、ログ・ファイル番号をインクリメントします。<br />
+ ただし、デフォルトでは最大2個までに制限していますので、ログ・ファイル番号1の次は0のログ・ファイルへ「上書き」します。<br />
+ これにより、ほっておいてもログ・ファイルが無限に増えることを防止しています。<br />
+ <br />
+</li>
+<li>".log"は自由に指定して下さい。<br />
+ <br />
+</li>
+</ul>
+<h2><a class="anchor" id="LogFileFormat"></a>
+5-2.ログ・ファイルのフォーマット</h2>
+<p>ログ・ファイルは後処理するのに便利のため簡易的なcsvフォーマットにしています。以下の通りです。<br />
+</p>
+<ul>
+<li>先頭行<br />
+ シーケンシャル番号です。これはログ・ファイルを生成する度に1つ増えます。<br />
+ unsigned型で循環します。<br />
+ <br />
+</li>
+<li>２行目以降<br />
+ <div class="fragment"><div class="line">,年-月-日,時間:分:秒.mSec,同期待ち時間(uSec),スレッドID,<a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7b">ErrorType</a>(<a class="code" href="namespacetheolizer.html#a64f24f288f49b55ce44b7b1438bf7789">ErrorKind</a>),エラー検出インスタンス : エラー・メッセージ</div></div><!-- fragment --></li>
+</ul>
+<p><b>ログ・ファイル例：</b><br />
+ </p><div class="fragment"><div class="line">0</div><div class="line">,2017-05-04,13:32:38.671,000001,___________12712,<a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba902b0d55fddef6f8d651fe1035b7d4bd">Error</a>(UnknownData),IntrusiveBase2.mULongLong : Unmatch type.{core_serializer.cpp(1570)}</div><div class="line">,2017-05-04,13:32:38.673,000000,___________12712,<a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba902b0d55fddef6f8d651fe1035b7d4bd">Error</a>(UnknownData),IntrusiveBase2.mULongLong : Unmatch type.{core_serializer.cpp(1570)}</div><div class="line">,2017-05-04,13:32:38.673,000000,___________12712,<a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba902b0d55fddef6f8d651fe1035b7d4bd">Error</a>(WrongUsing),mIntrusiveBase2{test_serializer_base02.cpp(91)} : Unmatch type.</div><div class="line">,2017-05-04,13:32:38.673,000000,___________12712,<a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba902b0d55fddef6f8d651fe1035b7d4bd">Error</a>(UnknownData),IntrusiveBase2.mULongLong : Unmatch type.{core_serializer.cpp(1654)}</div><div class="line">,2017-05-04,13:32:38.674,000000,___________12712,<a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba902b0d55fddef6f8d651fe1035b7d4bd">Error</a>(UnknownData),IntrusiveBase2.mULongLong : Unmatch type.{core_serializer.cpp(1654)}</div><div class="line">,2017-05-04,13:32:38.674,000000,___________12712,<a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba902b0d55fddef6f8d651fe1035b7d4bd">Error</a>(WrongUsing),mIntrusiveBase2{test_serializer_base02.cpp(123)} : Unmatch type.</div></div><!-- fragment --><h2><a class="anchor" id="WaitSync"></a>
+5-3.同期待ち時間について</h2>
+<p>エラー・ログ出力は、マルチ・スレッドに対応しています。<br />
+ 他のスレッドがエラー・ログ出力処理中に出力しようとした場合、後から出力する方は待たされます。<br />
+ その待ち時間を uSec で記録します。<br />
+ <br />
+</p>
+<h2><a class="anchor" id="ThreadId"></a>
+5-4.スレッドIDについて</h2>
+<p>当該ログを出力したスレッドIDを<code>std::this_thread::get_id()</code>で獲得して記録します。<br />
+</p>
+<p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="ErrorReport6"></a>
+6.サンプル・ソース</h1>
+<h6></h6>
+<p><b>サンプル・ソース（source/reference_and_test/basic/test_basic_process.cpp）</b><br />
+ </p><div class="fragment"><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 例外許可 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">    <span class="keywordflow">try</span></div><div class="line">    {</div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;tutorise_basic.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="keywordtype">int</span> aInt;</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aInt);   <span class="comment">// Type mismatch発生</span></div><div class="line">    }</div><div class="line">    <span class="keywordflow">catch</span> (<a class="code" href="classtheolizer_1_1_error_info.html">theolizer::ErrorInfo</a>&amp; e)</div><div class="line">    {</div><div class="line">        std::cout &lt;&lt; <span class="stringliteral">&quot;exception    : &quot;</span> &lt;&lt; e.<a class="code" href="classtheolizer_1_1_error_info.html#ae6d35783fff94d91b1e62b461cfdca12">getString</a>() &lt;&lt; std::endl;</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 例外禁止 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">    <span class="keywordflow">try</span></div><div class="line">    {</div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;tutorise_basic.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializer(aStream, <span class="keyword">true</span>);</div><div class="line"></div><div class="line">        <span class="keywordtype">short</span> ashort;</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, ashort); <span class="comment">// Type mismatch発生</span></div><div class="line"></div><div class="line">        <a class="code" href="classtheolizer_1_1_error_info.html">theolizer::ErrorInfo</a> aErrorInfo=aSerializer.getErrorInfo();</div><div class="line">        <span class="keywordflow">if</span> (aErrorInfo)</div><div class="line">        {</div><div class="line">            std::cout &lt;&lt; <span class="stringliteral">&quot;no-exception : &quot;</span> &lt;&lt; aErrorInfo.<a class="code" href="classtheolizer_1_1_error_info.html#ae6d35783fff94d91b1e62b461cfdca12">getString</a>() &lt;&lt; std::endl;</div><div class="line">            aSerializer.resetError();           <span class="comment">// エラー状態を解除する</span></div><div class="line">        }</div><div class="line">    }</div><div class="line">    <span class="keywordflow">catch</span> (<a class="code" href="classtheolizer_1_1_error_info.html">theolizer::ErrorInfo</a>&amp; e)</div><div class="line">    {</div><div class="line">        std::cout &lt;&lt; <span class="stringliteral">&quot;exception    : &quot;</span> &lt;&lt; e.<a class="code" href="classtheolizer_1_1_error_info.html#ae6d35783fff94d91b1e62b461cfdca12">getString</a>() &lt;&lt; std::endl;</div><div class="line">    }</div><div class="line"></div></div><!-- fragment --><p> これの出力は以下のようになります。</p>
+<div class="fragment"><div class="line">exception    : <a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba902b0d55fddef6f8d651fe1035b7d4bd">Error</a>(UnknownData),aInt{test_basic_process.cpp(241)} : Logical <a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba902b0d55fddef6f8d651fe1035b7d4bd">Error</a> on stream.</div><div class="line">no-exception : <a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba902b0d55fddef6f8d651fe1035b7d4bd">Error</a>(UnknownData),ashort{test_basic_process.cpp(256)} : Logical <a class="code" href="namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba902b0d55fddef6f8d651fe1035b7d4bd">Error</a> on stream.</div></div><!-- fragment --><p><br />
+ </p><h6></h6>
+<h1><a class="anchor" id="ErrorReport7"></a>
+7.エラー検出の網羅的テスト</h1>
+<h6></h6>
+<h2><a class="anchor" id="ErrorReport71"></a>
+7-1.エラー報告全体</h2>
+<p>テスト用のソース・コードは、source/test_library/reportフォルダに置いています。<br />
+ 下記の組合せでテストしています。</p>
+<table class="doxtable">
+<tr>
+<th>ソース・ファイル</th><th>テスト内容  </th></tr>
+<tr>
+<td>test_report1.cpp </td><td>エラー・ログが適切に保存されること<br />
+エラー・ログ・ファイルの指定ミス<br />
+マルチ・スレッドに対応できていること </td></tr>
+<tr>
+<td>test_report1_child.cpp </td><td>エラー・ログ・ファイル指定ミスのテスト用の子プロセス </td></tr>
+<tr>
+<td>test_report2.cpp </td><td>THEOLIZER_ERRORLOG_FILE未指定 </td></tr>
+<tr>
+<td>test_report3.cpp<br />
+test_report4.cpp </td><td>THEOLIZER_ERRORLOG_FILE多重登録 </td></tr>
+<tr>
+<td>test_report4.cpp </td><td>ErrorReproterのAPIテスト </td></tr>
+</table>
+<h2><a class="anchor" id="ErrorReport72"></a>
+7-2.downVersion/upVersionのコンパイル・エラー</h2>
+<p>プリミティブ型とenum型以外のメンバ変数への値設定が禁止できていることをテストしています。</p>
+<p>ソース・コードは、source/reference_and_test/ver3b/test_modify_complex.hにて、ERROR1, ERROR2マクロが定義されている時にコンパイル・エラーになるように定義しています。そして、source/reference_and_test/CMakeLists.txtのver3bERROR1, ver3bERROR2にてコンパイル・エラーが発生することをチェックしています。</p>
+<h2><a class="anchor" id="ErrorReport73"></a>
+7-3.グローバル・バージョン番号テーブルのエラー検出</h2>
+<p>バージョン・アップに伴い、一度シリアライズ指定したクラスやenum型をソース・コードから完全に削除した場合に、グローバル・バージョン番号テーブルから手動で削除する必要があります。（<a class="el" href="_specification.html#Basic344">3-4-4.クラスやenum型を削除する際の注意事項</a> 参照。）<br />
+ その削除を忘れた場合にコンパイル・エラーになることを確認しています。</p>
+<p>ソース・コードは、source/reference_and_test/ver3b/test_modify_complex.hにて、ERROR3マクロが定義されている時にコンパイル・エラーになるように定義しています。そして、source/reference_and_test/CMakeLists.txtのver3bERROR3にてコンパイル・エラーが発生することをチェックしています。</p>
+<h2><a class="anchor" id="ErrorReport74"></a>
+7-4.エラー・リカバリ</h2>
+<p>デシリアライズ中のエラー発生後にリカバリするテストを行っています。 Json, BinaryシリアライザのNoTypCheck, TypeCheck, TypeCheckByIndexについて、現バージョンと１つ前のバージョンからの回復についてリカバリできることを確認しています。</p>
+<p>ソース・コードは、source/reference_and_test/ver2a/test_modify_complex.cppのtutoriseModifyComplex()関数です。 </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.12-->
@@ -97,7 +336,8 @@ $(document).ready(function(){initNavTree('_error_report.html','');});
 	<ul>
     <li class="navelem"><a class="el" href="index.html">--目次--</a></li><li class="navelem"><a class="el" href="_usage_individual.html">使用方法（個別）</a></li>
 		<span style="color:#364D7C";>
-			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+			&nbsp;&nbsp;&copy; 2016 <a href="http://theolizer.com/">Theoride Technology</a> All Rights Reserved.
+      &nbsp;&nbsp;"Theolizer" is a registered trademark of Theoride Technology.
 		</span>
     <li class="footer">
 			構築:

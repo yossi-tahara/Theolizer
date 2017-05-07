@@ -1,4 +1,4 @@
 <map id="theolizer::internal::BinaryMidISerializer" name="theolizer::internal::BinaryMidISerializer">
-<area shape="rect" id="node2" href="$classtheolizer_1_1internal_1_1_base_serializer.html" title="theolizer::internal\l::BaseSerializer" alt="" coords="17,95,139,136"/>
-<area shape="rect" id="node3" href="$classtheolizer_1_1internal_1_1_error_base.html" title="theolizer::internal\l::ErrorBase" alt="" coords="17,5,139,47"/>
+<area shape="rect" id="node2" href="$classtheolizer_1_1internal_1_1_base_serializer.html" title="基底Serializer " alt="" coords="17,95,139,136"/>
+<area shape="rect" id="node3" href="$classtheolizer_1_1internal_1_1_error_base.html" title="エラー管理用クラス（シリアライザが継承する） " alt="" coords="17,5,139,47"/>
 </map>

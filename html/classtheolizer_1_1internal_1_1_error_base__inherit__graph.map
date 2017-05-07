@@ -1,5 +1,5 @@
 <map id="theolizer::internal::ErrorBase" name="theolizer::internal::ErrorBase">
-<area shape="rect" id="node2" href="$classtheolizer_1_1internal_1_1_base_serializer.html" title="theolizer::internal\l::BaseSerializer" alt="" coords="175,169,296,211"/>
+<area shape="rect" id="node2" href="$classtheolizer_1_1internal_1_1_base_serializer.html" title="基底Serializer " alt="" coords="175,169,296,211"/>
 <area shape="rect" id="node3" href="$classtheolizer_1_1internal_1_1_binary_mid_i_serializer.html" title="回復用中間BinarySerializer " alt="" coords="347,5,493,47"/>
 <area shape="rect" id="node5" href="$classtheolizer_1_1internal_1_1_binary_mid_o_serializer.html" title="保存用中間BinarySerializer " alt="" coords="344,71,496,112"/>
 <area shape="rect" id="node7" href="$classtheolizer_1_1internal_1_1_fast_mid_i_serializer.html" title="回復用中間FastSerializer " alt="" coords="353,136,487,177"/>

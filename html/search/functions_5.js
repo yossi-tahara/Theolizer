@@ -1,27 +1,6 @@
 var searchData=
 [
-  ['getacp',['getACP',['../namespacetheolizer.html#aaff928d5b9f4d2b1be1206edc8119a2d',1,'theolizer']]],
-  ['getadditionalinfo',['getAdditionalInfo',['../classtheolizer_1_1_error_info.html#a066e67fa783a7a65d32b1bf39223a463',1,'theolizer::ErrorInfo']]],
-  ['geterrorinfo',['getErrorInfo',['../classtheolizer_1_1_error_reporter.html#a5c8e30bfa0697fb332bf2c0bcaec73c1',1,'theolizer::ErrorReporter::getErrorInfo()'],['../classtheolizer_1_1internal_1_1_error_base.html#a67c72a9a3643fd60b916a1bcffd45025',1,'theolizer::internal::ErrorBase::getErrorInfo()']]],
-  ['geterrorkind',['getErrorKind',['../classtheolizer_1_1_error_info.html#a8eccd26f5b2dab0572fa67bf90cf41cb',1,'theolizer::ErrorInfo']]],
-  ['geterrortype',['getErrorType',['../classtheolizer_1_1_error_info.html#afb0e092aba721f29bea0e1f7559d9f43',1,'theolizer::ErrorInfo']]],
-  ['getfilelist',['getFileList',['../namespacetheolizer.html#adb2175efed45f231dbcee22704842e86',1,'theolizer']]],
-  ['getfilename',['getFileName',['../classtheolizer_1_1_error_info.html#a7482f12529aa4e8a78311e21a1f6c2df',1,'theolizer::ErrorInfo']]],
-  ['getglobalversionno',['getGlobalVersionNo',['../classtheolizer_1_1internal_1_1_base_serializer.html#a65074b1cfec748918a9b14c4aa43269c',1,'theolizer::internal::BaseSerializer']]],
-  ['getlibraryhash',['getLibraryHash',['../namespacetheolizer.html#ae7106e46bfdfa59f04b1d3a0204ef45c',1,'theolizer']]],
-  ['getlineheader',['getLineHeader',['../classtheolizer_1_1_working_log.html#a8ec0b5ca8d3647520502859d4bdc6674',1,'theolizer::WorkingLog']]],
-  ['getlineno',['getLineNo',['../classtheolizer_1_1_error_info.html#a1c646444613a61bccf5370acaf744af7',1,'theolizer::ErrorInfo']]],
-  ['getlogstream',['getLogStream',['../classtheolizer_1_1_working_log.html#aced4faafaec077387c5018fdb9d60a1c',1,'theolizer::WorkingLog']]],
-  ['getmessage',['getMessage',['../classtheolizer_1_1_error_info.html#a23aad5c4f46ae4d6aa55d3320ef68a7f',1,'theolizer::ErrorInfo']]],
-  ['getrbforadaptor',['getRBForAdaptor',['../namespacetheolizer.html#af1882553ed93e096447de1347c52ea42',1,'theolizer']]],
-  ['getrbforindexer',['getRBForIndexer',['../namespacetheolizer.html#a272329e3c82199c56e5a7559e49af7a2',1,'theolizer']]],
-  ['getrbforseparator',['getRBForSeparator',['../namespacetheolizer.html#a76ac39d337c51eac758bf4f5e29c6c4b',1,'theolizer']]],
-  ['getrequirechecktracking',['getRequireCheckTracking',['../classtheolizer_1_1internal_1_1_base_serializer.html#a4d70166a5782e470a255bd75adba2e98',1,'theolizer::internal::BaseSerializer']]],
-  ['getsharedptrtable',['getSharedPtrTable',['../classtheolizer_1_1internal_1_1_base_serializer.html#ad0a41928bd274cd1b091a18b30640b11',1,'theolizer::internal::BaseSerializer']]],
-  ['getsourceshash',['getSourcesHash',['../namespacetheolizer.html#a2a32c180b64431f2d0a538255aa9b82b',1,'theolizer']]],
-  ['getstring',['getString',['../classtheolizer_1_1_error_info.html#ae6d35783fff94d91b1e62b461cfdca12',1,'theolizer::ErrorInfo']]],
-  ['getthreadid',['getThreadId',['../classtheolizer_1_1_thread_guard.html#aefbb0efd018bfefde67a61b5b27cfd41',1,'theolizer::ThreadGuard']]],
-  ['gettime',['getTime',['../classtheolizer_1_1_working_log.html#ab82c3f455a516d0ee6f49fc8a4b1e6be',1,'theolizer::WorkingLog']]],
-  ['getversionno',['getVersionNo',['../namespacetheolizer.html#a8befb633c2327a637c7e5860c1aa99b9',1,'theolizer']]],
-  ['getversionstring',['getVersionString',['../namespacetheolizer.html#a3d6a1789d20a7e609a019b6d71cd7c3c',1,'theolizer']]]
+  ['fastiserializer',['FastISerializer',['../classtheolizer_1_1_fast_i_serializer.html#ad8d483e11d6fe9589ab1c36bdf9d5bdf',1,'theolizer::FastISerializer']]],
+  ['fastoserializer',['FastOSerializer',['../classtheolizer_1_1_fast_o_serializer.html#adac5dc58f348dcab99273a75c0bd3825',1,'theolizer::FastOSerializer']]],
+  ['front',['front',['../group___rb_for.html#ga1fae65b0a14cdd45b8021caf94656f85',1,'theolizer::BasicRange']]]
 ];

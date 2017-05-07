@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.5.0</span>
+   &#160;<span id="projectnumber">Version.1.0.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -88,7 +88,7 @@ $(document).ready(function(){initNavTree('test__tool_8h.html','');});
 <a href="#define-members">マクロ定義</a> &#124;
 <a href="#func-members">関数</a>  </div>
   <div class="headertitle">
-<div class="title">test_tool.h ファイル<div class="ingroups"><a class="el" href="group___theolizer_lib.html">Sources of TheolizerLib/Test</a></div></div>  </div>
+<div class="title">test_tool.h ファイル<div class="ingroups"><a class="el" href="group___theolizer_lib.html">Theolizer Library(main)</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -104,10 +104,10 @@ test_tool.h の依存先関係図:</div>
 <div class="center"><img src="test__tool_8h__incl.png" border="0" usemap="#test__tool_8h" alt=""/></div>
 <map name="test__tool_8h" id="test__tool_8h">
 <area shape="rect" id="node5" href="report_8h.html" title="Theolizerシステム部 " alt="" coords="333,80,400,107"/>
-<area shape="rect" id="node6" href="u8string_8h.html" title="u8string.h" alt="" coords="187,155,266,181"/>
+<area shape="rect" id="node6" href="u8string_8h.html" title="Unicode文字列用補助ツール群 " alt="" coords="187,155,266,181"/>
 <area shape="rect" id="node10" href="base_8h_source.html" title="internal/base.h" alt="" coords="449,155,556,181"/>
 <area shape="rect" id="node7" href="external_8h_source.html" title="internal/external.h" alt="" coords="5,229,131,256"/>
-<area shape="rect" id="node11" href="rbfor_8h_source.html" title="../rbfor.h" alt="" coords="817,229,887,256"/>
+<area shape="rect" id="node11" href="rbfor_8h.html" title="範囲ベースfor拡張 " alt="" coords="817,229,887,256"/>
 <area shape="rect" id="node19" href="version_8h.html" title="バージョン番号を自動生成 " alt="" coords="719,229,793,256"/>
 </map>
 </div>
@@ -117,10 +117,14 @@ test_tool.h の依存先関係図:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 クラス</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtheolizer_1_1_display_pass.html">theolizer::DisplayPass</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">PASS結果表示の有無指定  <a href="structtheolizer_1_1_display_pass.html#details">[詳解]</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_prepare_dir.html">theolizer::PrepareDir</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">テスト用フォルダの準備  <a href="classtheolizer_1_1_prepare_dir.html#details">[詳解]</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_thread_guard.html">theolizer::ThreadGuard</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">スレッド・オブジェクト<br />
+  <a href="classtheolizer_1_1_thread_guard.html#details">[詳解]</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -131,63 +135,61 @@ test_tool.h の依存先関係図:</div>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 マクロ定義</h2></td></tr>
-<tr class="memitem:a18ee4fc860ce5018ecf84738dfbb6b30"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(dLhs, ...)</td></tr>
-<tr class="separator:a18ee4fc860ce5018ecf84738dfbb6b30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace37dfcbf46e21e7b171fa2e0a7e7b1e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__tool_8h.html#ace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(dLhs,  dRhs)</td></tr>
-<tr class="separator:ace37dfcbf46e21e7b171fa2e0a7e7b1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba002d66ceb5ce60d8bef47524337664"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__tool_8h.html#aba002d66ceb5ce60d8bef47524337664">THEOLIZER_CHECK</a>(dJudge, ...)</td></tr>
-<tr class="separator:aba002d66ceb5ce60d8bef47524337664"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aed6a369542ce50a6f48dc6966b4482c7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__tool_8h.html#aed6a369542ce50a6f48dc6966b4482c7">THEOLIZER_REQUIRE</a>(dJudge, ...)</td></tr>
-<tr class="separator:aed6a369542ce50a6f48dc6966b4482c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae68ebb46b20311e93886b098a68324ed"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__tool_8h.html#ae68ebb46b20311e93886b098a68324ed">THEOLIZER_CHECK_EXCEPTION</a>(dStatements,  dException)</td></tr>
-<tr class="separator:ae68ebb46b20311e93886b098a68324ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a90221382e5f374c7f976a2bd9088b427"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__tool_8h.html#a90221382e5f374c7f976a2bd9088b427">THEOLIZER_REQUIRE_EXCEPTION</a>(dStatements,  dException)</td></tr>
-<tr class="separator:a90221382e5f374c7f976a2bd9088b427"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a949740ec30dee5027887661c6974ecce"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__tool_8h.html#a949740ec30dee5027887661c6974ecce">THEOLIZER_CHECK_EXCEPTION2</a>(dStatement,  dException,  dJudge,  dResult)</td></tr>
-<tr class="separator:a949740ec30dee5027887661c6974ecce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5ec5de25d814c9c3bb14354a2757f5d8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__tool_8h.html#a5ec5de25d814c9c3bb14354a2757f5d8">THEOLIZER_REQUIRE_EXCEPTION2</a>(dStatement,  dException,  dJudge,  dResult)</td></tr>
-<tr class="separator:a5ec5de25d814c9c3bb14354a2757f5d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga18ee4fc860ce5018ecf84738dfbb6b30"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(dLhs, ...)</td></tr>
+<tr class="separator:ga18ee4fc860ce5018ecf84738dfbb6b30"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gace37dfcbf46e21e7b171fa2e0a7e7b1e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#gace37dfcbf46e21e7b171fa2e0a7e7b1e">THEOLIZER_EQUAL_PTR</a>(dLhs,  dRhs)</td></tr>
+<tr class="separator:gace37dfcbf46e21e7b171fa2e0a7e7b1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaba002d66ceb5ce60d8bef47524337664"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#gaba002d66ceb5ce60d8bef47524337664">THEOLIZER_CHECK</a>(dJudge, ...)</td></tr>
+<tr class="separator:gaba002d66ceb5ce60d8bef47524337664"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaed6a369542ce50a6f48dc6966b4482c7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#gaed6a369542ce50a6f48dc6966b4482c7">THEOLIZER_REQUIRE</a>(dJudge, ...)</td></tr>
+<tr class="separator:gaed6a369542ce50a6f48dc6966b4482c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gae68ebb46b20311e93886b098a68324ed"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#gae68ebb46b20311e93886b098a68324ed">THEOLIZER_CHECK_EXCEPTION</a>(dStatements,  dException)</td></tr>
+<tr class="separator:gae68ebb46b20311e93886b098a68324ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga90221382e5f374c7f976a2bd9088b427"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga90221382e5f374c7f976a2bd9088b427">THEOLIZER_REQUIRE_EXCEPTION</a>(dStatements,  dException)</td></tr>
+<tr class="separator:ga90221382e5f374c7f976a2bd9088b427"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga949740ec30dee5027887661c6974ecce"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga949740ec30dee5027887661c6974ecce">THEOLIZER_CHECK_EXCEPTION2</a>(dStatement,  dException,  dJudge,  dResult)</td></tr>
+<tr class="separator:ga949740ec30dee5027887661c6974ecce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga5ec5de25d814c9c3bb14354a2757f5d8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga5ec5de25d814c9c3bb14354a2757f5d8">THEOLIZER_REQUIRE_EXCEPTION2</a>(dStatement,  dException,  dJudge,  dResult)</td></tr>
+<tr class="separator:ga5ec5de25d814c9c3bb14354a2757f5d8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 関数</h2></td></tr>
-<tr class="memitem:a2df7d20b382612c4cd41f49f01a1cd3d"><td class="memItemLeft" align="right" valign="top"><a id="a2df7d20b382612c4cd41f49f01a1cd3d"></a>
-THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__tool_8h.html#a2df7d20b382612c4cd41f49f01a1cd3d">operator&lt;&lt;</a> (std::ostream &amp;iOStream, char iChar)</td></tr>
-<tr class="memdesc:a2df7d20b382612c4cd41f49f01a1cd3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">char型を数値として出力する <br /></td></tr>
-<tr class="separator:a2df7d20b382612c4cd41f49f01a1cd3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37ac656fb0bf23e1e9b29c81778298b3"><td class="memItemLeft" align="right" valign="top"><a id="a37ac656fb0bf23e1e9b29c81778298b3"></a>
-THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__tool_8h.html#a37ac656fb0bf23e1e9b29c81778298b3">operator&lt;&lt;</a> (std::ostream &amp;iOStream, signed char iSChar)</td></tr>
-<tr class="memdesc:a37ac656fb0bf23e1e9b29c81778298b3"><td class="mdescLeft">&#160;</td><td class="mdescRight">signed char型を数値として出力する <br /></td></tr>
-<tr class="separator:a37ac656fb0bf23e1e9b29c81778298b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8e287e87ff13ef16dc571b076f515640"><td class="memItemLeft" align="right" valign="top"><a id="a8e287e87ff13ef16dc571b076f515640"></a>
-THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__tool_8h.html#a8e287e87ff13ef16dc571b076f515640">operator&lt;&lt;</a> (std::ostream &amp;iOStream, unsigned char iUChar)</td></tr>
-<tr class="memdesc:a8e287e87ff13ef16dc571b076f515640"><td class="mdescLeft">&#160;</td><td class="mdescRight">unsgined char型を数値として出力する <br /></td></tr>
-<tr class="separator:a8e287e87ff13ef16dc571b076f515640"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8013255e40614de9b6c0e0d3a50d9cf5"><td class="memTemplParams" colspan="2">template&lt;typename tEnum , THEOLIZER_INTERNAL_OVERLOAD((std::is_enum&lt; tEnum &gt;::value)) &gt; </td></tr>
-<tr class="memitem:a8013255e40614de9b6c0e0d3a50d9cf5"><td class="memTemplItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="test__tool_8h.html#a8013255e40614de9b6c0e0d3a50d9cf5">operator&lt;&lt;</a> (std::ostream &amp;iOStream, tEnum iEnum)</td></tr>
-<tr class="separator:a8013255e40614de9b6c0e0d3a50d9cf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1cedc9429f1c7eaa17911659d40854f8"><td class="memItemLeft" align="right" valign="top"><a id="a1cedc9429f1c7eaa17911659d40854f8"></a>
-THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="test__tool_8h.html#a1cedc9429f1c7eaa17911659d40854f8">operator&lt;&lt;</a> (std::ostream &amp;iOStream, std::type_info const &amp;)</td></tr>
-<tr class="memdesc:a1cedc9429f1c7eaa17911659d40854f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">type_info型を型名へ変換して表示する <br /></td></tr>
-<tr class="separator:a1cedc9429f1c7eaa17911659d40854f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac82b5fe5fee0645c7d4a9e53e7da1756"><td class="memTemplParams" colspan="2">template&lt;typename tReleaser &gt; </td></tr>
-<tr class="memitem:ac82b5fe5fee0645c7d4a9e53e7da1756"><td class="memTemplItemLeft" align="right" valign="top">internal::ScopeExit&lt; tReleaser &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#ac82b5fe5fee0645c7d4a9e53e7da1756">theolizer::makeScopeExit</a> (tReleaser &amp;&amp;iReleaser) noexcept</td></tr>
-<tr class="separator:ac82b5fe5fee0645c7d4a9e53e7da1756"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a796e09d6ba16820902a6ec9688f053e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a796e09d6ba16820902a6ec9688f053e8">theolizer::cutOptimize</a> ()</td></tr>
-<tr class="separator:a796e09d6ba16820902a6ec9688f053e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a290ebcb767f872f31fdd0ad389660358"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a290ebcb767f872f31fdd0ad389660358">theolizer::initResult</a> ()</td></tr>
-<tr class="separator:a290ebcb767f872f31fdd0ad389660358"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a14d2adb80938d7b505f46dc748185bdd"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a14d2adb80938d7b505f46dc748185bdd">theolizer::incrementFailCount</a> ()</td></tr>
-<tr class="separator:a14d2adb80938d7b505f46dc748185bdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a436bafe5d223b76aaeaf020a5407c4eb"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a436bafe5d223b76aaeaf020a5407c4eb">theolizer::printResult</a> (char const *iTitle=nullptr)</td></tr>
-<tr class="separator:a436bafe5d223b76aaeaf020a5407c4eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a76fa98fd253b8ae810a51d0d132b67f4"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a76fa98fd253b8ae810a51d0d132b67f4">theolizer::isExist</a> (u8string const &amp;iFilePath)</td></tr>
+<tr class="memitem:ga2df7d20b382612c4cd41f49f01a1cd3d"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga2df7d20b382612c4cd41f49f01a1cd3d">operator&lt;&lt;</a> (std::ostream &amp;iOStream, char iChar)</td></tr>
+<tr class="separator:ga2df7d20b382612c4cd41f49f01a1cd3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga37ac656fb0bf23e1e9b29c81778298b3"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga37ac656fb0bf23e1e9b29c81778298b3">operator&lt;&lt;</a> (std::ostream &amp;iOStream, signed char iSChar)</td></tr>
+<tr class="separator:ga37ac656fb0bf23e1e9b29c81778298b3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8e287e87ff13ef16dc571b076f515640"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga8e287e87ff13ef16dc571b076f515640">operator&lt;&lt;</a> (std::ostream &amp;iOStream, unsigned char iUChar)</td></tr>
+<tr class="separator:ga8e287e87ff13ef16dc571b076f515640"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8013255e40614de9b6c0e0d3a50d9cf5"><td class="memTemplParams" colspan="2">template&lt;typename tEnum , THEOLIZER_INTERNAL_OVERLOAD((std::is_enum&lt; tEnum &gt;::value)) &gt; </td></tr>
+<tr class="memitem:ga8013255e40614de9b6c0e0d3a50d9cf5"><td class="memTemplItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___test.html#ga8013255e40614de9b6c0e0d3a50d9cf5">operator&lt;&lt;</a> (std::ostream &amp;iOStream, tEnum iEnum)</td></tr>
+<tr class="separator:ga8013255e40614de9b6c0e0d3a50d9cf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga1cedc9429f1c7eaa17911659d40854f8"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga1cedc9429f1c7eaa17911659d40854f8">operator&lt;&lt;</a> (std::ostream &amp;iOStream, std::type_info const &amp;)</td></tr>
+<tr class="separator:ga1cedc9429f1c7eaa17911659d40854f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gac82b5fe5fee0645c7d4a9e53e7da1756"><td class="memTemplParams" colspan="2">template&lt;typename tReleaser &gt; </td></tr>
+<tr class="memitem:gac82b5fe5fee0645c7d4a9e53e7da1756"><td class="memTemplItemLeft" align="right" valign="top">internal::ScopeExit&lt; tReleaser &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group___test.html#gac82b5fe5fee0645c7d4a9e53e7da1756">theolizer::makeScopeExit</a> (tReleaser &amp;&amp;iReleaser) noexcept</td></tr>
+<tr class="separator:gac82b5fe5fee0645c7d4a9e53e7da1756"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga796e09d6ba16820902a6ec9688f053e8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga796e09d6ba16820902a6ec9688f053e8">theolizer::cutOptimize</a> ()</td></tr>
+<tr class="memdesc:ga796e09d6ba16820902a6ec9688f053e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">MinGW不具合対処  <a href="group___test.html#ga796e09d6ba16820902a6ec9688f053e8">[詳解]</a><br /></td></tr>
+<tr class="separator:ga796e09d6ba16820902a6ec9688f053e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga290ebcb767f872f31fdd0ad389660358"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga290ebcb767f872f31fdd0ad389660358">theolizer::initResult</a> ()</td></tr>
+<tr class="separator:ga290ebcb767f872f31fdd0ad389660358"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga14d2adb80938d7b505f46dc748185bdd"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga14d2adb80938d7b505f46dc748185bdd">theolizer::incrementFailCount</a> ()</td></tr>
+<tr class="separator:ga14d2adb80938d7b505f46dc748185bdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga436bafe5d223b76aaeaf020a5407c4eb"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga436bafe5d223b76aaeaf020a5407c4eb">theolizer::printResult</a> (char const *iTitle=nullptr)</td></tr>
+<tr class="separator:ga436bafe5d223b76aaeaf020a5407c4eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76fa98fd253b8ae810a51d0d132b67f4"><td class="memItemLeft" align="right" valign="top"><a id="a76fa98fd253b8ae810a51d0d132b67f4"></a>
+THEOLIZER_INTERNAL_DLL bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a76fa98fd253b8ae810a51d0d132b67f4">theolizer::isExist</a> (u8string const &amp;iFilePath)</td></tr>
+<tr class="memdesc:a76fa98fd253b8ae810a51d0d132b67f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">ファイル／フォルダの有無チェック <br /></td></tr>
 <tr class="separator:a76fa98fd253b8ae810a51d0d132b67f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78b05f902134ab4dcddf2ec2b021b26a"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a78b05f902134ab4dcddf2ec2b021b26a">theolizer::removeFile</a> (u8string const &amp;iFilePath)</td></tr>
-<tr class="separator:a78b05f902134ab4dcddf2ec2b021b26a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adb2175efed45f231dbcee22704842e86"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#adb2175efed45f231dbcee22704842e86">theolizer::getFileList</a> (std::string const &amp;iDirPath, std::string const &amp;iRegex=&quot;&quot;)</td></tr>
-<tr class="separator:adb2175efed45f231dbcee22704842e86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99b880d1e11549e64b2ea9a3773fed24"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a99b880d1e11549e64b2ea9a3773fed24">theolizer::setWritePermission</a> (const u8string &amp;iPath, bool iIsEnable)</td></tr>
-<tr class="separator:a99b880d1e11549e64b2ea9a3773fed24"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga78b05f902134ab4dcddf2ec2b021b26a"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga78b05f902134ab4dcddf2ec2b021b26a">theolizer::removeFile</a> (u8string const &amp;iFilePath)</td></tr>
+<tr class="memdesc:ga78b05f902134ab4dcddf2ec2b021b26a"><td class="mdescLeft">&#160;</td><td class="mdescRight">ファイルの削除  <a href="group___test.html#ga78b05f902134ab4dcddf2ec2b021b26a">[詳解]</a><br /></td></tr>
+<tr class="separator:ga78b05f902134ab4dcddf2ec2b021b26a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gadb2175efed45f231dbcee22704842e86"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#gadb2175efed45f231dbcee22704842e86">theolizer::getFileList</a> (std::string const &amp;iDirPath, std::string const &amp;iRegex=&quot;&quot;)</td></tr>
+<tr class="memdesc:gadb2175efed45f231dbcee22704842e86"><td class="mdescLeft">&#160;</td><td class="mdescRight">ファイル・リスト獲得  <a href="group___test.html#gadb2175efed45f231dbcee22704842e86">[詳解]</a><br /></td></tr>
+<tr class="separator:gadb2175efed45f231dbcee22704842e86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga99b880d1e11549e64b2ea9a3773fed24"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga99b880d1e11549e64b2ea9a3773fed24">theolizer::setWritePermission</a> (const u8string &amp;iPath, bool iIsEnable)</td></tr>
+<tr class="memdesc:ga99b880d1e11549e64b2ea9a3773fed24"><td class="mdescLeft">&#160;</td><td class="mdescRight">アクセス許可設定  <a href="group___test.html#ga99b880d1e11549e64b2ea9a3773fed24">[詳解]</a><br /></td></tr>
+<tr class="separator:ga99b880d1e11549e64b2ea9a3773fed24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">詳解</h2>
 <div class="textblock"><p>テスト用ツール群 </p>
@@ -196,319 +198,7 @@ THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" val
 <dl class="section date"><dt>日付</dt><dd>2015/08/08 Created </dd></dl>
 
 <p> <a class="el" href="test__tool_8h_source.html">test_tool.h</a> に定義があります。</p>
-</div><h2 class="groupheader">マクロ定義詳解</h2>
-<a id="aba002d66ceb5ce60d8bef47524337664"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aba002d66ceb5ce60d8bef47524337664">&sect;&nbsp;</a></span>THEOLIZER_CHECK</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define THEOLIZER_CHECK</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dJudge, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>値:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                      \</div><div class="line">    {                                                                       \</div><div class="line">        bool    aIsPass=<span class="keyword">true</span>;                                               \</div><div class="line">        THEOLIZER_INTERNAL_JUDGE(<span class="keyword">false</span>, dJudge, #dJudge);                   \</div><div class="line">        THEOLIZER_INTERNAL_RESULT_FOR(__VA_ARGS__);                         \</div><div class="line">        theolizer::internal::unlockMutex();                                 \</div><div class="line">    }                                                                       \</div><div class="line">    while(0)</div></div><!-- fragment --><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000074">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-<p> <a class="el" href="test__tool_8h_source.html">test_tool.h</a> の <a class="el" href="test__tool_8h_source.html#l00586">586</a> 行目に定義があります。</p>
-
-</div>
-</div>
-<a id="ae68ebb46b20311e93886b098a68324ed"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae68ebb46b20311e93886b098a68324ed">&sect;&nbsp;</a></span>THEOLIZER_CHECK_EXCEPTION</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define THEOLIZER_CHECK_EXCEPTION</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dStatements, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dException&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>値:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                      \</div><div class="line">    {                                                                       \</div><div class="line">        bool    aIsPass=<span class="keyword">true</span>;                                               \</div><div class="line">        try                                                                 \</div><div class="line">        {                                                                   \</div><div class="line">            dStatements                                                     \</div><div class="line">            aIsPass=<span class="keyword">false</span>;                                                  \</div><div class="line">            THEOLIZER_INTERNAL_JUDGE(<span class="keyword">false</span>, <span class="keyword">false</span>, <span class="stringliteral">&quot;No exception(&quot;</span> #dException <span class="stringliteral">&quot;)&quot;</span>);\</div><div class="line">        }                                                                   \</div><div class="line">        catch (dException)                                                  \</div><div class="line">        {                                                                   \</div><div class="line">            THEOLIZER_INTERNAL_JUDGE(<span class="keyword">false</span>, <span class="keyword">true</span>, <span class="stringliteral">&quot;exception(&quot;</span> #dException <span class="stringliteral">&quot;)&quot;</span>);\</div><div class="line">        }                                                                   \</div><div class="line">        theolizer::internal::unlockMutex();                                 \</div><div class="line">    }                                                                       \</div><div class="line">    while(0)</div></div><!-- fragment --><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000076">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-<p> <a class="el" href="test__tool_8h_source.html">test_tool.h</a> の <a class="el" href="test__tool_8h_source.html#l00617">617</a> 行目に定義があります。</p>
-
-</div>
-</div>
-<a id="a949740ec30dee5027887661c6974ecce"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a949740ec30dee5027887661c6974ecce">&sect;&nbsp;</a></span>THEOLIZER_CHECK_EXCEPTION2</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define THEOLIZER_CHECK_EXCEPTION2</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dStatement, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dException, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dJudge, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dResult&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>値:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                      \</div><div class="line">    {                                                                       \</div><div class="line">        bool    aIsPass=<span class="keyword">true</span>;                                               \</div><div class="line">        try                                                                 \</div><div class="line">        {                                                                   \</div><div class="line">            dStatement;                                                     \</div><div class="line">            aIsPass=<span class="keyword">false</span>;                                                  \</div><div class="line">            THEOLIZER_INTERNAL_JUDGE(<span class="keyword">false</span>, <span class="keyword">false</span>, <span class="stringliteral">&quot;No exception(&quot;</span> #dException <span class="stringliteral">&quot;)&quot;</span>);\</div><div class="line">        }                                                                   \</div><div class="line">        catch (dException)                                                  \</div><div class="line">        {                                                                   \</div><div class="line">            THEOLIZER_INTERNAL_JUDGE(<span class="keyword">false</span>, dJudge, #dJudge);               \</div><div class="line">            THEOLIZER_INTERNAL_RESULT(dResult);                             \</div><div class="line">        }                                                                   \</div><div class="line">        theolizer::internal::unlockMutex();                                 \</div><div class="line">    }                                                                       \</div><div class="line">    while(0)</div></div><!-- fragment --><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000078">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-<p> <a class="el" href="test__tool_8h_source.html">test_tool.h</a> の <a class="el" href="test__tool_8h_source.html#l00664">664</a> 行目に定義があります。</p>
-
-</div>
-</div>
-<a id="a18ee4fc860ce5018ecf84738dfbb6b30"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a18ee4fc860ce5018ecf84738dfbb6b30">&sect;&nbsp;</a></span>THEOLIZER_EQUAL</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define THEOLIZER_EQUAL</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dLhs, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>値:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                      \</div><div class="line">    {                                                                       \</div><div class="line">        bool    aIsPass=<span class="keyword">true</span>;                                               \</div><div class="line">        THEOLIZER_INTERNAL_JUDGE_ONLY(<span class="keyword">false</span>,                                \</div><div class="line">            ((dLhs)==THEOLZIER_INTERNAL_FIRST(__VA_ARGS__)));               \</div><div class="line">        if (!aIsPass &amp;&amp; theolizer::internal::checkFailCount()) {            \</div><div class="line">            theolizer::internal::getOStream()                               \</div><div class="line">                &lt;&lt; THEOLIZER_INTERNAL_FILE &lt;&lt; <span class="stringliteral">&quot;(&quot;</span>  &lt;&lt; __LINE__ &lt;&lt; <span class="stringliteral">&quot;)\n&quot;</span>;    \</div><div class="line">        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="structtheolizer_1_1_display_pass.html#aa5d2732dbbdd8b40195cb447f9dbb4c9">theolizer::DisplayPass::on</a>()) {                          \</div><div class="line">            theolizer::internal::getOStream() &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span> THEOLIZER_INTERNAL_PASS <span class="stringliteral">&quot;\n&quot;</span>\</div><div class="line">                &lt;&lt; THEOLIZER_INTERNAL_FILE &lt;&lt; <span class="stringliteral">&quot;(&quot;</span>  &lt;&lt; __LINE__ &lt;&lt; <span class="stringliteral">&quot;)\n&quot;</span>;    \</div><div class="line">        }                                                                   \</div><div class="line">        THEOLIZER_INTERNAL_RESULT(dLhs);                                    \</div><div class="line">        THEOLIZER_INTERNAL_RESULT_FOR(__VA_ARGS__);                         \</div><div class="line">        theolizer::internal::unlockMutex();                                 \</div><div class="line">    }                                                                       \</div><div class="line">    while(0)</div><div class="ttc" id="structtheolizer_1_1_display_pass_html_aa5d2732dbbdd8b40195cb447f9dbb4c9"><div class="ttname"><a href="structtheolizer_1_1_display_pass.html#aa5d2732dbbdd8b40195cb447f9dbb4c9">theolizer::DisplayPass::on</a></div><div class="ttdeci">static bool on()</div></div>
-</div><!-- fragment --><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000072">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-<p> <a class="el" href="test__tool_8h_source.html">test_tool.h</a> の <a class="el" href="test__tool_8h_source.html#l00537">537</a> 行目に定義があります。</p>
-
-</div>
-</div>
-<a id="ace37dfcbf46e21e7b171fa2e0a7e7b1e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace37dfcbf46e21e7b171fa2e0a7e7b1e">&sect;&nbsp;</a></span>THEOLIZER_EQUAL_PTR</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define THEOLIZER_EQUAL_PTR</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dLhs, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dRhs&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>値:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                      \</div><div class="line">    {                                                                       \</div><div class="line">        bool    aIsPass=<span class="keyword">true</span>;                                               \</div><div class="line">        THEOLIZER_INTERNAL_JUDGE_ONLY(<span class="keyword">false</span>, (dLhs) == (dRhs));             \</div><div class="line">        if (!aIsPass &amp;&amp; theolizer::internal::checkFailCount()) {            \</div><div class="line">            theolizer::internal::getOStream()                               \</div><div class="line">                &lt;&lt; THEOLIZER_INTERNAL_FILE &lt;&lt; <span class="stringliteral">&quot;(&quot;</span>  &lt;&lt; __LINE__ &lt;&lt; <span class="stringliteral">&quot;)\n&quot;</span>;    \</div><div class="line">        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="structtheolizer_1_1_display_pass.html#aa5d2732dbbdd8b40195cb447f9dbb4c9">theolizer::DisplayPass::on</a>()) {                          \</div><div class="line">            theolizer::internal::getOStream() &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span> THEOLIZER_INTERNAL_PASS <span class="stringliteral">&quot;\n&quot;</span>\</div><div class="line">                &lt;&lt; THEOLIZER_INTERNAL_FILE &lt;&lt; <span class="stringliteral">&quot;(&quot;</span>  &lt;&lt; __LINE__ &lt;&lt; <span class="stringliteral">&quot;)\n&quot;</span>;    \</div><div class="line">        }                                                                   \</div><div class="line">        THEOLIZER_INTERNAL_RESULT_PTR(dLhs);                                \</div><div class="line">        THEOLIZER_INTERNAL_RESULT_PTR(dRhs);                                \</div><div class="line">        theolizer::internal::unlockMutex();                                 \</div><div class="line">    }                                                                       \</div><div class="line">    while(0)</div><div class="ttc" id="structtheolizer_1_1_display_pass_html_aa5d2732dbbdd8b40195cb447f9dbb4c9"><div class="ttname"><a href="structtheolizer_1_1_display_pass.html#aa5d2732dbbdd8b40195cb447f9dbb4c9">theolizer::DisplayPass::on</a></div><div class="ttdeci">static bool on()</div></div>
-</div><!-- fragment --><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000073">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-<p> <a class="el" href="test__tool_8h_source.html">test_tool.h</a> の <a class="el" href="test__tool_8h_source.html#l00563">563</a> 行目に定義があります。</p>
-
-</div>
-</div>
-<a id="aed6a369542ce50a6f48dc6966b4482c7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aed6a369542ce50a6f48dc6966b4482c7">&sect;&nbsp;</a></span>THEOLIZER_REQUIRE</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define THEOLIZER_REQUIRE</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dJudge, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname"><em>...</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>値:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                      \</div><div class="line">    {                                                                       \</div><div class="line">        bool    aIsPass=<span class="keyword">true</span>;                                               \</div><div class="line">        THEOLIZER_INTERNAL_JUDGE(<span class="keyword">true</span>, dJudge, #dJudge);                    \</div><div class="line">        THEOLIZER_INTERNAL_RESULT_FOR(__VA_ARGS__);                         \</div><div class="line">        theolizer::internal::unlockMutex();                                 \</div><div class="line">        if (!aIsPass) <a class="code" href="namespacetheolizer.html">theolizer</a>::internal::throwAbort();                    \</div><div class="line">    }                                                                       \</div><div class="line">    while(0)</div><div class="ttc" id="namespacetheolizer_html"><div class="ttname"><a href="namespacetheolizer.html">theolizer</a></div><div class="ttdoc">theolizer名前空間 </div><div class="ttdef"><b>Definition:</b> <a href="base_8h_source.html#l00041">base.h:41</a></div></div>
-</div><!-- fragment --><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000075">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-<p> <a class="el" href="test__tool_8h_source.html">test_tool.h</a> の <a class="el" href="test__tool_8h_source.html#l00601">601</a> 行目に定義があります。</p>
-
-</div>
-</div>
-<a id="a90221382e5f374c7f976a2bd9088b427"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a90221382e5f374c7f976a2bd9088b427">&sect;&nbsp;</a></span>THEOLIZER_REQUIRE_EXCEPTION</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define THEOLIZER_REQUIRE_EXCEPTION</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dStatements, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dException&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>値:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                      \</div><div class="line">    {                                                                       \</div><div class="line">        bool    aIsPass=<span class="keyword">true</span>;                                               \</div><div class="line">        try                                                                 \</div><div class="line">        {                                                                   \</div><div class="line">            dStatements                                                     \</div><div class="line">            aIsPass=<span class="keyword">false</span>;                                                  \</div><div class="line">            THEOLIZER_INTERNAL_JUDGE(<span class="keyword">true</span>, <span class="keyword">false</span>, <span class="stringliteral">&quot;No exception(&quot;</span> #dException <span class="stringliteral">&quot;)&quot;</span>);\</div><div class="line">        }                                                                   \</div><div class="line">        catch (dException)                                                  \</div><div class="line">        {                                                                   \</div><div class="line">            THEOLIZER_INTERNAL_JUDGE(<span class="keyword">false</span>, <span class="keyword">true</span>, <span class="stringliteral">&quot;exception(&quot;</span> #dException <span class="stringliteral">&quot;)&quot;</span>);\</div><div class="line">        }                                                                   \</div><div class="line">        theolizer::internal::unlockMutex();                                 \</div><div class="line">        if (!aIsPass) <a class="code" href="namespacetheolizer.html">theolizer</a>::internal::throwAbort();                    \</div><div class="line">    }                                                                       \</div><div class="line">    while(0)</div><div class="ttc" id="namespacetheolizer_html"><div class="ttname"><a href="namespacetheolizer.html">theolizer</a></div><div class="ttdoc">theolizer名前空間 </div><div class="ttdef"><b>Definition:</b> <a href="base_8h_source.html#l00041">base.h:41</a></div></div>
-</div><!-- fragment --><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000077">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-<p> <a class="el" href="test__tool_8h_source.html">test_tool.h</a> の <a class="el" href="test__tool_8h_source.html#l00640">640</a> 行目に定義があります。</p>
-
-</div>
-</div>
-<a id="a5ec5de25d814c9c3bb14354a2757f5d8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5ec5de25d814c9c3bb14354a2757f5d8">&sect;&nbsp;</a></span>THEOLIZER_REQUIRE_EXCEPTION2</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">#define THEOLIZER_REQUIRE_EXCEPTION2</td>
-          <td>(</td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dStatement, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dException, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dJudge, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">&#160;</td>
-          <td class="paramname">dResult&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<b>値:</b><div class="fragment"><div class="line"><span class="keywordflow">do</span>                                                                      \</div><div class="line">    {                                                                       \</div><div class="line">        bool    aIsPass=<span class="keyword">true</span>;                                               \</div><div class="line">        try                                                                 \</div><div class="line">        {                                                                   \</div><div class="line">            dStatement;                                                     \</div><div class="line">            aIsPass=<span class="keyword">false</span>;                                                  \</div><div class="line">            THEOLIZER_INTERNAL_JUDGE(<span class="keyword">true</span>, <span class="keyword">false</span>, <span class="stringliteral">&quot;No exception(&quot;</span> #dException <span class="stringliteral">&quot;)&quot;</span>);\</div><div class="line">        }                                                                   \</div><div class="line">        catch (dException)                                                  \</div><div class="line">        {                                                                   \</div><div class="line">            THEOLIZER_INTERNAL_JUDGE(<span class="keyword">true</span>, dJudge, #dJudge);                \</div><div class="line">            THEOLIZER_INTERNAL_RESULT(dResult);                             \</div><div class="line">        }                                                                   \</div><div class="line">        theolizer::internal::unlockMutex();                                 \</div><div class="line">        if (!aIsPass) <a class="code" href="namespacetheolizer.html">theolizer</a>::internal::throwAbort();                    \</div><div class="line">    }                                                                       \</div><div class="line">    while(0)</div><div class="ttc" id="namespacetheolizer_html"><div class="ttname"><a href="namespacetheolizer.html">theolizer</a></div><div class="ttdoc">theolizer名前空間 </div><div class="ttdef"><b>Definition:</b> <a href="base_8h_source.html#l00041">base.h:41</a></div></div>
-</div><!-- fragment --><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000079">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-<p> <a class="el" href="test__tool_8h_source.html">test_tool.h</a> の <a class="el" href="test__tool_8h_source.html#l00688">688</a> 行目に定義があります。</p>
-
-</div>
-</div>
-<h2 class="groupheader">関数詳解</h2>
-<a id="a8013255e40614de9b6c0e0d3a50d9cf5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8013255e40614de9b6c0e0d3a50d9cf5">&sect;&nbsp;</a></span>operator<<()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename tEnum , THEOLIZER_INTERNAL_OVERLOAD((std::is_enum&lt; tEnum &gt;::value)) &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">std::ostream&amp; operator&lt;&lt; </td>
-          <td>(</td>
-          <td class="paramtype">std::ostream &amp;&#160;</td>
-          <td class="paramname"><em>iOStream</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">tEnum&#160;</td>
-          <td class="paramname"><em>iEnum</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000058">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-<p> <a class="el" href="test__tool_8h_source.html">test_tool.h</a> の <a class="el" href="test__tool_8h_source.html#l00077">77</a> 行目に定義があります。</p>
-
-</div>
-</div>
-</div><!-- contents -->
+</div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.12-->
 <!-- start footer part -->
@@ -516,7 +206,8 @@ template&lt;typename tEnum , THEOLIZER_INTERNAL_OVERLOAD((std::is_enum&lt; tEnum
 	<ul>
     <li class="navelem"><a class="el" href="dir_c0d7a5ea99cf056952ad9da006ee7797.html">Theolizer</a></li><li class="navelem"><a class="el" href="dir_24d94dfed046822834595a2e9d704119.html">source</a></li><li class="navelem"><a class="el" href="dir_0926a58a984fcb95b11cbd1e9cbca827.html">library</a></li><li class="navelem"><a class="el" href="dir_2b37ca5ca333dba6f36d09342e237e3e.html">theolizer</a></li><li class="navelem"><a class="el" href="test__tool_8h.html">test_tool.h</a></li>
 		<span style="color:#364D7C";>
-			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+			&nbsp;&nbsp;&copy; 2016 <a href="http://theolizer.com/">Theoride Technology</a> All Rights Reserved.
+      &nbsp;&nbsp;"Theolizer" is a registered trademark of Theoride Technology.
 		</span>
     <li class="footer">
 			構築:

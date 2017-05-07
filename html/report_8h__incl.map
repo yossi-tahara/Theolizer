@@ -1,7 +1,7 @@
 <map id="report.h" name="report.h">
-<area shape="rect" id="node2" href="$u8string_8h.html" title="u8string.h" alt="" coords="187,80,266,107"/>
+<area shape="rect" id="node2" href="$u8string_8h.html" title="Unicode文字列用補助ツール群 " alt="" coords="187,80,266,107"/>
 <area shape="rect" id="node6" href="$base_8h_source.html" title="internal/base.h" alt="" coords="449,80,556,107"/>
 <area shape="rect" id="node3" href="$external_8h_source.html" title="internal/external.h" alt="" coords="5,155,131,181"/>
-<area shape="rect" id="node7" href="$rbfor_8h_source.html" title="../rbfor.h" alt="" coords="817,155,887,181"/>
+<area shape="rect" id="node7" href="$rbfor_8h.html" title="範囲ベースfor拡張 " alt="" coords="817,155,887,181"/>
 <area shape="rect" id="node15" href="$version_8h.html" title="バージョン番号を自動生成 " alt="" coords="719,155,793,181"/>
 </map>

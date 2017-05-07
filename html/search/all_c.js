@@ -1,8 +1,8 @@
 var searchData=
 [
   ['enum型のアップデート／バージョン・アップ方法',['enum型のアップデート／バージョン・アップ方法',['../_changing_enum.html',1,'UsageIndividual']]],
-  ['empty',['empty',['../classtheolizer_1_1_basic_range.html#a91255941442f13c5f44af3f3d5889d2a',1,'theolizer::BasicRange']]],
-  ['end',['end',['../classtheolizer_1_1_basic_range.html#a79771cc3cb4e01f0169c1f26b57a5449',1,'theolizer::BasicRange']]],
+  ['empty',['empty',['../group___rb_for.html#ga91255941442f13c5f44af3f3d5889d2a',1,'theolizer::BasicRange']]],
+  ['end',['end',['../group___rb_for.html#ga79771cc3cb4e01f0169c1f26b57a5449',1,'theolizer::BasicRange']]],
   ['enum型のバリエーション',['enum型のバリエーション',['../_enum_variation.html',1,'UsageIndividual']]],
   ['error',['Error',['../namespacetheolizer.html#ab58d637248b6f2072509a837b6de1e7ba902b0d55fddef6f8d651fe1035b7d4bd',1,'theolizer']]],
   ['errorbase',['ErrorBase',['../classtheolizer_1_1internal_1_1_error_base.html',1,'theolizer::internal']]],

@@ -23,6 +23,6 @@ var namespacetheolizer =
     [ "MultiByte", "structtheolizer_1_1_multi_byte.html", null ],
     [ "PrepareDir", "classtheolizer_1_1_prepare_dir.html", "classtheolizer_1_1_prepare_dir" ],
     [ "ThreadGuard", "classtheolizer_1_1_thread_guard.html", "classtheolizer_1_1_thread_guard" ],
-    [ "u8string", "classtheolizer_1_1u8string.html", null ],
+    [ "u8string", "classtheolizer_1_1u8string.html", "classtheolizer_1_1u8string" ],
     [ "WorkingLog", "classtheolizer_1_1_working_log.html", "classtheolizer_1_1_working_log" ]
 ];

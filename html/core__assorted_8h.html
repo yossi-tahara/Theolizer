@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.5.0</span>
+   &#160;<span id="projectnumber">Version.1.0.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -88,7 +88,7 @@ $(document).ready(function(){initNavTree('core__assorted_8h.html','');});
 <a href="#enum-members">列挙型</a> &#124;
 <a href="#func-members">関数</a>  </div>
   <div class="headertitle">
-<div class="title">core_assorted.h ファイル<div class="ingroups"><a class="el" href="group___theolizer_lib.html">Sources of TheolizerLib/Test</a></div></div>  </div>
+<div class="title">core_assorted.h ファイル<div class="ingroups"><a class="el" href="group___theolizer_lib.html">Theolizer Library(main)</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -102,10 +102,10 @@ core_assorted.h の依存先関係図:</div>
 <div class="center"><img src="core__assorted_8h__incl.png" border="0" usemap="#core__assorted_8h" alt=""/></div>
 <map name="core__assorted_8h" id="core__assorted_8h">
 <area shape="rect" id="node3" href="report_8h.html" title="Theolizerシステム部 " alt="" coords="347,80,426,107"/>
-<area shape="rect" id="node4" href="u8string_8h.html" title="u8string.h" alt="" coords="187,155,266,181"/>
+<area shape="rect" id="node4" href="u8string_8h.html" title="Unicode文字列用補助ツール群 " alt="" coords="187,155,266,181"/>
 <area shape="rect" id="node8" href="base_8h_source.html" title="internal/base.h" alt="" coords="449,155,556,181"/>
 <area shape="rect" id="node5" href="external_8h_source.html" title="internal/external.h" alt="" coords="5,229,131,256"/>
-<area shape="rect" id="node9" href="rbfor_8h_source.html" title="../rbfor.h" alt="" coords="817,229,887,256"/>
+<area shape="rect" id="node9" href="rbfor_8h.html" title="範囲ベースfor拡張 " alt="" coords="817,229,887,256"/>
 <area shape="rect" id="node17" href="version_8h.html" title="バージョン番号を自動生成 " alt="" coords="719,229,793,256"/>
 </map>
 </div>
@@ -121,11 +121,13 @@ core_assorted.h の依存先関係図:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 マクロ定義</h2></td></tr>
 <tr class="memitem:ab0ac70e7c9399a86f27b40f45e25d39f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="core__assorted_8h.html#ab0ac70e7c9399a86f27b40f45e25d39f">THEOLIZER_PROVIDED_BY</a>(dVendor)</td></tr>
+<tr class="memdesc:ab0ac70e7c9399a86f27b40f45e25d39f"><td class="mdescLeft">&#160;</td><td class="mdescRight">ソース自動生成制御  <a href="#ab0ac70e7c9399a86f27b40f45e25d39f">[詳解]</a><br /></td></tr>
 <tr class="separator:ab0ac70e7c9399a86f27b40f45e25d39f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 列挙型</h2></td></tr>
-<tr class="memitem:a7dac95ef1d1e59b8c034e5de3c9009bf"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a7dac95ef1d1e59b8c034e5de3c9009bf">theolizer::Destination</a> : unsigned </td></tr>
+<tr class="memitem:a7dac95ef1d1e59b8c034e5de3c9009bf"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a7dac95ef1d1e59b8c034e5de3c9009bf">theolizer::Destination</a> : unsigned <tr class="memdesc:a7dac95ef1d1e59b8c034e5de3c9009bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">保存先シンボルを定義するscoped enum型  <a href="namespacetheolizer.html#a7dac95ef1d1e59b8c034e5de3c9009bf">[詳解]</a><br /></td></tr>
+</td></tr>
 <tr class="separator:a7dac95ef1d1e59b8c034e5de3c9009bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afedaabb9b299538fd08e2d2ae4ccde6e"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#afedaabb9b299538fd08e2d2ae4ccde6e">theolizer::CheckMode</a> { <br />
 &#160;&#160;<b>InMemory</b>, 
@@ -138,11 +140,23 @@ core_assorted.h の依存先関係図:</div>
  }<tr class="memdesc:afedaabb9b299538fd08e2d2ae4ccde6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">型チェック・モード  <a href="namespacetheolizer.html#afedaabb9b299538fd08e2d2ae4ccde6e">[詳解]</a><br /></td></tr>
 </td></tr>
 <tr class="separator:afedaabb9b299538fd08e2d2ae4ccde6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69382907eaaeffed2214b6ccde8ce648"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a69382907eaaeffed2214b6ccde8ce648">theolizer::Property</a> { <b>IsSaver</b>, 
+<b>EncodedString</b>, 
+<b>SupportModifying</b>
+ }<tr class="memdesc:a69382907eaaeffed2214b6ccde8ce648"><td class="mdescLeft">&#160;</td><td class="mdescRight">シリアライザが提供する機能(プロパティ）のリスト  <a href="namespacetheolizer.html#a69382907eaaeffed2214b6ccde8ce648">[詳解]</a><br /></td></tr>
+</td></tr>
+<tr class="separator:a69382907eaaeffed2214b6ccde8ce648"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 関数</h2></td></tr>
-<tr class="memitem:a7097c661ad7dc54337a7c094a3c89c41"><td class="memItemLeft" align="right" valign="top">THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a7097c661ad7dc54337a7c094a3c89c41">theolizer::operator&lt;&lt;</a> (std::ostream &amp;iOStream, CheckMode iCheckMode)</td></tr>
+<tr class="memitem:a7097c661ad7dc54337a7c094a3c89c41"><td class="memItemLeft" align="right" valign="top"><a id="a7097c661ad7dc54337a7c094a3c89c41"></a>
+THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#a7097c661ad7dc54337a7c094a3c89c41">theolizer::operator&lt;&lt;</a> (std::ostream &amp;iOStream, CheckMode iCheckMode)</td></tr>
+<tr class="memdesc:a7097c661ad7dc54337a7c094a3c89c41"><td class="mdescLeft">&#160;</td><td class="mdescRight">CheckModeの表示用オーバーロード <br /></td></tr>
 <tr class="separator:a7097c661ad7dc54337a7c094a3c89c41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8f708291e0f43f36110c0b6b73372c7"><td class="memItemLeft" align="right" valign="top"><a id="af8f708291e0f43f36110c0b6b73372c7"></a>
+THEOLIZER_INTERNAL_DLL std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetheolizer.html#af8f708291e0f43f36110c0b6b73372c7">theolizer::operator&lt;&lt;</a> (std::ostream &amp;iOStream, Property iProperty)</td></tr>
+<tr class="memdesc:af8f708291e0f43f36110c0b6b73372c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Propertyの表示用オーバーロード <br /></td></tr>
+<tr class="separator:af8f708291e0f43f36110c0b6b73372c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">詳解</h2>
 <div class="textblock"><p>Theolizerライブラリのコア部(型情報リスト) </p>
@@ -166,9 +180,16 @@ core_assorted.h の依存先関係図:</div>
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">todo:</a></b></dt><dd>T.B.D. </dd></dl>
 
-<p> <a class="el" href="core__assorted_8h_source.html">core_assorted.h</a> の <a class="el" href="core__assorted_8h_source.html#l00101">101</a> 行目に定義があります。</p>
+<p>ソース自動生成制御 </p>
+<p>ドライバにて下記制御を行う<br />
+ 　　環境変数THEOLIZER_DEVELOPER_NAMEが定義されている時、<br />
+ 　　THEOLIZER_PROVIDED_BY()のdVendor(C文字列)と一致したら、<br />
+ 　　THEOLIZER_PROVIDED_BYが展開されたファイル内の自動生成マクロは更新可能<br />
+ 　　そうでない場合に更新を検出したらエラー<br />
+ </p>
+
+<p> <a class="el" href="core__assorted_8h_source.html">core_assorted.h</a> の <a class="el" href="core__assorted_8h_source.html#l00113">113</a> 行目に定義があります。</p>
 
 </div>
 </div>
@@ -180,7 +201,8 @@ core_assorted.h の依存先関係図:</div>
 	<ul>
     <li class="navelem"><a class="el" href="dir_c0d7a5ea99cf056952ad9da006ee7797.html">Theolizer</a></li><li class="navelem"><a class="el" href="dir_24d94dfed046822834595a2e9d704119.html">source</a></li><li class="navelem"><a class="el" href="dir_0926a58a984fcb95b11cbd1e9cbca827.html">library</a></li><li class="navelem"><a class="el" href="dir_2b37ca5ca333dba6f36d09342e237e3e.html">theolizer</a></li><li class="navelem"><a class="el" href="dir_3710306edc35543e40f89e1ceb1af297.html">internal</a></li><li class="navelem"><a class="el" href="core__assorted_8h.html">core_assorted.h</a></li>
 		<span style="color:#364D7C";>
-			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+			&nbsp;&nbsp;&copy; 2016 <a href="http://theolizer.com/">Theoride Technology</a> All Rights Reserved.
+      &nbsp;&nbsp;"Theolizer" is a registered trademark of Theoride Technology.
 		</span>
     <li class="footer">
 			構築:

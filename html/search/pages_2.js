@@ -1,7 +1,10 @@
 var searchData=
 [
-  ['theolizer_5fprocess_28_29の使用例',['THEOLIZER_PROCESS()の使用例',['../_basic_process.html',1,'UsageIndividual']]],
-  ['theolizerのビルド手順',['Theolizerのビルド手順',['../_how_to_build_theolizer.html',1,'index']]],
-  ['theolizerの組み込み方とファイル構成',['Theolizerの組み込み方とファイル構成',['../_how_to_make_project.html',1,'index']]],
-  ['todo一覧',['todo一覧',['../todo.html',1,'']]]
+  ['その他のapi',['その他のAPI',['../_api_reference.html',1,'index']]],
+  ['クラスのアップデート／バージョン・アップ方法',['クラスのアップデート／バージョン・アップ方法',['../_changing_class.html',1,'UsageIndividual']]],
+  ['クラスのバリエーション',['クラスのバリエーション',['../_class_variation.html',1,'UsageIndividual']]],
+  ['エラー報告',['エラー報告',['../_error_report.html',1,'UsageIndividual']]],
+  ['オブジェクト追跡について',['オブジェクト追跡について',['../_object_tracking.html',1,'UsageIndividual']]],
+  ['インストール／アンインストール',['インストール／アンインストール',['../_prepare.html',1,'index']]],
+  ['スマート・ポインタ、および、標準コンテナ・サポートの使い方',['スマート・ポインタ、および、標準コンテナ・サポートの使い方',['../_support_s_t_l.html',1,'UsageIndividual']]]
 ];

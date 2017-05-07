@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.5.0</span>
+   &#160;<span id="projectnumber">Version.1.0.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -113,14 +113,14 @@ $(document).ready(function(){initNavTree('_enum_variation.html','');});
  非侵入型完全自動enum型の使い方は<a class="el" href="_usage_total.html#BasicUsage">2.基本的な使い方</a> で説明していますのでそちらを御覧ください。</p>
 <p><br />
  </p><h6></h6>
-<h1><a class="anchor" id="HalfAutoEnumSymName"></a>
+<h1><a class="anchor" id="HalfAutoEnum"></a>
 2.非侵入型半自動enum型</h1>
 <h6></h6>
 <p>enum型をシリアライズ対象であることを明示的に指定する際に、下記マクロを用いることができます。</p>
 <ul>
-<li><b>THEOLIZER_ENUM(dEnum, dLastVersionNo);</b><br />
+<li><b><a class="el" href="serializer_8h.html#a6b69c6bb89a295c8c3e5a289bd9d4f20" title="enum型シリアライズ（シンボル名保存）指定（2.非侵入型半自動enum型 参照） ">THEOLIZER_ENUM(dEnum, dLastVersionNo)</a>;</b><br />
  <b>シンボル名</b>でシリアライズするよう指定します。</li>
-<li><b>THEOLIZER_ENUM_VALUE(dEnum, dLastVersionNo);</b><br />
+<li><b><a class="el" href="serializer_8h.html#af2bd28fd8daca6b3d9ea66246f19bfc1" title="enum型シリアライズ（シンボル値保存）指定（2.非侵入型半自動enum型 参照） ">THEOLIZER_ENUM_VALUE(dEnum, dLastVersionNo)</a>;</b><br />
  <b>シンボル値</b>でシリアライズするよう指定します。</li>
 </ul>
 <p>それぞれのパラメータは以下の通りです。</p>
@@ -135,9 +135,9 @@ $(document).ready(function(){initNavTree('_enum_variation.html','');});
 </ul>
  <div class="fragment"><div class="line"><span class="keyword">enum</span> EnumSymName</div><div class="line">{</div><div class="line">    eesnDef=1000,</div><div class="line">    eesnVal</div><div class="line">};</div></div><!-- fragment --></p>
 <p>例えば、上記ように定義されている時、次の構文でEnumSymNameをシリアライズ対象として指定します。</p>
-<p><div class="fragment"><div class="line">THEOLIZER_ENUM(EnumSymName, 1);</div></div><!-- fragment --></p>
+<p><div class="fragment"><div class="line"><a class="code" href="serializer_8h.html#a6b69c6bb89a295c8c3e5a289bd9d4f20">THEOLIZER_ENUM</a>(EnumSymName, 1);</div></div><!-- fragment --></p>
 <p>保存／回復処理は従来通りです。</p>
- <div class="fragment"><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      保存</span></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"></div><div class="line">    {</div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;tutorise_enum_variation.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="comment">// 非侵入型半自動（シンボル名対応）</span></div><div class="line">        EnumSymName aEnumSymName=eesnVal;</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aEnumSymName);</div><div class="line"></div><div class="line">        <span class="comment">// 非侵入型半自動（シンボル値対応）</span></div><div class="line">        EnumSymVal  aEnumSymVal=eesvVal;</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aEnumSymVal);</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      回復</span></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"></div><div class="line">    {</div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;tutorise_enum_variation.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="comment">// 非侵入型半自動（シンボル名対応）</span></div><div class="line">        EnumSymName aEnumSymName=eesnDef;</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aEnumSymName);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aEnumSymName, eesnVal);</div><div class="line"></div><div class="line">        <span class="comment">// 非侵入型半自動（シンボル値対応）</span></div><div class="line">        EnumSymVal  aEnumSymVal=eesvDef;</div><div class="line">        THEOLIZER_PROCESS(aSerializer, aEnumSymVal);</div><div class="line">        <a class="code" href="test__tool_8h.html#a18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aEnumSymVal, eesvVal);</div><div class="line">    }</div></div><!-- fragment --></p>
+ <div class="fragment"><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      保存</span></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"></div><div class="line">    {</div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;tutorise_enum_variation.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="comment">// 非侵入型半自動（シンボル名対応）</span></div><div class="line">        EnumSymName aEnumSymName=eesnVal;</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aEnumSymName);</div><div class="line"></div><div class="line">        <span class="comment">// 非侵入型半自動（シンボル値対応）</span></div><div class="line">        EnumSymVal  aEnumSymVal=eesvVal;</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aEnumSymVal);</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      回復</span></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"></div><div class="line">    {</div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;tutorise_enum_variation.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line">        <span class="comment">// 非侵入型半自動（シンボル名対応）</span></div><div class="line">        EnumSymName aEnumSymName=eesnDef;</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aEnumSymName);</div><div class="line">        <a class="code" href="group___test.html#ga18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aEnumSymName, eesnVal);</div><div class="line"></div><div class="line">        <span class="comment">// 非侵入型半自動（シンボル値対応）</span></div><div class="line">        EnumSymVal  aEnumSymVal=eesvDef;</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aEnumSymVal);</div><div class="line">        <a class="code" href="group___test.html#ga18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aEnumSymVal, eesvVal);</div><div class="line">    }</div></div><!-- fragment --></p>
 <p>シリライズされた<b>tutorise_enum_variation.json</b> は以下の通りです。<br />
 </p>
 <div class="fragment"><div class="line"> json</div><div class="line">{</div><div class="line">    <span class="stringliteral">&quot;SerialzierName&quot;</span>:<span class="stringliteral">&quot;JsonTheolizer&quot;</span>,</div><div class="line">    <span class="stringliteral">&quot;GlobalVersionNo&quot;</span>:1,</div><div class="line">    <span class="stringliteral">&quot;TypeInfoList&quot;</span>:[1]</div><div class="line">}</div><div class="line"><span class="stringliteral">&quot;eesnVal&quot;</span></div><div class="line">3001</div></div><!-- fragment --><p><br />
@@ -183,7 +183,8 @@ $(document).ready(function(){initNavTree('_enum_variation.html','');});
 	<ul>
     <li class="navelem"><a class="el" href="index.html">--目次--</a></li><li class="navelem"><a class="el" href="_usage_individual.html">使用方法（個別）</a></li>
 		<span style="color:#364D7C";>
-			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+			&nbsp;&nbsp;&copy; 2016 <a href="http://theolizer.com/">Theoride Technology</a> All Rights Reserved.
+      &nbsp;&nbsp;"Theolizer" is a registered trademark of Theoride Technology.
 		</span>
     <li class="footer">
 			構築:

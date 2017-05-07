@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.5.0</span>
+   &#160;<span id="projectnumber">Version.1.0.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -95,11 +95,12 @@ $(document).ready(function(){initNavTree('_how_to_make_project.html','');});
 <p> Theolizerは下記ライブラリを用意しています。</p>
 <table class="doxtable">
 <tr>
-<th>リンク種別名 </th><th>Theolizer </th><th>boost </th><th>標準ランタイム </th><th>お薦めの選択  </th></tr>
+<th>リンク種別名 </th><th>Theolizer </th><th>boost </th><th>標準<br />
+ランタイム </th><th>お薦めの選択  </th></tr>
 <tr>
-<td>StaticWithBoost</td><td>静的リンク</td><td>静的リンク(同梱)</td><td>動的リンク</td><td>あなたのプログラムが<a href="https://ja.wikipedia.org/wiki/Boost">boost</a>を使っていない時 </td></tr>
+<td>StaticWithBoost</td><td>静的リンク</td><td>静的リンク（同梱）</td><td>動的リンク</td><td>あなたのプログラムが<a href="https://ja.wikipedia.org/wiki/Boost">boost</a>を使っていない時 </td></tr>
 <tr>
-<td>Static</td><td>静的リンク</td><td>静的リンク(非同梱)</td><td>動的リンク</td><td>あなたのプログラムが<a href="https://ja.wikipedia.org/wiki/Boost">boost</a>を使っている時 <b>(*1)</b> </td></tr>
+<td>Static</td><td>静的リンク</td><td>静的リンク（非同梱）</td><td>動的リンク</td><td>あなたのプログラムが<a href="https://ja.wikipedia.org/wiki/Boost">boost</a>を使っている時 <b>(*1)</b> </td></tr>
 <tr>
 <td>Shared</td><td>動的リンク</td><td>静的リンク</td><td>動的リンク</td><td>あなたのプログラムが<a href="https://ja.wikipedia.org/wiki/Boost">boost</a>を使っていて<br />
 Theolizerライブラリのビルドを避けたい時 <b>(*2)</b> </td></tr>
@@ -130,19 +131,30 @@ setup_theolizer(${TARGET_NAME} ${LINK_TYPE})
 <h6></h6>
 <hr/>
 <p>TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソース・コードとCMakeLists.txtを <b>source/samples/example</b> に置いています。これは「2.CMakeを使う場合」のサンプルとなります。<br />
-適切なビルド・フォルダを作成して、そこで下記コマンドを実行することで、プロジェクト生成→ビルド→テスト実行が行われます。<br />
+ 適切なビルド・フォルダを作成して、そこで下記コマンドを実行することで、プロジェクト生成→ビルド→テスト実行が行われます。<br />
+</p>
+<p>全てsource/samples/exampleフォルダで作業して下さい。<br />
  なお、下記は全てReleaseビルドの例です。Debugビルドする時は、Releaseの代わりにDebugを指定して下さい。<br />
- </p><h4>Visual Studio 2015(32bits版)の場合</h4>
-<pre class="fragment">cmake -G "Visual Studio 14" &lt;source/samples/exampleフォルダ&gt; -DTHEOLIZER_DIR=&lt;Theolizerルート・フォルダ&gt;
+</p>
+<h4>Visual Studio 2015(32bits版)の場合</h4>
+<pre class="fragment">mkdir msvc32
+cd msvc32
+cmake -G "Visual Studio 14" .. -DTHEOLIZER_DIR=&lt;Theolizerルート・フォルダ&gt;
 cmake --build . --config Release --target BuildTest
 </pre><h4>Visual Studio 2015(64bits版)の場合</h4>
-<pre class="fragment">cmake -G "Visual Studio 14 Win64" &lt;source/samples/exampleフォルダ&gt; -DTHEOLIZER_DIR=&lt;Theolizerルート・フォルダ&gt;
+<pre class="fragment">mkdir msvc64
+cd msvc64
+cmake -G "Visual Studio 14 Win64" .. -DTHEOLIZER_DIR=&lt;Theolizerルート・フォルダ&gt;
 cmake --build . --config Release --target BuildTest
 </pre><h4>MiGWの場合（事前にMinGWへのパスを設定下さい）</h4>
-<pre class="fragment">cmake -G "MinGW Makefiles" &lt;source/samples/exampleフォルダ&gt; -DTHEOLIZER_DIR=&lt;Theolizerルート・フォルダ&gt; -DCMAKE_BUILD_TYPE=Release
+<pre class="fragment">mkdir mingw
+cd mingw
+cmake -G "MinGW Makefiles" .. -DTHEOLIZER_DIR=&lt;Theolizerルート・フォルダ&gt; -DCMAKE_BUILD_TYPE=Release
 make BuildTest
 </pre><h4>gcc(Linux)の場合</h4>
-<pre class="fragment">cmake -G "Unix Makefiles" &lt;source/samples/exampleフォルダ&gt; -DTHEOLIZER_DIR=&lt;Theolizerルート・フォルダ&gt; -DCMAKE_BUILD_TYPE=Release
+<pre class="fragment">mkdir gcc
+cd gcc
+cmake -G "Unix Makefiles" .. -DTHEOLIZER_DIR=&lt;Theolizerルート・フォルダ&gt; -DCMAKE_BUILD_TYPE=Release
 make BuildTest
 </pre><p><br />
  </p><h6></h6>
@@ -193,7 +205,7 @@ make BuildTest
 <tr>
 <th>相対パス</th><th>ファイル種別</th><th>ファイル名  </th></tr>
 <tr>
-<td>ルート</td><td>CMake補助</td><td>THEOLIZERConfig.cmake </td></tr>
+<td>ルート/tools</td><td>CMake補助</td><td>THEOLIZERConfig.cmake </td></tr>
 <tr>
 <td></td><td>ドライバ・インストール</td><td>replace.bat </td></tr>
 <tr>
@@ -249,7 +261,7 @@ make BuildTest
 <tr>
 <th>相対パス</th><th>ファイル種別</th><th>ファイル名  </th></tr>
 <tr>
-<td>ルート</td><td>CMake補助</td><td>THEOLIZERConfig.cmake </td></tr>
+<td>ルート/tools</td><td>CMake補助</td><td>THEOLIZERConfig.cmake </td></tr>
 <tr>
 <td>doc/ja</td><td>詳細ドキュメント</td><td>index.html, html/*.* </td></tr>
 <tr>
@@ -275,7 +287,8 @@ make BuildTest
 	<ul>
     <li class="navelem"><a class="el" href="index.html">--目次--</a></li>
 		<span style="color:#364D7C";>
-			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+			&nbsp;&nbsp;&copy; 2016 <a href="http://theolizer.com/">Theoride Technology</a> All Rights Reserved.
+      &nbsp;&nbsp;"Theolizer" is a registered trademark of Theoride Technology.
 		</span>
     <li class="footer">
 			構築:

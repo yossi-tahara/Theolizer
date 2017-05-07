@@ -1,16 +1,17 @@
 var indexSectionsWithContent =
 {
-  0: "12345678abcdefgijklmnoprstuvwãäæ",
+  0: "12345678abcdefghijklmnoprstuvw~ãäæ",
   1: "bdefjlmptuw",
   2: "t",
-  3: "12345678crstuv",
-  4: "bcdefgijlmoprstuw",
+  3: "12345678acdflmrstuv",
+  4: "abcdefghijlmoprstuw~",
   5: "km",
-  6: "cde",
+  6: "cdep",
   7: "eintuw",
-  8: "t",
-  9: "su",
-  10: "aetãäæ"
+  8: "os",
+  9: "t",
+  10: "rstu",
+  11: "etãäæ"
 };
 
 var indexSectionNames =
@@ -23,9 +24,10 @@ var indexSectionNames =
   5: "variables",
   6: "enums",
   7: "enumvalues",
-  8: "defines",
-  9: "groups",
-  10: "pages"
+  8: "related",
+  9: "defines",
+  10: "groups",
+  11: "pages"
 };
 
 var indexSectionLabels =
@@ -38,8 +40,9 @@ var indexSectionLabels =
   5: "変数",
   6: "列挙型",
   7: "列挙値",
-  8: "マクロ定義",
-  9: "グループ",
-  10: "ページ"
+  8: "フレンド",
+  9: "マクロ定義",
+  10: "グループ",
+  11: "ページ"
 };
 

@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.5.0</span>
+   &#160;<span id="projectnumber">Version.1.0.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -84,22 +84,27 @@ $(document).ready(function(){initNavTree('group___unicode.html','');});
 <div class="header">
   <div class="summary">
 <a href="#nested-classes">クラス</a> &#124;
-<a href="#func-members">関数</a>  </div>
+<a href="#func-members">関数</a> &#124;
+<a href="#var-members">変数</a>  </div>
   <div class="headertitle">
-<div class="title">Unicode Helper<div class="ingroups"><a class="el" href="group___theolizer_lib.html">Sources of TheolizerLib/Test</a></div></div>  </div>
+<div class="title">Unicode Helper</div>  </div>
 </div><!--header-->
 <div class="contents">
-
-<p>Unicode文字列用補助ツール群  
-<a href="#details">[詳解]</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 クラス</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtheolizer_1_1_multi_byte.html">theolizer::MultiByte</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1u8string.html">theolizer::u8string</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unicode記録用文字列クラスu8string.  <a href="classtheolizer_1_1u8string.html#details">[詳解]</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 関数</h2></td></tr>
+<tr class="memitem:gaaff928d5b9f4d2b1be1206edc8119a2d"><td class="memItemLeft" align="right" valign="top">unsigned THEOLIZER_INTERNAL_DLL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___unicode.html#gaaff928d5b9f4d2b1be1206edc8119a2d">theolizer::getACP</a> ()</td></tr>
+<tr class="separator:gaaff928d5b9f4d2b1be1206edc8119a2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaa09517ed7cbf36ab3f9a551a616c81eb"><td class="memItemLeft" align="right" valign="top">bool THEOLIZER_INTERNAL_DLL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___unicode.html#gaa09517ed7cbf36ab3f9a551a616c81eb">theolizer::setACP</a> (unsigned iCodePage)</td></tr>
+<tr class="separator:gaa09517ed7cbf36ab3f9a551a616c81eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5b50c2df37efb2ba7c669355c5e0fd3f"><td class="memItemLeft" align="right" valign="top">bool THEOLIZER_INTERNAL_DLL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___unicode.html#ga5b50c2df37efb2ba7c669355c5e0fd3f">theolizer::registerStream</a> (std::istream *iIStream)</td></tr>
 <tr class="separator:ga5b50c2df37efb2ba7c669355c5e0fd3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad4a4d2ac76feba196ae50620d6f9c8de"><td class="memItemLeft" align="right" valign="top">bool THEOLIZER_INTERNAL_DLL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___unicode.html#gad4a4d2ac76feba196ae50620d6f9c8de">theolizer::registerStream</a> (std::ostream *iOStream)</td></tr>
@@ -116,10 +121,34 @@ $(document).ready(function(){initNavTree('group___unicode.html','');});
 <tr class="separator:ga72f7057d93d7e2efbc2ff3d040a3c9ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga492ee5cefa5b012c617ce4d0e55b1c1d"><td class="memItemLeft" align="right" valign="top">bool THEOLIZER_INTERNAL_DLL&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___unicode.html#ga492ee5cefa5b012c617ce4d0e55b1c1d">theolizer::isOutputByUtf8</a> (std::ostream *iOStream)</td></tr>
 <tr class="separator:ga492ee5cefa5b012c617ce4d0e55b1c1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+変数</h2></td></tr>
+<tr class="memitem:ga4f11c1cc04093914d973d9753a55627b"><td class="memItemLeft" align="right" valign="top">const THEOLIZER_INTERNAL_DLL unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___unicode.html#ga4f11c1cc04093914d973d9753a55627b">theolizer::kCP_ACP</a></td></tr>
+<tr class="separator:ga4f11c1cc04093914d973d9753a55627b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8c1f72dc495c26a0775f7b3e84208007"><td class="memItemLeft" align="right" valign="top">const THEOLIZER_INTERNAL_DLL unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___unicode.html#ga8c1f72dc495c26a0775f7b3e84208007">theolizer::kCP_UTF8</a></td></tr>
+<tr class="separator:ga8c1f72dc495c26a0775f7b3e84208007"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">詳解</h2>
-<p>Unicode文字列用補助ツール群 </p>
 <h2 class="groupheader">関数詳解</h2>
+<a id="gaaff928d5b9f4d2b1be1206edc8119a2d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaaff928d5b9f4d2b1be1206edc8119a2d">&sect;&nbsp;</a></span>getACP()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned THEOLIZER_INTERNAL_DLL theolizer::getACP </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>現在のコード・ページ獲得 </p>
+
+</div>
+</div>
 <a id="ga72f7057d93d7e2efbc2ff3d040a3c9ba"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga72f7057d93d7e2efbc2ff3d040a3c9ba">&sect;&nbsp;</a></span>isInputByUtf8()</h2>
 
@@ -135,7 +164,7 @@ $(document).ready(function(){initNavTree('group___unicode.html','');});
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000099">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<p>Multi Byte変換しない（UTF-8で入力する）時、true返却。 </p>
 
 </div>
 </div>
@@ -154,7 +183,7 @@ $(document).ready(function(){initNavTree('group___unicode.html','');});
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000100">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<p>Multi Byte変換しない（UTF-8で出力する）時、true返却。 </p>
 
 </div>
 </div>
@@ -173,7 +202,7 @@ $(document).ready(function(){initNavTree('group___unicode.html','');});
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000093">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<p>Multi Byte変換する対象としてstd::istreamを登録する。 </p>
 
 </div>
 </div>
@@ -192,7 +221,7 @@ $(document).ready(function(){initNavTree('group___unicode.html','');});
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000094">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<p>Multi Byte変換する対象としてstd::ostreamを登録する。 </p>
 
 </div>
 </div>
@@ -211,7 +240,26 @@ $(document).ready(function(){initNavTree('group___unicode.html','');});
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000095">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<p>Multi Byte変換する対象としてstd::iostreamを登録する。 </p>
+
+</div>
+</div>
+<a id="gaa09517ed7cbf36ab3f9a551a616c81eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaa09517ed7cbf36ab3f9a551a616c81eb">&sect;&nbsp;</a></span>setACP()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool THEOLIZER_INTERNAL_DLL theolizer::setACP </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>iCodePage</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>コード・ページ設定：失敗時false返却(非Windowsは常にtrue) </p>
 
 </div>
 </div>
@@ -230,7 +278,7 @@ $(document).ready(function(){initNavTree('group___unicode.html','');});
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000096">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<p>std::istreamをMulti Byte変換する対象から解除する。 </p>
 
 </div>
 </div>
@@ -249,7 +297,7 @@ $(document).ready(function(){initNavTree('group___unicode.html','');});
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000097">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<p>std::ostreamをMulti Byte変換する対象から解除する。 </p>
 
 </div>
 </div>
@@ -268,7 +316,38 @@ $(document).ready(function(){initNavTree('group___unicode.html','');});
         </tr>
       </table>
 </div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000098">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<p>std::iostreamをMulti Byte変換する対象から解除する。 </p>
+
+</div>
+</div>
+<h2 class="groupheader">変数詳解</h2>
+<a id="ga4f11c1cc04093914d973d9753a55627b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga4f11c1cc04093914d973d9753a55627b">&sect;&nbsp;</a></span>kCP_ACP</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const THEOLIZER_INTERNAL_DLL unsigned theolizer::kCP_ACP</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>WindowsのCP_ACPと同じ値 </p>
+
+</div>
+</div>
+<a id="ga8c1f72dc495c26a0775f7b3e84208007"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga8c1f72dc495c26a0775f7b3e84208007">&sect;&nbsp;</a></span>kCP_UTF8</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const THEOLIZER_INTERNAL_DLL unsigned theolizer::kCP_UTF8</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>WindowsのCP_UTF8と同じ値 </p>
 
 </div>
 </div>
@@ -279,7 +358,8 @@ $(document).ready(function(){initNavTree('group___unicode.html','');});
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
 	<ul>
 		<span style="color:#364D7C";>
-			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+			&nbsp;&nbsp;&copy; 2016 <a href="http://theolizer.com/">Theoride Technology</a> All Rights Reserved.
+      &nbsp;&nbsp;"Theolizer" is a registered trademark of Theoride Technology.
 		</span>
     <li class="footer">
 			構築:

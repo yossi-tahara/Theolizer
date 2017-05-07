@@ -1,4 +1,6 @@
 var searchData=
 [
-  ['threadguard',['ThreadGuard',['../classtheolizer_1_1_thread_guard.html#a890d1c650aa4c18c5190033fb4605169',1,'theolizer::ThreadGuard::ThreadGuard() noexcept'],['../classtheolizer_1_1_thread_guard.html#a9496244e62fce13eb655cdf3e0062d54',1,'theolizer::ThreadGuard::ThreadGuard(Fn &amp;&amp;fn, Args &amp;&amp;... args)'],['../classtheolizer_1_1_thread_guard.html#a4cd19bc4461e2602174d2cd48097f3d5',1,'theolizer::ThreadGuard::ThreadGuard(ThreadGuard &amp;&amp;iThread) noexcept']]]
+  ['registerstream',['registerStream',['../group___unicode.html#ga5b50c2df37efb2ba7c669355c5e0fd3f',1,'theolizer::registerStream(std::istream *iIStream)'],['../group___unicode.html#gad4a4d2ac76feba196ae50620d6f9c8de',1,'theolizer::registerStream(std::ostream *iOStream)'],['../group___unicode.html#ga8fec88e3cc3bcd4682ab9c6b957311f0',1,'theolizer::registerStream(std::iostream *iIOStream)']]],
+  ['removefile',['removeFile',['../group___test.html#ga78b05f902134ab4dcddf2ec2b021b26a',1,'theolizer']]],
+  ['reseterror',['resetError',['../classtheolizer_1_1_error_reporter.html#a522ccac2d195427b5b9ebb7503e701f1',1,'theolizer::ErrorReporter::resetError()'],['../classtheolizer_1_1internal_1_1_error_base.html#a9708e19b72d0370f441e65e38aa10d11',1,'theolizer::internal::ErrorBase::resetError()']]]
 ];

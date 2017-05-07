@@ -51,9 +51,12 @@ var index =
           [ "3-1-2.グローバル・バージョン番号", "_specification.html#Basic322", null ]
         ] ],
         [ "3-3.クラス・メンバ変数のKeep-step", "_specification.html#Basic33", null ],
-        [ "3-4.保存先指定等の要因で一部のメンバが回復されていない時", "_specification.html#Basic34", null ],
-        [ "3-5.旧バージョン処理時、メンバが回復されなかった時に発生する問題点対応", "_specification.html#Basic35", null ],
-        [ "3-6.down/upVersion関数で変更可能な変数と変更してはいけない変数のまとめ", "_specification.html#Basic36", null ]
+        [ "3-4.クラスとenum型定義変更時の注意事項", "_specification.html#Basic34", [
+          [ "3-4-1.保存先指定等の要因で一部のメンバが回復されていない時", "_specification.html#Basic341", null ],
+          [ "3-4-2.旧バージョン処理時、メンバが回復されなかった時に発生する問題点対応", "_specification.html#Basic342", null ],
+          [ "3-4-3.down/upVersion関数で変更可能な変数と変更してはいけない変数のまとめ", "_specification.html#Basic343", null ],
+          [ "3-4-4.クラスやenum型を削除する際の注意事項", "_specification.html#Basic344", null ]
+        ] ]
       ] ]
     ] ],
     [ "インストール／アンインストール", "_prepare.html", [
@@ -118,7 +121,9 @@ var index =
       [ "3.各シリアライザの説明", "_usage_total.html#Serializers", [
         [ "3-1.共通事項", "_usage_total.html#Serializer", [
           [ "3-1-1.型チェック・モード", "_usage_total.html#CheckMode", null ],
-          [ "3-1-2.派生メンバ", "_usage_total.html#DerivedMembers", null ]
+          [ "3-1-2.メンバ関数", "_usage_total.html#MemberFunctions", null ],
+          [ "3-1-3.プロパティ", "_usage_total.html#Property", null ],
+          [ "3-1-4.EncodedStringについて補足", "_usage_total.html#EncodedString", null ]
         ] ],
         [ "3-2.Json形式（JsonSerializer）", "_usage_total.html#JsonSerializer", [
           [ "3-2-1.保存用JsonSerialzier", "_usage_total.html#JsonOSerialzier", null ],
@@ -143,5 +148,5 @@ var index =
       ] ]
     ] ],
     [ "使用方法（個別）", "_usage_individual.html", "_usage_individual" ],
-    [ "APIリファレンス", "_api_reference.html", null ]
+    [ "その他のAPI", "_api_reference.html", null ]
 ];

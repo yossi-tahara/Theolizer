@@ -1,6 +1,6 @@
 var _usage_individual =
 [
-    [ "THEOLIZER_PROCESS()の使用例", "_basic_process.html", [
+    [ "THEOLIZER_PROCESS()の使用方法", "_basic_process.html", [
       [ "1.クラスとenum型の定義", "_basic_process.html#DefinitionEnumClass", null ],
       [ "2.網羅的な使用例（自動テスト）の説明", "_basic_process.html#TestBasicProcess", null ]
     ] ],
@@ -12,7 +12,7 @@ var _usage_individual =
         [ "3-2.非侵入型手動クラスのシリアライズ指定", "_class_variation.html#SpecifyManualClass", null ],
         [ "3-3.自動生成される保存／回復処理用関数の雛形例", "_class_variation.html#TemplateManualClass", null ],
         [ "3-4.クラス定義雛形のコピー", "_class_variation.html#CopyManualClass", null ],
-        [ "3-5.保存／回復処理関数の記述例", "_class_variation.html#WriteManualClass", null ],
+        [ "3-5.保存／回復処理関数の記述", "_class_variation.html#WriteManualClass", null ],
         [ "3-6.保存／回復処理例", "_class_variation.html#SaveLoadManualClass", null ]
       ] ],
       [ "4.それらを派生したり包含したりしたクラス", "_class_variation.html#DerivedIncluded", null ],
@@ -27,7 +27,7 @@ var _usage_individual =
     ] ],
     [ "enum型のバリエーション", "_enum_variation.html", [
       [ "1.非侵入型完全自動enum型", "_enum_variation.html#FullAutoEnum", null ],
-      [ "2.非侵入型半自動enum型", "_enum_variation.html#HalfAutoEnumSymName", null ],
+      [ "2.非侵入型半自動enum型", "_enum_variation.html#HalfAutoEnum", null ],
       [ "3.網羅的な使用例（自動テスト）の説明", "_enum_variation.html#TestEnumVariation", null ]
     ] ],
     [ "オブジェクト追跡について", "_object_tracking.html", [
@@ -161,5 +161,31 @@ var _usage_individual =
         [ "6-2.クラス変更の複合テスト", "_changing_class.html#HowToModifyClass62", null ]
       ] ]
     ] ],
-    [ "エラー処理", "_error_report.html", null ]
+    [ "エラー報告", "_error_report.html", [
+      [ "1.Theolizerエラー・クラス", "_error_report.html#ErrorReport1", [
+        [ "1-1.ErrorInfoクラス", "_error_report.html#ErrorInfo", null ],
+        [ "1-2.ErrorType枚挙型", "_error_report.html#ErrorType", null ],
+        [ "1-3.ErrorKind枚挙型", "_error_report.html#ErrorKind", null ],
+        [ "1-4.ErrorInfoのgetString()のフォーマット", "_error_report.html#getString", null ]
+      ] ],
+      [ "2.Theolizerで検出したエラーの記録", "_error_report.html#ErrorReport2", [
+        [ "2-1.シリアライザのインスタンス", "_error_report.html#SerializerInstance", null ],
+        [ "2-2.ErrorReporterシングルトン", "_error_report.html#ErrorReporter", null ]
+      ] ],
+      [ "3.Theolizerで検出したエラーの通知方法", "_error_report.html#ErrorReport3", null ],
+      [ "4.エラー状態の回復方法", "_error_report.html#ErrorReport4", null ],
+      [ "5.エラー・ログ", "_error_report.html#ErrorReport5", [
+        [ "5-1.THEOLIZER_ERRORLOG_FILE()マクロの指定方法", "_error_report.html#THEOLIZER_ERRORLOG_FILE", null ],
+        [ "5-2.ログ・ファイルのフォーマット", "_error_report.html#LogFileFormat", null ],
+        [ "5-3.同期待ち時間について", "_error_report.html#WaitSync", null ],
+        [ "5-4.スレッドIDについて", "_error_report.html#ThreadId", null ]
+      ] ],
+      [ "6.サンプル・ソース", "_error_report.html#ErrorReport6", null ],
+      [ "7.エラー検出の網羅的テスト", "_error_report.html#ErrorReport7", [
+        [ "7-1.エラー報告全体", "_error_report.html#ErrorReport71", null ],
+        [ "7-2.downVersion/upVersionのコンパイル・エラー", "_error_report.html#ErrorReport72", null ],
+        [ "7-3.グローバル・バージョン番号テーブルのエラー検出", "_error_report.html#ErrorReport73", null ],
+        [ "7-4.エラー・リカバリ", "_error_report.html#ErrorReport74", null ]
+      ] ]
+    ] ]
 ];

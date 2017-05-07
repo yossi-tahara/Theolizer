@@ -7,5 +7,6 @@ var searchData=
   ['7d_2edestinations_2eh',['7d.destinations.h',['../7d_8destinations_8h.html',1,'']]],
   ['7e_2esupport_5fstl_2eh',['7e.support_stl.h',['../7e_8support__stl_8h.html',1,'']]],
   ['7f_2emodify_5fenum_2eh',['7f.modify_enum.h',['../7f_8modify__enum_8h.html',1,'']]],
-  ['7g_2emodify_5fclass_2eh',['7g.modify_class.h',['../7g_8modify__class_8h.html',1,'']]]
+  ['7g_2emodify_5fclass_2eh',['7g.modify_class.h',['../7g_8modify__class_8h.html',1,'']]],
+  ['7h_2eerror_5freport_2eh',['7h.error_report.h',['../7h_8error__report_8h.html',1,'']]]
 ];

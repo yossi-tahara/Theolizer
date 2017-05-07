@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['preparedir',['PrepareDir',['../classtheolizer_1_1_prepare_dir.html#a004dce32808821840a6e551200fda1ca',1,'theolizer::PrepareDir']]],
-  ['print',['print',['../namespacetheolizer.html#ae08153a6de69bbdbf4807073d2d5af01',1,'theolizer']]],
-  ['printresult',['printResult',['../namespacetheolizer.html#a436bafe5d223b76aaeaf020a5407c4eb',1,'theolizer']]]
+  ['makescopeexit',['makeScopeExit',['../group___test.html#gac82b5fe5fee0645c7d4a9e53e7da1756',1,'theolizer']]]
 ];

@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.5.0</span>
+   &#160;<span id="projectnumber">Version.1.0.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -95,10 +95,18 @@ $(document).ready(function(){initNavTree('classtheolizer_1_1_error_reporter.html
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 静的公開メンバ関数</h2></td></tr>
-<tr class="memitem:a5c8e30bfa0697fb332bf2c0bcaec73c1"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="classtheolizer_1_1_error_info.html">ErrorInfo</a> const  &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_error_reporter.html#a5c8e30bfa0697fb332bf2c0bcaec73c1">getErrorInfo</a> () noexcept</td></tr>
+<tr class="memitem:a5c8e30bfa0697fb332bf2c0bcaec73c1"><td class="memItemLeft" align="right" valign="top"><a id="a5c8e30bfa0697fb332bf2c0bcaec73c1"></a>
+static <a class="el" href="classtheolizer_1_1_error_info.html">ErrorInfo</a> const  &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_error_reporter.html#a5c8e30bfa0697fb332bf2c0bcaec73c1">getErrorInfo</a> () noexcept</td></tr>
+<tr class="memdesc:a5c8e30bfa0697fb332bf2c0bcaec73c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">エラー情報返却 <br /></td></tr>
 <tr class="separator:a5c8e30bfa0697fb332bf2c0bcaec73c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a715b4eb6ca6c731aa1040680bc2c31ac"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_error_reporter.html#a715b4eb6ca6c731aa1040680bc2c31ac">isError</a> ()</td></tr>
-<tr class="separator:a715b4eb6ca6c731aa1040680bc2c31ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab94194b7327669113ebfbfe96895cd59"><td class="memItemLeft" align="right" valign="top"><a id="ab94194b7327669113ebfbfe96895cd59"></a>
+static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_error_reporter.html#ab94194b7327669113ebfbfe96895cd59">isError</a> () noexcept</td></tr>
+<tr class="memdesc:ab94194b7327669113ebfbfe96895cd59"><td class="mdescLeft">&#160;</td><td class="mdescRight">エラー発生ならtrue <br /></td></tr>
+<tr class="separator:ab94194b7327669113ebfbfe96895cd59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a522ccac2d195427b5b9ebb7503e701f1"><td class="memItemLeft" align="right" valign="top"><a id="a522ccac2d195427b5b9ebb7503e701f1"></a>
+static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_error_reporter.html#a522ccac2d195427b5b9ebb7503e701f1">resetError</a> () noexcept</td></tr>
+<tr class="memdesc:a522ccac2d195427b5b9ebb7503e701f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">エラー状態を解除する <br /></td></tr>
+<tr class="separator:a522ccac2d195427b5b9ebb7503e701f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="friends"></a>
 フレンド</h2></td></tr>
@@ -116,67 +124,10 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>internal::writeWarnin
 <tr class="separator:aab356d0770d029e3ecb6844e36dbfa09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">詳解</h2>
-<div class="textblock"><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000026">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<div class="textblock"><p>エラー管理シングルトン 　　スレッド毎に１つ存在する </p>
 
-<p> <a class="el" href="report_8h_source.html">report.h</a> の <a class="el" href="report_8h_source.html#l00631">631</a> 行目に定義があります。</p>
-</div><h2 class="groupheader">関数詳解</h2>
-<a id="a5c8e30bfa0697fb332bf2c0bcaec73c1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c8e30bfa0697fb332bf2c0bcaec73c1">&sect;&nbsp;</a></span>getErrorInfo()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static <a class="el" href="classtheolizer_1_1_error_info.html">ErrorInfo</a> const&amp; theolizer::ErrorReporter::getErrorInfo </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000050">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-<p> <a class="el" href="report_8h_source.html">report.h</a> の <a class="el" href="report_8h_source.html#l00698">698</a> 行目に定義があります。</p>
-
-</div>
-</div>
-<a id="a715b4eb6ca6c731aa1040680bc2c31ac"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a715b4eb6ca6c731aa1040680bc2c31ac">&sect;&nbsp;</a></span>isError()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static bool theolizer::ErrorReporter::isError </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000051">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-<p> <a class="el" href="report_8h_source.html">report.h</a> の <a class="el" href="report_8h_source.html#l00704">704</a> 行目に定義があります。</p>
-
-</div>
-</div>
-<hr/>このクラス詳解は次のファイルから抽出されました:<ul>
+<p> <a class="el" href="report_8h_source.html">report.h</a> の <a class="el" href="report_8h_source.html#l00637">637</a> 行目に定義があります。</p>
+</div><hr/>このクラス詳解は次のファイルから抽出されました:<ul>
 <li><a class="el" href="report_8h_source.html">report.h</a></li>
 </ul>
 </div><!-- contents -->
@@ -187,7 +138,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>internal::writeWarnin
 	<ul>
     <li class="navelem"><a class="el" href="namespacetheolizer.html">theolizer</a></li><li class="navelem"><a class="el" href="classtheolizer_1_1_error_reporter.html">ErrorReporter</a></li>
 		<span style="color:#364D7C";>
-			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+			&nbsp;&nbsp;&copy; 2016 <a href="http://theolizer.com/">Theoride Technology</a> All Rights Reserved.
+      &nbsp;&nbsp;"Theolizer" is a registered trademark of Theoride Technology.
 		</span>
     <li class="footer">
 			構築:

@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.0.5.0</span>
+   &#160;<span id="projectnumber">Version.1.0.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -86,52 +86,33 @@ $(document).ready(function(){initNavTree('classtheolizer_1_1_prepare_dir.html','
 <a href="#pub-methods">公開メンバ関数</a> &#124;
 <a href="classtheolizer_1_1_prepare_dir-members.html">全メンバ一覧</a>  </div>
   <div class="headertitle">
-<div class="title">theolizer::PrepareDir クラス</div>  </div>
+<div class="title">theolizer::PrepareDir クラス<div class="ingroups"><a class="el" href="group___test.html">Test Tools</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>テスト用フォルダの準備  
+ <a href="classtheolizer_1_1_prepare_dir.html#details">[詳解]</a></p>
 
 <p><code>#include &lt;<a class="el" href="test__tool_8h_source.html">test_tool.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 公開メンバ関数</h2></td></tr>
-<tr class="memitem:a004dce32808821840a6e551200fda1ca"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtheolizer_1_1_prepare_dir.html#a004dce32808821840a6e551200fda1ca">PrepareDir</a> (std::string const &amp;iDirPath, bool iIsNoDelete=false)</td></tr>
-<tr class="separator:a004dce32808821840a6e551200fda1ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga004dce32808821840a6e551200fda1ca"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga004dce32808821840a6e551200fda1ca">PrepareDir</a> (std::string const &amp;iDirPath, bool iIsNoDelete=false)</td></tr>
+<tr class="separator:ga004dce32808821840a6e551200fda1ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7d250060f2b3a94dad99a5786a39f6fd"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group___test.html#ga7d250060f2b3a94dad99a5786a39f6fd">~PrepareDir</a> ()</td></tr>
+<tr class="separator:ga7d250060f2b3a94dad99a5786a39f6fd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">詳解</h2>
-<div class="textblock"><dl class="todo"><dt><b><a class="el" href="todo.html#_todo000066">todo:</a></b></dt><dd>T.B.D. </dd></dl>
+<div class="textblock"><p>テスト用フォルダの準備 </p>
+<p>もし、iDirPathフォルダが既に存在していたら削除する。<br />
+ 次に、iDirPathフォルダを作成する。<br />
+ デストラクタにてiIsNoDeleteがfalseなら、iDirPathフォルダを削除する。<br />
+ iDirPathフォルダを生成できなかったら、std::runtime_errorを投げるので、<br />
+ catchしないことにより、テストが中断される。<br />
+ </p>
 
-<p> <a class="el" href="test__tool_8h_source.html">test_tool.h</a> の <a class="el" href="test__tool_8h_source.html#l00262">262</a> 行目に定義があります。</p>
-</div><h2 class="groupheader">構築子と解体子</h2>
-<a id="a004dce32808821840a6e551200fda1ca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a004dce32808821840a6e551200fda1ca">&sect;&nbsp;</a></span>PrepareDir()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">theolizer::PrepareDir::PrepareDir </td>
-          <td>(</td>
-          <td class="paramtype">std::string const &amp;&#160;</td>
-          <td class="paramname"><em>iDirPath</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>iIsNoDelete</em> = <code>false</code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<dl class="todo"><dt><b><a class="el" href="todo.html#_todo000082">todo:</a></b></dt><dd>T.B.D. </dd></dl>
-
-</div>
-</div>
-<hr/>このクラス詳解は次のファイルから抽出されました:<ul>
+<p> <a class="el" href="test__tool_8h_source.html">test_tool.h</a> の <a class="el" href="test__tool_8h_source.html#l00259">259</a> 行目に定義があります。</p>
+</div><hr/>このクラス詳解は次のファイルから抽出されました:<ul>
 <li><a class="el" href="test__tool_8h_source.html">test_tool.h</a></li>
 </ul>
 </div><!-- contents -->
@@ -142,7 +123,8 @@ $(document).ready(function(){initNavTree('classtheolizer_1_1_prepare_dir.html','
 	<ul>
     <li class="navelem"><a class="el" href="namespacetheolizer.html">theolizer</a></li><li class="navelem"><a class="el" href="classtheolizer_1_1_prepare_dir.html">PrepareDir</a></li>
 		<span style="color:#364D7C";>
-			&nbsp;&nbsp;&copy; 2016 Yohinori Tahara(<a href="http://theolizer.com/">Theoride Technology</a>) All Rights Reserved. 
+			&nbsp;&nbsp;&copy; 2016 <a href="http://theolizer.com/">Theoride Technology</a> All Rights Reserved.
+      &nbsp;&nbsp;"Theolizer" is a registered trademark of Theoride Technology.
 		</span>
     <li class="footer">
 			構築:
