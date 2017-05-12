@@ -70,6 +70,12 @@ char const* const   BinaryMidOSerializer::kSerializerName=
         "theolizer::internal::BinaryMidOSerializer";
 
 // ***************************************************************************
+//      fstreamのオープン・モード
+// ***************************************************************************
+
+std::ios_base::openmode BinaryMidOSerializer::kOpenMode=std::ios_base::binary;
+
+// ***************************************************************************
 //      コンストラクタ
 // ***************************************************************************
 
@@ -404,6 +410,12 @@ void BinaryMidOSerializer::writeByte(uint8_t iByte)
 
 char const* const   BinaryMidISerializer::kSerializerName=
         "theolizer::internal::BinaryMidISerializer";
+
+// ***************************************************************************
+//      fstreamのオープン・モード
+// ***************************************************************************
+
+std::ios_base::openmode BinaryMidISerializer::kOpenMode=std::ios_base::binary;
 
 // ***************************************************************************
 //      コンストラクタ

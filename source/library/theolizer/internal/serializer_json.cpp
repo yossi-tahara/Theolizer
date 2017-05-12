@@ -70,6 +70,12 @@ char const* const   JsonMidOSerializer::kSerializerName=
         "theolizer::internal::JsonMidOSerializer";
 
 // ***************************************************************************
+//      fstreamのオープン・モード
+// ***************************************************************************
+
+std::ios_base::openmode JsonMidOSerializer::kOpenMode=std::ios_base::openmode();
+
+// ***************************************************************************
 //      コンストラクタ
 // ***************************************************************************
 
@@ -387,6 +393,12 @@ void JsonMidOSerializer::encodeJsonString(std::string const& iString)
 
 char const* const   JsonMidISerializer::kSerializerName=
         "theolizer::internal::JsonMidISerializer";
+
+// ***************************************************************************
+//      fstreamのオープン・モード
+// ***************************************************************************
+
+std::ios_base::openmode JsonMidISerializer::kOpenMode=std::ios_base::openmode();
 
 // ***************************************************************************
 //      コンストラクタ

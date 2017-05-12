@@ -112,14 +112,7 @@ Theolizerをインストールした後、あなたのデータをTheolizerで�
 |Json形式|<theolizer/serializer_json.h>|fstreamはテキスト・モードでオープンする|
 |独自Binary形式|<theolizer/serializer_binary.h>|fstreamは<b>バイナリ・モード(std::ios_base::binary)</b>でオープンする|
 |メモリ内専用Fast形式|上記のどちから、もしくは、<theolizer/serializer.h>|fstreamは<b>バイナリ・モード(std::ios_base::binary)</b>でオープンする|
-<br>
-<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
-@anchor バイナリ・モード
-<b>バイナリ形式における注意事項：</b><br>
-バイナリ形式のシリアライザをfstreamで用いる時は、必ずバイナリ・モード（std::ios_base::binary）でfstreamをオープンして下さい。<br>
-fstreamがテキスト・モードでオープンされている場合、ファイル・ストリームへ数値26(0x1A)が出力されると、これはEOFコードなので回復時にEOFエラーになります。また、Windowsで数値10(0x0A)が出力されるとCR LFへ展開されてしまい、適切に回復できません。<br>
-このような事態をさけるため、Theolizer側でエラーにしたいのですが、iostreamではそのオープン・モードを確認できないためチェックが困難なのです。<br>
-</div>
+
 <br>
 // ***************************************************************************
 @subsection DefineClassEnum 2-2.シリアライズするクラスとenum型の定義
@@ -282,6 +275,7 @@ TypeCheckByIndexはデータ量が多い時は３種のCheckModeの中で最大�
 |IsSaver|保存処理用ならtrue、回復処理用ならfalse|--|--|--|
 |EncodedString|文字列のエンコードを処理する|true|false|false|
 |SupportModifying|クラスやenum型の定義変更に対応する|true|true|false|
+|BinaryOpen|fstreamをstd::ios_base::binaryモードでオープンする必要がある|false|true|true|
 
 プロパテイは以下の構文で受け取ります。
 
@@ -332,6 +326,20 @@ std::stringはMultiByte文字列としてエンコードされているものと
 @skip "tutoriseBasic() end"
 @skip }
 @until }
+
+@subsubsection BinaryOpen 3-1-5.BinaryOpenについて補足
+
+バイナリ形式のシリアライザをfstreamで用いる時は、必ずバイナリ・モード（std::ios_base::binary）でfstreamをオープンする必要があります。<br>
+Windowsの場合、fstreamがテキスト・モードでオープンされ、ストリームへ数値26(0x1A)が出力されると、0x1AはWindowsではEOFコードなので回復時にEOFエラーになります。また、Windowsで数値10(0x0A)が出力されるとCR LFへ展開されてしまい、適切に回復できません。<br>
+このような事態をさけるため、Theolizer側でエラーにしたいのですが、iostreamではそのオープン・モードを確認できないためチェックが困難なのです。<br>
+
+バイナリ形式のシリアライザは、hasProperty(theolzier::Property::BinaryOpen)がtrueになります。
+また、各シリアライザはstd::ios_base::openmode型の静的定数kOpenModeを定義しています。
+バイナリ形式のシリアライザではstd::ios_base::binary、それ以外のシリアライザで 0 となっています。
+
+<b>サンプル・ソース（source/reference_and_test/basic/test_basic_process.cpp）</b><br>
+
+@snippet  basic/test_basic_process.cpp BinaryOpen
 
 <br>
 // ***************************************************************************
@@ -418,7 +426,6 @@ Windowsのみ機能します。それ以外のOSではUTF-8のままです。
 @subsection BinarySerializer 3-3.独自Binary形式（BinarySerializer）
 // ***************************************************************************
 独自Binary形式でシリアライズする場合は、<b>theolizer/serializer_binary.h</b>をインクルードして下さい。<br>
-また、ファイル・ストリームは必ず@ref バイナリ・モード でオープンして下さい。
 
 Big Endianでエンコードします。Little Endianの処理系の場合Big Endianとの間で自動変換します。<br>
 整数型は値を表現するために十分なバイト数で保存します。例えば、long long型でも値が10ならタグと値で合わせて2バイトで保存します。<br>
@@ -456,7 +463,7 @@ BinaryOSerializer
 
 |パラメータ名|意味|
 |------------|----|
-|iOStream|出力先のストリーム(ofstreamは<b>@ref バイナリ・モード </b>でオープンして下さい）|
+|iOStream|出力先のストリーム(ofstreamはstd::ios_base::binaryでオープンして下さい）|
 |iGlobalVersionNo|保存するグローバル・バージョン番号(省略時は最新版)|
 |iCheckMode|型チェック・モード（省略時はNoTypeCheck)|
 |iNoThrowException|例外禁止時true（省略時はfalse)|
@@ -476,7 +483,7 @@ BinaryISerializer
 
 |パラメータ名|意味|
 |------------|----|
-|iIStream|入力元のストリーム(ofstreamは<b>@ref バイナリ・モード </b>でオープンして下さい）|
+|iIStream|入力元のストリーム(ofstreamはstd::ios_base::binaryでオープンして下さい）|
 |iNoThrowException|例外禁止時true（省略時はfalse)|
 
 <br>
@@ -487,7 +494,7 @@ FastSerializerの使用目的はデータ構造のプログラム内コピーで
 
 Theolizerが内部的に使用していますので、他のシリアライザのヘッダをインクルードすれば改めてヘッダをインクルードする必要はありません。<br>
 もし、他のシリアライザを使用しない時は、theolizer/serializer.hをインクルードして下さい。<br>
-また、ストリームはstd::stringstreamを用いることを想定していますが、もしも、ファイル・ストリームを与える場合は必ず@ref バイナリ・モード でオープンして下さい。<br>
+また、ストリームはstd::stringstreamを用いることを想定していますが、もしも、ファイル・ストリームを与える場合は必ず std::ios_base::binaryモード でオープンして下さい。<br>
 FastSerializerはデータ変換しません。バージョンの相違にも対応していません。<br>
 オーナー指定ポインタでない通常のポインタは、ポイント先をシリアライズしていない場合はシャロー・コピーになります。（ポインタ値を単純にコピーする。）<br>
 
@@ -506,7 +513,7 @@ FastOSerializer
 
 |パラメータ名|意味|
 |------------|----|
-|iOStream|出力先のストリーム(ofstreamは<b>@ref バイナリ・モード </b>でオープンして下さい）|
+|iOStream|出力先のストリーム(ofstreamはstd::ios_base::binaryでオープンして下さい）|
 |iNoThrowException|例外禁止時true（省略時はfalse)|
 
 @subsubsection FastISerializer 3-4-2.回復用FastSerializer
@@ -524,7 +531,7 @@ FastISerializer
 
 |パラメータ名|意味|
 |------------|----|
-|iIStream|入力元のストリーム(ofstreamは<b>@ref バイナリ・モード </b>でオープンして下さい）|
+|iIStream|入力元のストリーム(ofstreamはstd::ios_base::binaryでオープンして下さい）|
 |iNoThrowException|例外禁止時true（省略時はfalse)|
 
 #### FastSerializerを用いたグローバル関数

@@ -97,6 +97,10 @@ inline bool hasPropertyJson(Property iProperty, bool iIsSaver)
     case Property::SupportModifying:
         ret=true;
         break;
+
+    case Property::BinaryOpen:
+        ret=false;
+        break;
     }
 
     return ret;
@@ -265,8 +269,9 @@ private:
     typedef JsonMidISerializer  MetaISerializer;    // メタ・デシリアライザ
 
 protected:
-    bool                        mCharIsMultiByte;
-    static char const* const    kSerializerName;
+    bool                            mCharIsMultiByte;
+    static char const* const        kSerializerName;
+    static std::ios_base::openmode  kOpenMode;
 
     JsonMidOSerializer
     (
@@ -407,8 +412,9 @@ private:
     typedef JsonMidISerializer  MetaISerializer;    // メタ・デシリアライザ
 
 protected:
-    bool                        mCharIsMultiByte;
-    static char const* const    kSerializerName;
+    bool                            mCharIsMultiByte;
+    static char const* const        kSerializerName;
+    static std::ios_base::openmode  kOpenMode;
 
     JsonMidISerializer
     (
@@ -603,6 +609,9 @@ class JsonOSerializer : protected internal::JsonMidOSerializer
     using BaseSerializer::mIsSaver;
 
 public:
+    //! ofstream用std::ios_base::openmode
+    using MidSerializer::kOpenMode;
+
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
     static const bool                       kHasDestination=true;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
@@ -704,6 +713,9 @@ class JsonISerializer : protected internal::JsonMidISerializer
     using BaseSerializer::mIsSaver;
 
 public:
+    //! ifstream用std::ios_base::openmode
+    using MidSerializer::kOpenMode;
+
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
     static const bool                       kHasDestination=true;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN

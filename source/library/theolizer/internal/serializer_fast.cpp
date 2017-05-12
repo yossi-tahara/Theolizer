@@ -79,6 +79,12 @@ char const* const   FastMidOSerializer::kSerializerName=
         "theolizer::internal::FastMidOSerializer";
 
 // ***************************************************************************
+//      fstreamのオープン・モード
+// ***************************************************************************
+
+std::ios_base::openmode FastMidOSerializer::kOpenMode=std::ios_base::binary;
+
+// ***************************************************************************
 //      コンストラクタ
 // ***************************************************************************
 
@@ -196,6 +202,12 @@ void FastMidOSerializer::saveString(std::string const& iString)
 
 char const* const   FastMidISerializer::kSerializerName=
         "theolizer::internal::FastMidISerializer";
+
+// ***************************************************************************
+//      fstreamのオープン・モード
+// ***************************************************************************
+
+std::ios_base::openmode FastMidISerializer::kOpenMode=std::ios_base::binary;
 
 // ***************************************************************************
 //      コンストラクタ

@@ -296,6 +296,10 @@ std::ostream& operator<<(std::ostream& iOStream, Property iProperty)
     case Property::SupportModifying:
         iOStream << "SupportModifying";
         break;
+
+    case Property::BinaryOpen:
+        iOStream << "BinaryOpen";
+        break;
     }
 
     return iOStream;

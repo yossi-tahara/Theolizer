@@ -840,7 +840,8 @@ enum class Property
 {
     IsSaver,            // 保存処理を行う
     EncodedString,      // setCharIsMultiByte()をサポートし、文字列の互換がある
-    SupportModifying    // 変更をサポート(FastSerializerは非対応)
+    SupportModifying,   // 変更をサポート(FastSerializerは非対応)
+    BinaryOpen          // fstreamをstd::ios_base::binaryモードでオープンする必要がある
 };
 
 //! Propertyの表示用オーバーロード

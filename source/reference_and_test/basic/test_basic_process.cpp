@@ -206,6 +206,114 @@ void tutoriseBasic()
     }
 
 //----------------------------------------------------------------------------
+//      バイナリ・オープン
+//----------------------------------------------------------------------------
+
+//      ---<<< Property::BinaryOpen >>>---
+
+    THEOLIZER_EQUAL(theolizer::JsonOSerializer<>::
+        hasProperty(theolizer::Property::BinaryOpen), false);
+
+    THEOLIZER_EQUAL(theolizer::JsonISerializer<>::
+        hasProperty(theolizer::Property::BinaryOpen), false);
+
+    THEOLIZER_EQUAL(theolizer::BinaryOSerializer<>::
+        hasProperty(theolizer::Property::BinaryOpen), true);
+
+    THEOLIZER_EQUAL(theolizer::BinaryISerializer<>::
+        hasProperty(theolizer::Property::BinaryOpen), true);
+
+    THEOLIZER_EQUAL(theolizer::FastOSerializer<>::
+        hasProperty(theolizer::Property::BinaryOpen), true);
+
+    THEOLIZER_EQUAL(theolizer::FastISerializer<>::
+        hasProperty(theolizer::Property::BinaryOpen), true);
+
+//      ---<<< 保存 >>>---
+
+//! [BinaryOpen]
+
+    // Json
+    {
+        std::ofstream   aStream("openmode_json.json", theolizer::JsonOSerializer<>::kOpenMode);
+        theolizer::JsonOSerializer<> aSerializer(aStream);
+        int     aInt=0x1a;
+        THEOLIZER_PROCESS(aSerializer, aInt);
+    }
+
+    // Binary
+    {
+        std::ofstream   aStream("openmode_binary.bin", theolizer::BinaryOSerializer<>::kOpenMode);
+        theolizer::BinaryOSerializer<> aSerializer(aStream);
+        int     aInt=0x1a;
+        THEOLIZER_PROCESS(aSerializer, aInt);
+    }
+
+//! [BinaryOpen]
+
+    // Binary-Error
+    {
+        std::ofstream   aStream("openmode_binary_error.bin");
+        theolizer::BinaryOSerializer<> aSerializer(aStream);
+        int     aInt=0x1a;
+        THEOLIZER_PROCESS(aSerializer, aInt);
+    }
+
+    // Fast
+    {
+        std::ofstream   aStream("openmode_fast.bin", theolizer::FastOSerializer<>::kOpenMode);
+        theolizer::FastOSerializer<> aSerializer(aStream);
+        int     aInt=0x1a;
+        THEOLIZER_PROCESS(aSerializer, aInt);
+    }
+
+//      ---<<< 回復 >>>---
+
+    // Json
+    {
+        std::ifstream   aStream("openmode_json.json", theolizer::JsonISerializer<>::kOpenMode);
+        theolizer::JsonISerializer<> aSerializer(aStream);
+        int     aInt=0;
+        THEOLIZER_PROCESS(aSerializer, aInt);
+        THEOLIZER_EQUAL(aInt, 0x1a);
+    }
+
+    // Binary
+    {
+        std::ifstream   aStream("openmode_binary.bin", theolizer::BinaryISerializer<>::kOpenMode);
+        theolizer::BinaryISerializer<> aSerializer(aStream);
+        int     aInt=0;
+        THEOLIZER_PROCESS(aSerializer, aInt);
+        THEOLIZER_EQUAL(aInt, 0x1a);
+    }
+
+    // Binary-Error
+    {
+        std::ifstream   aStream("openmode_binary_error.bin");
+        theolizer::BinaryISerializer<> aSerializer(aStream);
+        int     aInt=0;
+#if defined(_WIN32)
+        THEOLIZER_CHECK_EXCEPTION2(
+            THEOLIZER_PROCESS(aSerializer, aInt);,                  // dStatements
+            theolizer::ErrorInfo& e,                                // dException
+            e.getErrorKind() == theolizer::ErrorKind::UnknownData,  // dJudge
+            e.getMessage());                                        // dResult
+#else
+        THEOLIZER_PROCESS(aSerializer, aInt);
+        THEOLIZER_EQUAL(aInt, 0x1a);
+#endif
+    }
+
+    // Fast
+    {
+        std::ifstream   aStream("openmode_fast.bin", theolizer::FastISerializer<>::kOpenMode);
+        theolizer::FastISerializer<> aSerializer(aStream);
+        int     aInt=0;
+        THEOLIZER_PROCESS(aSerializer, aInt);
+        THEOLIZER_EQUAL(aInt, 0x1a);
+    }
+
+//----------------------------------------------------------------------------
 //      エラー・ログ出力
 //----------------------------------------------------------------------------
 

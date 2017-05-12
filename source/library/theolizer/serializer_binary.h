@@ -199,6 +199,10 @@ inline bool hasPropertyBinary(Property iProperty, bool iIsSaver)
     case Property::SupportModifying:
         ret=true;
         break;
+
+    case Property::BinaryOpen:
+        ret=true;
+        break;
     }
 
     return ret;
@@ -365,7 +369,8 @@ private:
     typedef BinaryMidISerializer  MetaISerializer;   // メタ・デシリアライザ
 
 protected:
-    static char const* const    kSerializerName;
+    static char const* const        kSerializerName;
+    static std::ios_base::openmode  kOpenMode;
 
     BinaryMidOSerializer
     (
@@ -514,7 +519,8 @@ private:
     typedef BinaryMidISerializer  MetaISerializer;   // メタ・デシリアライザ
 
 protected:
-    static char const* const  kSerializerName;
+    static char const* const        kSerializerName;
+    static std::ios_base::openmode  kOpenMode;
 
     BinaryMidISerializer
     (
@@ -698,6 +704,9 @@ class BinaryOSerializer : protected internal::BinaryMidOSerializer
     using BaseSerializer::mIsSaver;
 
 public:
+    //! ofstream用std::ios_base::openmode
+    using MidSerializer::kOpenMode;
+
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
     static const bool                       kHasDestination=true;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
@@ -787,6 +796,9 @@ class BinaryISerializer : protected internal::BinaryMidISerializer
     using BaseSerializer::mIsSaver;
 
 public:
+    //! ifstream用std::ios_base::openmode
+    using MidSerializer::kOpenMode;
+
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
     static const bool                       kHasDestination=true;
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
