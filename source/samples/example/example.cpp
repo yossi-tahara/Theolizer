@@ -16,8 +16,8 @@ int main(int argc, char* argv[])
     // 保存
     {
         Foo foo;
-        foo.name="Yossi Tahara";
-        foo.age=55;
+        foo.name="Taro Yamada";
+        foo.age=22;
 
         std::ofstream ofs("sample.txt");
         theolizer::JsonOSerializer<> jos(ofs);  // シリアライザを生成

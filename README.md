@@ -32,8 +32,8 @@ int main()
 {
     {
         Foo foo;
-        foo.name="Yossi Tahara";
-        foo.age=55;
+        foo.name="Taro Yamada";
+        foo.age=22;
 
         std::ofstream ofs("sample.txt");
         foo.save(ofs);
@@ -49,7 +49,7 @@ int main()
 ```
 ### sample.txt
 ```txt
-Yossi Tahara 55
+Taro Yamada 22
 ```
 
 しかし、残念なことに [これはバグってます。](https://wandbox.org/permlink/JIBbWBShdozp208R)nameには性と名があり、間を空白文字で区切ります。従って、保存はされますが、回復する時、nameに名前の前半のみ回復され後半はageへ回復しようとして失敗します。  
@@ -73,16 +73,17 @@ struct Foo
 ```
 ### sample.txt
 ```txt
-Yossi Tahara
-55
+Taro Yamada
+22
 ```
-このように意外に手間がかかります。そして、通常は保存／回復したデータはもっと複雑です。  
-そこで、一般的には保存／回復するデータ型を数値と文字列に限定して保存／回復ライブラリを用意し、各クラスや構造体の保存／回復関数を１つ1つ記述することが多いのではないでしょうか。しかしそれでも、構造体同士の関連性や可変長なデータの保存／回復を記述しようとするとかなり苦労します。
+フィールド区切り方法を検討し、実装するので意外に手間がかかります。そして通常は保存／回復したいデータはもっと複雑です。  
+色々工夫して手間を省くとは思いますが、その工夫そのものにも手間がかかります。
 
 <b>Theolizerを使った場合：</b>  
-まずTheolizerライブラリが基本的な保存／回復ライブラリを提供します。（[全ての基本形＋全てのstd::basic_string型に対応](http://doc.theolizer.com/html/_specification.html#Basic11)）更に、ほとんどの場合 [保存／回復処理をTheolizerドライバが自動的に生成します。](http://doc.theolizer.com/html/_abstract.html#Mechanism)あなたはその保存／回復処理を呼び出すだけです。
+まずTheolizerライブラリが基本的な保存／回復ライブラリを提供します。（[全ての基本形＋全てのstd::basic_string型に対応](http://doc.theolizer.com/html/_specification.html#Basic11)）更に、ほとんどの場合 [Theolizerドライバがクラスのメンバ変数を自動的に列挙し、保存／回復処理を生成します。](http://doc.theolizer.com/html/_abstract.html#Mechanism)あなたはその保存／回復処理を呼び出すだけです。
 
 ### サンプル・ソース（example.cpp）
+
 ```C++
 #include <iostream>
 #include <fstream>
@@ -102,8 +103,8 @@ int main(int argc, char* argv[])
     // 保存
     {
         Foo foo;
-        foo.name="Yossi Tahara";
-        foo.age=55;
+        foo.name="Taro Yamada";
+        foo.age=22;
 
         std::ofstream ofs("sample.txt");
         theolizer::JsonOSerializer<> jos(ofs);  // シリアライザを生成
@@ -133,8 +134,8 @@ int main(int argc, char* argv[])
     "TypeInfoList":[1]
 }
 {
-    "name":"Yossi Tahara",
-    "age":55
+    "name":"Taro Yamada",
+    "age":22
 }
 ```
 
@@ -143,6 +144,11 @@ int main(int argc, char* argv[])
 1. [Theolzierのダウンロード](http://doc.theolizer.com/html/_prepare.html#PrepareTheolizer)
 2. [Theolizerドライバの準備](http://doc.theolizer.com/html/_prepare.html#ReplaceDriver)
 3. [ビルド環境の自動生成(by CMake)とビルド](http://doc.theolizer.com/html/_how_to_make_project.html#Example)
+
+### リフレクションがあればよいのに
+C#のように[リフレクション](https://goo.gl/XCRSND)を提供する言語なら可能ですか、C++はそのような機能を提供しておらず、我々のC++プログラムがクラスのメンバ変数のリストを得ることができません。（C++コンパイラは持っている情報ですので扱えそうな気もして、かなり深く調べましたが残念ながらできません。）<br>
+
+それを clangのlibToolingの力を借りてできるようにしました。これにより、C++コンパイラが持っているクラスのメンバ変数リストとenum型のシンボル名を取り出して、自動シリアライズを実現しました。
 
 ---
 <h1 id="Features">２．Theolizerの特長</h1>
@@ -234,11 +240,11 @@ Travis CI result : [![Build Status](https://travis-ci.org/yossi-tahara/Theolizer
     - コンパイラの種類とバージョン、32bit or 64bit
     - CMakeのバージョン、32bit or 64bit
 4. **下記不具合情報をできるだけご記載下さい**
-    - **不具合発生時に行っていた操作**  
+    - 不具合発生時に行っていた操作  
     例えば、Theolizerを用いたあなたのプログラムのビルド中など
-    - **どのような現象が発生したか？**
-    - **期待する動作はなにか？**
-    - **不具合が発生するソース・コード**  
+    - どのような現象が発生したか？
+    - 期待する動作はなにか？
+    - 不具合が発生するソース・コード  
     できれば、不具合が発生する最小のソースをご提供頂ければ助かります。
 5. **その他、追加情報があれば記載下さい**  
   何か気になったことや、不具合原因の推測等、なんでもよいので関連しそうな追加情報を頂けると助かります。
