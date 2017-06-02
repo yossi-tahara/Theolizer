@@ -191,7 +191,6 @@ namespace internal
 
 #define THEOLIZER_INTERNAL_SERIALIZABLE(dMap)                               \
     static const bool kIsTheolizer=true;                                    \
-friend int main(int argc, char** argv);\
     template<class>         friend struct theolizer::internal::IsNonIntrusive;\
     template<class, class>  friend struct theolizer::internal::IsNonIntrusiveImpl;\
     template<class>         friend struct theolizer::internal::IsTheolizerNonKeepStep;\

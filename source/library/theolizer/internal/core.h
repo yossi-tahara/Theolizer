@@ -61,11 +61,64 @@
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
+//      TheolizerNonKeepStep(プライマリ)の分岐処理
+//----------------------------------------------------------------------------
+
+namespace theolizer
+{
+namespace internal
+{
+
+//      ---<<< プライマリー >>>---
+
+template<typename tType, class tEnable=void>
+class TheolizerNonKeepStepPrimary
+{
+    tType&  mTarget;
+public:
+    TheolizerNonKeepStepPrimary(tType& iTarget) : mTarget(iTarget) { }
+
+//      ---<<< 値取り出し >>>---
+
+    tType const& get()      const { return mTarget; }
+    operator tType const&() const { return get(); }
+};
+
+//      ---<<< クラスへのポインタ用特殊化 >>>---
+
+template<typename tPointerType>
+class TheolizerNonKeepStepPrimary
+<
+    tPointerType,
+    theolizer::internal::EnableIf
+    <
+            std::is_pointer<tPointerType>::value
+         && std::is_class<typename std::remove_pointer<tPointerType>::type>::value
+    >
+>
+{
+    tPointerType&   mPointer;
+    typedef typename std::remove_pointer<tPointerType>::type Type;
+protected:
+    TheolizerNonKeepStepPrimary(tPointerType& iPointer) : mPointer(iPointer) { }
+
+public:
+//      ---<<< 値取り出し >>>---
+
+    Type const* get()        const { return mPointer; }
+    operator Type const*()   const { return get(); }
+    Type const* operator->() const { return mPointer; }
+};
+
+}   // namespace internal
+}   // namespace theolizer
+
+//----------------------------------------------------------------------------
 //      プライマリー
 //----------------------------------------------------------------------------
 
 template<class tClassType, class tEnable=void>
-struct TheolizerNonKeepStep
+struct TheolizerNonKeepStep : public theolizer::internal::TheolizerNonKeepStepPrimary<tClassType>
 {
     static const bool       kIsTheolizerNonKeepStep=true;
     typedef tClassType      Type;
@@ -87,41 +140,35 @@ private:
     // ターゲット
     Type*       mTarget;
 
+    typedef theolizer::internal::TheolizerNonKeepStepPrimary<tClassType> Base;
 public:
     // ターゲットからのコンストラクタ
     explicit TheolizerNonKeepStep(Type& iTarget) :
+        Base(iTarget),
         mValue(),
         mTarget(&iTarget)
     { }
 
     // 次からのコンストラクタ
     explicit TheolizerNonKeepStep(This& iNext) :
+        Base(*iNext.mTarget),
         mValue(),
         mTarget(iNext.mTarget)
     { }
 
     // ムーブ・コンストラクタ(配列処理用)
     explicit TheolizerNonKeepStep(This&& iNext) :
+        Base(*iNext.mTarget),
         mValue(),
         mTarget(iNext.mTarget)
     { }
 
     // デフォルト・コンストラクタ(次で削除されていた場合)
     TheolizerNonKeepStep() :
+        Base(mValue),
         mValue(),
         mTarget(&mValue)
     { }
-
-//      ---<<< 値取り出し >>>---
-
-    Type const& get()      const { return *mTarget; }
-    operator Type const&() const { return get(); }
-
-    // 非constはライト・オンリー
-private:
-    Type const& get();
-    operator Type const&();
-public:
 
 //      ---<<< 保存／回復処理 >>>---
 
@@ -142,7 +189,7 @@ THEOLIZER_INTERNAL_VER_DEBUG((std::cout << "TheolizerNonKeepStep<tClassType>" <<
 };
 
 //----------------------------------------------------------------------------
-//      TheolizerNonKeepStepの分岐
+//      TheolizerNonKeepStep(特殊化)の分岐処理
 //----------------------------------------------------------------------------
 
 namespace theolizer
@@ -153,12 +200,12 @@ namespace internal
 //      ---<<< プライマリー >>>---
 
 template<typename tPrimitiveType, class tThis, class tEnable=void>
-class TheolizerNonKeepStepBase { };
+class TheolizerNonKeepStepSpecial { };
 
 //      ---<<< 数値型用部分特殊化 >>>---
 
 template<typename tArithmeticType, class tThis>
-class TheolizerNonKeepStepBase
+class TheolizerNonKeepStepSpecial
 <
     tArithmeticType,
     tThis,
@@ -169,17 +216,17 @@ class TheolizerNonKeepStepBase
     typedef tThis           This;
     Type    mData;
 protected:
-    TheolizerNonKeepStepBase(Type iData=0) : mData(iData) { }
+    TheolizerNonKeepStepSpecial(Type iData=0) : mData(iData) { }
     Type& getData() { return mData; }
 
     virtual This& operator=(Type iRhs)=0;
-    virtual ~TheolizerNonKeepStepBase() { }
+    virtual ~TheolizerNonKeepStepSpecial() { }
 };
 
 //      ---<<< 文字列型用部分特殊化 >>>---
 
 template<typename tStringType, class tThis>
-struct TheolizerNonKeepStepBase
+struct TheolizerNonKeepStepSpecial
 <
     tStringType,
     tThis,
@@ -187,8 +234,8 @@ struct TheolizerNonKeepStepBase
 > : public tStringType
 {
 protected:
-    TheolizerNonKeepStepBase(tStringType const& iString=tStringType()) : tStringType(iString) { }
-    TheolizerNonKeepStepBase(tStringType&& iString) : tStringType(std::move(iString)) { }
+    TheolizerNonKeepStepSpecial(tStringType const& iString=tStringType()) : tStringType(iString){}
+    TheolizerNonKeepStepSpecial(tStringType&& iString) : tStringType(std::move(iString)) { }
     tStringType& getData() { return *this; }
 
 private:
@@ -231,7 +278,7 @@ struct THEOLIZER_INTERNAL_DLL TheolizerNonKeepStep
 <
     tPrimitiveType,
     theolizer::internal::EnableIf<theolizer::internal::IsPrimitive<tPrimitiveType>::value>
-> : public theolizer::internal::TheolizerNonKeepStepBase
+> : public theolizer::internal::TheolizerNonKeepStepSpecial
     <
         tPrimitiveType,
         TheolizerNonKeepStep<tPrimitiveType>
@@ -241,10 +288,10 @@ struct THEOLIZER_INTERNAL_DLL TheolizerNonKeepStep
     typedef tPrimitiveType  Type;
 
 private:
-    typedef TheolizerNonKeepStep<Type>                                          This;
-    typedef theolizer::internal::TheolizerNonKeepStepBase<tPrimitiveType, This> Base;
-    typedef theolizer::internal::TrackingMode                                   TrackingMode;
-    typedef theolizer::internal::BaseSerializer                                 BaseSerializer;
+    typedef TheolizerNonKeepStep<Type>                                              This;
+    typedef theolizer::internal::TheolizerNonKeepStepSpecial<tPrimitiveType, This>  Base;
+    typedef theolizer::internal::TrackingMode                                       TrackingMode;
+    typedef theolizer::internal::BaseSerializer                                     BaseSerializer;
 
 //      ---<<< 配列処理用 >>>---
 
