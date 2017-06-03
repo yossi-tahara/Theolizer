@@ -1,5 +1,5 @@
 
-### -- 目次 --
+### -- 目次 --　　　　　　　　　　　　　　　　　　　　[サポート掲示板はこちら](https://theolizer.com/customer/forums/)
 [1.Theolizerとは](#About)  
 [2.Theolizerの特長](#Features)  
 [3.対応環境](#Platforms)  
