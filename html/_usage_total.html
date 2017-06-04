@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.1.0.0</span>
+   &#160;<span id="projectnumber">Version.1.1.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -141,11 +141,6 @@ $(document).ready(function(){initNavTree('_usage_total.html','');});
 <td>メモリ内専用Fast形式</td><td>上記のどちから、もしくは、&lt;<a class="el" href="serializer_8h.html" title="TheolizerライブラリのAPI部 ">theolizer/serializer.h</a>&gt;</td><td>fstreamは<b>バイナリ・モード(std::ios_base::binary)</b>でオープンする </td></tr>
 </table>
 <p><br />
- </p><div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> <a class="anchor" id="バイナリ・モード"></a><b>バイナリ形式における注意事項：</b><br />
- バイナリ形式のシリアライザをfstreamで用いる時は、必ずバイナリ・モード（std::ios_base::binary）でfstreamをオープンして下さい。<br />
- fstreamがテキスト・モードでオープンされている場合、ファイル・ストリームへ数値26(0x1A)が出力されると、これはEOFコードなので回復時にEOFエラーになります。また、Windowsで数値10(0x0A)が出力されるとCR LFへ展開されてしまい、適切に回復できません。<br />
- このような事態をさけるため、Theolizer側でエラーにしたいのですが、iostreamではそのオープン・モードを確認できないためチェックが困難なのです。<br />
- </div><p> <br />
 </p>
 <h2><a class="anchor" id="DefineClassEnum"></a>
 2-2.シリアライズするクラスとenum型の定義</h2>
@@ -221,7 +216,7 @@ $(document).ready(function(){initNavTree('_usage_total.html','');});
  例外発生を禁止している場合は、破棄する前には必ずエラー情報をチェクした上で、エラー状態をリセットして下さい。<br />
  具体的手順は<a class="el" href="_error_report.html">エラー報告</a> にて説明します。</p>
 <p><b>ファイルへの保存例：(source/samples/example/example.cpp）</b></p>
- <div class="fragment"><div class="line">    <span class="comment">// 保存</span></div><div class="line">    {</div><div class="line">        Foo foo;</div><div class="line">        foo.name=<span class="stringliteral">&quot;Yossi Tahara&quot;</span>;</div><div class="line">        foo.age=55;</div><div class="line"></div><div class="line">        std::ofstream ofs(<span class="stringliteral">&quot;sample.txt&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> jos(ofs);  <span class="comment">// シリアライザを生成</span></div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(jos, foo);            <span class="comment">// ファイルへfooを保存</span></div><div class="line">    }</div></div><!-- fragment --></p>
+ <div class="fragment"><div class="line">    <span class="comment">// 保存</span></div><div class="line">    {</div><div class="line">        Foo foo;</div><div class="line">        foo.name=<span class="stringliteral">&quot;Taro Yamada&quot;</span>;</div><div class="line">        foo.age=22;</div><div class="line"></div><div class="line">        std::ofstream ofs(<span class="stringliteral">&quot;sample.txt&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> jos(ofs);  <span class="comment">// シリアライザを生成</span></div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(jos, foo);            <span class="comment">// ファイルへfooを保存</span></div><div class="line">    }</div></div><!-- fragment --></p>
 <p><b>ファイルからの回復例：(source/samples/example/example.cpp）</b></p>
 <p><div class="fragment"><div class="line">    <span class="comment">// 回復</span></div><div class="line">    {</div><div class="line">        Foo foo;</div><div class="line">        std::ifstream ifs(<span class="stringliteral">&quot;sample.txt&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> jis(ifs);  <span class="comment">// デシリアライザを生成</span></div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(jis, foo);            <span class="comment">// ファイルからfooを回復</span></div><div class="line"></div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> jos(std::cout);</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(jos, foo);            <span class="comment">// 回復結果の簡易表示</span></div><div class="line">    }</div></div><!-- fragment --></p>
 <p><br />
@@ -304,6 +299,8 @@ std::string変数の文字エンコードをMultiByte文字列として処理す
 <td>EncodedString</td><td>文字列のエンコードを処理する</td><td>true</td><td>false</td><td>false </td></tr>
 <tr>
 <td>SupportModifying</td><td>クラスやenum型の定義変更に対応する</td><td>true</td><td>true</td><td>false </td></tr>
+<tr>
+<td>BinaryOpen</td><td>fstreamをstd::ios_base::binaryモードでオープンする必要がある&lt;td&gt;false</td><td>true</td><td>true </td></tr>
 </table>
 <p>プロパテイは以下の構文で受け取ります。</p>
 <div class="fragment"><div class="line"><span class="keywordtype">bool</span> <span class="keyword">property</span> = &lt;シリアライザ・クラス&gt;::hasProperty(<a class="code" href="namespacetheolizer.html#a69382907eaaeffed2214b6ccde8ce648">theolizer::Property</a>::&lt;プロパティ名&gt;);</div></div><!-- fragment --><p> <br />
@@ -333,7 +330,16 @@ std::string変数の文字エンコードをMultiByte文字列として処理す
 <p><b>サンプル・ソース（source/reference_and_test/basic/test_basic_process.cpp）</b><br />
 </p>
  <div class="fragment"><div class="line"><span class="preprocessor">#if defined(_WIN32)</span></div><div class="line">    <span class="comment">// CP932で&quot;[こんにちは。]&quot;</span></div><div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span> gHelloCP932[] = <span class="stringliteral">&quot;\x5B\x82\xB1\x82\xF1\x82\xC9\x82\xBF\x82\xCD\x81\x42\x5D&quot;</span>;</div><div class="line"><span class="preprocessor">#else</span></div><div class="line">    <span class="comment">// UTF-8で&quot;[こんにちは。]&quot;  非Windows用</span></div><div class="line">    <span class="keyword">const</span> <span class="keywordtype">char</span> gHelloCP932[] = u8<span class="stringliteral">&quot;[こんにちは。]&quot;</span>;</div><div class="line"><span class="preprocessor">#endif</span></div><div class="line"><span class="keywordtype">void</span> tutoriseBasic()</div><div class="line">{</div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      保存</span></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"></div><div class="line">    {</div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;tutorise_basic.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; Shift-JISコードのテスト &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">        <span class="comment">// MultiByte指定</span></div><div class="line">        aSerializer.setCharIsMultiByte(<span class="keyword">true</span>);</div><div class="line">        std::string aString = gHelloCP932;</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aString);</div><div class="line"></div><div class="line">        <span class="comment">// UTF-8へ戻す</span></div><div class="line">        aSerializer.setCharIsMultiByte(<span class="keyword">false</span>);</div><div class="line">        aString = u8<span class="stringliteral">&quot;ユニコードＵＴＦ－８&quot;</span>;</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aString);</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 文字列互換テスト &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">        <span class="comment">// charをwchar_t, char16_t, char32_tへ回復</span></div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aString);</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aString);</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aString);</div><div class="line">    }</div><div class="line"></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      回復</span></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"></div><div class="line">    {</div><div class="line">        std::ifstream   aStream(<span class="stringliteral">&quot;tutorise_basic.json&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; Shift-JISコードのテスト &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">        <span class="comment">// MultiByte指定</span></div><div class="line">        aSerializer.setCharIsMultiByte(<span class="keyword">true</span>);</div><div class="line">        std::string aString = <span class="stringliteral">&quot;&quot;</span>;</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aString);</div><div class="line">        <a class="code" href="group___test.html#ga18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aString, gHelloCP932);</div><div class="line"></div><div class="line">        <span class="comment">// UTF-8へ戻す</span></div><div class="line">        aSerializer.setCharIsMultiByte(<span class="keyword">false</span>);</div><div class="line">        aString = <span class="stringliteral">&quot;&quot;</span>;</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aString);</div><div class="line">        <a class="code" href="group___test.html#ga18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aString, u8<span class="stringliteral">&quot;ユニコードＵＴＦ－８&quot;</span>);</div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 文字列互換テスト &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line">        std::wstring   aWString;</div><div class="line">        std::u16string aU16String;</div><div class="line">        std::u32string aU32String;</div><div class="line"></div><div class="line">        <span class="comment">// charをwchar_t, char16_t, char32_tへ回復</span></div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aWString);</div><div class="line">        <a class="code" href="group___test.html#ga18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aWString, L<span class="stringliteral">&quot;ユニコードＵＴＦ－８&quot;</span>);</div><div class="line"></div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aU16String);</div><div class="line">        <a class="code" href="group___test.html#ga18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aU16String, u<span class="stringliteral">&quot;ユニコードＵＴＦ－８&quot;</span>);</div><div class="line"></div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aU32String);</div><div class="line">        <a class="code" href="group___test.html#ga18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aU32String, U<span class="stringliteral">&quot;ユニコードＵＴＦ－８&quot;</span>);</div><div class="line">    }</div><div class="line">}</div></div><!-- fragment --></p>
-<p><br />
+<h3><a class="anchor" id="BinaryOpen"></a>
+3-1-5.BinaryOpenについて補足</h3>
+<p>バイナリ形式のシリアライザをfstreamで用いる時は、必ずバイナリ・モード（std::ios_base::binary）でfstreamをオープンする必要があります。<br />
+ Windowsの場合、fstreamがテキスト・モードでオープンされ、ストリームへ数値26(0x1A)が出力されると、0x1AはWindowsではEOFコードなので回復時にEOFエラーになります。また、Windowsで数値10(0x0A)が出力されるとCR LFへ展開されてしまい、適切に回復できません。<br />
+ このような事態をさけるため、Theolizer側でエラーにしたいのですが、iostreamではそのオープン・モードを確認できないためチェックが困難なのです。<br />
+</p>
+<p>バイナリ形式のシリアライザは、hasProperty(theolzier::Property::BinaryOpen)がtrueになります。 また、各シリアライザはstd::ios_base::openmode型の静的定数kOpenModeを定義しています。 バイナリ形式のシリアライザではstd::ios_base::binary、それ以外のシリアライザで 0 となっています。</p>
+<p><b>サンプル・ソース（source/reference_and_test/basic/test_basic_process.cpp）</b><br />
+</p>
+<div class="fragment"><div class="line"></div><div class="line">    <span class="comment">// Json</span></div><div class="line">    {</div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;openmode_json.json&quot;</span>, <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;::kOpenMode</a>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line">        <span class="keywordtype">int</span>     aInt=0x1a;</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aInt);</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// Binary</span></div><div class="line">    {</div><div class="line">        std::ofstream   aStream(<span class="stringliteral">&quot;openmode_binary.bin&quot;</span>, <a class="code" href="classtheolizer_1_1_binary_o_serializer.html">theolizer::BinaryOSerializer&lt;&gt;::kOpenMode</a>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_binary_o_serializer.html">theolizer::BinaryOSerializer&lt;&gt;</a> aSerializer(aStream);</div><div class="line">        <span class="keywordtype">int</span>     aInt=0x1a;</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aInt);</div><div class="line">    }</div><div class="line"></div></div><!-- fragment --><p> <br />
 </p>
 <h2><a class="anchor" id="JsonSerializer"></a>
 3-2.Json形式（JsonSerializer）</h2>
@@ -380,7 +386,7 @@ std::string変数の文字エンコードをMultiByte文字列として処理す
 <h2><a class="anchor" id="BinarySerializer"></a>
 3-3.独自Binary形式（BinarySerializer）</h2>
 <p>独自Binary形式でシリアライズする場合は、<b><a class="el" href="serializer__binary_8h_source.html">theolizer/serializer_binary.h</a></b>をインクルードして下さい。<br />
- また、ファイル・ストリームは必ず<a class="el" href="_usage_total.html#バイナリ・モード">バイナリ・モード</a> でオープンして下さい。</p>
+</p>
 <p>Big Endianでエンコードします。Little Endianの処理系の場合Big Endianとの間で自動変換します。<br />
  整数型は値を表現するために十分なバイト数で保存します。例えば、long long型でも値が10ならタグと値で合わせて2バイトで保存します。<br />
  浮動小数点型はIEEE754フォーマットのみサポートします。バイト単位でEndian変換します。<br />
@@ -395,7 +401,7 @@ std::string変数の文字エンコードをMultiByte文字列として処理す
 <tr>
 <th>パラメータ名</th><th>意味  </th></tr>
 <tr>
-<td>iOStream</td><td>出力先のストリーム(ofstreamは<b><a class="el" href="_usage_total.html#バイナリ・モード">バイナリ・モード</a> </b>でオープンして下さい） </td></tr>
+<td>iOStream</td><td>出力先のストリーム(ofstreamはstd::ios_base::binaryでオープンして下さい） </td></tr>
 <tr>
 <td>iGlobalVersionNo</td><td>保存するグローバル・バージョン番号(省略時は最新版) </td></tr>
 <tr>
@@ -410,7 +416,7 @@ std::string変数の文字エンコードをMultiByte文字列として処理す
 <tr>
 <th>パラメータ名</th><th>意味  </th></tr>
 <tr>
-<td>iIStream</td><td>入力元のストリーム(ofstreamは<b><a class="el" href="_usage_total.html#バイナリ・モード">バイナリ・モード</a> </b>でオープンして下さい） </td></tr>
+<td>iIStream</td><td>入力元のストリーム(ofstreamはstd::ios_base::binaryでオープンして下さい） </td></tr>
 <tr>
 <td>iNoThrowException</td><td>例外禁止時true（省略時はfalse) </td></tr>
 </table>
@@ -422,7 +428,7 @@ std::string変数の文字エンコードをMultiByte文字列として処理す
 </p>
 <p>Theolizerが内部的に使用していますので、他のシリアライザのヘッダをインクルードすれば改めてヘッダをインクルードする必要はありません。<br />
  もし、他のシリアライザを使用しない時は、theolizer/serializer.hをインクルードして下さい。<br />
- また、ストリームはstd::stringstreamを用いることを想定していますが、もしも、ファイル・ストリームを与える場合は必ず<a class="el" href="_usage_total.html#バイナリ・モード">バイナリ・モード</a> でオープンして下さい。<br />
+ また、ストリームはstd::stringstreamを用いることを想定していますが、もしも、ファイル・ストリームを与える場合は必ず std::ios_base::binaryモード でオープンして下さい。<br />
  FastSerializerはデータ変換しません。バージョンの相違にも対応していません。<br />
  オーナー指定ポインタでない通常のポインタは、ポイント先をシリアライズしていない場合はシャロー・コピーになります。（ポインタ値を単純にコピーする。）<br />
 </p>
@@ -433,7 +439,7 @@ std::string変数の文字エンコードをMultiByte文字列として処理す
 <tr>
 <th>パラメータ名</th><th>意味  </th></tr>
 <tr>
-<td>iOStream</td><td>出力先のストリーム(ofstreamは<b><a class="el" href="_usage_total.html#バイナリ・モード">バイナリ・モード</a> </b>でオープンして下さい） </td></tr>
+<td>iOStream</td><td>出力先のストリーム(ofstreamはstd::ios_base::binaryでオープンして下さい） </td></tr>
 <tr>
 <td>iNoThrowException</td><td>例外禁止時true（省略時はfalse) </td></tr>
 </table>
@@ -444,7 +450,7 @@ std::string変数の文字エンコードをMultiByte文字列として処理す
 <tr>
 <th>パラメータ名</th><th>意味  </th></tr>
 <tr>
-<td>iIStream</td><td>入力元のストリーム(ofstreamは<b><a class="el" href="_usage_total.html#バイナリ・モード">バイナリ・モード</a> </b>でオープンして下さい） </td></tr>
+<td>iIStream</td><td>入力元のストリーム(ofstreamはstd::ios_base::binaryでオープンして下さい） </td></tr>
 <tr>
 <td>iNoThrowException</td><td>例外禁止時true（省略時はfalse) </td></tr>
 </table>
@@ -637,7 +643,7 @@ saveBasic(), loadBasic(),callSaveDestinations(),callLoadDestinations()を呼び�
  FAILならば、テストの数とFAIL数をインクリメントし、テストを失敗させます。<br />
  また、dRhsとそれ以降のアイテム（1個以上7個まで）を標準出力へ出力します。</p>
 <p>下記はシリアライザを使って回復したint型のaIntの値が-3000であることをチェックしています。</p>
- <div class="fragment"><div class="line">    <span class="keywordtype">int</span>             aInt=0;</div><div class="line">    <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(iSerializer, aInt);</div><div class="line">    <a class="code" href="group___test.html#ga18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aInt, -3000);</div></div><!-- fragment --> </p>
+ <div class="fragment"><div class="line">        <span class="keywordtype">int</span>     aInt=0;</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(aSerializer, aInt);</div><div class="line">        <a class="code" href="group___test.html#ga18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(aInt, 0x1a);</div></div><!-- fragment --> </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.12-->

@@ -123,7 +123,8 @@ var index =
           [ "3-1-1.型チェック・モード", "_usage_total.html#CheckMode", null ],
           [ "3-1-2.メンバ関数", "_usage_total.html#MemberFunctions", null ],
           [ "3-1-3.プロパティ", "_usage_total.html#Property", null ],
-          [ "3-1-4.EncodedStringについて補足", "_usage_total.html#EncodedString", null ]
+          [ "3-1-4.EncodedStringについて補足", "_usage_total.html#EncodedString", null ],
+          [ "3-1-5.BinaryOpenについて補足", "_usage_total.html#BinaryOpen", null ]
         ] ],
         [ "3-2.Json形式（JsonSerializer）", "_usage_total.html#JsonSerializer", [
           [ "3-2-1.保存用JsonSerialzier", "_usage_total.html#JsonOSerialzier", null ],

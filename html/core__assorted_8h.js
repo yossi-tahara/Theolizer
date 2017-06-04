@@ -12,7 +12,8 @@ var core__assorted_8h =
     [ "Property", "core__assorted_8h.html#a69382907eaaeffed2214b6ccde8ce648", [
       [ "IsSaver", "core__assorted_8h.html#a69382907eaaeffed2214b6ccde8ce648af003f433b1474d3997368516bdcf978a", null ],
       [ "EncodedString", "core__assorted_8h.html#a69382907eaaeffed2214b6ccde8ce648ad1cbaded190c52462b2c14cb63103057", null ],
-      [ "SupportModifying", "core__assorted_8h.html#a69382907eaaeffed2214b6ccde8ce648acf044dc168b0ab2ebe62cacbc3c53158", null ]
+      [ "SupportModifying", "core__assorted_8h.html#a69382907eaaeffed2214b6ccde8ce648acf044dc168b0ab2ebe62cacbc3c53158", null ],
+      [ "BinaryOpen", "core__assorted_8h.html#a69382907eaaeffed2214b6ccde8ce648afce0d8b7b9006a8c8c4fc8a3a946cca6", null ]
     ] ],
     [ "operator<<", "core__assorted_8h.html#a7097c661ad7dc54337a7c094a3c89c41", null ],
     [ "operator<<", "core__assorted_8h.html#af8f708291e0f43f36110c0b6b73372c7", null ]
