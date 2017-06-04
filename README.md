@@ -1,6 +1,6 @@
 
-### -- 目次 --　　　　　　　　　　　　　　　　　　　　[サポート掲示板はこちら](https://theolizer.com/customer/forums/)
-[1.Theolizerとは](#About)  
+### -- 目次 --
+[1.Theolizerとは](#About)　　　　　　　　　　　　　　　　　　　　　　　　　　　[（サポート掲示板はこちら）](https://theolizer.com/customer/forums/)  
 [2.Theolizerの特長](#Features)  
 [3.対応環境](#Platforms)  
 [4.その他](#etc)  
