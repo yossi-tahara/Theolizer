@@ -447,5 +447,9 @@ endif()
 
 #       ---<<< CMake Helper >>>---
 
+if (${IS_MSVC})
+    install(FILES tools/theolizer.props.in DESTINATION .)
+endif()
+
 install(FILES tools/THEOLIZERConfig.cmake DESTINATION .)
 install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${SAMPLES_DIR} DESTINATION .)
