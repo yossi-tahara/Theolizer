@@ -192,7 +192,8 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION ERROR_CHECK TEST_F
                 \"-DMATCH_STRING=${MS}\"
                 \"-DREPLACE_STRING=${RS}\"
                 -P "${CMAKE_CURRENT_SOURCE_DIR}/copy.cmake"
-            COMMAND $<TARGET_FILE:TheolizerDriver> ${PARAMETERS})
+            COMMAND ${CMAKE_COMMAND} -E env "THEOLIZER_ORIGINAL_COMPILER=${CMAKE_CXX_COMPILER}"
+                $<TARGET_FILE:TheolizerDriver> ${PARAMETERS})
     else()
         add_custom_target(${TEST_NAME}
             COMMAND ${CMAKE_COMMAND} -E echo "${TEST_NAME}"
@@ -207,7 +208,8 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION ERROR_CHECK TEST_F
                 \"-DMATCH_STRING=${MS}\"
                 \"-DREPLACE_STRING=${RS}\"
                 -P "${CMAKE_CURRENT_SOURCE_DIR}/copy.cmake"
-            COMMAND ${CMAKE_INSTALL_PREFIX}/bin/TheolizerDriver ${PARAMETERS})
+            COMMAND ${CMAKE_COMMAND} -E env "THEOLIZER_ORIGINAL_COMPILER=${CMAKE_CXX_COMPILER}"
+                ${CMAKE_INSTALL_PREFIX}/bin/TheolizerDriver ${PARAMETERS})
     endif()
     set_target_properties(${TEST_NAME} PROPERTIES FOLDER "TestPrograms")
     #exclude_all_target(${TEST_NAME})
@@ -318,7 +320,7 @@ endif()
 #       バージョン変更テスト
 #-----------------------------------------------------------------------------
 
-if(TRUE)
+if(FALSE)
 
 set(FIRST_VERSION "ver1a")
 set(LAST_VERSION  "ver3b")

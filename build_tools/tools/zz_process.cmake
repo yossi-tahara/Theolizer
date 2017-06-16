@@ -34,53 +34,54 @@
 #       パラメータ設定
 #-----------------------------------------------------------------------------
 
-set(THEOLIZER_SOURCE "@THEOLIZER_SOURCE@")
-set(THEOLIZER_BINARY "@THEOLIZER_BINARY@")
-set(THEOLIZER_PREFIX "@THEOLIZER_PREFIX@")
-set(LIB_TYPE         "@LIB_TYPE@")
-set(COMPILER         "@COMPILER@")
-set(BIT_NUM          "@BIT_NUM@")
-set(CONFIG_TYPE      "@CONFIG_TYPE@")
-set(BUILD_DRIVER     "@BUILD_DRIVER@")
-set(BUILD_DOCUMENT   "@BUILD_DOCUMENT@")
-set(GENERATOR        "@GENERATOR@")
-set(BUILD_DIR        "@BUILD_DIR@")
-set(BOOST_ROOT       "@BOOST_ROOT@")
-set(LLVM_ROOT        "@LLVM_ROOT@")
-set(LLVM_VERSION     "@LLVM_VERSION@")
-set(CMAKE_VERSION    "@CMAKE_VERSION@")
-set(MAKE             "@MAKE@")
-set(PARALLEL         "@PARALLEL@")
-set(MSVC_PATH        "@MSVC_PATH@")
-set(CC_PATH          "@CC_PATH@")
-set(ORIGINAL_DIR     "@CMAKE_SOURCE_DIR@")
+set(THEOLIZER_SOURCE        "@THEOLIZER_SOURCE@")
+set(THEOLIZER_BINARY        "@THEOLIZER_BINARY@")
+set(THEOLIZER_PREFIX        "@THEOLIZER_PREFIX@")
+set(LIB_TYPE                "@LIB_TYPE@")
+set(COMPILER                "@COMPILER@")
+set(BIT_NUM                 "@BIT_NUM@")
+set(CONFIG_TYPE             "@CONFIG_TYPE@")
+set(BUILD_DRIVER            "@BUILD_DRIVER@")
+set(BUILD_DOCUMENT          "@BUILD_DOCUMENT@")
+set(GENERATOR               "@GENERATOR@")
+set(BUILD_DIR               "@BUILD_DIR@")
+set(BOOST_ROOT              "@BOOST_ROOT@")
+set(LLVM_ROOT               "@LLVM_ROOT@")
+set(LLVM_VERSION            "@LLVM_VERSION@")
+set(REQUIRE_CMAKE_VERSION   "@REQUIRE_CMAKE_VERSION@")
+set(MAKE                    "@MAKE@")
+set(PARALLEL                "@PARALLEL@")
+set(MSVC_PATH               "@MSVC_PATH@")
+set(CC_PATH                 "@CC_PATH@")
+set(ORIGINAL_DIR            "@CMAKE_SOURCE_DIR@")
 
 set(THEOLIZER_ROOT "${THEOLIZER_PREFIX}${COMPILER}x${BIT_NUM}")
 
 if(FALSE)
-    message(STATUS "THEOLIZER_SOURCE=${THEOLIZER_SOURCE}")
-    message(STATUS "THEOLIZER_BINARY=${THEOLIZER_BINARY}")
-    message(STATUS "THEOLIZER_PREFIX=${THEOLIZER_PREFIX}")
-    message(STATUS "LIB_TYPE        =${LIB_TYPE}")
-    message(STATUS "COMPILER        =${COMPILER}")
-    message(STATUS "BIT_NUM         =${BIT_NUM}")
-    message(STATUS "CONFIG_TYPE     =${CONFIG_TYPE}")
-    message(STATUS "BUILD_DRIVER    =${BUILD_DRIVER}")
-    message(STATUS "BUILD_DOCUMENT  =${BUILD_DOCUMENT}")
-    message(STATUS "GENERATOR       =${GENERATOR}")
-    message(STATUS "BUILD_DIR       =${BUILD_DIR}")
-    message(STATUS "BOOST_ROOT      =${BOOST_ROOT}")
-    message(STATUS "LLVM_ROOT       =${LLVM_ROOT}")
-    message(STATUS "LLVM_VERSION    =${LLVM_VERSION}")
-    message(STATUS "CMAKE_VERSION   =${CMAKE_VERSION}")
-    message(STATUS "MAKE            =${MAKE}")
-    message(STATUS "PARALLEL        =${PARALLEL}")
-    message(STATUS "MSVC_PATH       =${MSVC_PATH}")
-    message(STATUS "CC_PATH         =${CC_PATH}")
+    message(STATUS "THEOLIZER_SOURCE        =${THEOLIZER_SOURCE}")
+    message(STATUS "THEOLIZER_BINARY        =${THEOLIZER_BINARY}")
+    message(STATUS "THEOLIZER_PREFIX        =${THEOLIZER_PREFIX}")
+    message(STATUS "LIB_TYPE                =${LIB_TYPE}")
+    message(STATUS "COMPILER                =${COMPILER}")
+    message(STATUS "BIT_NUM                 =${BIT_NUM}")
+    message(STATUS "CONFIG_TYPE             =${CONFIG_TYPE}")
+    message(STATUS "BUILD_DRIVER            =${BUILD_DRIVER}")
+    message(STATUS "BUILD_DOCUMENT          =${BUILD_DOCUMENT}")
+    message(STATUS "GENERATOR               =${GENERATOR}")
+    message(STATUS "BUILD_DIR               =${BUILD_DIR}")
+    message(STATUS "BOOST_ROOT              =${BOOST_ROOT}")
+    message(STATUS "LLVM_ROOT               =${LLVM_ROOT}")
+    message(STATUS "LLVM_VERSION            =${LLVM_VERSION}")
+    message(STATUS "REQUIRE_CMAKE_VERSION   =${REQUIRE_CMAKE_VERSION}")
+    message(STATUS "MAKE                    =${MAKE}")
+    message(STATUS "PARALLEL                =${PARALLEL}")
+    message(STATUS "MSVC_PATH               =${MSVC_PATH}")
+    message(STATUS "CC_PATH                 =${CC_PATH}")
+    message(STATUS "ORIGINAL_DIR            =${ORIGINAL_DIR}")
 
-    message(STATUS "PROC_ALL        =${PROC_ALL}")
-    message(STATUS "THEOLIZER_ROOT  =${THEOLIZER_ROOT}")
-    message(STATUS "CI_SERVICE      =${CI_SERVICE}")
+    message(STATUS "PROC_ALL                =${PROC_ALL}")
+    message(STATUS "THEOLIZER_ROOT          =${THEOLIZER_ROOT}")
+    message(STATUS "CI_SERVICE              =${CI_SERVICE}")
 endif()
 
 set(BUILD_TYPE "")
@@ -97,29 +98,30 @@ endif()
 function(parameter_log LOG_FILE)
 
     file(WRITE  ${LOG_FILE} "--- Parameters ---\n")
-    file(APPEND ${LOG_FILE} "THEOLIZER_SOURCE=${THEOLIZER_SOURCE}\n")
-    file(APPEND ${LOG_FILE} "THEOLIZER_BINARY=${THEOLIZER_BINARY}\n")
-    file(APPEND ${LOG_FILE} "THEOLIZER_PREFIX=${THEOLIZER_PREFIX}\n")
-    file(APPEND ${LOG_FILE} "LIB_TYPE        =${LIB_TYPE}\n")
-    file(APPEND ${LOG_FILE} "COMPILER        =${COMPILER}\n")
-    file(APPEND ${LOG_FILE} "BIT_NUM         =${BIT_NUM}\n")
-    file(APPEND ${LOG_FILE} "CONFIG_TYPE     =${CONFIG_TYPE}\n")
-    file(APPEND ${LOG_FILE} "BUILD_DRIVER    =${BUILD_DRIVER}\n")
-    file(APPEND ${LOG_FILE} "BUILD_DOCUMENT  =${BUILD_DOCUMENT}\n")
-    file(APPEND ${LOG_FILE} "GENERATOR       =${GENERATOR}\n")
-    file(APPEND ${LOG_FILE} "BUILD_DIR       =${BUILD_DIR}\n")
-    file(APPEND ${LOG_FILE} "BOOST_ROOT      =${BOOST_ROOT}\n")
-    file(APPEND ${LOG_FILE} "LLVM_ROOT       =${LLVM_ROOT}\n")
-    file(APPEND ${LOG_FILE} "LLVM_VERSION    =${LLVM_VERSION}\n")
-    file(APPEND ${LOG_FILE} "CMAKE_VERSION   =${CMAKE_VERSION}")
-    file(APPEND ${LOG_FILE} "MAKE            =${MAKE}\n")
-    file(APPEND ${LOG_FILE} "PARALLEL        =${PARALLEL}\n")
-    file(APPEND ${LOG_FILE} "MSVC_PATH       =${MSVC_PATH}\n")
-    file(APPEND ${LOG_FILE} "CC_PATH         =${CC_PATH}\n")
+    file(APPEND ${LOG_FILE} "THEOLIZER_SOURCE       =${THEOLIZER_SOURCE}\n")
+    file(APPEND ${LOG_FILE} "THEOLIZER_BINARY       =${THEOLIZER_BINARY}\n")
+    file(APPEND ${LOG_FILE} "THEOLIZER_PREFIX       =${THEOLIZER_PREFIX}\n")
+    file(APPEND ${LOG_FILE} "LIB_TYPE               =${LIB_TYPE}\n")
+    file(APPEND ${LOG_FILE} "COMPILER               =${COMPILER}\n")
+    file(APPEND ${LOG_FILE} "BIT_NUM                =${BIT_NUM}\n")
+    file(APPEND ${LOG_FILE} "CONFIG_TYPE            =${CONFIG_TYPE}\n")
+    file(APPEND ${LOG_FILE} "BUILD_DRIVER           =${BUILD_DRIVER}\n")
+    file(APPEND ${LOG_FILE} "BUILD_DOCUMENT         =${BUILD_DOCUMENT}\n")
+    file(APPEND ${LOG_FILE} "GENERATOR              =${GENERATOR}\n")
+    file(APPEND ${LOG_FILE} "BUILD_DIR              =${BUILD_DIR}\n")
+    file(APPEND ${LOG_FILE} "BOOST_ROOT             =${BOOST_ROOT}\n")
+    file(APPEND ${LOG_FILE} "LLVM_ROOT              =${LLVM_ROOT}\n")
+    file(APPEND ${LOG_FILE} "LLVM_VERSION           =${LLVM_VERSION}\n")
+    file(APPEND ${LOG_FILE} "REQUIRE_CMAKE_VERSION  =${REQUIRE_CMAKE_VERSION}")
+    file(APPEND ${LOG_FILE} "MAKE                   =${MAKE}\n")
+    file(APPEND ${LOG_FILE} "PARALLEL               =${PARALLEL}\n")
+    file(APPEND ${LOG_FILE} "MSVC_PATH              =${MSVC_PATH}\n")
+    file(APPEND ${LOG_FILE} "CC_PATH                =${CC_PATH}\n")
+    file(APPEND ${LOG_FILE} "ORIGINAL_DIR           =${ORIGINAL_DIR}\n")
 
-    file(APPEND ${LOG_FILE} "PROC_ALL        =${PROC_ALL}\n")
-    file(APPEND ${LOG_FILE} "THEOLIZER_ROOT  =${THEOLIZER_ROOT}\n")
-    file(APPEND ${LOG_FILE} "CI_SERVICE      =${CI_SERVICE}\n")
+    file(APPEND ${LOG_FILE} "PROC_ALL               =${PROC_ALL}\n")
+    file(APPEND ${LOG_FILE} "THEOLIZER_ROOT         =${THEOLIZER_ROOT}\n")
+    file(APPEND ${LOG_FILE} "CI_SERVICE             =${CI_SERVICE}\n")
     file(APPEND ${LOG_FILE} "\n")
 
 endfunction()
@@ -273,6 +275,8 @@ endmacro()
 
 macro(build TARGET CONFIG_TYPE WORKING_DIR)
 
+message(STATUS "TARGET=${TARGET}")
+message(STATUS "CONFIG_TYPE=${CONFIG_TYPE}")
     if(${GENERATOR} MATCHES "Visual Studio")
         execute_process(
             COMMAND ${CMAKE_COMMAND}
@@ -283,15 +287,28 @@ macro(build TARGET CONFIG_TYPE WORKING_DIR)
             OUTPUT_VARIABLE OUTPUT_LOG
             ERROR_VARIABLE  OUTPUT_LOG
             RESULT_VARIABLE RETURN_CODE
+            ENCODING AUTO
         )
     elseif("${CI_SERVICE}" STREQUAL "")
-        execute_process(
-            COMMAND ${MAKE} ${TARGET} ${PARALLEL}
-            WORKING_DIRECTORY "${WORKING_DIR}"
-            OUTPUT_VARIABLE OUTPUT_LOG
-            ERROR_VARIABLE  OUTPUT_LOG
-            RESULT_VARIABLE RETURN_CODE
-        )
+        # MinGWの時、CMake 3.8.0以降なら、UTF-8へ統一するため
+        if ("${CMAKE_VERSION}" VERSION_LESS "3.8.0")
+            execute_process(
+                COMMAND ${MAKE} ${TARGET} ${PARALLEL}
+                WORKING_DIRECTORY "${WORKING_DIR}"
+                OUTPUT_VARIABLE OUTPUT_LOG
+                ERROR_VARIABLE  OUTPUT_LOG
+                RESULT_VARIABLE RETURN_CODE
+            )
+        else()
+            execute_process(
+                COMMAND ${MAKE} ${TARGET} ${PARALLEL}
+                WORKING_DIRECTORY "${WORKING_DIR}"
+                OUTPUT_VARIABLE OUTPUT_LOG
+                ERROR_VARIABLE  OUTPUT_LOG
+                RESULT_VARIABLE RETURN_CODE
+                ENCODING AUTO
+            )
+        endif()
     else()
         execute_process(
             COMMAND bash -c "${MAKE} ${TARGET} 2>&1 | tee temp.txt" ${PARALLEL}
@@ -301,6 +318,36 @@ macro(build TARGET CONFIG_TYPE WORKING_DIR)
         file(READ temp.txt TEMP)
         set(OUTPUT_LOG "${OUTPUT_LOG}${TEMP}")
     endif()
+
+    # CMake 3.8.0以降のWindows版のCTestはUTF-8で出力するのENCODING指定不要
+    if ("${RETUEN_CODE}" STREQUAL "")
+        set(LABEL "")
+        if    ("${TARGET}" STREQUAL "ShortTest")
+            set(LABEL "Test.*S")
+        elseif("${TARGET}" STREQUAL "LongTest")
+            set(LABEL "Test.*L.*")
+        elseif("${TARGET}" STREQUAL "FullTest")
+            set(LABEL "TestF.*")
+        elseif("${TARGET}" STREQUAL "FullTest1")
+            set(LABEL "TestF[1L].*")
+        elseif("${TARGET}" STREQUAL "FullTest2")
+            set(LABEL "TestF[2L].*")
+        elseif("${TARGET}" STREQUAL "FullTest3")
+            set(LABEL "TestF[3L].*")
+        endif()
+message(STATUS "LABEL=${LABEL}")
+        if (NOT "${LABEL}" STREQUAL "")
+            execute_process(
+                COMMAND "ctest" "-V" "-C" ${CONFIG_TYPE} "-L" "${LABEL}"
+                WORKING_DIRECTORY "${WORKING_DIR}"
+                OUTPUT_VARIABLE OUTPUT_LOG_TMP
+                ERROR_VARIABLE  OUTPUT_LOG_TMP
+                RESULT_VARIABLE RETURN_CODE
+            )
+            set(OUTPUT_LOG ${OUTPUT_LOG}${OUTPUT_LOG_TMP})
+        endif()
+    endif()
+
 #message(STATUS "build(${TARGET} ${CONFIG_TYPE} ${WORKING_DIR}) RETURN_CODE=${RETURN_CODE}")
 #message(STATUS "OUTPUT_LOG=${OUTPUT_LOG}")
 
@@ -460,7 +507,7 @@ if("${PROC}" STREQUAL "config")
                 "-DBUILD_DRIVER=${BUILD_DRIVER}"
                 "-DLLVM_ROOT=${LLVM_ROOT}"
                 "-DLLVM_VERSION=${LLVM_VERSION}"
-                "-DCMAKE_VERSION=${CMAKE_VERSION}"
+                "-DCMAKE_VERSION=${REQUIRE_CMAKE_VERSION}"
                 "-DBUILD_DOCUMENT=${BUILD_DOCUMENT}"
                 "-DCI_SERVICE=${CI_SERVICE}"
                 ${BUILD_TYPE}

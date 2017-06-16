@@ -539,6 +539,9 @@ int callParse
 
 int main(int iArgc, const char **iArgv)
 {
+const char* env=::getenv("THEOLIZER_ORIGINAL_COMPILER");
+std::cout << "Environment=" << ((env)?env:"<not found>") << std::endl;
+
     setupDebugLog();
 
     struct Auto

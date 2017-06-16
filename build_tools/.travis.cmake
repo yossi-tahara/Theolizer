@@ -83,7 +83,7 @@ set(LLVM_ROOT "/usr/lib/llvm-3.9/")
 set(LLVM_VERSION 3.9.1)
 
 # 必須CMakeバージョン
-set(CMAKE_VERSION 3.2.2)
+set(REQUIRE_CMAKE_VERSION 3.2.2)
 
 # MinGW/gccのbinフォルダのパス
 set(CC32 "/usr/bin")
@@ -102,7 +102,7 @@ set(SUMMARY linux-${PROC_ALL}.log)
 #       基本準備
 #-----------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION ${CMAKE_VERSION})
+cmake_minimum_required(VERSION ${REQUIRE_CMAKE_VERSION})
 
 include(tools/zz_prepare.cmake)
 

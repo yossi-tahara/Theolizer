@@ -1,5 +1,7 @@
 #[[###########################################################################
-        buildエラー・テスト
+        CTest内部でexecute_process中継する
+            CMake 3.8.0にて、CTestは子プロセス出力をUTF-8固定になったため、
+            このexecute_processでUTF-8へ変換する。
 
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
@@ -28,29 +30,22 @@
 
 ]]############################################################################
 
-message(STATUS "building error test")
-message(STATUS "BINARY_DIR=${BINARY_DIR}")
-message(STATUS "CONFIG=${CONFIG}")
 message(STATUS "TARGET_NAME=${TARGET_NAME}")
-message(STATUS "ERROR_NUMBER=${ERROR_NUMBER}")
+message(STATUS "PARAM_LIST=${PARAM_LIST}")
 
-execute_process(
-    COMMAND ${CMAKE_COMMAND}
-        --build "${BINARY_DIR}"
-        --config ${CONFIG}
-        --target ${TARGET_NAME}
-    OUTPUT_VARIABLE OUTPUT_STRING
-    ERROR_VARIABLE  OUTPUT_STRING
-)
-string(REGEX MATCHALL "${ERROR_MESSAGE}" RESULT "${OUTPUT_STRING}")
-list(LENGTH RESULT NUMBER)
-message(STATUS "NUMBER=${NUMBER}")
-
-if(NOT NUMBER EQUAL ${ERROR_NUMBER})
-    message(STATUS "OUTPUT_STRING=${OUTPUT_STRING}")
-    message(STATUS "ERROR_MESSAGE=${ERROR_MESSAGE}")
-    message(STATUS "TARGET_NAME=${TARGET_NAME}")
-    message(STATUS "ERROR_NUMBER=${ERROR_NUMBER}")
-    message(STATUS "NUMBER=${NUMBER}")
-    message(SEND_ERROR "${TARGET_NAME} test is failure.")
+if ("${CMAKE_VERSION}" VERSION_LESS "3.8.0")
+    execute_process(COMMAND ${TARGET_NAME} ${PARAM_LIST} RESULT_VARIABLE RETUEN_CODE)
+else()
+    execute_process(COMMAND ${TARGET_NAME} ${PARAM_LIST} RESULT_VARIABLE RETUEN_CODE ENCODING AUTO)
 endif()
+
+if (NOT ${RETUEN_CODE} EQUAL 0)
+    message(SEND_ERROR "RETUEN_CODE=${RETUEN_CODE}")
+endif()
+
+#execute_process(COMMAND ${TARGET_NAME} ${PARAM_LIST})
+#execute_process(
+#    COMMAND ${TARGET_NAME} ${PARAM_LIST}
+#    OUTPUT_FILE ${CMAKE_BINARY_DIR}/temp.log
+#    ERROR_FILE  ${CMAKE_BINARY_DIR}/temp.log
+#)
