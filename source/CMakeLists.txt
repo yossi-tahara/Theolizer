@@ -311,8 +311,20 @@ endfunction(add_test_sub)
 
 # 実装部(TARGET_NAMEはコマンド名)
 function(add_test_sub_base TEST_NAME TARGET_NAME)
-    add_test(NAME ${TEST_NAME} COMMAND ${TARGET_NAME} ${ARGN}
-                               WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Testing)
+##    add_test(NAME ${TEST_NAME} COMMAND ${TARGET_NAME} ${ARGN}
+##                               WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Testing)
+    set(COMMAND_LINE "${TARGET_NAME}")
+    set(PARAM_LIST "")
+    foreach(PARAM IN LISTS ARGN)
+        set(PARAM_LIST "${PARAM_LIST};${PARAM}")
+    endforeach()
+    message(STATUS "COMMAND_LINE=${COMMAND_LINE}")
+
+    add_test(NAME ${TEST_NAME} COMMAND ${CMAKE_COMMAND}
+        -D "TARGET_NAME=${TARGET_NAME}"
+        -D "PARAM_LIST=${PARAM_LIST}"
+        -P ${CMAKE_SOURCE_DIR}/tools/execute_process.cmake
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Testing)
     exclude_all_test(${TEST_NAME})
     # make ENVIRONMENT. ";" is cmake-list's separator, it is necessary to escape.
     set(PATH "$ENV{PATH}")

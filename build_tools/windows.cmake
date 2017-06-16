@@ -80,7 +80,7 @@ set(LLVM "C:/llvm390")
 #set(LLVM_VERSION 3.9.0)
 
 # 必須CMakeバージョン
-set(CMAKE_VERSION 3.5.0)
+set(REQUIRE_CMAKE_VERSION 3.5.0)
 
 # MinGW/gccのbinフォルダのパス
 set(CC32 "C:/mingw-w64/i686-5.4.0-posix-dwarf-rt_v5-rev0/mingw32/bin")
@@ -99,7 +99,7 @@ set(SUMMARY windows-${PROC_ALL}.log)
 #       基本準備
 #-----------------------------------------------------------------------------
 
-cmake_minimum_required(VERSION ${CMAKE_VERSION})
+cmake_minimum_required(VERSION ${REQUIRE_CMAKE_VERSION})
 
 include(tools/zz_prepare.cmake)
 
@@ -121,9 +121,10 @@ file(WRITE ${SUMMARY} "")
 #-----------------------------------------------------------------------------
 
 #output_title("****** StaticWithBoost ******")
-build_by_msvc(msvc2015 64 StaticWithBoost TRUE TRUE "38 11 1 1")
-build_by_msvc(msvc2015 32 StaticWithBoost TRUE TRUE "38 11 1 1")
+#build_by_msvc(msvc2015 64 StaticWithBoost TRUE TRUE "38 11 1 1")
+#build_by_msvc(msvc2015 32 StaticWithBoost TRUE TRUE "38 11 1 1")
 build_by_gcc( mingw540 64 StaticWithBoost TRUE TRUE "38 1" "11 1")
+if(FALSE)
 build_by_gcc( mingw540 32 StaticWithBoost TRUE TRUE "38 1" "11 1")
 
 output_title("****** Static ******")
@@ -137,5 +138,6 @@ build_by_msvc(msvc2015 64 Shared FALSE FALSE "38 11 1 1")
 build_by_msvc(msvc2015 32 Shared FALSE FALSE "38 11 1 1")
 build_by_gcc( mingw540 64 Shared FALSE FALSE "38 1" "11 1")
 build_by_gcc( mingw540 32 Shared FALSE FALSE "38 1" "11 1")
+endif()
 
 output_summary()

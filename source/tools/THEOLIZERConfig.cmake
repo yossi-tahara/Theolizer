@@ -147,7 +147,7 @@ macro(setup_theolizer TARGET_NAME LIB_TYPE)
     # Library
     link_directories("${THEOLIZER_ROOT}/lib/${CMAKE_BUILD_TYPE}")
 
-    if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
         target_link_libraries(${TARGET_NAME} optimized TheolizerLib${LIB_TYPE})
         target_link_libraries(${TARGET_NAME} optimized TheolizerTest${LIB_TYPE})
         target_link_libraries(${TARGET_NAME} debug     TheolizerLib${LIB_TYPE}${CMAKE_DEBUG_POSTFIX})
