@@ -274,9 +274,9 @@ endmacro()
 #       ---<<< ビルド実行 >>>---
 
 macro(build TARGET CONFIG_TYPE WORKING_DIR)
-
 message(STATUS "TARGET=${TARGET}")
 message(STATUS "CONFIG_TYPE=${CONFIG_TYPE}")
+
     if(${GENERATOR} MATCHES "Visual Studio")
         execute_process(
             COMMAND ${CMAKE_COMMAND}
@@ -298,7 +298,7 @@ message(STATUS "CONFIG_TYPE=${CONFIG_TYPE}")
         )
     else()
         execute_process(
-            COMMAND bash -c "${MAKE} ${TARGET} 2>&1 | tee temp.txt" ${PARALLEL}
+            COMMAND bash -c "${MAKE} ${TARGET} ${PARALLEL} 2>&1 | tee temp.txt"
             WORKING_DIRECTORY "${WORKING_DIR}"
             RESULT_VARIABLE RETURN_CODE
         )
