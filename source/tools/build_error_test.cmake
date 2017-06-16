@@ -28,7 +28,7 @@
 
 ]]############################################################################
 
-message(STATUS "building error test")
+message(STATUS "BuildingError Test")
 message(STATUS "BINARY_DIR=${BINARY_DIR}")
 message(STATUS "CONFIG=${CONFIG}")
 message(STATUS "TARGET_NAME=${TARGET_NAME}")

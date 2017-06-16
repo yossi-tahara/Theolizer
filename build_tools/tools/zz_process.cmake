@@ -274,9 +274,9 @@ endmacro()
 #       ---<<< ビルド実行 >>>---
 
 macro(build TARGET CONFIG_TYPE WORKING_DIR)
-
 message(STATUS "TARGET=${TARGET}")
 message(STATUS "CONFIG_TYPE=${CONFIG_TYPE}")
+
     if(${GENERATOR} MATCHES "Visual Studio")
         execute_process(
             COMMAND ${CMAKE_COMMAND}
@@ -311,13 +311,14 @@ message(STATUS "CONFIG_TYPE=${CONFIG_TYPE}")
         endif()
     else()
         execute_process(
-            COMMAND bash -c "${MAKE} ${TARGET} 2>&1 | tee temp.txt" ${PARALLEL}
+            COMMAND bash -c "${MAKE} ${TARGET} ${PARALLEL} 2>&1 | tee temp.txt"
             WORKING_DIRECTORY "${WORKING_DIR}"
             RESULT_VARIABLE RETURN_CODE
         )
         file(READ temp.txt TEMP)
         set(OUTPUT_LOG "${OUTPUT_LOG}${TEMP}")
     endif()
+message(STATUS "build(${TARGET} ${CONFIG_TYPE} ${WORKING_DIR}) RETURN_CODE=${RETURN_CODE} WORKING_DIR=${WORKING_DIR}")
 
     # CMake 3.8.0以降のWindows版のCTestはUTF-8で出力するのENCODING指定不要
     if ("${RETUEN_CODE}" STREQUAL "")
@@ -336,19 +337,29 @@ message(STATUS "CONFIG_TYPE=${CONFIG_TYPE}")
             set(LABEL "TestF[3L].*")
         endif()
 message(STATUS "LABEL=${LABEL}")
+
         if (NOT "${LABEL}" STREQUAL "")
-            execute_process(
-                COMMAND "ctest" "-V" "-C" ${CONFIG_TYPE} "-L" "${LABEL}"
-                WORKING_DIRECTORY "${WORKING_DIR}"
-                OUTPUT_VARIABLE OUTPUT_LOG_TMP
-                ERROR_VARIABLE  OUTPUT_LOG_TMP
-                RESULT_VARIABLE RETURN_CODE
-            )
-            set(OUTPUT_LOG ${OUTPUT_LOG}${OUTPUT_LOG_TMP})
+            if("${CI_SERVICE}" STREQUAL "")
+                execute_process(
+                    COMMAND ctest "-V" "-C" "${CONFIG_TYPE}" "-L" "${LABEL}"
+                    WORKING_DIRECTORY "${WORKING_DIR}"
+                    OUTPUT_VARIABLE TMP
+                    ERROR_VARIABLE  TMP
+                    RESULT_VARIABLE RETURN_CODE
+                )
+            else()
+                execute_process(
+                    COMMAND bash -c "ctest -V -C ${CONFIG_TYPE} -L ${LABEL} 2>&1 | tee temp.txt"
+                    WORKING_DIRECTORY "${WORKING_DIR}"
+                    RESULT_VARIABLE RETURN_CODE
+                )
+                file(READ "${WORKING_DIR}/temp.txt" TEMP)
+            endif()
+            set(OUTPUT_LOG ${OUTPUT_LOG}${TEMP})
         endif()
     endif()
 
-#message(STATUS "build(${TARGET} ${CONFIG_TYPE} ${WORKING_DIR}) RETURN_CODE=${RETURN_CODE}")
+message(STATUS "build(${TARGET} ${CONFIG_TYPE} ${WORKING_DIR}) RETURN_CODE=${RETURN_CODE}")
 #message(STATUS "OUTPUT_LOG=${OUTPUT_LOG}")
 
 endmacro()
@@ -571,6 +582,7 @@ elseif("${PROC}" STREQUAL "full")
             relay("  Release Build..")
             build(FullTest$ENV{PARALLEL_TEST} Release .)
             set(TEMP_LOG "${TEMP_LOG}${OUTPUT_LOG}")
+message(STATUS "ENV{PARALLEL_TEST}=$ENV{PARALLEL_TEST}")
         endif()
         get_pass_list()
         math(EXPR INDEX "${INDEX} + 1")
