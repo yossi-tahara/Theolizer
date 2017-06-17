@@ -262,29 +262,35 @@ endfunction()
 #       ---<<< test target >>>---
 
 # Full
-add_custom_target(FullTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF.*")
+#add_custom_target(FullTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF.*")
+add_custom_target(FullTest)
 set_target_properties(FullTest PROPERTIES FOLDER "TestTargets")
 exclude_all_target(FullTest)
 
-add_custom_target(FullTest1 COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF[1L].*")
+#add_custom_target(FullTest1 COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF[1L].*")
+add_custom_target(FullTest1)
 set_target_properties(FullTest1 PROPERTIES FOLDER "TestTargets")
 exclude_all_target(FullTest1)
 
-add_custom_target(FullTest2 COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF[2L].*")
+#add_custom_target(FullTest2 COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF[2L].*")
+add_custom_target(FullTest2)
 set_target_properties(FullTest2 PROPERTIES FOLDER "TestTargets")
 exclude_all_target(FullTest2)
 
-add_custom_target(FullTest3 COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF[3L].*")
+#add_custom_target(FullTest3 COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "TestF[3L].*")
+add_custom_target(FullTest3)
 set_target_properties(FullTest3 PROPERTIES FOLDER "TestTargets")
 exclude_all_target(FullTest3)
 
 # Long(Build using Driver Test)
-add_custom_target(LongTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "Test.*L.*")
+#add_custom_target(LongTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "Test.*L.*")
+add_custom_target(LongTest)
 exclude_all_target(LongTest)
 set_target_properties(LongTest PROPERTIES FOLDER "TestTargets")
 
 # Short(Library Test)
-add_custom_target(ShortTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "Test.*S")
+#add_custom_target(ShortTest COMMAND "ctest" "-V" "-C" $<CONFIG> "-L" "Test.*S")
+add_custom_target(ShortTest)
 set_target_properties(ShortTest PROPERTIES FOLDER "TestTargets")
 exclude_all_target(ShortTest)
 

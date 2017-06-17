@@ -287,15 +287,28 @@ message(STATUS "CONFIG_TYPE=${CONFIG_TYPE}")
             OUTPUT_VARIABLE OUTPUT_LOG
             ERROR_VARIABLE  OUTPUT_LOG
             RESULT_VARIABLE RETURN_CODE
+            ENCODING AUTO
         )
     elseif("${CI_SERVICE}" STREQUAL "")
-        execute_process(
-            COMMAND ${MAKE} ${TARGET} ${PARALLEL}
-            WORKING_DIRECTORY "${WORKING_DIR}"
-            OUTPUT_VARIABLE OUTPUT_LOG
-            ERROR_VARIABLE  OUTPUT_LOG
-            RESULT_VARIABLE RETURN_CODE
-        )
+        # MinGWの時、CMake 3.8.0以降なら、UTF-8へ統一するため
+        if ("${CMAKE_VERSION}" VERSION_LESS "3.8.0")
+            execute_process(
+                COMMAND ${MAKE} ${TARGET} ${PARALLEL}
+                WORKING_DIRECTORY "${WORKING_DIR}"
+                OUTPUT_VARIABLE OUTPUT_LOG
+                ERROR_VARIABLE  OUTPUT_LOG
+                RESULT_VARIABLE RETURN_CODE
+            )
+        else()
+            execute_process(
+                COMMAND ${MAKE} ${TARGET} ${PARALLEL}
+                WORKING_DIRECTORY "${WORKING_DIR}"
+                OUTPUT_VARIABLE OUTPUT_LOG
+                ERROR_VARIABLE  OUTPUT_LOG
+                RESULT_VARIABLE RETURN_CODE
+                ENCODING AUTO
+            )
+        endif()
     else()
         execute_process(
             COMMAND bash -c "${MAKE} ${TARGET} ${PARALLEL} 2>&1 | tee temp.txt"
@@ -305,7 +318,46 @@ message(STATUS "CONFIG_TYPE=${CONFIG_TYPE}")
         file(READ temp.txt TEMP)
         set(OUTPUT_LOG "${OUTPUT_LOG}${TEMP}")
     endif()
-#message(STATUS "build(${TARGET} ${CONFIG_TYPE} ${WORKING_DIR}) RETURN_CODE=${RETURN_CODE}")
+message(STATUS "build(${TARGET} ${CONFIG_TYPE} ${WORKING_DIR}) RETURN_CODE=${RETURN_CODE} WORKING_DIR=${WORKING_DIR}")
+
+    # CMake 3.8.0以降のWindows版のCTestはUTF-8で出力するのENCODING指定不要
+    set(LABEL "")
+    if    ("${TARGET}" STREQUAL "ShortTest")
+        set(LABEL "Test.*S")
+    elseif("${TARGET}" STREQUAL "LongTest")
+        set(LABEL "Test.*L.*")
+    elseif("${TARGET}" STREQUAL "FullTest")
+        set(LABEL "TestF.*")
+    elseif("${TARGET}" STREQUAL "FullTest1")
+        set(LABEL "TestF[1L].*")
+    elseif("${TARGET}" STREQUAL "FullTest2")
+        set(LABEL "TestF[2L].*")
+    elseif("${TARGET}" STREQUAL "FullTest3")
+        set(LABEL "TestF[3L].*")
+    endif()
+message(STATUS "LABEL=${LABEL}")
+
+    if (NOT "${LABEL}" STREQUAL "")
+        if("${CI_SERVICE}" STREQUAL "")
+            execute_process(
+                COMMAND ctest "-V" "-C" "${CONFIG_TYPE}" "-L" "${LABEL}"
+                WORKING_DIRECTORY "${WORKING_DIR}"
+                OUTPUT_VARIABLE TEMP
+                ERROR_VARIABLE  TEMP
+                RESULT_VARIABLE RETURN_CODE
+            )
+        else()
+            execute_process(
+                COMMAND bash -c "ctest -V -C ${CONFIG_TYPE} -L ${LABEL} 2>&1 | tee temp.txt"
+                WORKING_DIRECTORY "${WORKING_DIR}"
+                RESULT_VARIABLE RETURN_CODE
+            )
+            file(READ "${WORKING_DIR}/temp.txt" TEMP)
+        endif()
+        set(OUTPUT_LOG ${OUTPUT_LOG}${TEMP})
+    endif()
+
+message(STATUS "build(${TARGET} ${CONFIG_TYPE} ${WORKING_DIR}) RETURN_CODE=${RETURN_CODE}")
 #message(STATUS "OUTPUT_LOG=${OUTPUT_LOG}")
 
 endmacro()
