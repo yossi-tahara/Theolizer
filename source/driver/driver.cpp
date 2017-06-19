@@ -61,12 +61,11 @@ enum DriverMode {
     cpp                 // cpp
 };
 
-DriverMode getDriverMode(std::string const& iStem, std::string& oDefineParam)
+DriverMode getDriverMode(std::string const& iStem)
 {
     std::string aStem = StringRef(iStem).rtrim("-0123456789.").lower();
 
     DriverMode  ret = none;
-    oDefineParam="-D";
     if (StringRef(aStem).endswith("g++"))
     {
        ret = gpp;
@@ -74,7 +73,6 @@ DriverMode getDriverMode(std::string const& iStem, std::string& oDefineParam)
     if (StringRef(aStem).endswith("cl"))
     {
        ret = cl;
-       oDefineParam="/D";
     }
     if (StringRef(aStem).endswith("cpp"))
     {
@@ -261,9 +259,6 @@ std::string getCanonicalPath(std::string const& iPath)
 
 int TheolizerProc(std::string const& iExePath, char const* iArg)
 {
-    bool    aDoReplace=false;
-    bool    aDoRestore=false;
-
 //----------------------------------------------------------------------------
 //      TheolizerDriverであることを応答する(バージョン表示を兼ねる)
 //----------------------------------------------------------------------------
@@ -279,8 +274,9 @@ return 0;
 //      バラメータ取り出し
 //----------------------------------------------------------------------------
 
-    aDoReplace = StringRef(iArg).startswith(kTheolizerReplaceParam);
-    aDoRestore = StringRef(iArg).startswith(kTheolizerRestoreParam);
+#ifndef DISABLE_REPLACE
+    bool    aDoReplace = StringRef(iArg).startswith(kTheolizerReplaceParam);
+    bool    aDoRestore = StringRef(iArg).startswith(kTheolizerRestoreParam);
 
     if (!aDoReplace && !aDoRestore)
     {
@@ -394,6 +390,8 @@ return 1;
             DRIVER_ABORT("Unknown return code : CheckTheolizer() = %d\n", cr);
         }
     }
+#endif
+
     return 0;
 }
 
@@ -527,6 +525,25 @@ void setupDebugLog()
 }
 
 // ***************************************************************************
+//      元コンパイラ・パラメータ判定
+//          iArgv+2がkTheolizerOrigCompParamで始まっている時、true返却
+//              msvc  :/Dtheolizer_original_compiler=<元コンパイラのパス>
+//              その他:--theolizer_original_compiler=<元コンパイラのパス>
+// ***************************************************************************
+
+bool isOrigCompParam(char const* iArgv)
+{
+    if (!iArgv)
+return false;
+    if (!*iArgv)
+return false;
+    if (!*(iArgv+1))
+return false;
+
+    return StringRef(iArgv+2).startswith(kTheolizerOrigCompParam);
+}
+
+// ***************************************************************************
 //      メイン
 // ***************************************************************************
 
@@ -643,15 +660,14 @@ return 1;
 //----------------------------------------------------------------------------
 
     // ドライバー・モード設定とマクロ定義パラメータ形式決定
-    std::string aDefineParam;
-    DriverMode aDriverMode = getDriverMode(llvmS::path::stem(aExePath), aDefineParam);
+    DriverMode aDriverMode = getDriverMode(llvmS::path::stem(aExePath));
 
     // Theolizerドライバ・モード判定準備
-    std::string aTheolizerAnalyze = aDefineParam+kTheolizerAnalyzeParam;
     bool aDefining=false;
+    std::string aTheolizerDoProcess = std::string("D")+kTheolizerDoProcessParam;
 
     // パラメータ・チェック
-    bool aDoAnalyze = false;        // Theolizer解析実行
+    bool aDoProcess = false;        // Theolizer処理実行
     bool aIsClangHelp = false;
     bool aIsVersion = false;
     bool aIsNostdinc = false;
@@ -665,45 +681,50 @@ return 1;
     continue;
 
         // Theolizerドライバ・モード判定
-        if ((aDefining && StringRef(arg).equals(kTheolizerAnalyzeParam))
-         || (StringRef(arg).equals(aTheolizerAnalyze)))
+        if ((aDefining && StringRef(arg).equals(kTheolizerDoProcessParam))
+         || (StringRef(arg+1).equals(aTheolizerDoProcess)))
         {
-            PARAMETER_OUTPUT("aDoAnalyze");
-            aDoAnalyze=true;
+            aDefining=false;
+
+            PARAMETER_OUTPUT("aDoProcess");
+            aDoProcess=true;
+    continue;
+        }
+        else if ((aDefining && StringRef(arg).startswith(kTheolizerOrigCompParam))
+              || (isOrigCompParam(arg)))
+        {
+            aDefining=false;
+
+            std::pair<StringRef, StringRef> aCurrent = StringRef(arg).split('=');
+            if (aCurrent.second.empty())
+            {
+                llvm::errs() << kDiagMarker
+                             << "error: " << kTheolizerOrigCompParam << " path is null.\n";
+return 1;
+            }
+
+            aOriginalPath=aCurrent.second;
+            DRIVER_OUTPUT("aOriginalPath                = ", aOriginalPath);
+            aOriginalPath=getCanonicalPath(aOriginalPath);
+            DRIVER_OUTPUT("aOriginalPath(CanonicalPath) = ", aOriginalPath);
+            aDriverMode = getDriverMode(llvmS::path::stem(aOriginalPath));
     continue;
         }
 
-        if (StringRef(arg).equals(aDefineParam))
+        // -D(/D)処理中なら、現在はは定義シンボルなので解析スキップ
+        if (aDefining)
+        {
+            aDefining=false;
+    continue;
+        }
+
+        // -D(/D)の次にブランクのある場合の対処
+        if (StringRef(arg+1).equals("D"))
         {
             aDefining=true;
     continue;
         }
         aDefining=false;
-
-        // デバッグ動作(元コンパイラのパスを設定する)
-        if (StringRef(arg).startswith(kTheolizerCompilerParam))
-        {
-            std::pair<StringRef, StringRef> aCurrent = StringRef(arg).split('=');
-            if (aCurrent.second.empty())
-            {
-                llvm::errs() << kDiagMarker
-                             << "error: debug mode path is null.\n";
-return 1;
-            }
-            PARAMETER_OUTPUT("aDoAnalyze and Debug");
-            aDoAnalyze=true;
-            aOriginalPath=aCurrent.second;
-            DRIVER_OUTPUT("aOriginalPath                = ", aOriginalPath);
-            aOriginalPath=getCanonicalPath(aOriginalPath);
-            if (aOriginalPath.empty())
-return 1;
-            DRIVER_OUTPUT("aOriginalPath(CanonicalPath) = ", aOriginalPath);
-            aDriverMode = getDriverMode(llvmS::path::stem(aOriginalPath), aDefineParam);
-            aTheolizerAnalyze = aDefineParam+kTheolizerAnalyzeParam;
-
-            arg=nullptr;
-    continue;
-        }
 
         if (StringRef(arg).startswith(ARG_THEOLIZER))
 return TheolizerProc(aExePath, arg);
@@ -716,18 +737,27 @@ return TheolizerProc(aExePath, arg);
         if (StringRef(arg).equals("-v"))            aIsOptionv    = true;
     }
 
+#ifndef DISABLE_REPLACE
     // 元コンパイラのパス名をaExePathから生成する
     if (aOriginalPath.empty())
     {
         aOriginalPath = makeRenamePath(aExePath);
     }
+#else
+    if (aOriginalPath.empty())
+    {
+        llvm::errs() << kDiagMarker
+                     << "error: no " << kTheolizerOrigCompParam << " option.\n";
+return 1;
+    }
+#endif
     DRIVER_OUTPUT("aOriginalPath = ", aOriginalPath);
 
 //----------------------------------------------------------------------------
 //      Theolizer解析実行判定
 //----------------------------------------------------------------------------
 
-    if (!aDoAnalyze)
+    if (!aDoProcess)
     {
         DRIVER_OUTPUT("##### Pass through mode. #####");
     }
@@ -900,12 +930,41 @@ return aRet;
 
     llvm::opt::ArgStringList   aArgvForCall;
     aArgvForCall.push_back(aOriginalPath.c_str());
+    char const* aDefArg=nullptr;
     for (i=1; i < iArgc; ++i)
     {
-        if (StringRef(iArgv[i]).startswith(ARG_THEOLIZER))
+        if (StringRef(iArgv[i]).equals(""))
     continue;
 
-        if (StringRef(iArgv[i]).equals(""))
+        if ((aDefining && StringRef(iArgv[i]).equals(kTheolizerDoProcessParam))
+         || (StringRef(iArgv[i]+1).equals(aTheolizerDoProcess)))
+        {
+            aDefArg=nullptr;
+    continue;
+        }
+        else if ((aDefining && StringRef(iArgv[i]).startswith(kTheolizerOrigCompParam))
+              || (isOrigCompParam(iArgv[i])))
+        {
+            aDefArg=nullptr;
+    continue;
+        }
+
+        if (aDefArg)
+        {
+            aArgvForCall.push_back(aDefArg);
+            aArgvForCall.push_back(iArgv[i]);
+            aDefArg=nullptr;
+    continue;
+        }
+
+        if (StringRef(iArgv[i]+1).equals("D"))
+        {
+            aDefArg=iArgv[i];
+    continue;
+        }
+        aDefArg=nullptr;
+
+        if (StringRef(iArgv[i]).startswith(ARG_THEOLIZER))
     continue;
 
         aArgvForCall.push_back(iArgv[i]);

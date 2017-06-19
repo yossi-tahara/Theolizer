@@ -116,7 +116,7 @@ else()
     cmake_minimum_required(VERSION 3.5.0)
 
     set(ORIGINAL_COMPILER "${CMAKE_CXX_COMPILER}")
-    set(CMAKE_CXX_COMPILER "${THEOLIZER_ROOT}/bin/TheolizerDriver.exe")
+    set(CMAKE_CXX_COMPILER "${THEOLIZER_ROOT}/bin/TheolizerDriver")
     message(STATUS "ORIGINAL_COMPILER =${ORIGINAL_COMPILER}")
     message(STATUS "CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
 
@@ -147,7 +147,7 @@ endif()
 macro(setup_theolizer TARGET_NAME LIB_TYPE)
 
     #Theolizerドライバへの解析要求
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTHEOLIZER_ANALYZE")
+    add_definitions("-DTHEOLIZER_DO_PROCESS")
 
     #共有ライブラリ対応
     if(${LIB_TYPE} STREQUAL "Shared")
@@ -167,10 +167,11 @@ macro(setup_theolizer TARGET_NAME LIB_TYPE)
         target_link_libraries(${TARGET_NAME} debug     TheolizerTest${LIB_TYPE}${CMAKE_DEBUG_POSTFIX})
         set_target_properties(${TARGET_NAME} PROPERTIES VS_USER_PROPS "${CMAKE_BINARY_DIR}/theolizer.props")
         set(THEOLIZER_LIB "${THEOLIZER_ROOT}/lib")
+        add_definitions("-Dtheolizer_original_compiler=${ORIGINAL_COMPILER}")
     else()
         target_link_libraries(${TARGET_NAME} TheolizerLib${LIB_TYPE} TheolizerTest${LIB_TYPE})
         set(THEOLIZER_LIB "${THEOLIZER_ROOT}/lib/${CMAKE_BUILD_TYPE}")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --theolizer_original_compiler=${ORIGINAL_COMPILER}")
     endif()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --theolizer-compiler=\"${ORIGINAL_COMPILER}\"")
 
 endmacro()

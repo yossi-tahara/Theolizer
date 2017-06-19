@@ -64,9 +64,6 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION ERROR_CHECK TEST_F
             set(PARAMETERS ${PARAMETERS} $<$<CONFIG:Debug>:${PARAM}>)
         endforeach()
 
-        # Theolizerへ解析要求
-        set(PARAMETERS ${PARAMETERS} /DTHEOLIZER_ANALYZE)
-
         # コンパイル・エラー発生用マクロ定義
         if (NOT "${ERROR_CHECK}" STREQUAL "")
             set(PARAMETERS ${PARAMETERS} /D${ERROR_CHECK})
@@ -160,6 +157,19 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION ERROR_CHECK TEST_F
         endif()
     endif()
 
+    # 共通ファイル群
+    file(GLOB COMMON_LIST *.h *.inc)
+    message(STATUS "COMMON_LIST=${COMMON_LIST}")
+
+    # ビルド準備とビルド実行(custom_target)
+    if (${IS_MSVC})
+        set(PARAMETERS ${PARAMETERS} "/DTHEOLIZER_DO_PROCESS")
+        set(PARAMETERS ${PARAMETERS} "/Dtheolizer_original_compiler=\"${CMAKE_CXX_COMPILER}\"")
+    else()
+        set(PARAMETERS ${PARAMETERS} "-DTHEOLIZER_DO_PROCESS")
+        set(PARAMETERS ${PARAMETERS} "--theolizer_original_compiler=\"${CMAKE_CXX_COMPILER}\"")
+    endif()
+
     # デバッグ用
     if(TRUE)
     message(STATUS "----------------------------------------------------")
@@ -172,12 +182,6 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION ERROR_CHECK TEST_F
     message(STATUS "----------------------------------------------------")
     endif()
 
-    # 共通ファイル群
-    file(GLOB COMMON_LIST *.h *.inc)
-    message(STATUS "COMMON_LIST=${COMMON_LIST}")
-
-    # ビルド準備とビルド実行(custom_target)
-    set(PARAMETERS ${PARAMETERS} "--theolizer-compiler=${CMAKE_CXX_COMPILER}")
     if(BUILD_DRIVER)
         add_custom_target(${TEST_NAME}
             COMMAND ${CMAKE_COMMAND} -E echo "${TEST_NAME}"

@@ -274,8 +274,7 @@ endmacro()
 #       ---<<< ビルド実行 >>>---
 
 macro(build TARGET CONFIG_TYPE WORKING_DIR)
-message(STATUS "TARGET=${TARGET}")
-message(STATUS "CONFIG_TYPE=${CONFIG_TYPE}")
+#message(STATUS "build(TARGET=${TARGET} CONFIG_TYPE=${CONFIG_TYPE} WORKING_DIR=${WORKING_DIR}")
 
     if(${GENERATOR} MATCHES "Visual Studio")
         execute_process(
@@ -318,7 +317,6 @@ message(STATUS "CONFIG_TYPE=${CONFIG_TYPE}")
         file(READ temp.txt TEMP)
         set(OUTPUT_LOG "${OUTPUT_LOG}${TEMP}")
     endif()
-message(STATUS "build(${TARGET} ${CONFIG_TYPE} ${WORKING_DIR}) RETURN_CODE=${RETURN_CODE} WORKING_DIR=${WORKING_DIR}")
 
     # CMake 3.8.0以降のWindows版のCTestはUTF-8で出力するのENCODING指定不要
     set(LABEL "")
@@ -335,7 +333,6 @@ message(STATUS "build(${TARGET} ${CONFIG_TYPE} ${WORKING_DIR}) RETURN_CODE=${RET
     elseif("${TARGET}" STREQUAL "FullTest3")
         set(LABEL "TestF[3L].*")
     endif()
-message(STATUS "LABEL=${LABEL}")
 
     if (NOT "${LABEL}" STREQUAL "")
         if("${CI_SERVICE}" STREQUAL "")
@@ -356,9 +353,6 @@ message(STATUS "LABEL=${LABEL}")
         endif()
         set(OUTPUT_LOG ${OUTPUT_LOG}${TEMP})
     endif()
-
-message(STATUS "build(${TARGET} ${CONFIG_TYPE} ${WORKING_DIR}) RETURN_CODE=${RETURN_CODE}")
-#message(STATUS "OUTPUT_LOG=${OUTPUT_LOG}")
 
 endmacro()
 
@@ -407,6 +401,7 @@ endmacro()
 # 最後のテスト処理
 macro(last_test)
 
+if(FALSE)
     set(SUDO "")
     if((NOT WIN32) AND ("${CI_SERVICE}" STREQUAL ""))
         set(SUDO "sudo")
@@ -455,6 +450,10 @@ macro(last_test)
             set(RETURN_CODE ${RETURN_CODE2})
         endif()
     endif()
+else()
+    # サンプルのビルドとテスト
+    prepare_sample(example)
+endif()
 
 endmacro()
 

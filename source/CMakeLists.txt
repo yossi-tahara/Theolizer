@@ -301,15 +301,6 @@ add_custom_target(makeHashTxt)
 
 #       ---<<< test exe >>>---
 
-# sudoが必要な処理の入り口(TARGET_NAMEはプロジェクト名)
-function(add_test_sub_sudo TEST_NAME TARGET_NAME)
-    set(SUDO "")
-    if((NOT WIN32) AND ("${CI_SERVER}" STREQUAL ""))
-        set(SUDO "sudo")
-    endif()
-    add_test_sub_base(${TEST_NAME} ${SUDO} $<TARGET_FILE:${TARGET_NAME}> ${ARGN})
-endfunction(add_test_sub_sudo)
-
 # 入り口(TARGET_NAMEはプロジェクト名)
 function(add_test_sub TEST_NAME TARGET_NAME)
     add_test_sub_base(${TEST_NAME} $<TARGET_FILE:${TARGET_NAME}> ${ARGN})

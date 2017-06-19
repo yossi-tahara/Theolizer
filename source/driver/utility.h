@@ -35,6 +35,8 @@
 //      重要定義
 // ***************************************************************************
 
+#define DISABLE_REPLACE                             // replace/restore機能を禁止
+
 //----------------------------------------------------------------------------
 //      各種定義
 //----------------------------------------------------------------------------
@@ -49,12 +51,15 @@ char const* kTheolizerLogFile = "debug.log";
 char const* kTheolizerMarker = THEOLIZER_INTERNAL_PRODUCT_NAME;
 
 // TheolizerDriver専用パラメータ
+char const* kTheolizerOrigCompParam = "theolizer_original_compiler";// =<OrigPath>
+char const* kTheolizerDoProcessParam= "THEOLIZER_DO_PROCESS";       // none
+
 #define ARG_THEOLIZER   "--theolizer"                           // 継続パラメータ
-char const* kTheolizerAnalyzeParam  = "THEOLIZER_ANALYZE";      // none
-char const* kTheolizerCompilerParam = ARG_THEOLIZER "-compiler";// =<OrigPath>
+char const* kTheolizerVersionParam  = ARG_THEOLIZER "-version"; // none
+#ifndef DISABLE_REPLACE
 char const* kTheolizerReplaceParam  = ARG_THEOLIZER "-replace"; // =<Path>;<Path>;...
 char const* kTheolizerRestoreParam  = ARG_THEOLIZER "-restore"; // =<Path>;<Path>;...
-char const* kTheolizerVersionParam  = ARG_THEOLIZER "-version"; // none
+#endif
 
 // エラー出力ヘッダ
 char const*  kDiagMarker = "[" THEOLIZER_INTERNAL_PRODUCT_NAME "] ";

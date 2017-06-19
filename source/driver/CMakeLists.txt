@@ -145,6 +145,10 @@ install(TARGETS TheolizerDriver CONFIGURATIONS Release DESTINATION ${BIN_DIR})
 
 if (IS_MSVC)
     install(DIRECTORY helper/msvc/ DESTINATION .)
+    install(FILES $<TARGET_FILE:TheolizerDriver>
+            CONFIGURATIONS Release
+            DESTINATION msbuild-bin
+            RENAME cl.exe)
 endif()
 
 #-----------------------------------------------------------
@@ -153,6 +157,16 @@ endif()
 #-----------------------------------------------------------
 
 #       ---<<< define test parts >>>---
+
+if(FALSE)
+# sudoが必要な処理の入り口(TARGET_NAMEはプロジェクト名)
+function(add_test_sub_sudo TEST_NAME TARGET_NAME)
+    set(SUDO "")
+    if((NOT WIN32) AND ("${CI_SERVER}" STREQUAL ""))
+        set(SUDO "sudo")
+    endif()
+    add_test_sub_base(${TEST_NAME} ${SUDO} $<TARGET_FILE:${TARGET_NAME}> ${ARGN})
+endfunction(add_test_sub_sudo)
 
 # prepare
 add_test_sub_sudo(TheolizerDriverPrepare
@@ -186,3 +200,4 @@ add_test_sub_sudo(TheolizerDriverReUninstall
 set_tests_properties(TheolizerDriverReUninstall PROPERTIES PASS_REGULAR_EXPRESSION "Already restored")
 set_tests_properties(TheolizerDriverReUninstall PROPERTIES LABELS TestXL)
 set_tests_properties(TheolizerDriverReUninstall PROPERTIES DEPENDS TheolizerDriverUninstall)
+endif()
