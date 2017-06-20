@@ -105,10 +105,10 @@ add_test_function(${TARGET_NAME} ${SOURCE_LIST})
 set(TARGET_NAME Report3)
 
 set(SOURCE_LIST test_report3.cpp test_report4.cpp)
-add_test_function(${TARGET_NAME} ${SOURCE_LIST})
+add_test_function(${TARGET_NAME} "WILL_FAIL" ${SOURCE_LIST})
 
 # exit code != 0 is PASS.
-set_tests_properties(Report3 PROPERTIES WILL_FAIL true)
+#set_tests_properties(Report3 PROPERTIES WILL_FAIL true)
 
 #-----------------------------------------------------------------------------
 #       target definition(5)

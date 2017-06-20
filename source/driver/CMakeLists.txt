@@ -90,7 +90,11 @@ link_directories("${LLVM_LIBRARY_DIRS}")
 
 add_executable(TheolizerDriver ${THEOLIZER_DRIVER_LIST})
 add_dependencies(TheolizerDriver checkBuildSystem)
-add_dependencies(LongTest TheolizerDriver)
+add_dependencies(FullTest  TheolizerDriver)
+add_dependencies(FullTest1 TheolizerDriver)
+add_dependencies(FullTest2 TheolizerDriver)
+add_dependencies(FullTest3 TheolizerDriver)
+add_dependencies(LongTest  TheolizerDriver)
 
 target_link_libraries(TheolizerDriver ${Boost_LIBRARIES})
 
@@ -152,8 +156,17 @@ endif()
 
 #-----------------------------------------------------------
 #       test target
+#               parameter error test
 #               install/uninstall function test
 #-----------------------------------------------------------
+
+#       ---<<< parameter error test >>>---
+
+add_test_sub_base(DriverError $<TARGET_FILE:TheolizerDriver> "WILL_FAIL")
+set_tests_properties(DriverError PROPERTIES LABELS TestF1L)
+#set_tests_properties(DriverError PROPERTIES WILL_FAIL true)
+set_tests_properties(DriverError PROPERTIES PASS_REGULAR_EXPRESSION
+                     "No theolizer_original_compiler option")
 
 #       ---<<< define test parts >>>---
 

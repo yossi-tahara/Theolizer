@@ -634,7 +634,7 @@ return 1;
         if (ec)
         {
             llvm::errs() << kDiagMarker
-                         << "error: couldn't get arguments = " << ec.message() << "\n";
+                         << "Couldn't get arguments = " << ec.message() << "\n";
             return 1;
         }
     }
@@ -699,7 +699,7 @@ return 1;
             if (aCurrent.second.empty())
             {
                 llvm::errs() << kDiagMarker
-                             << "error: " << kTheolizerOrigCompParam << " path is null.\n";
+                             << kTheolizerOrigCompParam << " path is null.\n";
 return 1;
             }
 
@@ -747,7 +747,7 @@ return TheolizerProc(aExePath, arg);
     if (aOriginalPath.empty())
     {
         llvm::errs() << kDiagMarker
-                     << "error: no " << kTheolizerOrigCompParam << " option.\n";
+                     << "No " << kTheolizerOrigCompParam << " option.\n";
 return 1;
     }
 #endif

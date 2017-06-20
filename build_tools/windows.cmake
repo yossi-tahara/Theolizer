@@ -121,10 +121,10 @@ file(WRITE ${SUMMARY} "")
 #-----------------------------------------------------------------------------
 
 output_title("****** StaticWithBoost ******")
-build_by_msvc(msvc2015 64 StaticWithBoost TRUE TRUE "38 11 1 1")
-build_by_msvc(msvc2015 32 StaticWithBoost TRUE TRUE "38 11 1 1")
-build_by_gcc( mingw540 64 StaticWithBoost TRUE TRUE "38 1" "11 1")
-build_by_gcc( mingw540 32 StaticWithBoost TRUE TRUE "38 1" "11 1")
+build_by_msvc(msvc2015 64 StaticWithBoost TRUE TRUE "39 11 1 1")
+build_by_msvc(msvc2015 32 StaticWithBoost TRUE TRUE "39 11 1 1")
+build_by_gcc( mingw540 64 StaticWithBoost TRUE TRUE "39 1" "11 1")
+build_by_gcc( mingw540 32 StaticWithBoost TRUE TRUE "39 1" "11 1")
 
 output_title("****** Static ******")
 build_by_msvc(msvc2015 64 Static FALSE FALSE "38 11 1 1")

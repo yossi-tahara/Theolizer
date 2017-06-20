@@ -46,7 +46,7 @@
 // ***************************************************************************
 
 #ifndef BUILD_ERROR_TEST
-#if 0
+  #if 1
     #define ENABLE_BASIC_PROCESS_TEST
     #define ENABLE_CLASS_VARIATION_TEST
         #define ENABLE_SINGLE_TEST
@@ -65,7 +65,7 @@
         #define ENABLE_MODIFY_CLASS_TEST_NAME
         #define ENABLE_MODIFY_CLASS_TEST_ORDER
         #define ENABLE_MODIFY_CLASS_TEST_ARRAY
-#endif
+  #endif
 #endif
 
 #define ENABLE_MODIFY_COMPLEX_TEST

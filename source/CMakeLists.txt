@@ -307,18 +307,24 @@ function(add_test_sub TEST_NAME TARGET_NAME)
 endfunction(add_test_sub)
 
 # 実装部(TARGET_NAMEはコマンド名)
+#       WILL_FAILは"WILL_FAIL"、もしくは、先頭パラメータ
+#       先頭パラメータが"WILL_FAIL"になることはない。
 function(add_test_sub_base TEST_NAME TARGET_NAME)
-##    add_test(NAME ${TEST_NAME} COMMAND ${TARGET_NAME} ${ARGN}
-##                               WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Testing)
     set(COMMAND_LINE "${TARGET_NAME}")
-    set(PARAM_LIST "")
+
+    set(WILL_FAIL "")
     foreach(PARAM IN LISTS ARGN)
-        set(PARAM_LIST "${PARAM_LIST};${PARAM}")
+        if("${PARAM}" STREQUAL "WILL_FAIL")
+            set(WILL_FAIL TRUE)
+        else()
+            set(PARAM_LIST "${PARAM_LIST};${PARAM}")
+        endif()
     endforeach()
     message(STATUS "COMMAND_LINE=${COMMAND_LINE}")
 
     add_test(NAME ${TEST_NAME} COMMAND ${CMAKE_COMMAND}
         -D "TARGET_NAME=${TARGET_NAME}"
+        -D "WILL_FAIL=${WILL_FAIL}"
         -D "PARAM_LIST=${PARAM_LIST}"
         -P ${CMAKE_SOURCE_DIR}/tools/execute_process.cmake
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Testing)
@@ -346,8 +352,13 @@ endfunction(add_test_sub_base)
 
 #       ---<<< for test(normal) >>>---
 
-function(add_test_function TARGET_NAME)
-    add_executable(${TARGET_NAME} ${ARGN})
+function(add_test_function TARGET_NAME WILL_FAIL)
+    if("${WILL_FAIL}" STREQUAL "WILL_FAIL")
+        add_executable(${TARGET_NAME} ${ARGN})
+    else()
+        add_executable(${TARGET_NAME} ${WILL_FAIL} ${ARGN})
+        set(WILL_FAIL "")
+    endif()
     add_dependencies(${TARGET_NAME} checkBuildSystem)
 
     if (NOT ${STATIC_WITH_BOOST})
@@ -378,7 +389,7 @@ function(add_test_function TARGET_NAME)
 
     set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "TestPrograms")
 
-    add_test_sub(${TARGET_NAME} ${TARGET_NAME})
+    add_test_sub(${TARGET_NAME} ${TARGET_NAME} ${WILL_FAIL})
     set_tests_properties(${TARGET_NAME} PROPERTIES FAIL_REGULAR_EXPRESSION
                          "<<<FAIL>>>;Detected memory leaks!")
     set_tests_properties(${TARGET_NAME}  PROPERTIES LABELS TestFLS)

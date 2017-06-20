@@ -31,7 +31,8 @@
 ]]############################################################################
 
 message(STATUS "TARGET_NAME=${TARGET_NAME}")
-message(STATUS "PARAM_LIST=${PARAM_LIST}")
+message(STATUS "WILL_FAIL  =${WILL_FAIL}")
+message(STATUS "PARAM_LIST =${PARAM_LIST}")
 
 if ("${CMAKE_VERSION}" VERSION_LESS "3.8.0")
     execute_process(COMMAND ${TARGET_NAME} ${PARAM_LIST} RESULT_VARIABLE RETUEN_CODE)
@@ -39,8 +40,10 @@ else()
     execute_process(COMMAND ${TARGET_NAME} ${PARAM_LIST} RESULT_VARIABLE RETUEN_CODE ENCODING AUTO)
 endif()
 
-if (NOT ${RETUEN_CODE} EQUAL 0)
+if ((NOT ${RETUEN_CODE} EQUAL 0) AND ("${WILL_FAIL}" STREQUAL ""))
     message(SEND_ERROR "RETUEN_CODE=${RETUEN_CODE}")
+elseif ((${RETUEN_CODE} EQUAL 0) AND (NOT "${WILL_FAIL}" STREQUAL ""))
+    message(SEND_ERROR "RETUEN_CODE=${RETUEN_CODE} at WILL_FAIL=${WILL_FAIL}")
 endif()
 
 #execute_process(COMMAND ${TARGET_NAME} ${PARAM_LIST})
