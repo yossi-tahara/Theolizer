@@ -144,7 +144,6 @@ message(STATUS "CMAKE_CXX_FLAGS_RELEASE = ${CMAKE_CXX_FLAGS_RELEASE}")
 install(TARGETS TheolizerDriver CONFIGURATIONS Release DESTINATION ${BIN_DIR})
 
 if (IS_MSVC)
-    install(DIRECTORY helper/msvc/ DESTINATION .)
     install(FILES $<TARGET_FILE:TheolizerDriver>
             CONFIGURATIONS Release
             DESTINATION msbuild-bin
