@@ -11,7 +11,13 @@ var index =
       ] ],
       [ "4.Theolizerの仕組み", "_abstract.html#Mechanism", [
         [ "4-1.ドライバ", "_abstract.html#Mechanism41", null ],
-        [ "4-2.ライブラリ", "_abstract.html#Mechanism42", null ]
+        [ "4-2.ライブラリ", "_abstract.html#Mechanism42", null ],
+        [ "4-3.Theolizerドライバが割り込む仕組み", "_abstract.html#Mechanism43", [
+          [ "4-3-1. Theolizerドライバをコンパイラとして起動させる", "_abstract.html#Mechanism431", null ],
+          [ "4-3-2.Theolizerドライバにソース自動生成が必要であることを伝達する", "_abstract.html#Mechanism432", null ],
+          [ "4-3-3.Theolizerドライバに元コンパイラのパスを伝達する", "_abstract.html#Mechanism433", null ],
+          [ "4-3-4. 使い方の変更について", "_abstract.html#Mechanism434", null ]
+        ] ]
       ] ]
     ] ],
     [ "仕様", "_specification.html", [
@@ -60,13 +66,10 @@ var index =
       ] ]
     ] ],
     [ "インストール／アンインストール", "_prepare.html", [
-      [ "1.インストール手順", "_prepare.html#Install", [
-        [ "1-1.Theolizerの用意", "_prepare.html#PrepareTheolizer", null ],
-        [ "1-2.ドライバのリプレース", "_prepare.html#ReplaceDriver", null ]
-      ] ],
-      [ "2.アンインストール手順", "_prepare.html#Uninstall", [
-        [ "2-1.ドライバのリストア", "_prepare.html#RestoreDriver", null ],
-        [ "2-2.Theolizerの削除", "_prepare.html#DeleteTheolizer", null ]
+      [ "1.インストール手順", "_prepare.html#Install", null ],
+      [ "2.アンインストール手順", "_prepare.html#Uninstall", null ],
+      [ "3.Theolizer v1.1.0からのアップデートについて", "_prepare.html#UpdatedTeolizer", [
+        [ "3-1.リストア方法", "_prepare.html#RestoreTheolizer", null ]
       ] ]
     ] ],
     [ "Theolizerの組み込み方とファイル構成", "_how_to_make_project.html", [

@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.1.1.0</span>
+   &#160;<span id="projectnumber">Version.1.1.1</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -108,20 +108,24 @@ Theolizerライブラリのビルドを避けたい時 <b>(*2)</b> </td></tr>
 <p><b>(*1)</b> お使いの<a href="https://ja.wikipedia.org/wiki/Boost">boost</a>のバージョンがTholizerの<a href="https://ja.wikipedia.org/wiki/Boost">boost</a>のバージョンと異なる場合、<a href="_how_to_build_theolizer.html#HowToBuildLibrary">Theolizerライブラリのビルド</a>が必要になります。<br />
  <b>(*2)</b> Theolizerの動的リンク・ライブラリをパスの通ったフォルダへ置いて下さい</p>
 <p>StaticとSharedは、それぞれ通常の静的リンク・ライブラリ、動的リンク・ライブラリです。</p>
-<p>Theolizerは<a href="https://ja.wikipedia.org/wiki/Boost">boost</a>のsystemとfilesystemを用いているため、Theolizerを静的リンクする場合は、これらのライブラリをあなたのプロジェクトでリンクする必要が有ります。<br />
-<a href="https://ja.wikipedia.org/wiki/Boost">boost</a>を既にお使いの方ならばあまり問題はないと思いますが、そうでない方にとっては結構面倒な作業が必要となります。<br />
-そこで、プリビルド版の静的リンク・ライブラリとして<a href="https://ja.wikipedia.org/wiki/Boost">boost</a>を同梱したライブラリも用意しました。それがStaticWithBoostです。</p>
-<p><br />
+<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> Theolizerは<a href="https://ja.wikipedia.org/wiki/Boost">boost</a>のsystemとfilesystemを用いているため、Theolizerを静的リンクする場合は、これらのライブラリをあなたのプロジェクトでリンクする必要が有ります。<a href="https://ja.wikipedia.org/wiki/Boost">boost</a>を既にお使いの方ならばあまり問題はないと思いますが、そうでない方にとってはboostのインストールと一部のビルドが新たに必要となります。<br />
+ その手間を省くため、プリビルド版の静的リンク・ライブラリとして<a href="https://ja.wikipedia.org/wiki/Boost">boost</a>を同梱したライブラリも用意しました。それがStaticWithBoostです。 </div><p><br />
  </p><h6></h6>
 <h1><a class="anchor" id="CMake"></a>
 2.CMakeを使う場合</h1>
 <h6></h6>
 <hr/>
-<p> あなたのプロジェクトのCMakeLists.txtに下記を追加して下さい。 </p><pre class="fragment">find_package(THEOLIZER)
+<p> あなたのプロジェクトのCMakeLists.txtに下記を追加して下さい。 </p><pre class="fragment">project(&lt;あなたのプロジェクト名&gt;)
   :
-setup_theolizer(${TARGET_NAME} ${LINK_TYPE})
-</pre><p>${TARGET_NAME}はTheolizerライブラリをリンクするあなたのプログラムを指定します。 add_executable()やadd_library()のターゲット名です。</p>
-<p>${LINK_TYPE}はリンクするTheolizerライブラリの種別を指定します。 StaticWithBoost、Static、Sharedのどれかを指定して下さい。</p>
+find_package(THEOLIZER)
+  :
+add_executable(&lt;ターゲット名&gt;)
+  or
+add_library(&lt;ターゲット名&gt;)
+  :
+setup_theolizer(&lt;ターゲット名&gt; &lt;リンク種別&gt;)
+</pre><p><code>&lt;ターゲット名&gt;</code>はTheolizerライブラリをリンクするあなたのプログラムを指定します。 add_executable()やadd_library()のターゲット名です。</p>
+<p><code>&lt;リンク種別&gt;</code>はリンクするTheolizerライブラリの種別を指定します。 StaticWithBoost、Static、Sharedのどれかを指定して下さい。</p>
 <p>CMakeLists.txt作成後、THEOLIZER_DIRに <b>Theolizerルート・フォルダ</b> を設定し、CMakeでプロジェクトを生成して下さい。<br />
 </p>
 <p><br />
@@ -162,11 +166,28 @@ make BuildTest
 4.CMakeを使わない場合</h1>
 <h6></h6>
 <hr/>
-<p> 「5.ファイル構成」を参考にして、下記をプロジェクトへ設定下さい。</p><ul>
-<li>一般的なライブラリと同様、インクルード・パス、ライブラリ・パス、および、ライブラリを指定下さい。</li>
-<li>コンパイラ・オプションにてTHEOLIZER_ANALYZEマクロを定義して下さい。</li>
-<li>Sharedを用いる場合は、コンパイラ・オプションにてTHEOLIZER_DYN_LINKマクロを定義して下さい。</li>
-</ul>
+<p> 「<a class="el" href="_abstract.html#Mechanism43">4-3.Theolizerドライバが割り込む仕組み</a> 」にて仕組み記述しています。また「<a class="el" href="_how_to_make_project.html#FileStructure">5.ファイル構成</a> 」に<code>&lt;Theolizerルート・フォルダ&gt;</code>からのフォルダ構成を記載しています。これらを参考に下記をビルド・プロジェクトへ設定下さい。</p>
+<table class="doxtable">
+<tr>
+<th>コンパイラ・オプション</th><th>指定内容  </th></tr>
+<tr>
+<td>コンパイラ</td><td>Theolizerルート・フォルダ/bin/TheolizerDriver </td></tr>
+<tr>
+<td>インクルード・パス</td><td>Theolizerルート・フォルダ/include </td></tr>
+<tr>
+<td>ライブラリ・パス</td><td>Theolizerルート・フォルダ/lib </td></tr>
+<tr>
+<td>ライブラリ・ファイル</td><td>「<a class="el" href="_how_to_make_project.html#Selecting">1.Theolizerライブラリの選択</a> 」で選択したライブラリ。<br />
+ファイル名は「<a class="el" href="_how_to_make_project.html#FileStructure">5.ファイル構成</a> 」参照。 </td></tr>
+<tr>
+<td>マクロ定義</td><td>THEOLIZER_DO_PROCESS </td></tr>
+<tr>
+<td>マクロ定義(Visual C++の場合)</td><td><code>theolizer_original_compiler=&lt;元コンパイラのパス&gt;</code> </td></tr>
+<tr>
+<td>オプション指定(その他の場合)</td><td><code>--theolizer_original_compiler=&lt;元コンパイラのパス&gt;</code> </td></tr>
+<tr>
+<td>Sharedの場合は追加マクロ定義</td><td>THEOLIZER_DYN_LINK </td></tr>
+</table>
 <p><br />
  </p><h6></h6>
 <h1><a class="anchor" id="FileStructure"></a>
@@ -178,6 +199,10 @@ make BuildTest
 <table class="doxtable">
 <tr>
 <th>相対パス</th><th>ファイル種別</th><th>ファイル名  </th></tr>
+<tr>
+<td>ルート</td><td>cmakeのfind_package用<br />
+Theolizerのライセンス(GPLv3)</td><td>THEOLIZERConfig.cmake,theolizer.props.in<br />
+LICENSE.TXT </td></tr>
 <tr>
 <td>bin</td><td>Theolizerドライパ</td><td>TheolizerDriver.exe </td></tr>
 <tr>
@@ -195,7 +220,7 @@ make BuildTest
 <tr>
 <td></td><td>Shared(Debug)ライブラリ</td><td>TheolizerLibSharedd.dll </td></tr>
 <tr>
-<td>ルート</td><td>Theolizerのライセンス(GPLv3)</td><td>LICENSE.TXT </td></tr>
+<td>msbuild-bin</td><td>Theolizerドライパをリネームしたファイル</td><td>cl.exe </td></tr>
 <tr>
 <td>other_licenses</td><td>Theolizerにリンクしている他プロジェクトのライセンス</td><td>LICENSE-*.txt </td></tr>
 </table>
@@ -204,14 +229,6 @@ make BuildTest
 <table class="doxtable">
 <tr>
 <th>相対パス</th><th>ファイル種別</th><th>ファイル名  </th></tr>
-<tr>
-<td>ルート/tools</td><td>CMake補助</td><td>THEOLIZERConfig.cmake </td></tr>
-<tr>
-<td></td><td>ドライバ・インストール</td><td>replace.bat </td></tr>
-<tr>
-<td></td><td>ドライバ・アンインストール</td><td>restore.bat </td></tr>
-<tr>
-<td>bin</td><td>ドライバ・インストール補助</td><td>internal.bat </td></tr>
 <tr>
 <td>doc/ja</td><td>詳細ドキュメント</td><td>index.html, html/*.* </td></tr>
 <tr>
@@ -235,6 +252,10 @@ make BuildTest
 <tr>
 <th>相対パス</th><th>ファイル種別</th><th>ファイル名  </th></tr>
 <tr>
+<td>ルート</td><td>cmakeのfind_package用<br />
+Theolizerのライセンス(GPLv3)</td><td>THEOLIZERConfig.cmake<br />
+LICENSE.TXT </td></tr>
+<tr>
 <td>bin</td><td>Theolizerドライパ</td><td>TheolizerDriver.exe </td></tr>
 <tr>
 <td>include/theolizer</td><td>ヘッダ・ファイル群</td><td><code>*.h</code>, <code>*.inc</code> </td></tr>
@@ -251,8 +272,6 @@ make BuildTest
 <tr>
 <td></td><td>Shared(Debug)ライブラリ</td><td>libTheolizerLibShared.so </td></tr>
 <tr>
-<td>ルート</td><td>Theolizerのライセンス(GPLv3)</td><td>LICENSE.TXT </td></tr>
-<tr>
 <td>other_licenses</td><td>Theolizerにリンクしている他プロジェクトのライセンス</td><td>LICENSE-*.txt </td></tr>
 </table>
 <p>注）インクルード・パスは、include/theolizerではなく、includeを指定して下さい。</p>
@@ -260,8 +279,6 @@ make BuildTest
 <table class="doxtable">
 <tr>
 <th>相対パス</th><th>ファイル種別</th><th>ファイル名  </th></tr>
-<tr>
-<td>ルート/tools</td><td>CMake補助</td><td>THEOLIZERConfig.cmake </td></tr>
 <tr>
 <td>doc/ja</td><td>詳細ドキュメント</td><td>index.html, html/*.* </td></tr>
 <tr>
@@ -279,6 +296,7 @@ make BuildTest
 <tr>
 <td>samples</td><td>サンプル・プログラム</td><td>CMakeLists.txt, *.cpp, *.h </td></tr>
 </table>
+<p>注）テスト用ライブラリは、Theolizerの自動テストで使用しているライブラリです。 </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.12-->

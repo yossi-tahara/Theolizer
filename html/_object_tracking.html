@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.1.1.0</span>
+   &#160;<span id="projectnumber">Version.1.1.1</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -208,7 +208,7 @@ $(document).ready(function(){initNavTree('_object_tracking.html','');});
 </pre><p>メンバ変数名は"メンバ変数名"として記録されます。基底クラスにはメンバ変数名がないため、"{基底クラス名}"として記録しています。これにより、基底クラスの定義順序変更にも対応できます。</p>
 <h2><a class="anchor" id="Polymorphism32"></a>
 3-2.参照を経由する場合</h2>
-<p>ポリモーフィックな基底クラスへの参照をシリアライズすることで、ポリモーフィックに回復されます。つまり、派生クラスのインスタンスを基底クラスへのポインタでポイントして保存して回復した場合、派生クラスのインスタンスとして回復されます。</p>
+<p>ポリモーフィックな基底クラスへの参照をシリアライズすることで、ポリモーフィックに回復されます。つまり、派生クラスのインスタンスを基底クラス型の参照でポイントして保存し回復した場合、派生クラスのインスタンスとして回復されます。</p>
 <p><br />
  </p><h6></h6>
 <h1><a class="anchor" id="ClearTracking"></a>

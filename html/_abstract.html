@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.1.1.0</span>
+   &#160;<span id="projectnumber">Version.1.1.1</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -126,14 +126,14 @@ $(document).ready(function(){initNavTree('_abstract.html','');});
 <tr>
 <th>その他のツール</th><th>バージョン</th><th>備考  </th></tr>
 <tr>
-<td>CMake</td><td>3.5.0以上</td><td>ユーザ・プログラムビルド<br />
+<td>CMake</td><td>Visual C++は3.8.0以上<br />
+その他は3.5.0以上</td><td>ユーザ・プログラムビルド<br />
 Theolizerのビルド </td></tr>
 <tr>
 <td>boost</td><td>1.59.0以上</td><td>Theolizer内部使用 </td></tr>
 </table>
-<p>CMakeは必要ではありませんが、これがあるとプロジェクト生成が楽になります。<br />
- あなたのプログラムでboostを使っている場合、それがTheolizerで使っているものと異なるバージョンの時、注意が必要になります。<br />
- <a class="el" href="_how_to_make_project.html#Selecting">1.Theolizerライブラリの選択</a> を参照下さい。<br />
+<p>CMakeは必須ではありませんが、使用することを強く推奨します。<br />
+ あなたのプログラムでboostを使っている場合、それがTheolizerで使っているものと異なるバージョンの時、注意が必要になります。「<a class="el" href="_how_to_make_project.html#Selecting">1.Theolizerライブラリの選択</a> 」を参照下さい。<br />
 </p>
 <p><br />
  </p><h6></h6>
@@ -256,11 +256,50 @@ Theolizerのビルド </td></tr>
 </li>
 </ol>
 <div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> <b>自動生成するソースのファイル名</b><br />
- 自動生成するソース・ファイル名は、コンパイルするソースファイル名.theolizer.hppです。 例えば、main.cppの場合、main.cpp.theolizer.hppとなります。 </div><div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> <b>ドライバ動作の補足</b><br />
- Theolizerドライバは、THEOLIZER_ANALYZEマクロを定義するコマンドライン・オプション(例えば、-DTHEOLIZER_ANALYZE)とともに起動された時のみ、上記の1～3を行います。このオプション無しで起動された時は何もせずにそのまま元のコンパイラへパス・スルーしますので、Theolizerを用いないプロジェクトへの影響はありません。<br />
- Windows 10、および、ubuntu 16.04にて、コンパイラを置き換えたままCMakeのジェネレーション、および、llvmのビルドができることを確認しております。 </div><h2><a class="anchor" id="Mechanism42"></a>
+ 自動生成するソース・ファイル名は、コンパイルするソースファイル名.theolizer.hppです。 例えば、main.cppの場合、main.cpp.theolizer.hppとなります。 </div><h2><a class="anchor" id="Mechanism42"></a>
 4-2.ライブラリ</h2>
-<p><b>Theolizerライブラリ</b>はあなたのプログラムとリンクして、データ構造のシリアライズとデシリアライズを行います。 </p>
+<p><b>Theolizerライブラリ</b>はあなたのプログラムとリンクして、データ構造のシリアライズとデシリアライズを行います。</p>
+<h2><a class="anchor" id="Mechanism43"></a>
+4-3.Theolizerドライバが割り込む仕組み</h2>
+<p>ビルド・プロジェクトとコンパイラの間にTheolizerドライバを割り込む仕組みのポイントは次の３点です。</p>
+<ol type="1">
+<li>ビルド・システムにTheolizerドライバをコンパイラとして起動させる</li>
+<li>Theolizerドライバにソース自動生成が必要であることを伝達し、自動生成処理する</li>
+<li>Theolizerドライバに元コンパイラのパスを伝達し、元のコンパイラへ処理を引き継ぐ</li>
+</ol>
+<h3><a class="anchor" id="Mechanism431"></a>
+4-3-1. Theolizerドライバをコンパイラとして起動させる</h3>
+<h4>4-3-1-1.Visual Studioの場合</h4>
+<ul>
+<li>Theolizerインストール時に準備<br />
+ Theolizerのインストール先フォルダにmsbuild-binフォルダを追加し、そこへTheolizerドライバをcl.exeとして保存します。</li>
+<li>ビルド・プロジェクト生成</li>
+</ul>
+<p>CMake 3.8.0にて<a href="https://cmake.org/cmake/help/v3.8/prop_tgt/VS_USER_PROPS.html">VS_USER_PROPS</a>と言うVC++のプロジェクトへインクルード指定を追加するプロパティが追加されました。<br />
+ これを使ってターゲットのプロジェクト・ファイル（*.vcxproj）に<code>&lt;Import Project&gt;</code>キーを追加し、theolizer.propsをインクルードするようにしました。<br />
+ そして、<code>theolizer.props</code>にて、コンパイル時に使われる<code>PATH</code>を指定する<code>&lt;ExecutablePath&gt;</code>の先頭に上記<code>msbuild-bin</code>フォルダを追加しました。<br />
+</p>
+<p>以上により、Theolizerを使用するプロジェクトにおいてTheolizerドライバがコンパイラとして起動します。</p>
+<h4>4-3-1-2.その他（gcc/mingw)の場合</h4>
+<p>対象のプロジェクトのCMAKE_CXX_COMPILERにTheolizerドライバのフルパスを設定しました。<br />
+ これはmakefileのコンパイラに反映されますので、呼び出すコンパイラを変更できます。<br />
+ （なお、Visual Studioはmakeではなくマイクロソフト独自のMSBuildでビルドするためこの方法が機能しません。）<br />
+</p>
+<h3><a class="anchor" id="Mechanism432"></a>
+4-3-2.Theolizerドライバにソース自動生成が必要であることを伝達する</h3>
+<p>CMakeで<code>THEOLIZER_DO_PROCESS</code>マクロをコンパイラ・オプションで定義するようにしまた。 このマクロがオプションで指定された時、Theolizerドライバはソース自動生成処理を行います。 そうでない時は、Theolizer関連オプションを除く全ての引数で元コンパイラを起動（パススルー）します。</p>
+<h3><a class="anchor" id="Mechanism433"></a>
+4-3-3.Theolizerドライバに元コンパイラのパスを伝達する</h3>
+<h4>4-3-3-1.Visual Studioの場合</h4>
+<p>CMakeは*.rspファイルに全てのオプションを記述してコンパイラへ渡します。その為、Theolizerドライバでそのオプションを削除して元コンパイラへ引き継ぐことが難しいです。しかし、削除しないとcl.exeが「知らないオプション」として警告します。 そこで、マクロ定義（<code>/Dtheolizer_original_compiler=&lt;元コンパイラのパス&gt;</code>）で伝達することで警告表示されないようにしました。マクロ定義はリンカへ伝達する必要がないので伝わらないようです。</p>
+<h4>4-3-3-2.その他（gcc/mingw)の場合</h4>
+<p>CMakeはgcc/mingw用にはコンパイルとリンクを分解してg++を呼び出します。 リンクの時ldを直接呼ぶわけでなく、g++にリンク指定して呼び出します。 どちらの場合もTheolizerドライバが起動されることになります。 そして、リンク動作時は<code>-D</code>オプションは渡ってきません。マクロ定義はコンパイラのみ必要なオプションだからだと思います。 しかし、その結果、リンク時に起動されたTheolizerドライバが元コンパイラのパスを得ることができず、元コンパイラをパススルー起動できません。</p>
+<p>そこで、msvc以外の時は<code>--theolizer_original_compiler=&lt;元コンパイラのパス&gt;</code>オプションで元コンパイラのパスを伝達するようにしました。</p>
+<h3><a class="anchor" id="Mechanism434"></a>
+4-3-4. 使い方の変更について</h3>
+<p>上記はfind_packageで用いるTHEOLIZERConfig.cmake内部で対応しました。ですので、ユーザ・プログラム用のCMakeLists.txtは従来のままで使用できます。従来必要であったコンパイラのリプレース操作が不要になります。<br />
+</p>
+<p>なお、Visual Studioをお使いの場合は、CMakeを3.8.0以上へアップデートする必要があります。 </p>
 </div></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- HTML footer for doxygen 1.8.12-->

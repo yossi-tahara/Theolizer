@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.1.1.0</span>
+   &#160;<span id="projectnumber">Version.1.1.1</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -211,11 +211,11 @@ $(document).ready(function(){initNavTree('_how_to_build_theolizer.html','');});
  この時は<a href="http://www.doxygen.jp/">Doxygen</a>と<a href="http://www.graphviz.org/">Graphviz</a>のインストールが必要</li>
 </ul>
 <p>下記のバッチ(Windowsの場合)、もしくは、スクリプト(linuxの場合)を起動することでTheolizerのビルド・自動テスト・インストールを行います。<br />
- １組み合わせ当たり数分でビルド完了します。</p>
+ １組み合わせ当たり十数分でビルド完了します。</p>
 <table class="doxtable">
 <tr>
 <th>linuxのスクリプト<br />
-Windowsのバッチ</th><th>処理内容  </th></tr>
+Windowsのバッチ</th><th>処理内容</th><th>ログ・ファイル名  </th></tr>
 <tr>
 <td>zy0_full_all.sh<br />
 zz0_full_all.bat </td><td>ビルド・フォルダを削除し作成<br />
@@ -224,11 +224,11 @@ CMakeによるプロジェクト生成<br />
 (ドライバのビルドとテスト)<br />
 ドキュメントのビルド<br />
 ライブラリとドキュメントのインストール<br />
-インストール後のビルド・テスト </td></tr>
+インストール後のビルド・テスト</td><td>z3_full_test-full_all.log </td></tr>
 <tr>
 <td>zy1_config_all.sh<br />
 zz1_config_all.bat </td><td>ビルド・フォルダがなければ作成<br />
-<b>CMakeによるプロジェクト生成</b> </td></tr>
+<b>CMakeによるプロジェクト生成</b></td><td>z0_config.log </td></tr>
 <tr>
 <td>zy2_middle_all.sh<br />
 zz2_middle_all.bat </td><td>ビルド・フォルダがなければ作成<br />
@@ -236,39 +236,41 @@ CMakeによるプロジェクト生成<br />
 <b>ライブラリのビルドとテスト</b><br />
 <b>(ドライバのビルドとテスト)</b><br />
 ドキュメントのビルド<br />
-<b>Theolizerのインストール</b> </td></tr>
+<b>Theolizerのインストール</b></td><td>z3_full_test-middle_all.log </td></tr>
 <tr>
 <td>zy3_last_all.sh<br />
 zz3_last_all.bat </td><td>ビルド・フォルダがなければ作成<br />
 CMakeによるプロジェクト生成<br />
-<b>インストール確認のためのビルド・テスト</b> </td></tr>
+<b>インストール確認のためのビルド・テスト</b></td><td>z3_full_test-last_all.log </td></tr>
 </table>
 <p>ビルド・フォルダに下記のバッチ(Windowsの場合)、もしくは、スクリプト(linuxの場合)が生成されます。必要に応じてお使い下さい。 また、Visual Studioの場合はソリューション・ファイル(Theolizer.sln)も生成されています。これをダブル・クリックすればVisual Studioが起動します。</p>
 <table class="doxtable">
 <tr>
 <th>linuxのスクリプト<br />
-Windowsのバッチ</th><th>処理内容  </th></tr>
+Windowsのバッチ</th><th>処理内容</th><th>ログ・ファイル名  </th></tr>
 <tr>
 <td>zy0_config.sh<br />
-zz0_config.bat </td><td>CMakeによるプロジェクト生成 </td></tr>
+zz0_config.bat </td><td>CMakeによるプロジェクト生成</td><td>z0_config.log </td></tr>
 <tr>
 <td>zy1_short_test.sh<br />
-zz1_short_test.bat </td><td>ライブラリのビルドとテスト </td></tr>
+zz1_short_test.bat </td><td>ライブラリのビルドとテスト</td><td>z1_short_test.log </td></tr>
 <tr>
 <td>zy2_long_test.sh<br />
-zz1_short_test.bat </td><td>ドライバのビルドとテスト </td></tr>
+zz1_short_test.bat </td><td>ドライバのビルドとテスト</td><td>z2_long_test.log </td></tr>
 <tr>
 <td>zy3_full_test.sh<br />
 zz3_full_test.bat </td><td>ライブラリのビルドとテスト<br />
 ドライバのビルドとテスト<br />
 ドキュメントのビルド<br />
 Theolizerのインストール<br />
-インストール確認のためのビルド・テスト </td></tr>
+インストール確認のためのビルド・テスト</td><td>z3_full_test-.log </td></tr>
 <tr>
 <td>zy4_ja.sh<br />
-zz4_ja.bat </td><td>ドキュメントのビルド </td></tr>
+zz4_ja.bat </td><td>ドキュメントのビルド</td><td>z4_ja.log </td></tr>
 </table>
 <p><br />
+</p>
+<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> 従来Windows版のログ・ファイルはShift-JISで出力していましたが、今回よりUTF-8へ変更しています。 詳しくは<a href="https://github.com/yossi-tahara/Theolizer/issues/37#issuecomment-309667431">GitHub Issue #37</a>を参照下さい。 </div><p><br />
  </p>
 <h1><a class="anchor" id="HowToBuildDriver"></a>
 2.Theolizerドライバのビルド方法</h1>

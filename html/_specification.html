@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.1.1.0</span>
+   &#160;<span id="projectnumber">Version.1.1.1</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -212,6 +212,7 @@ $(document).ready(function(){initNavTree('_specification.html','');});
 </p>
 <p>また、ポリモーフィズムに対応しています。<br />
  派生クラスのインスタンスを基底クラスで参照されていた場合、派生クラスを保存／回復します。ただし、保存時と異なる派生クラスを参照している場合はエラーとします。参照はその参照先を初期設定後、変更出来ないというC++仕様によるものです。</p>
+<p>「<a class="el" href="_specification.html#Basic24">2-4.同じ領域を複数回シリアライズする時の動作について特記事項</a> 」参照。</p>
 <h2><a class="anchor" id="Basic13"></a>
 1-3.保存先指定</h2>
 <p>クラスのメンバ変数に保存先を指定し、１つのクラスのメンバ変数を異なるファイルに保存したり、別途通信回線で送信したりできます。</p>
@@ -346,7 +347,7 @@ $(document).ready(function(){initNavTree('_specification.html','');});
 <h2><a class="anchor" id="Basic24"></a>
 2-4.同じ領域を複数回シリアライズする時の動作について特記事項</h2>
 <p>同じインスタンスを複数回シリアライズするケースがあると思います。<br />
- 参照の指し示す先を切り替えたいような場合は、どのインスタンス同士が重なるか静的に決まらないようなケースが該当します。<br />
+ 例えば、参照の指し示す先を動的に切り替え、かつ、実体側と参照側の両方をシリアライズする場合に発生する可能性があります。<br />
 </p>
 <p>Theolizerは各インスタンスに対して、被ポインタ指定することでオブジェクト追跡しますが、オブジェクト追跡している場合、同じインスタンスであることを自動判定できます。<br />
  そこで、同じオブジェクト追跡単位内で重複してシリアライズした場合、先頭の１つのみをシリアライズします。<br />
