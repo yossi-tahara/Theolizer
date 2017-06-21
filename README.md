@@ -215,8 +215,9 @@ Windowsとubuntu用のプリビルド版を用意しています。<br>
 Theolizerは信頼性を上げるために自動テストを実装しています。
 
 - CIサービスによるサブセット・テスト（masterブランチの最新版）の状態<br>
-Travis CIにてubuntu環境のサブセット・テストをpush毎に自動実行しています。<br>
-Travis CI result : [![Build Status](https://travis-ci.org/yossi-tahara/Theolizer.svg?branch=master)](https://travis-ci.org/yossi-tahara/Theolizer) "for StaticWithBoost without sudo on ubuntu 14.04 LTS"
+~~Travis CIにてubuntu環境のサブセット・テストをpush毎に自動実行しています。~~<br>
+~~Travis CI result : [![Build Status](https://travis-ci.org/yossi-tahara/Theolizer.svg?branch=master)](https://travis-ci.org/yossi-tahara/Theolizer) "for StaticWithBoost without sudo on ubuntu 14.04 LTS"~~<br>
+（2017年6月21日現在、Travis-CIのllvmパッケージの異常により、Travis-CI環境ではTheolizerドライバをビルドできないため、一時的に停止しています。詳しくはIssue #38を参照下さい。）
 
 - ローカル環境によるフルセット・テストについて<br>
 バージョン番号に`-Prerelease`サフィックスのないものはフルセットのテストを完了しています。<br>
