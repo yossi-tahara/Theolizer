@@ -136,25 +136,31 @@ build_by_msvc()とbuild_by_gcc()について補足
 この時は[Doxygen](http://www.doxygen.jp/)と[Graphviz](http://www.graphviz.org/)のインストールが必要
 
 下記のバッチ(Windowsの場合)、もしくは、スクリプト(linuxの場合)を起動することでTheolizerのビルド・自動テスト・インストールを行います。<br>
-１組み合わせ当たり数分でビルド完了します。
+１組み合わせ当たり十数分でビルド完了します。
 
-|linuxのスクリプト<br>Windowsのバッチ|処理内容|
-|------------------------------------|--------|
-|zy0_full_all.sh<br>zz0_full_all.bat |ビルド・フォルダを削除し作成<br>CMakeによるプロジェクト生成<br>ライブラリのビルドとテスト<br>(ドライバのビルドとテスト)<br>ドキュメントのビルド<br>ライブラリとドキュメントのインストール<br>インストール後のビルド・テスト|
-|zy1_config_all.sh<br>zz1_config_all.bat |ビルド・フォルダがなければ作成<br><b>CMakeによるプロジェクト生成</b>|
-|zy2_middle_all.sh<br>zz2_middle_all.bat |ビルド・フォルダがなければ作成<br>CMakeによるプロジェクト生成<br><b>ライブラリのビルドとテスト</b><br><b>(ドライバのビルドとテスト)</b><br>ドキュメントのビルド<br><b>Theolizerのインストール</b>|
-|zy3_last_all.sh<br>zz3_last_all.bat |ビルド・フォルダがなければ作成<br>CMakeによるプロジェクト生成<br><b>インストール確認のためのビルド・テスト</b>|
+|linuxのスクリプト<br>Windowsのバッチ|処理内容|ログ・ファイル名|
+|------------------------------------|--------|----------------|
+|zy0_full_all.sh<br>zz0_full_all.bat |ビルド・フォルダを削除し作成<br>CMakeによるプロジェクト生成<br>ライブラリのビルドとテスト<br>(ドライバのビルドとテスト)<br>ドキュメントのビルド<br>ライブラリとドキュメントのインストール<br>インストール後のビルド・テスト|z3_full_test-full_all.log |
+|zy1_config_all.sh<br>zz1_config_all.bat |ビルド・フォルダがなければ作成<br><b>CMakeによるプロジェクト生成</b>|z0_config.log |
+|zy2_middle_all.sh<br>zz2_middle_all.bat |ビルド・フォルダがなければ作成<br>CMakeによるプロジェクト生成<br><b>ライブラリのビルドとテスト</b><br><b>(ドライバのビルドとテスト)</b><br>ドキュメントのビルド<br><b>Theolizerのインストール</b>|z3_full_test-middle_all.log |
+|zy3_last_all.sh<br>zz3_last_all.bat |ビルド・フォルダがなければ作成<br>CMakeによるプロジェクト生成<br><b>インストール確認のためのビルド・テスト</b>|z3_full_test-last_all.log |
 
 ビルド・フォルダに下記のバッチ(Windowsの場合)、もしくは、スクリプト(linuxの場合)が生成されます。必要に応じてお使い下さい。
 また、Visual Studioの場合はソリューション・ファイル(Theolizer.sln)も生成されています。これをダブル・クリックすればVisual Studioが起動します。
 
-|linuxのスクリプト<br>Windowsのバッチ|処理内容|
-|------------------------------------|--------|
-|zy0_config.sh<br>zz0_config.bat |CMakeによるプロジェクト生成|
-|zy1_short_test.sh<br>zz1_short_test.bat |ライブラリのビルドとテスト|
-|zy2_long_test.sh<br>zz1_short_test.bat |ドライバのビルドとテスト|
-|zy3_full_test.sh<br>zz3_full_test.bat |ライブラリのビルドとテスト<br>ドライバのビルドとテスト<br>ドキュメントのビルド<br>Theolizerのインストール<br>インストール確認のためのビルド・テスト|
-|zy4_ja.sh<br>zz4_ja.bat |ドキュメントのビルド|
+|linuxのスクリプト<br>Windowsのバッチ|処理内容|ログ・ファイル名|
+|------------------------------------|--------|----------------|
+|zy0_config.sh<br>zz0_config.bat |CMakeによるプロジェクト生成|z0_config.log |
+|zy1_short_test.sh<br>zz1_short_test.bat |ライブラリのビルドとテスト|z1_short_test.log |
+|zy2_long_test.sh<br>zz1_short_test.bat |ドライバのビルドとテスト|z2_long_test.log |
+|zy3_full_test.sh<br>zz3_full_test.bat |ライブラリのビルドとテスト<br>ドライバのビルドとテスト<br>ドキュメントのビルド<br>Theolizerのインストール<br>インストール確認のためのビルド・テスト|z3_full_test-.log |
+|zy4_ja.sh<br>zz4_ja.bat |ドキュメントのビルド|z4_ja.log |
+<br>
+
+<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
+従来Windows版のログ・ファイルはShift-JISで出力していましたが、今回よりUTF-8へ変更しています。
+詳しくは[GitHub Issue #37](https://github.com/yossi-tahara/Theolizer/issues/37#issuecomment-309667431)を参照下さい。
+</div>
 
 <br>
 @section HowToBuildDriver 2.Theolizerドライバのビルド方法

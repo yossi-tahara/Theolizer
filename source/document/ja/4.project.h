@@ -55,9 +55,10 @@ Theolizerは下記ライブラリを用意しています。
 
 StaticとSharedは、それぞれ通常の静的リンク・ライブラリ、動的リンク・ライブラリです。
 
-Theolizerは[boost](https://ja.wikipedia.org/wiki/Boost)のsystemとfilesystemを用いているため、Theolizerを静的リンクする場合は、これらのライブラリをあなたのプロジェクトでリンクする必要が有ります。\n
-[boost](https://ja.wikipedia.org/wiki/Boost)を既にお使いの方ならばあまり問題はないと思いますが、そうでない方にとっては結構面倒な作業が必要となります。\n
-そこで、プリビルド版の静的リンク・ライブラリとして[boost](https://ja.wikipedia.org/wiki/Boost)を同梱したライブラリも用意しました。それがStaticWithBoostです。
+<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
+Theolizerは[boost](https://ja.wikipedia.org/wiki/Boost)のsystemとfilesystemを用いているため、Theolizerを静的リンクする場合は、これらのライブラリをあなたのプロジェクトでリンクする必要が有ります。[boost](https://ja.wikipedia.org/wiki/Boost)を既にお使いの方ならばあまり問題はないと思いますが、そうでない方にとってはboostのインストールと一部のビルドが新たに必要となります。<br>
+その手間を省くため、プリビルド版の静的リンク・ライブラリとして[boost](https://ja.wikipedia.org/wiki/Boost)を同梱したライブラリも用意しました。それがStaticWithBoostです。
+</div>
 
 <br>
 //############################################################################
@@ -67,14 +68,20 @@ Theolizerは[boost](https://ja.wikipedia.org/wiki/Boost)のsystemとfilesystem�
 ---
 あなたのプロジェクトのCMakeLists.txtに下記を追加して下さい。
 
+    project(<あなたのプロジェクト名>)
+      :
     find_package(THEOLIZER)
       :
-    setup_theolizer(${TARGET_NAME} ${LINK_TYPE})
+    add_executable(<ターゲット名>)
+      or
+    add_library(<ターゲット名>)
+      :
+    setup_theolizer(<ターゲット名> <リンク種別>)
 
-${TARGET_NAME}はTheolizerライブラリをリンクするあなたのプログラムを指定します。
+`<ターゲット名>`はTheolizerライブラリをリンクするあなたのプログラムを指定します。
 add_executable()やadd_library()のターゲット名です。
 
-${LINK_TYPE}はリンクするTheolizerライブラリの種別を指定します。
+`<リンク種別>`はリンクするTheolizerライブラリの種別を指定します。
 StaticWithBoost、Static、Sharedのどれかを指定して下さい。
 
 CMakeLists.txt作成後、THEOLIZER_DIRに <b>Theolizerルート・フォルダ</b> を設定し、CMakeでプロジェクトを生成して下さい。<br>
@@ -126,10 +133,18 @@ TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソ�
 //############################################################################
 
 ---
-「5.ファイル構成」を参考にして、下記をプロジェクトへ設定下さい。
-- 一般的なライブラリと同様、インクルード・パス、ライブラリ・パス、および、ライブラリを指定下さい。
-- コンパイラ・オプションにてTHEOLIZER_ANALYZEマクロを定義して下さい。
-- Sharedを用いる場合は、コンパイラ・オプションにてTHEOLIZER_DYN_LINKマクロを定義して下さい。
+「@ref Mechanism43 」にて仕組み記述しています。また「@ref FileStructure 」に`<Theolizerルート・フォルダ>`からのフォルダ構成を記載しています。これらを参考に下記をビルド・プロジェクトへ設定下さい。
+
+|コンパイラ・オプション|指定内容|
+|----------------------|--------|
+|コンパイラ|Theolizerルート・フォルダ/bin/TheolizerDriver|
+|インクルード・パス|Theolizerルート・フォルダ/include|
+|ライブラリ・パス|Theolizerルート・フォルダ/lib|
+|ライブラリ・ファイル|「@ref Selecting 」で選択したライブラリ。<br>ファイル名は「@ref FileStructure 」参照。|
+|マクロ定義|THEOLIZER_DO_PROCESS|
+|マクロ定義(Visual C++の場合)|`theolizer_original_compiler=<元コンパイラのパス>`|
+|オプション指定(その他の場合)|`--theolizer_original_compiler=<元コンパイラのパス>`|
+|Sharedの場合は追加マクロ定義|THEOLIZER_DYN_LINK|
 
 <br>
 //############################################################################
@@ -143,6 +158,7 @@ TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソ�
 
 |相対パス|ファイル種別|ファイル名|
 |-------|----------|--------|
+|ルート|cmakeのfind_package用<br>Theolizerのライセンス(GPLv3)|THEOLIZERConfig.cmake,theolizer.props.in<br>LICENSE.TXT|
 |bin|Theolizerドライパ|TheolizerDriver.exe|
 |include/theolizer|ヘッダ・ファイル群|`*.h`, `*.inc`|
 |lib|StaticWithBoost(Release)ライブラリ|TheolizerLibStaticWithBoost.lib|
@@ -151,7 +167,7 @@ TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソ�
 ||StaticWithBoost(Debug)ライブラリ|TheolizerLibStaticWithBoostd.lib|
 ||Static(Debug)ライブラリ|TheolizerLibStaticd.lib|
 ||Shared(Debug)ライブラリ|TheolizerLibSharedd.dll|
-|ルート|Theolizerのライセンス(GPLv3)|LICENSE.TXT|
+|msbuild-bin|Theolizerドライパをリネームしたファイル|cl.exe|
 |other_licenses|Theolizerにリンクしている他プロジェクトのライセンス|LICENSE-*.txt|
 
 注）インクルード・パスは、include/theolizerではなく、includeを指定して下さい。
@@ -160,10 +176,6 @@ TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソ�
 
 |相対パス|ファイル種別|ファイル名|
 |-------|----------|--------|
-|ルート/tools|CMake補助|THEOLIZERConfig.cmake|
-||ドライバ・インストール|replace.bat|
-||ドライバ・アンインストール|restore.bat|
-|bin|ドライバ・インストール補助|internal.bat|
 |doc/ja|詳細ドキュメント|index.html, html/\*.\*|
 |lib|StaticWithBoost(Release)テスト用ライブラリ|TheolizerTestStaticWithBoost.lib|
 ||Static(Release)テスト用ライブラリ|TheolizerTestStatic.lib|
@@ -179,6 +191,7 @@ TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソ�
 
 |相対パス|ファイル種別|ファイル名|
 |-------|----------|--------|
+|ルート|cmakeのfind_package用<br>Theolizerのライセンス(GPLv3)|THEOLIZERConfig.cmake<br>LICENSE.TXT|
 |bin|Theolizerドライパ|TheolizerDriver.exe|
 |include/theolizer|ヘッダ・ファイル群|`*.h`, `*.inc`|
 |lib/Relase|StaticWithBoost(Release)ライブラリ|libTheolizerLibStaticWithBoost.a|
@@ -187,7 +200,6 @@ TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソ�
 |lib/Debug|StaticWithBoost(Debug)ライブラリ|libTheolizerLibStaticWithBoost.a|
 ||Static(Debug)ライブラリ|libTheolizerLibStatic.a|
 ||Shared(Debug)ライブラリ|libTheolizerLibShared.so|
-|ルート|Theolizerのライセンス(GPLv3)|LICENSE.TXT|
 |other_licenses|Theolizerにリンクしている他プロジェクトのライセンス|LICENSE-*.txt|
 
 注）インクルード・パスは、include/theolizerではなく、includeを指定して下さい。
@@ -196,7 +208,6 @@ TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソ�
 
 |相対パス|ファイル種別|ファイル名|
 |-------|----------|--------|
-|ルート/tools|CMake補助|THEOLIZERConfig.cmake|
 |doc/ja|詳細ドキュメント|index.html, html/\*.\*|
 |lib/Relase|StaticWithBoost(Release)テスト用ライブラリ|libTheolizerTestStaticWithBoost.a|
 ||Static(Release)テスト用ライブラリ|libTheolizerTestStatic.a|
@@ -205,5 +216,7 @@ TheolizerのGitHubリポジトリのトップ・ページにあるexampleのソ�
 ||Static(Debug)テスト用ライブラリ|libTheolizerTestStatic.a|
 ||Shared(Debug)テスト用ライブラリ|libTheolizerTestShared.so|
 |samples|サンプル・プログラム|CMakeLists.txt, *.cpp, *.h|
+
+注）テスト用ライブラリは、Theolizerの自動テストで使用しているライブラリです。
 
 */

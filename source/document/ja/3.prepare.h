@@ -43,50 +43,11 @@
 //############################################################################
 
 ---
-
-下記2つの手順で行います。
-
-1. Theolizerの用意
-2. ドライバのリプレース
-
-// ***************************************************************************
-@subsection PrepareTheolizer 1-1.Theolizerの用意
-// ***************************************************************************
 プリビルド版の場合は、GitHubの[relases](https://github.com/yossi-tahara/Theolizer/releases)からダウンロードしてお好きなフォルダへ解凍して下さい。
 
 ソース版の場合は、GitHubからソースをダウンロード、もしくは、ローカルへclone後、@ref HowToBuildLibrary の手順に従ってビルドとインストールを行って下さい。指定のフォルダへTheolizerがインストールされます。
 
 Theolizerを解凍、もしくは、インストールしたフォルダを以下<b>Theolizerルート・フォルダ</b>と呼びます。）
-
-// ***************************************************************************
-@subsection ReplaceDriver 1-2.ドライバのリプレース
-// ***************************************************************************
-
-<b>Theolizerルート・フォルダ</b>/binにてコマンド・プロンプト(Windows) かターミナル（linux）を起動し、下記を実行します。
-
-    TheolizerDriver "--theolizer-replace=コンパイラのパス"
-
-ターゲットのコンパイラが、<b>コンパイラ名RenamedByTheolizer</b>へリネームされ、TheolizerDriverが<b>コンパイラ名</b>へコピーされます。<br>
-コンパイラを置き換えますが、これによる悪影響はない筈です。@ref Mechanism の「ドライバ動作の補足」をご参照下さい。<br>
-（もし、悪影響か見つかった場合は、お手数ですがその再現手順を含めて当リボジトリのIssuesへご報告頂けますようお願い致します。）
-
-例えば、<b>`C:\mingw-w64\x86_64-5.4.0-posix-seh-rt_v5-rev0\mingw64\bin`</b>にMinGW 5.4.0がインストールされている場合、下記コマンドでにてコンパイラをリプレースします。
-
-    TheolizerDriver.exe "--theolizer-replace=C:\mingw-w64\x86_64-5.4.0-posix-seh-rt_v5-rev0\mingw64\bin\g++.exe"
-
-例えば、ubuntu 16.04 LTSの場合、次のコマンドでコンパイラをリプレースします。
-
-    sudo ./TheolizerDriver "--theolizer-restore=/usr/bin/g++"
-
-<br>
-<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
-Visual Strudio C++については、<b>Theolizerルート・フォルダ</b>にreplace.batを用意しています。これを起動することで上記のリプレース操作を行います。
-</div>
-
-<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
-linuxにてコンパイラのパスとしてシンボリック・リンクを指定した場合、シンボリック・リンクを追跡してコンパイラ実体のファイルを置き換えます。
-</div>
-
 
 <br>
 //############################################################################
@@ -95,29 +56,29 @@ linuxにてコンパイラのパスとしてシンボリック・リンクを指
 
 ---
 
-下記2つの手順で行います。
-
-1. ドライバのリストア
-2. Theolizerの削除
-
-// ***************************************************************************
-@subsection RestoreDriver 2-1.ドライバのリストア
-// ***************************************************************************
-
-リプレース時のreplaceをrestoreへ置き換えて操作して下さい。
-
-    TheolizerDriver "--theolizer-restore=コンパイラのパス"
-
-コンパイラのファイル名にてコピーされていた<b>TheolizerDriver</b>が削除され、<b>コンパイラ名RenamedByTheolizer</b>が元の<b>コンパイラ名</b>へリネームされます。また、もし、指定したコンパイラがTheolizerDriverでなかった場合は何もしません。
+<b>Theolizerルート・フォルダ</b>をフォルダごと、削除して下さい。
 
 <br>
-<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
- Visual Strudio C++については、<b>Theolizerルート・フォルダ</b>にrestore.batを用意しています。これを起動することで上記のリストア操作を行います。
-</div>
+//############################################################################
+@section UpdatedTeolizer 3.Theolizer v1.1.0からのアップデートについて
+//############################################################################
 
-// ***************************************************************************
-@subsection DeleteTheolizer 2-2.Theolizerの削除
-// ***************************************************************************
-ドライバのリストア確認後、<b>Theolizerルート・フォルダ</b>をフォルダごと、削除して下さい。
+---
+
+Theolizer v1.1.0まではTheolizerドライバのリプレースが必要でしたが、v1.1.1以降リプレース不要となりました。その結果、コンパイラがリプレースされたままの場合、正常に動作しない可能性があります。<br>
+Theolizer v1.1.0以前のものを使っていた方は<b>必ずリストアして下さい。</b>
+
+@subsection RestoreTheolizer 3-1.リストア方法
+
+旧Theolizerを削除する前に下記の手順を実行して下さい。
+
+### Visual Studioの場合
+旧Theolizerルート・フォルダのrestore.batをexplorerから起動して下さい。
+
+### その他（gcc/mingw)の場合
+コマンド・プロンプト、もしくは、ターミナルで下記コマンドを実行して下さい。
+
+    $ cd <旧Theolizerルート・フォルダ>/bin
+    $ TheolizerDriver "--theolizer-restore=コンパイラのパス"
 
 */
