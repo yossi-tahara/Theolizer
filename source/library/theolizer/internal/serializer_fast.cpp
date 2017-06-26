@@ -64,7 +64,7 @@ namespace internal
 namespace
 {
     GlobalVersionNoTableBase const*const sGlobalVersionNoTable=
-        GlobalVersionNoTable<1>::getInstance();;
+        GlobalVersionNoTable<1>::getInstance();
 }   // namespace
 
 //############################################################################

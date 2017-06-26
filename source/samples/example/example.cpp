@@ -11,7 +11,7 @@ struct Foo
 
 #include "example.cpp.theolizer.hpp"            // Theolizer自動生成先
 
-int main(int argc, char* argv[])
+int main()
 {
     // 保存
     {

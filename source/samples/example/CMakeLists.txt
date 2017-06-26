@@ -30,12 +30,11 @@ set(CMAKE_SUPPRESS_REGENERATION TRUE)
 find_package(THEOLIZER)
 
 # Options
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+if (MSVC)
     add_definitions(-D_UNICODE -DUNICODE)
-    set(CMAKE_DEBUG_POSTFIX "d")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /bigobj")
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
 
     # MinGWの不具合(https://sourceforge.net/p/mingw-w64/discussion/723797/thread/c6b70624/#7f0a)暫定対処
     if((CMAKE_COMPILER_IS_MINGW) AND (CMAKE_SIZEOF_VOID_P EQUAL 8))
@@ -48,11 +47,8 @@ add_executable(${TARGET_NAME} ${SOURCE_LIST})
 setup_theolizer(${TARGET_NAME} StaticWithBoost)
 
 #-----------------------------------------------------------------------------
-#       テスト実行
+#       テスト登録
 #-----------------------------------------------------------------------------
 
 enable_testing()
-add_test(NAME ${TARGET_NAME} COMMAND $<TARGET_FILE:${TARGET_NAME}>)
-
-add_custom_target(BuildTest COMMAND "ctest" "-V" "-C" $<CONFIG>)
-add_dependencies(BuildTest ${TARGET_NAME})
+add_test(NAME example COMMAND $<TARGET_FILE:example>)

@@ -1353,7 +1353,7 @@ void RegisterPointeeUnderlying
         uIsDerived,
         uIsManual
     >::getInstance().setPointee();
-};
+}
 
 //----------------------------------------------------------------------------
 //      配列の場合、基本型を登録する関数本体
@@ -1432,7 +1432,7 @@ void RegisterPointeeUnderlying
         uIsDerived,
         uIsManual
     >::registerType();
-};
+}
 
 // ***************************************************************************
 //      Switcher2(管理する型毎に特殊化する)

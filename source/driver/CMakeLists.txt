@@ -98,7 +98,7 @@ add_dependencies(LongTest  TheolizerDriver)
 
 target_link_libraries(TheolizerDriver ${Boost_LIBRARIES})
 
-if (NOT IS_MSVC)
+if (NOT MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-comment")
 endif()
@@ -147,7 +147,7 @@ message(STATUS "CMAKE_CXX_FLAGS_RELEASE = ${CMAKE_CXX_FLAGS_RELEASE}")
 
 install(TARGETS TheolizerDriver CONFIGURATIONS Release DESTINATION ${BIN_DIR})
 
-if (IS_MSVC)
+if (MSVC)
     install(FILES $<TARGET_FILE:TheolizerDriver>
             CONFIGURATIONS Release
             DESTINATION msbuild-bin

@@ -129,7 +129,7 @@ message(STATUS "DEBUG_LIBS  =${DEBUG_LIBS}")
 
 # extract *.o files from libboost*.a and make list(OBJECT_FILES) for add_library
 set(OBJECT_FILES "")
-if (NOT ${IS_MSVC} AND ${STATIC_WITH_BOOST})
+if ((NOT MSVC) AND ${STATIC_WITH_BOOST})
     if ((${CMAKE_BUILD_TYPE} STREQUAL Release) OR (${CMAKE_BUILD_TYPE} STREQUAL MinSizeRel))
         set(LINK_LIB_LIST ${RELEASE_LIBS})
     else()
@@ -156,7 +156,7 @@ endif()
 if(${BUILD_SHARED_LIBS})
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTHEOLIZER_DYN_LINK")
 
-    if (NOT ${IS_MSVC})
+    if (NOT MSVC)
         if(WIN32)
         else()
             set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden")
@@ -175,7 +175,7 @@ add_dependencies(${TheolizerLib} checkBuildSystem)
 version_at_build(${TheolizerLib} "/theolizer/internal" "${VERSION_SOURCE}")
 
 # boostをTheolizerLibにパッケージする場合(MSVC)
-if (${IS_MSVC} AND ${STATIC_WITH_BOOST})
+if (MSVC AND ${STATIC_WITH_BOOST})
     # This is a measure to fix the trouble.
     #    POST_BUILD run always when cmake "--build ."
     set_target_properties(${TheolizerLib} PROPERTIES OUTPUT_NAME ${TheolizerLib}Tmp)
@@ -200,7 +200,7 @@ else()
     install(TARGETS ${TheolizerLib} DESTINATION ${LIB_DIR})
 endif()
 
-if (${IS_MSVC})
+if (MSVC)
     file(GLOB_RECURSE PDBS ${CMAKE_CURRENT_BINARY_DIR}/*.dir/Debug/*.pdb)
     message(STATUS "PDBS=${PDBS}")
     install(FILES ${PDBS} DESTINATION ${LIB_DIR})
@@ -213,7 +213,7 @@ add_dependencies(${TheolizerTest} checkBuildSystem)
 target_link_libraries(${TheolizerTest} ${TheolizerLib})
 
 # for boost test
-if (${IS_MSVC})
+if (MSVC)
     set_target_properties(${TheolizerTest} PROPERTIES COMPILE_FLAGS "/EHa")
 endif()
 

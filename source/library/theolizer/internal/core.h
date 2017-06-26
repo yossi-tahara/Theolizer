@@ -722,7 +722,7 @@ public:
 
 #define THEOLIZER_INTERNAL_REGISTER_ELEMENT(dName,dNextName,dTrack,dDest,dType,dVerNo,dVer)\
     {                                                                       \
-        /*要素名*/          THEOLIZER_INTERNAL_STRINGIZE(THEOLIZER_INTERNAL_FIRST dName),\
+        /*要素名*/          THEOLIZER_INTERNAL_STRINGIZE(THEOLIZER_INTERNAL_UNPAREN dName),\
         /*Is基底クラス*/    false,                                          \
         /*保存先*/          {THEOLIZER_INTERNAL_UNPAREN dDest},             \
         /*TypeIndex関数*/                                                   \
@@ -735,13 +735,13 @@ public:
         [](tBaseSerializer& iSerializer, TheolizerVersion& iInstance)       \
         {                                                                   \
             THEOLIZER_INTERNAL_SAVE(iSerializer,                            \
-                iInstance.THEOLIZER_INTERNAL_FIRST dName, dTrack);          \
+                iInstance.THEOLIZER_INTERNAL_UNPAREN dName, dTrack);        \
         },                                                                  \
         /*回復関数*/                                                        \
         [](tBaseSerializer& iSerializer, TheolizerVersion& iInstance)       \
         {                                                                   \
             THEOLIZER_INTERNAL_LOAD(iSerializer,                            \
-                iInstance.THEOLIZER_INTERNAL_FIRST dName, dTrack);          \
+                iInstance.THEOLIZER_INTERNAL_UNPAREN dName, dTrack);        \
         },                                                                  \
         /*(次バージョンの要素名)*/                                          \
         #dNextName,                                                         \

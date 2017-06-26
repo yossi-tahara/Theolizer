@@ -99,7 +99,7 @@ struct Foo
 
 #include "example.cpp.theolizer.hpp"            // Theolizer自動生成先
 
-int main(int argc, char* argv[])
+int main()
 {
     // 保存
     {
@@ -142,17 +142,22 @@ int main(int argc, char* argv[])
 
 ### example.cppをビルドする手順
 
-1. [Theolzierのダウンロード](http://doc.theolizer.com/html/_prepare.html#PrepareTheolizer)
-2. [Theolizerドライバの準備](http://doc.theolizer.com/html/_prepare.html#ReplaceDriver)
-3. [ビルド環境の自動生成(by CMake)とビルド](http://doc.theolizer.com/html/_how_to_make_project.html#Example)
+1. [Theolzierのダウンロードとインストール](http://doc.theolizer.com/html/_prepare.html)
+2. [ビルド環境の自動生成(by CMake)とビルド](http://doc.theolizer.com/html/_how_to_make_project.html#Example)
 
-### リフレクションがあればよいのに
-C#のように[リフレクション](https://goo.gl/XCRSND)を提供する言語なら可能ですか、C++はそのような機能を提供しておらず、我々のC++プログラムがクラスのメンバ変数のリストを得ることができません。（C++コンパイラは持っている情報ですので扱えそうな気もして、かなり深く調べましたが残念ながらできません。）<br>
+### CMakeプロジェクトを作ってTheolizerを組み込む方法
 
-それを clangのlibToolingの力を借りてできるようにしました。これにより、C++コンパイラが持っているクラスのメンバ変数リストとenum型のシンボル名を取り出して、自動シリアライズを実現しました。
+公式サイトの[技術ブログ](https://theolizer.com/theolizer/cmake_and_cmakelists/)で解説しています。<br>
+CMakeの基礎から解説していますので、CMakeの使い方を学びたい方も是非ご覧になって下さい。
 
 ---
 <h1 id="Features">２．Theolizerの特長</h1>
+
+C#のように[リフレクション](https://goo.gl/XCRSND)を提供する言語なら可能ですか、C++はそのような機能を提供しておらず、我々のC++プログラムがクラスのメンバ変数のリストを得ることができません。（C++コンパイラは持っている情報ですので扱えそうな気もして、かなり深く調べましたが残念ながらできません。）<br>
+
+それを clangのlibToolingの力を借りてできるようにしました。これにより、C++コンパイラが持っているクラスのメンバ変数リストとenum型のシンボル名を取り出して、自動シリアライズを実現しました。<br>
+
+そのTheolizerは、次のような特長を持っています。
 
 ## 2-1.自動シリアライズ
 Theolizerは[Clang/LLVM](http://llvm.org/)に含まれるlibTooling[libTooling](http://qiita.com/Chironian/items/6021d35bf2750341d80c)の構文解析機能を用いてクラスやenum型の定義を解析し、メンバのリストを自動生成します。これにより、クラスやenum型を変更した時もメンバ・リストへの反映漏れが無く、プログラム開発が捗ります。

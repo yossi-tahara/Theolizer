@@ -47,7 +47,7 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION ERROR_CHECK TEST_F
     endif()
 
     # ビルド・パラメータ生成
-    if (${IS_MSVC})
+    if (MSVC)
         # コンパイル・フラグ設定
         set(PARAMETERS ${CMAKE_CXX_FLAGS})
         string(REPLACE " " ";" PARAMETERS "${PARAMETERS}")
@@ -162,7 +162,7 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION ERROR_CHECK TEST_F
     message(STATUS "COMMON_LIST=${COMMON_LIST}")
 
     # ビルド準備とビルド実行(custom_target)
-    if (${IS_MSVC})
+    if (MSVC)
         set(PARAMETERS ${PARAMETERS} "/DTHEOLIZER_DO_PROCESS")
         set(PARAMETERS ${PARAMETERS} "/Dtheolizer_original_compiler=\"${CMAKE_CXX_COMPILER}\"")
     else()
@@ -414,7 +414,7 @@ add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "" ${TEST_LAB
 
 #       ---<<< ver3bERROR1 >>>---
 
-if (${IS_MSVC})
+if (MSVC)
     set(ERROR_MESSAGE " C2679")
     set(ERROR_NUMBER 8)
 else()
@@ -429,7 +429,7 @@ add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "ERROR1" ${TE
 
 #       ---<<< ver3bERROR2 >>>---
 
-if (${IS_MSVC})
+if (MSVC)
     set(ERROR_MESSAGE " C2679")
     set(ERROR_NUMBER 8)
 else()

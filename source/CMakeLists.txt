@@ -39,7 +39,7 @@ message(STATUS "CI_SERVICE    =${CI_SERVICE}")
 #       Project version
 #-----------------------------------------------------------------------------
 
-project(Theolizer VERSION 1.1.1)
+project(Theolizer VERSION 1.1.2)
 #set(TEMPORARY_VERSION "-Prerelease.")
 
 message(STATUS "PROJECT_VERSION=${PROJECT_VERSION}${TEMPORARY_VERSION}")
@@ -101,11 +101,6 @@ message(STATUS "CpuCount=${CpuCount}")
 #       Get compiler informations
 #-----------------------------------------------------------------------------
 
-set(IS_MSVC OFF)
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
-    set(IS_MSVC ON)
-endif()
-
 message(STATUS "CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
 
 #-----------------------------------------------------------------------------
@@ -133,11 +128,11 @@ endif()
 #       default compile options
 #-----------------------------------------------------------------------------
 
-if (${IS_MSVC})
+if (MSVC)
     add_definitions(-D_UNICODE -DUNICODE)
     set(CMAKE_DEBUG_POSTFIX "d")
-    string(REPLACE "/W3 " "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /bigobj")
+    string(REPLACE "/W3 " "/W4 " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
 endif()
@@ -166,7 +161,7 @@ set(INCLUDE_DIR include)
 set(LIB_DIR lib)
 set(SAMPLES_DIR samples)
 
-if (NOT ${IS_MSVC})
+if (NOT MSVC)
     set(LIB_DIR "${LIB_DIR}/${CMAKE_BUILD_TYPE}")
 endif()
 message(STATUS "LIB_DIR=${LIB_DIR}")
@@ -365,7 +360,7 @@ function(add_test_function TARGET_NAME WILL_FAIL)
         target_link_libraries(${TARGET_NAME} ${Boost_LIBRARIES})
     endif()
 
-    if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+    if (MSVC)
         add_definitions(-D_UNICODE -DUNICODE)
         foreach(LINK_LIB IN LISTS LIBRARY_LIST)
             target_link_libraries(${TARGET_NAME} optimized ${LINK_LIB}.lib)
@@ -449,7 +444,7 @@ endif()
 
 #       ---<<< CMake Helper >>>---
 
-if (${IS_MSVC})
+if (MSVC)
     install(FILES tools/theolizer.props.in DESTINATION .)
 endif()
 

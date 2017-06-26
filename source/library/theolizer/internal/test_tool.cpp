@@ -155,7 +155,7 @@ PrepareDir::~PrepareDir()
         boost::system::error_code error;
         boostF::remove_all(mDirPath, error);
     }
-};
+}
 
 // ***************************************************************************
 //      ファイル／フォルダの有無チェック

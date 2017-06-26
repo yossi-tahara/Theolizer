@@ -59,7 +59,7 @@ if (NOT ${STATIC_WITH_BOOST})
     target_link_libraries(${TARGET_NAME} ${Boost_LIBRARIES})
 endif()
 
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
+if (MSVC)
     add_definitions(-D_UNICODE -DUNICODE)
     foreach(LINK_LIB IN LISTS LIBRARY_LIST)
         target_link_libraries(${TARGET_NAME} optimized ${LINK_LIB}.lib)

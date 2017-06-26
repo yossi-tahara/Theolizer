@@ -682,9 +682,9 @@ inline std::istream& operator>>(std::istream& iIStream, std::string& iString)
         return iOStream;                                                    \
     }
 
-THEOLIZER_INTERNAL_LEFT_SHIFT_OPERATOR(wchar_t);
-THEOLIZER_INTERNAL_LEFT_SHIFT_OPERATOR(char16_t);
-THEOLIZER_INTERNAL_LEFT_SHIFT_OPERATOR(char32_t);
+THEOLIZER_INTERNAL_LEFT_SHIFT_OPERATOR(wchar_t)
+THEOLIZER_INTERNAL_LEFT_SHIFT_OPERATOR(char16_t)
+THEOLIZER_INTERNAL_LEFT_SHIFT_OPERATOR(char32_t)
 #undef THEOLIZER_INTERNAL_LEFT_SHIFT_OPERATOR
 
 //----------------------------------------------------------------------------
@@ -705,9 +705,9 @@ THEOLIZER_INTERNAL_LEFT_SHIFT_OPERATOR(char32_t);
         return iIStream;                                                    \
     }
 
-THEOLIZER_INTERNAL_RIGHT_SHIFT_OPERATOR(wchar_t);
-THEOLIZER_INTERNAL_RIGHT_SHIFT_OPERATOR(char16_t);
-THEOLIZER_INTERNAL_RIGHT_SHIFT_OPERATOR(char32_t);
+THEOLIZER_INTERNAL_RIGHT_SHIFT_OPERATOR(wchar_t)
+THEOLIZER_INTERNAL_RIGHT_SHIFT_OPERATOR(char16_t)
+THEOLIZER_INTERNAL_RIGHT_SHIFT_OPERATOR(char32_t)
 #undef THEOLIZER_INTERNAL_RIGHT_SHIFT_OPERATOR
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
