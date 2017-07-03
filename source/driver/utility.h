@@ -303,11 +303,19 @@ private:
             llvmS::fs::file_status  result;
             if (!llvmS::fs::status(aLogPath, result))
             {
-                llvmS::TimeValue now = llvmS::TimeValue::now();
-                llvmS::TimeValue last = result.getLastModificationTime();
-                llvmS::TimeValue diff = now - last;
+                #if (LLVM_VERSION_MAJOR < 4)
+                    llvmS::TimeValue now  = llvmS::TimeValue::now();
+                    llvmS::TimeValue last = result.getLastModificationTime();
+                    llvmS::TimeValue diff = now - last;
+                    llvmS::TimeValue::SecondsType seconds=diff.seconds();
+                #else
+                    auto now  = std::chrono::system_clock::now();
+                    auto last = result.getLastModificationTime();
+                    auto diff = last-now;
+                    auto seconds=std::chrono::duration_cast<std::chrono::seconds>(diff).count();
+                #endif
 
-                if (diff.seconds() >= gAutoDeleteSec)
+                if (seconds >= gAutoDeleteSec)
                 {
                     llvmS::fs::remove(aLogPath);
                 }
