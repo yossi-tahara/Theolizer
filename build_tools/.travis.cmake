@@ -76,11 +76,11 @@ set(BOOST_PREFIX "$ENV{HOME}/install/boost")
 #   その他 : ${LLVM}/${COMPILER}x${BIT_NUM}-${CONFIG_TYPE}
 #   これ以外のフォルダを指定する時は、LLVMを""にしてLLVM_ROOTを設定する
 
-set(LLVM_ROOT "/usr/lib/llvm-3.9/")
+set(LLVM_ROOT "/usr/lib/llvm-4.0/")
 
 # LLVMのバージョン
 #   複数のLLVMがシステムにインストールされている時に指定する
-set(LLVM_VERSION 3.9.1)
+set(LLVM_VERSION 4.0.0)
 
 # 必須CMakeバージョン
 set(REQUIRE_CMAKE_VERSION 3.2.2)
@@ -93,7 +93,7 @@ set(CC64 "/usr/bin")
 #set(MAKE "/usr/bin/make")
 
 # make時の並列処理数を指定(msvc、jom使用時は指定不要)
-set(PARALLEL "-j8")
+set(PARALLEL "-j4")
 
 # 結果概要ファイル名
 set(SUMMARY linux-${PROC_ALL}.log)

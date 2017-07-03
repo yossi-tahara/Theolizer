@@ -38,11 +38,11 @@ cache:
 addons:
   apt:
     sources:
-    - llvm-toolchain-trusty-3.9
+    - llvm-toolchain-trusty-4.0
     - ubuntu-toolchain-r-test
     packages:
-    - libclang-3.9-dev
-    - llvm-3.9-dev
+    - libclang-4.0-dev
+    - llvm-4.0-dev
     - cmake
     - cmake-data
     - g++-5
