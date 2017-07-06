@@ -35,11 +35,11 @@
 //############################################################################
 
 #include "avoid-trouble.h"
+#include "internal.h"
 
 #include <limits>
 #include <sstream>
 
-#include "internal.h"
 #include "../serializer_fast.h"
 
 //############################################################################

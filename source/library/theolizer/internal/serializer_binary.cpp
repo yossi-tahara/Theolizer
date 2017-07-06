@@ -43,10 +43,10 @@
 //############################################################################
 
 #include "avoid-trouble.h"
+#include "internal.h"
 
 #include <limits>
 
-#include "internal.h"
 #include "../serializer_binary.h"
 
 //############################################################################

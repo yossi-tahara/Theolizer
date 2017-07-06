@@ -43,13 +43,13 @@
 //############################################################################
 
 #include "avoid-trouble.h"
+#include "internal.h"
 
 #include <algorithm>
 #include <tuple>        // for tie
 #include <map>
 #include <set>
 
-#include "internal.h"
 #include "core.h"
 
 //############################################################################

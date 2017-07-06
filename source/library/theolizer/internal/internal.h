@@ -70,4 +70,19 @@ namespace theolizer
 
 #include "../report.h"
 
+// ***************************************************************************
+//      BOOST_NO_EXCEPTIONSを定義し、throw_exception()をinline定義する
+//          throw_exception()をユーザ側のそれと完全に切り離すため。
+// ***************************************************************************
+
+#define BOOST_NO_EXCEPTIONS
+#define BOOST_NO_EXCEPTION  // boost 1.59.0対応
+namespace boost
+{
+    static inline void throw_exception(std::exception const& e)
+    {
+        THEOLIZER_INTERNAL_ABORT(e.what());
+    }
+}
+
 #endif  // THEOLIZER_INTERNAL_INTERNAL_H

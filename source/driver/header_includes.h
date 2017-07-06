@@ -91,6 +91,7 @@ THEOLIZER_INTERNAL_DISABLE_WARNING()
 #include <llvm/Config/llvm-config.h>    // for LLVM_VERSION_*
 
 #define BOOST_ALL_NO_LIB
+#define BOOST_NO_EXCEPTIONS
 #include <boost/interprocess/sync/file_lock.hpp>
 #include <boost/interprocess/sync/sharable_lock.hpp>
 #include <boost/interprocess/sync/upgradable_lock.hpp>

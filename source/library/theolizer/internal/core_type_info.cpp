@@ -35,11 +35,11 @@
 //############################################################################
 
 #include "avoid-trouble.h"
+#include "internal.h"
 
 #include <cstring>
 #include <algorithm>
 
-#include "internal.h"
 #include "core.h"
 
 //############################################################################

@@ -66,7 +66,6 @@ namespace internal
     template<>                                                              \
     struct TheolizerNonIntrusive<dClass> : public dClass                    \
     {                                                                       \
-    private:                                                                \
         THEOLIZER_INTERNAL_SERIALIZABLE_AUTO(,                              \
             (TheolizerNonIntrusive<dClass>), (dClass), 1,                   \
             (), theolizer::internal::emName, true, true);                   \
@@ -80,7 +79,6 @@ namespace internal
     struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_UNPAREN dClass> :       \
         public THEOLIZER_INTERNAL_UNPAREN dClass                            \
     {                                                                       \
-    private:                                                                \
         THEOLIZER_ANNOTATE(                                                 \
             TS:THEOLIZER_INTERNAL_UNPAREN dList;THEOLIZER_INTERNAL_UNPAREN dClass)\
         THEOLIZER_INTERNAL_SERIALIZABLE_AUTO(,                              \
@@ -99,6 +97,15 @@ namespace internal
 //              侵入型は、  ターゲット・クラス
 //              非侵入型は  TheolizerNonIntrusive<ターゲット・クラス>
 //----------------------------------------------------------------------------
+
+#define THEOLIZER_INTERNAL_SERIALIZABLE()                                   \
+    static const bool kIsTheolizer=true;                                    \
+    template<class>         friend struct theolizer::internal::IsTheolizerNonKeepStep;\
+    template<class, class>  friend struct theolizer::internal::IsTheolizerNonKeepStepImpl;\
+    template<class, typename, bool, theolizer::internal::TrackingMode, class>\
+        friend struct theolizer::internal::Switcher;                        \
+    template<typename, bool> friend struct theolizer::internal::RegisterToBaseClassEntrance;\
+    template<class> friend class theolizer::internal::ClassTypeInfo
 
 #define THEOLIZER_INTERNAL_SERIALIZABLE_AUTO(dAttribute, dClass, dTarget, dLastVersionNo,\
                                                 dDefineUnique, dMap, dIsNonIntrusive, dIsFullAuto)\
@@ -139,7 +146,10 @@ namespace internal
     };                                                                      \
     template<class tBaseSerializer, unsigned tVersionNo>                    \
     struct TheolizerSpecials { };                                           \
-    THEOLIZER_INTERNAL_SERIALIZABLE(theolizer::internal::emOrder)
+    THEOLIZER_INTERNAL_SERIALIZABLE();                                      \
+public:                                                                     \
+    template<class tBaseSerializer, unsigned tVersionNo>                    \
+    struct TheolizerVersion { }
 
 #define THEOLIZER_INTERNAL_SERIALIZABLE_MANUAL(dClass, dLastVersionNo,      \
                                                   dDefineUnique, dMap, dIsNonIntrusive)\
@@ -187,18 +197,7 @@ namespace internal
                           "loadClassManual() is undefined");                \
         }                                                                   \
     };                                                                      \
-    THEOLIZER_INTERNAL_SERIALIZABLE(theolizer::internal::emOrder)
-
-#define THEOLIZER_INTERNAL_SERIALIZABLE(dMap)                               \
-    static const bool kIsTheolizer=true;                                    \
-    template<class>         friend struct theolizer::internal::IsNonIntrusive;\
-    template<class, class>  friend struct theolizer::internal::IsNonIntrusiveImpl;\
-    template<class>         friend struct theolizer::internal::IsTheolizerNonKeepStep;\
-    template<class, class>  friend struct theolizer::internal::IsTheolizerNonKeepStepImpl;\
-    template<class, typename, bool, theolizer::internal::TrackingMode, class>\
-        friend struct theolizer::internal::Switcher;                        \
-    template<typename, bool> friend struct theolizer::internal::RegisterToBaseClassEntrance;\
-    template<class> friend class theolizer::internal::ClassTypeInfo;        \
+    THEOLIZER_INTERNAL_SERIALIZABLE();                                      \
 public:                                                                     \
     template<class tBaseSerializer, unsigned tVersionNo>                    \
     struct TheolizerVersion { }
@@ -246,15 +245,7 @@ public:                                                                     \
             (tBaseSerializer&, typename tTheolizerVersion::TheolizerClass*&)\
         { }                                                                 \
     };                                                                      \
-    static const bool kIsTheolizer=true;                                    \
-    template<class>         friend struct theolizer::internal::IsNonIntrusive;\
-    template<class, class>  friend struct theolizer::internal::IsNonIntrusiveImpl;\
-    template<class>         friend struct theolizer::internal::IsTheolizerNonKeepStep;\
-    template<class, class>  friend struct theolizer::internal::IsTheolizerNonKeepStepImpl;\
-    template<class, typename, bool, theolizer::internal::TrackingMode, class>\
-        friend struct theolizer::internal::Switcher;                        \
-    template<typename, bool> friend struct theolizer::internal::RegisterToBaseClassEntrance;\
-    template<class> friend class theolizer::internal::ClassTypeInfo
+    THEOLIZER_INTERNAL_SERIALIZABLE()
 
 // ***************************************************************************
 //      enum型のシリアライズ指定

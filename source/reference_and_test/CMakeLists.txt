@@ -446,6 +446,11 @@ add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "ERROR2" ${TE
 
 set(ERROR_MESSAGE "Please check deleted class or enum.")
 set(ERROR_NUMBER 1)
+if (MSVC)
+    if (MSVC_VERSION GREATER_EQUAL 1910)
+        set(ERROR_NUMBER 2)
+    endif()
+endif()
 
 message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"ERROR2\" \"${TEST_LABEL}\")")

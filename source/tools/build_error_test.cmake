@@ -34,14 +34,27 @@ message(STATUS "CONFIG=${CONFIG}")
 message(STATUS "TARGET_NAME=${TARGET_NAME}")
 message(STATUS "ERROR_NUMBER=${ERROR_NUMBER}")
 
-execute_process(
-    COMMAND ${CMAKE_COMMAND}
-        --build "${BINARY_DIR}"
-        --config ${CONFIG}
-        --target ${TARGET_NAME}
-    OUTPUT_VARIABLE OUTPUT_STRING
-    ERROR_VARIABLE  OUTPUT_STRING
-)
+if ("${CMAKE_VERSION}" VERSION_LESS "3.8.0")
+    execute_process(
+        COMMAND ${CMAKE_COMMAND}
+            --build "${BINARY_DIR}"
+            --config ${CONFIG}
+            --target ${TARGET_NAME}
+        OUTPUT_VARIABLE OUTPUT_STRING
+        ERROR_VARIABLE  OUTPUT_STRING
+    )
+else()
+    execute_process(
+        COMMAND ${CMAKE_COMMAND}
+            --build "${BINARY_DIR}"
+            --config ${CONFIG}
+            --target ${TARGET_NAME}
+        OUTPUT_VARIABLE OUTPUT_STRING
+        ERROR_VARIABLE  OUTPUT_STRING
+        ENCODING AUTO
+    )
+endif()
+
 string(REGEX MATCHALL "${ERROR_MESSAGE}" RESULT "${OUTPUT_STRING}")
 list(LENGTH RESULT NUMBER)
 message(STATUS "NUMBER=${NUMBER}")

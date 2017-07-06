@@ -55,10 +55,11 @@ namespace theolizer
 
 //############################################################################
 //      メモリリーク検出用(MSVCのみ有効)
+//          boost 1.64.0を使う時、これが原因でエラーになるので止める。
 //############################################################################
 
 #if defined(_MSC_VER) && defined(_DEBUG)
-    #define new new(_NORMAL_BLOCK, THEOLIZER_INTERNAL_FILE, __LINE__)
+//  #define new new(_NORMAL_BLOCK, THEOLIZER_INTERNAL_FILE, __LINE__)
 #endif
 
 //############################################################################

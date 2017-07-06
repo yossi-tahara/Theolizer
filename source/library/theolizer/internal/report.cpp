@@ -35,6 +35,7 @@
 //############################################################################
 
 #include "avoid-trouble.h"
+#include "internal.h"
 
 #include <ctime>
 
@@ -58,8 +59,6 @@ THEOLIZER_INTERNAL_DISABLE_WARNING()
 #include <boost/format.hpp>
 #include <boost/filesystem.hpp>
 namespace boostF = boost::filesystem;
-
-#include "internal.h"
 
 //############################################################################
 //      Begin

@@ -210,10 +210,19 @@ endif()
     endif()
 
     # ツールセット生成
-    if("${COMPILER}" STREQUAL "msvc2015")
+    if("${COMPILER}" STREQUAL "msvc2017")
+        set(TOOLSET "msvc-14.1")
+        execute_process(
+            COMMAND vswhere.exe -version 15.0 -property installationPath
+            OUTPUT_VARIABLE MSVC_PATH)
+        string(REPLACE "\n" "" MSVC_PATH "${MSVC_PATH}")
+        set(MSVC_PATH "${MSVC_PATH}/VC/Tools/MSVC/14.10.25017/bin/HostX86/x86")
+        string(REPLACE "\\" "/" MSVC_PATH "${MSVC_PATH}")
+        set(CC_PATH "")
+    elseif("${COMPILER}" STREQUAL "msvc2015")
         set(TOOLSET "msvc-14.0")
         set(MSVC_PATH "$ENV{VSSDK140Install}../VC/bin")
-        STRING(REPLACE "\\" "/" MSVC_PATH "${MSVC_PATH}")
+        string(REPLACE "\\" "/" MSVC_PATH "${MSVC_PATH}")
         set(CC_PATH "")
     elseif("${COMPILER}" MATCHES "mingw")
         set(TOOLSET "gcc")

@@ -35,6 +35,7 @@
 //############################################################################
 
 #include "avoid-trouble.h"
+#include "internal.h"
 
 #include <cstdio>
 
@@ -50,7 +51,6 @@
 THEOLIZER_INTERNAL_DISABLE_WARNING()
 #include <boost/locale.hpp>
 
-#include "internal.h"
 #include "../u8string.h"
 
 //############################################################################

@@ -51,7 +51,6 @@ set(LLVM_VERSION            "@LLVM_VERSION@")
 set(REQUIRE_CMAKE_VERSION   "@REQUIRE_CMAKE_VERSION@")
 set(MAKE                    "@MAKE@")
 set(PARALLEL                "@PARALLEL@")
-set(MSVC_PATH               "@MSVC_PATH@")
 set(CC_PATH                 "@CC_PATH@")
 set(ORIGINAL_DIR            "@CMAKE_SOURCE_DIR@")
 
@@ -75,7 +74,6 @@ if(FALSE)
     message(STATUS "REQUIRE_CMAKE_VERSION   =${REQUIRE_CMAKE_VERSION}")
     message(STATUS "MAKE                    =${MAKE}")
     message(STATUS "PARALLEL                =${PARALLEL}")
-    message(STATUS "MSVC_PATH               =${MSVC_PATH}")
     message(STATUS "CC_PATH                 =${CC_PATH}")
     message(STATUS "ORIGINAL_DIR            =${ORIGINAL_DIR}")
 
@@ -115,7 +113,6 @@ function(parameter_log LOG_FILE)
     file(APPEND ${LOG_FILE} "REQUIRE_CMAKE_VERSION  =${REQUIRE_CMAKE_VERSION}")
     file(APPEND ${LOG_FILE} "MAKE                   =${MAKE}\n")
     file(APPEND ${LOG_FILE} "PARALLEL               =${PARALLEL}\n")
-    file(APPEND ${LOG_FILE} "MSVC_PATH              =${MSVC_PATH}\n")
     file(APPEND ${LOG_FILE} "CC_PATH                =${CC_PATH}\n")
     file(APPEND ${LOG_FILE} "ORIGINAL_DIR           =${ORIGINAL_DIR}\n")
 
@@ -492,10 +489,6 @@ endfunction()
 #-----------------------------------------------------------------------------
 #       実行
 #-----------------------------------------------------------------------------
-
-if (NOT "${MSVC_PATH}" STREQUAL "")
-    set(ENV{PATH} "${MSVC_PATH};$ENV{PATH}")
-endif()
 
 if (NOT "${CC_PATH}" STREQUAL "")
     set(ENV{PATH} "${CC_PATH};$ENV{PATH}")

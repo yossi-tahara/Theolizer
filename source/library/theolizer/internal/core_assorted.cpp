@@ -35,11 +35,11 @@
 //############################################################################
 
 #include "avoid-trouble.h"
+#include "internal.h"
 
 #include <algorithm>
 #include <limits>       // for numeric_limits
 
-#include "internal.h"
 #include "core.h"
 
 //############################################################################

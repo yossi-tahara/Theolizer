@@ -73,18 +73,23 @@ set(BOOST_PREFIX "C:/Boost")
 #   その他 : ${LLVM}/${COMPILER}x${BIT_NUM}-${CONFIG_TYPE}
 #   これ以外のフォルダを指定する時は、LLVMを""にしてLLVM_ROOTを設定する
 
-set(LLVM "C:/llvm390")
+set(LLVM "C:/llvm400")
 
 # LLVMのバージョン
 #   複数のLLVMがシステムにインストールされている時に指定する
-#set(LLVM_VERSION 3.9.0)
+#set(LLVM_VERSION 4.0.0)
+
+# LLVMをコンパイルしたコンパイラ
+#   プリビルド版使用時、もしくは、ターゲットと同じ時は""
+set(LLVM_MSVC msvc2015)
+#set(LLVM_CC mingw710)
 
 # 必須CMakeバージョン
-set(REQUIRE_CMAKE_VERSION 3.5.0)
+set(REQUIRE_CMAKE_VERSION 3.8.0)
 
 # MinGW/gccのbinフォルダのパス
-set(CC32 "C:/mingw-w64/i686-5.4.0-posix-dwarf-rt_v5-rev0/mingw32/bin")
-set(CC64 "C:/mingw-w64/x86_64-5.4.0-posix-seh-rt_v5-rev0/mingw64/bin")
+set(CC32 "C:/mingw-w64/i686-7.1.0-posix-dwarf-rt_v5-rev0/mingw32/bin")
+set(CC64 "C:/mingw-w64/x86_64-7.1.0-posix-seh-rt_v5-rev0/mingw64/bin")
 
 # MinGW/gcc用のMakeのパス名(未指定ならmakeを使用する)
 set(MAKE "mingw32-make.exe")
@@ -111,7 +116,7 @@ file(WRITE ${SUMMARY} "")
 #
 #       build_by_msvc(COMPILER BIT_NUM LIB_TYPE BUILD_DRIVER BUILD_DOCUMENT PASS_LIST)
 #       build_by_gcc( COMPILER BIT_NUM LIB_TYPE BUILD_DRIVER BUILD_DOCUMENT RELEASE_LIST DEBUG_LIST)
-#           COMPILER        msvc2015/mingw540/gcc540
+#           COMPILER        msvc2017/msvc2015/mingw710/mingw540/gcc540
 #           BIT_NUM         64/32
 #           LIB_TYPE        StaticWithBoost/Static/Shared
 #           BUILD_DRIVER    TRUE/FALSE
@@ -121,23 +126,21 @@ file(WRITE ${SUMMARY} "")
 #-----------------------------------------------------------------------------
 
 output_title("****** StaticWithBoost ******")
-build_by_msvc(msvc2015 64 StaticWithBoost TRUE TRUE "39 11 1 1")
-if(FALSE)
-build_by_msvc(msvc2015 32 StaticWithBoost TRUE TRUE "39 11 1 1")
-build_by_gcc( mingw540 64 StaticWithBoost TRUE TRUE "39 1" "11 1")
-build_by_gcc( mingw540 32 StaticWithBoost TRUE TRUE "39 1" "11 1")
+build_by_msvc(msvc2017 64 StaticWithBoost TRUE TRUE "39 11 1 1")
+build_by_msvc(msvc2017 32 StaticWithBoost TRUE TRUE "39 11 1 1")
+build_by_gcc( mingw710 64 StaticWithBoost TRUE TRUE "39 1" "11 1")
+build_by_gcc( mingw710 32 StaticWithBoost TRUE TRUE "39 1" "11 1")
 
 output_title("****** Static ******")
-build_by_msvc(msvc2015 64 Static FALSE FALSE "38 11 1 1")
-build_by_msvc(msvc2015 32 Static FALSE FALSE "38 11 1 1")
-build_by_gcc( mingw540 64 Static FALSE FALSE "38 1" "11 1")
-build_by_gcc( mingw540 32 Static FALSE FALSE "38 1" "11 1")
+build_by_msvc(msvc2017 64 Static FALSE FALSE "38 11 1 1")
+build_by_msvc(msvc2017 32 Static FALSE FALSE "38 11 1 1")
+build_by_gcc( mingw710 64 Static FALSE FALSE "38 1" "11 1")
+build_by_gcc( mingw710 32 Static FALSE FALSE "38 1" "11 1")
 
 output_title("****** Shared ******")
-build_by_msvc(msvc2015 64 Shared FALSE FALSE "38 11 1 1")
-build_by_msvc(msvc2015 32 Shared FALSE FALSE "38 11 1 1")
-build_by_gcc( mingw540 64 Shared FALSE FALSE "38 1" "11 1")
-build_by_gcc( mingw540 32 Shared FALSE FALSE "38 1" "11 1")
-endif()
+build_by_msvc(msvc2017 64 Shared FALSE FALSE "38 11 1 1")
+build_by_msvc(msvc2017 32 Shared FALSE FALSE "38 11 1 1")
+build_by_gcc( mingw710 64 Shared FALSE FALSE "38 1" "11 1")
+build_by_gcc( mingw710 32 Shared FALSE FALSE "38 1" "11 1")
 
 output_summary()

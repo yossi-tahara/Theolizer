@@ -184,7 +184,6 @@ namespace theolizer
     struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_UNPAREN dClass> :       \
                         public THEOLIZER_INTERNAL_UNPAREN dClass            \
     {                                                                       \
-    private:                                                                \
         THEOLIZER_INTERNAL_SERIALIZABLE_MANUAL(dClass, dLastVersionNo,      \
             (), theolizer::internal::emOrder, true);                        \
     }
@@ -198,7 +197,6 @@ namespace theolizer
     struct TheolizerNonIntrusive<THEOLIZER_INTERNAL_UNPAREN dClass> :       \
                                 public THEOLIZER_INTERNAL_UNPAREN dClass    \
     {                                                                       \
-    private:                                                                \
         THEOLIZER_ANNOTATE(                                                 \
             TS:THEOLIZER_INTERNAL_UNPAREN dList;THEOLIZER_INTERNAL_UNPAREN dClass)\
         THEOLIZER_INTERNAL_SERIALIZABLE_MANUAL(dClass, dLastVersionNo,      \
@@ -282,7 +280,6 @@ namespace theolizer
     struct TheolizerNonIntrusive<dName<THEOLIZER_INTERNAL_UNPAREN dParam> > :\
         public dName<THEOLIZER_INTERNAL_UNPAREN dParam>                     \
     {                                                                       \
-    private:                                                                \
         THEOLIZER_ANNOTATE(                                                 \
             TS:THEOLIZER_INTERNAL_UNPAREN dList;dName<THEOLIZER_INTERNAL_UNPAREN dParam>)\
         THEOLIZER_INTERNAL_TEMPLATE_PARAMETER((dName<THEOLIZER_INTERNAL_UNPAREN dParam>),\

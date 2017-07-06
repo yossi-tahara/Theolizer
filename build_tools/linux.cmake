@@ -78,6 +78,11 @@ set(LLVM_ROOT "/usr/lib/llvm-4.0")
 #   複数のLLVMがシステムにインストールされている時に指定する
 set(LLVM_VERSION 4.0.0)
 
+# LLVMをコンパイルしたコンパイラ
+#   プリビルド版使用時、もしくは、ターゲットと同じ時は""
+#set(LLVM_MSVC msvc2015)
+#set(LLVM_CC mingw710)
+
 # 必須CMakeバージョン
 set(REQUIRE_CMAKE_VERSION 3.5.0)
 

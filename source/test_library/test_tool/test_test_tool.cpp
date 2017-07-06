@@ -535,7 +535,7 @@ int main(int argc, char** argv)
     {
         ++aTestCounter;
         THEOLIZER_CHECK_EXCEPTION(
-            theolizer::PrepareDir AutoDelete("///", true); ,    // dStatements
+            theolizer::PrepareDir AutoDelete("/::", true); ,    // dStatements
             std::runtime_error&);                               // dException
     }
 

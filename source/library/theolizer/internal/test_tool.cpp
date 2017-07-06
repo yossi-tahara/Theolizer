@@ -43,6 +43,7 @@
 //############################################################################
 
 #include "avoid-trouble.h"
+#include "internal.h"
 
 #include <stdexcept>
 #include <regex>
@@ -50,7 +51,6 @@
 #include <mutex>
 
 #define BOOST_ALL_NO_LIB                // Auto-linkを禁止する
-#define BOOST_NO_EXCEPTIONS
 
 THEOLIZER_INTERNAL_DISABLE_WARNING()    // boostで出るauto_ptr警告を抑止する
 #include <boost/filesystem.hpp>
@@ -61,7 +61,6 @@ namespace boostF = boost::filesystem;
     #include <crtdbg.h>
 #endif
 
-#include "internal.h"
 #include "../test_tool.h"
 
 //############################################################################
@@ -391,17 +390,3 @@ bool printResult(char const* iTitle)
 //############################################################################
 
 } // namespace theolizer
-
-// ***************************************************************************
-//      BOOST_NO_EXCEPTIONSを定義するとthrow_exception()の定義が必要
-// ***************************************************************************
-
-#ifdef BOOST_NO_EXCEPTIONS
-namespace boost
-{
-    void throw_exception(std::exception const& e)
-    {
-        THEOLIZER_INTERNAL_ABORT(e.what());
-    }
-}
-#endif

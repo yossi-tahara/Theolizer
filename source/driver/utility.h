@@ -1721,7 +1721,7 @@ bool                    gRetryAST;
 
 //      ---<<< ソース・ファイルの排他制御 >>>---
 
-ExclusiveControl        gExclusiveControl(kTheolizerFileLock);
+std::unique_ptr<ExclusiveControl>   gExclusiveControl;
 
 //      ---<<< 固定文字列 >>>---
 

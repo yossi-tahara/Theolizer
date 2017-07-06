@@ -415,7 +415,7 @@ std::vector<std::string> getGppInfo(std::string const& iExePath, std::string& oT
     ExecuteMan  aExecuteMan(iExePath, aArgv);
     DRIVER_ASSERT(!aExecuteMan.GetError(),
                   "Execution %s error : %s\n", 
-                  llvmS::path::filename(iExePath).str(),
+                  llvmS::path::filename(iExePath).str().c_str(),
                   aExecuteMan.GetErrorMessage().c_str());
 
     // システム・インクルード開始位置
@@ -556,6 +556,8 @@ int callParse
 
 int main(int iArgc, const char **iArgv)
 {
+    gExclusiveControl.reset(new ExclusiveControl(kTheolizerFileLock));
+
     setupDebugLog();
 
     struct Auto
@@ -901,13 +903,13 @@ return 1;
                 int ret=0;
                 do
                 {
-                    boostI::sharable_lock<ExclusiveControl> lock(gExclusiveControl);
+                    boostI::sharable_lock<ExclusiveControl> lock(*gExclusiveControl);
                     gRetryAST=false;
 
                     // AST解析とソース修正
                     ret=callParse(aExePath, args, aTarget);
                 }
-                while(gExclusiveControl.getRedoRequest() || gRetryAST);
+                while(gExclusiveControl->getRedoRequest() || gRetryAST);
                 if (ret) aRet=ret;
 
                 if (IS_TIME_OUTPUT)
@@ -986,7 +988,7 @@ return aRet;
 
     int ret=0;
     {
-        boostI::sharable_lock<ExclusiveControl> lock(gExclusiveControl);
+        boostI::sharable_lock<ExclusiveControl> lock(*gExclusiveControl);
 
         ret = llvmS::ExecuteAndWait(aOriginalPath, aArgvForCall.data(), nullptr,
                                     nullptr, 0, 0, &error_essage,
@@ -1049,13 +1051,15 @@ char* GetCurrentDirName()
 // ***************************************************************************
 
 #ifdef _MSC_VER     // start of disabling MSVC warnings
-    #pragma warning(disable:4702 4913)
+    #pragma warning(disable:4702 4717 4718 4913)
 #endif
 
 #undef new          // 誰かがデバッグ・ビルド時に#defineしており、boostと干渉する
 
+#define BOOST_NO_EXCEPTION  // boost 1.59.0対応
+//  BOOST_NO_EXCEPTIONSではなくBOOST_NO_EXCEPTION(Sがない)でboot::throw_exceptionが定義される)
+
 #define BOOST_TEST_NO_MAIN
-#define BOOST_NO_EXCEPTIONS
 #include <boost/test/included/prg_exec_monitor.hpp>
 
 // ***************************************************************************

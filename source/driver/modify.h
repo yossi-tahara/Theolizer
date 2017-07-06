@@ -2468,7 +2468,7 @@ public:
         }
 
         // 修正開始してみる。他が修正していたら、再処理する
-        boostI::upgradable_lock<ExclusiveControl> lock_try(gExclusiveControl, boostI::try_to_lock);
+        boostI::upgradable_lock<ExclusiveControl> lock_try(*gExclusiveControl,boostI::try_to_lock);
         ASTANALYZE_OUTPUT("pre lock_try");
         if (!lock_try)
         {
@@ -2478,7 +2478,7 @@ public:
         ASTANALYZE_OUTPUT("post lock_try(2)");
 
         // 他のプロセスのファイル開放待ち
-        boostI::scoped_lock<ExclusiveControl> lock(gExclusiveControl);
+        boostI::scoped_lock<ExclusiveControl> lock(*gExclusiveControl);
 
         for (auto aFileId2 : mModifiedFiles)
         {
