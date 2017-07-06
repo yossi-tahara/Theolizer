@@ -275,7 +275,16 @@ function(download_extract FILE_NAME EXTRACT_NAME EXTRACT_PATH)
     else()
         set(EXT ".tar.bz2")
     endif()
-    file(DOWNLOAD ${URL}/${FILE_NAME}${EXT}/download ${ROOT}/${FILE_NAME}${EXT} SHOW_PROGRESS)
+    if(NOT EXISTS ${ROOT}/${FILE_NAME}${EXT})
+        if(WIN32)
+            file(DOWNLOAD ${URL}/${FILE_NAME}${EXT} ${ROOT}/${FILE_NAME}${EXT} SHOW_PROGRESS)
+        else()
+            execute_process(
+                COMMAND ${CMAKE_COMMAND} -E wget ${URL}/${FILE_NAME}${EXT}
+                WORKING_DIRECTORY "${EXTRACT_PATH}"
+            )
+        endif()
+    endif()
     # 解凍ログはファイルへ出力する
     message(STATUS "extracting...")
     execute_process(
