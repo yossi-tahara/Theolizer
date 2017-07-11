@@ -579,7 +579,7 @@ elseif("${PROC}" STREQUAL "full")
         math(EXPR INDEX "${INDEX} + 1")
 
         # 非Travis-CI時のみインストールする
-        if((${RETURN_CODE} EQUAL 0) AND ("${CI_SERVICE}" STREQUAL ""))
+        if(${RETURN_CODE} EQUAL 0)
             relay("  Installing  ...")
 
             # インストール先を一旦削除してからインストールする
@@ -594,19 +594,17 @@ elseif("${PROC}" STREQUAL "full")
         endif()
 
         if(${GENERATOR} MATCHES "Visual Studio")
-            if("${CI_SERVICE}" STREQUAL "")
-                # デバッグ・ビルド時のTheolizerドライバは異常に遅いので
-                # ドライバによるビルド・テストはしない
-                relay("  Debug Build ...")
-                build(ShortTest Debug .)
+            # デバッグ・ビルド時のTheolizerドライバは異常に遅いので
+            # ドライバによるビルド・テストはしない
+            relay("  Debug Build ...")
+            build(ShortTest Debug .)
+            set(TEMP_LOG "${TEMP_LOG}${OUTPUT_LOG}")
+            get_pass_list()
+
+            if(${RETURN_CODE} EQUAL 0)
+                relay("  Installing  ...")
+                build(install Debug .)
                 set(TEMP_LOG "${TEMP_LOG}${OUTPUT_LOG}")
-                get_pass_list()
-    
-                if(${RETURN_CODE} EQUAL 0)
-                    relay("  Installing  ...")
-                    build(install Debug .)
-                    set(TEMP_LOG "${TEMP_LOG}${OUTPUT_LOG}")
-                endif()
             endif()
             math(EXPR INDEX "${INDEX} + 1")
         endif()
@@ -635,9 +633,7 @@ elseif("${PROC}" STREQUAL "full")
             math(EXPR INDEX "${INDEX} + 1")
 
             if(${GENERATOR} MATCHES "Visual Studio")
-                if("${CI_SERVICE}" STREQUAL "")
-                    get_pass_list()
-                endif()
+                get_pass_list()
                 math(EXPR INDEX "${INDEX} + 1")
             endif()
         endif()

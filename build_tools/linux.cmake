@@ -62,11 +62,17 @@ set(THEOLIZER_BINARY "../../build/")
 # Theolizerのインストール先のプリフィクス
 set(THEOLIZER_PREFIX "$ENV{HOME}/install/Theolizer-")
 
-# boostのルート・フォルダ   ${BOOST_PREFIX}${BIT_NUM}[fPIC]
-#   fPICは非WindowsにおいてSharedビルドする時自動的に付加する。
-#   これ以外のフォルダを指定する時は、BOOST_PREFIXを""にしてBOOST_ROOTを設定する
+# Boostバージョン指定
+set(BOOST_VERSION "1.61.0")
 
-set(BOOST_PREFIX "$ENV{HOME}/install/boost")
+# インストール済Boostを使う場合に指定する
+# linuxでは.soファイルへリンクする場合、fPICオプションによるビルドが必要
+if(FALSE)
+    set(BOOST_INSTALLEDx32 "../../build/boost/${BOOST_VERSION}/install32")
+    set(BOOST_INSTALLEDx64 "../../build/boost/${BOOST_VERSION}/install64")
+    set(BOOST_INSTALLEDx32fPIC "../../build/boost/${BOOST_VERSION}/install32fPIC")
+    set(BOOST_INSTALLEDx64fPIC "../../build/boost/${BOOST_VERSION}/install64fPIC")
+endif()
 
 # llvmのルート・フォールダ(ドライバをビルドしない時は未指定でOK)
 #   msvc   : ${LLVM}/${COMPILER}x${BIT_NUM}
@@ -84,7 +90,7 @@ set(LLVM_VERSION 4.0.0)
 #set(LLVM_CC mingw710)
 
 # 必須CMakeバージョン
-set(REQUIRE_CMAKE_VERSION 3.5.0)
+set(REQUIRE_CMAKE_VERSION 3.5.1)
 
 # MinGW/gccのbinフォルダのパス
 set(CC32 "/usr/bin")

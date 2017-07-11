@@ -1,5 +1,5 @@
 #[[###########################################################################
-        ビルド用補助CMakeスクリプト
+        boostビルド用補助CMakeスクリプト
 
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
@@ -37,19 +37,12 @@
 function(parameter_log LOG_FILE)
 
     file(WRITE  ${LOG_FILE} "--- Parameters ---\n")
-    file(APPEND ${LOG_FILE} "BOOST_DOWNLOAD  =${BOOST_DOWNLOAD}\n")
-    file(APPEND ${LOG_FILE} "BOOST_SOURCE    =${BOOST_SOURCE}\n")
-    file(APPEND ${LOG_FILE} "BOOST_PREFIX    =${BOOST_PREFIX}\n")
+    file(APPEND ${LOG_FILE} "BOOST_VERSION   =${BOOST_VERSION}\n")
+    file(APPEND ${LOG_FILE} "BOOST_PATH      =${BOOST_PATH}\n")
+    file(APPEND ${LOG_FILE} "fPIC            =${fPIC}\n")
     file(APPEND ${LOG_FILE} "COMPILER        =${COMPILER}\n")
     file(APPEND ${LOG_FILE} "BIT_NUM         =${BIT_NUM}\n")
     file(APPEND ${LOG_FILE} "CONFIG_TYPE     =${CONFIG_TYPE}\n")
-    file(APPEND ${LOG_FILE} "fPIC            =${fPIC}\n")
-    file(APPEND ${LOG_FILE} "BOOST_INSTALL   =${BOOST_INSTALL}\n")
-    file(APPEND ${LOG_FILE} "TOOLSET         =${TOOLSET}\n")
-    file(APPEND ${LOG_FILE} "BUILD_DIR       =${BUILD_DIR}\n")
-    file(APPEND ${LOG_FILE} "MAKE            =${MAKE}\n")
-    file(APPEND ${LOG_FILE} "MSVC_PATH       =${MSVC_PATH}\n")
-    file(APPEND ${LOG_FILE} "CC_PATH         =${CC_PATH}\n")
     file(APPEND ${LOG_FILE} "\n")
 
 endfunction()
@@ -146,74 +139,68 @@ macro(end LOG_FILE BREAK)
 endmacro()
 
 #-----------------------------------------------------------------------------
-#       ビルド周りのフォルダを絶対パスへ変換する
+#       ダウンロードと解凍
 #-----------------------------------------------------------------------------
 
-function(absolute_path PATH_STRING RESULT)
-    string(LENGTH ${PATH_STRING} LEN)
-    math(EXPR BEGIN "${LEN}-1")
-    string(SUBSTRING ${PATH_STRING} ${BEGIN} 1 LAST_CHAR)
-    if(NOT "${LAST_CHAR}" STREQUAL "/")
-        set(LAST_CHAR "")
-    endif()
-    get_filename_component(PATH_STRING "${PATH_STRING}" ABSOLUTE)
-    set(${RESULT} "${PATH_STRING}${LAST_CHAR}" PARENT_SCOPE)
-endfunction()
+function(boost_setup)
 
-absolute_path("${BOOST_SOURCE}" BOOST_SOURCE)
-absolute_path("${BOOST_PREFIX}" BOOST_PREFIX)
-message(STATUS "BOOST_SOURCE=${BOOST_SOURCE}")
-message(STATUS "BOOST_PREFIX=${BOOST_PREFIX}")
+    set(URL "https://sourceforge.net/projects/boost/files/boost/${BOOST_VERSION}")
+    message(STATUS "URL                     =${URL}")
 
-# 環境変数のPATHを確保しておく
-set(ENV_PATH "$ENV{PATH}")
+    string(REPLACE "." "_" VERSION2 ${BOOST_VERSION})
+    set(FILE_NAME "boost_${VERSION2}")
+    message(STATUS "FILE_NAME               =${FILE_NAME}")
 
-#-----------------------------------------------------------------------------
-#       結果概要まとめ用
-#-----------------------------------------------------------------------------
-
-function(output_title MESSAGE_STRING)
-    message(STATUS "${MESSAGE_STRING}")
-    file(APPEND ${SUMMARY} "${MESSAGE_STRING}\n")
-endfunction()
-
-function(output_summary)
-    message(STATUS "\n\n########## Summary ##########")
-    file(READ ${SUMMARY} OUTPUT_STRING)
-    message(STATUS ${OUTPUT_STRING})
-endfunction()
-
-#-----------------------------------------------------------------------------
-#       ビルド準備（パラメータ設定とビルド・フォルダとサブ・ファイル用意）
-#-----------------------------------------------------------------------------
-
-macro(setup_build_folder COMPILER BIT_NUM fPIC)
-
-    set(BOOST_INSTALL "${BOOST_PREFIX}${BIT_NUM}")
-    if("${fPIC}" STREQUAL "TRUE")
-        set(BOOST_INSTALL "${BOOST_INSTALL}-fPIC")
-    endif()
-
-if(FALSE)
-    message(STATUS "BOOST_PREFIX =${BOOST_PREFIX}")
-    message(STATUS "COMPILER     =${COMPILER}")
-    message(STATUS "BIT_NUM      =${BIT_NUM}")
-    message(STATUS "fPIC         =${fPIC}")
-    message(STATUS "BOOST_INSTALL=${BOOST_INSTALL}")
-endif()
-
-    # パラメータ・チェック
-    if("${BIT_NUM}" STREQUAL "64")
-    elseif("${BIT_NUM}" STREQUAL "32")
+    # ダウンロード
+    if(WIN32)
+        set(EXT ".7z")
     else()
-        message(SEND_ERROR "unknown number of bit ${BIT_NUM}")
+        set(EXT ".tar.bz2")
     endif()
+    if(NOT EXISTS ${BOOST_PATH}/${FILE_NAME}${EXT})
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${BOOST_PATH}"
+        )
+        if(WIN32)
+            file(DOWNLOAD ${URL}/${FILE_NAME}${EXT} ${BOOST_PATH}/${FILE_NAME}${EXT} SHOW_PROGRESS)
+        else()
+            execute_process(
+                COMMAND wget ${URL}/${FILE_NAME}${EXT}
+                WORKING_DIRECTORY "${BOOST_PATH}"
+            )
+        endif()
+    endif()
+
+    # 解凍
+    if (NOT EXISTS ${BOOST_SOURCE})
+        message(STATUS "extracting...")
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E tar xvf "${BOOST_PATH}/${FILE_NAME}${EXT}"
+            WORKING_DIRECTORY "${BOOST_PATH}"
+            OUTPUT_FILE expand.log
+        )
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E rename "${FILE_NAME}" "source"
+            WORKING_DIRECTORY "${BOOST_PATH}"
+        )
+        message(STATUS "extracted.")
+    endif()
+
+endfunction()
+
+#-----------------------------------------------------------------------------
+#       ビルド
+#-----------------------------------------------------------------------------
+
+function(build_boost)
+
+#       ---<<< ビルド準備（パラメータ設定とビルド・フォルダとサブ・ファイル用意） >>>---
 
     # ツールセット生成
     if("${COMPILER}" STREQUAL "msvc2017")
         set(TOOLSET "msvc-14.1")
         execute_process(
-            COMMAND vswhere.exe -version 15.0 -property installationPath
+            COMMAND vswhere/vswhere.exe -version 15.0 -property installationPath
             OUTPUT_VARIABLE MSVC_PATH)
         string(REPLACE "\n" "" MSVC_PATH "${MSVC_PATH}")
         set(MSVC_PATH "${MSVC_PATH}/VC/Tools/MSVC/14.10.25017/bin/HostX86/x86")
@@ -243,101 +230,26 @@ endif()
     else()
         message(SEND_ERROR "unknown compiler ${COMPILER}")
     endif()
-    message(STATUS "TOOLSET     =${TOOLSET}")
-
-    # ビルド・フォルダ・パス
-    set(BUILD_DIR "${CMAKE_SOURCE_DIR}/build/${COMPILER}x${BIT_NUM}")
-    if("${fPIC}" STREQUAL "TRUE")
-        set(BUILD_DIR "${BUILD_DIR}-fPIC")
-    endif()
-    message(STATUS "BUILD_DIR   =${BUILD_DIR}")
+    message(STATUS "TOOLSET                 =${TOOLSET}")
+    message(STATUS "MSVC_PATH               =${MSVC_PATH}")
+    message(STATUS "CC_PATH                 =${CC_PATH}")
 
     # makeツール
     if ("${MAKE}" STREQUAL "")
         set(MAKE "make")
     endif()
-    message(STATUS "MAKE        =${MAKE}")
+    message(STATUS "MAKE                    =${MAKE}")
 
-endmacro()
-
-#-----------------------------------------------------------------------------
-#       ダウンロードと解凍
-#-----------------------------------------------------------------------------
-
-function(download_extract FILE_NAME EXTRACT_NAME EXTRACT_PATH)
-    message(STATUS "FILE_NAME   =${FILE_NAME}")
-    message(STATUS "EXTRACT_NAME=${EXTRACT_NAME}")
-    message(STATUS "EXTRACT_PATH=${EXTRACT_PATH}")
-    message(STATUS "ROOT        =${ROOT}")
-    message(STATUS "URL         =${URL}")
-    if(WIN32)
-        set(EXT ".7z")
-    else()
-        set(EXT ".tar.bz2")
-    endif()
-    if(NOT EXISTS ${ROOT}/${FILE_NAME}${EXT})
-        if(WIN32)
-            file(DOWNLOAD ${URL}/${FILE_NAME}${EXT} ${ROOT}/${FILE_NAME}${EXT} SHOW_PROGRESS)
-        else()
-            execute_process(
-                COMMAND ${CMAKE_COMMAND} -E wget ${URL}/${FILE_NAME}${EXT}
-                WORKING_DIRECTORY "${EXTRACT_PATH}"
-            )
-        endif()
-    endif()
-    # 解凍ログはファイルへ出力する
-    message(STATUS "extracting...")
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} -E tar xvf "${ROOT}/${FILE_NAME}${EXT}"
-        WORKING_DIRECTORY "${EXTRACT_PATH}"
-        OUTPUT_FILE expand.log
-    )
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} -E rename "${FILE_NAME}" "${EXTRACT_NAME}"
-        WORKING_DIRECTORY "${EXTRACT_PATH}"
-    )
-    message(STATUS "extracted.")
-endfunction()
-
-function(boost_setup VERSION)
-    string(REPLACE "." "_" VERSION2 ${VERSION})
-    set(URL "https://sourceforge.net/projects/boost/files/boost/${VERSION}")
-
-    get_filename_component(ROOT     "${BOOST_SOURCE}" DIRECTORY)
-    get_filename_component(DIR_NAME "${BOOST_SOURCE}" NAME      )
-    download_extract("boost_${VERSION2}" ${DIR_NAME} "${ROOT}")
-endfunction()
-
-# boostをダウンロードする
-if ((NOT "${BOOST_DOWNLOAD}" STREQUAL "") AND (NOT EXISTS ${BOOST_SOURCE}))
-    boost_setup(${BOOST_DOWNLOAD})
-endif()
-
-#-----------------------------------------------------------------------------
-#       ビルド処理
-#-----------------------------------------------------------------------------
-
-function(build_process COMPILER BIT_NUM CONFIG_TYPE fPIC)
-
-    if("${CONFIG_TYPE}" STREQUAL "")
-        set(VARIANT "release,debug")
-    elseif("${CONFIG_TYPE}" STREQUAL "Release")
-        set(VARIANT "release")
-    elseif("${CONFIG_TYPE}" STREQUAL "Debug")
-        set(VARIANT "debug")
-    else()
-        message(SEND_ERROR "unknown config ${CONFIG_TYPE}")
-    endif()
-
-    setup_build_folder("${COMPILER}" "${BIT_NUM}" "${fPIC}")
-
+    # PATH設定
     if (NOT "${MSVC_PATH}" STREQUAL "")
-        set(ENV{PATH} "${MSVC_PATH};${ENV_PATH}")
+        set(ENV{PATH} "${MSVC_PATH};$ENV{PATH}")
     endif()
 
     if (NOT "${CC_PATH}" STREQUAL "")
-        set(ENV{PATH} "${CC_PATH};${ENV_PATH}")
+        set(ENV{PATH} "${CC_PATH};$ENV{PATH}")
     endif()
+
+#       ---<<< ビルド >>>---
 
     if(WIN32)
         if(NOT EXISTS "${BOOST_SOURCE}/b2.exe")
@@ -349,7 +261,7 @@ function(build_process COMPILER BIT_NUM CONFIG_TYPE fPIC)
                 RESULT_VARIABLE RETURN_CODE
                 WORKING_DIRECTORY "${BOOST_SOURCE}"
             )
-            end("${BUILD_DIR}/bootstrap.log" TRUE)
+            end("${BOOST_BUILD}/bootstrap.log" TRUE)
         endif()
     else()
         if(NOT EXISTS "${BOOST_SOURCE}/b2")
@@ -361,7 +273,7 @@ function(build_process COMPILER BIT_NUM CONFIG_TYPE fPIC)
                 RESULT_VARIABLE RETURN_CODE
                 WORKING_DIRECTORY "${BOOST_SOURCE}"
             )
-            end("${BUILD_DIR}/bootstrap.log" TRUE)
+            end("${BOOST_BUILD}/bootstrap.log" TRUE)
         endif()
     endif()
 
@@ -370,12 +282,12 @@ function(build_process COMPILER BIT_NUM CONFIG_TYPE fPIC)
         execute_process(
             COMMAND ./b2
                 "--prefix=${BOOST_INSTALL}"
-                "--build-dir=${BUILD_DIR}"
+                "--build-dir=${BOOST_BUILD}"
                 "toolset=${TOOLSET}"
                 "address-model=${BIT_NUM}"
                 --with-filesystem --with-system
                 install
-                variant=${VARIANT}
+                variant=release,debug
                 link=static runtime-link=shared
                 threading=multi
                 -a
@@ -391,12 +303,12 @@ function(build_process COMPILER BIT_NUM CONFIG_TYPE fPIC)
         execute_process(
             COMMAND ./b2
                 "--prefix=${BOOST_INSTALL}"
-                "--build-dir=${BUILD_DIR}"
+                "--build-dir=${BOOST_BUILD}"
                 "toolset=${TOOLSET}"
                 "address-model=${BIT_NUM}"
                 --with-filesystem --with-system
                 install
-                variant=${VARIANT}
+                variant=release,debug
                 link=static runtime-link=shared
                 threading=multi
                 -a
@@ -407,6 +319,26 @@ function(build_process COMPILER BIT_NUM CONFIG_TYPE fPIC)
             WORKING_DIRECTORY "${BOOST_SOURCE}"
         )
     endif()
-    end("${BUILD_DIR}/zz1_build.log" FALSE)
+    end("${BOOST_BUILD}/zz0_boost.log" FALSE)
 
 endfunction()
+
+#-----------------------------------------------------------------------------
+#       boostのソースを準備してビルドする
+#-----------------------------------------------------------------------------
+
+if("${${BOOST_VARIABLE_NAME}}" STREQUAL "")
+
+    # boostのソース・パス
+    set(BOOST_SOURCE  "${BOOST_PATH}/source")
+    message(STATUS "BOOST_SOURCE            =${BOOST_SOURCE}")
+
+    # boostのダウンロードと解凍
+    boost_setup()
+
+    # boostをビルドする
+    if((NOT EXISTS "${BOOST_BUILD}") AND (NOT "${CONFIG_TYPE}" STREQUAL "Debug"))
+        build_boost()
+    endif()
+ 
+endif()

@@ -32,8 +32,7 @@ compiler: gcc
 
 cache:
   directories:
-  - $HOME/install/boost64
-# - $HOME/install/boost64-fPIC
+  - $HOME/build/boost
 
 addons:
   apt:
@@ -61,23 +60,21 @@ before_install:
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
   - cd build_tools
-  - cd boost_build
-  - if [ ! -d "$HOME/install/boost64/lib" ]; then cmake -P .travis.cmake; fi
-  - cd ..
+  - if [ ! -d "$HOME/build/boost" ]; then cmake -DPROC_ALL=config_all -P .travis.cmake; fi
   - cd ..
 
 script:
   - cd build_tools
-  - cmake -DPROC_ALL=middle_all -P .travis.cmake
+  - cmake -DPROC_ALL=full_all -P .travis.cmake
 
 after_script:
   - echo '================================================================================='
-  - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/reference_and_test/version/ver1/*.hpp
+  - cat $HOME/build/gcc540x64-StaticWithBoost-Release/reference_and_test/version/ver1/*.hpp
 #  - echo '---------------------------------------------------------------------------------'
-#  - cat /home/travis/build/yossi-tahara/build/gcc540x64-StaticWithBoost-Release/*.log
+#  - cat $HOME/build/gcc540x64-StaticWithBoost-Release/*.log
 #  - echo '---------------------------------------------------------------------------------'
-#  - cat /home/travis/build/yossi-tahara/build/gcc540x64-Static-Release/*.log
+#  - cat $HOME/build/gcc540x64-Static-Release/*.log
 #  - echo '---------------------------------------------------------------------------------'
-#  - cat /home/travis/build/yossi-tahara/build/gcc540x64-Shared-Release/*.log
+#  - cat $HOME/build/gcc540x64-Shared-Release/*.log
 #  - echo '================================================================================='
 #  - cat /tmp/theolizer/Debug.log

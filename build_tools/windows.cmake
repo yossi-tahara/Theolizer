@@ -62,11 +62,17 @@ set(THEOLIZER_BINARY "../../build/")
 # Theolizerのインストール先のプリフィクス
 set(THEOLIZER_PREFIX "C:/Theolizer-")
 
-# boostのルート・フォルダ   ${BOOST_PREFIX}${BIT_NUM}[fPIC]
-#   fPICは非WindowsにおいてSharedビルドする時自動的に付加する。
-#   これ以外のフォルダを指定する時は、BOOST_PREFIXを""にしてBOOST_ROOTを設定する
+# Boostバージョン指定
+set(BOOST_VERSION "1.64.0")
 
-set(BOOST_PREFIX "C:/Boost")
+# インストール済Boostを使う場合に指定する
+# linuxでは.soファイルへリンクする場合、fPICオプションによるビルドが必要
+if(FALSE)
+    set(BOOST_INSTALLEDx32 "../../build/boost/${BOOST_VERSION}/install32")
+    set(BOOST_INSTALLEDx64 "../../build/boost/${BOOST_VERSION}/install64")
+#   set(BOOST_INSTALLEDx32fPIC "../../build/boost/${BOOST_VERSION}/install32fPIC")
+#   set(BOOST_INSTALLEDx64fPIC "../../build/boost/${BOOST_VERSION}/install64fPIC")
+endif()
 
 # llvmのルート・フォールダ(ドライバをビルドしない時は未指定でOK)
 #   msvc   : ${LLVM}/${COMPILER}x${BIT_NUM}

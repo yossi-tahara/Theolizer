@@ -78,7 +78,7 @@ endfunction()
 
 macro(setup_build_folder COMPILER BIT_NUM LIB_TYPE CONFIG_TYPE BUILD_DRIVER BUILD_DOCUMENT)
 
-if(FALSE)
+if(TRUE)
     message(STATUS "THEOLIZER_SOURCE        =${THEOLIZER_SOURCE}")
     message(STATUS "THEOLIZER_BINARY        =${THEOLIZER_BINARY}")
     message(STATUS "THEOLIZER_PREFIX        =${THEOLIZER_PREFIX}")
@@ -86,6 +86,11 @@ if(FALSE)
     message(STATUS "COMPILER                =${COMPILER}")
     message(STATUS "BIT_NUM                 =${BIT_NUM}")
     message(STATUS "CONFIG_TYPE             =${CONFIG_TYPE}")
+    message(STATUS "BOOST_VERSION           =${BOOST_VERSION}")
+    message(STATUS "BOOST_INSTALLEDx32      =${BOOST_INSTALLEDx32}")
+    message(STATUS "BOOST_INSTALLEDx64      =${BOOST_INSTALLEDx64}")
+    message(STATUS "BOOST_INSTALLEDx32fPIC  =${BOOST_INSTALLEDx32fPIC}")
+    message(STATUS "BOOST_INSTALLEDx64fPIC  =${BOOST_INSTALLEDx64fPIC}")
     message(STATUS "BUILD_DRIVER            =${BUILD_DRIVER}")
     message(STATUS "BUILD_DOCUMENT          =${BUILD_DOCUMENT}")
     message(STATUS "PROC_ALL                =${PROC_ALL}")
@@ -93,7 +98,8 @@ if(FALSE)
     message(STATUS "REQUIRE_CMAKE_VERSION   =${REQUIRE_CMAKE_VERSION}")
 endif()
 
-    # パラメータ・チェック
+    #       ---<<< パラメータ・チェック >>>---
+
     if("${LIB_TYPE}" STREQUAL "StaticWithBoost")
     elseif("${LIB_TYPE}" STREQUAL "Static")
     elseif("${LIB_TYPE}" STREQUAL "Shared")
@@ -126,7 +132,8 @@ endif()
         message(SEND_ERROR "illegal BUILD_DOCUMENT ${BUILD_DOCUMENT}")
     endif()
 
-    # ジェネレータ生成
+    #       ---<<< ジェネレータ名生成 >>>---
+
     if(("${COMPILER}" STREQUAL "msvc2015")
     OR ("${COMPILER}" STREQUAL "msvc2017"))
         if ("${COMPILER}" STREQUAL "msvc2015")
@@ -159,27 +166,63 @@ endif()
     else()
         message(SEND_ERROR "unknown compiler ${COMPILER}")
     endif()
-    message(STATUS "GENERATOR   =${GENERATOR}")
+    message(STATUS "GENERATOR               =${GENERATOR}")
 
-    # ビルド・フォルダ・パス
+    #       ---<<< ビルド・フォルダ・パス設定 >>>---
+
     set(BUILD_DIR "${THEOLIZER_BINARY}${COMPILER}x${BIT_NUM}-${LIB_TYPE}")
     if(NOT "${CONFIG_TYPE}" STREQUAL "")
         set(BUILD_DIR "${BUILD_DIR}-${CONFIG_TYPE}")
     endif()
-    message(STATUS "BUILD_DIR   =${BUILD_DIR}")
+    message(STATUS "BUILD_DIR               =${BUILD_DIR}")
 
-    # boostのフォルダ・パス
-    if(NOT "${BOOST_PREFIX}" STREQUAL "")
-        set(BOOST_ROOT "${BOOST_PREFIX}${BIT_NUM}")
-        if(NOT WIN32)
-            if("${LIB_TYPE}" STREQUAL "Shared")
-                set(BOOST_ROOT "${BOOST_ROOT}-fPIC")
-            endif()
+    #       ---<<< boostのフォルダ・パス生成 >>>---
+
+    # boostのフォルダ・パス(BOOST_PATH)と
+    # そのCMake変数名生成(BOOST_VARIABLE_NAME)
+    #   BOOST_INSTALLEDx32
+    #   BOOST_INSTALLEDx64
+    #   BOOST_INSTALLEDx32fPIC
+    #   BOOST_INSTALLEDx64fPIC
+    set(BOOST_PATH "${THEOLIZER_BINARY}boost/${BOOST_VERSION}")
+    set(BOOST_VARIABLE_NAME "BOOST_INSTALLEDx${BIT_NUM}")
+    set(fPIC FALSE)
+    if(NOT WIN32)
+        if("${LIB_TYPE}" STREQUAL "Shared")
+            set(BOOST_VARIABLE_NAME "${BOOST_VARIABLE_NAME}fPIC")
+            set(fPIC TRUE)
         endif()
     endif()
-    message(STATUS "BOOST_ROOT  =${BOOST_ROOT}")
+    message(STATUS "BOOST_PATH              =${BOOST_PATH}")
+    message(STATUS "BOOST_VARIABLE_NAME     =${BOOST_VARIABLE_NAME}")
 
-    # llvmのフォルダ・パス
+    # ビルド・フォルダ・パス
+    set(BOOST_BUILD "${BOOST_PATH}/${COMPILER}x${BIT_NUM}")
+    if(fPIC)
+        set(BOOST_BUILD "${BOOST_BUILD}-fPIC")
+    endif()
+    if(NOT "${CONFIG_TYPE}" STREQUAL "")
+        set(BOOST_BUILD "${BOOST_BUILD}-${CONFIG_TYPE}")
+    endif()
+    message(STATUS "BOOST_BUILD             =${BOOST_BUILD}")
+
+    # インストール・フォルダ・パス
+    set(BOOST_INSTALL "${BOOST_PATH}/install${BIT_NUM}")
+    if(fPIC)
+        set(BOOST_INSTALL "${BOOST_INSTALL}-fPIC")
+    endif()
+    message(STATUS "BOOST_INSTALL           =${BOOST_INSTALL}")
+
+    # BOOST_ROOTへ反映
+    if("${${BOOST_VARIABLE_NAME}}" STREQUAL "")
+        set(BOOST_ROOT "${BOOST_INSTALL}")
+    else()
+        set(BOOST_ROOT "${${BOOST_VARIABLE_NAME}}")
+    endif()
+    message(STATUS "BOOST_ROOT              =${BOOST_ROOT}")
+
+    #       ---<<< llvmのフォルダ・パス生成 >>>---
+
     if("${BUILD_DRIVER}" STREQUAL "TRUE")
         if(NOT "${LLVM}" STREQUAL "")
             if("${COMPILER}" MATCHES "msvc")
@@ -202,15 +245,17 @@ endif()
     else()
         set(LLVM_ROOT "")
     endif()
-    message(STATUS "LLVM_ROOT   =${LLVM_ROOT}")
+    message(STATUS "LLVM_ROOT               =${LLVM_ROOT}")
 
-    # makeツール
+    #       ---<<< makeツール設定 >>>---
+
     if ("${MAKE}" STREQUAL "")
         set(MAKE "make")
     endif()
-    message(STATUS "MAKE        =${MAKE}")
+    message(STATUS "MAKE                    =${MAKE}")
 
-    # フォルダ生成と必要ファイルのコピー
+    #       ---<<< ビルド・フォルダ生成 >>>---
+
     # full_all時のみビルド・フォルダを一度削除する
     if("${PROC_ALL}" STREQUAL "full_all")
         execute_process(
@@ -221,8 +266,9 @@ endif()
         COMMAND ${CMAKE_COMMAND} -E make_directory   "${BUILD_DIR}"
     )
 
-    configure_file(tools/zz_process.cmake ${BUILD_DIR}/zz_process.cmake @ONLY)
+    #       ---<<< スクリプト・ファイルのコピー >>>---
 
+    configure_file(tools/zz_process.cmake ${BUILD_DIR}/zz_process.cmake @ONLY)
     if(WIN32)
         file(GLOB SCRIPT_LIST tools/*.bat)
         file(COPY ${SCRIPT_LIST} DESTINATION  ${BUILD_DIR})
@@ -230,6 +276,10 @@ endif()
         file(GLOB SCRIPT_LIST tools/*.sh)
         file(COPY ${SCRIPT_LIST} DESTINATION  ${BUILD_DIR})
     endif()
+
+    #       ---<<< boostの準備 >>>---
+
+    include(tools/zz_boost.cmake)
 
 endmacro()
 
@@ -241,6 +291,12 @@ function(build_process COMPILER BIT_NUM LIB_TYPE CONFIG_TYPE BUILD_DRIVER BUILD_
 
     setup_build_folder("${COMPILER}" "${BIT_NUM}" "${LIB_TYPE}" "${CONFIG_TYPE}" "${BUILD_DRIVER}" "${BUILD_DOCUMENT}")
 
+     # CI_SERVICEに於けるconfig_allはboostの準備までに限定する
+    if(("${PROC_ALL}" STREQUAL "config_all") AND (NOT "${CI_SERVICE}" STREQUAL ""))
+return()
+    endif()
+
+    # Theolizerプロジェクトのコンフィグ
     execute_process(
         COMMAND ${CMAKE_COMMAND} "-DPROC=config" "-DPROC_ALL=${PROC_ALL}" "-DSUMMARY=${SUMMARY}"
                 "-DCI_SERVICE=${CI_SERVICE}" "-DPASS_LIST=${ARGN}"
@@ -253,6 +309,7 @@ function(build_process COMPILER BIT_NUM LIB_TYPE CONFIG_TYPE BUILD_DRIVER BUILD_
 return()
     endif()
 
+    # Theolizerプロジェクトのビルド（全フォルダのコンフィグの時はビルドしない)
     if(NOT "${PROC_ALL}" STREQUAL "config_all")
         execute_process(
             COMMAND ${CMAKE_COMMAND} "-DPROC=full" "-DPROC_ALL=${PROC_ALL}" "-DSUMMARY=${SUMMARY}"
