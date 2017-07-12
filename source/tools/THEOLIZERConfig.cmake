@@ -113,7 +113,7 @@ if (MSVC)
     import_library_msvc(TheolizerLibSharedd SHARED)
     import_library_msvc(TheolizerTestSharedd SHARED)
 else()
-    cmake_minimum_required(VERSION 3.5.0)
+    cmake_minimum_required(VERSION 3.2.2)
 
     set(ORIGINAL_COMPILER "${CMAKE_CXX_COMPILER}")
     set(CMAKE_CXX_COMPILER "${THEOLIZER_ROOT}/bin/TheolizerDriver")

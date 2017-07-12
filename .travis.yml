@@ -32,7 +32,8 @@ compiler: gcc
 
 cache:
   directories:
-  - $HOME/build/boost
+  - $TRAVIS_BUILD_DIR/../build/boost/1.59.0/gcc540x64
+  - $TRAVIS_BUILD_DIR/../build/boost/1.59.0/install64
 
 addons:
   apt:
@@ -48,9 +49,10 @@ addons:
     - gcc-5
 
 env:
-  - PARALLEL_TEST=1
-  - PARALLEL_TEST=2
-  - PARALLEL_TEST=3
+  matrix:
+    - PARALLEL_TEST=1
+    - PARALLEL_TEST=2
+    - PARALLEL_TEST=3
 
 before_install:
   - g++ --version
@@ -59,22 +61,27 @@ before_install:
 
 install:
   - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
-  - cd build_tools
-  - if [ ! -d "$HOME/build/boost" ]; then cmake -DPROC_ALL=config_all -P .travis.cmake; fi
-  - cd ..
 
 script:
+  - echo '================================================================================='
+  - ls -l $TRAVIS_BUILD_DIR/../build/boost/1.59.0
+  - ls -l $TRAVIS_BUILD_DIR/../build/boost/1.59.0/gcc540x64
+  - ls -l $TRAVIS_BUILD_DIR/../build/boost/1.59.0/install64
+  - echo '================================================================================='
   - cd build_tools
   - cmake -DPROC_ALL=full_all -P .travis.cmake
 
 after_script:
   - echo '================================================================================='
-  - cat $HOME/build/gcc540x64-StaticWithBoost-Release/reference_and_test/version/ver1/*.hpp
+  - ls -l $TRAVIS_BUILD_DIR/../build/boost/1.59.0
+  - ls -l $TRAVIS_BUILD_DIR/../build/boost/1.59.0/gcc540x64
+  - ls -l $TRAVIS_BUILD_DIR/../build/boost/1.59.0/install64
 #  - echo '---------------------------------------------------------------------------------'
-#  - cat $HOME/build/gcc540x64-StaticWithBoost-Release/*.log
+#  - cat $TRAVIS_BUILD_DIR/../build/gcc540x64-StaticWithBoost-Release/*.log
 #  - echo '---------------------------------------------------------------------------------'
-#  - cat $HOME/build/gcc540x64-Static-Release/*.log
+#  - cat $TRAVIS_BUILD_DIR/../build/gcc540x64-Static-Release/*.log
 #  - echo '---------------------------------------------------------------------------------'
-#  - cat $HOME/build/gcc540x64-Shared-Release/*.log
-#  - echo '================================================================================='
-#  - cat /tmp/theolizer/Debug.log
+#  - cat $TRAVIS_BUILD_DIR/../build/gcc540x64-Shared-Release/*.log
+#  - echo '---------------------------------------------------------------------------------'
+#  - cat $TRAVIS_BUILD_DIR/../build/gcc540x64-StaticWithBoost-Release/reference_and_test/version/basic/*.hpp
+  - echo '================================================================================='

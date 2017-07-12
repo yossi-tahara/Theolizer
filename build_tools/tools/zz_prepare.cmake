@@ -201,9 +201,11 @@ endif()
     if(fPIC)
         set(BOOST_BUILD "${BOOST_BUILD}-fPIC")
     endif()
-    if(NOT "${CONFIG_TYPE}" STREQUAL "")
-        set(BOOST_BUILD "${BOOST_BUILD}-${CONFIG_TYPE}")
-    endif()
+    # Theolizerのreleaseをコンフィグする際に
+    # boostのreleaseとdebugの双方をビルドするのでCONFIG_TYPEは不要
+#   if(NOT "${CONFIG_TYPE}" STREQUAL "")
+#       set(BOOST_BUILD "${BOOST_BUILD}-${CONFIG_TYPE}")
+#   endif()
     message(STATUS "BOOST_BUILD             =${BOOST_BUILD}")
 
     # インストール・フォルダ・パス
@@ -290,11 +292,6 @@ endmacro()
 function(build_process COMPILER BIT_NUM LIB_TYPE CONFIG_TYPE BUILD_DRIVER BUILD_DOCUMENT)
 
     setup_build_folder("${COMPILER}" "${BIT_NUM}" "${LIB_TYPE}" "${CONFIG_TYPE}" "${BUILD_DRIVER}" "${BUILD_DOCUMENT}")
-
-     # CI_SERVICEに於けるconfig_allはboostの準備までに限定する
-    if(("${PROC_ALL}" STREQUAL "config_all") AND (NOT "${CI_SERVICE}" STREQUAL ""))
-return()
-    endif()
 
     # Theolizerプロジェクトのコンフィグ
     execute_process(

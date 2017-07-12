@@ -311,12 +311,11 @@ macro(build TARGET CONFIG_TYPE WORKING_DIR)
             WORKING_DIRECTORY "${WORKING_DIR}"
             RESULT_VARIABLE RETURN_CODE
         )
-        file(READ temp.txt TEMP)
-        set(OUTPUT_LOG "${OUTPUT_LOG}${TEMP}")
+        file(READ temp.txt OUTPUT_LOG)
     endif()
 
     # CMake 3.8.0以降のWindows版のCTestはUTF-8で出力するのENCODING指定不要
-    set(LABEL "")
+    set(LABEL "NONE")
     if    ("${TARGET}" STREQUAL "ShortTest")
         set(LABEL "Test.*S")
     elseif("${TARGET}" STREQUAL "LongTest")
@@ -333,10 +332,10 @@ macro(build TARGET CONFIG_TYPE WORKING_DIR)
         set(LABEL "")
     endif()
 
-    if (NOT "${LABEL}" STREQUAL "")
+    if (NOT "${LABEL}" STREQUAL "NONE")
         if("${CI_SERVICE}" STREQUAL "")
             execute_process(
-                COMMAND ctest "-V" "-C" "${CONFIG_TYPE}" "-L" "${LABEL}"
+                COMMAND ctest -V -C ${CONFIG_TYPE} -L ${LABEL}
                 WORKING_DIRECTORY "${WORKING_DIR}"
                 OUTPUT_VARIABLE TEMP
                 ERROR_VARIABLE  TEMP
@@ -367,6 +366,7 @@ macro(prepare_sample TARGET)
     execute_process(
         COMMAND ${CMAKE_COMMAND} -E copy_directory "${THEOLIZER_SOURCE}/samples/${TARGET}" "${TARGET}"
     )
+
     # サンプルのコンフィグ
     execute_process(
         COMMAND ${CMAKE_COMMAND}
@@ -451,7 +451,9 @@ if(FALSE)
     endif()
 else()
     # サンプルのビルドとテスト
+    set(TEMP_LOG2 "")
     prepare_sample(example)
+    set(OUTPUT_LOG "${TEMP_LOG2}")
 endif()
 
 endmacro()
@@ -578,7 +580,7 @@ elseif("${PROC}" STREQUAL "full")
         get_pass_list()
         math(EXPR INDEX "${INDEX} + 1")
 
-        # 非Travis-CI時のみインストールする
+        # インストールする
         if(${RETURN_CODE} EQUAL 0)
             relay("  Installing  ...")
 

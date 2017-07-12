@@ -151,13 +151,14 @@ function(boost_setup)
     set(FILE_NAME "boost_${VERSION2}")
     message(STATUS "FILE_NAME               =${FILE_NAME}")
 
-    # ダウンロード
     if(WIN32)
         set(EXT ".7z")
     else()
         set(EXT ".tar.bz2")
     endif()
     if(NOT EXISTS ${BOOST_PATH}/${FILE_NAME}${EXT})
+
+        # ダウンロード
         execute_process(
             COMMAND ${CMAKE_COMMAND} -E make_directory "${BOOST_PATH}"
         )
@@ -169,10 +170,8 @@ function(boost_setup)
                 WORKING_DIRECTORY "${BOOST_PATH}"
             )
         endif()
-    endif()
 
-    # 解凍
-    if (NOT EXISTS ${BOOST_SOURCE})
+        # 解凍
         message(STATUS "extracting...")
         execute_process(
             COMMAND ${CMAKE_COMMAND} -E tar xvf "${BOOST_PATH}/${FILE_NAME}${EXT}"
@@ -184,8 +183,8 @@ function(boost_setup)
             WORKING_DIRECTORY "${BOOST_PATH}"
         )
         message(STATUS "extracted.")
-    endif()
 
+    endif()
 endfunction()
 
 #-----------------------------------------------------------------------------
@@ -261,7 +260,7 @@ function(build_boost)
                 RESULT_VARIABLE RETURN_CODE
                 WORKING_DIRECTORY "${BOOST_SOURCE}"
             )
-            end("${BOOST_BUILD}/bootstrap.log" TRUE)
+            end("${BOOST_SOURCE}/bootstrap.log" TRUE)
         endif()
     else()
         if(NOT EXISTS "${BOOST_SOURCE}/b2")
@@ -273,8 +272,14 @@ function(build_boost)
                 RESULT_VARIABLE RETURN_CODE
                 WORKING_DIRECTORY "${BOOST_SOURCE}"
             )
-            end("${BOOST_BUILD}/bootstrap.log" TRUE)
+            end("${BOOST_SOURCE}/bootstrap.log" TRUE)
         endif()
+    endif()
+
+    if(WIN32)
+        set(VARIANT "release,debug")
+    else()
+        set(VARIANT "release")
     endif()
 
     start("Build         ...")
@@ -287,7 +292,7 @@ function(build_boost)
                 "address-model=${BIT_NUM}"
                 --with-filesystem --with-system
                 install
-                variant=release,debug
+                variant=${VARIANT}
                 link=static runtime-link=shared
                 threading=multi
                 -a
@@ -308,7 +313,7 @@ function(build_boost)
                 "address-model=${BIT_NUM}"
                 --with-filesystem --with-system
                 install
-                variant=release,debug
+                variant=${VARIANT}
                 link=static runtime-link=shared
                 threading=multi
                 -a
@@ -329,16 +334,19 @@ endfunction()
 
 if("${${BOOST_VARIABLE_NAME}}" STREQUAL "")
 
-    # boostのソース・パス
-    set(BOOST_SOURCE  "${BOOST_PATH}/source")
-    message(STATUS "BOOST_SOURCE            =${BOOST_SOURCE}")
+    # Releaseビルド、かつ、boostのビルド・ログが無い時のみ処理する
+    # travis-ciでのキャッシュ制御のため
+    if((NOT "${CONFIG_TYPE}" STREQUAL "Debug") AND (NOT EXISTS "${BOOST_BUILD}/zz0_boost.log"))
 
-    # boostのダウンロードと解凍
-    boost_setup()
+        # boostのソース・パス
+        set(BOOST_SOURCE  "${BOOST_PATH}/source")
+        message(STATUS "BOOST_SOURCE            =${BOOST_SOURCE}")
 
-    # boostをビルドする
-    if((NOT EXISTS "${BOOST_BUILD}") AND (NOT "${CONFIG_TYPE}" STREQUAL "Debug"))
+        # boostのダウンロードと解凍
+        boost_setup()
+
+        # boostをビルドする
         build_boost()
+
     endif()
- 
 endif()

@@ -63,7 +63,7 @@ set(THEOLIZER_SOURCE "../source")
 set(THEOLIZER_BINARY "../../build/")
 
 # Theolizerのインストール先のプリフィクス
-set(THEOLIZER_PREFIX "$ENV{HOME}/install/Theolizer-")
+set(THEOLIZER_PREFIX "$ENV{TRAVIS_BUILD_DIR}/../install/Theolizer-")
 
 # Boostバージョン指定
 set(BOOST_VERSION "1.59.0")
