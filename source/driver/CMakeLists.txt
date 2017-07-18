@@ -88,7 +88,8 @@ link_directories("${LLVM_LIBRARY_DIRS}")
 
 #       ---<<< TheolizerDriver >>>---
 
-add_executable(TheolizerDriver ${THEOLIZER_DRIVER_LIST})
+add_executable(TheolizerDriver EXCLUDE_FROM_ALL ${THEOLIZER_DRIVER_LIST})
+#set_target_properties(TheolizerDriver PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD_RELEASE FALSE)
 add_dependencies(TheolizerDriver checkBuildSystem)
 add_dependencies(FullTest  TheolizerDriver)
 add_dependencies(FullTest1 TheolizerDriver)
@@ -145,7 +146,7 @@ message(STATUS "CMAKE_CXX_FLAGS_RELEASE = ${CMAKE_CXX_FLAGS_RELEASE}")
 #       install target
 #-----------------------------------------------------------
 
-install(TARGETS TheolizerDriver CONFIGURATIONS Release DESTINATION ${BIN_DIR})
+install(FILES $<TARGET_FILE:TheolizerDriver> CONFIGURATIONS Release DESTINATION ${BIN_DIR})
 
 if (MSVC)
     install(FILES $<TARGET_FILE:TheolizerDriver>

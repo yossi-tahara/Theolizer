@@ -143,12 +143,12 @@ build_by_msvc(msvc2017 32 Static FALSE FALSE "38 11 1 1")
 build_by_gcc( mingw710 64 Static FALSE FALSE "38 1" "11 1")
 build_by_gcc( mingw710 32 Static FALSE FALSE "38 1" "11 1")
 
-if(FALSE)
 output_title("****** Shared ******")
 build_by_msvc(msvc2017 64 Shared FALSE FALSE "38 11 1 1")
 build_by_msvc(msvc2017 32 Shared FALSE FALSE "38 11 1 1")
 build_by_gcc( mingw710 64 Shared FALSE FALSE "38 1" "11 1")
 build_by_gcc( mingw710 32 Shared FALSE FALSE "38 1" "11 1")
+if(FALSE)
 endif()
 
 output_summary()
