@@ -257,6 +257,31 @@ struct LoadPointer<tBaseSerializer, tClassType, EnableIf<IsNonIntrusive<tClassTy
 //      ポインタ型用Switcher本体
 //----------------------------------------------------------------------------
 
+//      ---<<< オーナー・ポインタのdelete >>>---
+
+template
+<
+    typename tPointerType,
+    TrackingMode tTrackingMode,
+    THEOLIZER_INTERNAL_OVERLOAD((tTrackingMode != etmOwner))
+>
+void deletePointer(tPointerType iPointer)
+{
+}
+
+template
+<
+    typename tPointerType,
+    TrackingMode tTrackingMode,
+    THEOLIZER_INTERNAL_OVERLOAD((tTrackingMode == etmOwner))
+>
+void deletePointer(tPointerType iPointer)
+{
+    delete iPointer;
+}
+
+//      ---<<< 本体 >>>---
+
 template<class tBaseSerializer,typename tPointerType,bool tIsRegister,TrackingMode tTrackingMode>
 struct Switcher
 <
@@ -370,6 +395,7 @@ struct Switcher
                 >::load(iSerializer, const_cast<PointerType&>(oPointer));
             }
             // オブジェクトのアドレス回復
+            PointerType aPointerBak=oPointer;
             iSerializer.recoverObject
             (
                 aObjectId,
@@ -377,6 +403,12 @@ struct Switcher
                 typeid(oPointer),
                 tTrackingMode
             );
+
+            // オーナー・ポインタが書き換わっていたら解放する
+            if (aPointerBak != oPointer)
+            {
+                deletePointer<PointerType, tTrackingMode>(aPointerBak);
+            }
         }
         iSerializer.mRequireClearTracking=true;
     }

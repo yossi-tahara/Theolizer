@@ -678,10 +678,7 @@ namespace change_order{namespace dummy{
         (string*))\
     THEOLIZER_INTERNAL_ELEMENT_AN((mArray),mArray,etmOwner,\
         (theolizerD::All),\
-        (int*),3)\
-    THEOLIZER_INTERNAL_ELEMENT_N((mArrayPtr),mArrayPtr,etmOwner,\
-        (theolizerD::All),\
-        (int(*)[2]))
+        (int*),3)
 #else
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
     THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmOwner,\

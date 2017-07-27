@@ -30,9 +30,26 @@
 
 ]]############################################################################
 
-message(STATUS "TARGET_NAME=${TARGET_NAME}")
-message(STATUS "WILL_FAIL  =${WILL_FAIL}")
-message(STATUS "PARAM_LIST =${PARAM_LIST}")
+message(STATUS "TARGET_NAME     =${TARGET_NAME}")
+message(STATUS "WILL_FAIL       =${WILL_FAIL}")
+message(STATUS "PARAM_LIST      =${PARAM_LIST}")
+
+set(MTRACE FALSE)
+if(UNIX)
+    execute_process(COMMAND whereis -b mtrace OUTPUT_VARIABLE WHEREIS_MTRACE RESULT_VARIABLE RETUEN_CODE)
+    string(REPLACE "\n" "" WHEREIS_MTRACE "${WHEREIS_MTRACE}")
+    message(STATUS "WHEREIS_MTRACE=${WHEREIS_MTRACE}")
+    message(STATUS "RETUEN_CODE   =${RETUEN_CODE}")
+    string(REPLACE "mtrace:" "" WHEREIS_MTRACE "${WHEREIS_MTRACE}")
+    string(FIND "${WHEREIS_MTRACE}" "mtrace" RESULT)
+    if(NOT ${RESULT} LESS 0) 
+        set(MTRACE TRUE)
+    endif()
+endif()
+if (MTRACE)
+    set(ENV{MALLOC_TRACE} "mtrace.log")
+    file(REMOVE "$ENV{MALLOC_TRACE}")
+endif()
 
 if ("${CMAKE_VERSION}" VERSION_LESS "3.8.0")
     execute_process(COMMAND ${TARGET_NAME} ${PARAM_LIST} RESULT_VARIABLE RETUEN_CODE)
@@ -40,6 +57,13 @@ elseif ("${TARGET_NAME}" STREQUAL "${CMAKE_COMMAND}")
     execute_process(COMMAND ${TARGET_NAME} ${PARAM_LIST} RESULT_VARIABLE RETUEN_CODE ENCODING UTF8)
 else()
     execute_process(COMMAND ${TARGET_NAME} ${PARAM_LIST} RESULT_VARIABLE RETUEN_CODE ENCODING AUTO)
+endif()
+if (MTRACE AND EXISTS "$ENV{MALLOC_TRACE}")
+    execute_process(COMMAND mtrace "${TARGET_NAME}" "$ENV{MALLOC_TRACE}"
+        OUTPUT_VARIABLE MTRACE_RESULT RESULT_VARIABLE MTRACE_CODE)
+     if(NOT "${MTRACE_RESULT}" STREQUAL "No memory leaks.\n")
+        message(SEND_ERROR "MTRACE_RESULT=${MTRACE_RESULT}")
+    endif()
 endif()
 
 if ((NOT ${RETUEN_CODE} EQUAL 0) AND ("${WILL_FAIL}" STREQUAL ""))

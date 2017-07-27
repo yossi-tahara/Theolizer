@@ -389,4 +389,20 @@ bool printResult(char const* iTitle)
 //      End
 //############################################################################
 
+// ***************************************************************************
+//      メモリ・リーク・テストの有効化
+//          gccの場合、必要。msvcは不要。
+// ***************************************************************************
+
+namespace internal
+{
+extern void enableTestLeak();
+
+void enableTestLeakCaller()
+{
+    enableTestLeak();
+}
+
+} // internal
+
 } // namespace theolizer

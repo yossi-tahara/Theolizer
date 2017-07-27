@@ -281,10 +281,15 @@ return;
         continue;
             aSaveStatList[aTypeIndex] = essSaved;
 
-            // ポインタ／参照で派生クラスが登録されていたら、その派生クラスの型情報を出力指示する
+            // ポインタ／参照で基底クラスが登録されていたら、その派生クラスの型情報を出力指示する
+            //  また基底クラス自身も出力指示する
             if (aTypeInfo->mTypeCategory == etcPointerType)
             {
                 BaseTypeInfo* aPointeeTypeInfo = aTypeInfo->getPointeeTypeInfo();
+                if (aSaveStatList[aPointeeTypeInfo->mTypeIndex] != essSaved)
+                {
+                    aSaveStatList[aPointeeTypeInfo->mTypeIndex] = essSaving;
+                }
                 if (aPointeeTypeInfo->setSaving(*this, aSaveStatList))
                 {
                     aAgain=true;   // 自分より前のものなら、再ループ

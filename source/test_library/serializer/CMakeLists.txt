@@ -82,15 +82,3 @@ set(TARGET_NAME SerializerMetaLoad)
 
 set(SOURCE_LIST test_serializer_meta_load.cpp)
 add_test_function(${TARGET_NAME} ${SOURCE_LIST})
-
-#-----------------------------------------------------------------------------
-#       debug
-#-----------------------------------------------------------------------------
-
-if(FALSE)
-set(TARGET_NAME Debug)
-
-set(SOURCE_LIST main.cpp main.h main.cpp.theolizer.hpp)
-add_test_function(${TARGET_NAME} ${SOURCE_LIST})
-
-endif()
