@@ -74,19 +74,24 @@ if(FALSE)
 #   set(BOOST_INSTALLEDx64fPIC "../../build/boost/${BOOST_VERSION}/install64fPIC")
 endif()
 
-# llvmのルート・フォールダ(ドライバをビルドしない時は未指定でOK)
-#   msvc   : ${LLVM}/${COMPILER}x${BIT_NUM}
-#   その他 : ${LLVM}/${COMPILER}x${BIT_NUM}-${CONFIG_TYPE}
-#   これ以外のフォルダを指定する時は、LLVMを""にしてLLVM_ROOTを設定する
-
-set(LLVM "C:/llvm400")
-
 # LLVMのバージョン
 #   複数のLLVMがシステムにインストールされている時に指定する
-#set(LLVM_VERSION 4.0.0)
+set(LLVM_VERSION 4.0.0)
+
+# llvmのダウンロード先フォルダ(ドライバをビルドしない時は未指定でOK)
+#   msvc   : ${LLVM}/${LLVM_MSVC}x${BIT_NUM}                LLVM_MSVC未定義の時はCOMPILER
+#   その他 : ${LLVM}/${LLVM_CC}x${BIT_NUM}-${CONFIG_TYPE}   LLVM_CC  未定義の時はCOMPILER
+#   これ以外のフォルダを指定する時は、LLVMを""にしてLLVM_ROOTを設定する
+set(LLVM "../../build/llvm/${LLVM_VERSION}/package/")
+
+# llvmのダウンロード元URL
+#   LLVM_DOWNLOADとLLVMの両方の指定が有る時は以下をダウンロードする
+#       msvc   : ${LLVM_DOWNLOAD}/${LLVM_MSVC}x${BIT_NUM}.${LLVM_EXT}   LLVM_MSVC未定義の時はCOMPILER
+#       その他 : ${LLVM_DOWNLOAD}/${LLVM_CC}x${BIT_NUM}.${LLVM_EXT}     LLVM_CC  未定義の時はCOMPILER
+set(LLVM_DOWNLOAD "https://github.com/yossi-tahara/build_libTooling/releases/download/v0.0.4/")
 
 # LLVMをコンパイルしたコンパイラ
-#   プリビルド版使用時、もしくは、ターゲットと同じ時は""
+#   プリビルド版使用時、もしくは、${COMPILER}と同じ時は""
 set(LLVM_MSVC msvc2015)
 #set(LLVM_CC mingw710)
 
@@ -148,7 +153,5 @@ build_by_msvc(msvc2017 64 Shared FALSE FALSE "38 11 1 1")
 build_by_msvc(msvc2017 32 Shared FALSE FALSE "38 11 1 1")
 build_by_gcc( mingw710 64 Shared FALSE FALSE "38 1" "11 1")
 build_by_gcc( mingw710 32 Shared FALSE FALSE "38 1" "11 1")
-if(FALSE)
-endif()
 
 output_summary()

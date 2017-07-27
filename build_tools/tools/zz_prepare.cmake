@@ -44,11 +44,18 @@ function(absolute_path PATH_STRING RESULT)
 endfunction()
 
 absolute_path("${THEOLIZER_SOURCE}" THEOLIZER_SOURCE)
-absolute_path("${THEOLIZER_BINARY}" THEOLIZER_BINARY)
-absolute_path("${THEOLIZER_PREFIX}" THEOLIZER_PREFIX)
 message(STATUS "THEOLIZER_SOURCE=${THEOLIZER_SOURCE}")
+
+absolute_path("${THEOLIZER_BINARY}" THEOLIZER_BINARY)
 message(STATUS "THEOLIZER_BINARY=${THEOLIZER_BINARY}")
+
+absolute_path("${THEOLIZER_PREFIX}" THEOLIZER_PREFIX)
 message(STATUS "THEOLIZER_PREFIX=${THEOLIZER_PREFIX}")
+
+if (NOT "${LLVM}" STREQUAL "")
+    absolute_path("${LLVM}"             LLVM)
+    message(STATUS "LLVM            =${LLVM}")
+endif()
 
 #-----------------------------------------------------------------------------
 #       結果概要まとめ用
@@ -91,6 +98,12 @@ if(TRUE)
     message(STATUS "BOOST_INSTALLEDx64      =${BOOST_INSTALLEDx64}")
     message(STATUS "BOOST_INSTALLEDx32fPIC  =${BOOST_INSTALLEDx32fPIC}")
     message(STATUS "BOOST_INSTALLEDx64fPIC  =${BOOST_INSTALLEDx64fPIC}")
+    message(STATUS "LLVM_VERSION            =${LLVM_VERSION}")
+    message(STATUS "LLVM                    =${LLVM}")
+    message(STATUS "LLVM_DOWNLOAD           =${LLVM_DOWNLOAD}")
+    message(STATUS "LLVM_EXT                =${LLVM_EXT}")
+    message(STATUS "LLVM_MSVC               =${LLVM_MSVC}")
+    message(STATUS "LLVM_CC                 =${LLVM_CC}")
     message(STATUS "BUILD_DRIVER            =${BUILD_DRIVER}")
     message(STATUS "BUILD_DOCUMENT          =${BUILD_DOCUMENT}")
     message(STATUS "PROC_ALL                =${PROC_ALL}")
@@ -201,6 +214,7 @@ endif()
     if(fPIC)
         set(BOOST_BUILD "${BOOST_BUILD}-fPIC")
     endif()
+
     # Theolizerのreleaseをコンフィグする際に
     # boostのreleaseとdebugの双方をビルドするのでCONFIG_TYPEは不要
 #   if(NOT "${CONFIG_TYPE}" STREQUAL "")
@@ -225,28 +239,28 @@ endif()
 
     #       ---<<< llvmのフォルダ・パス生成 >>>---
 
-    if("${BUILD_DRIVER}" STREQUAL "TRUE")
-        if(NOT "${LLVM}" STREQUAL "")
-            if("${COMPILER}" MATCHES "msvc")
-                if("${LLVM_MSVC}" STREQUAL "")
-                    set(LLVM_ROOT "${LLVM}/${COMPILER}x${BIT_NUM}")
-                else()
-                    set(LLVM_ROOT "${LLVM}/${LLVM_MSVC}x${BIT_NUM}")
-                endif()
+    if(("${BUILD_DRIVER}" STREQUAL "TRUE") AND (NOT "${LLVM}" STREQUAL ""))
+
+        if("${COMPILER}" MATCHES "msvc")
+            if("${LLVM_MSVC}" STREQUAL "")
+                set(FILE_NAME "${COMPILER}x${BIT_NUM}")
             else()
-                if("${LLVM_CC}" STREQUAL "")
-                    set(LLVM_ROOT "${LLVM}/${COMPILER}x${BIT_NUM}")
-                else()
-                    set(LLVM_ROOT "${LLVM}/${LLVM_CC}x${BIT_NUM}")
-                endif()
+                set(FILE_NAME "${LLVM_MSVC}x${BIT_NUM}")
             endif()
-            if(NOT "${CONFIG_TYPE}" STREQUAL "")
-                set(LLVM_ROOT "${LLVM_ROOT}-${CONFIG_TYPE}")
+        else()
+            if("${LLVM_CC}" STREQUAL "")
+                set(FILE_NAME "${COMPILER}x${BIT_NUM}")
+            else()
+                set(FILE_NAME "${LLVM_CC}x${BIT_NUM}")
             endif()
         endif()
-    else()
-        set(LLVM_ROOT "")
+        if(NOT "${CONFIG_TYPE}" STREQUAL "")
+            set(FILE_NAME "${FILE_NAME}-${CONFIG_TYPE}")
+        endif()
+        set(LLVM_ROOT "${LLVM}${FILE_NAME}")
+
     endif()
+    message(STATUS "FILENAME                =${FILENAME}")
     message(STATUS "LLVM_ROOT               =${LLVM_ROOT}")
 
     #       ---<<< makeツール設定 >>>---
@@ -282,6 +296,29 @@ endif()
     #       ---<<< boostの準備 >>>---
 
     include(tools/zz_boost.cmake)
+
+    #       ---<<< llvmの準備 >>>---
+
+    if(("${BUILD_DRIVER}" STREQUAL "TRUE") AND (NOT "${LLVM_DOWNLOAD}" STREQUAL ""))
+
+        # ダウンロード
+        if(NOT EXISTS "${LLVM}${FILE_NAME}.tar.bz2")
+            file(DOWNLOAD "${LLVM_DOWNLOAD}${FILE_NAME}.tar.bz2" "${LLVM}${FILE_NAME}.tar.bz2" SHOW_PROGRESS)
+        endif()
+
+        # 展開
+        if(NOT EXISTS "${LLVM}${FILE_NAME}")
+message(STATUS "llvm : ${LLVM}${FILE_NAME}")
+            execute_process(
+                COMMAND ${CMAKE_COMMAND} -E tar xvf "${LLVM}${FILE_NAME}.tar.bz2"
+                WORKING_DIRECTORY "${LLVM}"
+                OUTPUT_FILE "${FILE_NAME}.log"
+                ERROR_FILE  "${FILE_NAME}.log"
+            )
+        endif()
+
+    endif()
+
 
 endmacro()
 
