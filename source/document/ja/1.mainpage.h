@@ -142,9 +142,10 @@ Theolizerを使うことで次のようなプログラムの開発が容易に�
 マルチ・プラットフォームでC++11規格コンパイラに対応できるよう設計しています。<br>
 現時点でテストできている環境は下記の通りです。
 
+@subsection LastVersion 2-1.v1.1.3以降
 |OS|C++コンパイラ|
 |--------|--------|
-|Windows 10 Professional 64bit|[Visual Studio C++ 2015](https://www.visualstudio.com/ja/downloads/) Community update 3<br>[MinGW 5.4.0 32bit posix dwarf](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/5.4.0/threads-posix/dwarf/i686-5.4.0-release-posix-dwarf-rt_v5-rev0.7z/download)<br>[MinGW 5.4.0 64bit posix seh](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/5.4.0/threads-posix/seh/x86_64-5.4.0-release-posix-seh-rt_v5-rev0.7z/download)|
+|Windows 10 Professional 64bit|[Visual Studio C++ 2017](https://www.visualstudio.com/ja/downloads/) Community Version 15.2<br>[MinGW 7.1.0 32bit posix dwarf](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/7.1.0/threads-posix/dwarf/i686-7.1.0-release-posix-dwarf-rt_v5-rev0.7z/download)<br>[MinGW 7.1.0 64bit posix seh](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/7.1.0/threads-posix/seh/x86_64-7.1.0-release-posix-seh-rt_v5-rev0.7z/download)|
 |ubuntu 16.04 LTS 64bit|gcc 5.4.0(Ubuntu 5.4.0-6ubuntu1~16.04.2)|
 
 将来的にOS X + apple-llvmに対応する準備を進めています。<br>
@@ -153,11 +154,25 @@ Theolizerを使うことで次のようなプログラムの開発が容易に�
 
 |その他のツール|バージョン|備考|
 |--------------|----------|----|
-|CMake|Visual C++は3.8.0以上<br>その他は3.5.0以上|ユーザ・プログラムビルド<br>Theolizerのビルド|
-|boost|1.59.0以上|Theolizer内部使用|
+|CMake|Windowsは3.8.0以上<br>その他は3.2.2以上|ユーザ・プログラムのビルドをアシストする際に用います<br>Theolizerのビルドに使用しています|
+|boost|1.64.0以上|Theolizerの内部で使用しています|
 
 CMakeは必須ではありませんが、使用することを強く推奨します。<br>
 あなたのプログラムでboostを使っている場合、それがTheolizerで使っているものと異なるバージョンの時、注意が必要になります。「@ref Selecting 」を参照下さい。<br>
+
+@subsection OldVersion 2-2.v1.1.2以前
+|OS|C++コンパイラ|
+|--------|--------|
+|Windows 10 Professional 64bit|[Visual Studio C++ 2015](https://www.microsoft.com/ja-jp/dev/products/visual-studio-2015.aspx) Community update 3<br>[MinGW 5.4.0 32bit posix dwarf](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/5.4.0/threads-posix/dwarf/i686-5.4.0-release-posix-dwarf-rt_v5-rev0.7z/download)<br>[MinGW 5.4.0 64bit posix seh](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/5.4.0/threads-posix/seh/x86_64-5.4.0-release-posix-seh-rt_v5-rev0.7z/download)|
+|ubuntu 16.04 LTS 64bit|gcc 5.4.0(Ubuntu 5.4.0-6ubuntu1~16.04.2)|
+
+<br>
+次に、ユーザ・プログラムをビルドする際に関連するツールは以下の通りです。<br>
+
+|その他のツール|バージョン|備考|
+|--------------|----------|----|
+|CMake|Visual C++は3.8.0以上<br>その他は3.5.0以上|ユーザ・プログラムのビルドをアシストする際に用います<br>Theolizerのビルドに使用しています|
+|boost|1.59.0以上|Theolizerの内部で使用しています|
 
 <br>
 //############################################################################

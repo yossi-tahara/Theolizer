@@ -68,7 +68,7 @@
 
 <b>保存結果</b> (`<ビルド・フォルダ>/Testing/tutorise_class_variation.json`)<br>
 上記で保存されたシリアライズ・データの該当部分です。<br>
-このファイルは、<b>zy2_long_test.sh</b>や<b>zz2_long_test.bat</b> にて自動生成されます。（「@ref HowToBuildLibrary122 」参照。）本節のビルド・フォルダ配下のファイルは全て同じです。<br>
+このファイルは、<b>zy2_long_test.sh</b>や<b>zz2_long_test.bat</b> にて自動生成されます。（「@ref HowToBuildLibrary13 」参照。）本節のビルド・フォルダ配下のファイルは全て同じです。<br>
 privateメンバ以外のメンバが保存されています。
 @code
 {

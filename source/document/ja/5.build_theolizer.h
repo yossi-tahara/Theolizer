@@ -42,6 +42,25 @@
 ---
 
 @subsection HowToBuildLibrary11 1-1.使用するツールとリンクするライブラリ
+@subsubsection HowToBuildLibrary111 1-1-1.v1.1.3以降
+
+|アイテム|条件|検証済のアイテム|
+|-----|----|-----|
+|C++コンパイラ|C++11規格対応|[Visual Studio C++ 2017 Community Version 15.2](https://www.microsoft.com/ja-jp/dev)|
+|||[MinGW 7.1.0 32bit posix dwarf](https://sourceforge.net/projects/mingw-w64/)|
+|||[MinGW 7.1.0 64bit posix seh](https://sourceforge.net/projects/mingw-w64/)|
+|||gcc 5.4.0(Ubuntu 5.4.0-6ubuntu1~16.04.2)|
+|CMake|3.8.0以上|[CMake 3.8.0 64bit](https://cmake.org/)|
+|boost|1.64.0以降|[boost 1.64.0](http://www.boost.org/)|
+
+TheolzierのドキュメントはDoxygenとGraphvizを用いて生成します。現在は下記バージョンを用いています。
+
+|Doxygen|Graphviz|
+|-------|--------|
+|[1.8.12](http://www.stack.nl/~dimitri/doxygen/download.html)|[2.38](http://www.graphviz.org/Download..php)
+
+@subsubsection HowToBuildLibrary112 1-1-2.v1.1.2以前
+
 |アイテム|条件|検証済のアイテム|
 |-----|----|-----|
 |C++コンパイラ|C++11規格対応|[Visual Studio C++ 2015 Community update 3](https://www.microsoft.com/ja-jp/dev)|
@@ -51,92 +70,42 @@
 |CMake|3.5.0以上|[CMake 3.5.0 32bit](https://cmake.org/)|
 |boost|1.59.0以上|[boost 1.59.0](http://www.boost.org/)|
 
-TheolzierのドキュメントはDoxygenとGraphvizを用いて生成します。現在は下記バージョンを用いています。
-
-|Doxygen|Graphviz|
-|-------|--------|
-|[1.8.12](http://www.stack.nl/~dimitri/doxygen/download.html)|[2.38](http://www.graphviz.org/Download..php)
-
-@subsection HowToBuildLibrary12 1-2.ビルド手順
-
-下記手順でTheolizerライブラリをビルドします。
-
-1. boostのsystemとfilesystemをビルドしてインストール
-2. Theolizerライブラリをビルドしてインストール
-
-@subsubsection HowToBuildLibrary121 1-2-1.boostのsystemとfilesystemをビルドしてインストール
-コンパイラはTheolizerをビルドするものと同じものを使用します。<br>
-
-便利のためにcmakeスクリプトを用意しています。<br>
-Theolizerのソースのbuild/boost_buildフォルダにおいてます。Windowsでビルドする場合はwindows.cmakeを、linuxでビルドする場合linux.cmakeを用いて下さい。<br>
-下記のように使います。<br>
-
-1. 作業に用いるフォルダを作成して下さい。<br>
-    例えば、boost1.59.0をビルドする場合、boost-159のようにboostのバージョン番号を反映したフォルダ名をお勧めします。（以下作業フォルダをboost-159と仮定して説明します。）<br>
+@subsection HowToBuildLibrary12 1-2.ビルド概要
+TheolizerライブラリはBoostを使用しています。ヘッダオンリーではないsystem, filesystemをリンクします。そこで、Boostを[公式](http://www.boost.org/)からダウンロードしてこれらのライブラリをビルドする必要があります。<br>
 <br>
+Theolizerのビルド・システムでは、便利のためにcmakeスクリプトを用意しています。そのcmakeスクリプトにて以下の処理を行います。<br>
 
-2. そのフォルダ(boost-159)の下へ使いたいバージョンの[boost](http://www.boost.org/users/history/)をダウンロードして解凍して下さい。（フォルダ名をboostへ変更しておくことをお勧めします。）<br>
-    この作業はオプションです。後述のBOOST_DOWNLOADを有効にすれば自動的にダウンロードします。<br>
-    ただし、Windows上にインストールしたVirtualBox上のubuntuではダウンロードに成功しませんでした。<br>
-    そのような場合は手動でダウンロードし解凍して下さい。<br>
-<br>
+1. 指定バージョンのBoostソース・コード一式をBoost公式からダウンロード
+2. Theolizerが必要とするBoostライブラリをビルド(数分で完了)
+3. Theolizerライブラリをビルド
+4. Theolizerライブラリの自動テスト実施
+5. (Theolizerドライドのビルド準備とビルドと自動テスト実施：次節で解説します。)
+6. Theolizer一式のインストール
+7. インストール出来ていることの自動テスト
 
-3. そのフォルダ(boost-159)の下へboost_buildフォルダをコピーして下さい。<br>
-<br>
-
-4. 下記の<b>設定表</b>に従って、cmakeスクリプトのオプションを設定して下さい<br>
-<br>
-
-5. そして、Windowsならzz_full_all.bat、linuxならzz_full_all.shを起動すればビルドとインストールされます。<br>
-    １組み合わせ当たり数分でビルド完了します。<br>
-<br>
-
-6. ビルド完了時のフォルダ構成<br>
-    boost-159                   ダウンロードした圧縮ファイル
-    boost-159/boost             boostのソース・ファイル群<br>
-    boost-159/boost_build       ビルド用スクリプト群<br>
-    boost-159/boost_build/build ビルド・フォルダ（ビルド・ログや中間ファイル群)<br>
-
-<b>設定表</b>
-
-|設定先|設定内容|
-|------|--------|
-|BOOST_DOWNLOAD|設定した場合、boostを自動ダウンロードします。<br>ダウンロードするバージョン番号を設定して下さい。例："1.59.0"|
-|BOOST_SOURCE|boostのソースのフォルダ|
-|BOOST_PREFIX|boostのインストール先フォルダ名のプリフィクス|
-|CC32|MingWまたはgccの32ビット版のbinフォルダのパス(既にパスが通っているなら指定不要)|
-|CC64|MingWまたはgccの64ビット版のbinフォルダのパス(既にパスが通っているなら指定不要)|
-|build_process()|ビルドする組み合わせを指定|
-
-#### BOOST_DOWNLOADの補足
-BOOST_DOWNLOADを設定し、かつ、BOOST_SOURCEが存在しない時のみ自動ダウンロードします。<br>
-既にダウンロードが完了しているのに再度処理することを回避するためです。
-
-@subsubsection HowToBuildLibrary122 1-2-2.Theolizerライブラリをビルドしてインストール
-
-boostのビルドと同様、Theolizerをビルドするためのcmakeスクリプトを用意していますので、修正してお使い下さい。
+@subsection HowToBuildLibrary13 1-3.ビルド用スクリプトの設定とビルド
+cmakeスクリプトはTholizerソースのbuild_toolsフォルダにおいてます。Windowsでビルドする場合はwindows.cmakeを、linuxでビルドする場合linux.cmakeを用いて下さい。<br>
+設定内容は以下の通りです。(相対指定する時は、各cmakeスクリプトがあるフォルダが起点となります。）
 
 |設定先|設定内容|
 |------|--------|
 |THEOLIZER_SOURCE|Theolizerのソースがあるルート・フォルダ|
 |THEOLIZER_BINARY|ビルド時の中間ファイル群を置くフォルダ|
 |THEOLIZER_PREFIX|Theolizerのインストール先ルート・フォルダ|
-|BOOST|boostがインストールされているフォルダのプリフィックス|
-|LLVM|LLVMのインストール先のパス(Theolizerライブラリのビルド時は指定不要)|
+|BOOST_VERSION|使用するBoostのバージョン番号|
+|REQUIRE_CMAKE_VERSION|必須CMakeバージョン|
 |CC32|MingWまたはgccの32ビット版のbinフォルダのパス(既にパスが通っているなら指定不要)|
 |CC64|MingWまたはgccの64ビット版のbinフォルダのパス(既にパスが通っているなら指定不要)|
-|MAKE|[jom](https://wiki.qt.io/Jom)等の高速なmakeを使う場合にそのフルパス(標準のmakeを使う時は指定不要)|
 |build_by_msvc()|Visual Studio 2015でビルドする時にビルドする組み合わせを指定する|
 |build_by_gcc()|MinGWもしくはgccでビルドする時にビルドする組み合わせを指定する|
 
-build_by_msvc()とbuild_by_gcc()について補足
-- BUILD_DRIVERにTRUEを指定するとドライバをビルドする<br>
-この時はLLVMの指定が必要
-- BUILD_DOCUMENTにTRUEを指定するとドキュメントをビルドする<br>
-この時は[Doxygen](http://www.doxygen.jp/)と[Graphviz](http://www.graphviz.org/)のインストールが必要
+<b>build_by_msvc()とbuild_by_gcc()について補足</b><br>
+- BUILD_DRIVERにTRUEを指定するとドライバをビルドします<br>
+この時はLLVMの指定が必要です。
+- BUILD_DOCUMENTにTRUEを指定するとドキュメントをビルドします<br>
+この時は[Doxygen](http://www.doxygen.jp/)と[Graphviz](http://www.graphviz.org/)のインストールが必要になります。
 
-下記のバッチ(Windowsの場合)、もしくは、スクリプト(linuxの場合)を起動することでTheolizerのビルド・自動テスト・インストールを行います。<br>
-１組み合わせ当たり十数分でビルド完了します。
+下記のバッチ(Windowsの場合)、もしくは、スクリプト(linuxの場合)を起動することでTheolizerのビルド・自動テスト・インストールを行います。１組み合わせ当たり十数分でビルド完了します。
 
 |linuxのスクリプト<br>Windowsのバッチ|処理内容|ログ・ファイル名|
 |------------------------------------|--------|----------------|
@@ -162,87 +131,78 @@ build_by_msvc()とbuild_by_gcc()について補足
 詳しくは[GitHub Issue #37](https://github.com/yossi-tahara/Theolizer/issues/37#issuecomment-309667431)を参照下さい。
 </div>
 
+@subsection HowToBuildLibrary14 1-4.Boostの処理について補足
+BoostのダウンロードとビルドはTHEOLIZER_BINARY/${BOOST_VERSION}配下の次のフォルダで処理します。
+
+|フォルダ名|説明|
+|----------|----|
+|.|Boostのソースをダウンロードする|
+|source|ダウンロードしたソースを解凍する|
+|${COMPLIER}x${BIT_NUM}|Boostのビルド・フォルダ|
+|install32|32ビット版のインストール先|
+|install64|64ビット版のインストール先|
+|install32-fPIC|32ビットfPICオプション付き版のインストール先(linuxのみ)|
+|install64-fPIC|64ビットfPICオプション付き版のインストール先(linuxのみ)|
+
+なお、Boostを既にビルド／インストールしている場合は下記のオプションを指定することで、それを使用可能です。その場合、systemとfilesystemをビルドしてください。また、linuxの場合はfPICオプション付きのビルドも必要になります。
+
+|設定先|設定内容|
+|------|--------|
+|BOOST_INSTALLEDx32|インストール済Boostのフォルダを指定する(32Bit)|
+|BOOST_INSTALLEDx64|インストール済Boostのフォルダを指定する(64Bit)|
+|BOOST_INSTALLEDx32fPIC|インストール済Boostのフォルダを指定する(32Bit;fPICオプション付き)|
+|BOOST_INSTALLEDx64fPIC|インストール済Boostのフォルダを指定する(64Bit;fPICオプション付き)|
+
 <br>
 @section HowToBuildDriver 2.Theolizerドライバのビルド方法
 
 ---
 
 @subsection HowToBuildLibrary21 2-1.使用するツールとリンクするライブラリ
-「1-1.使用するツールとリンクするライブラリ」に加えて、下記が必要です。
+「1-1.使用するツールとリンクするライブラリ」に加えて下記が必要です。
 
 |アイテム|条件|検証済のアイテム|
 |-----|----|-----|
-|LLVM|3.9.0|[LLVM 3.9.0](http://llvm.org/)|
+|LLVM|4.0.0|[LLVM 4.0.0](http://llvm.org/)|
+|C++コンパイラ|C++11規格対応|[Visual Studio C++ 2015 Community update 3](https://www.microsoft.com/ja-jp/dev)|
 
-注）LLVM 3.8.1でもビルドできると思いますが、最終的なテストは行っていません。
-
-@subsection HowToBuildLibrary22 2-2.ビルド手順
-
-下記手順でTheolizerドライバをビルドします。
-
-1. boostのsystemとfilesystemをビルドしてインストール
-2. LLVM(libTooling含む)をビルドしてインストール
-3. Theolizerドライバをビルドしてインストール
-
-@subsubsection HowToBuildLibrary221 2-2-1.boostのsystemとfilesystemをビルドしてインストール
-
-@ref HowToBuildLibrary121 と同じなので省略します。
-
-@subsubsection HowToBuildLibrary222 2-2-2.LLVM(libTooling含む)をビルドしてインストール
-コンパイラはTheolizerをビルドするものと同じものを使用して下さい。
-
-boostのビルドと同様、llvmをビルドするためのcmakeスクリプトを用意しています。<br>
-Theolizerのソースのbuild/llvm_buildフォルダにおいてます。Windowsでビルドする場合はwindows.cmakeを、linuxでビルドする場合linux.cmakeを用いて下さい。<br>
-下記のように使います。<br>
-
-1. 作業に用いるフォルダを作成して下さい。<br>
-    例えば、llvm3.9.0をビルドする場合、llvm-390のようにllvmのバージョン番号を反映したフォルダ名をお勧めします。（以下作業フォルダをllvm-390と仮定して説明します。）<br>
+LLVM 4.0.0はVisual C++ 2017ではビルドできません。代わりにVisual C++ 2015でビルドします。[2015と2017はバイナリ互換性があります](https://stackoverflow.com/questions/40854917/is-visual-c-2017-binary-compatible-with-vc-2015)ので、バージョン相違による問題は発生しない筈です。<br>
 <br>
+注）LLVM 3.8.0, 3.8.1, 3.9.0でもビルドできるよう対応していますが、Theolizer最新版でのテストは行っていません。
 
-2. そのフォルダ(llvm-390)の下へ使いたいバージョンの[llvm](http://llvm.org/releases/download.html)をダウンロードして解凍して下さい。<br>
-    下記の<b>ダウンロード表</b>に従ってダウンロードし解凍して下さい。<br>
-    この作業はオプションです。後述のLLVM_DOWNLOADを有効にすれば自動的にダウンロードします。<br>
-    llvmはboostの場合と異なり、ubuntu環境からも正常にダウンロードできました。<br>
-<br>
+@subsection HowToBuildLibrary22 2-2.ビルド概要
+Theolizerドライバはllvmの[libTooling](http://qiita.com/Chironian/items/6021d35bf2750341d80c)を用いていますので、ビルドされたlibToolingライブラリが必要になります。
 
-3. そのフォルダ(llvm-390)の下へllvm_buildフォルダをコピーして下さい。<br>
-<br>
+- Windowsについて<br>
+Theolizer用にプリビルドしたlibToolingを[build_libTooling](https://github.com/yossi-tahara/build_libTooling)で提供しています。Theolizerで用いるlibToolingライブラリだけを抽出しています。Theolizerドライバをビルドする時はこれをビルド用cmakeスクリプトにより自動的にダウンロードして使用します。
 
-4. 下記の<b>設定表</b>に従って、cmakeスクリプトのオプションを設定して下さい<br>
-<br>
+- Linuxについて<br>
+ubuntu等linux用にはllvm公式にて[APTパッケージ](https://apt.llvm.org/)が提供されています。これらをインストールしてお使い下さい。
 
-5. そして、Windowsならzz_full_all.bat、linuxならzz_full_all.shを起動すればビルドとインストールされます。<br>
-    １組み合わせ当たり<b>１～２時間かかります</b>ので、時間に余裕のある時にビルドして下さい。<br>
-<br>
+<b>ubuntu 16.04へllvmをインストールする手順は次の通りです。</b><br>
+システム設定→ソフトウェアとアップデート→「他のソフトウェア」タブを開いて→「追加」ボタンを押し、次の内容を入力し、「ソースを追加」ボタンを押下して、APTリポジトリをubuntuへ登録して下さい。
+    deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-4.0 main
 
-6. ビルド完了時のフォルダ構成<br>
-    llvm-390                    ダウンロードした圧縮ファイル群
-    llvm-390/llvm               llvmのソース・ファイル群<br>
-    llvm-390/llvm_build         ビルド用スクリプト群<br>
-    llvm-390/llvm_build/build   ビルド・フォルダ（ビルド・ログや中間ファイル群)<br>
+その後、下記コマンドで/usr/lib/llvm-4.0/へインストールされます。
 
-<b>ダウンロード表</b>
+@code
+$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 15CF4D18AF4F7421
+$ sudo apt-get update
+$ sudo apt-get install libclang-4.0-dev
+$ sudo apt-get install llvm-4.0-dev
+@endcode
 
-|ダウンロードするアイテム|ダウンロードするファイル名|解凍後のフォルダ名|
-|------------------------|--------------------------|------------------|
-|LLVM source code|llvm-3.9.0.src.tar.xz|llvm|
-|Clang source code|cfe-3.9.0.src.tar.xz|llvm/tools/clang|
-|clang-tools-extra|clang-tools-extra-3.9.0.src.tar.xz|llvm/tools/clang/tools/extra|
-
-<b>設定表</b>
+@subsection HowToBuildLibrary23 2-3.ビルド用スクリプトの設定とビルド
+camkeスクリプトはTheolizerライブラリのビルドに用いたもの(@ref HowToBuildLibrary13)を用います。
 
 |設定先|設定内容|
 |------|--------|
-|LLVM_DOWNLOAD|設定した場合、必要なllvmを自動ダウンロードします。<br>ダウンロードするバージョン番号を設定して下さい。例："3.9.0"|
-|LLVM_PREFIX|LLVMのインストール先パス名のプリフィックス|
-|CC32|MingWまたはgccの32ビット版のbinフォルダのパス(既にパスが通っているなら指定不要)|
-|CC64|MingWまたはgccの64ビット版のbinフォルダのパス(既にパスが通っているなら指定不要)|
-|MAKE|[jom](https://wiki.qt.io/Jom)等の高速なmakeを使う場合にそのフルパス(標準のmakeを使う時は指定不要)|
-|build_process()|ビルドする組み合わせを指定|
-
-@subsubsection HowToBuildLibrary223 2-2-3.Theolizerドライバをビルドしてインストール
-
-@ref HowToBuildLibrary122 と同じなので省略します。
+|LLVM_VERSION使用するllvmのバージョン番号|
+|LLVM|llvmのダウンロード先パス(ダウンロードする時のみ指定)|
+|LLVM_ROOT|インストール済llvmのパス(ダウンロードしない時のみ指定)|
+|LLVM_DOWNLOAD|llvmのダウンロード元URL|
+|LLVM_MSVC|build_libToolingからダウンロードするllvmをビルドしたmsvcのバージョン|
+|LLVM_CC|build_libToolingからダウンロードするllvmをビルドしたMinGWのバージョン|
 
 <br>
 @section VersionNo 3.Theolizer自身のバージョン番号について
