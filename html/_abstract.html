@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.1.1.2</span>
+   &#160;<span id="projectnumber">Version.1.1.3-Prerelease.</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -108,13 +108,15 @@ $(document).ready(function(){initNavTree('_abstract.html','');});
 <hr/>
 <p>マルチ・プラットフォームでC++11規格コンパイラに対応できるよう設計しています。<br />
  現時点でテストできている環境は下記の通りです。</p>
+<h2><a class="anchor" id="LastVersion"></a>
+2-1.v1.1.3以降</h2>
 <table class="doxtable">
 <tr>
 <th>OS</th><th>C++コンパイラ  </th></tr>
 <tr>
-<td>Windows 10 Professional 64bit</td><td><a href="https://www.visualstudio.com/ja/downloads/">Visual Studio C++ 2015</a> Community update 3<br />
-<a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/5.4.0/threads-posix/dwarf/i686-5.4.0-release-posix-dwarf-rt_v5-rev0.7z/download">MinGW 5.4.0 32bit posix dwarf</a><br />
-<a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/5.4.0/threads-posix/seh/x86_64-5.4.0-release-posix-seh-rt_v5-rev0.7z/download">MinGW 5.4.0 64bit posix seh</a> </td></tr>
+<td>Windows 10 Professional 64bit</td><td><a href="https://www.visualstudio.com/ja/downloads/">Visual Studio C++ 2017</a> Community Version 15.2<br />
+<a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/7.1.0/threads-posix/dwarf/i686-7.1.0-release-posix-dwarf-rt_v5-rev0.7z/download">MinGW 7.1.0 32bit posix dwarf</a><br />
+<a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/7.1.0/threads-posix/seh/x86_64-7.1.0-release-posix-seh-rt_v5-rev0.7z/download">MinGW 7.1.0 64bit posix seh</a> </td></tr>
 <tr>
 <td>ubuntu 16.04 LTS 64bit</td><td>gcc 5.4.0(Ubuntu 5.4.0-6ubuntu1~16.04.2) </td></tr>
 </table>
@@ -126,15 +128,40 @@ $(document).ready(function(){initNavTree('_abstract.html','');});
 <tr>
 <th>その他のツール</th><th>バージョン</th><th>備考  </th></tr>
 <tr>
-<td>CMake</td><td>Visual C++は3.8.0以上<br />
-その他は3.5.0以上</td><td>ユーザ・プログラムビルド<br />
-Theolizerのビルド </td></tr>
+<td>CMake</td><td>Windowsは3.8.0以上<br />
+その他は3.2.2以上</td><td>ユーザ・プログラムのビルドをアシストする際に用います<br />
+Theolizerのビルドに使用しています </td></tr>
 <tr>
-<td>boost</td><td>1.59.0以上</td><td>Theolizer内部使用 </td></tr>
+<td>boost</td><td>1.64.0以上</td><td>Theolizerの内部で使用しています </td></tr>
 </table>
 <p>CMakeは必須ではありませんが、使用することを強く推奨します。<br />
  あなたのプログラムでboostを使っている場合、それがTheolizerで使っているものと異なるバージョンの時、注意が必要になります。「<a class="el" href="_how_to_make_project.html#Selecting">1.Theolizerライブラリの選択</a> 」を参照下さい。<br />
 </p>
+<h2><a class="anchor" id="OldVersion"></a>
+2-2.v1.1.2以前</h2>
+<table class="doxtable">
+<tr>
+<th>OS</th><th>C++コンパイラ  </th></tr>
+<tr>
+<td>Windows 10 Professional 64bit</td><td><a href="https://www.microsoft.com/ja-jp/dev/products/visual-studio-2015.aspx">Visual Studio C++ 2015</a> Community update 3<br />
+<a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/5.4.0/threads-posix/dwarf/i686-5.4.0-release-posix-dwarf-rt_v5-rev0.7z/download">MinGW 5.4.0 32bit posix dwarf</a><br />
+<a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/5.4.0/threads-posix/seh/x86_64-5.4.0-release-posix-seh-rt_v5-rev0.7z/download">MinGW 5.4.0 64bit posix seh</a> </td></tr>
+<tr>
+<td>ubuntu 16.04 LTS 64bit</td><td>gcc 5.4.0(Ubuntu 5.4.0-6ubuntu1~16.04.2) </td></tr>
+</table>
+<p><br />
+ 次に、ユーザ・プログラムをビルドする際に関連するツールは以下の通りです。<br />
+</p>
+<table class="doxtable">
+<tr>
+<th>その他のツール</th><th>バージョン</th><th>備考  </th></tr>
+<tr>
+<td>CMake</td><td>Visual C++は3.8.0以上<br />
+その他は3.5.0以上</td><td>ユーザ・プログラムのビルドをアシストする際に用います<br />
+Theolizerのビルドに使用しています </td></tr>
+<tr>
+<td>boost</td><td>1.59.0以上</td><td>Theolizerの内部で使用しています </td></tr>
+</table>
 <p><br />
  </p><h6></h6>
 <h1><a class="anchor" id="Features"></a>

@@ -2,7 +2,10 @@ var index =
 [
     [ "概要", "_abstract.html", [
       [ "1.Theolizerとは", "_abstract.html#What", null ],
-      [ "2.対応環境", "_abstract.html#Platforms", null ],
+      [ "2.対応環境", "_abstract.html#Platforms", [
+        [ "2-1.v1.1.3以降", "_abstract.html#LastVersion", null ],
+        [ "2-2.v1.1.2以前", "_abstract.html#OldVersion", null ]
+      ] ],
       [ "3.Theolizerの特長", "_abstract.html#Features", [
         [ "3-1.自動シリアライズ", "_abstract.html#Features31", null ],
         [ "3-2.保存先指定", "_abstract.html#Features32", null ],
@@ -81,19 +84,18 @@ var index =
     ] ],
     [ "Theolizerのビルド手順", "_how_to_build_theolizer.html", [
       [ "1.Theolizerライブラリのビルド方法", "_how_to_build_theolizer.html#HowToBuildLibrary", [
-        [ "1-1.使用するツールとリンクするライブラリ", "_how_to_build_theolizer.html#HowToBuildLibrary11", null ],
-        [ "1-2.ビルド手順", "_how_to_build_theolizer.html#HowToBuildLibrary12", [
-          [ "1-2-1.boostのsystemとfilesystemをビルドしてインストール", "_how_to_build_theolizer.html#HowToBuildLibrary121", null ],
-          [ "1-2-2.Theolizerライブラリをビルドしてインストール", "_how_to_build_theolizer.html#HowToBuildLibrary122", null ]
-        ] ]
+        [ "1-1.使用するツールとリンクするライブラリ", "_how_to_build_theolizer.html#HowToBuildLibrary11", [
+          [ "1-1-1.v1.1.3以降", "_how_to_build_theolizer.html#HowToBuildLibrary111", null ],
+          [ "1-1-2.v1.1.2以前", "_how_to_build_theolizer.html#HowToBuildLibrary112", null ]
+        ] ],
+        [ "1-2.ビルド概要", "_how_to_build_theolizer.html#HowToBuildLibrary12", null ],
+        [ "1-3.ビルド用スクリプトの設定とビルド", "_how_to_build_theolizer.html#HowToBuildLibrary13", null ],
+        [ "1-4.Boostの処理について補足", "_how_to_build_theolizer.html#HowToBuildLibrary14", null ]
       ] ],
       [ "2.Theolizerドライバのビルド方法", "_how_to_build_theolizer.html#HowToBuildDriver", [
         [ "2-1.使用するツールとリンクするライブラリ", "_how_to_build_theolizer.html#HowToBuildLibrary21", null ],
-        [ "2-2.ビルド手順", "_how_to_build_theolizer.html#HowToBuildLibrary22", [
-          [ "2-2-1.boostのsystemとfilesystemをビルドしてインストール", "_how_to_build_theolizer.html#HowToBuildLibrary221", null ],
-          [ "2-2-2.LLVM(libTooling含む)をビルドしてインストール", "_how_to_build_theolizer.html#HowToBuildLibrary222", null ],
-          [ "2-2-3.Theolizerドライバをビルドしてインストール", "_how_to_build_theolizer.html#HowToBuildLibrary223", null ]
-        ] ]
+        [ "2-2.ビルド概要", "_how_to_build_theolizer.html#HowToBuildLibrary22", null ],
+        [ "2-3.ビルド用スクリプトの設定とビルド", "_how_to_build_theolizer.html#HowToBuildLibrary23", null ]
       ] ],
       [ "3.Theolizer自身のバージョン番号について", "_how_to_build_theolizer.html#VersionNo", [
         [ "3-1.バージョン番号の付け方", "_how_to_build_theolizer.html#VersionManagement", null ],
