@@ -99,9 +99,9 @@ $(document).ready(function(){initNavTree('_how_to_build_theolizer.html','');});
 <tr>
 <td>C++コンパイラ</td><td>C++11規格対応</td><td><a href="https://www.microsoft.com/ja-jp/dev">Visual Studio C++ 2017 Community Version 15.2</a> </td></tr>
 <tr>
-<td></td><td></td><td><a href="https://sourceforge.net/projects/mingw-w64/">MinGW 7.1.0 32bit posix dwarf</a> </td></tr>
+<td></td><td></td><td><a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/7.1.0/threads-posix/dwarf/i686-7.1.0-release-posix-dwarf-rt_v5-rev0.7z/download">MinGW 7.1.0 32bit posix dwarf</a> </td></tr>
 <tr>
-<td></td><td></td><td><a href="https://sourceforge.net/projects/mingw-w64/">MinGW 7.1.0 64bit posix seh</a> </td></tr>
+<td></td><td></td><td><a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/7.1.0/threads-posix/seh/x86_64-7.1.0-release-posix-seh-rt_v5-rev0.7z/download">MinGW 7.1.0 64bit posix seh</a> </td></tr>
 <tr>
 <td></td><td></td><td>gcc 5.4.0(Ubuntu 5.4.0-6ubuntu1~16.04.2) </td></tr>
 <tr>
@@ -309,7 +309,22 @@ zz4_ja.bat </td><td>ドキュメントのビルド</td><td>z4_ja.log </td></tr>
 <div class="fragment"><div class="line">$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 15CF4D18AF4F7421</div><div class="line">$ sudo apt-<span class="keyword">get</span> update</div><div class="line">$ sudo apt-<span class="keyword">get</span> install libclang-4.0-dev</div><div class="line">$ sudo apt-<span class="keyword">get</span> install llvm-4.0-dev</div></div><!-- fragment --><h2><a class="anchor" id="HowToBuildLibrary23"></a>
 2-3.ビルド用スクリプトの設定とビルド</h2>
 <p>camkeスクリプトはTheolizerライブラリのビルドに用いたもの(<a class="el" href="_how_to_build_theolizer.html#HowToBuildLibrary13">1-3.ビルド用スクリプトの設定とビルド</a>)を用います。</p>
-<p>|設定先|設定内容| |---&mdash;|-----&mdash;| |LLVM_VERSION使用するllvmのバージョン番号| |LLVM|llvmのダウンロード先パス(ダウンロードする時のみ指定)| |LLVM_ROOT|インストール済llvmのパス(ダウンロードしない時のみ指定)| |LLVM_DOWNLOAD|llvmのダウンロード元URL| |LLVM_MSVC|build_libToolingからダウンロードするllvmをビルドしたmsvcのバージョン| |LLVM_CC|build_libToolingからダウンロードするllvmをビルドしたMinGWのバージョン|</p>
+<table class="doxtable">
+<tr>
+<th>設定先</th><th>設定内容  </th></tr>
+<tr>
+<td>LLVM_VERSION</td><td>使用するlvmのバージョン番号 </td></tr>
+<tr>
+<td>LLVM</td><td>llvmのダウンロード先パス(ダウンロードする時のみ指定) </td></tr>
+<tr>
+<td>LLVM_ROOT</td><td>インストール済llvmのパス(ダウンロードしない時のみ指定) </td></tr>
+<tr>
+<td>LLVM_DOWNLOAD</td><td>llvmのダウンロード元URL </td></tr>
+<tr>
+<td>LLVM_MSVC</td><td>build_libToolingからダウンロードするllvmをビルドしたmsvcのバージョン </td></tr>
+<tr>
+<td>LLVM_CC</td><td>build_libToolingからダウンロードするllvmをビルドしたMinGWのバージョン </td></tr>
+</table>
 <p><br />
  </p>
 <h1><a class="anchor" id="VersionNo"></a>

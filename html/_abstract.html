@@ -115,8 +115,8 @@ $(document).ready(function(){initNavTree('_abstract.html','');});
 <th>OS</th><th>C++コンパイラ  </th></tr>
 <tr>
 <td>Windows 10 Professional 64bit</td><td><a href="https://www.visualstudio.com/ja/downloads/">Visual Studio C++ 2017</a> Community Version 15.2<br />
-<a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/7.1.0/threads-posix/dwarf/i686-7.1.0-release-posix-dwarf-rt_v5-rev0.7z/download">MinGW 7.1.0 32bit posix dwarf</a><br />
-<a href="https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/7.1.0/threads-posix/seh/x86_64-7.1.0-release-posix-seh-rt_v5-rev0.7z/download">MinGW 7.1.0 64bit posix seh</a> </td></tr>
+<a href="https://sourceforge.net/projects/mingw-w64/">MinGW 7.1.0 32bit posix dwarf</a>(mingw-w64-install.exe)<br />
+<a href="https://sourceforge.net/projects/mingw-w64/">MinGW 7.1.0 64bit posix seh</a>(mingw-w64-install.exe) </td></tr>
 <tr>
 <td>ubuntu 16.04 LTS 64bit</td><td>gcc 5.4.0(Ubuntu 5.4.0-6ubuntu1~16.04.2) </td></tr>
 </table>
@@ -128,15 +128,31 @@ $(document).ready(function(){initNavTree('_abstract.html','');});
 <tr>
 <th>その他のツール</th><th>バージョン</th><th>備考  </th></tr>
 <tr>
-<td>CMake</td><td>Windowsは3.8.0以上<br />
-その他は3.2.2以上</td><td>ユーザ・プログラムのビルドをアシストする際に用います<br />
+<td>CMake</td><td>3.8.0以上</td><td>ユーザ・プログラムのビルドをアシストする際に用います<br />
 Theolizerのビルドに使用しています </td></tr>
 <tr>
 <td>boost</td><td>1.64.0以上</td><td>Theolizerの内部で使用しています </td></tr>
 </table>
 <p>CMakeは必須ではありませんが、使用することを強く推奨します。<br />
- あなたのプログラムでboostを使っている場合、それがTheolizerで使っているものと異なるバージョンの時、注意が必要になります。「<a class="el" href="_how_to_make_project.html#Selecting">1.Theolizerライブラリの選択</a> 」を参照下さい。<br />
+ あなたのプログラムでBoostを使っている場合、それがTheolizerで使っているものと異なるバージョンの時、注意が必要になります。「<a class="el" href="_how_to_make_project.html#Selecting">1.Theolizerライブラリの選択</a> 」を参照下さい。<br />
 </p>
+<p>なお、CMakeはバージョンによって認識可能なBoostのバージョンが異なります。調べた範囲では以下でした。Linuxではお使いになるBoostのバージョンに合わせて選択下さい。(WindowsではCMake 3.8.0以降のVisual Studio対応機能を用いますのでCMake 3.8.0以降のみ使用可能です。）</p>
+<table class="doxtable">
+<tr>
+<th>CMakeバージョン</th><th>Boostバージョン  </th></tr>
+<tr>
+<td>3.8.0</td><td>1.64.0以下 </td></tr>
+<tr>
+<td>3.7.2</td><td>1.63.0以下 </td></tr>
+<tr>
+<td>3.7.1</td><td>1.62.0以下 </td></tr>
+<tr>
+<td>3.6.0</td><td>1.61.0以下 </td></tr>
+<tr>
+<td>3.5.1</td><td>1.61.0以下 </td></tr>
+<tr>
+<td>3.5.0</td><td>1.61.0以下 </td></tr>
+</table>
 <h2><a class="anchor" id="OldVersion"></a>
 2-2.v1.1.2以前</h2>
 <table class="doxtable">
