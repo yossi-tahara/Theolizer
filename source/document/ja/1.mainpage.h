@@ -145,7 +145,7 @@ Theolizerを使うことで次のようなプログラムの開発が容易に�
 @subsection LastVersion 2-1.v1.1.3以降
 |OS|C++コンパイラ|
 |--------|--------|
-|Windows 10 Professional 64bit|[Visual Studio C++ 2017](https://www.visualstudio.com/ja/downloads/) Community Version 15.2<br>[MinGW 7.1.0 32bit posix dwarf](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/7.1.0/threads-posix/dwarf/i686-7.1.0-release-posix-dwarf-rt_v5-rev0.7z/download)<br>[MinGW 7.1.0 64bit posix seh](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/7.1.0/threads-posix/seh/x86_64-7.1.0-release-posix-seh-rt_v5-rev0.7z/download)|
+|Windows 10 Professional 64bit|[Visual Studio C++ 2017](https://www.visualstudio.com/ja/downloads/) Community Version 15.2<br>[MinGW 7.1.0 32bit posix dwarf](https://sourceforge.net/projects/mingw-w64/)(mingw-w64-install.exe)<br>[MinGW 7.1.0 64bit posix seh](https://sourceforge.net/projects/mingw-w64/)(mingw-w64-install.exe)|
 |ubuntu 16.04 LTS 64bit|gcc 5.4.0(Ubuntu 5.4.0-6ubuntu1~16.04.2)|
 
 将来的にOS X + apple-llvmに対応する準備を進めています。<br>
@@ -154,11 +154,22 @@ Theolizerを使うことで次のようなプログラムの開発が容易に�
 
 |その他のツール|バージョン|備考|
 |--------------|----------|----|
-|CMake|Windowsは3.8.0以上<br>その他は3.2.2以上|ユーザ・プログラムのビルドをアシストする際に用います<br>Theolizerのビルドに使用しています|
+|CMake|3.8.0以上|ユーザ・プログラムのビルドをアシストする際に用います<br>Theolizerのビルドに使用しています|
 |boost|1.64.0以上|Theolizerの内部で使用しています|
 
 CMakeは必須ではありませんが、使用することを強く推奨します。<br>
-あなたのプログラムでboostを使っている場合、それがTheolizerで使っているものと異なるバージョンの時、注意が必要になります。「@ref Selecting 」を参照下さい。<br>
+あなたのプログラムでBoostを使っている場合、それがTheolizerで使っているものと異なるバージョンの時、注意が必要になります。「@ref Selecting 」を参照下さい。<br>
+
+なお、CMakeはバージョンによって認識可能なBoostのバージョンが異なります。調べた範囲では以下でした。Linuxではお使いになるBoostのバージョンに合わせて選択下さい。(WindowsではCMake 3.8.0以降のVisual Studio対応機能を用いますのでCMake 3.8.0以降のみ使用可能です。）
+
+|CMakeバージョン|Boostバージョン|
+|---------------|---------------|
+|3.8.0|1.64.0以下|
+|3.7.2|1.63.0以下|
+|3.7.1|1.62.0以下|
+|3.6.0|1.61.0以下|
+|3.5.1|1.61.0以下|
+|3.5.0|1.61.0以下|
 
 @subsection OldVersion 2-2.v1.1.2以前
 |OS|C++コンパイラ|

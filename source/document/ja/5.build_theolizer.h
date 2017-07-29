@@ -47,8 +47,8 @@
 |アイテム|条件|検証済のアイテム|
 |-----|----|-----|
 |C++コンパイラ|C++11規格対応|[Visual Studio C++ 2017 Community Version 15.2](https://www.microsoft.com/ja-jp/dev)|
-|||[MinGW 7.1.0 32bit posix dwarf](https://sourceforge.net/projects/mingw-w64/)|
-|||[MinGW 7.1.0 64bit posix seh](https://sourceforge.net/projects/mingw-w64/)|
+|||[MinGW 7.1.0 32bit posix dwarf](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win32/Personal%20Builds/mingw-builds/7.1.0/threads-posix/dwarf/i686-7.1.0-release-posix-dwarf-rt_v5-rev0.7z/download)|
+|||[MinGW 7.1.0 64bit posix seh](https://sourceforge.net/projects/mingw-w64/files/Toolchains%20targetting%20Win64/Personal%20Builds/mingw-builds/7.1.0/threads-posix/seh/x86_64-7.1.0-release-posix-seh-rt_v5-rev0.7z/download)|
 |||gcc 5.4.0(Ubuntu 5.4.0-6ubuntu1~16.04.2)|
 |CMake|3.8.0以上|[CMake 3.8.0 64bit](https://cmake.org/)|
 |boost|1.64.0以降|[boost 1.64.0](http://www.boost.org/)|
@@ -197,7 +197,7 @@ camkeスクリプトはTheolizerライブラリのビルドに用いたもの(@r
 
 |設定先|設定内容|
 |------|--------|
-|LLVM_VERSION使用するllvmのバージョン番号|
+|LLVM_VERSION|使用するlvmのバージョン番号|
 |LLVM|llvmのダウンロード先パス(ダウンロードする時のみ指定)|
 |LLVM_ROOT|インストール済llvmのパス(ダウンロードしない時のみ指定)|
 |LLVM_DOWNLOAD|llvmのダウンロード元URL|

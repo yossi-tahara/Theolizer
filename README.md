@@ -200,7 +200,7 @@ Theolizerはバージョン・アップ／ダウン処理をカスケード(Ver.
 
 |OS|C++コンパイラ|
 |--------|--------|
-|Windows 10 Professional 64bit|[Visual Studio C++ 2015 Community update 3](https://www.microsoft.com/ja-jp/dev)<br>[MinGW 5.4.0 32bit posix dwarf](https://sourceforge.net/projects/mingw-w64/)<br>[MinGW 5.4.0 64bit posix seh](https://sourceforge.net/projects/mingw-w64/)|
+|Windows 10 Professional 64bit|[Visual Studio C++ 2017 Community update 3](https://www.microsoft.com/ja-jp/dev)<br>[MinGW 7.1.0 32bit posix dwarf](https://sourceforge.net/projects/mingw-w64/)(mingw-w64-install.exe)<br>[MinGW 7.1.0 64bit posix seh](https://sourceforge.net/projects/mingw-w64/)(mingw-w64-install.exe)|
 |ubuntu 16.04 LTS 64bit|gcc 5.4.0(Ubuntu 5.4.0-6ubuntu1~16.04.2)|
 
 将来的にはマッキントッシュOS Xにも対応する予定です。
