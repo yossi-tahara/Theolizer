@@ -88,7 +88,7 @@ set(LLVM "../../build/llvm/${LLVM_VERSION}/package/")
 #   LLVM_DOWNLOADとLLVMの両方の指定が有る時は以下をダウンロードする
 #       msvc   : ${LLVM_DOWNLOAD}/${LLVM_MSVC}x${BIT_NUM}.${LLVM_EXT}   LLVM_MSVC未定義の時はCOMPILER
 #       その他 : ${LLVM_DOWNLOAD}/${LLVM_CC}x${BIT_NUM}.${LLVM_EXT}     LLVM_CC  未定義の時はCOMPILER
-set(LLVM_DOWNLOAD "https://github.com/yossi-tahara/build_libTooling/releases/download/v0.0.4/")
+set(LLVM_DOWNLOAD "https://github.com/yossi-tahara/build_libTooling/releases/download/v4.0.0/")
 
 # LLVMをコンパイルしたコンパイラ
 #   プリビルド版使用時、もしくは、${COMPILER}と同じ時は""
