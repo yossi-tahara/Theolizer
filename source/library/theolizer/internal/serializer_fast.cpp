@@ -30,6 +30,14 @@
 
 #define THEOLIZER_INTERNAL_EXCLUDE_VERSION_H
 
+// ***************************************************************************
+//          警告抑止
+// ***************************************************************************
+
+#if defined(_MSC_VER)
+    #pragma warning(disable:4127)
+#endif
+
 //############################################################################
 //      インクルード
 //############################################################################
@@ -158,7 +166,16 @@ void FastMidOSerializer::writeHeader()
 #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSimbol)                    \
     void FastMidOSerializer::savePrimitive(dType const& iPrimitive)         \
     {                                                                       \
-        mOStream.write(reinterpret_cast<char const*>(&iPrimitive), sizeof(iPrimitive));\
+        std::size_t size=sizeof(dType);                                     \
+        /* float80 */                                                       \
+        if ((std::numeric_limits<dType>::is_signed == 1)                    \
+         && (std::numeric_limits<dType>::radix == 2)                        \
+         && (std::numeric_limits<dType>::digits == 64)                      \
+         && (std::numeric_limits<dType>::max_exponent == 16384))            \
+        {                                                                   \
+            size=10;                                                        \
+        }                                                                   \
+        mOStream.write(reinterpret_cast<char const*>(&iPrimitive), size);   \
         checkStreamError(mOStream.rdstate());                               \
     }
 
@@ -293,7 +310,16 @@ bool FastMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
 #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSimbol)                    \
     void FastMidISerializer::loadPrimitive(dType& oPrimitive)               \
     {                                                                       \
-        mIStream.read(reinterpret_cast<char*>(&oPrimitive), sizeof(oPrimitive));\
+        std::size_t size=sizeof(dType);                                     \
+        /* float80 */                                                       \
+        if ((std::numeric_limits<dType>::is_signed == 1)                    \
+         && (std::numeric_limits<dType>::radix == 2)                        \
+         && (std::numeric_limits<dType>::digits == 64)                      \
+         && (std::numeric_limits<dType>::max_exponent == 16384))            \
+        {                                                                   \
+            size=10;                                                        \
+        }                                                                   \
+        mIStream.read(reinterpret_cast<char*>(&oPrimitive), size);          \
         checkStreamError(mIStream.rdstate());                               \
     }
 

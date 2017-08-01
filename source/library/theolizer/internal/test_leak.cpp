@@ -79,6 +79,8 @@ struct TestLeak
     TestLeak  sTestLeak;
 #elif !defined(__MINGW32__)
     __attribute__((init_priority(65534))) TestLeak  sTestLeak;
+#else
+    TestLeak  sTestLeak;
 #endif
 
 void enableTestLeak()
