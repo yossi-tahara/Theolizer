@@ -125,7 +125,6 @@ void loadEnumVariation(tSerializer& iSerializer);
 
 void callTutorial()
 {
-new int(56789);
     std::cout << "callTutorial();\n";
 
     #ifdef ENABLE_BASIC_PROCESS_TEST
