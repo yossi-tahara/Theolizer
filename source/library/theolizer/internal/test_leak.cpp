@@ -30,12 +30,10 @@
 
 #if defined(_MSC_VER)
     #include <crtdbg.h>
-#elif !defined(__MINGW32__)
-    #include <mcheck.h>
 #endif
 
 // ***************************************************************************
-//      メモリ・リーク検出用のクラス
+//      メモリ・リーク検出用のクラスとグローバル変数
 // ***************************************************************************
 
 namespace theolizer
@@ -43,49 +41,44 @@ namespace theolizer
 namespace internal
 {
 
+#if defined(_MSC_VER)
 struct TestLeak
 {
     TestLeak()
     {
-    #if defined(_MSC_VER)
         _CrtSetReportMode(_CRT_WARN,  _CRTDBG_MODE_FILE);
         _CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_FILE);
         _CrtSetReportFile(_CRT_WARN,  _CRTDBG_FILE_STDERR);
         _CrtSetReportFile(_CRT_ERROR, _CRTDBG_FILE_STDERR);
         _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-    #elif !defined(__MINGW32__)
-        mtrace();
-    #endif
     }
 
     ~TestLeak()
     {
-    #if defined(_MSC_VER)
-    #elif !defined(__MINGW32__)
-        muntrace();
-    #endif
     }
 
     void enableTestLeak() { }
 };
-
-// ***************************************************************************
-//      リーク検出用グローバル変数
-// ***************************************************************************
+#endif
 
 #if defined(_MSC_VER)
     #pragma warning(disable : 4073)
     #pragma init_seg(lib)
     TestLeak  sTestLeak;
-#elif !defined(__MINGW32__)
-    __attribute__((init_priority(65534))) TestLeak  sTestLeak;
-#else
-    TestLeak  sTestLeak;
 #endif
+
+// ***************************************************************************
+//      グローバル変数の有効化用
+//          gccではこれがないと定義されない。
+//          msvcではなくても定義されるが、念のため残す。
+//          この関数は実際には呼ばれないが、呼び出すコードが存在する。
+// ***************************************************************************
 
 void enableTestLeak()
 {
+#if defined(_MSC_VER)
     sTestLeak.enableTestLeak();
+#endif
 }
 
 }   // namespace internal

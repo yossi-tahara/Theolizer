@@ -949,7 +949,7 @@ void BinaryMidISerializer::loadByteString(std::string& iString)
 
 uint8_t BinaryMidISerializer::readByte()
 {
-    char    in;
+    char    in=0;
     mIStream.get(in);
     checkStreamError(mIStream.rdstate());
 

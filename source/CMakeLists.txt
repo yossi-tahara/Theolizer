@@ -323,6 +323,8 @@ function(add_test_sub_base TEST_NAME TARGET_NAME)
         -D "PARAM_LIST=${PARAM_LIST}"
         -P ${CMAKE_SOURCE_DIR}/tools/execute_process.cmake
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Testing)
+    set_tests_properties(${TEST_NAME} PROPERTIES FAIL_REGULAR_EXPRESSION
+                         "<<<FAIL>>>;Detected memory leaks!;==[0-9]+==")
     exclude_all_test(${TEST_NAME})
     # make ENVIRONMENT. ";" is cmake-list's separator, it is necessary to escape.
     set(PATH "$ENV{PATH}")
@@ -385,8 +387,6 @@ function(add_test_function TARGET_NAME WILL_FAIL)
     set_target_properties(${TARGET_NAME} PROPERTIES FOLDER "TestPrograms")
 
     add_test_sub(${TARGET_NAME} ${TARGET_NAME} ${WILL_FAIL})
-    set_tests_properties(${TARGET_NAME} PROPERTIES FAIL_REGULAR_EXPRESSION
-                         "<<<FAIL>>>;Detected memory leaks!")
     set_tests_properties(${TARGET_NAME}  PROPERTIES LABELS TestFLS)
     add_dependencies(FullTest  ${TARGET_NAME})
     add_dependencies(FullTest1 ${TARGET_NAME})

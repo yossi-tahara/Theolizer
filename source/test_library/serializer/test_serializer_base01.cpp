@@ -74,6 +74,7 @@ void TestEof(const theolizer::CheckMode iCheckMode);
 
 int main(int argc, char** argv)
 {
+new int(12345);
     int ret=0;
 //  theolizer::DisplayPass aDisplayPass;
 
