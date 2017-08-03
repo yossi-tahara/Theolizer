@@ -395,7 +395,7 @@ struct Switcher
                 >::load(iSerializer, const_cast<PointerType&>(oPointer));
             }
             // オブジェクトのアドレス回復
-            PointerType aPointerBak=oPointer;
+            tPointerType aPointerBak=oPointer;
             iSerializer.recoverObject
             (
                 aObjectId,
@@ -407,7 +407,7 @@ struct Switcher
             // オーナー・ポインタが書き換わっていたら解放する
             if (aPointerBak != oPointer)
             {
-                deletePointer<PointerType, tTrackingMode>(aPointerBak);
+                deletePointer<tPointerType, tTrackingMode>(aPointerBak);
             }
         }
         iSerializer.mRequireClearTracking=true;
