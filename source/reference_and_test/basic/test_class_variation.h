@@ -1299,6 +1299,88 @@ public:
 };
 
 //----------------------------------------------------------------------------
+//      msvc 2017対策
+//          DerivedHalfAutoでBaseHalfAuto<>を使うとmsvc 2017でコンパイル・エラー。
+//          他のコンパイラではエラーにならないため、msvc2017の不具合と思うが、
+//          侵入型半自動のテンプレートはTheolizerの正規サポート対象ではないので
+//          msvc 2017用には使わないことにする。
+//      バリエーション
+//          BaseHalfAuto<2121>  BaseHalfAuto2121
+//          BaseHalfAuto<2221>  BaseHalfAuto2221
+//          BaseHalfAuto<2321>  BaseHalfAuto2321
+//          BaseHalfAuto<2421>  BaseHalfAuto2421
+//          BaseHalfAuto<2521>  BaseHalfAuto2521
+//          BaseHalfAuto<2621>  BaseHalfAuto2621
+//----------------------------------------------------------------------------
+
+#if (defined(_MSC_VER)) && (_MSC_VER >= 1910)
+
+#define tInitialValue   1121
+#include "BaseHalfAuto.inc"
+
+#define tInitialValue   1221
+#include "BaseHalfAuto.inc"
+
+#define tInitialValue   1321
+#include "BaseHalfAuto.inc"
+
+#define tInitialValue   1421
+#include "BaseHalfAuto.inc"
+
+#define tInitialValue   1521
+#include "BaseHalfAuto.inc"
+
+#define tInitialValue   1621
+#include "BaseHalfAuto.inc"
+
+
+#define tInitialValue   2121
+#include "BaseHalfAuto.inc"
+
+#define tInitialValue   2221
+#include "BaseHalfAuto.inc"
+
+#define tInitialValue   2321
+#include "BaseHalfAuto.inc"
+
+#define tInitialValue   2421
+#include "BaseHalfAuto.inc"
+
+#define tInitialValue   2521
+#include "BaseHalfAuto.inc"
+
+#define tInitialValue   2621
+#include "BaseHalfAuto.inc"
+
+
+#define tInitialValue   3321
+#include "BaseHalfAuto.inc"
+
+#define tInitialValue   3621
+#include "BaseHalfAuto.inc"
+
+#else
+
+typedef BaseHalfAuto<1121>  BaseHalfAuto_1121_;
+typedef BaseHalfAuto<1221>  BaseHalfAuto_1221_;
+typedef BaseHalfAuto<1321>  BaseHalfAuto_1321_;
+typedef BaseHalfAuto<1421>  BaseHalfAuto_1421_;
+typedef BaseHalfAuto<1521>  BaseHalfAuto_1521_;
+typedef BaseHalfAuto<1621>  BaseHalfAuto_1621_;
+
+typedef BaseHalfAuto<2121>  BaseHalfAuto_2121_;
+typedef BaseHalfAuto<2221>  BaseHalfAuto_2221_;
+typedef BaseHalfAuto<2321>  BaseHalfAuto_2321_;
+typedef BaseHalfAuto<2421>  BaseHalfAuto_2421_;
+typedef BaseHalfAuto<2521>  BaseHalfAuto_2521_;
+typedef BaseHalfAuto<2621>  BaseHalfAuto_2621_;
+
+typedef BaseHalfAuto<3321>  BaseHalfAuto_3321_;
+typedef BaseHalfAuto<3621>  BaseHalfAuto_3621_;
+
+#endif
+
+//----------------------------------------------------------------------------
 //      非侵入型手動　基底クラス
 //----------------------------------------------------------------------------
 
@@ -1389,37 +1471,37 @@ struct TheolizerNonIntrusive<BaseManual<tInitialValue>>::
 
 class DerivedFullAuto :
     private     BaseFullAuto<1111>,
-    private     BaseHalfAuto<1121>,
+    private     BaseHalfAuto_1121_,
     private     BaseManual  <1131>,
     protected   BaseFullAuto<1211>,
-    protected   BaseHalfAuto<1221>,
+    protected   BaseHalfAuto_1221_,
     protected   BaseManual  <1231>,
     public      BaseFullAuto<1311>,
-    public      BaseHalfAuto<1321>,
+    public      BaseHalfAuto_1321_,
     public      BaseManual  <1331>
 {
     BaseFullAuto<1411>  mBaseFullAutoPrivate;
-    BaseHalfAuto<1421>  mBaseHalfAutoPrivate;
+    BaseHalfAuto_1421_  mBaseHalfAutoPrivate;
     BaseManual  <1431>  mBaseManualPrivate;
 protected:
     BaseFullAuto<1511>  mBaseFullAutoProtected;
-    BaseHalfAuto<1521>  mBaseHalfAutoProtected;
+    BaseHalfAuto_1521_  mBaseHalfAutoProtected;
     BaseManual  <1531>  mBaseManualProtected;
 public:
     BaseFullAuto<1611>  mBaseFullAutoPublic;
-    BaseHalfAuto<1621>  mBaseHalfAutoPublic;
+    BaseHalfAuto_1621_  mBaseHalfAutoPublic;
     BaseManual  <1631>  mBaseManualPublic;
 
     // デフォルト・コンストラクタ
     DerivedFullAuto() :
         BaseFullAuto<1111>{false},
-        BaseHalfAuto<1121>{false},
+        BaseHalfAuto_1121_{false},
         BaseManual  <1131>{false},
         BaseFullAuto<1211>{false},
-        BaseHalfAuto<1221>{false},
+        BaseHalfAuto_1221_{false},
         BaseManual  <1231>{false},
         BaseFullAuto<1311>{false},
-        BaseHalfAuto<1321>{false},
+        BaseHalfAuto_1321_{false},
         BaseManual  <1331>{false},
         mBaseFullAutoPrivate{false},
         mBaseHalfAutoPrivate{false},
@@ -1435,13 +1517,13 @@ public:
     // 保存用コンストラクタ
     DerivedFullAuto(bool) :
         BaseFullAuto<1111>{true},
-        BaseHalfAuto<1121>{true},
+        BaseHalfAuto_1121_{true},
         BaseManual  <1131>{true},
         BaseFullAuto<1211>{true},
-        BaseHalfAuto<1221>{true},
+        BaseHalfAuto_1221_{true},
         BaseManual  <1231>{true},
         BaseFullAuto<1311>{true},
-        BaseHalfAuto<1321>{true},
+        BaseHalfAuto_1321_{true},
         BaseManual  <1331>{true},
         mBaseFullAutoPrivate{true},
         mBaseHalfAutoPrivate{true},
@@ -1460,27 +1542,27 @@ public:
         BaseFullAuto<1111>::checkPrivate(false);            // private継承は保存無し
         BaseFullAuto<1111>::checkProtected(false);          // private継承は保存無し
         BaseFullAuto<1111>::checkPublic(false);             // private継承は保存無し
-        BaseHalfAuto<1121>::checkPrivate(false);            // private継承は保存無し
-        BaseHalfAuto<1121>::checkProtected(false);          // private継承は保存無し
-        BaseHalfAuto<1121>::checkPublic(false);             // private継承は保存無し
+        BaseHalfAuto_1121_::checkPrivate(false);            // private継承は保存無し
+        BaseHalfAuto_1121_::checkProtected(false);          // private継承は保存無し
+        BaseHalfAuto_1121_::checkPublic(false);             // private継承は保存無し
         BaseManual  <1131>::checkPublic(false);             // private継承は保存無し
 
         // protected継承
         BaseFullAuto<1211>::checkPrivate(false);            // 非侵入型のprivateは保存無し
         BaseFullAuto<1211>::checkProtected(doSave);
         BaseFullAuto<1211>::checkPublic(doSave);
-        BaseHalfAuto<1221>::checkPrivate(doSave);
-        BaseHalfAuto<1221>::checkProtected(doSave);
-        BaseHalfAuto<1221>::checkPublic(doSave);
+        BaseHalfAuto_1221_::checkPrivate(doSave);
+        BaseHalfAuto_1221_::checkProtected(doSave);
+        BaseHalfAuto_1221_::checkPublic(doSave);
         BaseManual  <1231>::checkPublic(doSave);
 
         // public継承
         BaseFullAuto<1311>::checkPrivate(false);            // 非侵入型のprivateは保存無し
         BaseFullAuto<1311>::checkProtected(doSave);
         BaseFullAuto<1311>::checkPublic(doSave);
-        BaseHalfAuto<1321>::checkPrivate(doSave);
-        BaseHalfAuto<1321>::checkProtected(doSave);
-        BaseHalfAuto<1321>::checkPublic(doSave);
+        BaseHalfAuto_1321_::checkPrivate(doSave);
+        BaseHalfAuto_1321_::checkProtected(doSave);
+        BaseHalfAuto_1321_::checkPublic(doSave);
         BaseManual  <1331>::checkPublic(doSave);
 
         // privateメンバ
@@ -1518,37 +1600,37 @@ public:
 
 class DerivedHalfAuto :
     private     BaseFullAuto<2111>,
-    private     BaseHalfAuto<2121>,
+    private     BaseHalfAuto_2121_,
     private     BaseManual  <2131>,
     protected   BaseFullAuto<2211>,
-    protected   BaseHalfAuto<2221>,
+    protected   BaseHalfAuto_2221_,
     protected   BaseManual  <2231>,
     public      BaseFullAuto<2311>,
-    public      BaseHalfAuto<2321>,
+    public      BaseHalfAuto_2321_,
     public      BaseManual  <2331>
 {
     BaseFullAuto<2411>  mBaseFullAutoPrivate;
-    BaseHalfAuto<2421>  mBaseHalfAutoPrivate;
+    BaseHalfAuto_2421_  mBaseHalfAutoPrivate;
     BaseManual  <2431>  mBaseManualPrivate;
 protected:
     BaseFullAuto<2511>  mBaseFullAutoProtected;
-    BaseHalfAuto<2521>  mBaseHalfAutoProtected;
+    BaseHalfAuto_2521_  mBaseHalfAutoProtected;
     BaseManual  <2531>  mBaseManualProtected;
 public:
     BaseFullAuto<2611>  mBaseFullAutoPublic;
-    BaseHalfAuto<2621>  mBaseHalfAutoPublic;
+    BaseHalfAuto_2621_  mBaseHalfAutoPublic;
     BaseManual  <2631>  mBaseManualPublic;
 
     // デフォルト・コンストラクタ
     DerivedHalfAuto() :
         BaseFullAuto<2111>{false},
-        BaseHalfAuto<2121>{false},
+        BaseHalfAuto_2121_{false},
         BaseManual  <2131>{false},
         BaseFullAuto<2211>{false},
-        BaseHalfAuto<2221>{false},
+        BaseHalfAuto_2221_{false},
         BaseManual  <2231>{false},
         BaseFullAuto<2311>{false},
-        BaseHalfAuto<2321>{false},
+        BaseHalfAuto_2321_{false},
         BaseManual  <2331>{false},
         mBaseFullAutoPrivate{false},
         mBaseHalfAutoPrivate{false},
@@ -1564,13 +1646,13 @@ public:
     // 保存用コンストラクタ
     DerivedHalfAuto(bool) :
         BaseFullAuto<2111>{true},
-        BaseHalfAuto<2121>{true},
+        BaseHalfAuto_2121_{true},
         BaseManual  <2131>{true},
         BaseFullAuto<2211>{true},
-        BaseHalfAuto<2221>{true},
+        BaseHalfAuto_2221_{true},
         BaseManual  <2231>{true},
         BaseFullAuto<2311>{true},
-        BaseHalfAuto<2321>{true},
+        BaseHalfAuto_2321_{true},
         BaseManual  <2331>{true},
         mBaseFullAutoPrivate{true},
         mBaseHalfAutoPrivate{true},
@@ -1589,27 +1671,27 @@ public:
         BaseFullAuto<2111>::checkPrivate(false);            // 非侵入型のprivateは保存無し
         BaseFullAuto<2111>::checkProtected(doSave);
         BaseFullAuto<2111>::checkPublic(doSave);
-        BaseHalfAuto<2121>::checkPrivate(doSave);
-        BaseHalfAuto<2121>::checkProtected(doSave);
-        BaseHalfAuto<2121>::checkPublic(doSave);
+        BaseHalfAuto_2121_::checkPrivate(doSave);
+        BaseHalfAuto_2121_::checkProtected(doSave);
+        BaseHalfAuto_2121_::checkPublic(doSave);
         BaseManual  <2131>::checkPublic(doSave);
 
         // protected継承
         BaseFullAuto<2211>::checkPrivate(false);            // 非侵入型のprivateは保存無し
         BaseFullAuto<2211>::checkProtected(doSave);
         BaseFullAuto<2211>::checkPublic(doSave);
-        BaseHalfAuto<2221>::checkPrivate(doSave);
-        BaseHalfAuto<2221>::checkProtected(doSave);
-        BaseHalfAuto<2221>::checkPublic(doSave);
+        BaseHalfAuto_2221_::checkPrivate(doSave);
+        BaseHalfAuto_2221_::checkProtected(doSave);
+        BaseHalfAuto_2221_::checkPublic(doSave);
         BaseManual  <2231>::checkPublic(doSave);
 
         // public継承
         BaseFullAuto<2311>::checkPrivate(false);            // 非侵入型のprivateは保存無し
         BaseFullAuto<2311>::checkProtected(doSave);
         BaseFullAuto<2311>::checkPublic(doSave);
-        BaseHalfAuto<2321>::checkPrivate(doSave);
-        BaseHalfAuto<2321>::checkProtected(doSave);
-        BaseHalfAuto<2321>::checkPublic(doSave);
+        BaseHalfAuto_2321_::checkPrivate(doSave);
+        BaseHalfAuto_2321_::checkProtected(doSave);
+        BaseHalfAuto_2321_::checkPublic(doSave);
         BaseManual  <2331>::checkPublic(doSave);
 
         // privateメンバ
@@ -1650,18 +1732,18 @@ public:
 
 class DerivedManual :
     public      BaseFullAuto<3311>,
-    public      BaseHalfAuto<3321>,
+    public      BaseHalfAuto_3321_,
     public      BaseManual  <3331>
 {
 public:
     BaseFullAuto<3611>  mBaseFullAutoPublic;
-    BaseHalfAuto<3621>  mBaseHalfAutoPublic;
+    BaseHalfAuto_3621_  mBaseHalfAutoPublic;
     BaseManual  <3631>  mBaseManualPublic;
 
     // デフォルト・コンストラクタ
     DerivedManual() :
         BaseFullAuto{false},
-        BaseHalfAuto{false},
+        BaseHalfAuto_3321_{false},
         BaseManual{false},
         mBaseFullAutoPublic{false},
         mBaseHalfAutoPublic{false},
@@ -1671,7 +1753,7 @@ public:
     // 保存用コンストラクタ
     DerivedManual(bool) :
         BaseFullAuto{true},
-        BaseHalfAuto{true},
+        BaseHalfAuto_3321_{true},
         BaseManual{true},
         mBaseFullAutoPublic{true},
         mBaseHalfAutoPublic{true},
@@ -1684,9 +1766,9 @@ public:
         BaseFullAuto::checkPrivate(false);              // 完全自動のprivateは保存無し
         BaseFullAuto::checkProtected(doSave);
         BaseFullAuto::checkPublic(doSave);
-        BaseHalfAuto::checkPrivate(doSave);
-        BaseHalfAuto::checkProtected(doSave);
-        BaseHalfAuto::checkPublic(doSave);
+        BaseHalfAuto_3321_::checkPrivate(doSave);
+        BaseHalfAuto_3321_::checkProtected(doSave);
+        BaseHalfAuto_3321_::checkPublic(doSave);
         BaseManual::checkPublic(doSave);
 
         // publicメンバ
@@ -1716,7 +1798,7 @@ struct TheolizerNonIntrusive<DerivedManual>::
     )
     {
         THEOLIZER_PROCESS_BASE(iSerializer, BaseFullAuto, iInstance);
-        THEOLIZER_PROCESS_BASE(iSerializer, BaseHalfAuto, iInstance);
+        THEOLIZER_PROCESS_BASE(iSerializer, BaseHalfAuto_3321_, iInstance);
         THEOLIZER_PROCESS_BASE(iSerializer, BaseManual ,  iInstance);
         THEOLIZER_PROCESS(iSerializer, iInstance->mBaseFullAutoPublic);
         THEOLIZER_PROCESS(iSerializer, iInstance->mBaseHalfAutoPublic);
@@ -1733,7 +1815,7 @@ struct TheolizerNonIntrusive<DerivedManual>::
         if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
         THEOLIZER_PROCESS_BASE(iSerializer, BaseFullAuto, oInstance);
-        THEOLIZER_PROCESS_BASE(iSerializer, BaseHalfAuto, oInstance);
+        THEOLIZER_PROCESS_BASE(iSerializer, BaseHalfAuto_3321_, oInstance);
         THEOLIZER_PROCESS_BASE(iSerializer, BaseManual,   oInstance);
         THEOLIZER_PROCESS(iSerializer, oInstance->mBaseFullAutoPublic);
         THEOLIZER_PROCESS(iSerializer, oInstance->mBaseHalfAutoPublic);

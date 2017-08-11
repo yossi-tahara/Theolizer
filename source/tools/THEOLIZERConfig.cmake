@@ -97,6 +97,7 @@ if (MSVC)
     message(STATUS "ORIGINAL_COMPILER =${ORIGINAL_COMPILER}")
     set(EXECUTABLE_PATH "${THEOLIZER_ROOT}/msbuild-bin")
     configure_file("${THEOLIZER_ROOT}/theolizer.props.in" "${CMAKE_BINARY_DIR}/theolizer.props")
+    add_definitions(-D_MSC_VER=${MSVC_VERSION})
 
     import_library_msvc(TheolizerLibStaticWithBoost STATIC)
     import_library_msvc(TheolizerTestStaticWithBoost STATIC)
