@@ -78,6 +78,8 @@ void tutorisePolymorphism()
 
         PolyBase*   aPolyBase0=new PolyDerived0{true};
         PolyBase*   aPolyBase1=new PolyDerived1{true};
+        auto temp0=makeAutoRelease(aPolyBase0);                 // 自動解放設定
+        auto temp1=makeAutoRelease(aPolyBase1);                 // 自動解放設定
 
 //      ---<<< 保存処理 >>>---
 
@@ -102,6 +104,8 @@ void tutorisePolymorphism()
 
         PolyBase*   aPolyBase0=nullptr;
         PolyBase*   aPolyBase1=nullptr;
+        auto temp0=makeAutoRelease(aPolyBase0);                 // 自動解放設定
+        auto temp1=makeAutoRelease(aPolyBase1);                 // 自動解放設定
 
 //      ---<<< 回復処理 >>>---
 

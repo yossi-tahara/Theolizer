@@ -42,7 +42,7 @@ else()
     endif()
 endif()
 
-# example
+# build
 add_executable(${TARGET_NAME} ${SOURCE_LIST})
 setup_theolizer(${TARGET_NAME} StaticWithBoost)
 
@@ -51,4 +51,4 @@ setup_theolizer(${TARGET_NAME} StaticWithBoost)
 #-----------------------------------------------------------------------------
 
 enable_testing()
-add_test(NAME example COMMAND $<TARGET_FILE:example>)
+add_test(NAME ${TARGET_NAME} COMMAND $<TARGET_FILE:${TARGET_NAME}>)

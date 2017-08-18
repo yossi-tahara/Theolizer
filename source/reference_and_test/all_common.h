@@ -135,13 +135,13 @@ extern std::size_t gProgramIndex;   // 保存したプログラムのバージ�
 template<typename tType>
 struct AutoRelease
 {
-    tType*      mData;
-    AutoRelease(tType* iData) : mData(iData) { }
+    tType*&     mData;
+    AutoRelease(tType*& iData) : mData(iData) { }
     ~AutoRelease() { delete mData; }
 };
 
 template<typename tType>
-AutoRelease<tType> makeAutoRelease(tType* iData)
+AutoRelease<tType> makeAutoRelease(tType*& iData)
 {
     return AutoRelease<tType>(iData);
 }
