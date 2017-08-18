@@ -367,13 +367,8 @@ private:
     return false;
 
                 // プライマリー・テンプレート展開を試みる
-                ClassTemplateSpecializationDecl const* ctsd = 
-                    dyn_cast<ClassTemplateSpecializationDecl>(oTargetClass);
-                if (ctsd)
-                {
-                    ClassTemplateDecl* ctd = ctsd->getSpecializedTemplate();
-                    oTargetClass = ctd->getTemplatedDecl();
-                }
+                oTargetClass = getPrimary(oTargetClass);
+                ERROR(!oTargetClass, oTargetClass, false);
             }
             break;
 
@@ -399,7 +394,7 @@ private:
                 ClassTemplateDecl* ctd = dyn_cast<ClassTemplateDecl>(td);
                 if (!ctd)
     return false;
-                oTargetClass = ctd->getTemplatedDecl();
+                oTargetClass = searchDefinition(ctd);;
                 if (!oTargetClass)
     return false;
             }

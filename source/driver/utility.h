@@ -1332,6 +1332,22 @@ struct SerializeInfo
 
 //      ---<<< プライマリー・テンプレート取り出し >>>---
 
+CXXRecordDecl const* searchDefinition(ClassTemplateDecl const* ictd)
+{
+    ClassTemplateDecl const* actd = ictd->getMostRecentDecl();
+    while (!actd->isThisDeclarationADefinition())
+    {
+        actd = actd->getPreviousDecl();
+        if (actd == nullptr)
+        {
+            ASTANALYZE_OUTPUT("searchDefinition : Not Found Definition : ictd=",
+                ictd->getQualifiedNameAsString());
+    return nullptr;
+        }
+    }
+    return actd->getTemplatedDecl();
+}
+
 CXXRecordDecl const* getPrimary(CXXRecordDecl const* iTheolizerTarget)
 {
     // プライマリー・テンプレート展開を試みる
@@ -1340,11 +1356,14 @@ CXXRecordDecl const* getPrimary(CXXRecordDecl const* iTheolizerTarget)
     if (ctsd)
     {
         ClassTemplateDecl* ctd = ctsd->getSpecializedTemplate();
-        iTheolizerTarget = ctd->getMostRecentDecl()->getTemplatedDecl();
-        ASTANALYZE_OUTPUT("      CXXRecordDecl -> Primary ctd=", ctd,
-                          " : ", iTheolizerTarget->getQualifiedNameAsString(),
-                          " : ", ctd->getMostRecentDecl()->getTemplatedDecl(),
-                          " : ", iTheolizerTarget->getCanonicalDecl ());
+        iTheolizerTarget = searchDefinition(ctd);
+        if (iTheolizerTarget)
+        {
+            ASTANALYZE_OUTPUT("      CXXRecordDecl -> Primary ctd=", ctd,
+                              " : ", iTheolizerTarget->getQualifiedNameAsString(),
+                              " : ", iTheolizerTarget,
+                              " : ", iTheolizerTarget->getCanonicalDecl ());
+        }
     }
     return iTheolizerTarget;
 }
@@ -1478,6 +1497,7 @@ public:
         if ((pos == mMap.end()) || (pos->first != iTheolizerTarget))
         {
             tDecl const* aTheolizerTarget=getPrimary(iTheolizerTarget);
+            ERROR(!aTheolizerTarget, aTheolizerTarget, false);
             if (aTheolizerTarget != iTheolizerTarget)
             {
                 iTheolizerTarget=aTheolizerTarget;
@@ -1602,6 +1622,7 @@ public:
         if (pos == mMap.end())
         {
             tDecl const* aTheolizerTarget=getPrimary(iTheolizerTarget);
+            ERROR(!aTheolizerTarget, aTheolizerTarget, Iterator<MapType>(pos, &mMap));
             if (aTheolizerTarget != iTheolizerTarget)
             {
                 iTheolizerTarget=aTheolizerTarget;

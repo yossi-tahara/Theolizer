@@ -1511,8 +1511,8 @@ void loadSupportStl(tSerializer& iSerializer)
         iSerializer.clearTracking();
 
         // チェック
-        THEOLIZER_EQUAL(aSharedNull, false);
-        THEOLIZER_EQUAL(aForWeakNull, false);
+        THEOLIZER_EQUAL(static_cast<bool>(aSharedNull), false);
+        THEOLIZER_EQUAL(static_cast<bool>(aForWeakNull), false);
         aShared0.get()->check(100);
         aForWeak0.get()->check(110);
         aSmartTestAuto0.check(120, aShared0, aForWeak0);
@@ -1559,8 +1559,8 @@ void loadSupportStl(tSerializer& iSerializer)
         // チェック
         aShared.get()->check(200);
         aForWeak.get()->check(210);
-        THEOLIZER_EQUAL(aSharedNull, false);
-        THEOLIZER_EQUAL(aForWeakNull, false);
+        THEOLIZER_EQUAL(static_cast<bool>(aSharedNull), false);
+        THEOLIZER_EQUAL(static_cast<bool>(aForWeakNull), false);
         aSmartTestAuto0.check(220, aShared, aForWeak);
         aSmartTestAuto1.check(230, aShared, aForWeak);
         aSmartTestAuto2.check(240, aShared, aForWeak);
@@ -1599,8 +1599,8 @@ void loadSupportStl(tSerializer& iSerializer)
         // チェック
         aShared.get()->check(300);
         aForWeak.get()->check(310);
-        THEOLIZER_EQUAL(aSharedNull, false);
-        THEOLIZER_EQUAL(aForWeakNull, false);
+        THEOLIZER_EQUAL(static_cast<bool>(aSharedNull), false);
+        THEOLIZER_EQUAL(static_cast<bool>(aForWeakNull), false);
         aSmartTestManual0.check(320, aShared, aForWeak);
         aSmartTestManual1.check(330, aShared, aForWeak);
         aSmartTestManual2.check(340, aShared, aForWeak);
