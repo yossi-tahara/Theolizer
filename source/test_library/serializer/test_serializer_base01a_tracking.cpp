@@ -327,8 +327,14 @@ std::cout << "TestISerializerTracking(" << iFileName << ", "
 
 //      ---<<< 動的生成領域のオーナー指定(基本) >>>---
 
-    Dynamic*    aDynamic=nullptr;
+    Dynamic*    aDynamic=new Dynamic();
     auto aAutoDeleter=theolizer::makeScopeExit([&]{delete aDynamic;});
+
+    aDynamic->mUInt = new unsigned int(999);
+    aDynamic->mEnum = new EnumTest(EnumTest::zero);
+    aDynamic->mIncluded1 = new Included1(-402);
+    aDynamic->mString = new string("-403");
+    aDynamic->mArray[1] = new int(-404);
 
     THEOLIZER_PROCESS_OWNER(aSerializer, aDynamic);
     THEOLIZER_EQUAL(*(aDynamic->mUInt), 400);
