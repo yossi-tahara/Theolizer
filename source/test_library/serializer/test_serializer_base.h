@@ -488,9 +488,10 @@ public:
     Included1*      mIncluded1;
     string*         mString;
     int*            mArray[3];
+    int             (*mArrayPtr)[2];
 
     Dynamic() : mUInt(nullptr), mEnum(nullptr), mIncluded1(nullptr),
-                mString(nullptr), mArray{nullptr}
+                mString(nullptr), mArray{nullptr}, mArrayPtr(nullptr)
     { }
 
     ~Dynamic()
@@ -501,6 +502,7 @@ public:
         delete mString;
         for (std::size_t i=0; i < std::extent<decltype(mArray)>::value; ++i)
             delete mArray[i];
+        delete[] mArrayPtr;
     }
 };
 

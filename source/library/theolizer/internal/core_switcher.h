@@ -273,11 +273,30 @@ template
 <
     typename tPointerType,
     TrackingMode tTrackingMode,
-    THEOLIZER_INTERNAL_OVERLOAD((tTrackingMode == etmOwner))
+    THEOLIZER_INTERNAL_OVERLOAD
+    (
+           (tTrackingMode == etmOwner)
+        && (!std::is_array<typename std::remove_pointer<tPointerType>::type>::value)
+    )
 >
 void deletePointer(tPointerType iPointer)
 {
     delete iPointer;
+}
+
+template
+<
+    typename tPointerType,
+    TrackingMode tTrackingMode,
+    THEOLIZER_INTERNAL_OVERLOAD
+    (
+           (tTrackingMode == etmOwner)
+        && (std::is_array<typename std::remove_pointer<tPointerType>::type>::value)
+    )
+>
+void deletePointer(tPointerType iPointer)
+{
+    delete[] iPointer;
 }
 
 //      ---<<< 本体 >>>---
