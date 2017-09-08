@@ -425,6 +425,34 @@ void TestNormalImpl<theolizer::FastOSerializer<>, theolizer::FastISerializer<> >
     );
 }
 
+//      ---<<< Xml特殊化 >>>---
+
+template<>
+void TestNormalImpl<theolizer::XmlOSerializer<>, theolizer::XmlISerializer<> >
+(
+    string const& iFileName,
+    unsigned iGlobalVersionNo,
+    theolizer::CheckMode iCheckMode,
+    bool iNoPrettyPrint
+)
+{
+    TestOSerializerNormal<theolizer::XmlOSerializer<> >
+    (
+        iFileName,
+        std::ios::openmode(),
+        iGlobalVersionNo,
+        iCheckMode,
+        iNoPrettyPrint
+    );
+
+    TestISerializerNormal<theolizer::XmlISerializer<> >
+    (
+        iFileName,
+        std::ios::openmode(),
+        iGlobalVersionNo
+    );
+}
+
 //      ---<<< Json特殊化 >>>---
 
 template<>
@@ -531,6 +559,7 @@ void TestNormalMain()
 //  theolizer::DisplayPass aDisplayPass;
 
     TestNormal<theolizer::FastOSerializer<>,  theolizer::FastISerializer<> >("test_fast");
+    TestNormal<theolizer::XmlOSerializer<>,   theolizer::XmlISerializer<> >("test_xml");
     TestNormal<theolizer::JsonOSerializer<>,  theolizer::JsonISerializer<> >("test_json");
     TestNormal<theolizer::BinaryOSerializer<>,theolizer::BinaryISerializer<> >("test_binary");
 }

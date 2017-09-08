@@ -37,6 +37,7 @@
 //      通常のインクルード
 // ***************************************************************************
 
+#include <theolizer/serializer_xml.h>
 #include <theolizer/serializer_json.h>
 #include <theolizer/serializer_binary.h>
 #include <theolizer/serializer_fast.h>
