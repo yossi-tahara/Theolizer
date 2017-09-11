@@ -483,7 +483,7 @@ void JsonMidISerializer::readHeader()
             if (aSerialzierName != kJsonSerializerName)
             {
                 THEOLIZER_INTERNAL_DATA_ERROR
-                    ("JsonMidISerializer : シリアライザ名(%1%)が異なります。", aSerialzierName);
+                    ("JsonMidISerializer : Unmatch serializer name(%1%).", aSerialzierName);
             }
         }
         else if (aInfoName == "GlobalVersionNo")

@@ -59,6 +59,10 @@ namespace theolizer
 //      共通定義
 //############################################################################
 
+namespace internal
+{
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+
 // ***************************************************************************
 //      XMLシリアライザのバージョン番号とシリアライザ名
 //          注意事項：
@@ -69,12 +73,33 @@ namespace theolizer
 //              そこそこ手間が掛かりそうななので、必要が生じたら対応を検討する
 // ***************************************************************************
 
-namespace internal
-{
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
+#define THEOLIZER_INTERNAL_XML_THEOLIZER_NAME   "XmlTheolizer"
 
-const static char kXmlSerializerName[]="XmlTheolizer";
+const static char kXmlSerializerName[]=THEOLIZER_INTERNAL_XML_THEOLIZER_NAME;
 const static unsigned kXmlSerializerVersionNo=1;
+
+// ***************************************************************************
+//      XMLヘッダ関係
+// ***************************************************************************
+
+#define THEOLIZER_INTERNAL_XML_HEADER       \
+    "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?>\n"
+#define THEOLIZER_INTERNAL_XML_NAMESPACE    "th"
+#define THEOLIZER_INTERNAL_XML_URI          "https://theolizer.com/theoride/xml-1"
+
+// ***************************************************************************
+//      XMLタグ／属性
+// ***************************************************************************
+
+enum class TagKind
+{
+    Start,      // <タグ名 アトリビュート・リスト>
+    StartEnd,   // <タグ名 アトリビュート・リスト/>
+    End         // </タグ名>
+};
+THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, TagKind iTagKind);
+
+struct Attribute;
 
 // ***************************************************************************
 //      プロバティ返却
@@ -240,26 +265,6 @@ char const* getCppNameXml(std::string const& iPrimitiveName, unsigned iSerialize
 //              std::stringがMultiByteエンコードされているとして処理する。
 //############################################################################
 
-// ***************************************************************************
-//      XML名前空間
-// ***************************************************************************
-
-#define THEOLIZER_INTERNAL_XML_NAMESPACE    "th"
-#define THEOLIZER_INTERNAL_XML_URI          "https://theolizer.com/theoride/xml-1"
-
-// ***************************************************************************
-//      XMLタグ／属性
-// ***************************************************************************
-
-enum class TagKind
-{
-    Start,      // <タグ名 アトリビュート・リスト>
-    StartEnd,   // <タグ名 アトリビュート・リスト/>
-    End         // </タグ名>
-};
-
-struct Attribute;
-
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 // ***************************************************************************
 /*!
@@ -300,10 +305,10 @@ protected:
         GlobalVersionNoTableBase const*const iGlobalVersionNoTable,
         unsigned iGlobalVersionNo,
         unsigned iLastGlobalVersionNo,
-        CheckMode iCheckMode,
         bool iNoPrettyPrint,
         bool iNoThrowException
     );
+    ~XmlMidOSerializer();
 
 //----------------------------------------------------------------------------
 //      型情報保存
@@ -449,6 +454,7 @@ protected:
         std::ostream* iOStream,
         bool iNoThrowException
     );
+    ~XmlMidISerializer();
 
 //----------------------------------------------------------------------------
 //      ヘッダ回復と型チェック
@@ -649,7 +655,6 @@ public:
     (
         std::ostream& iOStream,
         unsigned iGlobalVersionNo=kLastGlobalVersionNo,
-        CheckMode iCheckMode=CheckMode::NoTypeCheck,
         bool iNoPrettyPrint=false,
         bool iNoThrowException=false
     ) : XmlMidOSerializer
@@ -659,7 +664,6 @@ public:
             internal::sGlobalVersionNoTable,
             iGlobalVersionNo,
             kLastGlobalVersionNo,
-            iCheckMode,
             iNoPrettyPrint,
             iNoThrowException
         )
@@ -669,7 +673,6 @@ public:
     XmlOSerializer
     (
         std::ostream& iOStream,
-        CheckMode iCheckMode,
         bool iNoPrettyPrint=false,
         bool iNoThrowException=false
     ) : XmlMidOSerializer
@@ -679,7 +682,6 @@ public:
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
             kLastGlobalVersionNo,
-            iCheckMode,
             iNoPrettyPrint,
             iNoThrowException
         )

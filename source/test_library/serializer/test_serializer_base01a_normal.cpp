@@ -441,7 +441,6 @@ void TestNormalImpl<theolizer::XmlOSerializer<>, theolizer::XmlISerializer<> >
         iFileName,
         std::ios::openmode(),
         iGlobalVersionNo,
-        iCheckMode,
         iNoPrettyPrint
     );
 

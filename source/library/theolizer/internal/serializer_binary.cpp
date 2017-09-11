@@ -499,7 +499,7 @@ void BinaryMidISerializer::readHeader()
             if (aSerialzierName != kBinarySerializerName)
             {
                 THEOLIZER_INTERNAL_DATA_ERROR
-                    ("BinaryMidISerializer : シリアライザ名(%1%)が異なります。", aSerialzierName);
+                    ("BinaryMidISerializer : Unmatch serializer name(%1%).", aSerialzierName);
             }
         }
         else if (aInfoName == "GlobalVersionNo")

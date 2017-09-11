@@ -46,6 +46,7 @@
 #include "internal.h"
 
 #include <limits>
+#include <sstream>
 
 #include "../serializer_xml.h"
 
@@ -60,6 +61,34 @@ namespace internal
 //############################################################################
 //      保存／回復共通
 //############################################################################
+
+// ***************************************************************************
+//      XMLタグ種別
+// ***************************************************************************
+
+std::ostream& operator<<(std::ostream& iOStream, TagKind iTagKind)
+{
+    switch(iTagKind)
+    {
+    case TagKind::Start:
+        iOStream << "Start";
+        break;
+
+    case TagKind::End:
+        iOStream << "End";
+        break;
+
+    case TagKind::StartEnd:
+        iOStream << "StartEnd";
+        break;
+
+    default:
+        THEOLIZER_INTERNAL_ABORT("Unknown TagKind in operator<<(TagKind)");
+        break;
+    }
+
+    return iOStream;
+}
 
 // ***************************************************************************
 //      XML属性
@@ -111,7 +140,6 @@ XmlMidOSerializer::XmlMidOSerializer
     GlobalVersionNoTableBase const*const iGlobalVersionNoTable,
     unsigned iGlobalVersionNo,
     unsigned iLastGlobalVersionNo,
-    CheckMode iCheckMode,
     bool iNoPrettyPrint,
     bool mNoThrowException
 ) : BaseSerializer
@@ -120,7 +148,7 @@ XmlMidOSerializer::XmlMidOSerializer
         iGlobalVersionNoTable,
         iGlobalVersionNo,
         iLastGlobalVersionNo,
-        iCheckMode,
+        CheckMode::NoTypeCheck,
         true,
         nullptr,
         mNoThrowException
@@ -153,9 +181,30 @@ XmlMidOSerializer::XmlMidOSerializer
         writeHeader();
     }
 
-    mOStream << "\n";
+//    mOStream << "\n";
 
     mWriteComma=false;
+}
+
+// ***************************************************************************
+//      デストラクタ
+// ***************************************************************************
+
+XmlMidOSerializer::~XmlMidOSerializer()
+{
+    try
+    {
+        saveTag
+        (
+            TagKind::End,
+            THEOLIZER_INTERNAL_XML_NAMESPACE ":" THEOLIZER_INTERNAL_XML_THEOLIZER_NAME
+        );
+        mOStream << "\n";
+    }
+    catch (ErrorInfo&)
+    {
+        // ErrorReporterに記録される
+    }
 }
 
 // ***************************************************************************
@@ -168,25 +217,23 @@ XmlMidOSerializer::XmlMidOSerializer
 
 void XmlMidOSerializer::writeHeader()
 {
-    AutoRestoreSave aAutoRestoreSave(*this, emName);
+//      ---<<< XMLヘッダ保存 >>>---
 
-    // シリアライザ名出力
-    writePreElement();
-    saveElementName(emName, "SerialzierName");
-    saveControl(kXmlSerializerName);
+    mOStream << THEOLIZER_INTERNAL_XML_HEADER;
 
-    // グローバル・バージョン番号出力
-    writePreElement();
-    saveElementName(emName, "GlobalVersionNo");
-    saveControl(mGlobalVersionNo);
+    Attribute   aAttribute;
+    aAttribute.mXmlns=THEOLIZER_INTERNAL_XML_URI;
+    aAttribute.mGlobalVersionNo=mGlobalVersionNo;
+    saveTag
+    (
+        TagKind::Start,
+        THEOLIZER_INTERNAL_XML_NAMESPACE ":" THEOLIZER_INTERNAL_XML_THEOLIZER_NAME,
+        &aAttribute
+    );
+    mOStream << "\n";
 
     // バージョン番号対応表生成
     createVersionNoTable();
-
-    // 型情報出力
-    writePreElement();
-    saveElementName(emName, "TypeInfoList");
-    BaseSerializer::writeHeaderTypeInfo();
 }
 
 // ***************************************************************************
@@ -351,7 +398,7 @@ void XmlMidOSerializer::saveTag
                 mOStream << " xmlns:" THEOLIZER_INTERNAL_XML_NAMESPACE "="
                             "\"" THEOLIZER_INTERNAL_XML_URI "\"";
             }
-            if (!iAttribute->mGlobalVersionNo)
+            if (iAttribute->mGlobalVersionNo)
             {
                 mOStream << " " THEOLIZER_INTERNAL_XML_NAMESPACE ":GlobalVersionNo=\""
                          << iAttribute->mGlobalVersionNo << '\"';
@@ -535,6 +582,40 @@ XmlMidISerializer::XmlMidISerializer
 }
 
 // ***************************************************************************
+//      デストラクタ
+// ***************************************************************************
+
+XmlMidISerializer::~XmlMidISerializer()
+{
+    try
+    {
+        std::string aSerialzierName;
+        Attribute   aAttribute;
+        TagKind aTag=loadTag
+        (
+            aSerialzierName
+        );
+        if (aTag != TagKind::End)
+        {
+            std::stringstream ss;
+            ss << aTag;
+            THEOLIZER_INTERNAL_DATA_ERROR
+                ("XmlMidISerializer : Illigal tag(%1%).", ss.str());
+        }
+        if (aSerialzierName !=
+            THEOLIZER_INTERNAL_XML_NAMESPACE ":" THEOLIZER_INTERNAL_XML_THEOLIZER_NAME)
+        {
+            THEOLIZER_INTERNAL_DATA_ERROR
+                ("XmlMidISerializer : Unmatch serializer name(%1%).", aSerialzierName);
+        }
+    }
+    catch (ErrorInfo&)
+    {
+        // ErrorReporterに記録される
+    }
+}
+
+// ***************************************************************************
 //      ヘッダ回復と型チェック
 // ***************************************************************************
 
@@ -544,77 +625,59 @@ XmlMidISerializer::XmlMidISerializer
 
 void XmlMidISerializer::readHeader()
 {
-    AutoRestoreLoad aAutoRestoreLoad(*this, emName);
+//      ---<<< XMLヘッダ回復 >>>---
 
-//      ---<<< 名前に従って回復 >>>---
-
-    bool aExistSerializerName=false;
-    bool aExistGlobalVersionNo=false;
-    bool aExistTypeInfo=false;
-
-    while(readPreElement())
+    std::size_t size=sizeof(THEOLIZER_INTERNAL_XML_HEADER)-1;
+    std::string header(size, 0);
+    mIStream.read(&(*header.begin()), size);
+    if (header != THEOLIZER_INTERNAL_XML_HEADER)
     {
-        std::string aInfoName=loadElementName(emName);
-
-        if (aInfoName == "SerialzierName")
-        {
-            aExistSerializerName=true;
-            std::string aSerialzierName;
-            loadControl(aSerialzierName);
-            if (aSerialzierName != kXmlSerializerName)
-            {
-                THEOLIZER_INTERNAL_DATA_ERROR
-                    ("XmlMidISerializer : シリアライザ名(%1%)が異なります。", aSerialzierName);
-            }
-        }
-        else if (aInfoName == "GlobalVersionNo")
-        {
-            aExistGlobalVersionNo=true;
-            loadControl(mGlobalVersionNo);
-
-#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-            // メタ・データ回復時は型情報は存在しないので生成しない
-            if (!mIsMetaMode)
-#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-            {
-                // バージョン番号対応表生成
-                createVersionNoTable();
-
-                // 型名と型／バージョン番号対応表生成
-                createTypeNameMap();
-            }
-
-//std::cout << "mGlobalVersionNo=" << mGlobalVersionNo << "\n";
-        }
-        else if (aInfoName == "TypeInfoList")
-        {
-            aExistTypeInfo=true;
-            BaseSerializer::readHeaderTypeInfo();
-//std::cout << "mSerializerVersionNo=" << mSerializerVersionNo << "\n";
-        }
-        else
-        {
-            disposeElement();
-        }
+        THEOLIZER_INTERNAL_DATA_ERROR("XML Header Error(%1%).", header);
     }
 
-//      ---<<< 情報無しチェック >>>---
-
-    if (!aExistSerializerName)
+    std::string aSerialzierName;
+    Attribute   aAttribute;
+    TagKind aTag=loadTag
+    (
+        aSerialzierName,
+        &aAttribute
+    );
+    if (aTag != TagKind::Start)
     {
-        THEOLIZER_INTERNAL_DATA_ERROR(u8"XmlMidISerializer : No Serializer name.");
+        std::stringstream ss;
+        ss << aTag;
+        THEOLIZER_INTERNAL_DATA_ERROR
+            ("XmlMidISerializer : Illigal tag(%1%).", ss.str());
     }
-
-    if (!aExistGlobalVersionNo)
+    if (aSerialzierName !=
+        THEOLIZER_INTERNAL_XML_NAMESPACE ":" THEOLIZER_INTERNAL_XML_THEOLIZER_NAME)
+    {
+        THEOLIZER_INTERNAL_DATA_ERROR
+            ("XmlMidISerializer : Unmatch serializer name(%1%).", aSerialzierName);
+    }
+    if (aAttribute.mXmlns != THEOLIZER_INTERNAL_XML_URI)
+    {
+        THEOLIZER_INTERNAL_DATA_ERROR
+            ("XmlMidISerializer : Unmatch namespace(%1%).", aAttribute.mXmlns);
+    }
+    if (aAttribute.mGlobalVersionNo == 0)
     {
         THEOLIZER_INTERNAL_DATA_ERROR
             ("XmlMidISerializer : No global version number.");
     }
-
-    if (!aExistTypeInfo)
+    mGlobalVersionNo = aAttribute.mGlobalVersionNo;
+#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
+    // メタ・データ回復時は型情報は存在しないので生成しない
+    if (!mIsMetaMode)
+#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
     {
-        THEOLIZER_INTERNAL_DATA_ERROR(u8"XmlMidISerializer : No types infomation.");
+        // バージョン番号対応表生成
+        createVersionNoTable();
+
+        // 型名と型／バージョン番号対応表生成
+        createTypeNameMap();
     }
+//std::cout << "mGlobalVersionNo=" << mGlobalVersionNo << "\n";
 }
 
 //----------------------------------------------------------------------------
@@ -804,7 +867,7 @@ TagKind XmlMidISerializer::loadTag(std::string& iName, Attribute* iAttribute)
     char in = find_not_of(" \t\n");
     if (in != '<')
     {
-        THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)", in);
+        THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)a", in);
     }
     in = find_not_of(" \t\n");
     if (in == '/')
@@ -820,10 +883,11 @@ TagKind XmlMidISerializer::loadTag(std::string& iName, Attribute* iAttribute)
     {
         if (!iAttribute)
         {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)", iName);
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)b", iName);
         }
         iAttribute->mIsArray = true;
     }
+std::cout << "loadTag(" << iName << ")\n";
     while((in = find_not_of(" \t\n")) != '>')
     {
         mIStream.unget();
@@ -832,11 +896,13 @@ TagKind XmlMidISerializer::loadTag(std::string& iName, Attribute* iAttribute)
         in=getChar();
         if (in != '\"')
         {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)", in);
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)c", in);
         }
         std::string aAttributeValue;
         std::getline(mIStream, aAttributeValue, '\"');
         checkStreamError(mIStream.rdstate());
+
+std::cout << "    " << aAttributeName << "=" << aAttributeValue << "\n";
 
         // エラーが発生していたら、終了する(無限ループ回避)
         if (ErrorReporter::isError())
@@ -844,7 +910,7 @@ return ret;
 
         if (!iAttribute)
         {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)", aAttributeName);
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)d", aAttributeName);
         }
 
         if ((aAttributeName == THEOLIZER_INTERNAL_XML_NAMESPACE ":Pointer")
@@ -863,10 +929,11 @@ return ret;
         else if (aAttributeName == THEOLIZER_INTERNAL_XML_NAMESPACE ":GlobalVersionNo")
         {
             iAttribute->mGlobalVersionNo =static_cast<unsigned>(std::stoul(aAttributeValue));
+std::cout << "    mGlobalVersionNo=" << iAttribute->mGlobalVersionNo << "\n";
         }
         else
         {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)", aAttributeName);
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)e", aAttributeName);
         }
     }
     return ret;
@@ -889,14 +956,14 @@ void XmlMidISerializer::loadClassStart(bool iIsTop)
         case emName:
             if (in != '{')
             {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)", in);
+                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)f", in);
             }
             break;
 
         case emOrder:
             if (in != '[')
             {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)", in);
+                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)g", in);
             }
             break;
         }
