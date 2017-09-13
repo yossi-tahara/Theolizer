@@ -858,7 +858,8 @@ protected:
 
 //      ---<<< トップ・レベル保存前後処理 >>>---
 
-    void saveProcessStart(size_t iTypeIndex);
+    std::string getTypeName(std::size_t iTypeIndex);
+    void saveProcessStart(std::size_t iTypeIndex);
     void saveProcessEnd();
 
 //----------------------------------------------------------------------------

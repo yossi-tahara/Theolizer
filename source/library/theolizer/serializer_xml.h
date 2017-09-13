@@ -220,25 +220,25 @@ class XmlMidISerializer;
         }                                                                   \
     }
 
-THEOLIZER_INTERNAL_INTEGRAL(0,  1,  "bool");
+THEOLIZER_INTERNAL_INTEGRAL(0,  1,  THEOLIZER_INTERNAL_XML_NAMESPACE ":bool");
 
-THEOLIZER_INTERNAL_INTEGRAL(1,  7,  "int8");
-THEOLIZER_INTERNAL_INTEGRAL(1, 15,  "int16");
-THEOLIZER_INTERNAL_INTEGRAL(1, 31,  "int32");
-THEOLIZER_INTERNAL_INTEGRAL(1, 63,  "int64");
+THEOLIZER_INTERNAL_INTEGRAL(1,  7,  THEOLIZER_INTERNAL_XML_NAMESPACE ":int8");
+THEOLIZER_INTERNAL_INTEGRAL(1, 15,  THEOLIZER_INTERNAL_XML_NAMESPACE ":int16");
+THEOLIZER_INTERNAL_INTEGRAL(1, 31,  THEOLIZER_INTERNAL_XML_NAMESPACE ":int32");
+THEOLIZER_INTERNAL_INTEGRAL(1, 63,  THEOLIZER_INTERNAL_XML_NAMESPACE ":int64");
 
-THEOLIZER_INTERNAL_INTEGRAL(0,  8,  "unit8");
-THEOLIZER_INTERNAL_INTEGRAL(0, 16,  "uint16");
-THEOLIZER_INTERNAL_INTEGRAL(0, 32,  "uint32");
-THEOLIZER_INTERNAL_INTEGRAL(0, 64,  "uint64");
+THEOLIZER_INTERNAL_INTEGRAL(0,  8,  THEOLIZER_INTERNAL_XML_NAMESPACE ":unit8");
+THEOLIZER_INTERNAL_INTEGRAL(0, 16,  THEOLIZER_INTERNAL_XML_NAMESPACE ":uint16");
+THEOLIZER_INTERNAL_INTEGRAL(0, 32,  THEOLIZER_INTERNAL_XML_NAMESPACE ":uint32");
+THEOLIZER_INTERNAL_INTEGRAL(0, 64,  THEOLIZER_INTERNAL_XML_NAMESPACE ":uint64");
 
-THEOLIZER_INTERNAL_FLOAT(24,   128, "float32");
-THEOLIZER_INTERNAL_FLOAT(53,  1024, "float64");
-THEOLIZER_INTERNAL_FLOAT(64, 16384, "float80");
+THEOLIZER_INTERNAL_FLOAT(24,   128, THEOLIZER_INTERNAL_XML_NAMESPACE ":float32");
+THEOLIZER_INTERNAL_FLOAT(53,  1024, THEOLIZER_INTERNAL_XML_NAMESPACE ":float64");
+THEOLIZER_INTERNAL_FLOAT(64, 16384, THEOLIZER_INTERNAL_XML_NAMESPACE ":float80");
 
-THEOLIZER_INTERNAL_STRING(1,        "String");
-THEOLIZER_INTERNAL_STRING(2,        "String");
-THEOLIZER_INTERNAL_STRING(4,        "String");
+THEOLIZER_INTERNAL_STRING(1,        THEOLIZER_INTERNAL_XML_NAMESPACE ":string");
+THEOLIZER_INTERNAL_STRING(2,        THEOLIZER_INTERNAL_XML_NAMESPACE ":string");
+THEOLIZER_INTERNAL_STRING(4,        THEOLIZER_INTERNAL_XML_NAMESPACE ":string");
 
 #undef  THEOLIZER_INTERNAL_INTEGRAL
 #undef  THEOLIZER_INTERNAL_FLOAT
@@ -333,6 +333,17 @@ private:
     void saveControl(unsigned long iControl)        {savePrimitive(iControl);}
     void saveControl(unsigned long long iControl)   {savePrimitive(iControl);}
     void saveControl(std::string const& iControl)   {encodeXmlString(iControl);}
+
+//      ---<<< 要素名処理 >>>---
+
+    class AutoReleaseTagName
+    {
+        XmlMidOSerializer&  mXmlMidOSerializer;
+        std::string         mTagName;
+    public:
+        AutoReleaseTagName(XmlMidOSerializer& iXmlMidOSerializer, std::size_t iTypeIndex);
+        ~AutoReleaseTagName();
+    };
 
 //      ---<<< プリミティブ保存 >>>---
 
@@ -486,6 +497,17 @@ private:
     void loadControl(unsigned long& iControl)       {loadPrimitive(iControl);}
     void loadControl(unsigned long long& iControl)  {loadPrimitive(iControl);}
     void loadControl(std::string& iControl)         {decodeXmlString(iControl);}
+
+//      ---<<< 要素名処理 >>>---
+
+    class AutoReleaseTagName
+    {
+        XmlMidISerializer&  mXmlMidISerializer;
+        std::string         mTagName;
+    public:
+        AutoReleaseTagName(XmlMidISerializer& iXmlMidISerializer, std::size_t iTypeIndex);
+        ~AutoReleaseTagName();
+    };
 
 //      ---<<< プリミティブ回復 >>>---
 

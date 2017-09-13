@@ -241,6 +241,25 @@ void XmlMidOSerializer::writeHeader()
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
+//      要素名処理
+//----------------------------------------------------------------------------
+
+XmlMidOSerializer::AutoReleaseTagName::AutoReleaseTagName
+(
+    XmlMidOSerializer& iXmlMidOSerializer,
+    std::size_t iTypeIndex
+) : mXmlMidOSerializer(iXmlMidOSerializer),
+    mTagName(mXmlMidOSerializer.getTypeName(iTypeIndex))
+{
+    mXmlMidOSerializer.saveTag(TagKind::Start, mTagName);
+}
+
+XmlMidOSerializer::AutoReleaseTagName::~AutoReleaseTagName()
+{
+    mXmlMidOSerializer.saveTag(TagKind::End, mTagName);
+}
+
+//----------------------------------------------------------------------------
 //      10進数変換して精度が劣化しない桁数
 //          https://ja.wikipedia.org/wiki/IEEE_754
 //          必要な桁数は、1 + ceiling(p×log102)
@@ -300,6 +319,7 @@ struct Decimal
 #define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSimbol)                     \
     void XmlMidOSerializer::savePrimitive(dType const& iPrimitive)          \
     {                                                                       \
+        AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
         if (std::numeric_limits<dType>::is_signed) {                        \
             mOStream << static_cast<long long>(iPrimitive);                 \
         } else {                                                            \
@@ -313,6 +333,7 @@ struct Decimal
 #define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSimbol)               \
     void XmlMidOSerializer::savePrimitive(dType const& iPrimitive)          \
     {                                                                       \
+        AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
         std::streamsize precision=mOStream.precision();                     \
         mOStream.precision(Decimal<dType>::kDigit);                         \
         mOStream << iPrimitive;                                             \
@@ -325,6 +346,7 @@ struct Decimal
 #define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType, dSimbol)                \
     void XmlMidOSerializer::savePrimitive(dType const& iPrimitive)          \
     {                                                                       \
+        AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
         if (mCharIsMultiByte)                                               \
         {                                                                   \
             u8string temp(iPrimitive, MultiByte());                         \
@@ -339,6 +361,7 @@ struct Decimal
 #define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType, dSimbol)                  \
     void XmlMidOSerializer::savePrimitive(dType const& iPrimitive)          \
     {                                                                       \
+        AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
         u8string temp(iPrimitive);                                          \
         encodeXmlString(temp.str());                                        \
     }
@@ -591,14 +614,14 @@ XmlMidISerializer::~XmlMidISerializer()
     {
         std::string aSerialzierName;
         Attribute   aAttribute;
-        TagKind aTag=loadTag
+        TagKind aTagKind=loadTag
         (
             aSerialzierName
         );
-        if (aTag != TagKind::End)
+        if (aTagKind != TagKind::End)
         {
             std::stringstream ss;
-            ss << aTag;
+            ss << aTagKind;
             THEOLIZER_INTERNAL_DATA_ERROR
                 ("XmlMidISerializer : Illigal tag(%1%).", ss.str());
         }
@@ -637,15 +660,15 @@ void XmlMidISerializer::readHeader()
 
     std::string aSerialzierName;
     Attribute   aAttribute;
-    TagKind aTag=loadTag
+    TagKind aTagKind=loadTag
     (
         aSerialzierName,
         &aAttribute
     );
-    if (aTag != TagKind::Start)
+    if (aTagKind != TagKind::Start)
     {
         std::stringstream ss;
-        ss << aTag;
+        ss << aTagKind;
         THEOLIZER_INTERNAL_DATA_ERROR
             ("XmlMidISerializer : Illigal tag(%1%).", ss.str());
     }
@@ -695,6 +718,53 @@ bool XmlMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
+//      要素名処理
+//----------------------------------------------------------------------------
+
+XmlMidISerializer::AutoReleaseTagName::AutoReleaseTagName
+(
+    XmlMidISerializer& iXmlMidISerializer,
+    std::size_t iTypeIndex
+) : mXmlMidISerializer(iXmlMidISerializer),
+    mTagName(mXmlMidISerializer.getTypeName(iTypeIndex))
+{
+std::cout << "<" << mTagName << ">";
+    std::string aTagName;
+    TagKind aTagKind = mXmlMidISerializer.loadTag(aTagName);
+    if (aTagKind != TagKind::Start)
+    {
+        std::stringstream ss;
+        ss << aTagKind;
+        THEOLIZER_INTERNAL_DATA_ERROR
+            ("XmlMidISerializer : Not start tag(%1%).", ss.str());
+    }
+    if (mTagName != aTagName)
+    {
+        THEOLIZER_INTERNAL_DATA_ERROR
+            ("XmlMidISerializer : Illegal tag name(data:%1%, program:%2%).", aTagName, mTagName);
+    }
+}
+
+XmlMidISerializer::AutoReleaseTagName::~AutoReleaseTagName()
+{
+std::cout << "</" << mTagName << ">\n";
+    std::string aTagName;
+    TagKind aTagKind = mXmlMidISerializer.loadTag(aTagName);
+    if (aTagKind != TagKind::End)
+    {
+        std::stringstream ss;
+        ss << aTagKind;
+        THEOLIZER_INTERNAL_DATA_ERROR
+            ("XmlMidISerializer : Not end tag(%1%).", ss.str());
+    }
+    if (mTagName != aTagName)
+    {
+        THEOLIZER_INTERNAL_DATA_ERROR
+            ("XmlMidISerializer : Illegal tag name(data:%1%, program:%2%).", aTagName, mTagName);
+    }
+}
+
+//----------------------------------------------------------------------------
 //      プリミティブ処理
 //----------------------------------------------------------------------------
 
@@ -703,6 +773,7 @@ bool XmlMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
 #define THEOLIZER_INTERNAL_DEF_BOOL(dType, dSimbol)                         \
     void XmlMidISerializer::loadPrimitive(bool& oPrimitive)                 \
     {                                                                       \
+        AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
         long long data(0);                                                  \
         mIStream >> data;                                                   \
         checkStreamError(mIStream.rdstate());                               \
@@ -719,6 +790,7 @@ bool XmlMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
 #define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSimbol)                     \
     void XmlMidISerializer::loadPrimitive(dType& oPrimitive)                \
     {                                                                       \
+        AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
         if (std::numeric_limits<dType>::is_signed)                          \
         {                                                                   \
             long long data(0);                                              \
@@ -749,6 +821,7 @@ bool XmlMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
 #define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSimbol)               \
     void XmlMidISerializer::loadPrimitive(dType& oPrimitive)                \
     {                                                                       \
+        AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
         mIStream >> oPrimitive;                                             \
         checkStreamError(mIStream.rdstate());                               \
     }
@@ -758,6 +831,7 @@ bool XmlMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
 #define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType, dSimbol)                \
     void XmlMidISerializer::loadPrimitive(dType& oPrimitive)                \
     {                                                                       \
+        AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
         if (mCharIsMultiByte)                                               \
         {                                                                   \
             u8string temp;                                                  \
@@ -773,6 +847,7 @@ bool XmlMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
 #define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType, dSimbol)                  \
     void XmlMidISerializer::loadPrimitive(dType& oPrimitive)                \
     {                                                                       \
+        AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
         u8string temp;                                                      \
         decodeXmlString(temp.str());                                        \
         oPrimitive=temp;                                                    \
@@ -862,6 +937,7 @@ void XmlMidISerializer::disposeElement()
 
 TagKind XmlMidISerializer::loadTag(std::string& iName, Attribute* iAttribute)
 {
+    static const std::string sDelimChar="> \t\n";
     TagKind ret = TagKind::Start;
 
     char in = find_not_of(" \t\n");
@@ -878,7 +954,22 @@ TagKind XmlMidISerializer::loadTag(std::string& iName, Attribute* iAttribute)
     {
         mIStream.unget();
     }
+#if 0
     mIStream >> iName;
+#else
+    iName.clear();
+    while(1)
+    {
+        in = getChar();
+        std::string::size_type pos = sDelimChar.find(in);
+        if (pos != std::string::npos)
+        {
+            mIStream.unget();
+    break;
+        }
+        iName.push_back(in);
+    }
+#endif
     if (iName == THEOLIZER_INTERNAL_XML_NAMESPACE ":Array")
     {
         if (!iAttribute)

@@ -413,11 +413,14 @@ return;
 //      前処理
 //----------------------------------------------------------------------------
 
-void BaseSerializer::saveProcessStart(size_t iTypeIndex)
+std::string BaseSerializer::getTypeName(std::size_t iTypeIndex)
+{
+    return mTypeInfoList[iTypeIndex]->getTypeName(mVersionNoList);
+}
+
+void BaseSerializer::saveProcessStart(std::size_t iTypeIndex)
 {
     saveClassStart(true);
-
-    BaseTypeInfo* aTypeInfo=mTypeInfoList[iTypeIndex];
 
     switch(mCheckMode)
     {
@@ -428,7 +431,7 @@ void BaseSerializer::saveProcessStart(size_t iTypeIndex)
     case CheckMode::TypeCheck:
         {
             writePreElement();
-            saveControl(aTypeInfo->getTypeName(mVersionNoList));
+            saveControl(getTypeName(iTypeIndex));
         }
         break;
 
