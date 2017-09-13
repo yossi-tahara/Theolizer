@@ -324,10 +324,10 @@ private:
 
 private:
 
-//      ---<<< クラス(配列／侵入型／非侵入型)処理 >>>---
+//      ---<<< グループ処理 >>>---
 
-    void saveClassStart(bool iIsTop=false);
-    void saveClassEnd(bool iIsTop=false);
+    void saveGroupStart(bool iIsTop=false);
+    void saveGroupEnd(bool iIsTop=false);
 
 //      ---<<< プリミティブ名返却 >>>---
 
@@ -480,12 +480,12 @@ private:
 
 private:
 
-//      ---<<< クラス(配列／侵入型／非侵入型)処理 >>>---
-//          loadClassEnd()呼び出し以前に、readPreElement()呼び出しにより、
+//      ---<<< グループ処理 >>>---
+//          loadGroupEnd()呼び出し以前に、readPreElement()呼び出しにより、
 //          mTerminatedをtrueにしておくこと。
 
-    void loadClassStart(bool iIsTop=false);
-    void loadClassEnd(bool iIsTop=false);
+    void loadGroupStart(bool iIsTop=false);
+    void loadGroupEnd(bool iIsTop=false);
 
 //      ---<<< プリミティブ名返却 >>>---
 

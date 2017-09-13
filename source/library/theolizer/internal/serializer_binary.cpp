@@ -345,7 +345,7 @@ template void BinaryMidOSerializer::saveFloat<long double>(long double iFloat);
 
 //      ---<<< 開始処理 >>>---
 
-void BinaryMidOSerializer::saveClassStart(bool iIsTop)
+void BinaryMidOSerializer::saveGroupStart(bool iIsTop)
 {
     if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
     {
@@ -364,7 +364,7 @@ void BinaryMidOSerializer::saveClassStart(bool iIsTop)
 
 //      ---<<< 終了処理 >>>---
 
-void BinaryMidOSerializer::saveClassEnd(bool iIsTop)
+void BinaryMidOSerializer::saveGroupEnd(bool iIsTop)
 {
     if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
     {
@@ -840,7 +840,7 @@ void BinaryMidISerializer::disposeElement()
 
 //      ---<<< 開始処理 >>>---
 
-void BinaryMidISerializer::loadClassStart(bool iIsTop)
+void BinaryMidISerializer::loadGroupStart(bool iIsTop)
 {
     if (iIsTop)
     {
@@ -875,7 +875,7 @@ void BinaryMidISerializer::loadClassStart(bool iIsTop)
 
 //      ---<<< 終了処理 >>>---
 
-void BinaryMidISerializer::loadClassEnd(bool iIsTop)
+void BinaryMidISerializer::loadGroupEnd(bool iIsTop)
 {
     // まだ終了処理されてないなら、終了処理する
     if (!mTerminated)

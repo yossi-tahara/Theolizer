@@ -294,7 +294,7 @@ void JsonMidOSerializer::writePreElement(bool iDoProcess)
 
 //      ---<<< 開始処理 >>>---
 
-void JsonMidOSerializer::saveClassStart(bool iIsTop)
+void JsonMidOSerializer::saveGroupStart(bool iIsTop)
 {
     mWriteComma=false;
     if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
@@ -315,7 +315,7 @@ void JsonMidOSerializer::saveClassStart(bool iIsTop)
 
 //      ---<<< 終了処理 >>>---
 
-void JsonMidOSerializer::saveClassEnd(bool iIsTop)
+void JsonMidOSerializer::saveGroupEnd(bool iIsTop)
 {
     mWriteComma=false;
     writeCommaIndent();
@@ -718,7 +718,7 @@ void JsonMidISerializer::disposeElement()
 
 //      ---<<< 開始処理 >>>---
 
-void JsonMidISerializer::loadClassStart(bool iIsTop)
+void JsonMidISerializer::loadGroupStart(bool iIsTop)
 {
     mReadComma=false;
     if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
@@ -746,7 +746,7 @@ void JsonMidISerializer::loadClassStart(bool iIsTop)
 
 //      ---<<< 終了処理 >>>---
 
-void JsonMidISerializer::loadClassEnd(bool iIsTop)
+void JsonMidISerializer::loadGroupEnd(bool iIsTop)
 {
     if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
     {

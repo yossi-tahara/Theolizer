@@ -185,11 +185,11 @@ private:
 
 private:
 
-//      ---<<< クラス(配列／侵入型／非侵入型)処理 >>>---
+//      ---<<< グループ処理 >>>---
 
-    void saveClassStart(bool iIsTop=false)
+    void saveGroupStart(bool iIsTop=false)
     { }
-    void saveClassEnd(bool iIsTop=false)
+    void saveGroupEnd(bool iIsTop=false)
     { }
 
 //      ---<<< プリミティブ名返却 >>>---
@@ -300,11 +300,11 @@ private:
 
 private:
 
-//      ---<<< クラス(配列／侵入型／非侵入型)処理 >>>---
+//      ---<<< グループ処理 >>>---
 
-    void loadClassStart(bool)
+    void loadGroupStart(bool)
     { }
-    void loadClassEnd(bool)
+    void loadGroupEnd(bool)
     { }
 
 //      ---<<< プリミティブ名返却 >>>---

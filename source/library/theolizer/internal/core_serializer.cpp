@@ -206,8 +206,7 @@ void BaseSerializer::writeHeaderTypeInfo()
 //----------------------------------------------------------------------------
 
     // 開始マーク
-    AutoRestoreSave aAutoRestoreSave(*this, emOrder,
-                                     mCheckMode == CheckMode::NoTypeCheck);
+    AutoRestoreSave aAutoRestoreSave(*this, emOrder, (mCheckMode <= CheckMode::NoTypeCheck));
 
 //----------------------------------------------------------------------------
 //      型チェック処理分岐
@@ -420,11 +419,12 @@ std::string BaseSerializer::getTypeName(std::size_t iTypeIndex)
 
 void BaseSerializer::saveProcessStart(std::size_t iTypeIndex)
 {
-    saveClassStart(true);
+    saveGroupStart(true);
 
     switch(mCheckMode)
     {
     case CheckMode::InMemory:
+    case CheckMode::TypeCheckInData:
     case CheckMode::NoTypeCheck:
         break;
 
@@ -453,7 +453,7 @@ void BaseSerializer::saveProcessStart(std::size_t iTypeIndex)
 
 void BaseSerializer::saveProcessEnd()
 {
-    saveClassEnd(true);
+    saveGroupEnd(true);
 }
 
 // ***************************************************************************
@@ -529,11 +529,12 @@ return;
 
 void BaseSerializer::loadProcessStart(std::size_t iTypeIndex)
 {
-    loadClassStart(true);
+    loadGroupStart(true);
 
     switch(mCheckMode)
     {
     case CheckMode::InMemory:
+    case CheckMode::TypeCheckInData:
     case CheckMode::NoTypeCheck:
         break;
 
@@ -596,7 +597,7 @@ void BaseSerializer::loadProcessStart(std::size_t iTypeIndex)
 
 void BaseSerializer::loadProcessEnd()
 {
-    loadClassEnd(true);
+    loadGroupEnd(true);
 }
 
 //############################################################################
@@ -869,21 +870,22 @@ BaseSerializer::AutoRestoreSaveProcess::~AutoRestoreSaveProcess() noexcept(false
 }
 
 //----------------------------------------------------------------------------
-//      クラス(配列／侵入型／非侵入型)処理補助クラス
+//      グループ化処理補助クラス
 //----------------------------------------------------------------------------
 
-BaseSerializer::AutoRestoreSave::AutoRestoreSave(
-            BaseSerializer& iSerializer,
-            ElementsMapping iElementsMapping,
-            bool iCancelPrettyPrint) :
-                mSerializer(iSerializer),
-                mElementsMapping(iSerializer.mElementsMapping),
-                mIndent(iSerializer.mIndent),
-                mCancelPrettyPrint(iSerializer.mCancelPrettyPrint)
+BaseSerializer::AutoRestoreSave::AutoRestoreSave
+(
+    BaseSerializer& iSerializer,
+    ElementsMapping iElementsMapping,
+    bool iCancelPrettyPrint
+) : mSerializer(iSerializer),
+    mElementsMapping(iSerializer.mElementsMapping),
+    mIndent(iSerializer.mIndent),
+    mCancelPrettyPrint(iSerializer.mCancelPrettyPrint)
 {
     mSerializer.mElementsMapping=iElementsMapping;
     mSerializer.mCancelPrettyPrint=iCancelPrettyPrint;
-    mSerializer.saveClassStart();
+    mSerializer.saveGroupStart();
 }
 
 BaseSerializer::AutoRestoreSave::~AutoRestoreSave() noexcept(false)
@@ -892,7 +894,53 @@ BaseSerializer::AutoRestoreSave::~AutoRestoreSave() noexcept(false)
     try
     {
         mSerializer.mIndent=mIndent;
-        mSerializer.saveClassEnd();
+        mSerializer.saveGroupEnd();
+        mSerializer.mCancelPrettyPrint=mCancelPrettyPrint;
+        mSerializer.mElementsMapping=mElementsMapping;
+    }
+    catch (std::exception& e)
+    {
+        THEOLIZER_INTERNAL_ERROR(e.what());
+    }
+    catch (...)
+    {
+        THEOLIZER_INTERNAL_ERROR(u8"Unknown exception");
+    }
+}
+
+//----------------------------------------------------------------------------
+//      各種構造処理補助クラス
+//----------------------------------------------------------------------------
+
+BaseSerializer::AutoRestoreSaveStructure::AutoRestoreSaveStructure
+(
+    BaseSerializer&     iSerializer,
+    ElementsMapping     iElementsMapping,
+    Structure           iStructure,
+    std::size_t         iTypeIndex
+) : mSerializer(iSerializer),
+    mElementsMapping(iSerializer.mElementsMapping),
+    mStructure(iStructure),
+    mIndent(iSerializer.mIndent),
+    mCancelPrettyPrint(iSerializer.mCancelPrettyPrint)
+{
+    mSerializer.mElementsMapping=iElementsMapping;
+    mSerializer.mCancelPrettyPrint=false;
+    // データ内に型名を記録
+    if ((mSerializer.mCheckMode == CheckMode::TypeCheckInData) && (iTypeIndex != kInvalidSize))
+    {
+        mTypeName.reset(new std::string(mSerializer.getTypeName(iTypeIndex)));
+    }
+    mSerializer.saveStructureStart(mStructure, mTypeName.get());
+}
+
+BaseSerializer::AutoRestoreSaveStructure::~AutoRestoreSaveStructure() noexcept(false)
+{
+    theolizer::internal::Releasing aReleasing{};
+    try
+    {
+        mSerializer.mIndent=mIndent;
+        mSerializer.saveStructureEnd(mStructure, mTypeName.get());
         mSerializer.mCancelPrettyPrint=mCancelPrettyPrint;
         mSerializer.mElementsMapping=mElementsMapping;
     }
@@ -947,7 +995,7 @@ BaseSerializer::AutoRestoreLoad::AutoRestoreLoad(
                 mElementsMapping(iSerializer.mElementsMapping)
 {
     mSerializer.mElementsMapping=iElementsMapping;
-    mSerializer.loadClassStart();
+    mSerializer.loadGroupStart();
 }
 
 BaseSerializer::AutoRestoreLoad::~AutoRestoreLoad() noexcept(false)
@@ -955,7 +1003,7 @@ BaseSerializer::AutoRestoreLoad::~AutoRestoreLoad() noexcept(false)
     theolizer::internal::Releasing aReleasing{};
     try
     {
-        mSerializer.loadClassEnd();
+        mSerializer.loadGroupEnd();
         mSerializer.mElementsMapping=mElementsMapping;
     }
     catch (std::exception& e)

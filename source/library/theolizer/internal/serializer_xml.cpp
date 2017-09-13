@@ -148,14 +148,13 @@ XmlMidOSerializer::XmlMidOSerializer
         iGlobalVersionNoTable,
         iGlobalVersionNo,
         iLastGlobalVersionNo,
-        CheckMode::NoTypeCheck,
+        CheckMode::TypeCheckInData,
         true,
         nullptr,
         mNoThrowException
     ),
     mOStream(iOStream),
     mNoPrettyPrint(iNoPrettyPrint),
-    mWriteComma(false),
     mCharIsMultiByte(false)
 {
     // エラー情報登録準備
@@ -182,8 +181,6 @@ XmlMidOSerializer::XmlMidOSerializer
     }
 
 //    mOStream << "\n";
-
-    mWriteComma=false;
 }
 
 // ***************************************************************************
@@ -376,7 +373,7 @@ struct Decimal
 
 void XmlMidOSerializer::writePreElement(bool iDoProcess)
 {
-    writeCommaIndent(mWriteComma);
+    writeIndent(true);
 }
 
 // ***************************************************************************
@@ -440,72 +437,56 @@ void XmlMidOSerializer::saveTag
 }
 
 //----------------------------------------------------------------------------
-//      クラス(侵入型／非侵入型)処理
+//      グループ処理
 //----------------------------------------------------------------------------
 
 //      ---<<< 開始処理 >>>---
 
-void XmlMidOSerializer::saveClassStart(bool iIsTop)
+void XmlMidOSerializer::saveGroupStart(bool iIsTop)
 {
-    mWriteComma=false;
-    if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
-    {
-        if (!mCancelPrettyPrint) mIndent++;
-        switch (mElementsMapping)
-        {
-        case emName:
-            mOStream << "{";
-            break;
-
-        case emOrder:
-            mOStream << "[";
-            break;
-        }
-    }
 }
 
 //      ---<<< 終了処理 >>>---
 
-void XmlMidOSerializer::saveClassEnd(bool iIsTop)
+void XmlMidOSerializer::saveGroupEnd(bool iIsTop)
 {
-    mWriteComma=false;
-    writeCommaIndent();
-    if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
-    {
-        switch (mElementsMapping)
-        {
-        case emName:
-            mOStream << "}";
-            break;
-
-        case emOrder:
-            mOStream << "]";
-            break;
-        }
-    }
     if ((iIsTop) && (!mIndent))
         mOStream << "\n";
+}
+
+//----------------------------------------------------------------------------
+//      各種構造処理
+//----------------------------------------------------------------------------
+
+//      ---<<< 開始処理 >>>---
+
+void XmlMidOSerializer::saveStructureStart(Structure iStructure, std::string const* iTypeName)
+{
+std::cout << "saveStructureStart() mNoPrettyPrint=" << mNoPrettyPrint << " mCancelPrettyPrint=" << mCancelPrettyPrint << " mIndent=" << mIndent << "\n";
+    if (!mCancelPrettyPrint) mIndent++;
+    saveTag(TagKind::Start, *iTypeName);
+}
+
+//      ---<<< 終了処理 >>>---
+
+void XmlMidOSerializer::saveStructureEnd(Structure iStructure, std::string const* iTypeName)
+{
+    writeIndent(true);
+    saveTag(TagKind::End, *iTypeName);
 }
 
 //----------------------------------------------------------------------------
 //      整形処理
 //----------------------------------------------------------------------------
 
-void XmlMidOSerializer::writeCommaIndent(bool iWriteComma)
+void XmlMidOSerializer::writeIndent(bool iNewLine)
 {
-    if (iWriteComma)
-    {
-        mOStream << ",";
-    }
-
     if (!mNoPrettyPrint && !mCancelPrettyPrint)
     {
-        mOStream << "\n";
+        if (iNewLine) mOStream << "\n";
         for (int i=0; i < mIndent; ++i)
             mOStream << "    ";
     }
-
-    mWriteComma=true;
 }
 
 //----------------------------------------------------------------------------
@@ -569,7 +550,7 @@ XmlMidISerializer::XmlMidISerializer
         iGlobalVersionNoTable,
         0,
         iLastGlobalVersionNo,
-        CheckMode::NoTypeCheck,
+        CheckMode::TypeCheckInData,
         false,
         iOStream,
         mNoThrowException
@@ -1036,7 +1017,7 @@ std::cout << "    mGlobalVersionNo=" << iAttribute->mGlobalVersionNo << "\n";
 
 //      ---<<< 開始処理 >>>---
 
-void XmlMidISerializer::loadClassStart(bool iIsTop)
+void XmlMidISerializer::loadGroupStart(bool iIsTop)
 {
     mReadComma=false;
     if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
@@ -1064,7 +1045,7 @@ void XmlMidISerializer::loadClassStart(bool iIsTop)
 
 //      ---<<< 終了処理 >>>---
 
-void XmlMidISerializer::loadClassEnd(bool iIsTop)
+void XmlMidISerializer::loadGroupEnd(bool iIsTop)
 {
     if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
     {

@@ -820,6 +820,7 @@ namespace theolizer
 enum class CheckMode
 {
     InMemory,                   //   メモリ内動作のみ、かつ、型チェック無し（非公開）
+    TypeCheckInData,            //   データ内に型名を記録する
     NoTypeCheck,                //!< 型チェック無し
     TypeCheck,                  //!< 型名による型チェック
     TypeCheckByIndex,           //!< TypeIndexによる型チェック

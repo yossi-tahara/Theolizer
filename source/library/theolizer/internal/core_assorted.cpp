@@ -257,6 +257,10 @@ std::ostream& operator<<(std::ostream& iOStream, CheckMode iCheckMode)
         iOStream << "InMemory";
         break;
 
+    case CheckMode::TypeCheckInData:
+        iOStream << "TypeCheckInData";
+        break;
+
     case CheckMode::NoTypeCheck:
         iOStream << "NoTypeCheck";
         break;

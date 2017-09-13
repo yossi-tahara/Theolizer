@@ -386,6 +386,21 @@ public:
 };
 
 //############################################################################
+//      構造処理
+//          xml生成時に用いている。
+//############################################################################
+
+enum class Structure
+{
+    Class,
+    Array,
+    Pointer,
+    OwnerPointer,
+    Pointee,
+    Reference               // 参照による動的ポリモーフィズム処理用
+};
+
+//############################################################################
 //      オブジェクト追跡用クラス
 //############################################################################
 
@@ -812,21 +827,51 @@ protected:
     };
 
 //----------------------------------------------------------------------------
-//      クラス(配列／侵入型／非侵入型)処理補助クラス
+//      グループ処理補助クラス
 //----------------------------------------------------------------------------
 
     struct THEOLIZER_INTERNAL_DLL AutoRestoreSave
     {
         BaseSerializer&     mSerializer;
         ElementsMapping     mElementsMapping;
-        bool                mIsShared;
         int                 mIndent;
         bool                mCancelPrettyPrint;
-
-        AutoRestoreSave(BaseSerializer& iSerializer,
-                    ElementsMapping iElementsMapping=emOrder,
-                    bool iCancelPrettyPrint=false);
+        AutoRestoreSave
+        (
+            BaseSerializer& iSerializer,
+            ElementsMapping iElementsMapping=emOrder,
+            bool            iCancelPrettyPrint=false
+        );
         ~AutoRestoreSave() noexcept(false);
+    };
+
+//----------------------------------------------------------------------------
+//      各種構造処理補助クラス
+//          クラス
+//          配列
+//          ポインタ
+//          オーナ・ポインタ
+//          被ポインタ
+//          参照（動的ポリモーフィズム時のみ）
+//----------------------------------------------------------------------------
+
+    struct THEOLIZER_INTERNAL_DLL AutoRestoreSaveStructure
+    {
+        BaseSerializer&                     mSerializer;
+        ElementsMapping                     mElementsMapping;
+        Structure                           mStructure;
+        std::unique_ptr<std::string const>  mTypeName;
+        int                                 mIndent;
+        bool                                mCancelPrettyPrint;
+
+        AutoRestoreSaveStructure
+        (
+            BaseSerializer&     iSerializer,
+            ElementsMapping     iElementsMapping,
+            Structure           iStructure,
+            std::size_t         iTypeIndex=kInvalidSize
+        );
+        ~AutoRestoreSaveStructure() noexcept(false);
     };
 
 //----------------------------------------------------------------------------
@@ -871,8 +916,12 @@ protected:
 //      ---<<< 制御用 >>>---
 
     virtual void writePreElement(bool iDoProcess=false)     {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void saveClassStart(bool iIsTop=false)          {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void saveClassEnd(bool iIsTop=false)            {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void saveGroupStart(bool iIsTop=false)          {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void saveGroupEnd(bool iIsTop=false)            {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void saveStructureStart(Structure iStructure, std::string const* iTypeName)
+                                                            {saveGroupStart();}
+    virtual void saveStructureEnd(Structure iStructure, std::string const* iTypeName)
+                                                            {saveGroupEnd();}
     virtual void saveControl(int iControl)                  {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveControl(long iControl)                 {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveControl(long long iControl)            {THEOLIZER_INTERNAL_ABORT("");}
@@ -934,7 +983,15 @@ private:
             aElementsMapping=emOrder;
         }
 
-        AutoRestoreSave aAutoRestoreSave(*this, aElementsMapping);
+        // データ内に型名保存
+        std::size_t aTypeIndex = kInvalidSize;
+        if (mCheckMode == CheckMode::TypeCheckInData)
+        {
+            aTypeIndex = getTypeIndex<tVersionType::TheolizerTarget>();
+        }
+
+        AutoRestoreSaveStructure aAutoRestoreSaveStructure
+            (*this, aElementsMapping, Structure::Class, aTypeIndex);
         BaseSerializer::AutoBaseProcessing aAutoBaseProcessing(*this);
         for (size_t i=0; !tVersionType::getElementTheolizer(i).isSentinel() ; ++i)
         {
@@ -1038,8 +1095,8 @@ protected:
 
     virtual ReadStat readPreElement(bool iDoProcess=false)  {THEOLIZER_INTERNAL_ABORT("");}
     virtual void disposeElement()                           {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void loadClassStart(bool iIsTop=false)          {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void loadClassEnd(bool iIsTop=false)            {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void loadGroupStart(bool iIsTop=false)          {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void loadGroupEnd(bool iIsTop=false)            {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadControl(int& iControl)                 {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadControl(long& iControl)                {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadControl(long long& iControl)           {THEOLIZER_INTERNAL_ABORT("");}

@@ -285,7 +285,6 @@ private:
 
     std::ostream&           mOStream;
     bool                    mNoPrettyPrint;
-    bool                    mWriteComma;
 
     static const unsigned   kLastVersionNo=kXmlSerializerVersionNo;
 
@@ -364,10 +363,15 @@ private:
 
     void saveTag(TagKind iTagKind, std::string const& iName, Attribute const* iAttribute=nullptr);
 
-//      ---<<< クラス(配列／侵入型／非侵入型)処理 >>>---
+//      ---<<< グループ処理 >>>---
 
-    void saveClassStart(bool iIsTop=false);
-    void saveClassEnd(bool iIsTop=false);
+    void saveGroupStart(bool iIsTop=false);
+    void saveGroupEnd(bool iIsTop=false);
+
+//      ---<<< 各種構造処理 >>>---
+
+    void saveStructureStart(Structure iStructure, std::string const* iTypeName);
+    void saveStructureEnd(Structure iStructure, std::string const* iTypeName);
 
 //      ---<<< プリミティブ名返却 >>>---
 
@@ -381,8 +385,7 @@ private:
 //      ---<<< Element名保存 >>>---
 //          名前対応時のみ保存する
 
-    void saveElementName(ElementsMapping iElementsMapping,
-                         u8string const& iElementName)
+    void saveElementName(ElementsMapping iElementsMapping, u8string const& iElementName)
     {
         if (iElementsMapping == emName)
         {
@@ -393,7 +396,7 @@ private:
 
 //      ---<<< 整形処理 >>>---
 
-    void writeCommaIndent(bool iWriteComma=false);
+    void writeIndent(bool iNewLine);
 
 //      ---<<< XML文字列へエンコードして保存 >>>---
 
@@ -536,12 +539,12 @@ private:
 
     TagKind loadTag(std::string& iName, Attribute* iAttribute=nullptr);
 
-//      ---<<< クラス(配列／侵入型／非侵入型)処理 >>>---
-//          loadClassEnd()呼び出し以前に、readPreElement()呼び出しにより、
+//      ---<<< グループ処理 >>>---
+//          loadGroupEnd()呼び出し以前に、readPreElement()呼び出しにより、
 //          mTerminatedをtrueにしておくこと。
 
-    void loadClassStart(bool iIsTop=false);
-    void loadClassEnd(bool iIsTop=false);
+    void loadGroupStart(bool iIsTop=false);
+    void loadGroupEnd(bool iIsTop=false);
 
 //      ---<<< プリミティブ名返却 >>>---
 
