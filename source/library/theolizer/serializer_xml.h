@@ -99,7 +99,26 @@ enum class TagKind
 };
 THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, TagKind iTagKind);
 
-struct Attribute;
+// ***************************************************************************
+//      XML属性
+// ***************************************************************************
+
+struct Attribute
+{
+    Structure       mStructure;
+    std::size_t     mObjectId;
+    std::string     mXmlns;             // xmlns:th用
+    unsigned        mGlobalVersionNo;   // GlobalVersionNo
+
+    Attribute() :
+        mStructure(Structure::None),
+        mObjectId(kInvalidSize),
+        mXmlns(),
+        mGlobalVersionNo(0)
+    { }
+
+    char const* getStructure(char const* iName) const;
+};
 
 // ***************************************************************************
 //      プロバティ返却
@@ -370,7 +389,7 @@ private:
 
 //      ---<<< 各種構造処理 >>>---
 
-    void saveStructureStart(Structure iStructure, std::string const* iTypeName);
+    void saveStructureStart(Structure iStructure, std::string* iTypeName);
     void saveStructureEnd(Structure iStructure, std::string const* iTypeName);
 
 //      ---<<< プリミティブ名返却 >>>---
@@ -523,6 +542,7 @@ private:
 //              次があるなら、Continue  (mTerminated=false)
 //              それ以外なら、例外
 
+    // readPreElementで回復し、loadTagで確認
     ReadStat readPreElement(bool iDoProcess=false);
 
 //      ---<<< 要素破棄処理 >>>---
@@ -535,9 +555,22 @@ private:
 
 private:
 
-//      ---<<< タグ回復 >>>---
+//      ---<<< タグ回復と確認 >>>---
 
+    // mTagInfoが有効ならmTagInfoと一致チェック、そうでないなら回復してチェック
     void loadTag(TagKind iTagKind, std::string const& iName, Attribute* iAttribute=nullptr);
+
+    // タグ情報回復
+    struct TagInfo
+    {
+        bool        mValid;
+        TagKind     mTagKind;
+        std::string mTagName;
+        std::string mMemberName;
+        Attribute   mAttribute;
+        TagInfo() : mValid(false), mTagKind(TagKind::Start) { }
+    } mTagInfo;
+    void loadTagInfo();
 
 //      ---<<< グループ処理 >>>---
 //          loadGroupEnd()呼び出し以前に、readPreElement()呼び出しにより、
@@ -548,7 +581,7 @@ private:
 
 //      ---<<< 各種構造処理 >>>---
 
-    void loadStructureStart(Structure iStructure, std::string const* iTypeName);
+    void loadStructureStart(Structure iStructure, std::string* iTypeName);
     void loadStructureEnd(Structure iStructure, std::string const* iTypeName);
 
 //      ---<<< プリミティブ名返却 >>>---

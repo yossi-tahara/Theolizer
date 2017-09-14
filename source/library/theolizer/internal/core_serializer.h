@@ -858,12 +858,12 @@ protected:
 
     struct THEOLIZER_INTERNAL_DLL AutoRestoreSaveStructure
     {
-        BaseSerializer&                     mSerializer;
-        ElementsMapping                     mElementsMapping;
-        Structure                           mStructure;
-        std::unique_ptr<std::string const>  mTypeName;
-        int                                 mIndent;
-        bool                                mCancelPrettyPrint;
+        BaseSerializer&                 mSerializer;
+        ElementsMapping                 mElementsMapping;
+        Structure                       mStructure;
+        std::unique_ptr<std::string>    mTypeName;  // saveStructureStart()が変更するので注意
+        int                             mIndent;
+        bool                            mCancelPrettyPrint;
 
         AutoRestoreSaveStructure
         (
@@ -919,7 +919,8 @@ protected:
     virtual void writePreElement(bool iDoProcess=false)     {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveGroupStart(bool iIsTop=false)          {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveGroupEnd(bool iIsTop=false)            {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void saveStructureStart(Structure iStructure, std::string const* iTypeName)
+    // iTypeName変更許可
+    virtual void saveStructureStart(Structure iStructure, std::string* iTypeName)
                                                             {saveGroupStart();}
     virtual void saveStructureEnd(Structure iStructure, std::string const* iTypeName)
                                                             {saveGroupEnd();}
@@ -988,7 +989,7 @@ private:
         std::size_t aTypeIndex = kInvalidSize;
         if (mCheckMode == CheckMode::TypeCheckInData)
         {
-            aTypeIndex = getTypeIndex<tVersionType::TheolizerTarget>();
+            aTypeIndex = getTypeIndex<typename tVersionType::TheolizerTarget>();
         }
 
         AutoRestoreSaveStructure aAutoRestoreSaveStructure
@@ -1057,12 +1058,12 @@ protected:
 
     struct THEOLIZER_INTERNAL_DLL AutoRestoreLoadStructure
     {
-        BaseSerializer&                     mSerializer;
-        ElementsMapping                     mElementsMapping;
-        Structure                           mStructure;
-        std::unique_ptr<std::string const>  mTypeName;
-        int                                 mIndent;
-        bool                                mCancelPrettyPrint;
+        BaseSerializer&                 mSerializer;
+        ElementsMapping                 mElementsMapping;
+        Structure                       mStructure;
+        std::unique_ptr<std::string>    mTypeName;  // loadStructureStart()が変更するので注意
+        int                             mIndent;
+        bool                            mCancelPrettyPrint;
 
         AutoRestoreLoadStructure
         (
@@ -1126,7 +1127,8 @@ protected:
     virtual void disposeElement()                           {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadGroupStart(bool iIsTop=false)          {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadGroupEnd(bool iIsTop=false)            {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void loadStructureStart(Structure iStructure, std::string const* iTypeName)
+    // iTypeName変更許可
+    virtual void loadStructureStart(Structure iStructure, std::string* iTypeName)
                                                             {loadGroupStart();}
     virtual void loadStructureEnd(Structure iStructure, std::string const* iTypeName)
                                                             {loadGroupEnd();}
@@ -1200,7 +1202,7 @@ private:
     template<class tVersionType>
     void loadClassImpl(tVersionType& iVersion)
     {
-#if 1
+#if 0
 auto& aClassTypeInfo=ClassTypeInfo<typename tVersionType::TheolizerClass>::getInstance();
 std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
 #endif
@@ -1216,10 +1218,10 @@ std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
         std::size_t aTypeIndex = kInvalidSize;
         if (mCheckMode == CheckMode::TypeCheckInData)
         {
-            aTypeIndex = getTypeIndex<tVersionType::TheolizerTarget>();
+            aTypeIndex = getTypeIndex<typename tVersionType::TheolizerTarget>();
         }
 
-        AutoRestoreLoadStructure aAutoRestoreSaveStructure
+        AutoRestoreLoadStructure aAutoRestoreLoadStructure
             (*this, aElementsMapping, Structure::Class, aTypeIndex);
         BaseSerializer::AutoBaseProcessing aAutoBaseProcessing(*this);
         // 要素がないならNOP
