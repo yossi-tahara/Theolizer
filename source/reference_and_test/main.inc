@@ -120,9 +120,172 @@ void callTests
     }
 
 //----------------------------------------------------------------------------
+//      XmlSerializer
+//----------------------------------------------------------------------------
+
+    std::string prefix;
+    prefix="Xml-";
+
+    // デフォルト処理
+    if (gIndex == kDefaultIndex)
+    {
+        std::string filename = prefix + aVersionName + ".xml";
+        std::cout << "  XmlSerializer(" << filename << ")\n";
+
+        // 保存処理
+        if (iDoSave)
+        {
+            {
+                std::ofstream   aStream(filename);
+                theolizer::XmlOSerializer<> xos(aStream);
+                saveBasic(xos);
+            }
+
+            // 保存先指定テスト
+            {
+                std::ofstream   aStreamA(makeDestFileName(filename, "A"));
+                theolizer::XmlOSerializer<theolizerD::DestA> josA(aStreamA);
+                std::ofstream   aStreamB(makeDestFileName(filename, "B"));
+                theolizer::XmlOSerializer<theolizerD::DestB> josB(aStreamB);
+                std::ofstream   aStreamAB(makeDestFileName(filename, "AB"));
+                theolizer::XmlOSerializer<theolizerD::DestA, theolizerD::DestB> josAB(aStreamAB);
+                callSaveDestinations(josA, josB, josAB);
+            }
+        }
+
+        // 回復処理
+        else
+        {
+            {
+                std::ifstream   aStream(filename);
+                theolizer::XmlISerializer<> jis(aStream);
+                loadBasic(jis);
+            }
+
+            // 保存先指定テスト
+            {
+                std::ifstream   aStreamA(makeDestFileName(filename, "A"));
+                theolizer::XmlISerializer<theolizerD::DestA> jisA(aStreamA);
+                std::ifstream   aStreamB(makeDestFileName(filename, "B"));
+                theolizer::XmlISerializer<theolizerD::DestB> jisB(aStreamB);
+                std::ifstream   aStreamAB(makeDestFileName(filename, "AB"));
+                theolizer::XmlISerializer<theolizerD::DestA, theolizerD::DestB> jisAB(aStreamAB);
+                callLoadDestinations(jisA, jisB, jisAB);
+            }
+        }
+    }
+
+    // パラメータ指定
+    else if (iCheckMode == CheckMode::NoTypeCheck)
+    {
+        std::stringstream   ss;
+        std::string         filename;
+
+//      ---<<< PretyPrint >>>---
+
+        ss << prefix << "pp-" << aVersionName << "-" << iCheckMode << ".xml";
+        filename=ss.str();
+        std::cout << "  XmlSerializer(" << filename << ")\n";
+
+        // 保存処理
+        if (iDoSave)
+        {
+            {
+                std::ofstream   aStream(filename);
+                theolizer::XmlOSerializer<> xos(aStream, aGlobalVersionNo);
+                saveBasic(xos);
+            }
+
+            // 保存先指定テスト
+            {
+                std::ofstream   aStreamA(makeDestFileName(filename, "A"));
+                theolizer::XmlOSerializer<theolizerD::DestA>
+                    josA(aStreamA, aGlobalVersionNo);
+                std::ofstream   aStreamB(makeDestFileName(filename, "B"));
+                theolizer::XmlOSerializer<theolizerD::DestB>
+                    josB(aStreamB, aGlobalVersionNo);
+                std::ofstream   aStreamAB(makeDestFileName(filename, "AB"));
+                theolizer::XmlOSerializer<theolizerD::DestA, theolizerD::DestB>
+                    josAB(aStreamAB, aGlobalVersionNo);
+                callSaveDestinations(josA, josB, josAB);
+            }
+        }
+
+        // 回復処理
+        else
+        {
+            std::ifstream   aStream(filename);
+            theolizer::XmlISerializer<> jis(aStream);
+            loadBasic(jis);
+
+            // 保存先指定テスト
+            {
+                std::ifstream   aStreamA(makeDestFileName(filename, "A"));
+                theolizer::XmlISerializer<theolizerD::DestA> jisA(aStreamA);
+                std::ifstream   aStreamB(makeDestFileName(filename, "B"));
+                theolizer::XmlISerializer<theolizerD::DestB> jisB(aStreamB);
+                std::ifstream   aStreamAB(makeDestFileName(filename, "AB"));
+                theolizer::XmlISerializer<theolizerD::DestA, theolizerD::DestB> jisAB(aStreamAB);
+                callLoadDestinations(jisA, jisB, jisAB);
+            }
+        }
+
+//      ---<<< 非PretyPrint >>>---
+
+        ss.str("");
+        ss << prefix << "np-" << aVersionName << "-" << iCheckMode << ".xml";
+        filename=ss.str();
+        std::cout << "  XmlSerializer(" << filename << ")\n";
+
+        // 保存処理
+        if (iDoSave)
+        {
+            {
+                std::ofstream   aStream(filename);
+                theolizer::XmlOSerializer<> xos(aStream, aGlobalVersionNo, true);
+                saveBasic(xos);
+            }
+
+            // 保存先指定テスト
+            {
+                std::ofstream   aStreamA(makeDestFileName(filename, "A"));
+                theolizer::XmlOSerializer<theolizerD::DestA>
+                    josA(aStreamA, aGlobalVersionNo, true);
+                std::ofstream   aStreamB(makeDestFileName(filename, "B"));
+                theolizer::XmlOSerializer<theolizerD::DestB>
+                    josB(aStreamB, aGlobalVersionNo, true);
+                std::ofstream   aStreamAB(makeDestFileName(filename, "AB"));
+                theolizer::XmlOSerializer<theolizerD::DestA, theolizerD::DestB>
+                    josAB(aStreamAB, aGlobalVersionNo, true);
+                callSaveDestinations(josA, josB, josAB);
+            }
+        }
+
+        // 回復処理
+        else
+        {
+            std::ifstream   aStream(filename);
+            theolizer::XmlISerializer<> jis(aStream);
+            loadBasic(jis);
+
+            // 保存先指定テスト
+            {
+                std::ifstream   aStreamA(makeDestFileName(filename, "A"));
+                theolizer::XmlISerializer<theolizerD::DestA> jisA(aStreamA);
+                std::ifstream   aStreamB(makeDestFileName(filename, "B"));
+                theolizer::XmlISerializer<theolizerD::DestB> jisB(aStreamB);
+                std::ifstream   aStreamAB(makeDestFileName(filename, "AB"));
+                theolizer::XmlISerializer<theolizerD::DestA, theolizerD::DestB> jisAB(aStreamAB);
+                callLoadDestinations(jisA, jisB, jisAB);
+            }
+        }
+    }
+
+//----------------------------------------------------------------------------
 //      JsonSerializer
 //----------------------------------------------------------------------------
 
+#if 0
     std::string prefix;
     prefix="json-";
 
@@ -448,6 +611,7 @@ void callTests
             }
         }
     }
+#endif
 
     std::cout << "\n";
 }

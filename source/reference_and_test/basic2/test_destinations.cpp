@@ -45,6 +45,7 @@
 #include <theolizer/serializer_binary.h>
 #include <theolizer/serializer_fast.h>
 #include <theolizer/serializer_json.h>
+#include <theolizer/serializer_xml.h>
 
 #include <theolizer/memory.h>   // std::unique_ptrのシリアライズ化
 #include <theolizer/list.h>     // std::listのシリアライス化

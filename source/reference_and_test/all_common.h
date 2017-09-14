@@ -121,6 +121,8 @@ extern std::size_t gProgramIndex;   // 保存したプログラムのバージ�
     template void dFunc<dSerializer>(dSerializer&)
 
 #define INSTANTIATION_ALL(dFunc)                                            \
+    INSTANTIATION(dFunc, theolizer::XmlOSerializer<>);                      \
+    INSTANTIATION(dFunc, theolizer::XmlISerializer<>);                      \
     INSTANTIATION(dFunc, theolizer::JsonOSerializer<>);                     \
     INSTANTIATION(dFunc, theolizer::JsonISerializer<>);                     \
     INSTANTIATION(dFunc, theolizer::BinaryOSerializer<>);                   \

@@ -736,7 +736,7 @@ public:
     XmlOSerializer
     (
         std::ostream& iOStream,
-        bool iNoPrettyPrint=false,
+        bool iNoPrettyPrint,
         bool iNoThrowException=false
     ) : XmlMidOSerializer
         (

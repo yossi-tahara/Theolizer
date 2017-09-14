@@ -97,6 +97,8 @@ THEOLIZER_DESTINATIONS
     )
 
 #define INSTANTIATION_DESTINATIONS(dFunc)                                   \
+    INSTANTIATION_DEST(dFunc, theolizer::XmlOSerializer);                   \
+    INSTANTIATION_DEST(dFunc, theolizer::XmlISerializer);                   \
     INSTANTIATION_DEST(dFunc, theolizer::JsonOSerializer);                  \
     INSTANTIATION_DEST(dFunc, theolizer::JsonISerializer);                  \
     INSTANTIATION_DEST(dFunc, theolizer::BinaryOSerializer);                \
