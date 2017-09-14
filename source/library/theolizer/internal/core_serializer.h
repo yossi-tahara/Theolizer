@@ -929,7 +929,7 @@ protected:
     virtual void saveControl(unsigned long iControl)        {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveControl(unsigned long long iControl)   {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveControl(std::string const& iControl)   {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void saveElementName(ElementsMapping iElementsMapping, const u8string& iElementName)
+    virtual void saveElementName(ElementsMapping iElementsMapping, char const* iElementName)
                                                             {THEOLIZER_INTERNAL_ABORT("");}
 
 //      ---<<< プリミティブ用 >>>---

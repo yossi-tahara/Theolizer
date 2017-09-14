@@ -202,7 +202,7 @@ private:
 
 //      ---<<< Element名保存 >>>---
 
-    void saveElementName(ElementsMapping, const u8string&)
+    void saveElementName(ElementsMapping,  char const*)
     { }
 
 

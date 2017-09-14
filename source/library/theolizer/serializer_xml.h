@@ -385,12 +385,12 @@ private:
 //      ---<<< Element名保存 >>>---
 //          名前対応時のみ保存する
 
-    void saveElementName(ElementsMapping iElementsMapping, u8string const& iElementName)
+    char const* mElementName;
+    void saveElementName(ElementsMapping iElementsMapping, char const* iElementName)
     {
         if (iElementsMapping == emName)
         {
-            encodeXmlString(iElementName.str());
-            mOStream << ":";
+            mElementName = iElementName;
         }
     }
 

@@ -155,7 +155,8 @@ XmlMidOSerializer::XmlMidOSerializer
     ),
     mOStream(iOStream),
     mNoPrettyPrint(iNoPrettyPrint),
-    mCharIsMultiByte(false)
+    mCharIsMultiByte(false),
+    mElementName(nullptr)
 {
     // エラー情報登録準備
     theolizer::internal::ApiBoundary aApiBoundary(&mAdditionalInfo);
@@ -402,6 +403,12 @@ void XmlMidOSerializer::saveTag
     if (iTagKind != TagKind::End)
     {
         mOStream << "<" << aName;
+        if (mElementName)
+        {
+            mOStream << " " THEOLIZER_INTERNAL_XML_NAMESPACE ":MemberName="
+                        "\"" << mElementName << "\"";
+            mElementName = nullptr;
+        }
         if (iAttribute)
         {
             if (iAttribute->mIsPointer)
