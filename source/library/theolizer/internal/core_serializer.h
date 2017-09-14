@@ -392,6 +392,7 @@ public:
 
 enum class Structure
 {
+    None,
     Class,
     Array,
     Pointer,
@@ -1031,18 +1032,46 @@ protected:
     };
 
 //----------------------------------------------------------------------------
-//      クラス(配列／侵入型／非侵入型)処理補助クラス
+//      グループ処理補助クラス
 //----------------------------------------------------------------------------
 
     struct THEOLIZER_INTERNAL_DLL AutoRestoreLoad
     {
         BaseSerializer&     mSerializer;
         ElementsMapping     mElementsMapping;
-        std::size_t         mDataTypeIndex;     // 処理中のシリアライズ・データ内TypeIndex
 
         AutoRestoreLoad(BaseSerializer& iSerializer,
                         ElementsMapping iElementsMapping=emOrder);
         ~AutoRestoreLoad() noexcept(false);
+    };
+
+//----------------------------------------------------------------------------
+//      各種構造処理補助クラス
+//          クラス
+//          配列
+//          ポインタ
+//          オーナ・ポインタ
+//          被ポインタ
+//          参照（動的ポリモーフィズム時のみ）
+//----------------------------------------------------------------------------
+
+    struct THEOLIZER_INTERNAL_DLL AutoRestoreLoadStructure
+    {
+        BaseSerializer&                     mSerializer;
+        ElementsMapping                     mElementsMapping;
+        Structure                           mStructure;
+        std::unique_ptr<std::string const>  mTypeName;
+        int                                 mIndent;
+        bool                                mCancelPrettyPrint;
+
+        AutoRestoreLoadStructure
+        (
+            BaseSerializer&     iSerializer,
+            ElementsMapping     iElementsMapping,
+            Structure           iStructure,
+            std::size_t         iTypeIndex=kInvalidSize
+        );
+        ~AutoRestoreLoadStructure() noexcept(false);
     };
 
 //----------------------------------------------------------------------------
@@ -1097,6 +1126,10 @@ protected:
     virtual void disposeElement()                           {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadGroupStart(bool iIsTop=false)          {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadGroupEnd(bool iIsTop=false)            {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void loadStructureStart(Structure iStructure, std::string const* iTypeName)
+                                                            {loadGroupStart();}
+    virtual void loadStructureEnd(Structure iStructure, std::string const* iTypeName)
+                                                            {loadGroupEnd();}
     virtual void loadControl(int& iControl)                 {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadControl(long& iControl)                {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadControl(long long& iControl)           {THEOLIZER_INTERNAL_ABORT("");}
@@ -1167,7 +1200,7 @@ private:
     template<class tVersionType>
     void loadClassImpl(tVersionType& iVersion)
     {
-#if 0
+#if 1
 auto& aClassTypeInfo=ClassTypeInfo<typename tVersionType::TheolizerClass>::getInstance();
 std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
 #endif
@@ -1178,9 +1211,17 @@ std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
         {
             aElementsMapping=emOrder;
         }
-        AutoRestoreLoad aAutoRestoreLoad(*this, aElementsMapping);
-        BaseSerializer::AutoBaseProcessing aAutoBaseProcessing(*this);
 
+        // データ内に型名保存
+        std::size_t aTypeIndex = kInvalidSize;
+        if (mCheckMode == CheckMode::TypeCheckInData)
+        {
+            aTypeIndex = getTypeIndex<tVersionType::TheolizerTarget>();
+        }
+
+        AutoRestoreLoadStructure aAutoRestoreSaveStructure
+            (*this, aElementsMapping, Structure::Class, aTypeIndex);
+        BaseSerializer::AutoBaseProcessing aAutoBaseProcessing(*this);
         // 要素がないならNOP
         if (tVersionType::getElementTheolizer(0).isSentinel())
     return;
@@ -1189,7 +1230,10 @@ std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
         if ((tVersionType::Theolizer::kElementsMapping == emName)
          && (CheckMode::TypeCheck <= mCheckMode))
         {
-            std::size_t aTypeIndex = getTypeIndex<typename tVersionType::TheolizerTarget>();
+            if (aTypeIndex == kInvalidSize)
+            {
+                aTypeIndex = getTypeIndex<typename tVersionType::TheolizerTarget>();
+            }
             aDataTypeIndex=mTypeIndexTable[aTypeIndex];
             THEOLIZER_INTERNAL_ASSERT(aDataTypeIndex != kInvalidSize,
                 "aTypeIndex=%d aDataTypeIndex=%d TypeName=%s", aTypeIndex, aDataTypeIndex,

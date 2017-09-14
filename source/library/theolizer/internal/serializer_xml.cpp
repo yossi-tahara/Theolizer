@@ -96,20 +96,43 @@ std::ostream& operator<<(std::ostream& iOStream, TagKind iTagKind)
 
 struct Attribute
 {
-    bool            mIsArray;           // 要素名で記録するが、内部I/Fは属性扱いとする？
-    bool            mIsPointer;
+    Structure       mStructure;
     std::size_t     mObjectId;
-
     std::string     mXmlns;             // xmlns:th用
     unsigned        mGlobalVersionNo;   // GlobalVersionNo
 
     Attribute() :
-        mIsArray(false),
-        mIsPointer(false),
+        mStructure(Structure::None),
         mObjectId(kInvalidSize),
         mXmlns(),
         mGlobalVersionNo(0)
     { }
+
+    char const* getStructure(char const* iName) const
+    {
+        switch(mStructure)
+        {
+        case Structure::None:
+        case Structure::Class:
+            break;
+
+        case Structure::Array:
+            return THEOLIZER_INTERNAL_XML_NAMESPACE ":Array";
+
+        case Structure::Pointer:
+            return THEOLIZER_INTERNAL_XML_NAMESPACE ":Pointer";
+
+        case Structure::OwnerPointer:
+            return THEOLIZER_INTERNAL_XML_NAMESPACE ":OwnerPointer";
+
+        case Structure::Pointee:
+            return THEOLIZER_INTERNAL_XML_NAMESPACE ":Pointee";
+
+        case Structure::Reference:
+            return THEOLIZER_INTERNAL_XML_NAMESPACE ":Reference";
+        }
+        return iName;
+    }
 };
 
 //############################################################################
@@ -395,10 +418,7 @@ void XmlMidOSerializer::saveTag
     char const* aName = iName.c_str();
     if (iAttribute)
     {
-        if (iAttribute->mIsArray)
-        {
-            aName=THEOLIZER_INTERNAL_XML_NAMESPACE ":Array";
-        }
+        aName=iAttribute->getStructure(aName);
     }
     if (iTagKind != TagKind::End)
     {
@@ -411,10 +431,6 @@ void XmlMidOSerializer::saveTag
         }
         if (iAttribute)
         {
-            if (iAttribute->mIsPointer)
-            {
-                mOStream << " " THEOLIZER_INTERNAL_XML_NAMESPACE ":Pointer=\"yes\"";
-            }
             if (iAttribute->mObjectId != kInvalidSize)
             {
                 mOStream << " " THEOLIZER_INTERNAL_XML_NAMESPACE ":ObjectId=\""
@@ -469,7 +485,7 @@ void XmlMidOSerializer::saveGroupEnd(bool iIsTop)
 
 void XmlMidOSerializer::saveStructureStart(Structure iStructure, std::string const* iTypeName)
 {
-std::cout << "saveStructureStart() mNoPrettyPrint=" << mNoPrettyPrint << " mCancelPrettyPrint=" << mCancelPrettyPrint << " mIndent=" << mIndent << "\n";
+std::cout << "saveStructureStart(" << *iTypeName << ") mNoPrettyPrint=" << mNoPrettyPrint << " mCancelPrettyPrint=" << mCancelPrettyPrint << " mIndent=" << mIndent << "\n";
     if (!mCancelPrettyPrint) mIndent++;
     saveTag(TagKind::Start, *iTypeName);
 }
@@ -600,25 +616,11 @@ XmlMidISerializer::~XmlMidISerializer()
 {
     try
     {
-        std::string aSerialzierName;
-        Attribute   aAttribute;
-        TagKind aTagKind=loadTag
+        loadTag
         (
-            aSerialzierName
+            TagKind::End,
+            THEOLIZER_INTERNAL_XML_NAMESPACE ":" THEOLIZER_INTERNAL_XML_THEOLIZER_NAME
         );
-        if (aTagKind != TagKind::End)
-        {
-            std::stringstream ss;
-            ss << aTagKind;
-            THEOLIZER_INTERNAL_DATA_ERROR
-                ("XmlMidISerializer : Illigal tag(%1%).", ss.str());
-        }
-        if (aSerialzierName !=
-            THEOLIZER_INTERNAL_XML_NAMESPACE ":" THEOLIZER_INTERNAL_XML_THEOLIZER_NAME)
-        {
-            THEOLIZER_INTERNAL_DATA_ERROR
-                ("XmlMidISerializer : Unmatch serializer name(%1%).", aSerialzierName);
-        }
     }
     catch (ErrorInfo&)
     {
@@ -646,31 +648,14 @@ void XmlMidISerializer::readHeader()
         THEOLIZER_INTERNAL_DATA_ERROR("XML Header Error(%1%).", header);
     }
 
-    std::string aSerialzierName;
     Attribute   aAttribute;
-    TagKind aTagKind=loadTag
+    aAttribute.mXmlns = THEOLIZER_INTERNAL_XML_URI;
+    loadTag
     (
-        aSerialzierName,
+        TagKind::Start,
+        THEOLIZER_INTERNAL_XML_NAMESPACE ":" THEOLIZER_INTERNAL_XML_THEOLIZER_NAME,
         &aAttribute
     );
-    if (aTagKind != TagKind::Start)
-    {
-        std::stringstream ss;
-        ss << aTagKind;
-        THEOLIZER_INTERNAL_DATA_ERROR
-            ("XmlMidISerializer : Illigal tag(%1%).", ss.str());
-    }
-    if (aSerialzierName !=
-        THEOLIZER_INTERNAL_XML_NAMESPACE ":" THEOLIZER_INTERNAL_XML_THEOLIZER_NAME)
-    {
-        THEOLIZER_INTERNAL_DATA_ERROR
-            ("XmlMidISerializer : Unmatch serializer name(%1%).", aSerialzierName);
-    }
-    if (aAttribute.mXmlns != THEOLIZER_INTERNAL_XML_URI)
-    {
-        THEOLIZER_INTERNAL_DATA_ERROR
-            ("XmlMidISerializer : Unmatch namespace(%1%).", aAttribute.mXmlns);
-    }
     if (aAttribute.mGlobalVersionNo == 0)
     {
         THEOLIZER_INTERNAL_DATA_ERROR
@@ -716,40 +701,14 @@ XmlMidISerializer::AutoReleaseTagName::AutoReleaseTagName
 ) : mXmlMidISerializer(iXmlMidISerializer),
     mTagName(mXmlMidISerializer.getTypeName(iTypeIndex))
 {
-std::cout << "<" << mTagName << ">";
-    std::string aTagName;
-    TagKind aTagKind = mXmlMidISerializer.loadTag(aTagName);
-    if (aTagKind != TagKind::Start)
-    {
-        std::stringstream ss;
-        ss << aTagKind;
-        THEOLIZER_INTERNAL_DATA_ERROR
-            ("XmlMidISerializer : Not start tag(%1%).", ss.str());
-    }
-    if (mTagName != aTagName)
-    {
-        THEOLIZER_INTERNAL_DATA_ERROR
-            ("XmlMidISerializer : Illegal tag name(data:%1%, program:%2%).", aTagName, mTagName);
-    }
+std::cout << "AutoReleaseTagName()\n";
+    mXmlMidISerializer.loadTag(TagKind::Start, mTagName);
 }
 
 XmlMidISerializer::AutoReleaseTagName::~AutoReleaseTagName()
 {
-std::cout << "</" << mTagName << ">\n";
-    std::string aTagName;
-    TagKind aTagKind = mXmlMidISerializer.loadTag(aTagName);
-    if (aTagKind != TagKind::End)
-    {
-        std::stringstream ss;
-        ss << aTagKind;
-        THEOLIZER_INTERNAL_DATA_ERROR
-            ("XmlMidISerializer : Not end tag(%1%).", ss.str());
-    }
-    if (mTagName != aTagName)
-    {
-        THEOLIZER_INTERNAL_DATA_ERROR
-            ("XmlMidISerializer : Illegal tag name(data:%1%, program:%2%).", aTagName, mTagName);
-    }
+std::cout << "~AutoReleaseTagName()\n";
+    mXmlMidISerializer.loadTag(TagKind::End, mTagName);
 }
 
 //----------------------------------------------------------------------------
@@ -923,29 +882,29 @@ void XmlMidISerializer::disposeElement()
 //      タグ回復
 //----------------------------------------------------------------------------
 
-TagKind XmlMidISerializer::loadTag(std::string& iName, Attribute* iAttribute)
+void XmlMidISerializer::loadTag(TagKind iTagKind, std::string const& iName, Attribute* iAttribute)
 {
+std::cout << "<" << ((iTagKind==TagKind::End)?"/":"") << iName << ((iTagKind==TagKind::StartEnd)?"/":"") << ">";
     static const std::string sDelimChar="> \t\n";
-    TagKind ret = TagKind::Start;
+    TagKind aTagKind = TagKind::Start;
 
+    // タグ名獲得
     char in = find_not_of(" \t\n");
     if (in != '<')
     {
-        THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)a", in);
+        THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.A(%1%)", in);
     }
     in = find_not_of(" \t\n");
     if (in == '/')
     {
-        ret = TagKind::End;
+        aTagKind = TagKind::End;
     }
     else
     {
         mIStream.unget();
     }
-#if 0
-    mIStream >> iName;
-#else
-    iName.clear();
+
+    std::string aNameInData;
     while(1)
     {
         in = getChar();
@@ -955,27 +914,46 @@ TagKind XmlMidISerializer::loadTag(std::string& iName, Attribute* iAttribute)
             mIStream.unget();
     break;
         }
-        iName.push_back(in);
+        aNameInData.push_back(in);
     }
-#endif
-    if (iName == THEOLIZER_INTERNAL_XML_NAMESPACE ":Array")
+std::cout << "[" << aNameInData << "]" << ((iTagKind!=TagKind::Start)?"\n":"");
+    // タグ名確認
+    char const* aName = iName.c_str();
+    if (iAttribute)
     {
-        if (!iAttribute)
+        aName=iAttribute->getStructure(aName);
+    }
+    if (aNameInData != aName)
+    {
+        THEOLIZER_INTERNAL_DATA_ERROR
+            ("XmlMidISerializer : Illegal tag name(data:%1%, program:%2%).", aNameInData, aName);
+    }
+
+    while(1)
+    {
+        in = find_not_of(" \t\n");
+        if (in == '/')
         {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)b", iName);
+            aTagKind = TagKind::StartEnd;
+            in = find_not_of(" \t\n");
+            if (in != '>')
+            {
+                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.C(%1%)", in);
+            }
+    break;
         }
-        iAttribute->mIsArray = true;
-    }
-std::cout << "loadTag(" << iName << ")\n";
-    while((in = find_not_of(" \t\n")) != '>')
-    {
+        if (in == '>')
+        {
+    break;
+        }
+
         mIStream.unget();
         std::string aAttributeName;
         std::getline(mIStream, aAttributeName, '=');
         in=getChar();
         if (in != '\"')
         {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)c", in);
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.D(%1%)", in);
         }
         std::string aAttributeValue;
         std::getline(mIStream, aAttributeValue, '\"');
@@ -985,19 +963,14 @@ std::cout << "    " << aAttributeName << "=" << aAttributeValue << "\n";
 
         // エラーが発生していたら、終了する(無限ループ回避)
         if (ErrorReporter::isError())
-return ret;
+return;
 
         if (!iAttribute)
         {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)d", aAttributeName);
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.E(%1%)", aAttributeName);
         }
 
-        if ((aAttributeName == THEOLIZER_INTERNAL_XML_NAMESPACE ":Pointer")
-         && (aAttributeValue == "yes"))
-        {
-            iAttribute->mIsPointer = true;
-        }
-        else if (aAttributeName == THEOLIZER_INTERNAL_XML_NAMESPACE ":ObjectId")
+        if (aAttributeName == THEOLIZER_INTERNAL_XML_NAMESPACE ":ObjectId")
         {
             iAttribute->mObjectId = std::stoull(aAttributeValue);
         }
@@ -1012,14 +985,21 @@ std::cout << "    mGlobalVersionNo=" << iAttribute->mGlobalVersionNo << "\n";
         }
         else
         {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)e", aAttributeName);
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.F(%1%)", aAttributeName);
         }
     }
-    return ret;
+
+    // 値チェック
+    if (aTagKind != iTagKind)
+    {
+        std::stringstream ss;
+        ss << aTagKind;
+        THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.G(%1%)", ss.str());
+    }
 }
 
 //----------------------------------------------------------------------------
-//      クラス(侵入型／非侵入型)処理
+//      グループ処理
 //----------------------------------------------------------------------------
 
 //      ---<<< 開始処理 >>>---
@@ -1027,33 +1007,13 @@ std::cout << "    mGlobalVersionNo=" << iAttribute->mGlobalVersionNo << "\n";
 void XmlMidISerializer::loadGroupStart(bool iIsTop)
 {
     mReadComma=false;
-    if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
-    {
-        char in = find_not_of(" \t\n");
-        switch (mElementsMapping)
-        {
-        case emName:
-            if (in != '{')
-            {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)f", in);
-            }
-            break;
-
-        case emOrder:
-            if (in != '[')
-            {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(%1%)g", in);
-            }
-            break;
-        }
-    }
-//  mTerminated=false;  // 呼び出される前は必ずfalseなので設定不要
 }
 
 //      ---<<< 終了処理 >>>---
 
 void XmlMidISerializer::loadGroupEnd(bool iIsTop)
 {
+#if 0
     if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
     {
         // まだ終了処理されてないなら、終了処理する
@@ -1069,8 +1029,29 @@ void XmlMidISerializer::loadGroupEnd(bool iIsTop)
             }
         }
     }
+#endif
     mTerminated=false;
     mReadComma=true;
+}
+
+//----------------------------------------------------------------------------
+//      各種構造処理
+//----------------------------------------------------------------------------
+
+//      ---<<< 開始処理 >>>---
+
+void XmlMidISerializer::loadStructureStart(Structure iStructure, std::string const* iTypeName)
+{
+std::cout << "loadStructureStart()\n";
+    loadTag(TagKind::Start, *iTypeName);
+}
+
+//      ---<<< 終了処理 >>>---
+
+void XmlMidISerializer::loadStructureEnd(Structure iStructure, std::string const* iTypeName)
+{
+std::cout << "loadStructureEnd()\n";
+    loadTag(TagKind::End, *iTypeName);
 }
 
 //----------------------------------------------------------------------------

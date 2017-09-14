@@ -970,7 +970,26 @@ inline void THEOLIZER_INTERNAL_DERIVED::Theolizer::saveEnum
         theolizer::internal::BaseSerializer,
         THEOLIZER_GENERATED_LAST_VERSION_NO
     > aVersion(iInstance);
-    aVersion.saveEnum(iSerializer, iVersionNo);
+
+    // データ内に型名保存
+    if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+    {
+        std::size_t aTypeIndex=theolizer::internal::getTypeIndex<THEOLIZER_GENERATED_ENUM_TYPE>();
+        theolizer::internal::BaseSerializer::AutoRestoreSaveStructure
+            aAutoRestoreSaveStructure
+            (
+                iSerializer,
+                theolizer::internal::emOrder,
+                theolizer::internal::Structure::None,
+                aTypeIndex
+            );
+        iSerializer.writePreElement();
+        aVersion.saveEnum(iSerializer, iVersionNo);
+    }
+    else
+    {
+        aVersion.saveEnum(iSerializer, iVersionNo);
+    }
 }
 
 //      ---<<< 回復 >>>---
@@ -987,7 +1006,31 @@ inline void THEOLIZER_INTERNAL_DERIVED::Theolizer::loadEnum
         theolizer::internal::BaseSerializer,
         THEOLIZER_GENERATED_LAST_VERSION_NO
     >   aVersion(iInstance);
-    aVersion.loadEnum(iSerializer, iVersionNo);
+
+    // データ内に型名保存
+    if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+    {
+        std::size_t aTypeIndex=theolizer::internal::getTypeIndex<THEOLIZER_GENERATED_ENUM_TYPE>();
+        theolizer::internal::BaseSerializer::AutoRestoreLoadStructure
+            aAutoRestoreLoadStructure
+            (
+                iSerializer,
+                theolizer::internal::emOrder,
+                theolizer::internal::Structure::None,
+                aTypeIndex
+            );
+        if (!iSerializer.readPreElement())
+        {
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Enum Format Error.(%1%)",
+                THEOLIZER_INTERNAL_STRINGIZE(THEOLIZER_GENERATED_ENUM_TYPE));
+        }
+
+        aVersion.loadEnum(iSerializer, iVersionNo);
+    }
+    else
+    {
+        aVersion.loadEnum(iSerializer, iVersionNo);
+    }
 }
 
 //      ---<<< クラス名返却 >>>---

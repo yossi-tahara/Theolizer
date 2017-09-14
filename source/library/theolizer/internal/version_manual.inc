@@ -571,9 +571,22 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion<tBaseSerializer, 1>::loadClass
     unsigned iVersionNo
 )
 {
+    // データ内に型名保存
+    std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+    if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+    {
+        aTypeIndex = theolizer::internal::getTypeIndex<THEOLIZER_GENERATED_CLASS_TYPE>();
+    }
+
     // 当バージョン／クラスの処理
-    theolizer::internal::BaseSerializer::AutoRestoreLoad
-        aAutoLoadEnd(iSerializer, theolizer::internal::emOrder);
+    theolizer::internal::BaseSerializer::AutoRestoreLoadStructure
+        aAutoRestoreLoadStructure
+        (
+            iSerializer,
+            theolizer::internal::emOrder,
+            theolizer::internal::Structure::Class,
+            aTypeIndex
+        );
     THEOLIZER_INTERNAL_DERIVED::TheolizerUserDefine
     <
         tBaseSerializer,

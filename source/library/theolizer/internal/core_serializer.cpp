@@ -985,14 +985,15 @@ BaseSerializer::AutoRestoreLoadProcess::~AutoRestoreLoadProcess() noexcept(false
 }
 
 //----------------------------------------------------------------------------
-//      クラス(配列／侵入型／非侵入型)処理補助クラス
+//      グループ化処理補助クラス
 //----------------------------------------------------------------------------
 
-BaseSerializer::AutoRestoreLoad::AutoRestoreLoad(
-            BaseSerializer& iSerializer,
-            ElementsMapping iElementsMapping) :
-                mSerializer(iSerializer),
-                mElementsMapping(iSerializer.mElementsMapping)
+BaseSerializer::AutoRestoreLoad::AutoRestoreLoad
+(
+    BaseSerializer& iSerializer,
+    ElementsMapping iElementsMapping
+) : mSerializer(iSerializer),
+    mElementsMapping(iSerializer.mElementsMapping)
 {
     mSerializer.mElementsMapping=iElementsMapping;
     mSerializer.loadGroupStart();
@@ -1004,6 +1005,47 @@ BaseSerializer::AutoRestoreLoad::~AutoRestoreLoad() noexcept(false)
     try
     {
         mSerializer.loadGroupEnd();
+        mSerializer.mElementsMapping=mElementsMapping;
+    }
+    catch (std::exception& e)
+    {
+        THEOLIZER_INTERNAL_ERROR(e.what());
+    }
+    catch (...)
+    {
+        THEOLIZER_INTERNAL_ERROR(u8"Unknown exception");
+    }
+}
+
+//----------------------------------------------------------------------------
+//      各種構造処理補助クラス
+//----------------------------------------------------------------------------
+
+BaseSerializer::AutoRestoreLoadStructure::AutoRestoreLoadStructure
+(
+    BaseSerializer&     iSerializer,
+    ElementsMapping     iElementsMapping,
+    Structure           iStructure,
+    std::size_t         iTypeIndex
+) : mSerializer(iSerializer),
+    mElementsMapping(iSerializer.mElementsMapping),
+    mStructure(iStructure)
+{
+    mSerializer.mElementsMapping=iElementsMapping;
+    // データ内に型名を記録
+    if ((mSerializer.mCheckMode == CheckMode::TypeCheckInData) && (iTypeIndex != kInvalidSize))
+    {
+        mTypeName.reset(new std::string(mSerializer.getTypeName(iTypeIndex)));
+    }
+    mSerializer.loadStructureStart(mStructure, mTypeName.get());
+}
+
+BaseSerializer::AutoRestoreLoadStructure::~AutoRestoreLoadStructure() noexcept(false)
+{
+    theolizer::internal::Releasing aReleasing{};
+    try
+    {
+        mSerializer.loadStructureEnd(mStructure, mTypeName.get());
         mSerializer.mElementsMapping=mElementsMapping;
     }
     catch (std::exception& e)

@@ -537,7 +537,7 @@ private:
 
 //      ---<<< タグ回復 >>>---
 
-    TagKind loadTag(std::string& iName, Attribute* iAttribute=nullptr);
+    void loadTag(TagKind iTagKind, std::string const& iName, Attribute* iAttribute=nullptr);
 
 //      ---<<< グループ処理 >>>---
 //          loadGroupEnd()呼び出し以前に、readPreElement()呼び出しにより、
@@ -545,6 +545,11 @@ private:
 
     void loadGroupStart(bool iIsTop=false);
     void loadGroupEnd(bool iIsTop=false);
+
+//      ---<<< 各種構造処理 >>>---
+
+    void loadStructureStart(Structure iStructure, std::string const* iTypeName);
+    void loadStructureEnd(Structure iStructure, std::string const* iTypeName);
 
 //      ---<<< プリミティブ名返却 >>>---
 
