@@ -559,7 +559,7 @@ void TestNormalMain()
 {
 //  theolizer::DisplayPass aDisplayPass;
 
-//    TestNormal<theolizer::FastOSerializer<>,  theolizer::FastISerializer<> >("test_fast");
+    TestNormal<theolizer::FastOSerializer<>,  theolizer::FastISerializer<> >("test_fast");
     TestNormal<theolizer::XmlOSerializer<>,   theolizer::XmlISerializer<> >("test_xml");
     TestNormal<theolizer::JsonOSerializer<>,  theolizer::JsonISerializer<> >("test_json");
     TestNormal<theolizer::BinaryOSerializer<>,theolizer::BinaryISerializer<> >("test_binary");

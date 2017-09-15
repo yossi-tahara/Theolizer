@@ -700,6 +700,52 @@ void TestObjectTrackingImpl<theolizer::FastOSerializer<>, theolizer::FastISerial
     );
 }
 
+//      ---<<< Xml特殊化 >>>---
+
+template<>
+void TestObjectTrackingImpl<theolizer::XmlOSerializer<>, theolizer::XmlISerializer<>>
+(
+    string const& iPreFix,
+    unsigned iGlobalVersionNo,
+    theolizer::CheckMode iCheckMode,
+    bool iNoPrettyPrint
+)
+{
+//      ---<<< 様々なオブジェクト追跡のテスト >>>---
+
+    string aFileName=iPreFix+"_tracking.log";
+    TestOSerializerTracking<theolizer::XmlOSerializer<> >
+    (
+        aFileName,
+        std::ios::openmode(),
+        iGlobalVersionNo,
+        iNoPrettyPrint
+    );
+    TestISerializerTracking<theolizer::XmlISerializer<> >
+    (
+        aFileName,
+        std::ios::openmode(),
+        iGlobalVersionNo
+    );
+
+//      ---<<< 複雑なポインタと参照のテスト >>>---
+
+    aFileName=iPreFix+"_pointer.log";
+    TestOSerializerPointer<theolizer::XmlOSerializer<> >
+    (
+        aFileName,
+        std::ios::openmode(),
+        iGlobalVersionNo,
+        iNoPrettyPrint
+    );
+    TestISerializerPointer<theolizer::XmlISerializer<> >
+    (
+        aFileName,
+        std::ios::openmode(),
+        iGlobalVersionNo
+    );
+}
+
 //      ---<<< Json特殊化 >>>---
 
 template<>
@@ -852,6 +898,9 @@ void TestTrackingMain()
 
     TestObjectTracking<theolizer::FastOSerializer<>, theolizer::FastISerializer<>>
         ("test_fast");
+
+    TestObjectTracking<theolizer::XmlOSerializer<>, theolizer::XmlISerializer<>>
+        ("test_xml");
 
     TestObjectTracking<theolizer::JsonOSerializer<>, theolizer::JsonISerializer<>>
         ("test_json");

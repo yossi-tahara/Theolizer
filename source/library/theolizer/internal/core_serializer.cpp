@@ -918,7 +918,8 @@ BaseSerializer::AutoRestoreSaveStructure::AutoRestoreSaveStructure
     ElementsMapping     iElementsMapping,
     Structure           iStructure,
     std::size_t         iTypeIndex,
-    std::size_t         iObjectId
+    std::size_t         iObjectId,
+    bool                iCancelPrettyPrint
 ) : mSerializer(iSerializer),
     mElementsMapping(iSerializer.mElementsMapping),
     mStructure(iStructure),
@@ -926,13 +927,20 @@ BaseSerializer::AutoRestoreSaveStructure::AutoRestoreSaveStructure
     mCancelPrettyPrint(iSerializer.mCancelPrettyPrint)
 {
     mSerializer.mElementsMapping=iElementsMapping;
-    mSerializer.mCancelPrettyPrint=false;
+    mSerializer.mCancelPrettyPrint=iCancelPrettyPrint;
     // データ内に型名を記録
-    if ((mSerializer.mCheckMode == CheckMode::TypeCheckInData) && (iTypeIndex != kInvalidSize))
+    if (mSerializer.mCheckMode == CheckMode::TypeCheckInData)
     {
-        mTypeName.reset(new std::string(mSerializer.getTypeName(iTypeIndex)));
+        if (iTypeIndex != kInvalidSize)
+        {
+            mTypeName.reset(new std::string(mSerializer.getTypeName(iTypeIndex)));
+        }
+        else
+        {
+            mTypeName.reset(new std::string);
+        }
     }
-    mSerializer.saveStructureStart(mStructure, mTypeName, iObjectId);
+    mSerializer.saveStructureStart(mStructure, *mTypeName.get(), iObjectId);
 }
 
 BaseSerializer::AutoRestoreSaveStructure::~AutoRestoreSaveStructure() noexcept(false)
@@ -941,7 +949,7 @@ BaseSerializer::AutoRestoreSaveStructure::~AutoRestoreSaveStructure() noexcept(f
     try
     {
         mSerializer.mIndent=mIndent;
-        mSerializer.saveStructureEnd(mStructure, mTypeName.get());
+        mSerializer.saveStructureEnd(mStructure, *mTypeName.get());
         mSerializer.mCancelPrettyPrint=mCancelPrettyPrint;
         mSerializer.mElementsMapping=mElementsMapping;
     }
@@ -1028,18 +1036,26 @@ BaseSerializer::AutoRestoreLoadStructure::AutoRestoreLoadStructure
     ElementsMapping     iElementsMapping,
     Structure           iStructure,
     std::size_t         iTypeIndex,
-    std::size_t         iObjectId
+    std::size_t*        oObjectId
 ) : mSerializer(iSerializer),
     mElementsMapping(iSerializer.mElementsMapping),
     mStructure(iStructure)
 {
     mSerializer.mElementsMapping=iElementsMapping;
     // データ内に型名を記録
-    if ((mSerializer.mCheckMode == CheckMode::TypeCheckInData) && (iTypeIndex != kInvalidSize))
+    // データ内に型名を記録
+    if (mSerializer.mCheckMode == CheckMode::TypeCheckInData)
     {
-        mTypeName.reset(new std::string(mSerializer.getTypeName(iTypeIndex)));
+        if (iTypeIndex != kInvalidSize)
+        {
+            mTypeName.reset(new std::string(mSerializer.getTypeName(iTypeIndex)));
+        }
+        else
+        {
+            mTypeName.reset(new std::string);
+        }
     }
-    mSerializer.loadStructureStart(mStructure, mTypeName, iObjectId);
+    mSerializer.loadStructureStart(mStructure, *mTypeName.get(), oObjectId);
 }
 
 BaseSerializer::AutoRestoreLoadStructure::~AutoRestoreLoadStructure() noexcept(false)
@@ -1047,7 +1063,7 @@ BaseSerializer::AutoRestoreLoadStructure::~AutoRestoreLoadStructure() noexcept(f
     theolizer::internal::Releasing aReleasing{};
     try
     {
-        mSerializer.loadStructureEnd(mStructure, mTypeName.get());
+        mSerializer.loadStructureEnd(mStructure, *mTypeName.get());
         mSerializer.mElementsMapping=mElementsMapping;
     }
     catch (std::exception& e)
@@ -1402,7 +1418,7 @@ TypeIndexList& BaseSerializer::getProgramTypeIndex()
     {
         // 型名回復
         std::string  aTypeName;
-        loadControl(aTypeName);
+        loadTypeName(aTypeName);
 
         // 型名から、現在のTypeIndexListを求める
 return mTypeNameMap->mMap[aTypeName];

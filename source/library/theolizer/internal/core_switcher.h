@@ -315,7 +315,9 @@ struct Switcher
     static void save(tBaseSerializer& iSerializer, tPointerType& iPointer)
     {
         // const外し
-        typedef typename RemoveCV<tPointerType>::type   PointerType;
+        typedef typename RemoveCV<tPointerType>::type           PointerType;
+        // pointer外し
+        typedef typename std::remove_pointer<PointerType>::type PointeeType;
 
         bool aIsSaved;
 //std::cout << "Switcher(Pointer) " << THEOLIZER_INTERNAL_TYPE_NAME(tPointerType)
@@ -330,17 +332,32 @@ struct Switcher
                 &aIsSaved
             );
 
+        // ポイント先の型のTypeIndex取り出し
+        std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+        if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+        {
+            aTypeIndex = theolizer::internal::getTypeIndex<PointeeType>();
+        }
+
         // 追跡指定がないなら、オブジェクトIDを保存するのみ
         if (tTrackingMode == etmDefault)
         {
-            iSerializer.saveObjectId(aSerializeInfo.mObjectId);
+            iSerializer.saveObjectId(aSerializeInfo.mObjectId, aTypeIndex);
         }
 
         // 追跡指定有り
         else
         {
             // 開始／終了マーク処理
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+            BaseSerializer::AutoRestoreSaveStructure    aAutoRestoreSaveStructure
+                (
+                    iSerializer,
+                    emOrder,
+                    (iSerializer.mRefProcessing)?Structure::Reference:Structure::OwnerPointer,
+                    aTypeIndex,
+                    aSerializeInfo.mObjectId,
+                    true
+                );
 
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
@@ -354,7 +371,7 @@ struct Switcher
             {
                 iSerializer.writePreElement();
                 SavePointer<tBaseSerializer,
-                            typename std::remove_pointer<PointerType>::type
+                            PointeeType
                            >::save(iSerializer, const_cast<PointerType&>(iPointer));
                 aSerializeInfo.mStatus=etsProcessed;
             }
@@ -366,13 +383,22 @@ struct Switcher
     {
         // const外し
         typedef typename RemoveCV<tPointerType>::type   PointerType;
+        // pointer外し
+        typedef typename std::remove_pointer<PointerType>::type PointeeType;
+
+        // ポイント先の型のTypeIndex取り出し
+        std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+        if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+        {
+            aTypeIndex = theolizer::internal::getTypeIndex<PointeeType>();
+        }
 
         // 追跡指定なし
         if (tTrackingMode == etmDefault)
         {
             // オブジェクトID回復
             size_t aObjectId;
-            iSerializer.loadControl(aObjectId);
+            iSerializer.loadObjectId(aObjectId, aTypeIndex);
             iSerializer.recoverObject
             (
                 aObjectId,
@@ -385,19 +411,31 @@ struct Switcher
         // 追跡指定有り
         else
         {
+            size_t aObjectId;
+
             // 開始／終了マーク処理
-            BaseSerializer::AutoRestoreLoad aAutoRestoreLoad(iSerializer);
+            BaseSerializer::AutoRestoreLoadStructure aAutoRestoreLoadStructure
+                (
+                    iSerializer,
+                    emOrder,
+                    (iSerializer.mRefProcessing)?Structure::Reference:Structure::OwnerPointer,
+                    aTypeIndex,
+                    &aObjectId
+                );
 
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
 
+            // AutoRestoreLoadStructureにてaObjectId回復済でない時のみ
             // オブジェクトID回復
-            size_t aObjectId;
-            if (!iSerializer.readPreElement())
+            if (iSerializer.mCheckMode != theolizer::CheckMode::TypeCheckInData)
             {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+                if (!iSerializer.readPreElement())
+                {
+                    THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+                }
+                iSerializer.loadControl(aObjectId);
             }
-            iSerializer.loadControl(aObjectId);
 
             void* aPointer;
             bool aIsLoaded=iSerializer.isLoadedObject(aObjectId, aPointer);

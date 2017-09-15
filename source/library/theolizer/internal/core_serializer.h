@@ -398,18 +398,12 @@ enum class Structure
 {
     None,
     Class,
+    Pointee,
     Array,
     Pointer,
     OwnerPointer,
-    Pointee,
     Reference               // 参照による動的ポリモーフィズム処理用
 };
-
-// ***************************************************************************
-//      文字列保持
-// ***************************************************************************
-
-typedef std::unique_ptr<std::string>    StringPtr;
 
 //############################################################################
 //      オブジェクト追跡用クラス
@@ -881,7 +875,8 @@ protected:
             ElementsMapping     iElementsMapping,
             Structure           iStructure,
             std::size_t         iTypeIndex=kInvalidSize,
-            std::size_t         iObjectId=kInvalidSize
+            std::size_t         iObjectId=kInvalidSize,
+            bool                iCancelPrettyPrint=false
         );
         ~AutoRestoreSaveStructure() noexcept(false);
     };
@@ -931,11 +926,12 @@ protected:
     virtual void saveGroupStart(bool iIsTop=false)          {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveGroupEnd(bool iIsTop=false)            {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveStructureStart
-        (Structure iStructure, StringPtr& ioTypeName, std::size_t iObjectId)
+        (Structure iStructure, std::string& ioTypeName, std::size_t iObjectId)
                                                             {saveGroupStart();}
-    virtual void saveStructureEnd(Structure iStructure, std::string const* iTypeName)
+    virtual void saveStructureEnd(Structure iStructure, std::string const& iTypeName)
                                                             {saveGroupEnd();}
-    virtual void saveObjectId(std::size_t iObjectId)        {saveControl(iObjectId);}
+    virtual void saveObjectId(std::size_t iObjectId, std::size_t iTypeIndex)
+                                                            {saveControl(iObjectId);}
     virtual void saveControl(int iControl)                  {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveControl(long iControl)                 {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveControl(long long iControl)            {THEOLIZER_INTERNAL_ABORT("");}
@@ -1083,7 +1079,7 @@ protected:
             ElementsMapping     iElementsMapping,
             Structure           iStructure,
             std::size_t         iTypeIndex=kInvalidSize,
-            std::size_t         iObjectId=kInvalidSize
+            std::size_t*        oObjectId=nullptr
         );
         ~AutoRestoreLoadStructure() noexcept(false);
     };
@@ -1142,11 +1138,13 @@ protected:
     virtual void loadGroupEnd(bool iIsTop=false)            {THEOLIZER_INTERNAL_ABORT("");}
     // iTypeName変更許可
     virtual void loadStructureStart
-        (Structure iStructure, StringPtr& ioTypeName, std::size_t iObjectId)
+        (Structure iStructure, std::string& ioTypeName, std::size_t* oObjectId)
                                                             {loadGroupStart();}
-    virtual void loadStructureEnd(Structure iStructure, std::string const* iTypeName)
+    virtual void loadStructureEnd(Structure iStructure, std::string const& iTypeName)
                                                             {loadGroupEnd();}
-    virtual void loadObjectId(std::size_t& oObjectId)       {loadControl(oObjectId);}
+    virtual void loadObjectId(std::size_t& oObjectId, std::size_t iTypeIndex)
+                                                            {loadControl(oObjectId);}
+    virtual void loadTypeName(std::string& oTypeName)       {loadControl(oTypeName);}
     virtual void loadControl(int& oControl)                 {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadControl(long& oControl)                {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadControl(long long& oControl)           {THEOLIZER_INTERNAL_ABORT("");}
@@ -1173,7 +1171,7 @@ protected:
     template<typename tBaseSerializer, typename tArrayType, TrackingMode tTrackingMode>
     void loadArray(tArrayType& oArray)
     {
-        AutoRestoreLoad aAutoRestoreLoad(*this);
+        AutoRestoreLoadStructure aAutoRestoreLoadStructure(*this, emOrder, Structure::Array);
         for (size_t i=0; true; ++i)
         {
             ReadStat aReadStat=readPreElement();

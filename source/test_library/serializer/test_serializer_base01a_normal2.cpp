@@ -82,6 +82,7 @@ std::cout << "TestOSerializerNormal2(" << iFileName << ", "
     std::ofstream   aStream(iFileName, iOpenMode);
     tOSerializer    aSerializer(aStream, iArgs...);
 
+#if 0
 //      ---<<< 生配列(トップレベル) >>>---
 
     int aArray[5][2];
@@ -178,6 +179,7 @@ std::cout << "TestOSerializerNormal2(" << iFileName << ", "
         { 50, 60}
     };
     THEOLIZER_PROCESS(aSerializer, aListFullAuto);
+#endif
 
 //      ---<<< std::unique_ptr >>>---
 
@@ -214,6 +216,7 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
     std::ifstream   aStream(iFileName, iOpenMode);
     tISerializer    aSerializer(aStream, iArgs...);
 
+#if 0
 //      ---<<< 生配列(トップレベル) >>>---
 
     int aArray[5][2];
@@ -452,6 +455,7 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
     THEOLIZER_EQUAL(itr->getInt(),   50);
     THEOLIZER_EQUAL(itr->getShort(), 60);
     ++itr;
+#endif
 
 //      ---<<< std::unique_ptr >>>---
 
@@ -515,6 +519,33 @@ void TestNormalImpl2<theolizer::FastOSerializer<>, theolizer::FastISerializer<> 
     (
         iFileName,
         std::ios::binary,
+        iGlobalVersionNo
+    );
+}
+
+//      ---<<< Xml特殊化 >>>---
+
+template<>
+void TestNormalImpl2<theolizer::XmlOSerializer<>, theolizer::XmlISerializer<> >
+(
+    string const& iFileName,
+    unsigned iGlobalVersionNo,
+    theolizer::CheckMode iCheckMode,
+    bool iNoPrettyPrint
+)
+{
+    TestOSerializerNormal2<theolizer::XmlOSerializer<> >
+    (
+        iFileName,
+        std::ios::openmode(),
+        iGlobalVersionNo,
+        iNoPrettyPrint
+    );
+
+    TestISerializerNormal2<theolizer::XmlISerializer<> >
+    (
+        iFileName,
+        std::ios::openmode(),
         iGlobalVersionNo
     );
 }
@@ -624,7 +655,8 @@ void TestNormalMain2()
 {
 //  theolizer::DisplayPass aDisplayPass;
 
-    TestNormal2<theolizer::FastOSerializer<>,  theolizer::FastISerializer<> >("test_fast2");
+///    TestNormal2<theolizer::FastOSerializer<>,  theolizer::FastISerializer<> >("test_fast2");
+    TestNormal2<theolizer::XmlOSerializer<>,   theolizer::XmlISerializer<> >("test_xml2");
     TestNormal2<theolizer::JsonOSerializer<>,  theolizer::JsonISerializer<> >("test_json2");
     TestNormal2<theolizer::BinaryOSerializer<>,theolizer::BinaryISerializer<> >("test_binary2");
 }

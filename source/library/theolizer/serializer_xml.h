@@ -105,15 +105,18 @@ THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, TagKind 
 
 struct Attribute
 {
+    Structure       mStructure;
     std::size_t     mObjectId;
     std::string     mXmlns;             // xmlns:th用
     unsigned        mGlobalVersionNo;   // GlobalVersionNo
 
     Attribute() :
+        mStructure(Structure::None),
         mObjectId(kInvalidSize),
         mXmlns(),
         mGlobalVersionNo(0)
     { }
+    char const* getStructure() const;
 };
 
 // ***************************************************************************
@@ -340,7 +343,7 @@ private:
 
 //      ---<<< 制御情報保存 >>>---
 
-    void saveObjectId(std::size_t iObjectId);
+    void saveObjectId(std::size_t iObjectId, std::size_t iTypeIndex);
 
     void saveControl(int)                  {}
     void saveControl(long)                 {}
@@ -368,7 +371,7 @@ private:
 
 //      ---<<< Element前処理 >>>---
 
-    void writePreElement(bool iDoProcess=false);
+    void writePreElement(bool) { };
 
 //----------------------------------------------------------------------------
 //      内部処理
@@ -378,17 +381,22 @@ private:
 
 //      ---<<< タグ保存 >>>---
 
-    void saveTag(TagKind iTagKind, std::string const& iName, Attribute const* iAttribute=nullptr);
+    char const* saveTag
+    (
+        TagKind             iTagKind,
+        std::string const&  iName,
+        Attribute const*    iAttribute=nullptr
+    );
 
 //      ---<<< グループ処理 >>>---
 
-    void saveGroupStart(bool iIsTop=false);
-    void saveGroupEnd(bool iIsTop=false);
+    void saveGroupStart(bool) { }
+    void saveGroupEnd(bool)   { }
 
 //      ---<<< 各種構造処理 >>>---
 
-    void saveStructureStart(Structure iStructure, StringPtr& ioTypeName, std::size_t iOjbectId);
-    void saveStructureEnd(Structure iStructure, std::string const* iTypeName);
+    void saveStructureStart(Structure iStructure, std::string& ioTypeName, std::size_t iOjbectId);
+    void saveStructureEnd(Structure iStructure, std::string const& iTypeName);
 
 //      ---<<< プリミティブ名返却 >>>---
 
@@ -413,7 +421,7 @@ private:
 
 //      ---<<< 整形処理 >>>---
 
-    void writeIndent(bool iNewLine);
+    void writeIndent();
 
 //      ---<<< XML文字列へエンコードして保存 >>>---
 
@@ -510,7 +518,7 @@ private:
 
 //      ---<<< 制御情報回復 >>>---
 
-    void loadObjectId(std::size_t& oObjectId);
+    void loadObjectId(std::size_t& oObjectId, std::size_t iTypeIndex);
 
     void loadControl(int&)                 {}
     void loadControl(long&)                {}
@@ -558,7 +566,7 @@ private:
 //      ---<<< タグ回復と確認 >>>---
 
     // mTagInfoが有効ならmTagInfoと一致チェック、そうでないなら回復してチェック
-    void loadTag(TagKind iTagKind, std::string const& iName, Attribute* iAttribute=nullptr);
+    char const* loadTag(TagKind iTagKind, std::string const& iName, Attribute* iAttribute=nullptr);
 
     // タグ情報回復
     struct TagInfo
@@ -566,6 +574,7 @@ private:
         bool        mValid;
         TagKind     mTagKind;
         std::string mTagName;
+        std::string mTypeName;
         std::string mMemberName;
         Attribute   mAttribute;
         TagInfo() : mValid(false), mTagKind(TagKind::Start) { }
@@ -581,8 +590,9 @@ private:
 
 //      ---<<< 各種構造処理 >>>---
 
-    void loadStructureStart(Structure iStructure, StringPtr& ioTypeName, std::size_t iObjectId);
-    void loadStructureEnd(Structure iStructure, std::string const* iTypeName);
+    void loadStructureStart(Structure iStructure, std::string& ioTypeName, std::size_t* oObjectId);
+    void loadStructureEnd(Structure iStructure, std::string const& iTypeName);
+    void loadTypeName(std::string& oTypeName);
 
 //      ---<<< プリミティブ名返却 >>>---
 
