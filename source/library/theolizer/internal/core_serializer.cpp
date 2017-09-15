@@ -917,7 +917,8 @@ BaseSerializer::AutoRestoreSaveStructure::AutoRestoreSaveStructure
     BaseSerializer&     iSerializer,
     ElementsMapping     iElementsMapping,
     Structure           iStructure,
-    std::size_t         iTypeIndex
+    std::size_t         iTypeIndex,
+    std::size_t         iObjectId
 ) : mSerializer(iSerializer),
     mElementsMapping(iSerializer.mElementsMapping),
     mStructure(iStructure),
@@ -931,7 +932,7 @@ BaseSerializer::AutoRestoreSaveStructure::AutoRestoreSaveStructure
     {
         mTypeName.reset(new std::string(mSerializer.getTypeName(iTypeIndex)));
     }
-    mSerializer.saveStructureStart(mStructure, mTypeName.get());
+    mSerializer.saveStructureStart(mStructure, mTypeName, iObjectId);
 }
 
 BaseSerializer::AutoRestoreSaveStructure::~AutoRestoreSaveStructure() noexcept(false)
@@ -1026,7 +1027,8 @@ BaseSerializer::AutoRestoreLoadStructure::AutoRestoreLoadStructure
     BaseSerializer&     iSerializer,
     ElementsMapping     iElementsMapping,
     Structure           iStructure,
-    std::size_t         iTypeIndex
+    std::size_t         iTypeIndex,
+    std::size_t         iObjectId
 ) : mSerializer(iSerializer),
     mElementsMapping(iSerializer.mElementsMapping),
     mStructure(iStructure)
@@ -1037,7 +1039,7 @@ BaseSerializer::AutoRestoreLoadStructure::AutoRestoreLoadStructure
     {
         mTypeName.reset(new std::string(mSerializer.getTypeName(iTypeIndex)));
     }
-    mSerializer.loadStructureStart(mStructure, mTypeName.get());
+    mSerializer.loadStructureStart(mStructure, mTypeName, iObjectId);
 }
 
 BaseSerializer::AutoRestoreLoadStructure::~AutoRestoreLoadStructure() noexcept(false)

@@ -105,19 +105,15 @@ THEOLIZER_INTERNAL_DLL std::ostream& operator<<(std::ostream& iOStream, TagKind 
 
 struct Attribute
 {
-    Structure       mStructure;
     std::size_t     mObjectId;
     std::string     mXmlns;             // xmlns:th用
     unsigned        mGlobalVersionNo;   // GlobalVersionNo
 
     Attribute() :
-        mStructure(Structure::None),
         mObjectId(kInvalidSize),
         mXmlns(),
         mGlobalVersionNo(0)
     { }
-
-    char const* getStructure(char const* iName) const;
 };
 
 // ***************************************************************************
@@ -344,13 +340,15 @@ private:
 
 //      ---<<< 制御情報保存 >>>---
 
-    void saveControl(int iControl)                  {savePrimitive(iControl);}
-    void saveControl(long iControl)                 {savePrimitive(iControl);}
-    void saveControl(long long iControl)            {savePrimitive(iControl);}
-    void saveControl(unsigned iControl)             {savePrimitive(iControl);}
-    void saveControl(unsigned long iControl)        {savePrimitive(iControl);}
-    void saveControl(unsigned long long iControl)   {savePrimitive(iControl);}
-    void saveControl(std::string const& iControl)   {encodeXmlString(iControl);}
+    void saveObjectId(std::size_t iObjectId);
+
+    void saveControl(int)                  {}
+    void saveControl(long)                 {}
+    void saveControl(long long)            {}
+    void saveControl(unsigned)             {}
+    void saveControl(unsigned long)        {}
+    void saveControl(unsigned long long)   {}
+    void saveControl(std::string const&)   {}
 
 //      ---<<< 要素名処理 >>>---
 
@@ -389,7 +387,7 @@ private:
 
 //      ---<<< 各種構造処理 >>>---
 
-    void saveStructureStart(Structure iStructure, std::string* iTypeName);
+    void saveStructureStart(Structure iStructure, StringPtr& ioTypeName, std::size_t iOjbectId);
     void saveStructureEnd(Structure iStructure, std::string const* iTypeName);
 
 //      ---<<< プリミティブ名返却 >>>---
@@ -512,13 +510,15 @@ private:
 
 //      ---<<< 制御情報回復 >>>---
 
-    void loadControl(int& iControl)                 {loadPrimitive(iControl);}
-    void loadControl(long& iControl)                {loadPrimitive(iControl);}
-    void loadControl(long long& iControl)           {loadPrimitive(iControl);}
-    void loadControl(unsigned& iControl)            {loadPrimitive(iControl);}
-    void loadControl(unsigned long& iControl)       {loadPrimitive(iControl);}
-    void loadControl(unsigned long long& iControl)  {loadPrimitive(iControl);}
-    void loadControl(std::string& iControl)         {decodeXmlString(iControl);}
+    void loadObjectId(std::size_t& oObjectId);
+
+    void loadControl(int&)                 {}
+    void loadControl(long&)                {}
+    void loadControl(long long&)           {}
+    void loadControl(unsigned&)            {}
+    void loadControl(unsigned long&)       {}
+    void loadControl(unsigned long long&)  {}
+    void loadControl(std::string&)         {}
 
 //      ---<<< 要素名処理 >>>---
 
@@ -581,7 +581,7 @@ private:
 
 //      ---<<< 各種構造処理 >>>---
 
-    void loadStructureStart(Structure iStructure, std::string* iTypeName);
+    void loadStructureStart(Structure iStructure, StringPtr& ioTypeName, std::size_t iObjectId);
     void loadStructureEnd(Structure iStructure, std::string const* iTypeName);
 
 //      ---<<< プリミティブ名返却 >>>---

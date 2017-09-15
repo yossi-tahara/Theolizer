@@ -333,7 +333,7 @@ struct Switcher
         // 追跡指定がないなら、オブジェクトIDを保存するのみ
         if (tTrackingMode == etmDefault)
         {
-            iSerializer.saveControl(aSerializeInfo.mObjectId);
+            iSerializer.saveObjectId(aSerializeInfo.mObjectId);
         }
 
         // 追跡指定有り
@@ -611,11 +611,6 @@ struct Switcher
         }
         else
         {
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
-
-            // クラス・インスタンスのオブジェクト追跡中
-            BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
-
             bool aIsSaved;
 //std::cout << "Switcher(Intrusive) " << THEOLIZER_INTERNAL_TYPE_NAME(IntrusiveType) << "\n";
             SerializeInfo& aSerializeInfo=
@@ -626,6 +621,13 @@ struct Switcher
                     aTrackingMode,
                     &aIsSaved
                 );
+
+            // 開始／終了マーク処理
+            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+
+            // クラス・インスタンスのオブジェクト追跡中
+            BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
+
             iSerializer.writePreElement();
             iSerializer.saveControl(aSerializeInfo.mObjectId);
             // 未保存の時のみ保存する
@@ -826,11 +828,6 @@ struct Switcher
         }
         else
         {
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
-
-            // クラス・インスタンスのオブジェクト追跡中
-            BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
-
             bool aIsSaved;
 //std::cout << "Switcher(NonIntrusive) "<<THEOLIZER_INTERNAL_TYPE_NAME(NonIntrusiveType) << "\n";
             SerializeInfo& aSerializeInfo=
@@ -841,6 +838,13 @@ struct Switcher
                     aTrackingMode,
                     &aIsSaved
                 );
+
+            // 開始／終了マーク処理
+            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+
+            // クラス・インスタンスのオブジェクト追跡中
+            BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
+
             iSerializer.writePreElement();
             iSerializer.saveControl(aSerializeInfo.mObjectId);
             // 未保存の時のみ保存する
@@ -985,11 +989,6 @@ struct Switcher
         }
         else
         {
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
-
-            // クラス・インスタンスのオブジェクト追跡中
-            BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
-
             bool aIsSaved;
 //std::cout << "Switcher(TheolizerVersion) "<<THEOLIZER_INTERNAL_TYPE_NAME(tVersionType) << "\n";
             SerializeInfo& aSerializeInfo=
@@ -1000,6 +999,13 @@ struct Switcher
                     aTrackingMode,
                     &aIsSaved
                 );
+
+            // 開始／終了マーク処理
+            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+
+            // クラス・インスタンスのオブジェクト追跡中
+            BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
+
             iSerializer.writePreElement();
             iSerializer.saveControl(aSerializeInfo.mObjectId);
             // 未保存の時のみ保存する
@@ -1120,7 +1126,6 @@ struct Switcher
         }
         else
         {
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
             bool aIsSaved;
 //std::cout << "Switcher(Enum) " << THEOLIZER_INTERNAL_TYPE_NAME(tEnumType) << "\n";
             SerializeInfo& aSerializeInfo=
@@ -1131,6 +1136,10 @@ struct Switcher
                     tTrackingMode,
                     &aIsSaved
                 );
+
+            // 開始／終了マーク処理
+            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+
             iSerializer.writePreElement();
             iSerializer.saveControl(aSerializeInfo.mObjectId);
             // 未保存の時のみ保存する
@@ -1205,7 +1214,6 @@ struct Switcher
         }
         else
         {
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
             bool aIsSaved;
 //std::cout << "Switcher(EnumVersion) " << THEOLIZER_INTERNAL_TYPE_NAME(tVersionType) << "\n";
             SerializeInfo& aSerializeInfo=
@@ -1216,6 +1224,10 @@ struct Switcher
                     tTrackingMode,
                     &aIsSaved
                 );
+
+            // 開始／終了マーク処理
+            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+
             iSerializer.writePreElement();
             iSerializer.saveControl(aSerializeInfo.mObjectId);
             // 未保存の時のみ保存する
@@ -1285,7 +1297,6 @@ struct Switcher
         }
         else
         {
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
             bool aIsSaved;
 //std::cout << "Switcher(Primitive) " << THEOLIZER_INTERNAL_TYPE_NAME(tPrimitiveType) << "\n";
             SerializeInfo& aSerializeInfo=
@@ -1296,6 +1307,10 @@ struct Switcher
                     tTrackingMode,
                     &aIsSaved
                 );
+
+            // 開始／終了マーク処理
+            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+
             iSerializer.writePreElement();
             iSerializer.saveControl(aSerializeInfo.mObjectId);
             // 未保存の時のみ保存する

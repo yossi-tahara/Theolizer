@@ -91,34 +91,38 @@ std::ostream& operator<<(std::ostream& iOStream, TagKind iTagKind)
 }
 
 // ***************************************************************************
-//      XML属性
+//      構造名取得
 // ***************************************************************************
 
-char const* Attribute::getStructure(char const* iName) const
+void getTagName(Structure iStructure, std::string& oTagName)
 {
-    switch(mStructure)
+    switch(iStructure)
     {
     case Structure::None:
     case Structure::Class:
         break;
 
     case Structure::Array:
-        return THEOLIZER_INTERNAL_XML_NAMESPACE ":Array";
+        oTagName = THEOLIZER_INTERNAL_XML_NAMESPACE ":Array";
+        break;
 
     case Structure::Pointer:
-        return THEOLIZER_INTERNAL_XML_NAMESPACE ":Pointer";
+        oTagName = THEOLIZER_INTERNAL_XML_NAMESPACE ":Pointer";
+        break;
 
     case Structure::OwnerPointer:
-        return THEOLIZER_INTERNAL_XML_NAMESPACE ":OwnerPointer";
+        oTagName = THEOLIZER_INTERNAL_XML_NAMESPACE ":OwnerPointer";
+        break;
 
     case Structure::Pointee:
-        return THEOLIZER_INTERNAL_XML_NAMESPACE ":Pointee";
+        oTagName = THEOLIZER_INTERNAL_XML_NAMESPACE ":Pointee";
+        break;
 
     case Structure::Reference:
-        return THEOLIZER_INTERNAL_XML_NAMESPACE ":Reference";
+        oTagName = THEOLIZER_INTERNAL_XML_NAMESPACE ":Reference";
+        break;
     }
-    return iName;
-    }
+}
 
 // ***************************************************************************
 //      テンプレート型名変換
@@ -278,6 +282,19 @@ void XmlMidOSerializer::writeHeader()
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
+//      型情報保存
+//----------------------------------------------------------------------------
+
+void XmlMidOSerializer::saveObjectId(std::size_t iObjectId)
+{
+    std::string aTagName;
+    getTagName(Structure::Pointer, aTagName);
+    Attribute   aAttribute;
+    aAttribute.mObjectId = iObjectId;
+    saveTag(TagKind::StartEnd, aTagName, &aAttribute);
+}
+
+//----------------------------------------------------------------------------
 //      要素名処理
 //----------------------------------------------------------------------------
 
@@ -431,14 +448,9 @@ void XmlMidOSerializer::saveTag
     Attribute const*    iAttribute
 )
 {
-    char const* aName = iName.c_str();
-    if (iAttribute)
-    {
-        aName=iAttribute->getStructure(aName);
-    }
     if (iTagKind != TagKind::End)
     {
-        mOStream << "<" << aName;
+        mOStream << "<" << iName;
         if (mElementName)
         {
             mOStream << " " THEOLIZER_INTERNAL_XML_NAMESPACE ":MemberName="
@@ -471,7 +483,7 @@ void XmlMidOSerializer::saveTag
     }
     else
     {
-        mOStream << "</" << aName << ">";
+        mOStream << "</" << iName << ">";
     }
 }
 
@@ -499,13 +511,21 @@ void XmlMidOSerializer::saveGroupEnd(bool iIsTop)
 
 //      ---<<< 開始処理 >>>---
 
-void XmlMidOSerializer::saveStructureStart(Structure iStructure, std::string* iTypeName)
+void XmlMidOSerializer::saveStructureStart
+(
+    Structure   iStructure,
+    StringPtr&  ioTypeName,
+    std::size_t iObjectId
+)
 {
-    THEOLIZER_INTERNAL_ASSERT(iTypeName, "saveStructureStart() iTypeName = nullptr");
-std::cout << "saveStructureStart(" << *iTypeName << ") mNoPrettyPrint=" << mNoPrettyPrint << " mCancelPrettyPrint=" << mCancelPrettyPrint << " mIndent=" << mIndent << "\n";
+    if (!ioTypeName) ioTypeName.reset(new std::string);
+std::cout << "saveStructureStart(" << *ioTypeName.get() << ") mNoPrettyPrint=" << mNoPrettyPrint << " mCancelPrettyPrint=" << mCancelPrettyPrint << " mIndent=" << mIndent << "\n";
     if (!mCancelPrettyPrint) mIndent++;
-    modifyTypeName(*iTypeName);
-    saveTag(TagKind::Start, *iTypeName);
+    modifyTypeName(*ioTypeName.get());
+    getTagName(iStructure, *ioTypeName.get());
+    Attribute   aAttribute;
+    aAttribute.mObjectId = iObjectId;
+    saveTag(TagKind::Start, *ioTypeName.get(), &aAttribute);
 }
 
 //      ---<<< 終了処理 >>>---
@@ -707,6 +727,20 @@ bool XmlMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
 // ***************************************************************************
 //      データ回復
 // ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      型情報保存
+//----------------------------------------------------------------------------
+
+void XmlMidISerializer::loadObjectId(std::size_t& oObjectId)
+{
+    if (!mTagInfo.mValid)
+    {
+        THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+    }
+
+    oObjectId = mTagInfo.mAttribute.mObjectId;
+}
 
 //----------------------------------------------------------------------------
 //      要素名処理
@@ -922,16 +956,11 @@ std::cout << "<" << ((iTagKind==TagKind::End)?"/":"") << iName << ((iTagKind==Ta
     }
 
     // タグ名確認
-    char const* aName = iName.c_str();
-    if (iAttribute)
-    {
-        aName=iAttribute->getStructure(aName);
-    }
-    if (mTagInfo.mTagName != aName)
+    if (mTagInfo.mTagName != iName)
     {
         THEOLIZER_INTERNAL_DATA_ERROR
             ("XmlMidISerializer : Illegal tag name(data:%1%, program:%2%).",
-                mTagInfo.mTagName, aName);
+                mTagInfo.mTagName, iName);
     }
 
     // 属性返却(ObjectIdとGlobalVersionNo)
@@ -942,7 +971,8 @@ std::cout << "<" << ((iTagKind==TagKind::End)?"/":"") << iName << ((iTagKind==Ta
     }
 
     // 属性確認
-    if (mTagInfo.mAttribute.mXmlns.empty() == (!!iAttribute))
+    if (mTagInfo.mAttribute.mXmlns.empty()
+     != (!iAttribute || iAttribute->mXmlns.empty()))
     {
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.(Xmlns)");
     }
@@ -1102,11 +1132,20 @@ void XmlMidISerializer::loadGroupEnd(bool iIsTop)
 
 //      ---<<< 開始処理 >>>---
 
-void XmlMidISerializer::loadStructureStart(Structure iStructure, std::string* iTypeName)
+void XmlMidISerializer::loadStructureStart
+(
+    Structure   iStructure,
+    StringPtr&  ioTypeName,
+    std::size_t iObjectId
+)
 {
-std::cout << "loadStructureStart(" << *iTypeName << ")\n";
-    modifyTypeName(*iTypeName);
-    loadTag(TagKind::Start, *iTypeName);
+    if (!ioTypeName) ioTypeName.reset(new std::string);
+std::cout << "loadStructureStart(" << *ioTypeName.get() << ")\n";
+    modifyTypeName(*ioTypeName.get());
+    getTagName(iStructure, *ioTypeName.get());
+    Attribute   aAttribute;
+    aAttribute.mObjectId = iObjectId;
+    loadTag(TagKind::Start, *ioTypeName.get(), &aAttribute);
 }
 
 //      ---<<< 終了処理 >>>---

@@ -390,6 +390,10 @@ public:
 //          xml生成時に用いている。
 //############################################################################
 
+// ***************************************************************************
+//      構造を示すenum型
+// ***************************************************************************
+
 enum class Structure
 {
     None,
@@ -400,6 +404,12 @@ enum class Structure
     Pointee,
     Reference               // 参照による動的ポリモーフィズム処理用
 };
+
+// ***************************************************************************
+//      文字列保持
+// ***************************************************************************
+
+typedef std::unique_ptr<std::string>    StringPtr;
 
 //############################################################################
 //      オブジェクト追跡用クラス
@@ -870,7 +880,8 @@ protected:
             BaseSerializer&     iSerializer,
             ElementsMapping     iElementsMapping,
             Structure           iStructure,
-            std::size_t         iTypeIndex=kInvalidSize
+            std::size_t         iTypeIndex=kInvalidSize,
+            std::size_t         iObjectId=kInvalidSize
         );
         ~AutoRestoreSaveStructure() noexcept(false);
     };
@@ -919,11 +930,12 @@ protected:
     virtual void writePreElement(bool iDoProcess=false)     {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveGroupStart(bool iIsTop=false)          {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveGroupEnd(bool iIsTop=false)            {THEOLIZER_INTERNAL_ABORT("");}
-    // iTypeName変更許可
-    virtual void saveStructureStart(Structure iStructure, std::string* iTypeName)
+    virtual void saveStructureStart
+        (Structure iStructure, StringPtr& ioTypeName, std::size_t iObjectId)
                                                             {saveGroupStart();}
     virtual void saveStructureEnd(Structure iStructure, std::string const* iTypeName)
                                                             {saveGroupEnd();}
+    virtual void saveObjectId(std::size_t iObjectId)        {saveControl(iObjectId);}
     virtual void saveControl(int iControl)                  {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveControl(long iControl)                 {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveControl(long long iControl)            {THEOLIZER_INTERNAL_ABORT("");}
@@ -950,7 +962,7 @@ protected:
     template<typename tBaseSerializer, typename tArrayType, TrackingMode tTrackingMode>
     void saveArray(tArrayType& iArray)
     {
-        AutoRestoreSave aAutoRestoreSave(*this);
+        AutoRestoreSaveStructure aAutoRestoreSaveStructure(*this, emOrder, Structure::Array);
         for (size_t i=0; i < std::extent<tArrayType>::value; ++i)
         {
             AutoRestoreSerializeInfo aAutoRestoreSerializeInfo(*this, nullptr, i);
@@ -1070,7 +1082,8 @@ protected:
             BaseSerializer&     iSerializer,
             ElementsMapping     iElementsMapping,
             Structure           iStructure,
-            std::size_t         iTypeIndex=kInvalidSize
+            std::size_t         iTypeIndex=kInvalidSize,
+            std::size_t         iObjectId=kInvalidSize
         );
         ~AutoRestoreLoadStructure() noexcept(false);
     };
@@ -1128,17 +1141,19 @@ protected:
     virtual void loadGroupStart(bool iIsTop=false)          {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadGroupEnd(bool iIsTop=false)            {THEOLIZER_INTERNAL_ABORT("");}
     // iTypeName変更許可
-    virtual void loadStructureStart(Structure iStructure, std::string* iTypeName)
+    virtual void loadStructureStart
+        (Structure iStructure, StringPtr& ioTypeName, std::size_t iObjectId)
                                                             {loadGroupStart();}
     virtual void loadStructureEnd(Structure iStructure, std::string const* iTypeName)
                                                             {loadGroupEnd();}
-    virtual void loadControl(int& iControl)                 {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void loadControl(long& iControl)                {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void loadControl(long long& iControl)           {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void loadControl(unsigned& iControl)            {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void loadControl(unsigned long& iControl)       {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void loadControl(unsigned long long& iControl)  {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void loadControl(std::string& iControl)         {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void loadObjectId(std::size_t& oObjectId)       {loadControl(oObjectId);}
+    virtual void loadControl(int& oControl)                 {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void loadControl(long& oControl)                {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void loadControl(long long& oControl)           {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void loadControl(unsigned& oControl)            {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void loadControl(unsigned long& oControl)       {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void loadControl(unsigned long long& oControl)  {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void loadControl(std::string& oControl)         {THEOLIZER_INTERNAL_ABORT("");}
     virtual std::string loadElementName(ElementsMapping iElementsMapping)
                                                             {THEOLIZER_INTERNAL_ABORT("");}
 

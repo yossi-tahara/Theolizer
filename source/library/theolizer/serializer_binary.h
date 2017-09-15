@@ -555,13 +555,13 @@ private:
     long long loadSigned();
     unsigned long long loadUnsigned(BinaryTag::TagCode iTagCode=BinaryTag::TagCode::Primitive);
 
-    void loadControl(int& iControl)                {iControl=static_cast<int>(loadSigned());}
-    void loadControl(long& iControl)               {iControl=static_cast<long>(loadSigned());}
-    void loadControl(long long& iControl)          {iControl=loadSigned();}
-    void loadControl(unsigned& iControl)           {iControl=static_cast<unsigned>(loadSigned());}
-    void loadControl(unsigned long& iControl)  {iControl=static_cast<unsigned long>(loadSigned());}
-    void loadControl(unsigned long long& iControl) {iControl=loadSigned();}
-    void loadControl(std::string& iControl)        {loadByteString(iControl);}
+    void loadControl(int& oControl)                {oControl=static_cast<int>(loadSigned());}
+    void loadControl(long& oControl)               {oControl=static_cast<long>(loadSigned());}
+    void loadControl(long long& oControl)          {oControl=loadSigned();}
+    void loadControl(unsigned& oControl)           {oControl=static_cast<unsigned>(loadSigned());}
+    void loadControl(unsigned long& oControl)  {oControl=static_cast<unsigned long>(loadSigned());}
+    void loadControl(unsigned long long& oControl) {oControl=loadSigned();}
+    void loadControl(std::string& oControl)        {loadByteString(oControl);}
 
 //      ---<<< プリミティブ回復 >>>---
 

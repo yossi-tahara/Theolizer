@@ -448,13 +448,13 @@ private:
 
 //      ---<<< 制御情報回復 >>>---
 
-    void loadControl(int& iControl)                 {loadPrimitive(iControl);}
-    void loadControl(long& iControl)                {loadPrimitive(iControl);}
-    void loadControl(long long& iControl)           {loadPrimitive(iControl);}
-    void loadControl(unsigned& iControl)            {loadPrimitive(iControl);}
-    void loadControl(unsigned long& iControl)       {loadPrimitive(iControl);}
-    void loadControl(unsigned long long& iControl)  {loadPrimitive(iControl);}
-    void loadControl(std::string& iControl)         {decodeJsonString(iControl);}
+    void loadControl(int& oControl)                 {loadPrimitive(oControl);}
+    void loadControl(long& oControl)                {loadPrimitive(oControl);}
+    void loadControl(long long& oControl)           {loadPrimitive(oControl);}
+    void loadControl(unsigned& oControl)            {loadPrimitive(oControl);}
+    void loadControl(unsigned long& oControl)       {loadPrimitive(oControl);}
+    void loadControl(unsigned long long& oControl)  {loadPrimitive(oControl);}
+    void loadControl(std::string& oControl)         {decodeJsonString(oControl);}
 
 //      ---<<< プリミティブ回復 >>>---
 

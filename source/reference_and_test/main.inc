@@ -124,7 +124,7 @@ void callTests
 //----------------------------------------------------------------------------
 
     std::string prefix;
-    prefix="Xml-";
+    prefix="xml-";
 
     // デフォルト処理
     if (gIndex == kDefaultIndex)
