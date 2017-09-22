@@ -660,8 +660,23 @@ struct Switcher
                     &aIsSaved
                 );
 
+            // 型のTypeIndex取り出し
+            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+            {
+                aTypeIndex = theolizer::internal::getTypeIndex<tTargetClass>();
+            }
+
             // 開始／終了マーク処理
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+            BaseSerializer::AutoRestoreSaveStructure    aAutoRestoreSaveStructure
+                (
+                    iSerializer,
+                    emOrder,
+                    Structure::Pointee,
+                    aTypeIndex,
+                    aSerializeInfo.mObjectId,
+                    true
+                );
 
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
@@ -745,12 +760,27 @@ struct Switcher
         }
         else
         {
-            BaseSerializer::AutoRestoreLoad aAutoRestoreLoad(iSerializer);
+            // 型のTypeIndex取り出し
+            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+            {
+                aTypeIndex = theolizer::internal::getTypeIndex<tTargetClass>();
+            }
+
+            // 開始／終了マーク処理
+            size_t aObjectId=kInvalidSize;
+            BaseSerializer::AutoRestoreLoadStructure aAutoRestoreLoadStructure
+                (
+                    iSerializer,
+                    emOrder,
+                    Structure::Pointee,
+                    aTypeIndex,
+                    &aObjectId
+                );
 
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
 
-            size_t aObjectId;
             if (!iSerializer.readPreElement())
             {
                 THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
@@ -877,8 +907,23 @@ struct Switcher
                     &aIsSaved
                 );
 
+            // 型のTypeIndex取り出し
+            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+            {
+                aTypeIndex = theolizer::internal::getTypeIndex<tTargetClass>();
+            }
+
             // 開始／終了マーク処理
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+            BaseSerializer::AutoRestoreSaveStructure    aAutoRestoreSaveStructure
+                (
+                    iSerializer,
+                    emOrder,
+                    Structure::Pointee,
+                    aTypeIndex,
+                    aSerializeInfo.mObjectId,
+                    true
+                );
 
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
@@ -962,12 +1007,27 @@ struct Switcher
         }
         else
         {
-            BaseSerializer::AutoRestoreLoad aAutoRestoreLoad(iSerializer);
+            // 型のTypeIndex取り出し
+            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+            {
+                aTypeIndex = theolizer::internal::getTypeIndex<tTargetClass>();
+            }
+
+            // 開始／終了マーク処理
+            size_t aObjectId=kInvalidSize;
+            BaseSerializer::AutoRestoreLoadStructure aAutoRestoreLoadStructure
+                (
+                    iSerializer,
+                    emOrder,
+                    Structure::Pointee,
+                    aTypeIndex,
+                    &aObjectId
+                );
 
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
 
-            size_t aObjectId;
             iSerializer.readPreElement();
             iSerializer.loadControl(aObjectId);
             bool aIsLoaded;
@@ -1038,8 +1098,23 @@ struct Switcher
                     &aIsSaved
                 );
 
+            // 型のTypeIndex取り出し
+            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+            {
+                aTypeIndex = theolizer::internal::getTypeIndex<TheolizerTarget>();
+            }
+
             // 開始／終了マーク処理
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+            BaseSerializer::AutoRestoreSaveStructure    aAutoRestoreSaveStructure
+                (
+                    iSerializer,
+                    emOrder,
+                    Structure::Pointee,
+                    aTypeIndex,
+                    aSerializeInfo.mObjectId,
+                    true
+                );
 
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
@@ -1070,12 +1145,27 @@ struct Switcher
         }
         else
         {
-            BaseSerializer::AutoRestoreLoad aAutoRestoreLoad(iSerializer);
+            // 型のTypeIndex取り出し
+            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+            {
+                aTypeIndex = theolizer::internal::getTypeIndex<TheolizerTarget>();
+            }
+
+            // 開始／終了マーク処理
+            size_t aObjectId=kInvalidSize;
+            BaseSerializer::AutoRestoreLoadStructure aAutoRestoreLoadStructure
+                (
+                    iSerializer,
+                    emOrder,
+                    Structure::Pointee,
+                    aTypeIndex,
+                    &aObjectId
+                );
 
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
 
-            size_t aObjectId;
             if (!iSerializer.readPreElement()) {
                 THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
             }
@@ -1175,8 +1265,23 @@ struct Switcher
                     &aIsSaved
                 );
 
+            // 型のTypeIndex取り出し
+            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+            {
+                aTypeIndex = theolizer::internal::getTypeIndex<tEnumType>();
+            }
+
             // 開始／終了マーク処理
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+            BaseSerializer::AutoRestoreSaveStructure    aAutoRestoreSaveStructure
+                (
+                    iSerializer,
+                    emOrder,
+                    Structure::Pointee,
+                    aTypeIndex,
+                    aSerializeInfo.mObjectId,
+                    true
+                );
 
             iSerializer.writePreElement();
             iSerializer.saveControl(aSerializeInfo.mObjectId);
@@ -1202,8 +1307,24 @@ struct Switcher
         }
         else
         {
-            BaseSerializer::AutoRestoreLoad aAutoRestoreLoad(iSerializer);
-            size_t aObjectId;
+            // 型のTypeIndex取り出し
+            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+            {
+                aTypeIndex = theolizer::internal::getTypeIndex<tEnumType>();
+            }
+
+            // 開始／終了マーク処理
+            size_t aObjectId=kInvalidSize;
+            BaseSerializer::AutoRestoreLoadStructure aAutoRestoreLoadStructure
+                (
+                    iSerializer,
+                    emOrder,
+                    Structure::Pointee,
+                    aTypeIndex,
+                    &aObjectId
+                );
+
             iSerializer.readPreElement();
             iSerializer.loadControl(aObjectId);
             bool aIsLoaded;
@@ -1243,6 +1364,8 @@ struct Switcher
     typename tVersionType::TheolizerEnumVersion
 >
 {
+    typedef typename tVersionType::TheolizerTarget  TheolizerTarget;
+
     // 保存
     static void save(tBaseSerializer& iSerializer, tVersionType& iInstance)
     {
@@ -1263,8 +1386,23 @@ struct Switcher
                     &aIsSaved
                 );
 
+            // 型のTypeIndex取り出し
+            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+            {
+                aTypeIndex = theolizer::internal::getTypeIndex<TheolizerTarget>();
+            }
+
             // 開始／終了マーク処理
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+            BaseSerializer::AutoRestoreSaveStructure    aAutoRestoreSaveStructure
+                (
+                    iSerializer,
+                    emOrder,
+                    Structure::Pointee,
+                    aTypeIndex,
+                    aSerializeInfo.mObjectId,
+                    true
+                );
 
             iSerializer.writePreElement();
             iSerializer.saveControl(aSerializeInfo.mObjectId);
@@ -1285,8 +1423,24 @@ struct Switcher
         }
         else
         {
-            BaseSerializer::AutoRestoreLoad aAutoRestoreLoad(iSerializer);
-            size_t aObjectId;
+            // 型のTypeIndex取り出し
+            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+            {
+                aTypeIndex = theolizer::internal::getTypeIndex<TheolizerTarget>();
+            }
+
+            // 開始／終了マーク処理
+            size_t aObjectId=kInvalidSize;
+            BaseSerializer::AutoRestoreLoadStructure aAutoRestoreLoadStructure
+                (
+                    iSerializer,
+                    emOrder,
+                    Structure::Pointee,
+                    aTypeIndex,
+                    &aObjectId
+                );
+
             iSerializer.readPreElement();
             iSerializer.loadControl(aObjectId);
             bool aIsLoaded;
@@ -1346,8 +1500,23 @@ struct Switcher
                     &aIsSaved
                 );
 
+            // 型のTypeIndex取り出し
+            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+            {
+                aTypeIndex = theolizer::internal::getTypeIndex<tPrimitiveType>();
+            }
+
             // 開始／終了マーク処理
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
+            BaseSerializer::AutoRestoreSaveStructure    aAutoRestoreSaveStructure
+                (
+                    iSerializer,
+                    emOrder,
+                    Structure::Pointee,
+                    aTypeIndex,
+                    aSerializeInfo.mObjectId,
+                    true
+                );
 
             iSerializer.writePreElement();
             iSerializer.saveControl(aSerializeInfo.mObjectId);
@@ -1368,8 +1537,24 @@ struct Switcher
         }
         else
         {
-            BaseSerializer::AutoRestoreLoad aAutoRestoreLoad(iSerializer);
-            size_t aObjectId;
+            // 型のTypeIndex取り出し
+            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+            {
+                aTypeIndex = theolizer::internal::getTypeIndex<tPrimitiveType>();
+            }
+
+            // 開始／終了マーク処理
+            size_t aObjectId=kInvalidSize;
+            BaseSerializer::AutoRestoreLoadStructure aAutoRestoreLoadStructure
+                (
+                    iSerializer,
+                    emOrder,
+                    Structure::Pointee,
+                    aTypeIndex,
+                    &aObjectId
+                );
+
             iSerializer.readPreElement();
             iSerializer.loadControl(aObjectId);
             bool aIsLoaded;

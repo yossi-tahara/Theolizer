@@ -369,6 +369,7 @@ THEOLIZER_INTERNAL_VER_DEBUG((
         }
         else
         {
+#if 0
             BaseSerializer::AutoRestoreSave aAutoRestoreSave
             (
                 iSerializer,
@@ -384,6 +385,36 @@ THEOLIZER_INTERNAL_VER_DEBUG((
                     tTrackingMode,
                     &aIsSaved
                 );
+#else
+            bool aIsSaved;
+            theolizer::internal::SerializeInfo& aSerializeInfo=
+                iSerializer.registerObject
+                (
+                    mTarget,
+                    typeid(mTarget),
+                    tTrackingMode,
+                    &aIsSaved
+                );
+
+            // 型のTypeIndex取り出し
+            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+            {
+                aTypeIndex = theolizer::internal::getTypeIndex<tPrimitiveType>();
+            }
+
+            // 開始／終了マーク処理
+            BaseSerializer::AutoRestoreSaveStructure    aAutoRestoreSaveStructure
+                (
+                    iSerializer,
+                    theolizer::internal::emOrder,
+                    theolizer::internal::Structure::Pointee,
+                    aTypeIndex,
+                    aSerializeInfo.mObjectId,
+                    true
+                );
+#endif
+
             iSerializer.writePreElement();
             iSerializer.saveControl(aSerializeInfo.mObjectId);
             // 未保存の時のみ保存する
@@ -406,8 +437,28 @@ THEOLIZER_INTERNAL_VER_DEBUG((
         }
         else
         {
+#if 0
             BaseSerializer::AutoRestoreLoad aAutoRestoreLoad(iSerializer);
             size_t aObjectId;
+#else
+            // 型のTypeIndex取り出し
+            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+            {
+                aTypeIndex = theolizer::internal::getTypeIndex<tPrimitiveType>();
+            }
+
+            // 開始／終了マーク処理
+            size_t aObjectId= theolizer::internal::kInvalidSize;
+            BaseSerializer::AutoRestoreLoadStructure aAutoRestoreLoadStructure
+                (
+                    iSerializer,
+                    theolizer::internal::emOrder,
+                    theolizer::internal::Structure::Pointee,
+                    aTypeIndex,
+                    &aObjectId
+                );
+#endif
             iSerializer.readPreElement();
             iSerializer.loadControl(aObjectId);
             bool aIsLoaded;
@@ -435,15 +486,22 @@ THEOLIZER_INTERNAL_VER_DEBUG((
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
-// ***************************************************************************
-//      バージョン定義(クラス型)
-// ***************************************************************************
-
 namespace theolizer
 {
 namespace internal
 {
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
+
+// ***************************************************************************
+//      Non-keep-step用定義
+// ***************************************************************************
+
+#define THEOLIZER_INTERNAL_NON_KEEP_STEP(dType)                             \
+    TheolizerNonKeepStep<typename std::remove_reference<THEOLIZER_INTERNAL_UNPAREN dType>::type>
+
+// ***************************************************************************
+//      バージョン定義(クラス型)
+// ***************************************************************************
 
 //----------------------------------------------------------------------------
 //      Element/EnumElementの基底クラス
@@ -838,13 +896,6 @@ struct EnumElement : public ElementBase
     Destinations    mDestinations;
     Destinations const& getDestinations() const {return mDestinations;}
 };
-
-// ***************************************************************************
-//      Non-keep-step用定義
-// ***************************************************************************
-
-#define THEOLIZER_INTERNAL_NON_KEEP_STEP(dType)                             \
-    TheolizerNonKeepStep<typename std::remove_reference<THEOLIZER_INTERNAL_UNPAREN dType>::type>
 
 // ***************************************************************************
 //      バージョン定義(共通)

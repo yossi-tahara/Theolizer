@@ -286,6 +286,7 @@ void XmlMidOSerializer::saveObjectId(std::size_t iObjectId, std::size_t iTypeInd
     Attribute   aAttribute;
     aAttribute.mStructure = Structure::Pointer;
     aAttribute.mObjectId = iObjectId;
+    writeIndent();
     saveTag(TagKind::StartEnd, getTypeName(iTypeIndex), &aAttribute);
 }
 
@@ -723,6 +724,7 @@ void XmlMidISerializer::loadObjectId(std::size_t& oObjectId, std::size_t iTypeIn
     {
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
     }
+    mTagInfo.mValid = false;
     if (mTagInfo.mTypeName != getTypeName(iTypeIndex))
     {
         THEOLIZER_INTERNAL_DATA_ERROR
@@ -853,20 +855,12 @@ std::cout << "~AutoReleaseTagName()\n";
 
 ReadStat XmlMidISerializer::readPreElement(bool iDoProcess)
 {
-#if 0
-    bool aContinue=readComma(mReadComma);
-    mReadComma=true;
-
-    // isError()はErrorReporterを使う。(シリアライザへ伝達されていない場合があるため)
-    return (aContinue && !ErrorReporter::isError())?Continue:Terminated;
-#else
     if (iDoProcess || mTagInfo.mValid)
 return Continue;
 
 std::cout << "(readPreElement)";
         loadTagInfo();
-    return (mTagInfo.mTagKind == TagKind::Start)?Continue:Terminated;
-#endif
+    return (mTagInfo.mTagKind != TagKind::End)?Continue:Terminated;
 }
 
 //----------------------------------------------------------------------------

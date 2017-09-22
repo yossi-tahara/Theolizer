@@ -1043,7 +1043,6 @@ BaseSerializer::AutoRestoreLoadStructure::AutoRestoreLoadStructure
 {
     mSerializer.mElementsMapping=iElementsMapping;
     // データ内に型名を記録
-    // データ内に型名を記録
     if (mSerializer.mCheckMode == CheckMode::TypeCheckInData)
     {
         if (iTypeIndex != kInvalidSize)
