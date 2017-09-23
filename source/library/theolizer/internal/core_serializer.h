@@ -1136,12 +1136,11 @@ protected:
     virtual void disposeElement()                           {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadGroupStart(bool iIsTop=false)          {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadGroupEnd(bool iIsTop=false)            {THEOLIZER_INTERNAL_ABORT("");}
-    // iTypeName変更許可
     virtual void loadStructureStart
         (Structure iStructure, std::string& ioTypeName, std::size_t* oObjectId)
-                                                            {loadGroupStart();}
+                                                            {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadStructureEnd(Structure iStructure, std::string const& iTypeName)
-                                                            {loadGroupEnd();}
+                                                            {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadObjectId(std::size_t& oObjectId, std::size_t iTypeIndex)
                                                             {loadControl(oObjectId);}
     virtual void loadTypeName(std::string& oTypeName)       {loadControl(oTypeName);}

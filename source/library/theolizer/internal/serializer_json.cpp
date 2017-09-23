@@ -337,6 +337,34 @@ void JsonMidOSerializer::saveGroupEnd(bool iIsTop)
 }
 
 //----------------------------------------------------------------------------
+//      各種構造処理
+//----------------------------------------------------------------------------
+
+//      ---<<< 開始処理 >>>---
+
+void JsonMidOSerializer::saveStructureStart
+(
+    Structure,
+    std::string&,
+    std::size_t     iObjectId
+)
+{
+    saveGroupStart();
+    if (iObjectId != kInvalidSize)
+    {
+        writePreElement();
+        saveControl(iObjectId);
+    }
+}
+
+//      ---<<< 終了処理 >>>---
+
+void JsonMidOSerializer::saveStructureEnd(Structure, std::string const&)
+{
+    saveGroupEnd();
+}
+
+//----------------------------------------------------------------------------
 //      整形処理
 //----------------------------------------------------------------------------
 
@@ -765,6 +793,37 @@ void JsonMidISerializer::loadGroupEnd(bool iIsTop)
     }
     mTerminated=false;
     mReadComma=true;
+}
+
+//----------------------------------------------------------------------------
+//      各種構造処理
+//----------------------------------------------------------------------------
+
+//      ---<<< 開始処理 >>>---
+
+void JsonMidISerializer::loadStructureStart
+(
+    Structure,
+    std::string&,
+    std::size_t*    oObjectId
+)
+{
+    loadGroupStart();
+    if (oObjectId)
+    {
+        if (!readPreElement())
+        {
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+        }
+        loadControl(*oObjectId);
+    }
+}
+
+//      ---<<< 終了処理 >>>---
+
+void JsonMidISerializer::loadStructureEnd(Structure, std::string const&)
+{
+    loadGroupEnd();
 }
 
 //----------------------------------------------------------------------------

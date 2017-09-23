@@ -192,6 +192,15 @@ private:
     void saveGroupEnd(bool iIsTop=false)
     { }
 
+//      ---<<< 各種構造処理 >>>---
+
+    void saveStructureStart(Structure, std::string&, std::size_t iOjbectId)
+    {
+        if (iOjbectId != kInvalidSize) saveControl(iOjbectId);
+    }
+    void saveStructureEnd(Structure, std::string const& )
+    { }
+
 //      ---<<< プリミティブ名返却 >>>---
 
     template<typename tType>
@@ -305,6 +314,15 @@ private:
     void loadGroupStart(bool)
     { }
     void loadGroupEnd(bool)
+    { }
+
+//      ---<<< 各種構造処理 >>>---
+
+    void loadStructureStart(Structure, std::string&, std::size_t* oObjectId)
+    {
+        if (oObjectId) loadPrimitive(*oObjectId);
+    }
+    void loadStructureEnd(Structure, std::string const&)
     { }
 
 //      ---<<< プリミティブ名返却 >>>---

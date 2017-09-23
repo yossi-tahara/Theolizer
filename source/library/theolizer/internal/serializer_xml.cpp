@@ -1029,6 +1029,9 @@ void XmlMidISerializer::loadTagInfo()
     while(1)
     {
         in = getChar();
+        // エラーが発生していたら、終了する(無限ループ回避)
+        if (ErrorReporter::isError())
+return;
         std::string::size_type pos = sDelimChar.find(in);
         if (pos != std::string::npos)
         {

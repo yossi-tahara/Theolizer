@@ -441,6 +441,11 @@ private:
     void saveGroupStart(bool iIsTop=false);
     void saveGroupEnd(bool iIsTop=false);
 
+//      ---<<< 各種構造処理 >>>---
+
+    void saveStructureStart(Structure iStructure, std::string& ioTypeName, std::size_t iOjbectId);
+    void saveStructureEnd(Structure iStructure, std::string const& iTypeName);
+
 //      ---<<< プリミティブ名返却 >>>---
 
     template<typename tType>
@@ -599,6 +604,11 @@ private:
 
     void loadGroupStart(bool iIsTop=false);
     void loadGroupEnd(bool iIsTop=false);
+
+//      ---<<< 各種構造処理 >>>---
+
+    void loadStructureStart(Structure iStructure, std::string& ioTypeName, std::size_t* oObjectId);
+    void loadStructureEnd(Structure iStructure, std::string const& iTypeName);
 
 //      ---<<< プリミティブ名返却 >>>---
 

@@ -97,7 +97,7 @@ set(SOURCE_LIST ${SOURCE_LIST} test_support_stl.cpp)
 
 else()
 
-set(TARGET_NAME Debug_ver1a)
+set(TARGET_NAME Debug_ver1b)
 set(SOURCE_LIST                main.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} test_modify_enum.cpp)
 set(SOURCE_LIST ${SOURCE_LIST} test_modify_class.cpp)

@@ -362,10 +362,6 @@ struct Switcher
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
 
-            // オブジェクトIDを保存
-            iSerializer.writePreElement();
-            iSerializer.saveControl(aSerializeInfo.mObjectId);
-
             // 未保存の時のみ保存する
             if (!aIsSaved)
             {
@@ -425,17 +421,6 @@ struct Switcher
 
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
-
-            // AutoRestoreLoadStructureにてaObjectId回復済でない時のみ
-            // オブジェクトID回復
-            if (iSerializer.mCheckMode != theolizer::CheckMode::TypeCheckInData)
-            {
-                if (!iSerializer.readPreElement())
-                {
-                    THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
-                }
-                iSerializer.loadControl(aObjectId);
-            }
 
             void* aPointer;
             bool aIsLoaded=iSerializer.isLoadedObject(aObjectId, aPointer);
@@ -681,8 +666,6 @@ struct Switcher
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
 
-            iSerializer.writePreElement();
-            iSerializer.saveControl(aSerializeInfo.mObjectId);
             // 未保存の時のみ保存する
             if (!aIsSaved)
             {
@@ -781,11 +764,6 @@ struct Switcher
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
 
-            if (!iSerializer.readPreElement())
-            {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
-            }
-            iSerializer.loadControl(aObjectId);
             bool aIsLoaded;
             IntrusiveType* aPointer=&oInstance;
 
@@ -928,8 +906,6 @@ struct Switcher
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
 
-            iSerializer.writePreElement();
-            iSerializer.saveControl(aSerializeInfo.mObjectId);
             // 未保存の時のみ保存する
             if (!aIsSaved)
             {
@@ -1028,8 +1004,6 @@ struct Switcher
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
 
-            iSerializer.readPreElement();
-            iSerializer.loadControl(aObjectId);
             bool aIsLoaded;
             iSerializer.recoverObject
             (
@@ -1119,8 +1093,6 @@ struct Switcher
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
 
-            iSerializer.writePreElement();
-            iSerializer.saveControl(aSerializeInfo.mObjectId);
             // 未保存の時のみ保存する
             if (!aIsSaved)
             {
@@ -1166,10 +1138,6 @@ struct Switcher
             // クラス・インスタンスのオブジェクト追跡中
             BaseSerializer::AutoClassTracking aAutoClassTracking(iSerializer);
 
-            if (!iSerializer.readPreElement()) {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
-            }
-            iSerializer.loadControl(aObjectId);
             bool aIsLoaded;
             iSerializer.recoverObject
             (
@@ -1283,8 +1251,6 @@ struct Switcher
                     true
                 );
 
-            iSerializer.writePreElement();
-            iSerializer.saveControl(aSerializeInfo.mObjectId);
             // 未保存の時のみ保存する
             if (!aIsSaved)
             {
@@ -1325,8 +1291,6 @@ struct Switcher
                     &aObjectId
                 );
 
-            iSerializer.readPreElement();
-            iSerializer.loadControl(aObjectId);
             bool aIsLoaded;
             tEnumType* aPointer=&oInstance;
             iSerializer.recoverObject
@@ -1404,8 +1368,6 @@ struct Switcher
                     true
                 );
 
-            iSerializer.writePreElement();
-            iSerializer.saveControl(aSerializeInfo.mObjectId);
             // 未保存の時のみ保存する
             if (!aIsSaved)
             {
@@ -1441,8 +1403,6 @@ struct Switcher
                     &aObjectId
                 );
 
-            iSerializer.readPreElement();
-            iSerializer.loadControl(aObjectId);
             bool aIsLoaded;
             iSerializer.recoverObject
             (
@@ -1518,8 +1478,6 @@ struct Switcher
                     true
                 );
 
-            iSerializer.writePreElement();
-            iSerializer.saveControl(aSerializeInfo.mObjectId);
             // 未保存の時のみ保存する
             if (!aIsSaved)
             {
@@ -1555,8 +1513,6 @@ struct Switcher
                     &aObjectId
                 );
 
-            iSerializer.readPreElement();
-            iSerializer.loadControl(aObjectId);
             bool aIsLoaded;
             tPrimitiveType* aPointer=&oInstance;
             iSerializer.recoverObject

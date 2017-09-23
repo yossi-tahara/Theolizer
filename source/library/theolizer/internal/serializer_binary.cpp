@@ -373,6 +373,34 @@ void BinaryMidOSerializer::saveGroupEnd(bool iIsTop)
 }
 
 //----------------------------------------------------------------------------
+//      各種構造処理
+//----------------------------------------------------------------------------
+
+//      ---<<< 開始処理 >>>---
+
+void BinaryMidOSerializer::saveStructureStart
+(
+    Structure,
+    std::string&,
+    std::size_t     iObjectId
+)
+{
+    saveGroupStart();
+    if (iObjectId != kInvalidSize)
+    {
+        writePreElement();
+        saveControl(iObjectId);
+    }
+}
+
+//      ---<<< 終了処理 >>>---
+
+void BinaryMidOSerializer::saveStructureEnd(Structure, std::string const&)
+{
+    saveGroupEnd();
+}
+
+//----------------------------------------------------------------------------
 //      Byte列保存
 //----------------------------------------------------------------------------
 
@@ -902,6 +930,37 @@ void BinaryMidISerializer::loadGroupEnd(bool iIsTop)
     }
 
     mTerminated=false;
+}
+
+//----------------------------------------------------------------------------
+//      各種構造処理
+//----------------------------------------------------------------------------
+
+//      ---<<< 開始処理 >>>---
+
+void BinaryMidISerializer::loadStructureStart
+(
+    Structure,
+    std::string&,
+    std::size_t*    oObjectId
+)
+{
+    loadGroupStart();
+    if (oObjectId)
+    {
+        if (!readPreElement())
+        {
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+        }
+        loadControl(*oObjectId);
+    }
+}
+
+//      ---<<< 終了処理 >>>---
+
+void BinaryMidISerializer::loadStructureEnd(Structure, std::string const&)
+{
+    loadGroupEnd();
 }
 
 //----------------------------------------------------------------------------
