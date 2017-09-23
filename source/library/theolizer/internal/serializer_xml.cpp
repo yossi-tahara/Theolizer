@@ -47,6 +47,7 @@
 
 #include <limits>
 #include <sstream>
+#include <cctype>
 
 #include "../serializer_xml.h"
 
@@ -500,7 +501,7 @@ void XmlMidOSerializer::saveStructureStart
     std::size_t     iObjectId
 )
 {
-std::cout << "saveStructureStart(" << ioTypeName << ") mNoPrettyPrint=" << mNoPrettyPrint << " mIndent=" << mIndent << "\n";
+//std::cout << "saveStructureStart(" << ioTypeName << ") mNoPrettyPrint=" << mNoPrettyPrint << " mIndent=" << mIndent << "\n";
     writeIndent();
     mIndent++;
     modifyTypeName(ioTypeName);
@@ -537,28 +538,23 @@ void XmlMidOSerializer::writeIndent()
 }
 
 //----------------------------------------------------------------------------
-//      JSON文字列へエンコードして保存
+//      XML文字列へエンコードして保存
 //----------------------------------------------------------------------------
 
 void XmlMidOSerializer::encodeXmlString(std::string const& iString)
 {
-    mOStream << "\"";
     for (auto ch : iString)
     {
         switch(ch)
         {
-        case '\"':      mOStream << "\\\"";     break;
-        case '\\':      mOStream << "\\\\";     break;
-        case '/':       mOStream << "\\/";      break;
-        case '\x08':    mOStream << "\\b";      break;
-        case '\x0C':    mOStream << "\\f";      break;
-        case '\n':      mOStream << "\\n";      break;
-        case '\r':      mOStream << "\\r";      break;
-        case '\t':      mOStream << "\\t";      break;
+        case '<':       mOStream << "&lt;";     break;
+        case '>':       mOStream << "&gt;";     break;
+        case '\"':      mOStream << "&quot;";   break;
+        case '\'':      mOStream << "&apos;";   break;
+        case '&':       mOStream << "&amp;";    break;
         default:        mOStream << ch;         break;
         }
     }
-    mOStream << "\"";
     checkStreamError(mOStream.rdstate());
 }
 
@@ -746,13 +742,11 @@ XmlMidISerializer::AutoReleaseTagName::AutoReleaseTagName
 ) : mXmlMidISerializer(iXmlMidISerializer),
     mTagName(mXmlMidISerializer.getTypeName(iTypeIndex))
 {
-std::cout << "AutoReleaseTagName()\n";
     mXmlMidISerializer.loadTag(TagKind::Start, mTagName);
 }
 
 XmlMidISerializer::AutoReleaseTagName::~AutoReleaseTagName()
 {
-std::cout << "~AutoReleaseTagName()\n";
     mXmlMidISerializer.loadTag(TagKind::End, mTagName);
 }
 
@@ -858,8 +852,7 @@ ReadStat XmlMidISerializer::readPreElement(bool iDoProcess)
     if (iDoProcess || mTagInfo.mValid)
 return Continue;
 
-std::cout << "(readPreElement)";
-        loadTagInfo();
+    loadTagInfo();
     return (mTagInfo.mTagKind != TagKind::End)?Continue:Terminated;
 }
 
@@ -883,35 +876,28 @@ std::string XmlMidISerializer::loadElementName(ElementsMapping iElementsMapping)
 
 void XmlMidISerializer::disposeElement()
 {
-    char in = find_not_of(" \t\n");
+//std::cout << "disposeElement()\n";
+    if (mTagInfo.mTagKind != TagKind::Start)
+return;
 
-    // 次の処理に備えて、最後の文字を戻しておく
-    mIStream.unget();
-
-    switch(in)
+    // th:名前空間のタグ
+    if (mTagInfo.mTagName.substr(0, sizeof(THEOLIZER_INTERNAL_XML_NAMESPACE))
+     == THEOLIZER_INTERNAL_XML_NAMESPACE ":")
     {
-    case '\"':
+        // 先頭が小文字ならプリミティブ
+        if (islower(mTagInfo.mTagName[sizeof(THEOLIZER_INTERNAL_XML_NAMESPACE)]))
         {
             std::string temp;
-            decodeXmlString(temp);
+            std::getline(mIStream, temp, '<');
+            mIStream.unget();
+            mTagInfo.mValid = false;
+            loadTag(TagKind::End, "");
+return;
         }
-        break;
-
-    case '{':
-        disposeClass(emName);
-        break;
-
-    case '[':
-        disposeClass(emOrder);
-        break;
-
-    default:
-        {
-            long double temp;
-            mIStream >> temp;
-        }
-        break;
     }
+
+    // その他はComplex処理
+    disposeClass(emOrder);
 }
 
 // ***************************************************************************
@@ -929,7 +915,7 @@ char const* XmlMidISerializer::loadTag
     Attribute*          iAttribute
 )
 {
-std::cout << "<" << ((iTagKind==TagKind::End)?"/":"") << iName << ((iTagKind==TagKind::StartEnd)?"/":"") << ">";
+//std::cout << "<" << ((iTagKind==TagKind::End)?"/":"") << iName << ((iTagKind==TagKind::StartEnd)?"/":"") << ">";
 
     if (!mTagInfo.mValid)
     {
@@ -955,7 +941,7 @@ std::cout << "<" << ((iTagKind==TagKind::End)?"/":"") << iName << ((iTagKind==Ta
     {
         aTagName = iName.c_str();
     }
-    if (mTagInfo.mTagName != aTagName)
+    if (*aTagName && (mTagInfo.mTagName != aTagName))
     {
         THEOLIZER_INTERNAL_DATA_ERROR
             ("XmlMidISerializer : Illegal tag name(data:%1%, program:%2%).",
@@ -1071,7 +1057,7 @@ return;
         std::getline(mIStream, aAttributeValue, '\"');
         checkStreamError(mIStream.rdstate());
 
-std::cout << "    " << aAttributeName << "=" << aAttributeValue << "\n";
+//std::cout << "    " << aAttributeName << "=" << aAttributeValue << "\n";
 
         // エラーが発生していたら、終了する(無限ループ回避)
         if (ErrorReporter::isError())
@@ -1105,7 +1091,7 @@ return;
     }
     mTagInfo.mValid=true;
 
-std::cout << "[" << mTagInfo.mTagName << ":" << mTagInfo.mTagKind << "]" << ((mTagInfo.mTagKind!=TagKind::Start)?"\n":"");
+//std::cout << "[" << mTagInfo.mTagName << ":" << mTagInfo.mTagKind << "]" << ((mTagInfo.mTagKind!=TagKind::Start)?"\n":"");
 }
 
 //----------------------------------------------------------------------------
@@ -1123,23 +1109,6 @@ void XmlMidISerializer::loadGroupStart(bool iIsTop)
 
 void XmlMidISerializer::loadGroupEnd(bool iIsTop)
 {
-#if 0
-    if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
-    {
-        // まだ終了処理されてないなら、終了処理する
-        if (!mTerminated)
-        {
-            while (readPreElement())
-            {
-                // エラーが発生していたら、抜ける
-                if (ErrorReporter::isError())
-            break;
-
-                disposeElement();
-            }
-        }
-    }
-#endif
     mTerminated=false;
     mReadComma=true;
 }
@@ -1157,7 +1126,7 @@ void XmlMidISerializer::loadStructureStart
     std::size_t*    oObjectId
 )
 {
-std::cout << "loadStructureStart(" << ioTypeName << ")\n";
+//std::cout << "loadStructureStart(" << ioTypeName << ")\n";
     modifyTypeName(ioTypeName);
     Attribute   aAttribute;
     aAttribute.mStructure = iStructure;
@@ -1176,8 +1145,25 @@ std::cout << "loadStructureStart(" << ioTypeName << ")\n";
 
 void XmlMidISerializer::loadStructureEnd(Structure iStructure, std::string const& iTypeName)
 {
-std::cout << "loadStructureEnd(" << iTypeName << ")\n";
+//std::cout << "loadStructureEnd(" << iTypeName << ")\n";
+#if 1
     loadTag(TagKind::End, iTypeName);
+#else
+    if (!mTagInfo.mValid)
+    {
+        //THEOLIZER_INTERNAL_DATA_ERROR(u8"mTagInfo is not valid.");
+        loadTagInfo();
+    }
+    while (mTagInfo.mTagKind != TagKind::End)
+    {
+        disposeElement();
+
+        // エラーが発生していたら、抜ける
+        if (ErrorReporter::isError())
+    break;
+    }
+#endif
+    mTerminated=false;
 }
 
 //      ---<<< 型名取得 >>>---
@@ -1193,103 +1179,50 @@ void XmlMidISerializer::loadTypeName(std::string& oTypeName)
 }
 
 //----------------------------------------------------------------------------
-//      ,まで読み飛ばし
-//----------------------------------------------------------------------------
-
-bool XmlMidISerializer::readComma(bool iReadComma)
-{
-    char in = find_not_of(" \t\n");
-    if (in == ',')
-    {
-        if (iReadComma)
-        {
-return true;
-        }
-        else
-        {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
-        }
-    }
-
-    // 終端マークなら、false返却
-    if (checkTerminal(in))
-return false;
-
-    // 読みだした文字は要素の先頭なので、戻しておく
-    mIStream.unget();
-
-    return true;
-}
-
-//----------------------------------------------------------------------------
-//      終了マーク確認
-//----------------------------------------------------------------------------
-
-bool XmlMidISerializer::checkTerminal(char iIn)
-{
-    switch (mElementsMapping)
-    {
-    case emName:
-        if (iIn != '}')
-return false;
-        break;
-
-    case emOrder:
-        if (iIn != ']')
-return false;
-        break;
-    }
-    mTerminated=true;
-
-    return true;
-}
-
-//----------------------------------------------------------------------------
-//      JSON文字列を回復しつつ、デコード
+//      XML文字列を回復しつつ、デコード
 //----------------------------------------------------------------------------
 
 void XmlMidISerializer::decodeXmlString(std::string& iString)
 {
-//      ---<<< "までスキップ >>>---
+//      ---<<< スペースをスキップ >>>---
 
     char in = find_not_of(" \t\n");
-    if (in != '\"')
-    {
-        THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
-    }
 
-//      ---<<< "の直前までを追加する >>>---
+//      ---<<< <の直前までを追加する >>>---
 
     iString.clear();
     while(1)
     {
-        in=getChar();
-
         // Escape文字
-        if (in == '\\')
+        if (in == '&')
         {
-            in=getChar();
-            switch (in)
+            std::string escape;
+            while ((in=getChar()) != ';')
             {
-            case '\"':              break;
-            case '\\':              break;
-            case '/':               break;
-            case 'b':   in='\x08';  break;
-            case 'f':   in='\x0C';  break;
-            case 'n':   in='\n';    break;
-            case 'r':   in='\r';    break;
-            case 't':   in='\t';    break;
-            default:
+                escape.push_back(in);
+                // エラーが発生していたら、終了する
+                if (ErrorReporter::isError())
+return;
+            }
+
+            if      (escape == "lt")        in = '<';
+            else if (escape == "gt")        in = '>';
+            else if (escape == "quot")      in = '\"';
+            else if (escape == "apos")      in = '\'';
+            else if (escape == "amp")       in = '&';
+            else
+            {
                 THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
-                break;
             }
         // "(終了文字)
         }
-        else if (in == '\"')
+        else if (in == '<')
         {
+            mIStream.unget();
     break;
         }
         iString += in;
+        in=getChar();
     }
 }
 

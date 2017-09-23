@@ -616,19 +616,6 @@ private:
 
     std::string loadElementName(ElementsMapping iElementsMapping);
 
-//      ---<<< ,まで読み飛ばし >>>---
-//          戻り値：
-//              ,なら、true
-//              終端なら、false
-//              それ以外なら、例外
-
-    bool readComma(bool iReadComma=false);
-
-//      ---<<< 終了マーク確認 >>>---
-//          終了マークなら、true
-
-    bool checkTerminal(char iIn);
-
 //      ---<<< XML文字列をデコードして文字列回復 >>>---
 
     void decodeXmlString(std::string& iString);

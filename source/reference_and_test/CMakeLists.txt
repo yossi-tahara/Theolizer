@@ -283,7 +283,7 @@ set(TARGET_NAME external_test_)
 #       基本的網羅テスト
 #-----------------------------------------------------------------------------
 
-if(FALSE)
+if(TRUE)
 
 set(FIRST_VERSION "")
 set(LAST_VERSION  "")
@@ -355,9 +355,6 @@ message(STATUS "start of add_build_and_test("
     "${TARGET_NAME}${NOW_VERSION} \"${PREV_VERSION}\" \"${TEST_LABEL}\")")
 add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "" ${TEST_LABEL}
     "" "" ${SOURCE_LIST})
-
-endif()
-if(FALSE)
 
 #       ---<<< ver1c >>>---
 

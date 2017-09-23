@@ -285,8 +285,6 @@ void callTests
 //      JsonSerializer
 //----------------------------------------------------------------------------
 
-#if 0
-    std::string prefix;
     prefix="json-";
 
     // デフォルト処理
@@ -611,7 +609,6 @@ void callTests
             }
         }
     }
-#endif
 
     std::cout << "\n";
 }

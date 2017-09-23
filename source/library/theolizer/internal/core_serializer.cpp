@@ -1391,7 +1391,7 @@ SharedPtrTable& BaseSerializer::registerSharedPtrTable(std::type_index iTypeInde
 
 void BaseSerializer::disposeClass(ElementsMapping iElementsMapping)
 {
-    AutoRestoreLoad aAutoRestoreLoad(*this, iElementsMapping);
+    AutoRestoreLoadStructure aAutoRestoreLoadStructure(*this, iElementsMapping, Structure::Class);
 
     while(true)
     {
