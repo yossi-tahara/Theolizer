@@ -82,7 +82,6 @@ std::cout << "TestOSerializerNormal2(" << iFileName << ", "
     std::ofstream   aStream(iFileName, iOpenMode);
     tOSerializer    aSerializer(aStream, iArgs...);
 
-#if 0
 //      ---<<< 生配列(トップレベル) >>>---
 
     int aArray[5][2];
@@ -179,7 +178,6 @@ std::cout << "TestOSerializerNormal2(" << iFileName << ", "
         { 50, 60}
     };
     THEOLIZER_PROCESS(aSerializer, aListFullAuto);
-#endif
 
 //      ---<<< std::unique_ptr >>>---
 
@@ -216,7 +214,6 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
     std::ifstream   aStream(iFileName, iOpenMode);
     tISerializer    aSerializer(aStream, iArgs...);
 
-#if 0
 //      ---<<< 生配列(トップレベル) >>>---
 
     int aArray[5][2];
@@ -455,7 +452,6 @@ std::cout << "TestISerializerNormal2(" << iFileName << ", "
     THEOLIZER_EQUAL(itr->getInt(),   50);
     THEOLIZER_EQUAL(itr->getShort(), 60);
     ++itr;
-#endif
 
 //      ---<<< std::unique_ptr >>>---
 

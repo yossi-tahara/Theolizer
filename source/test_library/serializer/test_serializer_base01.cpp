@@ -95,7 +95,7 @@ int main(int argc, char** argv)
 //      基本的テスト
 // ***************************************************************************
 
-///        TestNormalMain();
+        TestNormalMain();
         TestNormalMain2();
         TestTrackingMain();
 
