@@ -470,7 +470,6 @@ private:
 //----------------------------------------------------------------------------
 
     std::istream&           mIStream;
-    bool                    mReadComma;
     bool                    mTerminated;
 
     static const unsigned   kLastVersionNo=kXmlSerializerVersionNo;

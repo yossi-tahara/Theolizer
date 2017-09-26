@@ -599,7 +599,6 @@ XmlMidISerializer::XmlMidISerializer
         mNoThrowException
     ),
     mIStream(iIStream),
-    mReadComma(false),
     mTerminated(false),
     mCharIsMultiByte(false)
 {
@@ -1107,7 +1106,6 @@ return;
 
 void XmlMidISerializer::loadGroupStart(bool iIsTop)
 {
-    mReadComma=false;
 }
 
 //      ---<<< 終了処理 >>>---
@@ -1115,7 +1113,6 @@ void XmlMidISerializer::loadGroupStart(bool iIsTop)
 void XmlMidISerializer::loadGroupEnd(bool iIsTop)
 {
     mTerminated=false;
-    mReadComma=true;
 }
 
 //----------------------------------------------------------------------------
