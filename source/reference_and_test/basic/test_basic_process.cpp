@@ -469,6 +469,14 @@ void saveBasicProcess(tSerializer& iSerializer)
     std::u32string aU32string=U"ＵＴＦ－３２";
     THEOLIZER_PROCESS(iSerializer, aU32string);
 
+    // Json Escape文字チェック
+    aString=u8"\"-\\-/-\x08-\x0C-\n-\r-\t-\\\\\\";
+    THEOLIZER_PROCESS(iSerializer, aString);
+
+    // Xml Escape文字チェック
+    aString=u8"<-\"-&&&-\'-\"->\n\r\t ";
+    THEOLIZER_PROCESS(iSerializer, aString);
+
 //      ---<<< enum型 >>>---
 
     NormalEnum aNormalEnum=eneOne;
@@ -756,6 +764,16 @@ void loadBasicProcess(tSerializer& iSerializer)
     std::u32string aU32string;
     THEOLIZER_PROCESS(iSerializer, aU32string);
     THEOLIZER_EQUAL(aU32string, U"ＵＴＦ－３２");
+
+    // Json Escape文字チェック
+    aString=u8"";
+    THEOLIZER_PROCESS(iSerializer, aString);
+    THEOLIZER_EQUAL(aString, u8"\"-\\-/-\x08-\x0C-\n-\r-\t-\\\\\\");
+
+    // Xml Escape文字チェック
+    aString=u8"";
+    THEOLIZER_PROCESS(iSerializer, aString);
+    THEOLIZER_EQUAL(aString, u8"<-\"-&&&-\'-\"->\n\r\t ");
 
 //      ---<<< enum型 >>>---
 
