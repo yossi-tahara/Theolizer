@@ -76,14 +76,36 @@ struct ModifyHalfAuto
 //      非侵入型手動
 //----------------------------------------------------------------------------
 
+// 削除テスト用
+enum TestEnum
+{
+    eteZero,
+    eteOne,
+    eteTwo
+};
+
+// 本体
 struct ModifyManual
 {
-    int     mManual;
+    int             mManual;
 
-    ModifyManual(int iValue=0) : mManual(iValue) { }
+    // 削除テスト要
+    unsigned        mUnsigned;
+    ModifyHalfAuto  mModifyHalfAuto;
+    TestEnum        mTestEnum;
+
+    ModifyManual(int iValue=0) :
+        mManual(iValue),
+        mUnsigned(iValue),
+        mModifyHalfAuto(iValue),
+        mTestEnum((iValue)?eteTwo:eteZero)
+    { }
     void check(int iValue)
     {
         THEOLIZER_EQUAL(mManual, iValue);
+        THEOLIZER_EQUAL(mUnsigned, static_cast<unsigned>(iValue));
+        mModifyHalfAuto.check(iValue);
+        THEOLIZER_EQUAL(mTestEnum, (iValue)?eteTwo:eteZero);
     }
 };
 
@@ -103,6 +125,9 @@ struct TheolizerNonIntrusive<ModifyManual>::
     )
     {
         THEOLIZER_PROCESS(iSerializer, iInstance->mManual);
+        THEOLIZER_PROCESS(iSerializer, iInstance->mUnsigned);
+        THEOLIZER_PROCESS(iSerializer, iInstance->mModifyHalfAuto);
+        THEOLIZER_PROCESS(iSerializer, iInstance->mTestEnum);
     }
 
     // Load members.
@@ -115,6 +140,9 @@ struct TheolizerNonIntrusive<ModifyManual>::
         if (!oInstance) oInstance=new typename tTheolizerVersion::TheolizerTarget();
         
         THEOLIZER_PROCESS(iSerializer, oInstance->mManual);
+        THEOLIZER_PROCESS(iSerializer, oInstance->mUnsigned);
+        THEOLIZER_PROCESS(iSerializer, oInstance->mModifyHalfAuto);
+        THEOLIZER_PROCESS(iSerializer, oInstance->mTestEnum);
     }
 };
 
@@ -194,11 +222,17 @@ struct ModifyClassName :
         THEOLIZER_EQUAL(mFullAuto, 100);
         THEOLIZER_EQUAL(mHalfAuto, 101);
         THEOLIZER_EQUAL(mManual,   102);
+        ModifyFullAuto::check(100);
+        ModifyHalfAuto::check(101);
+        ModifyManual::check(102);
 
         // --- クラス型メンバ変数 ---
         THEOLIZER_EQUAL(mFullAutoMember.mFullAuto, 110);
         THEOLIZER_EQUAL(mHalfAutoMember.mHalfAuto, 111);
         THEOLIZER_EQUAL(mManualMember.mManual,     112);
+        mFullAutoMember.check(110);
+        mHalfAutoMember.check(111);
+        mManualMember.check(112);
 
         // --- 基本型メンバ変数 ---
         THEOLIZER_EQUAL(mShort,    120);
@@ -285,11 +319,17 @@ struct ModifyClassOrder :
         THEOLIZER_EQUAL(mFullAuto, 200);
         THEOLIZER_EQUAL(mHalfAuto, 201);
         THEOLIZER_EQUAL(mManual,   202);
+        ModifyFullAuto::check(200);
+        ModifyHalfAuto::check(201);
+        ModifyManual::check(202);
 
         // --- クラス型メンバ変数 ---
         THEOLIZER_EQUAL(mFullAutoMember.mFullAuto, 210);
         THEOLIZER_EQUAL(mHalfAutoMember.mHalfAuto, 211);
         THEOLIZER_EQUAL(mManualMember.mManual,     212);
+        mFullAutoMember.check(210);
+        mHalfAutoMember.check(211);
+        mManualMember.check(212);
 
         // --- 基本型メンバ変数 ---
         THEOLIZER_EQUAL(mShort,    220);

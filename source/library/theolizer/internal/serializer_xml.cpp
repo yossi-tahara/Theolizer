@@ -853,7 +853,12 @@ ReadStat XmlMidISerializer::readPreElement(bool iDoProcess)
 return Continue;
 
     loadTagInfo();
-    return (mTagInfo.mTagKind != TagKind::End)?Continue:Terminated;
+
+    if (mTagInfo.mTagKind != TagKind::End)
+return Continue;
+
+    mTerminated = true;
+    return Terminated;
 }
 
 //----------------------------------------------------------------------------
@@ -1146,23 +1151,23 @@ void XmlMidISerializer::loadStructureStart
 void XmlMidISerializer::loadStructureEnd(Structure iStructure, std::string const& iTypeName)
 {
 //std::cout << "loadStructureEnd(" << iTypeName << ")\n";
-#if 1
-    loadTag(TagKind::End, iTypeName);
-#else
-    if (!mTagInfo.mValid)
+    // まだ終了処理されてないなら、終了処理する
+    if (!mTerminated)
     {
-        //THEOLIZER_INTERNAL_DATA_ERROR(u8"mTagInfo is not valid.");
-        loadTagInfo();
-    }
-    while (mTagInfo.mTagKind != TagKind::End)
-    {
-        disposeElement();
+        while (readPreElement())
+        {
+            // エラーが発生していたら、抜ける
+            if (ErrorReporter::isError())
+        break;
 
-        // エラーが発生していたら、抜ける
-        if (ErrorReporter::isError())
-    break;
+            disposeElement();
+        }
+        mTagInfo.mValid = false;
     }
-#endif
+    else
+    {
+        loadTag(TagKind::End, iTypeName);
+    }
     mTerminated=false;
 }
 
