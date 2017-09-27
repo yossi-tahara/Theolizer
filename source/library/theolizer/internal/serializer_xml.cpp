@@ -1077,7 +1077,7 @@ return;
         }
         else if (aAttributeName == THEOLIZER_INTERNAL_XML_NAMESPACE ":ObjectId")
         {
-            mTagInfo.mAttribute.mObjectId = std::stoull(aAttributeValue);
+            mTagInfo.mAttribute.mObjectId = std::stoul(aAttributeValue);
         }
         else if (aAttributeName == "xmlns:" THEOLIZER_INTERNAL_XML_NAMESPACE)
         {

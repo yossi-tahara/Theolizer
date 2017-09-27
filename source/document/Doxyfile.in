@@ -869,7 +869,7 @@ EXCLUDE_SYMBOLS        =
 
 EXAMPLE_PATH           = ${CMAKE_SOURCE_DIR}/reference_and_test \
                          ${CMAKE_SOURCE_DIR}/test_library       \
-                         ${CMAKE_SOURCE_DIR}/samples
+                         ${CMAKE_SOURCE_DIR}/samples/example
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp and

@@ -94,16 +94,16 @@ Theolizerをインストールした後、あなたのデータをTheolizerで�
 一部例外(*1)はありますが原則として、<b>シリアライズするクラスとenum型の定義</b> 前にシリアライザのヘッダをインクルードして下さい。<br>
 
 <b>Json形式シリアライザ・ヘッダのインクルードと型定義の例：(source/samples/example/example.cpp）</b>
-
-@dontinclude example.cpp
-@skip #include <theolizer
-@until #include <theolizer
-
+@code
+#include <theolizer/serializer_json.h>
+#include "ユーザ定義.h"
+@endcode
+<div style="margin-top: 20px;"></div>
 <div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
 (*1) 例外：<b>非侵入型</b>(@ref Basic12)のクラスやenum型の<b>非侵入型完全自動</b>については、<b>シリアライザのヘッダをインクルード</b>する前でも定義できます。<br>
 </div>
 
-現在、サポートしているシリアライザはJson形式、独自Binary形式、メモリ内専用のFast形式の3種類です。
+現在、サポートしているシリアライザはJson形式、独自Binary形式、Xml形式、メモリ内専用のFast形式の4種類です。
 それぞれ、下記ヘッダをインクールドして下さい。
 
 
@@ -111,6 +111,7 @@ Theolizerをインストールした後、あなたのデータをTheolizerで�
 |----|----------------------|--------|
 |Json形式|<theolizer/serializer_json.h>|fstreamはテキスト・モードでオープンする|
 |独自Binary形式|<theolizer/serializer_binary.h>|fstreamは<b>バイナリ・モード(std::ios_base::binary)</b>でオープンする|
+|Xml形式|<theolizer/serializer_xml.h>|fstreamはテキスト・モードでオープンする|
 |メモリ内専用Fast形式|上記のどちから、もしくは、<theolizer/serializer.h>|fstreamは<b>バイナリ・モード(std::ios_base::binary)</b>でオープンする|
 
 <br>
@@ -158,11 +159,13 @@ Theolizerは、バージョンを上げた時に古いクラス定義やenum型�
  - <b>保存（送信用）シリアライザ</b> <br>
     theolizer::JsonOSerializer<br>
     theolizer::BinaryOSerializer<br>
+    theolizer::XmlOSerializer<br>
     theolizer::FastOSerializer<br>
 
  - <b>回復（受信用）シリアライザ（デシリアライザ）</b> <br>
     theolizer::JsonISerializer<br>
     theolizer::BinaryISerializer<br>
+    theolizer::XmlISerializer<br>
     theolizer::FastISerializer<br>
 
 @subsubsection Request 2-4-2.シリアライズ処理要求
@@ -187,9 +190,7 @@ dInstanceを保存／回復します。<br>
 @see @ref ObjectTracking
 
 <div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
-このようにシリアライザを問わず、全て同じマクロでシリアライズ処理できます。<br>
-xmlも将来的にサポートする予定ですが、その際も同じマクロで対応できる筈です。<br>
-（マクロなので、\#演算によりインスタンス名をC言語文字列として取り出して用います。）
+このようにシリアライザを問わず、全て同じマクロでシリアライズ処理できます。
 </div>
 
 @subsubsection DestructSerializer 2-4-3.シリアライザ・インスタンスの破棄
@@ -216,7 +217,6 @@ xmlも将来的にサポートする予定ですが、その際も同じマク�
 現在、サポートしているシリアライザはJson形式、独自Binary形式、メモリ内専用のFast形式の3種類です。<br>
 ここではそれぞれの使い方を説明します。
 
-<br>
 // ***************************************************************************
 @subsection Serializer 3-1.共通事項
 // ***************************************************************************
@@ -488,7 +488,175 @@ BinaryISerializer
 
 <br>
 // ***************************************************************************
-@subsection FastSerializer 3-4.メモリ内専用のFast形式（FastSerializer）
+@subsection XmlSerializer 3-4.Xml形式（XmlSerializer）
+// ***************************************************************************
+
+@subsubsection SpecXml 3-4-1.仕様
+Xml形式でシリアライズする場合は、<b>theolizer/serializer_xml.h</b>をインクルードして下さい。<br>
+
+__名前空間__<br>
+名前空間として`https://theolizer.com/theoride/xml-1`を使います。（特に何も置いていません。識別用だけです。）
+現時点では下記要素名と属性名を定義しています。（接頭辞はthを用いていますので接頭辞付きで表記します。）
+
+|識別子|要素名/<br>属性名|c++の型 or 意味|
+|------|----|----|
+|th:bool|要素名|bool 型|
+|th:int8|要素名|int8_t 型|
+|th:int16|要素名|int16_t 型|
+|th:int32|要素名|int32_t 型|
+|th:int64|要素名|int64_t 型|
+|th:unit8|要素名|unit8_t 型|
+|th:uint16|要素名|uint16_t 型|
+|th:uint32|要素名|uint32_t 型|
+|th:uint64|要素名|uint64_t 型|
+|th:float32|要素名|IEEE754のbinary32型|
+|th:float64|要素名|IEEE754のbinary64型|
+|th:float80|要素名|IEEE754の拡張型(仮数部64bit、指数部15bit)|
+|th:string|要素名|UTF-8文字列|
+|th:Array|要素名|配列(ネストすることで多次元配列を表現する)|
+|th:Pointer|要素名|ポインタ型(@ref HowToObjectTracking 参照)|
+|th:Pointee|要素名|被ポインタ(@ref HowToObjectTracking 参照)|
+|th:OwnerPointer|要素名|オーナ－・ポインタ(@ref HowToObjectTracking 参照)|
+|th:Reference|要素名|動的ポリモーフィズムされた参照(@ref Basic123 参照)|
+|th:Type|属性名|ポインタの指す先の型|
+|th:ObjectId|属性名|ポインタ or 被ポインタのオブジェクトID<br>(@ref Basic24 参照)|
+|th:MemberName|属性名|メンバ変数名|
+|th:GlobalVersionNo|属性名|グローバル・バージョン番号(ヘッダにのみ出現する)|
+|ユーザ・クラス名|要素名|ユーザ定義のクラス名|
+|ユーザenum型名|要素名|ユーザ定義のenum型名|
+
+各数値型(intやdouble等)は処理系に毎に異なりますが、適切なth:int??, th:float??名が割り当てられます。<br>
+std::numelic_limitsのis_signed, digits, max_exponentを用いて振り分けています。
+
+__型チェックと要素名の使い方について__<br>
+Xmlフォーマットを用いるシリアライザは、要素名としてメンバ変数名を用いるものが多いですが、当Xmlシリアライザは要素名として型名を用いることにしました。
+
+1. __Theolizerとしての要件__<br>
+Theolizerは、クラスのメンバ変数を回復する際、名前対応と順序対応の２つを用意しています。「新しい」クラスは変更が予想されるため名前で対応することで変更を容易にしています。「枯れた」クラスは名前を保存する記憶スペースを省略し効率を上げます。Xmlの場合、重複する文字列の保存が多いため後者のメリットはあまり効果的ではありませんが、他のシリアライザと同等の扱いとしています。<br>
+従って、クラスのメンバ変数の名前をシリアライズしないケースがあります。
+
+2. __トップ・レベルの変数名や配列の各要素、ヒープ上のオブジェクト__<br>
+トップ・レベルの(プログラマが直接保存／回復を指示する)変数は、保存時と回復時の変数名が一致しない場合も少なくないと思います。また、C++の場合、配列全体に名前は付いている場合が多いですが、配列の各要素には名前がありません。更に、ヒープ上のオブジェクトにはそもそも名前がありません。ポインタには名前がありますが、オブジェクト自身には名前がありません。<br>
+これらの名前を付けたくないものや名前の無いものは、変数名をシリアライズしない方が自然です。
+
+3. __C++は静的型付け言語__<br>
+ですので、変数には必ず型が存在し、型の異なる変数への回復をエラーチェックすると好ましいです。<br>
+
+以上に理由により、要素名(Xml要素が必ず必要とする名前)を「型名」とし、回復時に必ず型チェックするようにしました。
+
+従って、CheckModeパラメータは指定しません。
+
+@subsubsection XmlOSerialzier 3-4-2.保存用XmlSerialzier
+@link theolizer::XmlOSerializer::XmlOSerializer(std::ostream&,unsigned,bool,bool)
+@copybrief theolizer::XmlOSerializer::XmlOSerializer(std::ostream&,unsigned,bool,bool)
+@endlink
+
+@code
+XmlOSerializer
+(
+    std::ostream& iOStream,
+    unsigned iGlobalVersionNo=kLastGlobalVersionNo,
+    bool iNoPrettyPrint=false,
+    bool iNoThrowException=false
+);
+@endcode
+
+@link theolizer::XmlOSerializer::XmlOSerializer(std::ostream&,bool,bool)
+@copybrief theolizer::XmlOSerializer::XmlOSerializer(std::ostream&,bool,bool)
+@endlink
+
+@code
+XmlOSerializer
+(
+    std::ostream& iOStream,
+    bool iNoPrettyPrint=false,
+    bool iNoThrowException=false
+);
+@endcode
+
+|パラメータ名|意味|
+|------------|----|
+|iOStream|出力先のストリーム(ofstreamはstd::ios_base::binaryでオープンして下さい）|
+|iGlobalVersionNo|保存するグローバル・バージョン番号(省略時は最新版)|
+|iNoPrettyPrint|整形出力しない時true（省略時はfalse)|
+|iNoThrowException|例外禁止時true（省略時はfalse)|
+
+@subsubsection XmlISerializer 3-4-3.回復用XmlSerialzier
+@link theolizer::XmlISerializer::XmlISerializer(std::istream&,bool)
+@copybrief theolizer::XmlISerializer::XmlISerializer(std::istream&,bool)
+@endlink
+
+@code
+XmlISerializer
+(
+    std::istream& iIStream,
+    bool iNoThrowException=false
+);
+@endcode
+
+|パラメータ名|意味|
+|------------|----|
+|iIStream|入力元のストリーム(ofstreamはstd::ios_base::binaryでオープンして下さい）|
+|iNoThrowException|例外禁止時true（省略時はfalse)|
+
+@subsubsection ExampleXml 3-4-4.使い方
+
+サンプルのsource/samples/example/example.cppをxml用に修正した場合の出力例です。
+
+@code
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <theolizer/serializer_xml.h>
+
+struct Foo
+{
+    std::string name;
+    int age;
+};
+
+#include "example.cpp.theolizer.hpp"            // Theolizer自動生成先
+
+int main()
+{
+    // 保存
+    {
+        Foo foo;
+        foo.name="Taro Yamada";
+        foo.age=22;
+
+        std::ofstream ofs("sample.txt");
+        theolizer::XmlOSerializer<> xos(ofs);   // シリアライザを生成
+        THEOLIZER_PROCESS(xos, foo);            // ファイルへfooを保存
+    }
+
+    // 回復
+    {
+        Foo foo;
+        std::ifstream ifs("sample.txt");
+        theolizer::XmlISerializer<> xis(ifs);   // デシリアライザを生成
+        THEOLIZER_PROCESS(xis, foo);            // ファイルからfooを回復
+
+        theolizer::XmlOSerializer<> xos(std::cout);
+        THEOLIZER_PROCESS(xos, foo);            // 回復結果の簡易表示
+    }
+}
+@endcode
+
+__出力__
+@code
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<th:XmlTheolizer xmlns:th="https://theolizer.com/theoride/xml-1" th:GlobalVersionNo="1">
+<Foo>
+    <th:string th:MemberName="name">Taro Yamada</th:string>
+    <th:int32 th:MemberName="age">22</th:int32>
+</Foo>
+</th:XmlTheolizer>
+@endcode
+
+<br>
+// ***************************************************************************
+@subsection FastSerializer 3-5.メモリ内専用のFast形式（FastSerializer）
 // ***************************************************************************
 FastSerializerの使用目的はデータ構造のプログラム内コピーです。外部プログラムとのデータ交換は想定していません<br>
 
@@ -498,7 +666,7 @@ Theolizerが内部的に使用していますので、他のシリアライザ�
 FastSerializerはデータ変換しません。バージョンの相違にも対応していません。<br>
 オーナー指定ポインタでない通常のポインタは、ポイント先をシリアライズしていない場合はシャロー・コピーになります。（ポインタ値を単純にコピーする。）<br>
 
-@subsubsection FastOSerializer 3-4-1.保存用FastSerializer
+@subsubsection FastOSerializer 3-5-1.保存用FastSerializer
 @link theolizer::FastOSerializer::FastOSerializer(std::ostream&,bool)
 @copybrief theolizer::FastOSerializer::FastOSerializer(std::ostream&,bool)
 @endlink
@@ -516,7 +684,7 @@ FastOSerializer
 |iOStream|出力先のストリーム(ofstreamはstd::ios_base::binaryでオープンして下さい）|
 |iNoThrowException|例外禁止時true（省略時はfalse)|
 
-@subsubsection FastISerializer 3-4-2.回復用FastSerializer
+@subsubsection FastISerializer 3-5-2.回復用FastSerializer
 @link theolizer::FastISerializer::FastISerializer(std::istream&,bool)
 @copybrief theolizer::FastISerializer::FastISerializer(std::istream&,bool)
 @endlink
@@ -617,6 +785,8 @@ class/structでメンバ変数を削除した場合、１つ前のバージョ�
 - json-np (非整形出力)
 - json-pp (整形出力)
 - binary
+- xml-np (非整形出力)
+- xml-pp (整形出力)
 - fast
 
 ②は以下の通りです。
@@ -626,6 +796,8 @@ class/structでメンバ変数を削除した場合、１つ前のバージョ�
     - NoTypeCheck
     - TypeCheck
     - TypeCheckByIndex
+  - xmlの場合
+    - NoTypeCheck(実際には型チェックします)
   - fastの場合は、最新版のみ対応でオプションもないため、上記表の「指定無し」のみです。
 <br><br>
 
