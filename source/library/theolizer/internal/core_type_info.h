@@ -167,7 +167,7 @@ struct SerializedTypeName;
 //          派生シリアライザー毎に型リストを生成し、型IDを決定する。
 // ***************************************************************************
 
-class BaseTypeInfo;
+class THEOLIZER_INTERNAL_DLL BaseTypeInfo;
 
 //----------------------------------------------------------------------------
 //      型種別
@@ -1016,7 +1016,7 @@ public:
 //----------------------------------------------------------------------------
 
 template<typename tPrimitiveType>
-class PrimitiveTypeInfo : public BaseTypeInfo
+class THEOLIZER_INTERNAL_DLL PrimitiveTypeInfo : public BaseTypeInfo
 {
 private:
     // コンストラクタ／デストラクタ
