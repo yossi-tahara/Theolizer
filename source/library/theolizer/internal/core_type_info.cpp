@@ -121,5 +121,22 @@ return aTypeInfoListImpl[iTypeIndex]->getLastVersionNoV();
     return std::vector<unsigned>::at(iTypeIndex);
 }
 
+// ***************************************************************************
+//      プリミティブ管理クラス(シングルトン)
+//          プリミティブ型を型リストへ登録する
+// ***************************************************************************
+
+template<typename tPrimitiveType>
+PrimitiveTypeInfo<tPrimitiveType>& PrimitiveTypeInfo<tPrimitiveType>::getInstance()
+{
+    static PrimitiveTypeInfo<tPrimitiveType> instance;
+    return instance;
+}
+
+// 明示的実体化
+#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                    \
+    template class PrimitiveTypeInfo<dType>;
+#include "primitive.inc"
+
 }   // namespace internal
 }   // namespace theolizer

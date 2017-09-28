@@ -142,16 +142,16 @@ build_by_msvc(msvc2017 32 StaticWithBoost TRUE TRUE "39 11 1 1")
 build_by_gcc( mingw710 64 StaticWithBoost TRUE TRUE "39 1" "11 1")
 build_by_gcc( mingw710 32 StaticWithBoost TRUE TRUE "39 1" "11 1")
 
-output_title("****** Static ******")
-build_by_msvc(msvc2017 64 Static FALSE FALSE "38 11 1 1")
-build_by_msvc(msvc2017 32 Static FALSE FALSE "38 11 1 1")
-build_by_gcc( mingw710 64 Static FALSE FALSE "38 1" "11 1")
-build_by_gcc( mingw710 32 Static FALSE FALSE "38 1" "11 1")
-
 output_title("****** Shared ******")
 build_by_msvc(msvc2017 64 Shared FALSE FALSE "38 11 1 1")
 build_by_msvc(msvc2017 32 Shared FALSE FALSE "38 11 1 1")
 build_by_gcc( mingw710 64 Shared FALSE FALSE "38 1" "11 1")
 build_by_gcc( mingw710 32 Shared FALSE FALSE "38 1" "11 1")
+
+output_title("****** Static ******")
+build_by_msvc(msvc2017 64 Static FALSE FALSE "38 11 1 1")
+build_by_msvc(msvc2017 32 Static FALSE FALSE "38 11 1 1")
+build_by_gcc( mingw710 64 Static FALSE FALSE "38 1" "11 1")
+build_by_gcc( mingw710 32 Static FALSE FALSE "38 1" "11 1")
 
 output_summary()

@@ -306,9 +306,7 @@ std::cout << "TestISerializerNormal(" << iFileName << ", "
     THEOLIZER_EQUAL(aString, "Test");
 
     NonIntrusiveDrived aNonIntrusiveDrived;
-std::cout << "pre  NonIntrusiveDrived ------\n";
     THEOLIZER_PROCESS(aSerializer, aNonIntrusiveDrived);
-std::cout << "post NonIntrusiveDrived ------\n";
     THEOLIZER_EQUAL(aNonIntrusiveDrived.mLong, -100);
     THEOLIZER_EQUAL(aNonIntrusiveDrived.mInt,  -101);
 

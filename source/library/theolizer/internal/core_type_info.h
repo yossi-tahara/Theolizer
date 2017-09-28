@@ -1022,11 +1022,7 @@ private:
     // コンストラクタ／デストラクタ
     PrimitiveTypeInfo() : BaseTypeInfo(etcPrimitiveType) { }
 public:
-    static PrimitiveTypeInfo& getInstance()
-    {
-        static PrimitiveTypeInfo instance;
-        return instance;
-    }
+    static PrimitiveTypeInfo& getInstance();
 
     // コピー／ムーブ禁止(仮想関数があるのでis_trivially_copyableにならない)
     PrimitiveTypeInfo(const PrimitiveTypeInfo&)  = delete;
