@@ -30,7 +30,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">Theolizer
-   &#160;<span id="projectnumber">Version.1.1.3</span>
+   &#160;<span id="projectnumber">Version.1.2.0</span>
    </div>
    <div id="projectbrief">serializer for C++ / Do you want to update your classes easily ?</div>
   </td>
@@ -126,10 +126,8 @@ $(document).ready(function(){initNavTree('_usage_total.html','');});
 2-1.Theolizerヘッダをインクルード</h2>
 <p>一部例外(*1)はありますが原則として、<b>シリアライズするクラスとenum型の定義</b> 前にシリアライザのヘッダをインクルードして下さい。<br />
 </p>
-<p><b>Json形式シリアライザ・ヘッダのインクルードと型定義の例：(source/samples/example/example.cpp）</b></p>
- <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="serializer__json_8h.html">theolizer/serializer_json.h</a>&gt;</span></div></div><!-- fragment --></p>
-<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> (*1) 例外：<b>非侵入型</b>(<a class="el" href="_specification.html#Basic12">1-2.シリアライズ可能な型についての補足事項</a>)のクラスやenum型の<b>非侵入型完全自動</b>については、<b>シリアライザのヘッダをインクルード</b>する前でも定義できます。<br />
- </div><p>現在、サポートしているシリアライザはJson形式、独自Binary形式、メモリ内専用のFast形式の3種類です。 それぞれ、下記ヘッダをインクールドして下さい。</p>
+<p><b>Json形式シリアライザ・ヘッダのインクルードと型定義の例：(source/samples/example/example.cpp）</b> </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="serializer__json_8h.html">theolizer/serializer_json.h</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &quot;ユーザ定義.h&quot;</span></div></div><!-- fragment --> <div style="margin-top: 20px;"></div> <div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> (*1) 例外：<b>非侵入型</b>(<a class="el" href="_specification.html#Basic12">1-2.シリアライズ可能な型についての補足事項</a>)のクラスやenum型の<b>非侵入型完全自動</b>については、<b>シリアライザのヘッダをインクルード</b>する前でも定義できます。<br />
+ </div><p>現在、サポートしているシリアライザはJson形式、独自Binary形式、Xml形式、メモリ内専用のFast形式の4種類です。 それぞれ、下記ヘッダをインクールドして下さい。</p>
 <table class="doxtable">
 <tr>
 <th>形式</th><th>インクルードするヘッダ</th><th>注意事項  </th></tr>
@@ -137,6 +135,8 @@ $(document).ready(function(){initNavTree('_usage_total.html','');});
 <td>Json形式</td><td>&lt;<a class="el" href="serializer__json_8h.html" title="Jsonシリアライザ ">theolizer/serializer_json.h</a>&gt;</td><td>fstreamはテキスト・モードでオープンする </td></tr>
 <tr>
 <td>独自Binary形式</td><td>&lt;<a class="el" href="serializer__binary_8h_source.html">theolizer/serializer_binary.h</a>&gt;</td><td>fstreamは<b>バイナリ・モード(std::ios_base::binary)</b>でオープンする </td></tr>
+<tr>
+<td>Xml形式</td><td>&lt;<a class="el" href="serializer__xml_8h.html" title="XMLシリアライザ ">theolizer/serializer_xml.h</a>&gt;</td><td>fstreamはテキスト・モードでオープンする </td></tr>
 <tr>
 <td>メモリ内専用Fast形式</td><td>上記のどちから、もしくは、&lt;<a class="el" href="serializer_8h.html" title="TheolizerライブラリのAPI部 ">theolizer/serializer.h</a>&gt;</td><td>fstreamは<b>バイナリ・モード(std::ios_base::binary)</b>でオープンする </td></tr>
 </table>
@@ -156,7 +156,7 @@ $(document).ready(function(){initNavTree('_usage_total.html','');});
 <p>自動生成するファイルのファイル名は、そのコンパイル単位のファイル名に".theolzier.hpp"を繋げたものです。<br />
  例えば、<b>example.cpp</b> の場合は、<b>example.cpp.theolizer.hpp</b> となります。</p>
 <p><b>クラス定義と*.theolizer.hppインクルード指定例：(source/samples/example/example.cpp）</b></p>
- <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;fstream&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;string&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="serializer__json_8h.html">theolizer/serializer_json.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      非侵入型完全自動　基底クラス</span></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 本体 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keywordtype">int</span> tInitialValue&gt;</div><div class="line"><span class="keyword">class </span>BaseFullAuto</div><div class="line">{</div><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> kIntPrivate  =tInitialValue;</div><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> kIntProtected=tInitialValue+1;</div><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> kIntPublic   =tInitialValue+2;</div><div class="line"></div><div class="line">    <span class="keywordtype">int</span>     mIntPrivate;</div><div class="line"></div><div class="line"><span class="keyword">protected</span>:</div><div class="line">    <span class="keywordtype">int</span>     mIntProtected;</div><div class="line"></div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="keywordtype">int</span>     mIntPublic;</div><div class="line"></div><div class="line">    <span class="comment">// コンストラクタ</span></div><div class="line">    <span class="comment">//  (デフォルト・コンストラクタは意図的に無し)</span></div><div class="line">    BaseFullAuto(<span class="keywordtype">bool</span> iIsValued) :</div><div class="line">        mIntPrivate(  (iIsValued)?kIntPrivate:0),</div><div class="line">        mIntProtected((iIsValued)?kIntProtected:0),</div><div class="line">        mIntPublic(   (iIsValued)?kIntPublic:0)</div><div class="line">    { }</div><div class="line">};</div><div class="line"></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      侵入型半自動　基底クラス</span></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keywordtype">int</span> tInitialValue&gt;</div><div class="line"><span class="keyword">class </span>BaseHalfAuto</div><div class="line">{</div><div class="line"><span class="keyword">public</span>:</div><div class="line"></div><div class="line">    <span class="comment">// デフォルト・コンストラクタ</span></div><div class="line">    BaseHalfAuto()</div><div class="line">    { }</div><div class="line"></div><div class="line">    <span class="comment">// コンストラクタ</span></div><div class="line">    <span class="comment">//  (デフォルト・コンストラクタは意図的に無し)</span></div><div class="line">    BaseHalfAuto(<span class="keywordtype">bool</span>)</div><div class="line">    { }</div><div class="line"></div><div class="line">    <span class="comment">// 侵入型半自動 指定</span></div><div class="line">    THEOLIZER_INTRUSIVE_TEMPLATE</div><div class="line">    (</div><div class="line">        CS,</div><div class="line">        (template&lt;int tInitialValue&gt;),</div><div class="line">        (BaseHalfAuto&lt;tInitialValue&gt;),</div><div class="line">        1,</div><div class="line">        BaseHalfAutoPrimary</div><div class="line">    );</div><div class="line">};</div><div class="line"></div><div class="line"><span class="keyword">class </span>BaseHalfAuto2621</div><div class="line">{</div><div class="line"><span class="keyword">public</span>:</div><div class="line"></div><div class="line">    <span class="comment">// デフォルト・コンストラクタ</span></div><div class="line">    BaseHalfAuto2621()</div><div class="line">    { }</div><div class="line"></div><div class="line">    <span class="comment">// コンストラクタ</span></div><div class="line">    <span class="comment">//  (デフォルト・コンストラクタは意図的に無し)</span></div><div class="line">    BaseHalfAuto2621(<span class="keywordtype">bool</span>)</div><div class="line">    { }</div><div class="line"></div><div class="line">    <span class="comment">// 侵入型半自動 指定</span></div><div class="line">    <a class="code" href="serializer_8h.html#a7265fc4db9b57e28e813430083a84634">THEOLIZER_INTRUSIVE</a>(CS, (BaseHalfAuto2621), 1);</div><div class="line">};</div><div class="line"></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      非侵入型手動　基底クラス</span></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; 本体 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keywordtype">int</span> tInitialValue&gt;</div><div class="line"><span class="keyword">class </span>BaseManual</div><div class="line">{</div><div class="line">    <span class="keyword">static</span> <span class="keyword">const</span> <span class="keywordtype">int</span> kIntPublic   =tInitialValue+2;</div><div class="line"></div><div class="line"><span class="keyword">public</span>:</div><div class="line">    <span class="keywordtype">int</span>     mIntPublic;</div><div class="line"></div><div class="line">    <span class="comment">// コンストラクタ</span></div><div class="line">    <span class="comment">//  (デフォルト・コンストラクタは意図的に無し)</span></div><div class="line">    BaseManual(<span class="keywordtype">bool</span> iIsValued=<span class="keyword">false</span>) :</div><div class="line">        mIntPublic((iIsValued)?kIntPublic:0)</div><div class="line">    { }</div><div class="line"></div><div class="line">    <span class="comment">// 一致チェック</span></div><div class="line">    <span class="keywordtype">void</span> checkPublic(<span class="keywordtype">bool</span> iIsValued=<span class="keyword">false</span>)</div><div class="line">    {</div><div class="line">        <a class="code" href="group___test.html#ga18ee4fc860ce5018ecf84738dfbb6b30">THEOLIZER_EQUAL</a>(mIntPublic, ((!iIsValued)?0:kIntPublic));</div><div class="line">    }</div><div class="line">};</div><div class="line"></div><div class="line"><span class="comment">//      ---&lt;&lt;&lt; シリアライズ用の手動記述 &gt;&gt;&gt;---</span></div><div class="line"></div><div class="line"><span class="comment">//THEOLIZER_NON_INTRUSIVE_ORDER((BaseManual), 1);</span></div><div class="line">THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER</div><div class="line">(</div><div class="line">    (template&lt;int tInitialValue&gt;),</div><div class="line">    (BaseManual&lt;tInitialValue&gt;),</div><div class="line">    1,</div><div class="line">    BaseManualPrimary</div><div class="line">);</div><div class="line"></div><div class="line"><span class="comment">// 以下、test_class_variation.cpp.theolizer.hppから、</span></div><div class="line"><span class="comment">//  #ifdef  THEOLIZER_WRITE_CODE // ###### BaseManual ######の</span></div><div class="line"><span class="comment">//  #if false // Sample of save/load function.</span></div><div class="line"><span class="comment">//  から</span></div><div class="line"><span class="comment">//  #endif // Sample of save/load function.</span></div><div class="line"><span class="comment">//  までの間をコピーして、saveClassManual()/loadClassManual()の内容を記述。</span></div><div class="line"></div><div class="line"><span class="keyword">template</span>&lt;<span class="keywordtype">int</span> tInitialValue&gt;</div><div class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> tBaseSerializer, <span class="keyword">class</span> tTheolizerVersion&gt;</div><div class="line"><span class="keyword">struct </span>TheolizerNonIntrusive&lt;BaseManual&lt;tInitialValue&gt;&gt;::</div><div class="line">    TheolizerUserDefine&lt;tBaseSerializer, tTheolizerVersion, 1&gt;</div><div class="line">{</div><div class="line">    <span class="comment">// Save members.</span></div><div class="line">    <span class="keyword">static</span> <span class="keywordtype">void</span> saveClassManual</div><div class="line">    (</div><div class="line">        tBaseSerializer&amp; iSerializer,</div><div class="line">        <span class="keyword">typename</span> tTheolizerVersion::TheolizerTarget <span class="keyword">const</span>*<span class="keyword">const</span>&amp; iInstance</div><div class="line">    )</div><div class="line">    {</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(iSerializer, iInstance-&gt;mIntPublic);</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// Load members.</span></div><div class="line">    <span class="keyword">static</span> <span class="keywordtype">void</span> loadClassManual</div><div class="line">    (</div><div class="line">        tBaseSerializer&amp; iSerializer,</div><div class="line">        <span class="keyword">typename</span> tTheolizerVersion::TheolizerTarget*&amp; oInstance</div><div class="line">    )</div><div class="line">    {</div><div class="line">        <span class="keywordflow">if</span> (!oInstance) oInstance=<span class="keyword">new</span> <span class="keyword">typename</span> tTheolizerVersion::TheolizerTarget(<span class="keyword">false</span>);</div><div class="line"></div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(iSerializer, oInstance-&gt;mIntPublic);</div><div class="line">    }</div><div class="line">};</div><div class="line"></div><div class="line"><span class="comment">// ***************************************************************************</span></div><div class="line"><span class="comment">//      ２重組み合わせテスト</span></div><div class="line"><span class="comment">// ***************************************************************************</span></div><div class="line"></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"><span class="comment">//      侵入型半自動</span></div><div class="line"><span class="comment">//----------------------------------------------------------------------------</span></div><div class="line"></div><div class="line"><span class="keyword">class </span>DerivedHalfAuto</div><div class="line">{</div><div class="line"><span class="keyword">public</span>:</div><div class="line">    BaseFullAuto&lt;2611&gt;  mBaseFullAutoPublic;</div><div class="line">    BaseHalfAuto&lt;2621&gt;  mBaseHalfAutoPublic;</div><div class="line">    BaseHalfAuto2621    mBaseHalfAutoPublic2;</div><div class="line">    BaseManual  &lt;2631&gt;  mBaseManualPublic;</div><div class="line"></div><div class="line"><span class="preprocessor">#if 0</span></div><div class="line">    <span class="comment">// デフォルト・コンストラクタ</span></div><div class="line">    DerivedHalfAuto() :</div><div class="line">        mBaseFullAutoPublic{<span class="keyword">false</span>},</div><div class="line">        mBaseHalfAutoPublic{<span class="keyword">false</span>},</div><div class="line">        mBaseManualPublic{<span class="keyword">false</span>}</div><div class="line">    { }</div><div class="line"></div><div class="line">    <span class="comment">// 保存用コンストラクタ</span></div><div class="line">    DerivedHalfAuto(<span class="keywordtype">bool</span>) :</div><div class="line">        mBaseFullAutoPublic{<span class="keyword">true</span>},</div><div class="line">        mBaseHalfAutoPublic{<span class="keyword">true</span>},</div><div class="line">        mBaseManualPublic{<span class="keyword">true</span>}</div><div class="line">    { }</div><div class="line"><span class="preprocessor">#endif</span></div><div class="line"></div><div class="line">    <span class="comment">// 侵入型半自動 指定</span></div><div class="line">    <a class="code" href="serializer_8h.html#a7265fc4db9b57e28e813430083a84634">THEOLIZER_INTRUSIVE</a>(CS, (DerivedHalfAuto), 1);</div><div class="line">};</div><div class="line"></div><div class="line"></div><div class="line"><span class="preprocessor">#include &quot;example.cpp.theolizer.hpp&quot;</span>            <span class="comment">// Theolizer自動生成先</span></div></div><!-- fragment --></p>
+ <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;fstream&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;string&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="serializer__json_8h.html">theolizer/serializer_json.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="keyword">struct </span>Foo</div><div class="line">{</div><div class="line">    std::string name;</div><div class="line">    <span class="keywordtype">int</span> age;</div><div class="line">};</div><div class="line"></div><div class="line"><span class="preprocessor">#include &quot;example.cpp.theolizer.hpp&quot;</span>            <span class="comment">// Theolizer自動生成先</span></div></div><!-- fragment --></p>
 <p>この例では、example.cppの頭でクラスを定義していますが、example.hで定義し、#include "example.h" にてインクルードするのが一般的です。</p>
 <h2><a class="anchor" id="SerializingProcess"></a>
 2-4.シリアライズ処理</h2>
@@ -173,11 +173,13 @@ $(document).ready(function(){initNavTree('_usage_total.html','');});
 <li><b>保存（送信用）シリアライザ</b> <br />
  <a class="el" href="classtheolizer_1_1_json_o_serializer.html" title="保存用JsonSerializer ">theolizer::JsonOSerializer</a><br />
  <a class="el" href="classtheolizer_1_1_binary_o_serializer.html" title="保存用BinarySerializer ">theolizer::BinaryOSerializer</a><br />
+ <a class="el" href="classtheolizer_1_1_xml_o_serializer.html" title="保存用XmlSerializer ">theolizer::XmlOSerializer</a><br />
  <a class="el" href="classtheolizer_1_1_fast_o_serializer.html" title="保存用FastSerializer ">theolizer::FastOSerializer</a><br />
 </li>
 <li><b>回復（受信用）シリアライザ（デシリアライザ）</b> <br />
  <a class="el" href="classtheolizer_1_1_json_i_serializer.html" title="回復用JsonSerializer ">theolizer::JsonISerializer</a><br />
  <a class="el" href="classtheolizer_1_1_binary_i_serializer.html" title="回復用BinarySerializer ">theolizer::BinaryISerializer</a><br />
+ <a class="el" href="classtheolizer_1_1_xml_i_serializer.html" title="回復用XmlSerializer ">theolizer::XmlISerializer</a><br />
  <a class="el" href="classtheolizer_1_1_fast_i_serializer.html" title="回復用FastSerializer ">theolizer::FastISerializer</a><br />
 </li>
 </ul>
@@ -207,18 +209,16 @@ $(document).ready(function(){initNavTree('_usage_total.html','');});
 </li>
 </ul>
 <dl class="section see"><dt>参照</dt><dd><a class="el" href="_object_tracking.html">オブジェクト追跡について</a></dd></dl>
-<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> このようにシリアライザを問わず、全て同じマクロでシリアライズ処理できます。<br />
- xmlも将来的にサポートする予定ですが、その際も同じマクロで対応できる筈です。<br />
- （マクロなので、#演算によりインスタンス名をC言語文字列として取り出して用います。） </div><h3><a class="anchor" id="DestructSerializer"></a>
+<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;"> このようにシリアライザを問わず、全て同じマクロでシリアライズ処理できます。 </div><h3><a class="anchor" id="DestructSerializer"></a>
 2-4-3.シリアライザ・インスタンスの破棄</h3>
 <p>最後にシリアライザ・インスタンスを破棄することでシリアライズ処理を完了します。<br />
  生成時に例外発生を禁止していた場合に、エラー状態をリセットしないまま破棄すると、プロセスをアボートします。これはエラー状態の見逃しを回避するための仕様です。<br />
  例外発生を禁止している場合は、破棄する前には必ずエラー情報をチェクした上で、エラー状態をリセットして下さい。<br />
  具体的手順は<a class="el" href="_error_report.html">エラー報告</a> にて説明します。</p>
 <p><b>ファイルへの保存例：(source/samples/example/example.cpp）</b></p>
- <div class="fragment"><div class="line">    <span class="comment">// 保存用コンストラクタ</span></div><div class="line">    DerivedHalfAuto(<span class="keywordtype">bool</span>) :</div><div class="line">        mBaseFullAutoPublic{<span class="keyword">true</span>},</div></div><!-- fragment --></p>
+ <div class="fragment"><div class="line">    <span class="comment">// 保存</span></div><div class="line">    {</div><div class="line">        Foo foo;</div><div class="line">        foo.name=<span class="stringliteral">&quot;Taro Yamada&quot;</span>;</div><div class="line">        foo.age=22;</div><div class="line"></div><div class="line">        std::ofstream ofs(<span class="stringliteral">&quot;sample.txt&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> jos(ofs);  <span class="comment">// シリアライザを生成</span></div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(jos, foo);            <span class="comment">// ファイルへfooを保存</span></div><div class="line">    }</div></div><!-- fragment --></p>
 <p><b>ファイルからの回復例：(source/samples/example/example.cpp）</b></p>
-<p><div class="fragment"><div class="line">}</div></div><!-- fragment --></p>
+<p><div class="fragment"><div class="line">    <span class="comment">// 回復</span></div><div class="line">    {</div><div class="line">        Foo foo;</div><div class="line">        std::ifstream ifs(<span class="stringliteral">&quot;sample.txt&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_json_i_serializer.html">theolizer::JsonISerializer&lt;&gt;</a> jis(ifs);  <span class="comment">// デシリアライザを生成</span></div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(jis, foo);            <span class="comment">// ファイルからfooを回復</span></div><div class="line"></div><div class="line">        <a class="code" href="classtheolizer_1_1_json_o_serializer.html">theolizer::JsonOSerializer&lt;&gt;</a> jos(std::cout);</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(jos, foo);            <span class="comment">// 回復結果の簡易表示</span></div><div class="line">    }</div></div><!-- fragment --></p>
 <p><br />
  </p><h6></h6>
 <h1><a class="anchor" id="Serializers"></a>
@@ -226,8 +226,6 @@ $(document).ready(function(){initNavTree('_usage_total.html','');});
 <h6></h6>
 <p>現在、サポートしているシリアライザはJson形式、独自Binary形式、メモリ内専用のFast形式の3種類です。<br />
  ここではそれぞれの使い方を説明します。</p>
-<p><br />
-</p>
 <h2><a class="anchor" id="Serializer"></a>
 3-1.共通事項</h2>
 <p>全てのシリアライザについて共通な事項について説明します。</p>
@@ -422,8 +420,119 @@ std::string変数の文字エンコードをMultiByte文字列として処理す
 </table>
 <p><br />
 </p>
+<h2><a class="anchor" id="XmlSerializer"></a>
+3-4.Xml形式（XmlSerializer）</h2>
+<h3><a class="anchor" id="SpecXml"></a>
+3-4-1.仕様</h3>
+<p>Xml形式でシリアライズする場合は、<b><a class="el" href="serializer__xml_8h.html" title="XMLシリアライザ ">theolizer/serializer_xml.h</a></b>をインクルードして下さい。<br />
+</p>
+<p><b>名前空間</b><br />
+ 名前空間として<code><a href="https://theolizer.com/theoride/xml-1">https://theolizer.com/theoride/xml-1</a></code>を使います。（特に何も置いていません。識別用だけです。） 現時点では下記要素名と属性名を定義しています。（接頭辞はthを用いていますので接頭辞付きで表記します。）</p>
+<table class="doxtable">
+<tr>
+<th>識別子</th><th>要素名/<br />
+属性名</th><th>c++の型 or 意味  </th></tr>
+<tr>
+<td>th:bool</td><td>要素名</td><td>bool 型 </td></tr>
+<tr>
+<td>th:int8</td><td>要素名</td><td>int8_t 型 </td></tr>
+<tr>
+<td>th:int16</td><td>要素名</td><td>int16_t 型 </td></tr>
+<tr>
+<td>th:int32</td><td>要素名</td><td>int32_t 型 </td></tr>
+<tr>
+<td>th:int64</td><td>要素名</td><td>int64_t 型 </td></tr>
+<tr>
+<td>th:unit8</td><td>要素名</td><td>unit8_t 型 </td></tr>
+<tr>
+<td>th:uint16</td><td>要素名</td><td>uint16_t 型 </td></tr>
+<tr>
+<td>th:uint32</td><td>要素名</td><td>uint32_t 型 </td></tr>
+<tr>
+<td>th:uint64</td><td>要素名</td><td>uint64_t 型 </td></tr>
+<tr>
+<td>th:float32</td><td>要素名</td><td>IEEE754のbinary32型 </td></tr>
+<tr>
+<td>th:float64</td><td>要素名</td><td>IEEE754のbinary64型 </td></tr>
+<tr>
+<td>th:float80</td><td>要素名</td><td>IEEE754の拡張型(仮数部64bit、指数部15bit) </td></tr>
+<tr>
+<td>th:string</td><td>要素名</td><td>UTF-8文字列 </td></tr>
+<tr>
+<td>th:Array</td><td>要素名</td><td>配列(ネストすることで多次元配列を表現する) </td></tr>
+<tr>
+<td>th:Pointer</td><td>要素名</td><td>ポインタ型(<a class="el" href="_object_tracking.html#HowToObjectTracking">1.オブジェクト追跡の使い方</a> 参照) </td></tr>
+<tr>
+<td>th:Pointee</td><td>要素名</td><td>被ポインタ(<a class="el" href="_object_tracking.html#HowToObjectTracking">1.オブジェクト追跡の使い方</a> 参照) </td></tr>
+<tr>
+<td>th:OwnerPointer</td><td>要素名</td><td>オーナ－・ポインタ(<a class="el" href="_object_tracking.html#HowToObjectTracking">1.オブジェクト追跡の使い方</a> 参照) </td></tr>
+<tr>
+<td>th:Reference</td><td>要素名</td><td>動的ポリモーフィズムされた参照(<a class="el" href="_specification.html#Basic123">1-2-3.参照について</a> 参照) </td></tr>
+<tr>
+<td>th:Type</td><td>属性名</td><td>ポインタの指す先の型 </td></tr>
+<tr>
+<td>th:ObjectId</td><td>属性名</td><td>ポインタ or 被ポインタのオブジェクトID<br />
+(<a class="el" href="_specification.html#Basic24">2-4.同じ領域を複数回シリアライズする時の動作について特記事項</a> 参照) </td></tr>
+<tr>
+<td>th:MemberName</td><td>属性名</td><td>メンバ変数名 </td></tr>
+<tr>
+<td>th:GlobalVersionNo</td><td>属性名</td><td>グローバル・バージョン番号(ヘッダにのみ出現する) </td></tr>
+<tr>
+<td>ユーザ・クラス名</td><td>要素名</td><td>ユーザ定義のクラス名 </td></tr>
+<tr>
+<td>ユーザenum型名</td><td>要素名</td><td>ユーザ定義のenum型名 </td></tr>
+</table>
+<p>各数値型(intやdouble等)は処理系に毎に異なりますが、適切なth:int??, th:float??名が割り当てられます。<br />
+ std::numelic_limitsのis_signed, digits, max_exponentを用いて振り分けています。</p>
+<p><b>型チェックと要素名の使い方について</b><br />
+ Xmlフォーマットを用いるシリアライザは、要素名としてメンバ変数名を用いるものが多いですが、当Xmlシリアライザは要素名として型名を用いることにしました。</p>
+<ol type="1">
+<li><b>Theolizerとしての要件</b><br />
+ Theolizerは、クラスのメンバ変数を回復する際、名前対応と順序対応の２つを用意しています。「新しい」クラスは変更が予想されるため名前で対応することで変更を容易にしています。「枯れた」クラスは名前を保存する記憶スペースを省略し効率を上げます。Xmlの場合、重複する文字列の保存が多いため後者のメリットはあまり効果的ではありませんが、他のシリアライザと同等の扱いとしています。<br />
+ 従って、クラスのメンバ変数の名前をシリアライズしないケースがあります。</li>
+<li><b>トップ・レベルの変数名や配列の各要素、ヒープ上のオブジェクト</b><br />
+ トップ・レベルの(プログラマが直接保存／回復を指示する)変数は、保存時と回復時の変数名が一致しない場合も少なくないと思います。また、C++の場合、配列全体に名前は付いている場合が多いですが、配列の各要素には名前がありません。更に、ヒープ上のオブジェクトにはそもそも名前がありません。ポインタには名前がありますが、オブジェクト自身には名前がありません。<br />
+ これらの名前を付けたくないものや名前の無いものは、変数名をシリアライズしない方が自然です。</li>
+<li><b>C++は静的型付け言語</b><br />
+ ですので、変数には必ず型が存在し、型の異なる変数への回復をエラーチェックすると好ましいです。<br />
+</li>
+</ol>
+<p>以上に理由により、要素名(Xml要素が必ず必要とする名前)を「型名」とし、回復時に必ず型チェックするようにしました。</p>
+<p>従って、CheckModeパラメータは指定しません。</p>
+<h3><a class="anchor" id="XmlOSerialzier"></a>
+3-4-2.保存用XmlSerialzier</h3>
+<p><a class="el" href="classtheolizer_1_1_xml_o_serializer.html#ac211f885451858d266df963fec39c310">通常のコンストラクタ </a></p>
+<div class="fragment"><div class="line">XmlOSerializer</div><div class="line">(</div><div class="line">    std::ostream&amp; iOStream,</div><div class="line">    <span class="keywordtype">unsigned</span> iGlobalVersionNo=kLastGlobalVersionNo,</div><div class="line">    <span class="keywordtype">bool</span> iNoPrettyPrint=<span class="keyword">false</span>,</div><div class="line">    <span class="keywordtype">bool</span> iNoThrowException=<span class="keyword">false</span></div><div class="line">);</div></div><!-- fragment --><p><a class="el" href="classtheolizer_1_1_xml_o_serializer.html#a34de1ccb06ff51e664afc3de2d29af43">GlobalVersionNo以外のオプションを指定するコンストラクタ </a></p>
+<div class="fragment"><div class="line">XmlOSerializer</div><div class="line">(</div><div class="line">    std::ostream&amp; iOStream,</div><div class="line">    <span class="keywordtype">bool</span> iNoPrettyPrint=<span class="keyword">false</span>,</div><div class="line">    <span class="keywordtype">bool</span> iNoThrowException=<span class="keyword">false</span></div><div class="line">);</div></div><!-- fragment --><table class="doxtable">
+<tr>
+<th>パラメータ名</th><th>意味  </th></tr>
+<tr>
+<td>iOStream</td><td>出力先のストリーム(ofstreamはstd::ios_base::binaryでオープンして下さい） </td></tr>
+<tr>
+<td>iGlobalVersionNo</td><td>保存するグローバル・バージョン番号(省略時は最新版) </td></tr>
+<tr>
+<td>iNoPrettyPrint</td><td>整形出力しない時true（省略時はfalse) </td></tr>
+<tr>
+<td>iNoThrowException</td><td>例外禁止時true（省略時はfalse) </td></tr>
+</table>
+<h3><a class="anchor" id="XmlISerializer"></a>
+3-4-3.回復用XmlSerialzier</h3>
+<p><a class="el" href="classtheolizer_1_1_xml_i_serializer.html#ae594f9c812e017e368c5a43b2e461abc">コンストラクタ </a></p>
+<div class="fragment"><div class="line">XmlISerializer</div><div class="line">(</div><div class="line">    std::istream&amp; iIStream,</div><div class="line">    <span class="keywordtype">bool</span> iNoThrowException=<span class="keyword">false</span></div><div class="line">);</div></div><!-- fragment --><table class="doxtable">
+<tr>
+<th>パラメータ名</th><th>意味  </th></tr>
+<tr>
+<td>iIStream</td><td>入力元のストリーム(ofstreamはstd::ios_base::binaryでオープンして下さい） </td></tr>
+<tr>
+<td>iNoThrowException</td><td>例外禁止時true（省略時はfalse) </td></tr>
+</table>
+<h3><a class="anchor" id="ExampleXml"></a>
+3-4-4.使い方</h3>
+<p>サンプルのsource/samples/example/example.cppをxml用に修正した場合の出力例です。</p>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;iostream&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;fstream&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;string&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="serializer__xml_8h.html">theolizer/serializer_xml.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="keyword">struct </span>Foo</div><div class="line">{</div><div class="line">    std::string name;</div><div class="line">    <span class="keywordtype">int</span> age;</div><div class="line">};</div><div class="line"></div><div class="line"><span class="preprocessor">#include &quot;example.cpp.theolizer.hpp&quot;</span>            <span class="comment">// Theolizer自動生成先</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main()</div><div class="line">{</div><div class="line">    <span class="comment">// 保存</span></div><div class="line">    {</div><div class="line">        Foo foo;</div><div class="line">        foo.name=<span class="stringliteral">&quot;Taro Yamada&quot;</span>;</div><div class="line">        foo.age=22;</div><div class="line"></div><div class="line">        std::ofstream ofs(<span class="stringliteral">&quot;sample.txt&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_xml_o_serializer.html">theolizer::XmlOSerializer&lt;&gt;</a> xos(ofs);   <span class="comment">// シリアライザを生成</span></div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(xos, foo);            <span class="comment">// ファイルへfooを保存</span></div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// 回復</span></div><div class="line">    {</div><div class="line">        Foo foo;</div><div class="line">        std::ifstream ifs(<span class="stringliteral">&quot;sample.txt&quot;</span>);</div><div class="line">        <a class="code" href="classtheolizer_1_1_xml_i_serializer.html">theolizer::XmlISerializer&lt;&gt;</a> xis(ifs);   <span class="comment">// デシリアライザを生成</span></div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(xis, foo);            <span class="comment">// ファイルからfooを回復</span></div><div class="line"></div><div class="line">        <a class="code" href="classtheolizer_1_1_xml_o_serializer.html">theolizer::XmlOSerializer&lt;&gt;</a> xos(std::cout);</div><div class="line">        <a class="code" href="serializer_8h.html#a111b2020794cbf2649488f2030c49f7b">THEOLIZER_PROCESS</a>(xos, foo);            <span class="comment">// 回復結果の簡易表示</span></div><div class="line">    }</div><div class="line">}</div></div><!-- fragment --><p><b>出力</b> </p><div class="fragment"><div class="line">&lt;?xml version=<span class="stringliteral">&quot;1.0&quot;</span> encoding=<span class="stringliteral">&quot;UTF-8&quot;</span> standalone=<span class="stringliteral">&quot;yes&quot;</span> ?&gt;</div><div class="line">&lt;th:XmlTheolizer xmlns:th=<span class="stringliteral">&quot;https://theolizer.com/theoride/xml-1&quot;</span> th:GlobalVersionNo=<span class="stringliteral">&quot;1&quot;</span>&gt;</div><div class="line">&lt;Foo&gt;</div><div class="line">    &lt;th:<span class="keywordtype">string</span> th:MemberName=<span class="stringliteral">&quot;name&quot;</span>&gt;Taro Yamada&lt;/th:<span class="keywordtype">string</span>&gt;</div><div class="line">    &lt;th:int32 th:MemberName=<span class="stringliteral">&quot;age&quot;</span>&gt;22&lt;/th:int32&gt;</div><div class="line">&lt;/Foo&gt;</div><div class="line">&lt;/th:XmlTheolizer&gt;</div></div><!-- fragment --><p><br />
+</p>
 <h2><a class="anchor" id="FastSerializer"></a>
-3-4.メモリ内専用のFast形式（FastSerializer）</h2>
+3-5.メモリ内専用のFast形式（FastSerializer）</h2>
 <p>FastSerializerの使用目的はデータ構造のプログラム内コピーです。外部プログラムとのデータ交換は想定していません<br />
 </p>
 <p>Theolizerが内部的に使用していますので、他のシリアライザのヘッダをインクルードすれば改めてヘッダをインクルードする必要はありません。<br />
@@ -433,7 +542,7 @@ std::string変数の文字エンコードをMultiByte文字列として処理す
  オーナー指定ポインタでない通常のポインタは、ポイント先をシリアライズしていない場合はシャロー・コピーになります。（ポインタ値を単純にコピーする。）<br />
 </p>
 <h3><a class="anchor" id="FastOSerializer"></a>
-3-4-1.保存用FastSerializer</h3>
+3-5-1.保存用FastSerializer</h3>
 <p><a class="el" href="classtheolizer_1_1_fast_o_serializer.html#adac5dc58f348dcab99273a75c0bd3825">コンストラクタ </a></p>
 <div class="fragment"><div class="line">FastOSerializer</div><div class="line">(</div><div class="line">    std::ostream&amp; iOStream,</div><div class="line">    <span class="keywordtype">bool</span> iNoThrowException=<span class="keyword">false</span></div><div class="line">);</div></div><!-- fragment --><table class="doxtable">
 <tr>
@@ -444,7 +553,7 @@ std::string変数の文字エンコードをMultiByte文字列として処理す
 <td>iNoThrowException</td><td>例外禁止時true（省略時はfalse) </td></tr>
 </table>
 <h3><a class="anchor" id="FastISerializer"></a>
-3-4-2.回復用FastSerializer</h3>
+3-5-2.回復用FastSerializer</h3>
 <p><a class="el" href="classtheolizer_1_1_fast_i_serializer.html#ad8d483e11d6fe9589ab1c36bdf9d5bdf">コンストラクタ </a></p>
 <div class="fragment"><div class="line">FastISerializer</div><div class="line">(</div><div class="line">    std::istream&amp; iIStream,</div><div class="line">    <span class="keywordtype">bool</span> iNoThrowException=<span class="keyword">false</span></div><div class="line">);</div></div><!-- fragment --><table class="doxtable">
 <tr>
@@ -559,6 +668,8 @@ std::string変数の文字エンコードをMultiByte文字列として処理す
 <li>json-np (非整形出力)</li>
 <li>json-pp (整形出力)</li>
 <li>binary</li>
+<li>xml-np (非整形出力)</li>
+<li>xml-pp (整形出力)</li>
 <li>fast</li>
 </ul>
 <p>②は以下の通りです。</p>
@@ -568,6 +679,10 @@ std::string変数の文字エンコードをMultiByte文字列として処理す
 <li>NoTypeCheck</li>
 <li>TypeCheck</li>
 <li>TypeCheckByIndex</li>
+</ul>
+</li>
+<li>xmlの場合<ul>
+<li>NoTypeCheck(実際には型チェックします)</li>
 </ul>
 </li>
 <li>fastの場合は、最新版のみ対応でオプションもないため、上記表の「指定無し」のみです。 <br />

@@ -38,6 +38,7 @@ var files =
     [ "serializer_binary.h", "serializer__binary_8h_source.html", null ],
     [ "serializer_fast.h", "serializer__fast_8h_source.html", null ],
     [ "serializer_json.h", "serializer__json_8h.html", "serializer__json_8h" ],
+    [ "serializer_xml.h", "serializer__xml_8h.html", "serializer__xml_8h" ],
     [ "set.h", "set_8h.html", null ],
     [ "test_tool.h", "test__tool_8h.html", "test__tool_8h" ],
     [ "u8string.h", "u8string_8h.html", "u8string_8h" ],

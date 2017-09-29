@@ -8,7 +8,9 @@ var namespacetheolizer =
       [ "FastMidISerializer", "classtheolizer_1_1internal_1_1_fast_mid_i_serializer.html", "classtheolizer_1_1internal_1_1_fast_mid_i_serializer" ],
       [ "FastMidOSerializer", "classtheolizer_1_1internal_1_1_fast_mid_o_serializer.html", "classtheolizer_1_1internal_1_1_fast_mid_o_serializer" ],
       [ "JsonMidISerializer", "classtheolizer_1_1internal_1_1_json_mid_i_serializer.html", "classtheolizer_1_1internal_1_1_json_mid_i_serializer" ],
-      [ "JsonMidOSerializer", "classtheolizer_1_1internal_1_1_json_mid_o_serializer.html", "classtheolizer_1_1internal_1_1_json_mid_o_serializer" ]
+      [ "JsonMidOSerializer", "classtheolizer_1_1internal_1_1_json_mid_o_serializer.html", "classtheolizer_1_1internal_1_1_json_mid_o_serializer" ],
+      [ "XmlMidISerializer", "classtheolizer_1_1internal_1_1_xml_mid_i_serializer.html", "classtheolizer_1_1internal_1_1_xml_mid_i_serializer" ],
+      [ "XmlMidOSerializer", "classtheolizer_1_1internal_1_1_xml_mid_o_serializer.html", "classtheolizer_1_1internal_1_1_xml_mid_o_serializer" ]
     ] ],
     [ "BasicRange", "classtheolizer_1_1_basic_range.html", "classtheolizer_1_1_basic_range" ],
     [ "BinaryISerializer", "classtheolizer_1_1_binary_i_serializer.html", "classtheolizer_1_1_binary_i_serializer" ],
@@ -24,5 +26,7 @@ var namespacetheolizer =
     [ "PrepareDir", "classtheolizer_1_1_prepare_dir.html", "classtheolizer_1_1_prepare_dir" ],
     [ "ThreadGuard", "classtheolizer_1_1_thread_guard.html", "classtheolizer_1_1_thread_guard" ],
     [ "u8string", "classtheolizer_1_1u8string.html", "classtheolizer_1_1u8string" ],
-    [ "WorkingLog", "classtheolizer_1_1_working_log.html", "classtheolizer_1_1_working_log" ]
+    [ "WorkingLog", "classtheolizer_1_1_working_log.html", "classtheolizer_1_1_working_log" ],
+    [ "XmlISerializer", "classtheolizer_1_1_xml_i_serializer.html", "classtheolizer_1_1_xml_i_serializer" ],
+    [ "XmlOSerializer", "classtheolizer_1_1_xml_o_serializer.html", "classtheolizer_1_1_xml_o_serializer" ]
 ];

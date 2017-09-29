@@ -139,9 +139,15 @@ var index =
           [ "3-3-1.保存用BinarySerialzier", "_usage_total.html#BinaryOSerialzier", null ],
           [ "3-3-2.回復用BinarySerialzier", "_usage_total.html#BinaryISerializer", null ]
         ] ],
-        [ "3-4.メモリ内専用のFast形式（FastSerializer）", "_usage_total.html#FastSerializer", [
-          [ "3-4-1.保存用FastSerializer", "_usage_total.html#FastOSerializer", null ],
-          [ "3-4-2.回復用FastSerializer", "_usage_total.html#FastISerializer", null ]
+        [ "3-4.Xml形式（XmlSerializer）", "_usage_total.html#XmlSerializer", [
+          [ "3-4-1.仕様", "_usage_total.html#SpecXml", null ],
+          [ "3-4-2.保存用XmlSerialzier", "_usage_total.html#XmlOSerialzier", null ],
+          [ "3-4-3.回復用XmlSerialzier", "_usage_total.html#XmlISerializer", null ],
+          [ "3-4-4.使い方", "_usage_total.html#ExampleXml", null ]
+        ] ],
+        [ "3-5.メモリ内専用のFast形式（FastSerializer）", "_usage_total.html#FastSerializer", [
+          [ "3-5-1.保存用FastSerializer", "_usage_total.html#FastOSerializer", null ],
+          [ "3-5-2.回復用FastSerializer", "_usage_total.html#FastISerializer", null ]
         ] ]
       ] ],
       [ "4.テスト・プログラムの構造", "_usage_total.html#TestProgram", [

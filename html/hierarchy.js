@@ -24,6 +24,12 @@ var hierarchy =
         ] ],
         [ "theolizer::internal::JsonMidOSerializer", "classtheolizer_1_1internal_1_1_json_mid_o_serializer.html", [
           [ "theolizer::JsonOSerializer< uDefault, uDestinations >", "classtheolizer_1_1_json_o_serializer.html", null ]
+        ] ],
+        [ "theolizer::internal::XmlMidISerializer", "classtheolizer_1_1internal_1_1_xml_mid_i_serializer.html", [
+          [ "theolizer::XmlISerializer< uDefault, uDestinations >", "classtheolizer_1_1_xml_i_serializer.html", null ]
+        ] ],
+        [ "theolizer::internal::XmlMidOSerializer", "classtheolizer_1_1internal_1_1_xml_mid_o_serializer.html", [
+          [ "theolizer::XmlOSerializer< uDefault, uDestinations >", "classtheolizer_1_1_xml_o_serializer.html", null ]
         ] ]
       ] ]
     ] ],
