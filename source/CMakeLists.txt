@@ -432,6 +432,13 @@ endif()
 # テスト
 add_subdirectory(reference_and_test)
 
+#       ---<<< Meta-Serializer >>>---
+
+if(MSVC)
+    message(STATUS "add_subdirectory(cs_integration_test)")
+    add_subdirectory(cs_integration_test)
+endif()
+
 #       ---<<< Theolizer Document >>>---
 
 if(BUILD_DOCUMENT)

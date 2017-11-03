@@ -3163,7 +3163,7 @@ void MetaDeserializerBase::generateClass
         bool aIsForwardDecl=false;
         for (auto&& element : iClassElements)
         {
-            if (element.mName[0] == '(')
+            if (element.mName[0] == '{')
         continue;
 
             // ポインタ、かつ、非テンプレートで自動型クラスなら前方宣言
@@ -3206,7 +3206,7 @@ void MetaDeserializerBase::generateClass
         bool aIsFirst=true;
         for (auto&& element : iClassElements)
         {
-            if (element.mName[0] != '(')
+            if (element.mName[0] != '{')
         continue;
 
             if (aIsFirst)
@@ -3227,7 +3227,7 @@ void MetaDeserializerBase::generateClass
         // メンバ処理
         for (auto&& element : iClassElements)
         {
-            if (element.mName[0] == '(')
+            if (element.mName[0] == '{')
         continue;
 
             mOStream << "    " << element.mTypeName << ' ';
@@ -3339,7 +3339,7 @@ void MetaDeserializerBase::generateClass
         if (!iIsLastVersion)
         {
             // 基底クラス
-            if (element.mName[0] == '(')
+            if (element.mName[0] == '{')
             {
                 auto found = 
                     find_if
@@ -3367,7 +3367,7 @@ void MetaDeserializerBase::generateClass
         }
 
         // 基底クラス
-        if (element.mName[0] == '(')
+        if (element.mName[0] == '{')
         {
             if (aIsBaseFirst)
             {
