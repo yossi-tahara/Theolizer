@@ -31,6 +31,107 @@
 #if !defined(THEOLIZER_INTERNAL_INTEGRATOR_H)
 #define THEOLIZER_INTERNAL_INTEGRATOR_H
 
+#include <memory>
+#include <thread>
 
+#include "memory_stream.h"
+
+//############################################################################
+//      Begin
+//############################################################################
+
+// ***************************************************************************
+//      C++DLL用連携処理統括クラス
+//          DLLの場合、通常１つしかインスタンス不要なのでシングルトンとする
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      サーバ初期化
+//----------------------------------------------------------------------------
+
+namespace theolizer
+{
+    struct Streams;
+}   // theolizer
+
+extern "C"  THEOLIZER_INTERNAL_DLL  void CppInitialize(theolizer::Streams* oStreams);
+
+//----------------------------------------------------------------------------
+//      C#への接続情報
+//----------------------------------------------------------------------------
+
+namespace theolizer
+{
+
+struct Streams
+{
+    IMemoryStream*  mRequest;           // C#->Cpp要求用ストリーム
+    OMemoryStream*  mResponse;          // Cpp->C#応答用ストリーム
+    OMemoryStream*  mNotify;            // Cpp->C#通知用ストリーム
+
+    // コンストラクタ
+    Streams();
+
+    // デストラクタ
+    ~Streams();
+
+private:
+    friend  void ::CppInitialize(Streams*);
+
+    // コピー／ムーブ不可
+    Streams(Streams const&) = delete;
+    Streams(Streams     &&) = delete;
+    Streams& operator=(Streams const&) = default;   // friendのみ許可
+    Streams& operator=(Streams     &&) = delete;
+};
+
+//----------------------------------------------------------------------------
+//      本体
+//----------------------------------------------------------------------------
+
+class DllIntegrator
+{
+    friend  void ::CppInitialize(Streams*);
+
+    std::thread*    mMainThread;
+
+    // 生成／コピー／ムーブ不可
+    DllIntegrator() : mMainThread(nullptr) { }
+    DllIntegrator(DllIntegrator const&) = delete;
+    DllIntegrator(DllIntegrator     &&) = delete;
+    DllIntegrator& operator=(DllIntegrator const&) = delete;
+    DllIntegrator& operator=(DllIntegrator     &&) = delete;
+
+    template <class F, class ...Args>
+    void startThread(F&& f, Args&&... args)
+    {
+        if (!mMainThread)
+        {
+            mMainThread = new std::thread(f, args...);
+        }
+    }
+
+    //      ---<<< 管理領域 >>>---
+
+    Streams mStreams;
+
+public:
+    //      ---<<< API >>>---
+
+    static DllIntegrator& get()
+    {
+        static DllIntegrator instance;
+        return instance;
+    }
+    ~DllIntegrator();
+
+    Streams* getStreams() { return &mStreams; }
+};
+
+//############################################################################
+//      End
+//############################################################################
+
+}   // namespace theolizer
 
 #endif  // THEOLIZER_INTERNAL_INTEGRATOR_H

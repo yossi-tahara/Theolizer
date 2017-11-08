@@ -1,6 +1,6 @@
-#[[###########################################################################
-        Theolizer Test Project for C# Integration
-
+﻿//############################################################################
+//      Theolizerライブラリのメモリ・ストリーム(C++側)
+/*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
 
@@ -25,23 +25,9 @@
         あなたはこのファイルを取り扱うことができます。
         GPLv3の内容を https://www.gnu.org/licenses/gpl.txt にて確認して下さい。
         またGPLv3のコピーをLICENSE.TXTファイルにおいてます。
+*/
+//############################################################################
 
-]]############################################################################
+#define DLL_EXPORT
+#include "memory_stream.h"
 
-#-----------------------------------------------------------------------------
-#       target definition
-#-----------------------------------------------------------------------------
-
-set(CPP_SOURCES cpp_server.cpp cpp_server.h)
-set(CPP_LIBRALY
-    ../theolizer/integrator.cpp
-    ../theolizer/integrator.h
-    ../theolizer/memory_stream.cpp
-    ../theolizer/memory_stream.h
-)
-
-#-----------------------------------------------------------------------------
-#       make target
-#-----------------------------------------------------------------------------
-
-add_library(cpp_server SHARED ${CPP_SOURCES} ${CPP_LIBRALY})

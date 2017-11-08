@@ -1,5 +1,5 @@
 ﻿//############################################################################
-//      Theolizer Test Project for C# Integration
+//      Theolizerライブラリのメモリ・ストリーム(C++側)
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
@@ -28,61 +28,116 @@
 */
 //############################################################################
 
-// ***************************************************************************
-//          警告抑止
-// ***************************************************************************
-
-#if defined(_MSC_VER)
-//  #pragma warning(disable:4100)
-#endif
-
-// ***************************************************************************
-//      インクルード
-// ***************************************************************************
+#if !defined(THEOLIZER_INTERNAL_MEMORY_STREAM_H)
+#define THEOLIZER_INTERNAL_MEMORY_STREAM_H
 
 // 標準ライブラリ
 #include <iostream>
 #include <string>
 #include <sstream>
 
-// 固有ヘッダ
-#define DLL_EXPORT
-#include "cpp_server.h"
+#include "base.h"
 
-// ***************************************************************************
-//      連携処理クラス
-// ***************************************************************************
+//############################################################################
+//      Begin
+//############################################################################
 
-// ***************************************************************************
-//      C# → C++
-// ***************************************************************************
-
-//----------------------------------------------------------------------------
-//      書き込み
-//----------------------------------------------------------------------------
-
-void CppWrite(uint8_t* buffer, int offset, int count)
+namespace theolizer
 {
-    std::string temp((char*)buffer+offset, count);
-    DEBUG_PRINT("---------------- CppWrite() : ", temp.c_str());
-}
-
-//----------------------------------------------------------------------------
-//      フラッシュ
-//----------------------------------------------------------------------------
-
-void CppFlush()
-{
-    DEBUG_PRINT("---------------- CppFlush()");
-}
 
 // ***************************************************************************
-//      main()
+//      ストリーム・バッファ
 // ***************************************************************************
 
-int main()
+class MemoryStreamBuf : public std::streambuf
 {
-    DEBUG_PRINT("---------------- main()");
+    std::string     mInternalBuff;
 
-    return 0;
-}
+    std::streampos seekoff
+    ( 
+        std::streamoff off, 
+        std::ios::seek_dir dir, 
+        int nMode = std::ios::in | std::ios::out
+    )
+    {
+        return EOF;
+    }
+    std::streampos seekpos
+    ( 
+        std::streampos pos, 
+        int nMode = std::ios::in | std::ios::out
+    )
+    {
+        return EOF;
+    }
+
+#if 0
+    int overflow( int nCh = EOF ) override
+    {
+        char buffer[2];
+        buffer[0]=nCh;
+        DWORD size;
+        WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE),buffer,1,&size,NULL);
+        return 0;
+    }
+#endif
+
+    std::streamsize xsputn(const char* s, std::streamsize n) override
+    {
+        return n;
+    }
+
+    int underflow()
+    {
+        return EOF;
+    }
+
+public:
+    MemoryStreamBuf()
+    {
+        setbuf(nullptr, 0);
+    }
+    ~MemoryStreamBuf()
+    {
+    }
+};
+
+// ***************************************************************************
+//      C# → C++用メモリ・ストリーム
+// ***************************************************************************
+
+class IMemoryStream : public std::istream
+{
+public:
+    IMemoryStream() : std::istream(new MemoryStreamBuf())
+    {
+    }
+
+    ~IMemoryStream()
+    {
+    }
+};
+
+// ***************************************************************************
+//      C++ → C#用メモリ・ストリーム
+// ***************************************************************************
+
+class OMemoryStream : public std::ostream
+{
+public:
+    OMemoryStream() : std::ostream(new MemoryStreamBuf())
+    {
+    }
+
+    ~OMemoryStream()
+    {
+    }
+};
+
+//############################################################################
+//      End
+//############################################################################
+
+}   // namespace theolizer
+
+#endif  // THEOLIZER_INTERNAL_MEMORY_STREAM_H

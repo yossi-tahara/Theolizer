@@ -30,6 +30,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -53,15 +54,32 @@ namespace theolizer
         }
 
         //----------------------------------------------------------------------------
+        //      管理領域
+        //----------------------------------------------------------------------------
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Streams
+        {
+            public IntPtr   mRequest;           // C#->Cpp要求用ストリーム
+            public IntPtr   mResponse;          // Cpp->C#応答用ストリーム
+            public IntPtr   mNotify;            // Cpp->C#通知用ストリーム
+        }
+
+        Streams     mStreams = new Streams();
+
+        //----------------------------------------------------------------------------
         //      コンストラクタ
         //----------------------------------------------------------------------------
 
         [DllImport(Constants.CppDllName)]
-        extern static void CppInitialize();
+        extern static void CppInitialize(out Streams oStreams);
 
         private DllIntegrator()
         {
-            CppInitialize();
+            CppInitialize(out mStreams);
+Debug.WriteLine("mRequest  = {0:X16}", (ulong)mStreams.mRequest);
+Debug.WriteLine("mResponse = {0:X16}", (ulong)mStreams.mResponse);
+Debug.WriteLine("mNotify   = {0:X16}", (ulong)mStreams.mNotify);
         }
     }
 }

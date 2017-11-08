@@ -28,3 +28,63 @@
 */
 //############################################################################
 
+#define DLL_EXPORT
+#include "integrator.h"
+
+// ***************************************************************************
+//      C++DLL用連携処理統括クラス
+//          DLLの場合、通常１つしかインスタンス不要なのでシングルトンとする
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      スレッド起動処理(main()呼び出し)
+//----------------------------------------------------------------------------
+
+extern "C" int main();
+
+void CppInitialize(theolizer::Streams* oStreams)
+{
+    auto&   aDllIntegrator = theolizer::DllIntegrator::get();
+    aDllIntegrator.startThread(main);
+
+DEBUG_PRINT("mRequest  = ", aDllIntegrator.getStreams()->mRequest);
+DEBUG_PRINT("mResponse = ", aDllIntegrator.getStreams()->mResponse);
+DEBUG_PRINT("mNotify   = ", aDllIntegrator.getStreams()->mNotify);
+
+    *oStreams = *aDllIntegrator.getStreams();
+}
+
+//----------------------------------------------------------------------------
+//      C#への接続情報
+//----------------------------------------------------------------------------
+
+namespace theolizer
+{
+
+Streams::Streams() :
+    mRequest(new IMemoryStream),
+    mResponse(new OMemoryStream),
+    mNotify(new OMemoryStream)
+{ }
+
+Streams::~Streams()
+{
+    delete mRequest;
+    delete mResponse;
+    delete mNotify;
+}
+
+//----------------------------------------------------------------------------
+//      デストラクタ(スレッド停止処理)
+//----------------------------------------------------------------------------
+
+DllIntegrator::~DllIntegrator()
+{
+    if (mMainThread)
+    {
+        mMainThread->join();
+        delete mMainThread;
+    }
+}
+
+}   // namespace theolizer

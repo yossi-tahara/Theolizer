@@ -31,29 +31,7 @@
 #if !defined(THEOLIZER_INTERNAL_CPP_SERVER_H)
 #define THEOLIZER_INTERNAL_CPP_SERVER_H
 
-// ***************************************************************************
-//          API定義用マクロ
-// ***************************************************************************
-
-#ifdef DLL_EXPORT
-    #if defined(_MSC_VER)
-        #define THEOLIZER_INTERNAL_DLL __declspec(dllexport)
-    #elif defined(_WIN32)
-        #define THEOLIZER_INTERNAL_DLL __declspec(dllexport)
-    #else
-        #define THEOLIZER_INTERNAL_DLL __attribute__((visibility ("default")))
-    #endif
-#else
-    #if defined(THEOLIZER_DYN_LINK)
-        #if defined(_MSC_VER)
-            #define THEOLIZER_INTERNAL_DLL __declspec(dllimport)
-        #else
-            #define THEOLIZER_INTERNAL_DLL
-        #endif
-    #else
-        #define THEOLIZER_INTERNAL_DLL
-    #endif
-#endif
+#include "../theolizer/base.h"
 
 // ***************************************************************************
 //          API関数群(C言語I/F)
@@ -61,7 +39,6 @@
 
 extern "C"
 {
-    THEOLIZER_INTERNAL_DLL  void CppInitialize();
     THEOLIZER_INTERNAL_DLL  void CppWrite(uint8_t* buffer, int offset, int count);
     THEOLIZER_INTERNAL_DLL  void CppFlush();
 }
