@@ -1,4 +1,4 @@
-﻿namespace WindowsFormsApp3
+﻿namespace cs_client
 {
     partial class Form1
     {

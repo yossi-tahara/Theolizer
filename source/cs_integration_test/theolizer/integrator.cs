@@ -1,5 +1,5 @@
 ﻿//############################################################################
-//      Theolizer Test Project for C# Integration
+//      Theolizerライブラリの連携処理クラス(C#側)
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
@@ -28,42 +28,41 @@
 */
 //############################################################################
 
-#if !defined(THEOLIZER_INTERNAL_CPP_SERVER_H)
-#define THEOLIZER_INTERNAL_CPP_SERVER_H
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
-// ***************************************************************************
-//          API定義用マクロ
-// ***************************************************************************
-
-#ifdef DLL_EXPORT
-    #if defined(_MSC_VER)
-        #define THEOLIZER_INTERNAL_DLL __declspec(dllexport)
-    #elif defined(_WIN32)
-        #define THEOLIZER_INTERNAL_DLL __declspec(dllexport)
-    #else
-        #define THEOLIZER_INTERNAL_DLL __attribute__((visibility ("default")))
-    #endif
-#else
-    #if defined(THEOLIZER_DYN_LINK)
-        #if defined(_MSC_VER)
-            #define THEOLIZER_INTERNAL_DLL __declspec(dllimport)
-        #else
-            #define THEOLIZER_INTERNAL_DLL
-        #endif
-    #else
-        #define THEOLIZER_INTERNAL_DLL
-    #endif
-#endif
-
-// ***************************************************************************
-//          API関数群(C言語I/F)
-// ***************************************************************************
-
-extern "C"
+namespace theolizer
 {
-    THEOLIZER_INTERNAL_DLL  void CppInitialize();
-    THEOLIZER_INTERNAL_DLL  void CppWrite(uint8_t* buffer, int offset, int count);
-    THEOLIZER_INTERNAL_DLL  void CppFlush();
+    // ***************************************************************************
+    //      C++DLL用連携処理統括クラス
+    //          DLLの場合、通常１つしかインスタンス不要なのでシングルトンとする
+    // ***************************************************************************
+
+    class DllIntegrator
+    {
+        private static DllIntegrator sInstance = new DllIntegrator();
+
+        public static DllIntegrator get()
+        {
+            return sInstance;
+        }
+
+        //----------------------------------------------------------------------------
+        //      コンストラクタ
+        //----------------------------------------------------------------------------
+
+        [DllImport(Constants.CppDllName)]
+        extern static void CppInitialize();
+
+        private DllIntegrator()
+        {
+            CppInitialize();
+        }
+    }
 }
 
-#endif  // THEOLIZER_INTERNAL_CPP_SERVER_H

@@ -32,6 +32,16 @@
 #       target definition
 #-----------------------------------------------------------------------------
 
+set(CMAKE_CSharp_FLAGS "/langversion:6")
+if ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+    set(CMAKE_CSharp_FLAGS "${CMAKE_CSharp_FLAGS} /platform:x64")
+endif()
+
+set(CS_SERIALIZER
+        ../theolizer/integrator.cs
+        ../theolizer/memory_stream.cs
+)
+
 set(CS_MAIN     App.config Program.cs)
 set(CS_FORMS    Form1.cs Form1.Designer.cs Form1.resx)
 set(CS_RESOUCES
@@ -56,7 +66,7 @@ set(CS_REFERENCES
 enable_language(CSharp)
 include(CSharpUtilities)
 
-add_executable(cs_client ${CS_MAIN} ${CS_FORMS} ${CS_RESOUCES})
+add_executable(cs_client ${CS_MAIN} ${CS_FORMS} ${CS_RESOUCES} ${CS_SERIALIZER})
 csharp_set_windows_forms_properties(${CS_FORMS})
 csharp_set_designer_cs_properties(${CS_RESOUCES})
 set_property(TARGET cs_client PROPERTY VS_DOTNET_REFERENCES ${CS_REFERENCES})
@@ -66,3 +76,6 @@ set_target_properties(cs_client PROPERTIES
     VS_DOTNET_TARGET_FRAMEWORK_VERSION  "v4.6.2"
     VS_GLOBAL_ROOTNAMESPACE             "cs_client"
 )
+
+message(STATUS "CMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}")
+message(STATUS "CMAKE_VS_PLATFORM_NAME=${CMAKE_VS_PLATFORM_NAME}")
