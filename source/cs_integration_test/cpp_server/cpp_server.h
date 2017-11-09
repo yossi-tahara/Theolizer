@@ -31,7 +31,7 @@
 #if !defined(THEOLIZER_INTERNAL_CPP_SERVER_H)
 #define THEOLIZER_INTERNAL_CPP_SERVER_H
 
-#include "../theolizer/base.h"
+#include <theolizer/temp.h>
 
 // ***************************************************************************
 //          API関数群(C言語I/F)

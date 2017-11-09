@@ -34,14 +34,15 @@
 
 set(CPP_SOURCES cpp_server.cpp cpp_server.h)
 set(CPP_LIBRALY
-    ../theolizer/integrator.cpp
-    ../theolizer/integrator.h
-    ../theolizer/memory_stream.cpp
-    ../theolizer/memory_stream.h
+    ${THEOLIZER_ROOT}/theolizer/integrator.cpp
+    ${THEOLIZER_ROOT}/theolizer/integrator.h
+    ${THEOLIZER_ROOT}/theolizer/memory_stream.cpp
+    ${THEOLIZER_ROOT}/theolizer/memory_stream.h
 )
 
 #-----------------------------------------------------------------------------
 #       make target
 #-----------------------------------------------------------------------------
 
+include_directories(${THEOLIZER_ROOT})
 add_library(cpp_server SHARED ${CPP_SOURCES} ${CPP_LIBRALY})

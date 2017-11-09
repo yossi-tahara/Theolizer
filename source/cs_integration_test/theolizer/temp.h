@@ -28,8 +28,8 @@
 */
 //############################################################################
 
-#if !defined(THEOLIZER_INTERNAL_BASE_H)
-#define THEOLIZER_INTERNAL_BASE_H
+#if !defined(THEOLIZER_INTERNAL_TEMP_H)
+#define THEOLIZER_INTERNAL_TEMP_H
 
 //############################################################################
 //      Begin
@@ -102,4 +102,4 @@ void print(tParams... iParams)
 
 }   // namespace theolizer
 
-#endif  // THEOLIZER_INTERNAL_BASE_H
+#endif  // THEOLIZER_INTERNAL_TEMP_H

@@ -31,10 +31,10 @@
 cmake_minimum_required(VERSION 3.8)
 
 if("${PROJECT_NAME}" STREQUAL "")
-#   project(cs_integration_test VERSION 0.1.0 LANGUAGES CSharp)
     project(cs_integration_test VERSION 0.1.0)
     set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
     set(CMAKE_SUPPRESS_REGENERATION TRUE)
+    set(THEOLIZER_ROOT "../")
     message(STATUS "PROJECT_NAME=${PROJECT_NAME}")
 endif()
 

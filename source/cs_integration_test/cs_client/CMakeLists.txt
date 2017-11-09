@@ -38,8 +38,8 @@ if ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
 endif()
 
 set(CS_SERIALIZER
-        ../theolizer/integrator.cs
-        ../theolizer/memory_stream.cs
+    ${THEOLIZER_ROOT}/theolizer/integrator.cs
+    ${THEOLIZER_ROOT}/theolizer/memory_stream.cs
 )
 
 set(CS_MAIN     App.config Program.cs)
