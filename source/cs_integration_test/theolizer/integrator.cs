@@ -34,6 +34,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -67,6 +68,14 @@ namespace theolizer
 
         Streams     mStreams = new Streams();
 
+        // 内部ストリーム（現在は暫定的にStreamWriter)
+        Stream          mRequestStream;
+        StreamWriter    mRequestWriter;
+        public StreamWriter RequestWriter
+        {
+            get { return mRequestWriter; }
+        }
+
         //----------------------------------------------------------------------------
         //      コンストラクタ
         //----------------------------------------------------------------------------
@@ -80,6 +89,9 @@ namespace theolizer
 Debug.WriteLine("mRequest  = {0:X16}", (ulong)mStreams.mRequest);
 Debug.WriteLine("mResponse = {0:X16}", (ulong)mStreams.mResponse);
 Debug.WriteLine("mNotify   = {0:X16}", (ulong)mStreams.mNotify);
+
+            mRequestStream = new CppOStream(mStreams.mRequest);
+            mRequestWriter = new StreamWriter(mRequestStream, Encoding.UTF8);
         }
     }
 }

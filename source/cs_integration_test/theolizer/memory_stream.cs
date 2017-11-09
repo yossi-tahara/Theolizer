@@ -45,25 +45,35 @@ namespace theolizer
     class CppOStream : Stream
     {
         //----------------------------------------------------------------------------
+        //      管理領域
+        //----------------------------------------------------------------------------
+
+        IntPtr  mCppHandle;
+        public CppOStream(IntPtr iCppHandle)
+        {
+            mCppHandle = iCppHandle;
+        }
+
+        //----------------------------------------------------------------------------
         //      C# → C++転送
         //----------------------------------------------------------------------------
 
         [DllImport("cpp_server.dll")]
-        extern static void CppWrite(IntPtr buffer, int offset, int count);
+        extern static void CppWrite(IntPtr handle, IntPtr buffer, int offset, int count);
 
         [DllImport("cpp_server.dll")]
-        extern static void CppFlush();
+        extern static void CppFlush(IntPtr handle);
 
         public override void Write(byte[] buffer, int offset, int count)
         {
             GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-            CppWrite(handle.AddrOfPinnedObject(), offset, count);
+            CppWrite(mCppHandle, handle.AddrOfPinnedObject(), offset, count);
             handle.Free();
         }
 
         public override void Flush()
         {
-            CppFlush();
+            CppFlush(mCppHandle);
         }
 
         public override bool CanWrite

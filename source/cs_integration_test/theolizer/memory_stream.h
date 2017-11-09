@@ -38,8 +38,31 @@
 
 #include <theolizer/temp.h>
 
+
 //############################################################################
-//      Begin
+//      C# I/F
+//############################################################################
+
+namespace theolizer
+{
+    class IMemoryStream;
+    class OMemoryStream;
+}
+
+extern "C"
+{
+    THEOLIZER_INTERNAL_DLL  void CppWrite
+    (
+        theolizer::IMemoryStream* iIMemoryStream,
+        uint8_t* buffer,
+        int offset,
+        int count
+    );
+    THEOLIZER_INTERNAL_DLL  void CppFlush(theolizer::IMemoryStream* iIMemoryStream);
+}
+
+//############################################################################
+//      C++内部処理
 //############################################################################
 
 namespace theolizer

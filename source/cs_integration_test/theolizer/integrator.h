@@ -37,8 +37,25 @@
 #include "memory_stream.h"
 
 //############################################################################
-//      Begin
+//      C# I/F
 //############################################################################
+
+namespace theolizer
+{
+    struct Streams;
+}
+
+extern "C"
+{
+    THEOLIZER_INTERNAL_DLL  void CppInitialize(theolizer::Streams* oStreams);
+}
+
+//############################################################################
+//      C++内部処理
+//############################################################################
+
+namespace theolizer
+{
 
 // ***************************************************************************
 //      C++DLL用連携処理統括クラス
@@ -46,22 +63,8 @@
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
-//      サーバ初期化
-//----------------------------------------------------------------------------
-
-namespace theolizer
-{
-    struct Streams;
-}   // theolizer
-
-extern "C"  THEOLIZER_INTERNAL_DLL  void CppInitialize(theolizer::Streams* oStreams);
-
-//----------------------------------------------------------------------------
 //      C#への接続情報
 //----------------------------------------------------------------------------
-
-namespace theolizer
-{
 
 struct Streams
 {
@@ -114,6 +117,7 @@ class DllIntegrator
     //      ---<<< 管理領域 >>>---
 
     Streams mStreams;
+    Streams* getStreams() { return &mStreams; }
 
 public:
     //      ---<<< API >>>---
@@ -125,7 +129,9 @@ public:
     }
     ~DllIntegrator();
 
-    Streams* getStreams() { return &mStreams; }
+    std::istream& getRequestStream()  { return *(mStreams.mRequest); }
+    std::ostream& getResponseStream() { return *(mStreams.mResponse); }
+    std::ostream& getNotifyStream()   { return *(mStreams.mNotify); }
 };
 
 //############################################################################

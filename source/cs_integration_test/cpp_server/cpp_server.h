@@ -31,16 +31,6 @@
 #if !defined(THEOLIZER_INTERNAL_CPP_SERVER_H)
 #define THEOLIZER_INTERNAL_CPP_SERVER_H
 
-#include <theolizer/temp.h>
-
-// ***************************************************************************
-//          API関数群(C言語I/F)
-// ***************************************************************************
-
-extern "C"
-{
-    THEOLIZER_INTERNAL_DLL  void CppWrite(uint8_t* buffer, int offset, int count);
-    THEOLIZER_INTERNAL_DLL  void CppFlush();
-}
+#include <theolizer/integrator.h>
 
 #endif  // THEOLIZER_INTERNAL_CPP_SERVER_H
