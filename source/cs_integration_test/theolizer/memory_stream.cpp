@@ -43,18 +43,27 @@
 //      書き込み
 //----------------------------------------------------------------------------
 
-void CppWrite(theolizer::IMemoryStream* iIMemoryStream, uint8_t* buffer, int offset, int count)
+theolizer::StreamStatus CppWrite
+(
+    theolizer::IMemoryStream* iIMemoryStream,
+    uint8_t* buffer,
+    int offset,
+    int count
+)
 {
     std::string temp((char*)buffer+offset, count);
     DEBUG_PRINT("---------------- CppWrite() : ", temp.c_str());
+
+    return iIMemoryStream->write(buffer+offset, count);
 }
 
 //----------------------------------------------------------------------------
 //      フラッシュ
 //----------------------------------------------------------------------------
 
-void CppFlush(theolizer::IMemoryStream* iIMemoryStream)
+theolizer::StreamStatus CppFlush(theolizer::IMemoryStream* iIMemoryStream)
 {
     DEBUG_PRINT("---------------- CppFlush()");
-}
 
+    return theolizer::StreamStatus::NoError;
+}

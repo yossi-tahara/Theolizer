@@ -33,6 +33,7 @@
 
 #include <memory>
 #include <thread>
+#include <utility>
 
 #include "memory_stream.h"
 
@@ -49,6 +50,7 @@ extern "C"
 {
     THEOLIZER_INTERNAL_DLL  void CppInitialize(theolizer::Streams* oStreams);
 }
+extern "C" int main();
 
 //############################################################################
 //      C++内部処理
@@ -96,22 +98,39 @@ class DllIntegrator
 {
     friend  void ::CppInitialize(Streams*);
 
-    std::thread*    mMainThread;
+    std::thread*    mMainThread;        // メイン・スレッド
+    bool            mTerminated;        // サービス終了
 
     // 生成／コピー／ムーブ不可
-    DllIntegrator() : mMainThread(nullptr) { }
+    DllIntegrator() : mMainThread(nullptr), mTerminated(false) { }
     DllIntegrator(DllIntegrator const&) = delete;
     DllIntegrator(DllIntegrator     &&) = delete;
     DllIntegrator& operator=(DllIntegrator const&) = delete;
     DllIntegrator& operator=(DllIntegrator     &&) = delete;
 
-    template <class F, class ...Args>
+    // メイン・スレッド起動と終了管理
+    template<class F, class ...Args>
     void startThread(F&& f, Args&&... args)
     {
         if (!mMainThread)
         {
-            mMainThread = new std::thread(f, args...);
+            mMainThread = new std::thread
+                (
+                    [&]()
+                    {
+                        f(std::forward<Args>(args)...);
+                        terminate();
+                    }
+                );
         }
+    }
+    // 終了
+    void terminate()
+    {
+        mTerminated = true;
+        mStreams.mRequest->disconnect();
+        mStreams.mResponse->disconnect();
+        mStreams.mNotify->disconnect();
     }
 
     //      ---<<< 管理領域 >>>---
@@ -132,6 +151,8 @@ public:
     std::istream& getRequestStream()  { return *(mStreams.mRequest); }
     std::ostream& getResponseStream() { return *(mStreams.mResponse); }
     std::ostream& getNotifyStream()   { return *(mStreams.mNotify); }
+
+    bool isTerminated() { return mTerminated; }
 };
 
 //############################################################################

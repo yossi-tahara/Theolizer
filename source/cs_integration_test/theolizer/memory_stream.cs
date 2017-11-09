@@ -54,26 +54,42 @@ namespace theolizer
             mCppHandle = iCppHandle;
         }
 
+        enum StreamStatus : int
+        {
+            NoError,
+            Disconnected
+        }
+        void CheckError(StreamStatus iStreamStatus)
+        {
+            switch(iStreamStatus)
+            {
+            case StreamStatus.Disconnected:
+                throw new ObjectDisposedException("theolizer : CppOStream disconnected");
+            }
+        }
+
         //----------------------------------------------------------------------------
         //      C# → C++転送
         //----------------------------------------------------------------------------
 
         [DllImport("cpp_server.dll")]
-        extern static void CppWrite(IntPtr handle, IntPtr buffer, int offset, int count);
+        extern static StreamStatus CppWrite(IntPtr handle, IntPtr buffer, int offset, int count);
 
         [DllImport("cpp_server.dll")]
-        extern static void CppFlush(IntPtr handle);
+        extern static StreamStatus CppFlush(IntPtr handle);
 
         public override void Write(byte[] buffer, int offset, int count)
         {
             GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
-            CppWrite(mCppHandle, handle.AddrOfPinnedObject(), offset, count);
+            StreamStatus ret=CppWrite(mCppHandle, handle.AddrOfPinnedObject(), offset, count);
             handle.Free();
+            CheckError(ret);
         }
 
         public override void Flush()
         {
-            CppFlush(mCppHandle);
+            StreamStatus ret=CppFlush(mCppHandle);
+            CheckError(ret);
         }
 
         public override bool CanWrite

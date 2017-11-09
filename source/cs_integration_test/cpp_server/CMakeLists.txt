@@ -38,6 +38,7 @@ set(CPP_LIBRALY
     ${THEOLIZER_ROOT}/theolizer/integrator.h
     ${THEOLIZER_ROOT}/theolizer/memory_stream.cpp
     ${THEOLIZER_ROOT}/theolizer/memory_stream.h
+    ${THEOLIZER_ROOT}/theolizer/temp.h
 )
 
 #-----------------------------------------------------------------------------

@@ -31,6 +31,8 @@
 #if !defined(THEOLIZER_INTERNAL_TEMP_H)
 #define THEOLIZER_INTERNAL_TEMP_H
 
+#include <sstream>
+
 //############################################################################
 //      Begin
 //############################################################################
@@ -70,6 +72,23 @@ namespace theolizer
 
 #include <windows.h>
 
+template<typename tType>
+void printValue(std::stringstream& ioString, tType iData)
+{
+    ioString << iData;
+}
+
+template<typename tType>
+void printValue(std::stringstream& ioString, tType* iData)
+{
+    ioString << reinterpret_cast<void const*>(iData);
+}
+
+inline void printValue(std::stringstream& ioString, char const* iData)
+{
+    ioString << iData;
+}
+
 inline void printImpl(std::stringstream& ioString)
 {
 }
@@ -77,7 +96,7 @@ inline void printImpl(std::stringstream& ioString)
 template<typename tFirst, typename... tParams>
 void printImpl(std::stringstream& ioString, tFirst iFirst, tParams... iParams)
 {
-    ioString << iFirst;
+    printValue(ioString, iFirst);
     printImpl(ioString, iParams...);
 }
 

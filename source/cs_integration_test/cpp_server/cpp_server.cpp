@@ -60,8 +60,22 @@ int main()
     auto&   aDllIntegrator = theolizer::DllIntegrator::get();
     auto&   aRequestStream = aDllIntegrator.getRequestStream();
 
-    int     aInt;
-    aRequestStream >> aInt;
+    while (!aDllIntegrator.isTerminated())
+    {
+        int     aInt=123456789;
+        DEBUG_PRINT("---------------- aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
+        aRequestStream >> aInt;
+        DEBUG_PRINT("---------------- aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
+        if (!aRequestStream.good())
+        {
+            aRequestStream.clear();
+            std::string dummy;
+            aRequestStream >> dummy;
+        }
+        aRequestStream.unget();
+        aRequestStream >> aInt;
+        DEBUG_PRINT("---------------- aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
+    }
 
     return 0;
 }
