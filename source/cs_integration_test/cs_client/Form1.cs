@@ -31,6 +31,7 @@ namespace cs_client
             mDllIntegrator.RequestWriter.Flush();
             numericUpDown.UpButton();
 
+Debug.WriteLine("Write");
             // 受信
             var str = mDllIntegrator.ResponseReader.ReadLine();
 

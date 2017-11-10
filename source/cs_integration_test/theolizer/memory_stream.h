@@ -91,130 +91,6 @@ extern "C"
 namespace theolizer
 {
 // ***************************************************************************
-//      簡易循環キュー
-//          排他制御は外部で行うこと
-// ***************************************************************************
-
-class Queue
-{
-    std::size_t                 mSize;
-    std::size_t                 mCount;
-    std::size_t                 mRead;
-    std::size_t                 mWrite;
-    std::unique_ptr<uint8_t[]>  mBuffer;
-public:
-    Queue(std::size_t iSize) :
-        mSize(iSize),
-        mCount(0),
-        mRead(0),
-        mWrite(0),
-        mBuffer(new uint8_t[mSize])
-    { }
-    void resize(std::size_t iSize)
-    {
-        if (mCount)
-    throw std::runtime_error("can not resize theolizer::Quque while Count != 0.");
-
-        mSize = iSize;
-        mRead = mWrite = 0;
-        mBuffer.reset(new uint8_t[mSize]);
-    }
-
-    // 戻り値はdequeueできた要素数
-    std::size_t dequeue(uint8_t* oData, std::size_t iCount)
-    {
-        DEBUG_PRINT("dequeue() mCount=", mCount, " iCount=", iCount);
-
-        if (mCount == 0)
-    return 0;
-
-        // 残数より多くdequeueしようとした時は、有る分だけdequeue
-        if (mCount < iCount)
-    return dequeue(oData, mCount);
-
-        // バッファの終わりをまたぐ時は、まずバッファの最後までをdequeue
-        std::size_t ret=0;
-        if ((mSize-mRead) < iCount)
-        {
-            // バッファの最後までコピー
-            std::copy
-            (
-                mBuffer.get()+mRead,
-                mBuffer.get()+mSize,
-                THEOLIZER_INTERNAL_UNCHECKED(oData)
-            );
-            std::size_t aCopy = mSize-mRead;
-            oData  += aCopy;
-            ret    += aCopy;
-            iCount -= aCopy;
-            mCount -= aCopy;
-            mRead = 0;
-        }
-{std::string temp((char*)mBuffer.get()+mRead, iCount);
-DEBUG_PRINT("dequeue(2) ", temp);}
-
-        // 残りをコピー
-        std::copy
-        (
-            mBuffer.get()+mRead,
-            mBuffer.get()+mRead+iCount,
-            THEOLIZER_INTERNAL_UNCHECKED(oData)
-        );
-        ret    += iCount;
-        mCount -= iCount;
-        mRead  += iCount;
-{std::string temp((char*)oData, iCount);
-DEBUG_PRINT("dequeue(3) ", temp);}
-    return ret;
-    }
-
-    // 戻り値はenqueueできた要素数
-    std::size_t enqueue(uint8_t const* iData, std::size_t iCount)
-    {
-{std::string temp((char*)iData, iCount);
-        DEBUG_PRINT("enqueue() mCount=", mCount, " iCount=", iCount, " mSize=", mSize, " temp=", temp);}
-
-        if (mCount == mSize)
-    return 0;
-
-        // 空きより多くenqueしようとした時は、入る分だけenqueue
-        if ((mSize - mCount) < iCount)
-    return enqueue(iData, mSize - mCount);
-
-        // バッファの最後をまたぐ時は、まずバッファの最後までenque
-        //  (mWrite < mReadの場合、この条件は成立しないので条件省略)
-        if ((mSize-mWrite) < iCount)
-        {
-            // バッファの最後までコピー
-            std::size_t aCopy = mSize-mWrite;
-            std::copy
-            (
-                iData,
-                iData+aCopy,
-                THEOLIZER_INTERNAL_UNCHECKED(mBuffer.get()+mWrite)
-            );
-            iCount -= aCopy;
-            mCount += aCopy;
-            iData  += aCopy;
-            mWrite = 0;
-        }
-
-        std::copy
-        (
-            iData,
-            iData+iCount,
-            THEOLIZER_INTERNAL_UNCHECKED(mBuffer.get()+mWrite)
-        );
-        mCount += iCount;
-        mWrite += iCount;
-        DEBUG_PRINT("enqueue() return ", iCount);
-{std::string temp((char*)mBuffer.get()+mRead, mCount);
-        DEBUG_PRINT("enqueue() temp=", temp);}
-        return iCount;
-    }
-};
-
-// ***************************************************************************
 //      C# → C++用メモリ・ストリーム
 // ***************************************************************************
 
@@ -255,12 +131,10 @@ class IMemoryStreamBuf : public std::streambuf
 
         if (mNextChar != EOF)
         {
-DEBUG_PRINT("underflow(1) ", mNextChar);
     return mNextChar;
         }
         if (mBuffChar != EOF)
         {
-DEBUG_PRINT("underflow(2) ", mBuffChar);
     return mBuffChar;
         }
         std::unique_lock<std::mutex> lock(mMutex);
@@ -269,7 +143,6 @@ DEBUG_PRINT("underflow(2) ", mBuffChar);
     return EOF;
 
         mBuffChar = *mTransBuff;
-DEBUG_PRINT("underflow(3) ", mBuffChar);
         return mBuffChar;
     }
 
@@ -283,7 +156,6 @@ DEBUG_PRINT("underflow(3) ", mBuffChar);
             mLastChar = mNextChar;
             mNextChar = EOF;
             mBuffChar = EOF;
-DEBUG_PRINT("uflow() ", mLastChar);
     return mLastChar;
         }
 
@@ -300,7 +172,6 @@ DEBUG_PRINT("uflow() ", mLastChar);
             mConditionVariable.notify_all();
         }
 
-DEBUG_PRINT("uflow() ", mLastChar);
         return mLastChar;
     }
 
@@ -324,7 +195,7 @@ DEBUG_PRINT("uflow() ", mLastChar);
     StreamStatus write(uint8_t* buffer, int count)
     {
 std::string temp((char*)buffer, count);
-DEBUG_PRINT("---------------- IMemoryStreamBuf::write() : ", temp.c_str());
+DEBUG_PRINT("---------------- IMemoryStreamBuf::write() : [", temp, "]");
 
         std::unique_lock<std::mutex> lock(mMutex);
 
@@ -409,7 +280,6 @@ public:
 //      OMemoryStream用ストリーム・バッファ
 //----------------------------------------------------------------------------
 
-#if 1   // デバッグ用ostream
 class OMemoryStreamBuf : public std::streambuf
 {
     friend  class OMemoryStream;
@@ -431,80 +301,268 @@ class OMemoryStreamBuf : public std::streambuf
 
 //      ---<<< Queue >>>---
 
-    Queue   mQueue;
+    std::streamsize             mSize;          // バッファのバイト数
+    bool                        mIsFull;        // フル
+    struct Man
+    {
+        std::streamsize         mCount;         // 有効バイト数
+        std::streamsize         mRead;          // リード位置
+        std::streamsize         mWrite;         // ライト位置
+        Man() : mCount(0), mRead(0), mWrite(0) { }
+    } mWriteMan, mReadMan;
+    std::unique_ptr<uint8_t[]>  mBuffer;
+
     void setSize(std::size_t iSize)
     {
-        mQueue.resize(iSize);
+        std::lock_guard<std::mutex> lock(mMutex);
+
+        if (mWriteMan.mCount+mReadMan.mCount)
+    throw std::runtime_error("can not resize theolizer::OMemoryStreamBuf while Count != 0.");
+
+        mSize = static_cast<std::streamsize>(iSize);
+        mWriteMan.mRead = mWriteMan.mWrite = 0;
+        mReadMan.mRead  = mReadMan.mWrite  = 0;
+        mBuffer.reset(new uint8_t[mSize]);
     }
 
 //      ---<<< ostream用(C++ → C#) >>>---
+
+    void flush()
+    {
+        mWriteMan.mRead = mReadMan.mRead;
+        mReadMan.mWrite = mWriteMan.mWrite;
+        mReadMan.mCount += mWriteMan.mCount;
+        mWriteMan.mCount = 0;
+    }
+
+    int waitSpace()
+    {
+        std::unique_lock<std::mutex> lock(mMutex);
+        mConditionVariable.wait
+        (
+            lock,
+            [&]{ return mDisconnected || ((mReadMan.mCount+mWriteMan.mCount) < mSize); }
+        );
+        if (mDisconnected)
+    return EOF;
+
+        mIsFull = false;
+
+        // flushすることで書き込み側へ「空き」を移転する
+        flush();
+
+        return 0;
+    }
+
+    bool    mSynchronized;
+    int sync() override
+    {
+        DEBUG_PRINT("sync() mSynchronized=", mSynchronized, " ", this);
+
+        if (!mSynchronized)
+        {
+            DEBUG_PRINT("process sync() ");
+            mSynchronized = true;
+            std::lock_guard<std::mutex> lock(mMutex);
+            flush();
+            mConditionVariable.notify_all();
+        }
+        return 0;
+    }
 
     int overflow(int c = EOF) override
     {
         DEBUG_PRINT("overflow(...,", c , ") ", this);
 
-        uint8_t  buff = static_cast<uint8_t>(c);
+        if (mDisconnected)
+    return EOF;
+
+        // Fullなら空きを待つ
+        if (mIsFull)
         {
-            std::unique_lock<std::mutex> lock(mMutex);
-            mConditionVariable.wait
-            (
-                lock,
-                [&]{ return (mDisconnected || (mQueue.enqueue(&buff, 1) != 0)); }
-            );
+            if (waitSpace() == EOF)
+    return EOF;
         }
-        mConditionVariable.notify_all();
+
+        mSynchronized = false;
+
+        // enqueueする
+        *(mBuffer.get()+mWriteMan.mWrite) = static_cast<uint8_t>(c);
+        ++mWriteMan.mCount;
+        ++mWriteMan.mWrite;
+        if (mWriteMan.mWrite == mSize)
+        {
+            mWriteMan.mWrite = 0;
+        }
+        if (mWriteMan.mWrite == mWriteMan.mRead)
+        {
+            mIsFull = true;
+        }
+
+        // フル、もしくは、十分に溜まっていたらflushする
+        if (mIsFull || (128 <= mWriteMan.mCount))
+        {
+            DEBUG_PRINT("call sync(1) mIsFull=", mIsFull);
+    return sync();
+        }
         return 0;
     }
 
-    std::streamsize xsputn(const char* s, std::streamsize n) override
+    std::streamsize xsputn(char const* buffer, std::streamsize count) override
     {
-        DEBUG_PRINT("xsputn(...,", n , ") ", this);
+        DEBUG_PRINT("xsputn(...,", count, ") ", this);
 
-        std::streamsize ret=0;
+        std::streamsize ret = 0;
+        while (ret < count)
         {
-            std::unique_lock<std::mutex> lock(mMutex);
-            mConditionVariable.wait
+            if (mDisconnected)
+    return EOF;
+
+            // Fullなら空きを待つ
+            if (mIsFull)
+            {
+                if (waitSpace() == EOF)
+    return EOF;
+            }
+
+            mSynchronized = false;
+
+            // 書き込み可能な空きバッファ・サイズ
+            std::streamsize aCount = 0;
+            if (mWriteMan.mWrite < mWriteMan.mRead)
+            {
+                aCount = mWriteMan.mRead - mWriteMan.mWrite;
+            }
+            else
+            {
+                aCount = (mSize - mWriteMan.mWrite) + mWriteMan.mRead;
+            }
+
+            // コピーするバイト数
+            if ((count-ret) < aCount)
+            {
+                aCount = count-ret;
+            }
+
+            // バッファの終わりをまたぐ時は、まずバッファの最後までenqueue
+            if ((mSize-mWriteMan.mWrite) < aCount)
+            {
+                // バッファの最後までコピー
+                std::streamsize aLast = mSize-mWriteMan.mWrite;
+                std::copy
+                (
+                    buffer,
+                    buffer+aLast,
+                    THEOLIZER_INTERNAL_UNCHECKED(mBuffer.get()+mWriteMan.mWrite)
+                );
+                ret    += aLast;
+                buffer += aLast;
+                aCount -= aLast;
+                mWriteMan.mCount += aLast;
+                mWriteMan.mWrite = 0;
+            }
+
+            // 残りをコピー
+            std::copy
             (
-                lock,
-                [&]
-                {
-                    if (mDisconnected)
-                return true;
-                    ret += mQueue.enqueue(reinterpret_cast<uint8_t const*>(s)+ret, n-ret);
-DEBUG_PRINT("mConditionVariable.wait(1) return ", (ret >= n));
-                    return (ret >= n);
-                }
+                buffer,
+                buffer+aCount,
+                THEOLIZER_INTERNAL_UNCHECKED(mBuffer.get()+mWriteMan.mWrite)
             );
+            ret              += aCount;
+            buffer           += aCount;
+            mWriteMan.mCount += aCount;
+            mWriteMan.mWrite += aCount;
+            if (mWriteMan.mWrite == mSize)
+            {
+                mWriteMan.mWrite = 0;
+            }
+            if (mWriteMan.mWrite == mWriteMan.mRead)
+            {
+                mIsFull = true;
+            }
+
+            // フル、もしくは、十分に溜まっていたらflushすす
+            if (mIsFull || (128 <= mWriteMan.mCount))
+            {
+                DEBUG_PRINT("call sync(2) mIsFull=", mIsFull);
+                if (sync() == EOF)
+    return EOF;
+            }
         }
-        mConditionVariable.notify_all();
+
         return ret;
     }
 
 //      ---<<< C# I/F >>>---
 
-    StreamStatus read(uint8_t* buffer, int count, int* out_cout)
+    StreamStatus read(uint8_t* buffer, int count, int* out_count)
     {
-DEBUG_PRINT("---------------- OMemoryStreamBuf::read() : ");
+DEBUG_PRINT("---------------- OMemoryStreamBuf::read() : mCount=", mReadMan.mCount);
+uint8_t* debug_buf=buffer;
 
+        std::streamsize ret=0;
+
+        // ポインタ群をロックしてdequeue処理する
         {
             std::unique_lock<std::mutex> lock(mMutex);
-            mConditionVariable.wait
+
+            // 空ならデータ待ち
+            if (mReadMan.mCount == 0)
+            {
+                mConditionVariable.wait(lock, [&]{return mDisconnected||(mReadMan.mCount != 0);});
+            }
+
+            // コピーするバイト数
+            std::streamsize aCount = count;
+            if (mReadMan.mCount < aCount)
+            {
+                aCount = mReadMan.mCount;
+            }
+
+            // バッファの終わりをまたぐ時は、まずバッファの最後までをdequeue
+            if ((mSize-mReadMan.mRead) < aCount)
+            {
+                // バッファの最後までコピー
+                std::copy
+                (
+                    mBuffer.get()+mReadMan.mRead,
+                    mBuffer.get()+mSize,
+                    THEOLIZER_INTERNAL_UNCHECKED(buffer)
+                );
+                std::streamsize aLast = mSize-mReadMan.mRead;
+                buffer += aLast;
+                ret    += aLast;
+                aCount -= aLast;
+                mReadMan.mCount -= aLast;
+                mReadMan.mRead = 0;
+            }
+
+            // 残りをコピー
+            std::copy
             (
-                lock,
-                [&]
-                {
-                    if (mDisconnected)
-                return true;
-                    *out_cout = static_cast<int>(mQueue.dequeue(buffer, count));
-DEBUG_PRINT("mConditionVariable.wait(2) return ", *out_cout);
-                    return (*out_cout != 0);
-                }
+                mBuffer.get()+mReadMan.mRead,
+                mBuffer.get()+mReadMan.mRead+aCount,
+                THEOLIZER_INTERNAL_UNCHECKED(buffer)
             );
+            ret            += aCount;
+            mReadMan.mCount-= aCount;
+            mReadMan.mRead += aCount;
+            if (mReadMan.mRead == mSize)
+            {
+                mReadMan.mRead = 0;
+            }
         }
 
+        // 空きが生じたことを通知する
         mConditionVariable.notify_all();
-std::string temp((char*)buffer, *out_cout);
-DEBUG_PRINT("---------------- OMemoryStreamBuf::read() : ", mDisconnected, " ", temp.c_str());
+
+        *out_count = static_cast<int>(ret);
+
+std::string temp((char*)debug_buf, *out_count);
+DEBUG_PRINT("---------------- OMemoryStreamBuf::read() : ",
+    mDisconnected, " out_count=", *out_count, " [", temp, "]");
+
         return (mDisconnected)?StreamStatus::Disconnected:StreamStatus::NoError;
     }
 
@@ -513,7 +571,10 @@ DEBUG_PRINT("---------------- OMemoryStreamBuf::read() : ", mDisconnected, " ", 
 public:
     OMemoryStreamBuf() :
         mDisconnected(false),
-        mQueue(1024)
+        mSize(1024),
+        mIsFull(false),
+        mBuffer(new uint8_t[mSize]),
+        mSynchronized(false)
     {
         setbuf(nullptr, 0);
         DEBUG_PRINT("OMemoryStreamBuf() ", this);
@@ -524,93 +585,6 @@ public:
     }
 };
 
-#else
-#include <windows.h>
-class OMemoryStreamBuf : public std::streambuf
-{
-    std::string     mInternalBuff;
-
-    std::streampos seekoff
-    ( 
-        std::streamoff off, 
-        std::ios::seek_dir dir, 
-        int nMode = std::ios::in | std::ios::out
-    )
-    {
-        return EOF;
-    }
-    std::streampos seekpos
-    ( 
-        std::streampos pos, 
-        int nMode = std::ios::in | std::ios::out
-    )
-    {
-        return EOF;
-    }
-
-#if 0
-    int overflow( int nCh = EOF ) override
-    {
-        char buffer[2];
-        buffer[0]=nCh;
-        DWORD size;
-        WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE),buffer,1,&size,NULL);
-        return 0;
-    }
-#endif
-
-    std::streamsize xsputn(const char* s, std::streamsize n) override
-    {
-#if 1
-        DWORD size;
-        WriteConsole(GetStdHandle(STD_OUTPUT_HANDLE),s,n,&size,NULL);
-        return size;
-#else
-        std::streamsize start=0;
-        for (std::streamsize i=0; i < n; ++i)
-        {
-            if (s[i] == '\n')
-            {
-                mInternalBuff.append(s+start, n-start);
-                OutputDebugStringA(mInternalBuff.c_str());
-                start=i+1;
-                mInternalBuff.clear();
-            }
-        }
-        mInternalBuff.assign(s+start, n-start);
-        return n;
-#endif
-    }
-
-    int underflow()
-    {
-        return EOF;
-    }
-
-public:
-    OMemoryStreamBuf()
-    {
-        setbuf(nullptr, 0);
-        AllocConsole();
-    }
-    ~OMemoryStreamBuf()
-    {
-        FreeConsole();
-    }
-
-
-    StreamStatus read(uint8_t* buffer, int count, int* out_cout)
-    {
-        return StreamStatus::NoError;
-    }
-    void disconnect()
-    {
-    }
-    void setSize(std::size_t iSize)
-    {
-    }
-};
-#endif
 //----------------------------------------------------------------------------
 //      ストリーム
 //----------------------------------------------------------------------------
@@ -623,7 +597,7 @@ class OMemoryStream : public std::ostream
         uint8_t* buffer,
         int offset,
         int count,
-        int* out_cout
+        int* out_count
     );
 
     friend  class DllIntegrator;

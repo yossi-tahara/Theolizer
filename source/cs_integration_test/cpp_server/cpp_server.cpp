@@ -58,7 +58,7 @@ int main()
     DEBUG_PRINT("---------------- main()");
 
     auto&   aDllIntegrator  = theolizer::DllIntegrator::get();
-    aDllIntegrator.setSize(1024, 4096);
+    aDllIntegrator.setSize(20, 4096);
 
     auto&   aRequestStream  = aDllIntegrator.getRequestStream();
     auto&   aResponseStream = aDllIntegrator.getResponseStream();
@@ -66,20 +66,30 @@ int main()
     while (!aDllIntegrator.isTerminated())
     {
         int     aInt=123456789;
-        DEBUG_PRINT("---------------- aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
+        DEBUG_PRINT("----------------(1) aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
         aRequestStream >> aInt;
-        DEBUG_PRINT("---------------- aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
-        aResponseStream << aInt*2 << std::endl;
+        DEBUG_PRINT("----------------(2) aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
 
+#if 0   // エラー発生テスト用(xsputnで戻り値が小さい時など)
         if (!aRequestStream.good())
         {
             aRequestStream.clear();
             std::string dummy;
             aRequestStream >> dummy;
         }
+#endif
+#if 0   // unget()デバッグ用
         aRequestStream.unget();
         aRequestStream >> aInt;
-        DEBUG_PRINT("---------------- aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
+        DEBUG_PRINT("----------------(3) aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
+#endif
+
+        // 改行の読み捨て
+        std::string temp;
+        std::getline(aRequestStream, temp);
+
+        // 要求データを全て受け取ってから応答を返却するべき
+        aResponseStream << aInt*2 << " tes" << "ted " << "ABC" << std::endl;
     }
 
     return 0;
