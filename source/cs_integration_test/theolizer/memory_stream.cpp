@@ -67,3 +67,34 @@ theolizer::StreamStatus CppFlush(theolizer::IMemoryStream* iIMemoryStream)
 
     return theolizer::StreamStatus::NoError;
 }
+
+//----------------------------------------------------------------------------
+//      読み出し
+//----------------------------------------------------------------------------
+
+theolizer::StreamStatus CppRead
+(
+    theolizer::OMemoryStream* iOMemoryStream,
+    uint8_t* buffer,
+    int offset,
+    int count,
+    int* out_count
+)
+{
+    DEBUG_PRINT("---------------- CppRead() : ", count);
+
+#if 0
+    int num=0;
+    *buffer++ = 'A';    ++num;
+    *buffer++ = 'n';    ++num;
+    *buffer++ = 's';    ++num;
+    *buffer++ = 'w';    ++num;
+    *buffer++ = 'e';    ++num;
+    *buffer++ = 'r';    ++num;
+    *buffer++ = '\n';   ++num;
+    *out_count=num;
+    return theolizer::StreamStatus::NoError;
+#else
+    return iOMemoryStream->read(buffer+offset, count, out_count);
+#endif
+}

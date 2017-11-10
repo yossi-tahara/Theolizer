@@ -57,8 +57,11 @@ int main()
 {
     DEBUG_PRINT("---------------- main()");
 
-    auto&   aDllIntegrator = theolizer::DllIntegrator::get();
-    auto&   aRequestStream = aDllIntegrator.getRequestStream();
+    auto&   aDllIntegrator  = theolizer::DllIntegrator::get();
+    aDllIntegrator.setSize(1024, 4096);
+
+    auto&   aRequestStream  = aDllIntegrator.getRequestStream();
+    auto&   aResponseStream = aDllIntegrator.getResponseStream();
 
     while (!aDllIntegrator.isTerminated())
     {
@@ -66,6 +69,8 @@ int main()
         DEBUG_PRINT("---------------- aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
         aRequestStream >> aInt;
         DEBUG_PRINT("---------------- aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
+        aResponseStream << aInt*2 << std::endl;
+
         if (!aRequestStream.good())
         {
             aRequestStream.clear();

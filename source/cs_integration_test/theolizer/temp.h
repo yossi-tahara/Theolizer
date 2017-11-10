@@ -32,6 +32,7 @@
 #define THEOLIZER_INTERNAL_TEMP_H
 
 #include <sstream>
+#include <iterator> // stdext::make_unchecked_array_iterator
 
 //############################################################################
 //      Begin
@@ -39,6 +40,17 @@
 
 namespace theolizer
 {
+
+// ***************************************************************************
+//          msvcのstd::copyは4996警告がでるので代わりを設ける
+//              #pragma warning(disable:4996)で消えないので特別対策が必要
+// ***************************************************************************
+
+#ifdef _MSC_VER
+    #define THEOLIZER_INTERNAL_UNCHECKED(i) stdext::make_unchecked_array_iterator(i)
+#else
+    #define THEOLIZER_INTERNAL_UNCHECKED(i) i
+#endif
 
 // ***************************************************************************
 //          API定義用マクロ

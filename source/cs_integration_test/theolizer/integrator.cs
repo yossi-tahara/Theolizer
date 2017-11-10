@@ -68,12 +68,26 @@ namespace theolizer
 
         Streams     mStreams = new Streams();
 
-        // 内部ストリーム（現在は暫定的にStreamWriter)
+        // 内部ストリーム（現在は暫定的にStreamWriter/StreamReader)
         Stream          mRequestStream;
         StreamWriter    mRequestWriter;
         public StreamWriter RequestWriter
         {
             get { return mRequestWriter; }
+        }
+
+        Stream          mResponseStream;
+        StreamReader    mResponseReader;
+        public StreamReader ResponseReader
+        {
+            get { return mResponseReader; }
+        }
+
+        Stream          mNotifyStream;
+        StreamReader    mNotifyReader;
+        public StreamReader NotifyReader
+        {
+            get { return mNotifyReader; }
         }
 
         //----------------------------------------------------------------------------
@@ -92,6 +106,12 @@ Debug.WriteLine("mNotify   = {0:X16}", (ulong)mStreams.mNotify);
 
             mRequestStream = new CppOStream(mStreams.mRequest);
             mRequestWriter = new StreamWriter(mRequestStream, new UTF8Encoding(false));
+
+            mResponseStream = new CppIStream(mStreams.mResponse);
+            mResponseReader = new StreamReader(mResponseStream, new UTF8Encoding(false));
+
+            mNotifyStream = new CppIStream(mStreams.mNotify);
+            mNotifyReader = new StreamReader(mNotifyStream, new UTF8Encoding(false));
         }
     }
 }

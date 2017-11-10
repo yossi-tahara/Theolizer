@@ -148,6 +148,12 @@ public:
     }
     ~DllIntegrator();
 
+    void setSize(std::size_t iResposeSize, std::size_t iNotifySize)
+    {
+        mStreams.mResponse->setSize(iResposeSize);
+        mStreams.mNotify->setSize(iNotifySize);
+    }
+
     std::istream& getRequestStream()  { return *(mStreams.mRequest); }
     std::ostream& getResponseStream() { return *(mStreams.mResponse); }
     std::ostream& getNotifyStream()   { return *(mStreams.mNotify); }

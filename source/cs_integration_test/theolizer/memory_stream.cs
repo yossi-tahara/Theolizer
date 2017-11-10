@@ -39,7 +39,29 @@ using System.Windows.Forms;
 namespace theolizer
 {
     // ***************************************************************************
-    //      メモリ・ストリーム
+    //      ストリーム状態管理
+    // ***************************************************************************
+
+    enum StreamStatus : int
+    {
+        NoError,
+        Disconnected
+    }
+
+    class StreamStatusMan
+    {
+        public static void CheckError(StreamStatus iStreamStatus)
+        {
+            switch(iStreamStatus)
+            {
+            case StreamStatus.Disconnected:
+                throw new ObjectDisposedException("theolizer : CppOStream disconnected");
+            }
+        }
+    }
+
+    // ***************************************************************************
+    //      C# → C++メモリ・ストリーム
     // ***************************************************************************
 
     class CppOStream : Stream
@@ -52,20 +74,6 @@ namespace theolizer
         public CppOStream(IntPtr iCppHandle)
         {
             mCppHandle = iCppHandle;
-        }
-
-        enum StreamStatus : int
-        {
-            NoError,
-            Disconnected
-        }
-        void CheckError(StreamStatus iStreamStatus)
-        {
-            switch(iStreamStatus)
-            {
-            case StreamStatus.Disconnected:
-                throw new ObjectDisposedException("theolizer : CppOStream disconnected");
-            }
         }
 
         //----------------------------------------------------------------------------
@@ -83,13 +91,13 @@ namespace theolizer
             GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
             StreamStatus ret=CppWrite(mCppHandle, handle.AddrOfPinnedObject(), offset, count);
             handle.Free();
-            CheckError(ret);
+            StreamStatusMan.CheckError(ret);
         }
 
         public override void Flush()
         {
             StreamStatus ret=CppFlush(mCppHandle);
-            CheckError(ret);
+            StreamStatusMan.CheckError(ret);
         }
 
         public override bool CanWrite
@@ -117,6 +125,108 @@ namespace theolizer
         }
 
         public override long Seek(long offset, SeekOrigin origin)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override long Length
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override long Position
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override void SetLength(long value)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    // ***************************************************************************
+    //      C++ → C#メモリ・ストリーム
+    // ***************************************************************************
+
+    class CppIStream : Stream
+    {
+        //----------------------------------------------------------------------------
+        //      管理領域
+        //----------------------------------------------------------------------------
+
+        IntPtr  mCppHandle;
+        public CppIStream(IntPtr iCppHandle)
+        {
+            mCppHandle = iCppHandle;
+        }
+
+        //----------------------------------------------------------------------------
+        //      C++ → C#転送
+        //----------------------------------------------------------------------------
+
+        [DllImport("cpp_server.dll")]
+        extern static StreamStatus CppRead
+        (
+            IntPtr handle,
+            IntPtr buffer,
+            int offset,
+            int count,
+            ref int out_count
+        );
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            int out_count = 0;
+            GCHandle handle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
+            StreamStatus ret=CppRead(mCppHandle, handle.AddrOfPinnedObject(), offset, count,ref out_count);
+            handle.Free();
+            StreamStatusMan.CheckError(ret);
+
+            return out_count;
+        }
+
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override bool CanWrite
+        {
+            get { return false; }
+        }
+
+        public override bool CanRead
+        {
+            get { return true; }
+        }
+
+        public override bool CanSeek
+        {
+            get { return false; }
+        }
+
+        //----------------------------------------------------------------------------
+        //      非サポート・メソッド群
+        //----------------------------------------------------------------------------
+
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void Flush()
         {
             throw new NotImplementedException();
         }
