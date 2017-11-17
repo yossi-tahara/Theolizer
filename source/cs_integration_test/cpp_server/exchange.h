@@ -1,6 +1,6 @@
-#[[###########################################################################
-        Theolizer Test Project for C# Integration
-
+﻿//############################################################################
+//      Theolizer Test Project for C# Integration
+/*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
 
@@ -25,25 +25,14 @@
         あなたはこのファイルを取り扱うことができます。
         GPLv3の内容を https://www.gnu.org/licenses/gpl.txt にて確認して下さい。
         またGPLv3のコピーをLICENSE.TXTファイルにおいてます。
+*/
+//############################################################################
 
-]]############################################################################
+#if !defined(THEOLIZER_INTERNAL_TYPE_H)
+#define THEOLIZER_INTERNAL_CPP_SERVER_H
 
-#-----------------------------------------------------------------------------
-#       target definition
-#-----------------------------------------------------------------------------
+namespace exchange
+{
+}
 
-set(CPP_SOURCES cpp_server.cpp cpp_server.h exchange.cpp exchange.h)
-set(CPP_LIBRALY
-    ${THEOLIZER_ROOT}/theolizer/integrator.cpp
-    ${THEOLIZER_ROOT}/theolizer/integrator.h
-    ${THEOLIZER_ROOT}/theolizer/memory_stream.cpp
-    ${THEOLIZER_ROOT}/theolizer/memory_stream.h
-    ${THEOLIZER_ROOT}/theolizer/temp.h
-)
-
-#-----------------------------------------------------------------------------
-#       make target
-#-----------------------------------------------------------------------------
-
-include_directories(${THEOLIZER_ROOT})
-add_library(cpp_server SHARED ${CPP_SOURCES} ${CPP_LIBRALY})
+#endif  // THEOLIZER_INTERNAL_TYPE_H

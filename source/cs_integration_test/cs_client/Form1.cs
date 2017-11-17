@@ -21,17 +21,24 @@ namespace cs_client
         {
             InitializeComponent();
             mDllIntegrator = DllIntegrator.get();
+            mDllIntegrator.setupSerializer(SerializerType.Json);
         }
 
         private void buttonSend_Click(object sender, EventArgs e)
         {
             // 送信
             int data = (int)numericUpDown.Value;
+#if false
             mDllIntegrator.RequestWriter.WriteLine(data);
             mDllIntegrator.RequestWriter.Flush();
             numericUpDown.UpButton();
+#else
+            var aUserClassMain = new exchange.UserClassMain();
+            aUserClassMain.mIntMain = data;
+            aUserClassMain.func0(new exchange.UserClassSub(5678, "test"));
+#endif
+Debug.WriteLine("Wrote");
 
-Debug.WriteLine("Write");
             // 受信
             var str = mDllIntegrator.ResponseReader.ReadLine();
 

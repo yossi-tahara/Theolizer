@@ -1,6 +1,6 @@
-#[[###########################################################################
-        Theolizer Test Project for C# Integration
-
+﻿//############################################################################
+//      ユーザが記述するファイル
+/*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
 
@@ -25,25 +25,20 @@
         あなたはこのファイルを取り扱うことができます。
         GPLv3の内容を https://www.gnu.org/licenses/gpl.txt にて確認して下さい。
         またGPLv3のコピーをLICENSE.TXTファイルにおいてます。
+*/
+//############################################################################
 
-]]############################################################################
+using System;
 
-#-----------------------------------------------------------------------------
-#       target definition
-#-----------------------------------------------------------------------------
-
-set(CPP_SOURCES cpp_server.cpp cpp_server.h exchange.cpp exchange.h)
-set(CPP_LIBRALY
-    ${THEOLIZER_ROOT}/theolizer/integrator.cpp
-    ${THEOLIZER_ROOT}/theolizer/integrator.h
-    ${THEOLIZER_ROOT}/theolizer/memory_stream.cpp
-    ${THEOLIZER_ROOT}/theolizer/memory_stream.h
-    ${THEOLIZER_ROOT}/theolizer/temp.h
-)
-
-#-----------------------------------------------------------------------------
-#       make target
-#-----------------------------------------------------------------------------
-
-include_directories(${THEOLIZER_ROOT})
-add_library(cpp_server SHARED ${CPP_SOURCES} ${CPP_LIBRALY})
+namespace exchange
+{
+    // ユーザ・クラスのユーザ追加部
+    partial class UserClassSub
+    {
+        public UserClassSub(UInt32 iUIntSub, string iStringSub)
+        {
+            mUIntSub=iUIntSub;
+            mStringSub=iStringSub;
+        }
+    };
+}

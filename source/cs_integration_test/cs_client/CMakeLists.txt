@@ -39,10 +39,12 @@ endif()
 
 set(CS_SERIALIZER
     ${THEOLIZER_ROOT}/theolizer/integrator.cs
+    ${THEOLIZER_ROOT}/theolizer/core_serializer.cs
+    ${THEOLIZER_ROOT}/theolizer/serializer_json.cs
     ${THEOLIZER_ROOT}/theolizer/memory_stream.cs
 )
 
-set(CS_MAIN     App.config Program.cs)
+set(CS_MAIN     App.config Program.cs exchange.cs exchange.theolizer.cs)
 set(CS_FORMS    Form1.cs Form1.Designer.cs Form1.resx)
 set(CS_RESOUCES
     Properties/AssemblyInfo.cs

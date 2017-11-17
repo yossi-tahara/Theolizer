@@ -41,11 +41,22 @@ using System.Windows.Forms;
 namespace theolizer
 {
     // ***************************************************************************
+    //      各種ヘルパー
+    // ***************************************************************************
+
+    public enum SerializerType
+    {
+        None,               // シリアライザ無し
+        Binary,             // Binary
+        Json                // Json
+    }
+
+    // ***************************************************************************
     //      C++DLL用連携処理統括クラス
     //          DLLの場合、通常１つしかインスタンス不要なのでシングルトンとする
     // ***************************************************************************
 
-    class DllIntegrator
+    sealed class DllIntegrator : IDisposable
     {
         private static DllIntegrator sInstance = new DllIntegrator();
 
@@ -112,6 +123,70 @@ Debug.WriteLine("mNotify   = {0:X16}", (ulong)mStreams.mNotify);
 
             mNotifyStream = new CppIStream(mStreams.mNotify);
             mNotifyReader = new StreamReader(mNotifyStream, new UTF8Encoding(false));
+        }
+
+        //----------------------------------------------------------------------------
+        //      破棄
+        //----------------------------------------------------------------------------
+
+        ~DllIntegrator()
+        {
+            Dispose(false);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (mRequestSerializer != null)     mRequestSerializer.Dispose();
+            if (mResponseSerializer != null)    mResponseSerializer.Dispose();
+            if (mNotifySerializer != null)      mNotifySerializer.Dispose();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        //----------------------------------------------------------------------------
+        //      シリアライザ
+        //----------------------------------------------------------------------------
+
+        BaseSerializer   mRequestSerializer;
+        public BaseSerializer RequestSerializer
+        {
+            get { return mRequestSerializer; }
+        }
+
+        BaseSerializer   mResponseSerializer;
+        BaseSerializer   mNotifySerializer;
+
+        public void setupSerializer(SerializerType iSerializerType)
+        {
+            switch(iSerializerType)
+            {
+            case SerializerType.None:
+            case SerializerType.Binary:
+                if (mRequestSerializer != null)
+                {
+                    mRequestSerializer.Dispose();
+                    mRequestSerializer = null;
+                }
+                if (mResponseSerializer != null)
+                {
+                    mResponseSerializer.Dispose();
+                    mResponseSerializer = null;
+                }
+                if (mNotifySerializer != null)
+                {
+                    mNotifySerializer.Dispose();
+                    mNotifySerializer = null;
+                }
+                break;
+
+            case SerializerType.Json:
+                mRequestSerializer = new JsonOSerializer(mRequestStream);
+                break;
+            }
         }
     }
 }
