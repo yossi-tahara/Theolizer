@@ -51,9 +51,6 @@ theolizer::StreamStatus CppWrite
     int count
 )
 {
-    std::string temp((char*)buffer+offset, count);
-    DEBUG_PRINT("---------------- CppWrite() : ", temp.c_str());
-
     return iIMemoryStream->write(buffer+offset, count);
 }
 

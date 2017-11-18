@@ -32,7 +32,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace theolizer
+namespace theolizer.internal_space
 {
 //############################################################################
 //      シリアライザ
@@ -85,6 +85,7 @@ namespace theolizer
         //      シリアライズ補助関数群
         //----------------------------------------------------------------------------
 
+        // 構造出力開始
         protected override void saveStructureStart()
         {
             mWriteComma=false;
@@ -101,6 +102,7 @@ namespace theolizer
             }
         }
 
+        // 構造出力終了
         protected override void saveStructureEnd()
         {
             mWriteComma=false;
@@ -115,8 +117,12 @@ namespace theolizer
                 mOStream.Write("]");
                 break;
             }
-            if (mIndent != 0)
-                mOStream.Write("\n");
+        }
+
+        // 次の要素出力準備
+        public    override void writePreElement()
+        {
+            writeCommaIndent(mWriteComma);
         }
 
         void writeCommaIndent(bool iWriteComma = false)
@@ -131,6 +137,43 @@ namespace theolizer
                 mOStream.Write("    ");
 
             mWriteComma=true;
+        }
+
+        // flush
+        public    override void flush()
+        {
+            mOStream.Write("\n");
+            mOStream.Flush();
+        }
+
+        //----------------------------------------------------------------------------
+        //      プリミティブ保存関数群
+        //----------------------------------------------------------------------------
+
+        public    override void savePrimitive(Boolean iPrimitive)
+        {
+            mOStream.Write((iPrimitive)?1:0);
+        }
+        public    override void savePrimitive(Byte    iPrimitive) {mOStream.Write(iPrimitive);}
+        public    override void savePrimitive(SByte   iPrimitive) {mOStream.Write(iPrimitive);}
+        public    override void savePrimitive(Char    iPrimitive) {mOStream.Write(iPrimitive);}
+        public    override void savePrimitive(Int16   iPrimitive) {mOStream.Write(iPrimitive);}
+        public    override void savePrimitive(UInt16  iPrimitive) {mOStream.Write(iPrimitive);}
+        public    override void savePrimitive(Int32   iPrimitive) {mOStream.Write(iPrimitive);}
+        public    override void savePrimitive(UInt32  iPrimitive) {mOStream.Write(iPrimitive);}
+        public    override void savePrimitive(Int64   iPrimitive) {mOStream.Write(iPrimitive);}
+        public    override void savePrimitive(UInt64  iPrimitive) {mOStream.Write(iPrimitive);}
+        public    override void savePrimitive(Single  iPrimitive)
+        {
+            mOStream.Write(iPrimitive.ToString("R"));
+        }
+        public    override void savePrimitive(Double  iPrimitive)
+        {
+            mOStream.Write(iPrimitive.ToString("R"));
+        }
+        public    override void savePrimitive(String  iPrimitive)
+        {
+            mOStream.Write(iPrimitive);
         }
     }
 

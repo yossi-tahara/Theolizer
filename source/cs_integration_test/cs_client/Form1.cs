@@ -7,7 +7,6 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using theolizer;
 
@@ -20,8 +19,8 @@ namespace cs_client
         public Form1()
         {
             InitializeComponent();
-            mDllIntegrator = DllIntegrator.get();
-            mDllIntegrator.setupSerializer(SerializerType.Json);
+            mDllIntegrator = DllIntegrator.getInstance(SerializerType.Json);
+            ThreadIntegrator.Integrator = mDllIntegrator;
         }
 
         private void buttonSend_Click(object sender, EventArgs e)
@@ -32,18 +31,26 @@ namespace cs_client
             mDllIntegrator.RequestWriter.WriteLine(data);
             mDllIntegrator.RequestWriter.Flush();
             numericUpDown.UpButton();
-#else
-            var aUserClassMain = new exchange.UserClassMain();
-            aUserClassMain.mIntMain = data;
-            aUserClassMain.func0(new exchange.UserClassSub(5678, "test"));
-#endif
 Debug.WriteLine("Wrote");
 
             // 受信
             var str = mDllIntegrator.ResponseReader.ReadLine();
+Debug.WriteLine("ReadLine(" + str + ")");
 
             // 表示
             textBox.AppendText("Send(" + data + ") -> " + str + Environment.NewLine);
+#else
+            var aUserClassMain = new exchange.UserClassMain();
+            aUserClassMain.mIntMain = data;
+            aUserClassMain.func0(new exchange.UserClassSub(5678, "test"));
+
+            do
+            {
+                var str = mDllIntegrator.ResponseReader.ReadLine();
+                textBox.AppendText(str + Environment.NewLine);
+            }
+            while(mDllIntegrator.ResponseReader.Peek() > -1);
+#endif
         }
     }
 }

@@ -30,18 +30,11 @@
 
 using System;
 
-namespace theolizer
+namespace theolizer.internal_space
 {
     // ***************************************************************************
     //      各種ヘルパー
     // ***************************************************************************
-
-    // クラス用インタフェース
-    internal interface ITheolizer
-    {
-        void save(BaseSerializer iBaseSerializer);
-        void load(BaseSerializer iBaseSerializer);
-    }
 
     // クラス・メンバの対応方法(データはemOrderのみ使用)
     enum ElementsMapping
@@ -109,7 +102,7 @@ namespace theolizer
             public AutoRestoreSaveStructure
             (
                 BaseSerializer  iSerializer,
-                ElementsMapping iElementsMapping
+                ElementsMapping iElementsMapping = ElementsMapping.emOrder
             )
             {
                 mSerializer = iSerializer;
@@ -132,13 +125,29 @@ namespace theolizer
         //      派生シリアライザで実装するシリアライズ補助関数群
         //----------------------------------------------------------------------------
 
-        protected virtual void saveStructureStart()
-        {
-            throw new NotImplementedException();
-        }
-        protected virtual void saveStructureEnd()
-        {
-            throw new NotImplementedException();
-        }
+        protected virtual void saveStructureStart() {throw new NotImplementedException();}
+        protected virtual void saveStructureEnd()   {throw new NotImplementedException();}
+        public    virtual void writePreElement()    {throw new NotImplementedException();}
+        public    virtual void flush()              {throw new NotImplementedException();}
+
+        //----------------------------------------------------------------------------
+        //      プリミティブ保存関数群
+        //          DecimalはC++に対応する型がないので非サポート
+        //          Objectはクラスにてサポート
+        //----------------------------------------------------------------------------
+
+        public    virtual void savePrimitive(Boolean iPrimitive) {throw new NotImplementedException();}
+        public    virtual void savePrimitive(Byte    iPrimitive) {throw new NotImplementedException();}
+        public    virtual void savePrimitive(SByte   iPrimitive) {throw new NotImplementedException();}
+        public    virtual void savePrimitive(Char    iPrimitive) {throw new NotImplementedException();}
+        public    virtual void savePrimitive(Int16   iPrimitive) {throw new NotImplementedException();}
+        public    virtual void savePrimitive(UInt16  iPrimitive) {throw new NotImplementedException();}
+        public    virtual void savePrimitive(Int32   iPrimitive) {throw new NotImplementedException();}
+        public    virtual void savePrimitive(UInt32  iPrimitive) {throw new NotImplementedException();}
+        public    virtual void savePrimitive(Int64   iPrimitive) {throw new NotImplementedException();}
+        public    virtual void savePrimitive(UInt64  iPrimitive) {throw new NotImplementedException();}
+        public    virtual void savePrimitive(Single  iPrimitive) {throw new NotImplementedException();}
+        public    virtual void savePrimitive(Double  iPrimitive) {throw new NotImplementedException();}
+        public    virtual void savePrimitive(String  iPrimitive) {throw new NotImplementedException();}
     }
 }

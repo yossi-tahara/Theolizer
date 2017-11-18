@@ -35,8 +35,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using theolizer.internal_space;
 
 namespace theolizer
 {
@@ -44,9 +46,37 @@ namespace theolizer
     //      各種ヘルパー
     // ***************************************************************************
 
+    //----------------------------------------------------------------------------
+    //      スレッドで使用するインテグレータを管理
+    //----------------------------------------------------------------------------
+
+    static class ThreadIntegrator
+    {
+        static ThreadLocal<IIntegrator> sThreadIntegrator;
+        static ThreadIntegrator()
+        {
+            sThreadIntegrator = new ThreadLocal<IIntegrator>();
+        }
+        public static IIntegrator Integrator
+        {
+            get { return sThreadIntegrator.Value; }
+            set
+            {
+                if (sThreadIntegrator.Value != value)
+                {
+                    if (sThreadIntegrator.Value != null)  sThreadIntegrator.Value.Dispose();
+                    sThreadIntegrator.Value = value;
+                }
+            }
+        }
+    }
+
+    //----------------------------------------------------------------------------
+    //      シリアライザの指定
+    //----------------------------------------------------------------------------
+
     public enum SerializerType
     {
-        None,               // シリアライザ無し
         Binary,             // Binary
         Json                // Json
     }
@@ -56,21 +86,78 @@ namespace theolizer
     //          DLLの場合、通常１つしかインスタンス不要なのでシングルトンとする
     // ***************************************************************************
 
-    sealed class DllIntegrator : IDisposable
+    sealed class DllIntegrator : internal_space.IIntegrator, IDisposable
     {
-        private static DllIntegrator sInstance = new DllIntegrator();
+        //----------------------------------------------------------------------------
+        //      コンストラクタ
+        //          get()のみマルチスレッド対応
+        //----------------------------------------------------------------------------
 
-        public static DllIntegrator get()
+        private static DllIntegrator sInstance;
+        public static DllIntegrator getInstance(SerializerType iSerializerType)
         {
+            if (sInstance == null)
+            {
+                sInstance = new DllIntegrator(iSerializerType);
+            }
             return sInstance;
         }
 
+        [DllImport(Constants.CppDllName)]
+        extern static void CppInitialize(out Streams oStreams);
+
+        private DllIntegrator(SerializerType iSerializerType)
+        {
+            CppInitialize(out mStreams);
+
+            mRequestStream = new CppOStream(mStreams.mRequest);
+            mRequestWriter = new StreamWriter(mRequestStream, new UTF8Encoding(false));
+
+            mResponseStream = new CppIStream(mStreams.mResponse);
+            mResponseReader = new StreamReader(mResponseStream, new UTF8Encoding(false));
+
+            mNotifyStream = new CppIStream(mStreams.mNotify);
+            mNotifyReader = new StreamReader(mNotifyStream, new UTF8Encoding(false));
+
+            switch(iSerializerType)
+            {
+            case SerializerType.Binary:
+                throw new NotImplementedException();
+
+            case SerializerType.Json:
+                mRequestSerializer = new JsonOSerializer(mRequestStream);
+                break;
+            }
+        }
+
         //----------------------------------------------------------------------------
-        //      管理領域
+        //      破棄
+        //----------------------------------------------------------------------------
+
+        ~DllIntegrator()
+        {
+            Dispose(false);
+        }
+
+        protected void Dispose(bool disposing)
+        {
+            if (mRequestSerializer != null)     mRequestSerializer.Dispose();
+            if (mResponseSerializer != null)    mResponseSerializer.Dispose();
+            if (mNotifySerializer != null)      mNotifySerializer.Dispose();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        //----------------------------------------------------------------------------
+        //      ストリーム群
         //----------------------------------------------------------------------------
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct Streams
+        struct Streams
         {
             public IntPtr   mRequest;           // C#->Cpp要求用ストリーム
             public IntPtr   mResponse;          // Cpp->C#応答用ストリーム
@@ -102,92 +189,30 @@ namespace theolizer
         }
 
         //----------------------------------------------------------------------------
-        //      コンストラクタ
-        //----------------------------------------------------------------------------
-
-        [DllImport(Constants.CppDllName)]
-        extern static void CppInitialize(out Streams oStreams);
-
-        private DllIntegrator()
-        {
-            CppInitialize(out mStreams);
-Debug.WriteLine("mRequest  = {0:X16}", (ulong)mStreams.mRequest);
-Debug.WriteLine("mResponse = {0:X16}", (ulong)mStreams.mResponse);
-Debug.WriteLine("mNotify   = {0:X16}", (ulong)mStreams.mNotify);
-
-            mRequestStream = new CppOStream(mStreams.mRequest);
-            mRequestWriter = new StreamWriter(mRequestStream, new UTF8Encoding(false));
-
-            mResponseStream = new CppIStream(mStreams.mResponse);
-            mResponseReader = new StreamReader(mResponseStream, new UTF8Encoding(false));
-
-            mNotifyStream = new CppIStream(mStreams.mNotify);
-            mNotifyReader = new StreamReader(mNotifyStream, new UTF8Encoding(false));
-        }
-
-        //----------------------------------------------------------------------------
-        //      破棄
-        //----------------------------------------------------------------------------
-
-        ~DllIntegrator()
-        {
-            Dispose(false);
-        }
-
-        protected void Dispose(bool disposing)
-        {
-            if (mRequestSerializer != null)     mRequestSerializer.Dispose();
-            if (mResponseSerializer != null)    mResponseSerializer.Dispose();
-            if (mNotifySerializer != null)      mNotifySerializer.Dispose();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        //----------------------------------------------------------------------------
         //      シリアライザ
         //----------------------------------------------------------------------------
 
         BaseSerializer   mRequestSerializer;
-        public BaseSerializer RequestSerializer
-        {
-            get { return mRequestSerializer; }
-        }
-
         BaseSerializer   mResponseSerializer;
         BaseSerializer   mNotifySerializer;
 
-        public void setupSerializer(SerializerType iSerializerType)
+        // クライアント用インテグレータなので要求用シリアライザを返却する
+        public BaseSerializer Serializer
         {
-            switch(iSerializerType)
-            {
-            case SerializerType.None:
-            case SerializerType.Binary:
-                if (mRequestSerializer != null)
-                {
-                    mRequestSerializer.Dispose();
-                    mRequestSerializer = null;
-                }
-                if (mResponseSerializer != null)
-                {
-                    mResponseSerializer.Dispose();
-                    mResponseSerializer = null;
-                }
-                if (mNotifySerializer != null)
-                {
-                    mNotifySerializer.Dispose();
-                    mNotifySerializer = null;
-                }
-                break;
-
-            case SerializerType.Json:
-                mRequestSerializer = new JsonOSerializer(mRequestStream);
-                break;
-            }
+            get { return mRequestSerializer; }
         }
     }
 }
 
+//############################################################################
+//      内部用（ユーザプログラムから使用不可）
+//############################################################################
+
+namespace theolizer.internal_space
+{
+    interface IIntegrator
+    {
+        BaseSerializer Serializer { get; }
+        void Dispose();
+    }
+}

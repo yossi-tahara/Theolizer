@@ -30,19 +30,32 @@
 
 using System;
 using theolizer;
+using theolizer.internal_space;
 
 namespace exchange
 {
-    // ユーザ・クラス
-    //  ユーザが追加できるようpartial
+    // ***************************************************************************
+    //      ユーザ・クラス
+    //          ユーザがメンバを追加できるようpartial
+    // ***************************************************************************
+
     partial class UserClassSub : ITheolizer
     {
+        //      ---<<< メンバ変数群 >>>---
+
         public UInt32 mUIntSub;
         public string mStringSub = "";
 
         // シリアライズ
         void ITheolizer.save(BaseSerializer iBaseSerializer)
         {
+            using (var temp = new BaseSerializer.AutoRestoreSaveStructure(iBaseSerializer))
+            {
+                iBaseSerializer.writePreElement();
+                iBaseSerializer.savePrimitive(mUIntSub);
+                iBaseSerializer.writePreElement();
+                iBaseSerializer.savePrimitive(mStringSub);
+            }
         }
 
         // デシリアライズ
@@ -53,48 +66,82 @@ namespace exchange
 
     partial class UserClassMain : ITheolizer
     {
+        //      ---<<< メンバ変数群 >>>---
+
         public Int32 mIntMain;
-
-        public void func0(UserClassSub iUserClassSub)
-        {
-            var aFuncObject = new func0Theolizer(this, iUserClassSub);
-            // インテグレータ獲得
-            // シリアライザ獲得
-            //aFuncObject.save(シリアライザ);
-        }
-        class func0Theolizer : ITheolizer
-        {
-            UserClassMain   mThis;
-            UserClassSub    miUserClassSub;
-            public func0Theolizer
-            (
-                UserClassMain iThis,
-                UserClassSub iUserClassSub
-            )
-            {
-                mThis=iThis;
-                miUserClassSub=iUserClassSub;
-            }
-
-            // シリアライズ
-            void ITheolizer.save(BaseSerializer iBaseSerializer)
-            {
-            }
-
-            // デシリアライズ
-            void ITheolizer.load(BaseSerializer iBaseSerializer)
-            {
-            }
-        }
 
         // シリアライズ
         void ITheolizer.save(BaseSerializer iBaseSerializer)
         {
+            using (var temp = new BaseSerializer.AutoRestoreSaveStructure(iBaseSerializer))
+            {
+                iBaseSerializer.writePreElement();
+                iBaseSerializer.savePrimitive(mIntMain);
+            }
         }
 
         // デシリアライズ
         void ITheolizer.load(BaseSerializer iBaseSerializer)
         {
         }
+
+        //      ---<<< メンバ関数群 >>>---
+
+        public void func0(UserClassSub iUserClassSub)
+        {
+            var aFuncObject = new func0Theolizer(this, iUserClassSub);
+            // インテグレータ獲得
+            var aIntegrator = ThreadIntegrator.Integrator;
+            // シリアライザ獲得
+            var aSerializer = aIntegrator.Serializer;
+            // 保存
+            ((ITheolizer)aFuncObject).save(aSerializer);
+            // 出力
+            aSerializer.flush();
+        }
+    }
+
+    // UserClassMain::func0用関数クラス
+    class func0Theolizer : ITheolizer
+    {
+        UserClassMain   mThis;
+        UserClassSub    miUserClassSub;
+        public func0Theolizer
+        (
+            UserClassMain iThis,
+            UserClassSub iUserClassSub
+        )
+        {
+            mThis=iThis;
+            miUserClassSub=iUserClassSub;
+        }
+
+        // シリアライズ
+        void ITheolizer.save(BaseSerializer iBaseSerializer)
+        {
+            using (var temp = new BaseSerializer.AutoRestoreSaveStructure(iBaseSerializer))
+            {
+                iBaseSerializer.writePreElement();
+                ((ITheolizer)mThis).save(iBaseSerializer);
+                iBaseSerializer.writePreElement();
+                ((ITheolizer)miUserClassSub).save(iBaseSerializer);
+            }
+        }
+
+        // デシリアライズ
+        void ITheolizer.load(BaseSerializer iBaseSerializer)
+        {
+        }
+    }
+
+    // ***************************************************************************
+    //      各種ヘルパー
+    // ***************************************************************************
+
+    // クラス用インタフェース
+    internal interface ITheolizer
+    {
+        void save(BaseSerializer iBaseSerializer);
+        void load(BaseSerializer iBaseSerializer);
     }
 }

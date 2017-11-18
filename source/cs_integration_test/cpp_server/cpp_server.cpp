@@ -57,32 +57,38 @@ int main()
 {
     DEBUG_PRINT("---------------- main()");
 
-    auto&   aDllIntegrator  = theolizer::DllIntegrator::get();
-    aDllIntegrator.setSize(20, 4096);
+    auto&   aDllIntegrator  = theolizer::DllIntegrator::getInstance();
+    aDllIntegrator.setSize(1024, 4096);
 
     auto&   aRequestStream  = aDllIntegrator.getRequestStream();
     auto&   aResponseStream = aDllIntegrator.getResponseStream();
 
     while (!aDllIntegrator.isTerminated())
     {
+#if 1
+        std::string aLine;
+        getline(aRequestStream, aLine);
+DEBUG_PRINT("[" + aLine + "]");
+        aResponseStream << aLine << std::endl;
+#else
         int     aInt=123456789;
         DEBUG_PRINT("----------------(1) aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
         aRequestStream >> aInt;
         DEBUG_PRINT("----------------(2) aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
 
-#if 0   // エラー発生テスト用(xsputnで戻り値が小さい時など)
+    #if 0   // エラー発生テスト用(xsputnで戻り値が小さい時など)
         if (!aRequestStream.good())
         {
             aRequestStream.clear();
             std::string dummy;
             aRequestStream >> dummy;
         }
-#endif
-#if 0   // unget()デバッグ用
+    #endif
+    #if 0   // unget()デバッグ用
         aRequestStream.unget();
         aRequestStream >> aInt;
         DEBUG_PRINT("----------------(3) aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
-#endif
+    #endif
 
         // 改行の読み捨て
         std::string temp;
@@ -90,6 +96,7 @@ int main()
 
         // 要求データを全て受け取ってから応答を返却するべき
         aResponseStream << aInt*2 << " tes" << "ted " << "ABC" << std::endl;
+#endif
     }
 
     return 0;

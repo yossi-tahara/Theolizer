@@ -141,7 +141,7 @@ class DllIntegrator
 public:
     //      ---<<< API >>>---
 
-    static DllIntegrator& get()
+    static DllIntegrator& getInstance()
     {
         static DllIntegrator instance;
         return instance;

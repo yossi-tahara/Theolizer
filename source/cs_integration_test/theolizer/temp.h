@@ -118,7 +118,7 @@ void print(tParams... iParams)
     std::stringstream ss;
     printImpl(ss, iParams...);
     std::string str(ss.str());
-    if (str.back() != '\n') str.push_back('\n');
+    if (str.empty() || (str.back() != '\n')) str.push_back('\n');
     OutputDebugStringA(str.c_str());
 }
 
