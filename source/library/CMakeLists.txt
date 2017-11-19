@@ -187,14 +187,14 @@ if (MSVC AND ${STATIC_WITH_BOOST})
                 lib.exe /OUT:$(TargetDir)$(ProjectName).lib
                     $(TargetDir)$(TargetFileName) ${RELEASE_LIBS}
         COMMAND if "$(Configuration)" == "Debug"
-                lib.exe /OUT:$(TargetDir)$(ProjectName)d.lib
+                lib.exe /OUT:$(TargetDir)$(ProjectName).lib
                     $(TargetDir)$(TargetFileName) ${DEBUG_LIBS})
 
     #ターゲット指定すると、${TheolizerLib}Tmpがインストールされてしまうため、対処。
     install(FILES $<$<CONFIG:Release>:${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/${TheolizerLib}.lib>
-            DESTINATION ${LIB_DIR})
-    install(FILES $<$<CONFIG:Debug>:${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/${TheolizerLib}d.lib>
-            DESTINATION ${LIB_DIR})
+            DESTINATION ${LIB_DIR}/$<CONFIG>)
+    install(FILES $<$<CONFIG:Debug>:${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/${TheolizerLib}.lib>
+            DESTINATION ${LIB_DIR}/$<CONFIG>)
 else()
     target_link_libraries(${TheolizerLib} PUBLIC ${LIB_LIST})
     install(TARGETS ${TheolizerLib} DESTINATION ${LIB_DIR})
@@ -203,7 +203,7 @@ endif()
 if (MSVC)
     file(GLOB_RECURSE PDBS ${CMAKE_CURRENT_BINARY_DIR}/*.dir/Debug/*.pdb)
     message(STATUS "PDBS=${PDBS}")
-    install(FILES ${PDBS} DESTINATION ${LIB_DIR})
+    install(FILES ${PDBS} DESTINATION ${LIB_DIR}/$<CONFIG>)
 endif()
 
 #       ---<<< TheolizerTest >>>---
@@ -215,6 +215,7 @@ target_link_libraries(${TheolizerTest} ${TheolizerLib})
 # for boost test
 if (MSVC)
     set_target_properties(${TheolizerTest} PROPERTIES COMPILE_FLAGS "/EHa")
+    install(TARGETS ${TheolizerTest} DESTINATION ${LIB_DIR}/$<CONFIG>)
+else()
+    install(TARGETS ${TheolizerTest} DESTINATION ${LIB_DIR})
 endif()
-
-install(TARGETS ${TheolizerTest} DESTINATION ${LIB_DIR})

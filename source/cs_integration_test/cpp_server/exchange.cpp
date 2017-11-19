@@ -45,6 +45,7 @@
 // 固有ヘッダ
 #define DLL_EXPORT
 #include "exchange.h"
+#include "exchange.cpp.theolizer.hpp"
 
 // ***************************************************************************
 //      

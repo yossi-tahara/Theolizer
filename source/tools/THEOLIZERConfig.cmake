@@ -47,72 +47,22 @@
 #       Theolizer root path
 #-----------------------------------------------------------------------------
 
-get_filename_component(THEOLIZER_ROOT ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
+if("${THEOLIZER_ROOT}" STREQUAL "")
+    get_filename_component(THEOLIZER_ROOT ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
+endif()
 message(STATUS "THEOLIZER_ROOT=${THEOLIZER_ROOT}")
 
 #-----------------------------------------------------------------------------
-#       TheolizerライブラリのIMPORT
+#       Theolizerライブラリのsetup
 #-----------------------------------------------------------------------------
-
-function(import_library_msvc LIB_NAME LIB_TYPE)
-    add_library(${LIB_NAME} ${LIB_TYPE} IMPORTED)
-    if(${LIB_TYPE} STREQUAL "STATIC")
-        set_target_properties(${LIB_NAME}
-            PROPERTIES IMPORTED_LOCATION ${THEOLIZER_ROOT}/lib/${LIB_NAME}.lib)
-    else()
-        set_target_properties(${LIB_NAME}
-            PROPERTIES IMPORTED_LOCATION ${THEOLIZER_ROOT}/lib/${LIB_NAME}.dll)
-        set_target_properties(${LIB_NAME}
-            PROPERTIES IMPORTED_IMPLIB   ${THEOLIZER_ROOT}/lib/${LIB_NAME}.lib)
-    endif()
-endfunction()
-
-function(import_library_gcc LIB_NAME LIB_TYPE)
-    add_library(${LIB_NAME} ${LIB_TYPE} IMPORTED)
-    if(${LIB_TYPE} STREQUAL "STATIC")
-        set_target_properties(${LIB_NAME}
-            PROPERTIES IMPORTED_LOCATION_RELEASE ${THEOLIZER_ROOT}/lib/Release/lib${LIB_NAME}.a)
-        set_target_properties(${LIB_NAME}
-            PROPERTIES IMPORTED_LOCATION_DEBUG   ${THEOLIZER_ROOT}/lib/Debug/lib${LIB_NAME}.a)
-    elseif(WIN32)
-        set_target_properties(${LIB_NAME}
-            PROPERTIES IMPORTED_LOCATION_RELEASE ${THEOLIZER_ROOT}/lib/Release/lib${LIB_NAME}.dll)
-        set_target_properties(${LIB_NAME}
-            PROPERTIES IMPORTED_IMPLIB_RELEASE   ${THEOLIZER_ROOT}/lib/Release/lib${LIB_NAME}.dll.a)
-        set_target_properties(${LIB_NAME}
-            PROPERTIES IMPORTED_LOCATION_DEBUG   ${THEOLIZER_ROOT}/lib/Debug/lib${LIB_NAME}.dll)
-        set_target_properties(${LIB_NAME}
-            PROPERTIES IMPORTED_IMPLIB_DEBUG     ${THEOLIZER_ROOT}/lib/Debug/lib${LIB_NAME}.dll.a)
-    else()
-        set_target_properties(${LIB_NAME}
-            PROPERTIES IMPORTED_LOCATION_RELEASE ${THEOLIZER_ROOT}/lib/Release/lib${LIB_NAME}.so)
-        set_target_properties(${LIB_NAME}
-            PROPERTIES IMPORTED_LOCATION_DEBUG   ${THEOLIZER_ROOT}/lib/Debug/lib${LIB_NAME}.so)
-    endif()
-endfunction()
 
 if (MSVC)
     cmake_minimum_required(VERSION 3.8.0)
     set(ORIGINAL_COMPILER "${CMAKE_CXX_COMPILER}")
     message(STATUS "ORIGINAL_COMPILER =${ORIGINAL_COMPILER}")
-    set(EXECUTABLE_PATH "${THEOLIZER_ROOT}/msbuild-bin")
-    configure_file("${THEOLIZER_ROOT}/theolizer.props.in" "${CMAKE_BINARY_DIR}/theolizer.props")
+    set(EXECUTABLE_PATH "${THEOLIZER_ROOT}/bin")
+    configure_file("${THEOLIZER_ROOT}/theolizer.props.in" "${CMAKE_CURRENT_BINARY_DIR}/theolizer.props")
     add_definitions(-D_MSC_VER=${MSVC_VERSION})
-
-    import_library_msvc(TheolizerLibStaticWithBoost STATIC)
-    import_library_msvc(TheolizerTestStaticWithBoost STATIC)
-    import_library_msvc(TheolizerLibStaticWithBoostd STATIC)
-    import_library_msvc(TheolizerTestStaticWithBoostd STATIC)
-
-    import_library_msvc(TheolizerLibStatic STATIC)
-    import_library_msvc(TheolizerTestStatic STATIC)
-    import_library_msvc(TheolizerLibStaticd STATIC)
-    import_library_msvc(TheolizerTestStaticd STATIC)
-
-    import_library_msvc(TheolizerLibShared SHARED)
-    import_library_msvc(TheolizerTestShared SHARED)
-    import_library_msvc(TheolizerLibSharedd SHARED)
-    import_library_msvc(TheolizerTestSharedd SHARED)
 else()
     cmake_minimum_required(VERSION 3.2.2)
 
@@ -120,15 +70,6 @@ else()
     set(CMAKE_CXX_COMPILER "${THEOLIZER_ROOT}/bin/TheolizerDriver")
     message(STATUS "ORIGINAL_COMPILER =${ORIGINAL_COMPILER}")
     message(STATUS "CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}")
-
-    import_library_gcc(TheolizerLibStaticWithBoost STATIC)
-    import_library_gcc(TheolizerTestStaticWithBoost STATIC)
-
-    import_library_gcc(TheolizerLibStatic STATIC)
-    import_library_gcc(TheolizerTestStatic STATIC)
-
-    import_library_gcc(TheolizerLibShared SHARED)
-    import_library_gcc(TheolizerTestShared SHARED)
 endif()
 
 #-----------------------------------------------------------------------------
@@ -159,18 +100,18 @@ macro(setup_theolizer TARGET_NAME LIB_TYPE)
     include_directories(${THEOLIZER_ROOT}/include)
 
     # Library
-    link_directories("${THEOLIZER_ROOT}/lib/${CMAKE_BUILD_TYPE}")
+    link_directories("${THEOLIZER_ROOT}/library/${CMAKE_BUILD_TYPE}")
 
     if (MSVC)
-        target_link_libraries(${TARGET_NAME} optimized "${THEOLIZER_ROOT}/lib/${CMAKE_BUILD_TYPE}/TheolizerLib${LIB_TYPE}.lib")
-        target_link_libraries(${TARGET_NAME} optimized "${THEOLIZER_ROOT}/lib/${CMAKE_BUILD_TYPE}/TheolizerTest${LIB_TYPE}.lib")
-        target_link_libraries(${TARGET_NAME} debug     "${THEOLIZER_ROOT}/lib/${CMAKE_BUILD_TYPE}/TheolizerLib${LIB_TYPE}d.lib")
-        target_link_libraries(${TARGET_NAME} debug     "${THEOLIZER_ROOT}/lib/${CMAKE_BUILD_TYPE}/TheolizerTest${LIB_TYPE}d.lib")
+        target_link_libraries(${TARGET_NAME} optimized "${THEOLIZER_ROOT}/library/Release/TheolizerLib${LIB_TYPE}.lib")
+        target_link_libraries(${TARGET_NAME} optimized "${THEOLIZER_ROOT}/library/Release/TheolizerTest${LIB_TYPE}.lib")
+        target_link_libraries(${TARGET_NAME} debug     "${THEOLIZER_ROOT}/library/Debug/TheolizerLib${LIB_TYPE}.lib")
+        target_link_libraries(${TARGET_NAME} debug     "${THEOLIZER_ROOT}/library/Debug/TheolizerTest${LIB_TYPE}.lib")
         set_target_properties(${TARGET_NAME} PROPERTIES VS_USER_PROPS "${CMAKE_BINARY_DIR}/theolizer.props")
         add_definitions("-Dtheolizer_original_compiler=${ORIGINAL_COMPILER}")
     else()
-        target_link_libraries(${TARGET_NAME} "${THEOLIZER_ROOT}/lib/${CMAKE_BUILD_TYPE}/libTheolizerLib${LIB_TYPE}.a")
-        target_link_libraries(${TARGET_NAME} "${THEOLIZER_ROOT}/lib/${CMAKE_BUILD_TYPE}/libTheolizerTest${LIB_TYPE}.a")
+        target_link_libraries(${TARGET_NAME} "${THEOLIZER_ROOT}/library/${CMAKE_BUILD_TYPE}/libTheolizerLib${LIB_TYPE}.a")
+        target_link_libraries(${TARGET_NAME} "${THEOLIZER_ROOT}/library/${CMAKE_BUILD_TYPE}/libTheolizerTest${LIB_TYPE}.a")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --theolizer_original_compiler=${ORIGINAL_COMPILER}")
     endif()
 

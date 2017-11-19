@@ -48,6 +48,7 @@
 // 固有ヘッダ
 #define DLL_EXPORT
 #include "cpp_server.h"
+#include "cpp_server.cpp.theolizer.hpp"
 
 // ***************************************************************************
 //      main()

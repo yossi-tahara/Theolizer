@@ -49,12 +49,12 @@ if(LLVM_BUILD_MAIN_SRC_DIR)
 endif()
 add_definitions(${LLVM_DEFINITIONS})
 
-set(LIBRARY_LIST ${LIBRARY_LIST} clangFrontend clangSerialization clangDriver)
-set(LIBRARY_LIST ${LIBRARY_LIST} clangTooling clangParse clangSema)
-set(LIBRARY_LIST ${LIBRARY_LIST} clangAnalysis clangEdit clangAST)
-set(LIBRARY_LIST ${LIBRARY_LIST} clangLex clangBasic clangRewrite)
-set(LIBRARY_LIST ${LIBRARY_LIST} LLVMProfileData LLVMObject LLVMMCParser LLVMBitReader)
-set(LIBRARY_LIST ${LIBRARY_LIST} LLVMCore LLVMMC LLVMOption LLVMSupport)
+set(LIB_TOOLING_LIST                 clangFrontend clangSerialization clangDriver)
+set(LIB_TOOLING_LIST ${LIB_TOOLING_LIST} clangTooling clangParse clangSema)
+set(LIB_TOOLING_LIST ${LIB_TOOLING_LIST} clangAnalysis clangEdit clangAST)
+set(LIB_TOOLING_LIST ${LIB_TOOLING_LIST} clangLex clangBasic clangRewrite)
+set(LIB_TOOLING_LIST ${LIB_TOOLING_LIST} LLVMProfileData LLVMObject LLVMMCParser LLVMBitReader)
+set(LIB_TOOLING_LIST ${LIB_TOOLING_LIST} LLVMCore LLVMMC LLVMOption LLVMSupport)
 
 if(WIN32)
     set(WINLIB_LIST Version)
@@ -102,18 +102,24 @@ target_link_libraries(TheolizerDriver ${Boost_LIBRARIES})
 if (NOT MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-comment")
+else()
+    add_custom_command(TARGET TheolizerDriver
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+            $<TARGET_FILE:TheolizerDriver> $<TARGET_FILE_DIR:TheolizerDriver>/cl.exe)
 endif()
 
 # version.h生成
 version_at_build(TheolizerDriver "" "${VERSION_SOURCE}")
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
-    foreach(link_lib IN LISTS LIBRARY_LIST)
+    target_link_libraries(TheolizerDriver  ${LIBRARY_LIST})
+    foreach(link_lib IN LISTS LIB_TOOLING_LIST)
         target_link_libraries(TheolizerDriver optimized ${link_lib}.lib)
         target_link_libraries(TheolizerDriver debug     ${link_lib}d.lib)
     endforeach()
 else()
-    target_link_libraries(TheolizerDriver ${LIBRARY_LIST})
+    target_link_libraries(TheolizerDriver ${LIBRARY_LIST} ${LIB_TOOLING_LIST})
     if (CMAKE_COMPILER_IS_MINGW)
         set(CMAKE_EXE_LINKER_FLAGS "-static -static-libgcc -static-libstdc++")
     endif()
@@ -127,6 +133,7 @@ target_link_libraries(TheolizerDriver ${LLVM_LIBS})
 
 message(STATUS "Boost_LIBRARIES  = ${Boost_LIBRARIES}")
 message(STATUS "LIBRARY_LIST     = ${LIBRARY_LIST}")
+message(STATUS "LIB_TOOLING_LIST = ${LIB_TOOLING_LIST}")
 message(STATUS "WINLIB_LIST      = ${WINLIB_LIST}")
 
 message(STATUS "COMPONENT_LIST   = ${COMPONENT_LIST}")
@@ -151,7 +158,7 @@ install(PROGRAMS $<TARGET_FILE:TheolizerDriver> CONFIGURATIONS Release DESTINATI
 if (MSVC)
     install(FILES $<TARGET_FILE:TheolizerDriver>
             CONFIGURATIONS Release
-            DESTINATION msbuild-bin
+            DESTINATION bin
             RENAME cl.exe)
 endif()
 

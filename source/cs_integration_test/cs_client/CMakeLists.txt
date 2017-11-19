@@ -38,10 +38,10 @@ if ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
 endif()
 
 set(CS_SERIALIZER
-    ${THEOLIZER_ROOT}/theolizer/integrator.cs
-    ${THEOLIZER_ROOT}/theolizer/core_serializer.cs
-    ${THEOLIZER_ROOT}/theolizer/serializer_json.cs
-    ${THEOLIZER_ROOT}/theolizer/memory_stream.cs
+    ../theolizer/integrator.cs
+    ../theolizer/core_serializer.cs
+    ../theolizer/serializer_json.cs
+    ../theolizer/memory_stream.cs
 )
 
 set(CS_MAIN     App.config Program.cs exchange.cs exchange.theolizer.cs)

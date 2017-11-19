@@ -28,22 +28,59 @@
 
 ]]############################################################################
 
+# 開発用
+if(NOT "${THEOLIZER_ROOT}" STREQUAL "")
+    set(THEOLIZER_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/${THEOLIZER_ROOT}")
+    message(STATUS "THEOLIZER_ROOT=${THEOLIZER_ROOT}")
+
+    set(THEOLIZER_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../..")
+    message(STATUS "THEOLIZER_SOURCE_DIR=${THEOLIZER_SOURCE_DIR}")
+
+    set(THEOLIZER_DIR "${THEOLIZER_SOURCE_DIR}/tools")
+    message(STATUS "THEOLIZER_DIR=${THEOLIZER_DIR}")
+
+    include_directories("${THEOLIZER_SOURCE_DIR}/library")
+    include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../")
+endif()
+
 #-----------------------------------------------------------------------------
 #       target definition
 #-----------------------------------------------------------------------------
 
+set(TARGET_NAME cpp_server)
 set(CPP_SOURCES cpp_server.cpp cpp_server.h exchange.cpp exchange.h)
 set(CPP_LIBRALY
-    ${THEOLIZER_ROOT}/theolizer/integrator.cpp
-    ${THEOLIZER_ROOT}/theolizer/integrator.h
-    ${THEOLIZER_ROOT}/theolizer/memory_stream.cpp
-    ${THEOLIZER_ROOT}/theolizer/memory_stream.h
-    ${THEOLIZER_ROOT}/theolizer/temp.h
+    ../theolizer/integrator.cpp
+    ../theolizer/integrator.h
+    ../theolizer/memory_stream.cpp
+    ../theolizer/memory_stream.h
+    ../theolizer/temp.h
 )
 
 #-----------------------------------------------------------------------------
 #       make target
 #-----------------------------------------------------------------------------
 
-include_directories(${THEOLIZER_ROOT})
-add_library(cpp_server SHARED ${CPP_SOURCES} ${CPP_LIBRALY})
+# MSVCの通常使わないビルド・モードとZERO_CHECKプロジェクトの削除
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
+set(CMAKE_SUPPRESS_REGENERATION TRUE)
+
+# Theolizer
+find_package(THEOLIZER)
+
+# Options
+if (MSVC)
+    add_definitions(-D_UNICODE -DUNICODE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /bigobj")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
+
+    # MinGWの不具合(https://sourceforge.net/p/mingw-w64/discussion/723797/thread/c6b70624/#7f0a)暫定対処
+    if((CMAKE_COMPILER_IS_MINGW) AND (CMAKE_SIZEOF_VOID_P EQUAL 8))
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wa,-mbig-obj")
+    endif()
+endif()
+
+# build
+add_library(${TARGET_NAME} SHARED ${CPP_SOURCES} ${CPP_LIBRALY})
+setup_theolizer(${TARGET_NAME} StaticWithBoost)

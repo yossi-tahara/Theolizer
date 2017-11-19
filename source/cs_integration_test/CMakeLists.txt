@@ -37,10 +37,6 @@ if("${PROJECT_NAME}" STREQUAL "")
     message(STATUS "PROJECT_NAME=${PROJECT_NAME}")
 endif()
 
-if("${THEOLIZER_ROOT}" STREQUAL "")
-    set(THEOLIZER_ROOT "../")
-endif()
-
 #-----------------------------------------------------------------------------
 #       Test-Projects
 #-----------------------------------------------------------------------------

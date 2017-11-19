@@ -124,6 +124,8 @@ void callTests
 //----------------------------------------------------------------------------
 
     std::string prefix;
+
+#ifdef ENABLE_XML_BINARY_TEST
     prefix="xml-";
 
     // デフォルト処理
@@ -280,6 +282,7 @@ void callTests
             }
         }
     }
+#endif  // ENABLE_XML_BINARY_TEST
 
 //----------------------------------------------------------------------------
 //      JsonSerializer
@@ -446,6 +449,7 @@ void callTests
 //      BinarySerializer
 //----------------------------------------------------------------------------
 
+#ifdef ENABLE_XML_BINARY_TEST
     prefix="binary-";
 
     // デフォルト処理
@@ -609,6 +613,7 @@ void callTests
             }
         }
     }
+#endif  // ENABLE_XML_BINARY_TEST
 
     std::cout << "\n";
 }

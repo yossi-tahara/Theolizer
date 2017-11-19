@@ -130,7 +130,6 @@ endif()
 
 if (MSVC)
     add_definitions(-D_UNICODE -DUNICODE)
-    set(CMAKE_DEBUG_POSTFIX "d")
     string(REPLACE "/W3 " "/W4 " CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj -D_MSC_VER=${MSVC_VERSION}")
 else()
@@ -158,7 +157,7 @@ message(STATUS "  Boost_LIBRARIES  =${Boost_LIBRARIES}")
 set(BIN_DIR bin)
 set(DOC_DIR doc)
 set(INCLUDE_DIR include)
-set(LIB_DIR lib)
+set(LIB_DIR library)
 set(SAMPLES_DIR samples)
 
 if (NOT MSVC)
@@ -365,8 +364,7 @@ function(add_test_function TARGET_NAME WILL_FAIL)
     if (MSVC)
         add_definitions(-D_UNICODE -DUNICODE)
         foreach(LINK_LIB IN LISTS LIBRARY_LIST)
-            target_link_libraries(${TARGET_NAME} optimized ${LINK_LIB}.lib)
-            target_link_libraries(${TARGET_NAME} debug     ${LINK_LIB}d.lib)
+            target_link_libraries(${TARGET_NAME} ${LINK_LIB}.lib)
         endforeach()
     else()
         target_link_libraries(${TARGET_NAME} ${LIBRARY_LIST})
@@ -429,14 +427,19 @@ if(BUILD_DRIVER)
     add_subdirectory(driver)
 endif()
 
+# テストに必要なツールのコピー
+if (MSVC)
+    file(COPY ${CMAKE_SOURCE_DIR}/tools/theolizer.props.in DESTINATION ${CMAKE_BINARY_DIR})
+endif()
+
 # テスト
 add_subdirectory(reference_and_test)
 
-#       ---<<< Meta-Serializer >>>---
+#       ---<<< C# Integration >>>---
 
 if(MSVC)
-    message(STATUS "add_subdirectory(cs_integration_test)")
-    add_subdirectory(cs_integration_test)
+#    message(STATUS "add_subdirectory(cs_integration_test)")
+#    add_subdirectory(cs_integration_test)
 endif()
 
 #       ---<<< Theolizer Document >>>---
