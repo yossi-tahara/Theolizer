@@ -36,11 +36,22 @@ namespace theolizer.internal_space
     //      各種ヘルパー
     // ***************************************************************************
 
+    // 型チェック・モード
+    enum CheckMode
+    {
+        InMemory=0,                 // メモリ内動作のみ、かつ、型チェック無し（非公開）
+        TypeCheckInData,            // データ内に型名を記録する（非公開）
+        NoTypeCheck,                // 型チェック無し
+        TypeCheck,                  // 型名による型チェック
+        TypeCheckByIndex,           // TypeIndexによる型チェック
+        MetaMode                    // メタ処理－型定義情報を保存／回復（非公開）
+    }
+
     // クラス・メンバの対応方法(データはemOrderのみ使用)
     enum ElementsMapping
     {
-        emName,                 // フィールド名(=0:完全自動時)
-        emOrder                 // 順序
+        emName=0,                   // フィールド名(=0:完全自動時)
+        emOrder                     // 順序
     }
 
     // シリアライズ・データ読出状態
@@ -52,17 +63,21 @@ namespace theolizer.internal_space
 
     abstract class BaseSerializer : IDisposable
     {
-        protected int               mIndent;
+        protected uint              mGlobalVersionNo;
         protected ElementsMapping   mElementsMapping;
+        protected bool              mCancelPrettyPrint;
+        protected int               mIndent;
 
         //----------------------------------------------------------------------------
         //      コンストラクタ
         //----------------------------------------------------------------------------
 
-        public BaseSerializer()
+        public BaseSerializer(uint iGlobalVersionNo)
         {
-            mIndent = 0;
+            mGlobalVersionNo = iGlobalVersionNo;
             mElementsMapping = ElementsMapping.emName;
+            mCancelPrettyPrint = false;
+            mIndent = 0;
         }
 
         //----------------------------------------------------------------------------
@@ -95,6 +110,7 @@ namespace theolizer.internal_space
         {
             BaseSerializer  mSerializer;
             ElementsMapping mElementsMapping;
+            bool            mCancelPrettyPrint;
             int             mIndent;
 
             //      ---<<< コンストラクタ >>>---
@@ -102,12 +118,19 @@ namespace theolizer.internal_space
             public AutoRestoreSaveStructure
             (
                 BaseSerializer  iSerializer,
-                ElementsMapping iElementsMapping = ElementsMapping.emOrder
+                ElementsMapping iElementsMapping = ElementsMapping.emOrder,
+                bool            iCancelPrettyPrint = false
             )
             {
                 mSerializer = iSerializer;
-                mElementsMapping=iSerializer.mElementsMapping;
                 mIndent = mSerializer.mIndent;
+
+                mElementsMapping=mSerializer.mElementsMapping;
+                mSerializer.mElementsMapping=iElementsMapping;
+
+                mCancelPrettyPrint=mSerializer.mCancelPrettyPrint;
+                mSerializer.mCancelPrettyPrint=iCancelPrettyPrint;
+
                 mSerializer.saveStructureStart();
             }
 
@@ -117,6 +140,7 @@ namespace theolizer.internal_space
             {
                 mSerializer.mIndent=mIndent;
                 mSerializer.saveStructureEnd();
+                mSerializer.mCancelPrettyPrint=mCancelPrettyPrint;
                 mSerializer.mElementsMapping=mElementsMapping;
             }
         }
@@ -129,6 +153,14 @@ namespace theolizer.internal_space
         protected virtual void saveStructureEnd()   {throw new NotImplementedException();}
         public    virtual void writePreElement()    {throw new NotImplementedException();}
         public    virtual void flush()              {throw new NotImplementedException();}
+
+        protected virtual void saveControl(Int32  iControl) {throw new NotImplementedException();}
+        protected virtual void saveControl(Int64  iControl) {throw new NotImplementedException();}
+        protected virtual void saveControl(UInt32 iControl) {throw new NotImplementedException();}
+        protected virtual void saveControl(UInt64 iControl) {throw new NotImplementedException();}
+        protected virtual void saveControl(String iControl) {throw new NotImplementedException();}
+        protected virtual void saveElementName(ElementsMapping iElementsMapping, String iElementName)
+                                                            {throw new NotImplementedException();}
 
         //----------------------------------------------------------------------------
         //      プリミティブ保存関数群
@@ -149,5 +181,20 @@ namespace theolizer.internal_space
         public    virtual void savePrimitive(Single  iPrimitive) {throw new NotImplementedException();}
         public    virtual void savePrimitive(Double  iPrimitive) {throw new NotImplementedException();}
         public    virtual void savePrimitive(String  iPrimitive) {throw new NotImplementedException();}
+
+        //----------------------------------------------------------------------------
+        //      ヘッダ内型情報保存
+        //----------------------------------------------------------------------------
+
+        protected void writeHeaderTypeInfo()
+        {
+            using (var temp =
+                new BaseSerializer.AutoRestoreSaveStructure(this, ElementsMapping.emOrder, true))
+            {
+                // 型チェックのモード出力
+                writePreElement();
+                saveControl((int)CheckMode.NoTypeCheck);
+            }
+        }
     }
 }

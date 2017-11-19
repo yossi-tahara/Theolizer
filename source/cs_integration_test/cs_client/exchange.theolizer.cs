@@ -32,8 +32,21 @@ using System;
 using theolizer;
 using theolizer.internal_space;
 
+namespace theolizer
+{
+    // ***************************************************************************
+    //      必要な定数定義
+    // ***************************************************************************
+
+    static class Theolizer
+    {
+        public static uint GlobalVersionNo = 1;
+    }
+}
+
 namespace exchange
 {
+
     // ***************************************************************************
     //      ユーザ・クラス
     //          ユーザがメンバを追加できるようpartial

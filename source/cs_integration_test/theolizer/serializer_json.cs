@@ -35,8 +35,21 @@ using System.Text;
 namespace theolizer.internal_space
 {
 //############################################################################
+//      シリアライザ用定数
+//############################################################################
+
+    static partial class Constants
+    {
+        public static String kJsonSerializerName = "JsonTheolizer";
+    }
+
+//############################################################################
 //      シリアライザ
 //############################################################################
+
+    // ***************************************************************************
+    //      本体
+    // ***************************************************************************
 
     class JsonOSerializer : BaseSerializer
     {
@@ -48,7 +61,7 @@ namespace theolizer.internal_space
         //      コンストラクタ
         //----------------------------------------------------------------------------
 
-        public JsonOSerializer(Stream iStream)
+        public JsonOSerializer(Stream iStream, uint iGlobalVersionNo) : base(iGlobalVersionNo)
         {
             if (!iStream.CanWrite)
             {
@@ -58,6 +71,11 @@ namespace theolizer.internal_space
             mStream = iStream;
             mOStream = new StreamWriter(mStream, new UTF8Encoding(false));
             mWriteComma = false;
+
+            // 通常ヘッダ保存
+            writeHeader();
+            mOStream.Write("\n");
+            mWriteComma=false;
         }
 
         //----------------------------------------------------------------------------
@@ -89,7 +107,7 @@ namespace theolizer.internal_space
         protected override void saveStructureStart()
         {
             mWriteComma=false;
-            mIndent++;
+            if (!mCancelPrettyPrint) mIndent++;
             switch (mElementsMapping)
             {
             case ElementsMapping.emName:
@@ -132,9 +150,12 @@ namespace theolizer.internal_space
                 mOStream.Write(",");
             }
 
-            mOStream.Write("\n");
-            for (int i=0; i < mIndent; ++i)
-                mOStream.Write("    ");
+            if (!mCancelPrettyPrint)
+            {
+                mOStream.Write("\n");
+                for (int i=0; i < mIndent; ++i)
+                    mOStream.Write("    ");
+            }
 
             mWriteComma=true;
         }
@@ -144,6 +165,21 @@ namespace theolizer.internal_space
         {
             mOStream.Write("\n");
             mOStream.Flush();
+        }
+
+        // 各種制御コード出力
+        protected override void saveControl(Int32  iControl)    {savePrimitive(iControl);}
+        protected override void saveControl(Int64  iControl)    {savePrimitive(iControl);}
+        protected override void saveControl(UInt32 iControl)    {savePrimitive(iControl);}
+        protected override void saveControl(UInt64 iControl)    {savePrimitive(iControl);}
+        protected override void saveControl(String iControl)    {encodeJsonString(iControl);}
+        protected override void saveElementName(ElementsMapping iElementsMapping, String iElementName)
+        {
+            if (iElementsMapping == ElementsMapping.emName)
+            {
+                encodeJsonString(iElementName);
+                mOStream.Write(":");
+            }
         }
 
         //----------------------------------------------------------------------------
@@ -173,13 +209,72 @@ namespace theolizer.internal_space
         }
         public    override void savePrimitive(String  iPrimitive)
         {
-            mOStream.Write(iPrimitive);
+            encodeJsonString(iPrimitive);
+        }
+
+        // Json文字列へエンコード
+        void encodeJsonString(string iString)
+        {
+            mOStream.Write("\"");
+            foreach (var ch in iString)
+            {
+                switch(ch)
+                {
+                case '\"':      mOStream.Write("\\\""); break;
+                case '\\':      mOStream.Write("\\\\"); break;
+                case '/':       mOStream.Write("\\/");  break;
+                case '\x08':    mOStream.Write("\\b");  break;
+                case '\x0C':    mOStream.Write("\\f");  break;
+                case '\n':      mOStream.Write("\\n");  break;
+                case '\r':      mOStream.Write("\\r");  break;
+                case '\t':      mOStream.Write("\\t");  break;
+                default:        mOStream.Write(ch);     break;
+                }
+            }
+            mOStream.Write("\"");
+        }
+
+        //----------------------------------------------------------------------------
+        //      ヘッダ保存
+        //----------------------------------------------------------------------------
+
+        void writeHeader()
+        {
+            using (var temp = new BaseSerializer.AutoRestoreSaveStructure(this, ElementsMapping.emName))
+            {
+                // シリアライザ名出力
+                writePreElement();
+                saveElementName(ElementsMapping.emName, "SerialzierName");
+                saveControl(Constants.kJsonSerializerName);
+
+                // グローバル・バージョン番号出力
+                writePreElement();
+                saveElementName(ElementsMapping.emName, "GlobalVersionNo");
+                saveControl(mGlobalVersionNo);
+
+                // 型情報出力
+                writePreElement();
+                saveElementName(ElementsMapping.emName, "TypeInfoList");
+                writeHeaderTypeInfo();
+            }
         }
     }
 
-//############################################################################
-//      デシリアライザ
-//############################################################################
+    // ***************************************************************************
+    //      定義
+    //          現時点ではNoCheckType用。将来的にメタ・シリアライズ情報交換用
+    // ***************************************************************************
+#if false
+{
+    "SerialzierName":"JsonTheolizer",
+    "GlobalVersionNo":1,
+    "TypeInfoList":[2]
+}
+#endif
+
+    //############################################################################
+    //      デシリアライザ
+    //############################################################################
 
     class JsonISerializer : BaseSerializer
     {
@@ -191,7 +286,7 @@ namespace theolizer.internal_space
         //      コンストラクタ
         //----------------------------------------------------------------------------
 
-        public JsonISerializer(Stream iStream)
+        public JsonISerializer(Stream iStream) : base(0)
         {
             if (!iStream.CanRead)
             {

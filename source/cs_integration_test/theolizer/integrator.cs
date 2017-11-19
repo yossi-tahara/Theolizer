@@ -94,11 +94,11 @@ namespace theolizer
         //----------------------------------------------------------------------------
 
         private static DllIntegrator sInstance;
-        public static DllIntegrator getInstance(SerializerType iSerializerType)
+        public static DllIntegrator getInstance(SerializerType iSerializerType, uint iGlobalVersionNo)
         {
             if (sInstance == null)
             {
-                sInstance = new DllIntegrator(iSerializerType);
+                sInstance = new DllIntegrator(iSerializerType, iGlobalVersionNo);
             }
             return sInstance;
         }
@@ -106,7 +106,7 @@ namespace theolizer
         [DllImport(Constants.CppDllName)]
         extern static void CppInitialize(out Streams oStreams);
 
-        private DllIntegrator(SerializerType iSerializerType)
+        private DllIntegrator(SerializerType iSerializerType, uint iGlobalVersionNo)
         {
             CppInitialize(out mStreams);
 
@@ -125,7 +125,7 @@ namespace theolizer
                 throw new NotImplementedException();
 
             case SerializerType.Json:
-                mRequestSerializer = new JsonOSerializer(mRequestStream);
+                mRequestSerializer = new JsonOSerializer(mRequestStream, iGlobalVersionNo);
                 break;
             }
         }

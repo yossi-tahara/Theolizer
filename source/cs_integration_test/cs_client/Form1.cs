@@ -19,7 +19,7 @@ namespace cs_client
         public Form1()
         {
             InitializeComponent();
-            mDllIntegrator = DllIntegrator.getInstance(SerializerType.Json);
+            mDllIntegrator = DllIntegrator.getInstance(SerializerType.Json, Theolizer.GlobalVersionNo);
             ThreadIntegrator.Integrator = mDllIntegrator;
         }
 
@@ -42,7 +42,8 @@ Debug.WriteLine("ReadLine(" + str + ")");
 #else
             var aUserClassMain = new exchange.UserClassMain();
             aUserClassMain.mIntMain = data;
-            aUserClassMain.func0(new exchange.UserClassSub(5678, "test"));
+            var aUserClassSub=new exchange.UserClassSub(5678, "test [\"][\\][/][\x08][\x0c][\n][\r][\t]");
+            aUserClassMain.func0(aUserClassSub);
 
             do
             {
