@@ -48,6 +48,7 @@
 // 固有ヘッダ
 #define DLL_EXPORT
 #include "cpp_server.h"
+#include "exchange.h"
 #include "cpp_server.cpp.theolizer.hpp"
 
 // ***************************************************************************
@@ -58,45 +59,42 @@ int main()
 {
     DEBUG_PRINT("---------------- main()");
 
+    {
+///        theolizer::JsonOSerializer<> jos(std::cout);  // シリアライザを生成
+    }
+    {
+        /*exchange::*/func0Theolizer    afunc0Theolizer;
+        afunc0Theolizer.mThis.mIntMain=123;
+        afunc0Theolizer.miUserClassSub.mUIntSub=456;
+        afunc0Theolizer.miUserClassSub.mStringSub="test";
+
+        theolizer::JsonOSerializer<> jos(std::cout);
+        THEOLIZER_PROCESS(jos, afunc0Theolizer);
+    }
+
+
     auto&   aDllIntegrator  = theolizer::DllIntegrator::getInstance();
     aDllIntegrator.setSize(1024, 4096);
 
     auto&   aRequestStream  = aDllIntegrator.getRequestStream();
     auto&   aResponseStream = aDllIntegrator.getResponseStream();
 
+    theolizer::JsonISerializer<> jis(aRequestStream);
+    theolizer::JsonOSerializer<> debug(std::cout);
+    theolizer::JsonOSerializer<> jos(aResponseStream);
+
     while (!aDllIntegrator.isTerminated())
     {
-#if 1
+#if 0
         std::string aLine;
         getline(aRequestStream, aLine);
-DEBUG_PRINT("[" + aLine + "]");
         aResponseStream << aLine << std::endl;
 #else
-        int     aInt=123456789;
-        DEBUG_PRINT("----------------(1) aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
-        aRequestStream >> aInt;
-        DEBUG_PRINT("----------------(2) aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
-
-    #if 0   // エラー発生テスト用(xsputnで戻り値が小さい時など)
-        if (!aRequestStream.good())
-        {
-            aRequestStream.clear();
-            std::string dummy;
-            aRequestStream >> dummy;
-        }
-    #endif
-    #if 0   // unget()デバッグ用
-        aRequestStream.unget();
-        aRequestStream >> aInt;
-        DEBUG_PRINT("----------------(3) aInt=", aInt, " rdstate()=", aRequestStream.rdstate());
-    #endif
-
-        // 改行の読み捨て
-        std::string temp;
-        std::getline(aRequestStream, temp);
-
-        // 要求データを全て受け取ってから応答を返却するべき
-        aResponseStream << aInt*2 << " tes" << "ted " << "ABC" << std::endl;
+        /*exchange::*/func0Theolizer    afunc0Theolizer;
+        THEOLIZER_PROCESS(jis, afunc0Theolizer);
+        THEOLIZER_PROCESS(debug, afunc0Theolizer);
+        THEOLIZER_PROCESS(jos, afunc0Theolizer);
+        aResponseStream.flush();
 #endif
     }
 

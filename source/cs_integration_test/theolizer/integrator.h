@@ -48,7 +48,7 @@ namespace theolizer
 
 extern "C"
 {
-    THEOLIZER_INTERNAL_DLL  void CppInitialize(theolizer::Streams* oStreams);
+    THEOLIZER_EXPORT_DLL  void CppInitialize(theolizer::Streams* oStreams);
 }
 extern "C" int main();
 
@@ -102,7 +102,7 @@ class DllIntegrator
     bool            mTerminated;        // サービス終了
 
     // 生成／コピー／ムーブ不可
-    DllIntegrator() : mMainThread(nullptr), mTerminated(false) { }
+    DllIntegrator();
     DllIntegrator(DllIntegrator const&) = delete;
     DllIntegrator(DllIntegrator     &&) = delete;
     DllIntegrator& operator=(DllIntegrator const&) = delete;

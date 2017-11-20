@@ -31,8 +31,53 @@
 #if !defined(THEOLIZER_INTERNAL_TYPE_H)
 #define THEOLIZER_INTERNAL_CPP_SERVER_H
 
-namespace exchange
+#include <theolizer/serializer_json.h>
+
+// ***************************************************************************
+//      データ処理用クラス群
+// ***************************************************************************
+
+//namespace exchange
+//{
+
+class UserClassSub
 {
-}
+    //      ---<<< メンバ変数群 >>>---
+public:
+    unsigned    mUIntSub;
+    std::string mStringSub = "";
+    THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassSub), 1);
+};
+
+class UserClassMain
+{
+public:
+    //      ---<<< メンバ変数群 >>>---
+
+    int     mIntMain;
+
+    //      ---<<< メンバ関数群 >>>---
+
+    void func0(UserClassSub const& iUserClassSub)
+    {
+        
+    }
+
+    THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassMain), 1);
+};
+
+// ***************************************************************************
+//      自動生成予定のクラス群
+// ***************************************************************************
+
+class func0Theolizer
+{
+public:
+    UserClassMain   mThis;
+    UserClassSub    miUserClassSub;
+    THEOLIZER_INTRUSIVE_ORDER(CS, (func0Theolizer), 1);
+};
+
+//} // namespace exchange
 
 #endif  // THEOLIZER_INTERNAL_TYPE_H

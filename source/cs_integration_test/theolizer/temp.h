@@ -67,21 +67,21 @@ namespace theolizer
 
 #ifdef DLL_EXPORT
     #if defined(_MSC_VER)
-        #define THEOLIZER_INTERNAL_DLL __declspec(dllexport)
+        #define THEOLIZER_EXPORT_DLL __declspec(dllexport)
     #elif defined(_WIN32)
-        #define THEOLIZER_INTERNAL_DLL __declspec(dllexport)
+        #define THEOLIZER_EXPORT_DLL __declspec(dllexport)
     #else
-        #define THEOLIZER_INTERNAL_DLL __attribute__((visibility ("default")))
+        #define THEOLIZER_EXPORT_DLL __attribute__((visibility ("default")))
     #endif
 #else
     #if defined(THEOLIZER_DYN_LINK)
         #if defined(_MSC_VER)
-            #define THEOLIZER_INTERNAL_DLL __declspec(dllimport)
+            #define THEOLIZER_EXPORT_DLL __declspec(dllimport)
         #else
-            #define THEOLIZER_INTERNAL_DLL
+            #define THEOLIZER_EXPORT_DLL
         #endif
     #else
-        #define THEOLIZER_INTERNAL_DLL
+        #define THEOLIZER_EXPORT_DLL
     #endif
 #endif
 
@@ -91,6 +91,7 @@ namespace theolizer
 
 #if defined(_DEBUG) && defined(_WIN32)
 
+#define NOMINMAX
 #include <windows.h>
 
 template<typename tType>
@@ -122,7 +123,7 @@ void printImpl(std::stringstream& ioString, tFirst iFirst, tParams... iParams)
 }
 
 template<typename... tParams>
-void print(tParams... iParams)
+void printDebug(tParams... iParams)
 {
     std::stringstream ss;
     printImpl(ss, iParams...);
@@ -131,7 +132,7 @@ void print(tParams... iParams)
     OutputDebugStringA(str.c_str());
 }
 
-#define DEBUG_PRINT(...)    theolizer::print(__VA_ARGS__)
+#define DEBUG_PRINT(...)    theolizer::printDebug(__VA_ARGS__)
 #else
 #define DEBUG_PRINT(...)
 #endif

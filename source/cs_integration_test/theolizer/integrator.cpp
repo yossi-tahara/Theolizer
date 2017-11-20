@@ -28,6 +28,9 @@
 */
 //############################################################################
 
+#define NOMINMAX
+#include <windows.h>
+
 #define DLL_EXPORT
 #include "integrator.h"
 
@@ -74,6 +77,16 @@ Streams::~Streams()
 }
 
 //----------------------------------------------------------------------------
+//      コンストラクタ
+//----------------------------------------------------------------------------
+FILE *fp;
+DllIntegrator::DllIntegrator() : mMainThread(nullptr), mTerminated(false)
+{
+AllocConsole();
+freopen_s(&fp, "CON", "w", stdout);
+}
+
+//----------------------------------------------------------------------------
 //      デストラクタ(スレッド停止処理)
 //----------------------------------------------------------------------------
 
@@ -84,6 +97,8 @@ DllIntegrator::~DllIntegrator()
         mMainThread->join();
         delete mMainThread;
     }
+fclose(fp);
+FreeConsole();
 }
 
 }   // namespace theolizer

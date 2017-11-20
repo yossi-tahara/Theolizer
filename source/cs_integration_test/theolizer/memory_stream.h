@@ -75,19 +75,19 @@ namespace theolizer
 
 extern "C"
 {
-    THEOLIZER_INTERNAL_DLL  theolizer::StreamStatus CppWrite
+    THEOLIZER_EXPORT_DLL  theolizer::StreamStatus CppWrite
     (
         theolizer::IMemoryStream* iIMemoryStream,
         uint8_t* buffer,
         int offset,
         int count
     );
-    THEOLIZER_INTERNAL_DLL  theolizer::StreamStatus CppFlush
+    THEOLIZER_EXPORT_DLL  theolizer::StreamStatus CppFlush
     (
         theolizer::IMemoryStream* iIMemoryStream
     );
 
-    THEOLIZER_INTERNAL_DLL theolizer::StreamStatus CppRead
+    THEOLIZER_EXPORT_DLL theolizer::StreamStatus CppRead
     (
         theolizer::OMemoryStream* iOMemoryStream,
         uint8_t* buffer,
@@ -385,7 +385,7 @@ class OMemoryStreamBuf : public std::streambuf
 
     int overflow(int c = EOF) override
     {
-        DEBUG_PRINT("overflow(...,", c , ") ", this);
+        DEBUG_PRINT("overflow(..., [", static_cast<char>(c) , "]) ", this);
 
         if (mDisconnected)
     return EOF;
@@ -423,7 +423,7 @@ class OMemoryStreamBuf : public std::streambuf
 
     std::streamsize xsputn(char const* buffer, std::streamsize count) override
     {
-        DEBUG_PRINT("xsputn(...,", count, ") ", this);
+        DEBUG_PRINT("xsputn(...,", count, ") [", std::string(buffer, count), "] ", this);
 
         std::streamsize ret = 0;
         while (ret < count)
@@ -495,7 +495,7 @@ class OMemoryStreamBuf : public std::streambuf
                 mIsFull = true;
             }
 
-            // フル、もしくは、十分に溜まっていたらflushすす
+            // フル、もしくは、十分に溜まっていたらflushする
             if (mIsFull || (128 <= mWriteMan.mCount))
             {
                 DEBUG_PRINT("call sync(2) mIsFull=", mIsFull);
