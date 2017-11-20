@@ -53,29 +53,6 @@ foreach(SOURCE IN LISTS VERSION_SOURCE)
     message(STATUS "${SOURCE}")
 endforeach()
 
-#       ---<<< install header files >>>---
-
-file(GLOB_RECURSE LIBRARY_HEADERS *.h *.inc)
-file(GLOB_RECURSE REMOVE_LIST avoid-trouble.h internal.h version.h)
-list(REMOVE_ITEM LIBRARY_HEADERS ${REMOVE_LIST})
-list(SORT LIBRARY_HEADERS)
-message(STATUS "Source of library's header")
-foreach(SOURCE IN LISTS LIBRARY_HEADERS)
-    message(STATUS "${SOURCE}")
-endforeach()
-
-install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/theolizer
-        DESTINATION ${INCLUDE_DIR}
-        FILES_MATCHING
-             PATTERN *.h
-             PATTERN *.inc
-             PATTERN avoid-trouble.h EXCLUDE
-             PATTERN internal.h      EXCLUDE
-)
-
-# 親へ返却する
-set(LIBRARY_HEADERS "${LIBRARY_HEADERS}" PARENT_SCOPE)
-
 #       ---<<< tool >>>---
 
 macro(extract FOLDER ARCHIVE_FILE)
@@ -94,6 +71,7 @@ endmacro(extract)
 
 # Header
 include_directories("${Boost_INCLUDE_DIR}")
+include_directories("${CMAKE_SOURCE_DIR}/library")
 
 # Library
 link_directories("${Boost_LIBRARY_DIR}")
@@ -219,3 +197,41 @@ if (MSVC)
 else()
     install(TARGETS ${TheolizerTest} DESTINATION ${LIB_DIR})
 endif()
+
+#       ---<<< install header files >>>---
+
+file(GLOB_RECURSE LIBRARY_HEADERS *.h *.inc)
+file(GLOB_RECURSE REMOVE_LIST avoid-trouble.h internal.h version.h)
+list(REMOVE_ITEM LIBRARY_HEADERS ${REMOVE_LIST})
+list(SORT LIBRARY_HEADERS)
+message(STATUS "Source of library's header")
+foreach(SOURCE IN LISTS LIBRARY_HEADERS)
+    message(STATUS "${SOURCE}")
+endforeach()
+# 親へ返却する
+set(LIBRARY_HEADERS "${LIBRARY_HEADERS}" PARENT_SCOPE)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/theolizer
+        DESTINATION ${INCLUDE_DIR}
+        FILES_MATCHING
+             PATTERN *.h
+             PATTERN *.inc
+             PATTERN avoid-trouble.h EXCLUDE
+             PATTERN internal.h      EXCLUDE
+)
+
+add_custom_command(TARGET ${TheolizerLib}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} 
+        \"-DSOURCE=${CMAKE_CURRENT_SOURCE_DIR}/theolizer/\"
+        \"-DDESTINATION=${CMAKE_BINARY_DIR}/include/theolizer\"
+        -P "${CMAKE_SOURCE_DIR}/tools/install_header_test.cmake"
+)
+
+add_custom_command(TARGET ${TheolizerTest}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} 
+        \"-DSOURCE=${CMAKE_CURRENT_SOURCE_DIR}/theolizer/\"
+        \"-DDESTINATION=${CMAKE_BINARY_DIR}/include/theolizer\"
+        -P "${CMAKE_SOURCE_DIR}/tools/install_header_test.cmake"
+)

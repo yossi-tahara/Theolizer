@@ -72,6 +72,9 @@ foreach(SOURCE IN LISTS THEOLIZER_DRIVER_LIST)
     message(STATUS "${SOURCE}")
 endforeach()
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}/bin/Debug")
+
 #-----------------------------------------------------------
 #       make target
 #-----------------------------------------------------------
@@ -81,6 +84,7 @@ endforeach()
 # Header
 include_directories("${Boost_INCLUDE_DIR}")
 include_directories("${LLVM_INCLUDE_DIRS}")
+include_directories("${CMAKE_SOURCE_DIR}/library")
 
 # Library
 link_directories("${Boost_LIBRARY_DIR}")

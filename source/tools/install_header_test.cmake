@@ -1,5 +1,7 @@
 #[[###########################################################################
-        テスト
+        Theolizerソースの修正後、テストにPASSしていることをチェックする
+            テストに通ったら、sources_hash.txtが更新されていることが必須。
+            修正後PASSしていない場合、1で終了する
 
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
@@ -28,27 +30,14 @@
 
 ]]############################################################################
 
-#-----------------------------------------------------------------------------
-#       Test-Projects
-#-----------------------------------------------------------------------------
+message(STATUS "SOURCE=${SOURCE}")
+message(STATUS "DESTINATION=${DESTINATION}")
 
-include_directories("${CMAKE_BINARY_DIR}/include")
-
-add_subdirectory(base)
-add_subdirectory(report)
-add_subdirectory(serializer)
-add_subdirectory(test_tool)
-add_subdirectory(u8string)
-
-#-----------------------------------------------------------------------------
-#       make hash for check Pass
-#-----------------------------------------------------------------------------
-
-add_custom_target(HashOfTestLibrary
-    COMMAND ${CMAKE_COMMAND}
-        -D CURRENT_SOURCE_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}\"
-        -P \"${CMAKE_SOURCE_DIR}/tools/sources_hash.cmake\"
-         > \"${CMAKE_CURRENT_BINARY_DIR}/sources_hash.txt\"
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    )
-add_dependencies(makeHashTxt HashOfTestLibrary)
+file(COPY ${SOURCE}
+    DESTINATION ${DESTINATION}
+    FILES_MATCHING
+        PATTERN *.h
+        PATTERN *.inc
+        PATTERN avoid-trouble.h EXCLUDE
+        PATTERN internal.h      EXCLUDE
+)

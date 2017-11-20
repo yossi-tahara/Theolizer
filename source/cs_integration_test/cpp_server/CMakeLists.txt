@@ -29,18 +29,9 @@
 ]]############################################################################
 
 # 開発用
-if(NOT "${THEOLIZER_ROOT}" STREQUAL "")
-    set(THEOLIZER_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/${THEOLIZER_ROOT}")
-    message(STATUS "THEOLIZER_ROOT=${THEOLIZER_ROOT}")
-
-    set(THEOLIZER_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../..")
-    message(STATUS "THEOLIZER_SOURCE_DIR=${THEOLIZER_SOURCE_DIR}")
-
-    set(THEOLIZER_DIR "${THEOLIZER_SOURCE_DIR}/tools")
-    message(STATUS "THEOLIZER_DIR=${THEOLIZER_DIR}")
-
-    include_directories("${THEOLIZER_SOURCE_DIR}/library")
-    include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../")
+if(NOT "${DEVELOPING_INTEGRATOR}" STREQUAL "")
+    message(STATUS "DEVELOPING_INTEGRATOR=${DEVELOPING_INTEGRATOR}")
+    include_directories("${CMAKE_SOURCE_DIR}")
 endif()
 
 #-----------------------------------------------------------------------------

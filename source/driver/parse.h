@@ -1569,7 +1569,7 @@ private:
         // save/loadがなく、かつ、デフォルトの自動生成ソース指定もないなら
         // ソース修正無し。(非デフォルトへの修正が発生しないが許容する。)
 
-        if (mASTVisitor.mSwicher && !mAstInterface.mLocationDefault.isInvalid())
+        if (mASTVisitor.mSwicher || !mAstInterface.mLocationDefault.isInvalid())
         {
             ModifySource aModifySource(mPreprocessor, mAstInterface);
             aModifySource.process();

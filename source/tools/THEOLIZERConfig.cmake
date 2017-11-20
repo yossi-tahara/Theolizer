@@ -47,9 +47,7 @@
 #       Theolizer root path
 #-----------------------------------------------------------------------------
 
-if("${THEOLIZER_ROOT}" STREQUAL "")
-    get_filename_component(THEOLIZER_ROOT ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
-endif()
+get_filename_component(THEOLIZER_ROOT ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
 message(STATUS "THEOLIZER_ROOT=${THEOLIZER_ROOT}")
 
 #-----------------------------------------------------------------------------
@@ -107,7 +105,7 @@ macro(setup_theolizer TARGET_NAME LIB_TYPE)
         target_link_libraries(${TARGET_NAME} optimized "${THEOLIZER_ROOT}/library/Release/TheolizerTest${LIB_TYPE}.lib")
         target_link_libraries(${TARGET_NAME} debug     "${THEOLIZER_ROOT}/library/Debug/TheolizerLib${LIB_TYPE}.lib")
         target_link_libraries(${TARGET_NAME} debug     "${THEOLIZER_ROOT}/library/Debug/TheolizerTest${LIB_TYPE}.lib")
-        set_target_properties(${TARGET_NAME} PROPERTIES VS_USER_PROPS "${CMAKE_BINARY_DIR}/theolizer.props")
+        set_target_properties(${TARGET_NAME} PROPERTIES VS_USER_PROPS "${CMAKE_CURRENT_BINARY_DIR}/theolizer.props")
         add_definitions("-Dtheolizer_original_compiler=${ORIGINAL_COMPILER}")
     else()
         target_link_libraries(${TARGET_NAME} "${THEOLIZER_ROOT}/library/${CMAKE_BUILD_TYPE}/libTheolizerLib${LIB_TYPE}.a")

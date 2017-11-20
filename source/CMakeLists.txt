@@ -413,7 +413,6 @@ endif()
 # ライブラリのハッシュ計算用ソース
 set(VERSION_SOURCE "")
 
-include_directories("${CMAKE_SOURCE_DIR}/library")
 add_subdirectory(library)
 link_directories("${CMAKE_BINARY_DIR}/library")
 
@@ -429,7 +428,8 @@ endif()
 
 # テストに必要なツールのコピー
 if (MSVC)
-    file(COPY ${CMAKE_SOURCE_DIR}/tools/theolizer.props.in DESTINATION ${CMAKE_BINARY_DIR})
+    file(COPY ${CMAKE_SOURCE_DIR}/tools/theolizer.props.in    DESTINATION ${CMAKE_BINARY_DIR})
+    file(COPY ${CMAKE_SOURCE_DIR}/tools/THEOLIZERConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
 endif()
 
 # テスト
