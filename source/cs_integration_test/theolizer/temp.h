@@ -65,24 +65,12 @@ namespace theolizer
 //          API定義用マクロ
 // ***************************************************************************
 
-#ifdef DLL_EXPORT
-    #if defined(_MSC_VER)
-        #define THEOLIZER_EXPORT_DLL __declspec(dllexport)
-    #elif defined(_WIN32)
-        #define THEOLIZER_EXPORT_DLL __declspec(dllexport)
-    #else
-        #define THEOLIZER_EXPORT_DLL __attribute__((visibility ("default")))
-    #endif
+#if defined(_MSC_VER)
+    #define THEOLIZER_INTERNAL_EXPORT __declspec(dllexport)
+#elif defined(_WIN32)
+    #define THEOLIZER_INTERNAL_EXPORT __declspec(dllexport)
 #else
-    #if defined(THEOLIZER_DYN_LINK)
-        #if defined(_MSC_VER)
-            #define THEOLIZER_EXPORT_DLL __declspec(dllimport)
-        #else
-            #define THEOLIZER_EXPORT_DLL
-        #endif
-    #else
-        #define THEOLIZER_EXPORT_DLL
-    #endif
+    #define THEOLIZER_INTERNAL_EXPORT __attribute__((visibility ("default")))
 #endif
 
 // ***************************************************************************

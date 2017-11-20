@@ -28,16 +28,16 @@
 */
 //############################################################################
 
+#define THEOLIZER_NO_ANALYZE
+
 #define NOMINMAX
 #include <windows.h>
 
-#define DLL_EXPORT
 #include "integrator.h"
 
-// ***************************************************************************
-//      C++DLL用連携処理統括クラス
-//          DLLの場合、通常１つしかインスタンス不要なのでシングルトンとする
-// ***************************************************************************
+//############################################################################
+//      C# I/F
+//############################################################################
 
 //----------------------------------------------------------------------------
 //      スレッド起動処理(main()呼び出し)
@@ -48,9 +48,6 @@ extern "C" int main();
 void CppInitialize(theolizer::Streams* oStreams)
 {
     auto&   aDllIntegrator = theolizer::DllIntegrator::getInstance();
-DEBUG_PRINT("mRequest  = ", aDllIntegrator.getStreams()->mRequest);
-DEBUG_PRINT("mResponse = ", aDllIntegrator.getStreams()->mResponse);
-DEBUG_PRINT("mNotify   = ", aDllIntegrator.getStreams()->mNotify);
     *oStreams = *aDllIntegrator.getStreams();
 
     aDllIntegrator.startThread(main);

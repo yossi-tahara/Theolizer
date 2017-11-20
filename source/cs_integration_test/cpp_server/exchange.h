@@ -37,8 +37,8 @@
 //      データ処理用クラス群
 // ***************************************************************************
 
-//namespace exchange
-//{
+namespace exchange
+{
 
 class UserClassSub
 {
@@ -78,6 +78,6 @@ public:
     THEOLIZER_INTRUSIVE_ORDER(CS, (func0Theolizer), 1);
 };
 
-//} // namespace exchange
+} // namespace exchange
 
 #endif  // THEOLIZER_INTERNAL_TYPE_H

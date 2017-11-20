@@ -46,7 +46,6 @@
 #include <sstream>
 
 // 固有ヘッダ
-#define DLL_EXPORT
 #include "cpp_server.h"
 #include "exchange.h"
 #include "cpp_server.cpp.theolizer.hpp"
@@ -63,7 +62,7 @@ int main()
 ///        theolizer::JsonOSerializer<> jos(std::cout);  // シリアライザを生成
     }
     {
-        /*exchange::*/func0Theolizer    afunc0Theolizer;
+        exchange::func0Theolizer    afunc0Theolizer;
         afunc0Theolizer.mThis.mIntMain=123;
         afunc0Theolizer.miUserClassSub.mUIntSub=456;
         afunc0Theolizer.miUserClassSub.mStringSub="test";
@@ -90,7 +89,7 @@ int main()
         getline(aRequestStream, aLine);
         aResponseStream << aLine << std::endl;
 #else
-        /*exchange::*/func0Theolizer    afunc0Theolizer;
+        exchange::func0Theolizer    afunc0Theolizer;
         THEOLIZER_PROCESS(jis, afunc0Theolizer);
         THEOLIZER_PROCESS(debug, afunc0Theolizer);
         THEOLIZER_PROCESS(jos, afunc0Theolizer);
