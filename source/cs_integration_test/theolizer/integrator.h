@@ -35,7 +35,113 @@
 #include <thread>
 #include <utility>
 
+// 対応する派生シリアライザを全てインクルードする
+#include <theolizer/serializer_json.h>
+#include <theolizer/serializer_binary.h>
+
 #include "memory_stream.h"
+
+//############################################################################
+//      core_integratorへ分離予定
+//############################################################################
+
+namespace theolizer
+{
+// ***************************************************************************
+//      各種ヘルパー
+// ***************************************************************************
+
+namespace internal
+{
+class BaseIntegrator;
+}
+
+//----------------------------------------------------------------------------
+//      スレッドで使用するインテグレータを管理
+//----------------------------------------------------------------------------
+
+class ThreadIntegrator
+{
+    static thread_local internal::BaseIntegrator  *mIntegrator;
+public:
+    static void setIntegrator(internal::BaseIntegrator* iIntegrator)
+    {
+        mIntegrator = iIntegrator;
+    }
+    static internal::BaseIntegrator* getIntegrator()
+    {
+        return mIntegrator;
+    }
+};
+
+//----------------------------------------------------------------------------
+//      シリアライザの指定
+//----------------------------------------------------------------------------
+
+enum class SerializerType
+{
+    Binary,             // Binary
+    Json                // Json
+};
+
+// ***************************************************************************
+//      内部用（ユーザプログラムから使用不可）
+// ***************************************************************************
+
+namespace internal
+{
+//----------------------------------------------------------------------------
+//      基底インテグレータ
+//----------------------------------------------------------------------------
+
+class BaseIntegrator
+{
+protected:
+    template<Destination uDefault>
+    BaseSerializer* makeISerializer(SerializerType iSerializerType, std::istream& iIStream)
+    {
+        switch(iSerializerType)
+        {
+        case SerializerType::Binary:
+            return new BinaryISerializer<uDefault>(iIStream);
+
+        case SerializerType::Json:
+            return new JsonISerializer<uDefault>(iIStream);
+        }
+    }
+
+    template<Destination uDefault>
+    BaseSerializer*  makeOSerializer
+    (
+        SerializerType  iSerializerType,
+        std::ostream&   iOStream,
+        unsigned        iGlobalVersionNo
+    )
+    {
+        switch(iSerializerType)
+        {
+        case SerializerType::Binary:
+            return new BinaryOSerializer<uDefault>(iOStream, iGlobalVersionNo);
+
+        case SerializerType::Json:
+            return new JsonOSerializer<uDefault>(iOStream, iGlobalVersionNo);
+        }
+    }
+
+    void deleteSerializer(BaseSerializer* iBaseSerializer)
+    {
+        delete iBaseSerializer;
+    }
+public:
+    virtual ~BaseIntegrator()
+    {
+    }
+
+};
+
+}   // namespace internal
+
+}   // namespace theolizer
 
 //############################################################################
 //      C++内部処理
@@ -47,12 +153,15 @@
 
 namespace theolizer
 {
+namespace internal
+{
     struct Streams;
+}
 }
 
 extern "C"
 {
-    THEOLIZER_INTERNAL_EXPORT void CppInitialize(theolizer::Streams* oStreams);
+    THEOLIZER_INTERNAL_EXPORT void CppInitialize(theolizer::internal::Streams* oStreams);
 }
 
 // ***************************************************************************
@@ -62,40 +171,44 @@ extern "C"
 
 namespace theolizer
 {
-
 //----------------------------------------------------------------------------
 //      C#への接続情報
 //----------------------------------------------------------------------------
 
+namespace internal
+{
+
 struct Streams
 {
-    IMemoryStream*  mRequest;           // C#->Cpp要求用ストリーム
-    OMemoryStream*  mResponse;          // Cpp->C#応答用ストリーム
-    OMemoryStream*  mNotify;            // Cpp->C#通知用ストリーム
+        IMemoryStream*  mRequest;           // C#->Cpp要求用ストリーム
+        OMemoryStream*  mResponse;          // Cpp->C#応答用ストリーム
+        OMemoryStream*  mNotify;            // Cpp->C#通知用ストリーム
 
-    // コンストラクタ
-    Streams();
+        // コンストラクタ
+        Streams();
 
-    // デストラクタ
-    ~Streams();
+        // デストラクタ
+        ~Streams();
 
 private:
     friend  void ::CppInitialize(Streams*);
 
-    // コピー／ムーブ不可
-    Streams(Streams const&) = delete;
-    Streams(Streams     &&) = delete;
-    Streams& operator=(Streams const&) = default;   // friendのみ許可
-    Streams& operator=(Streams     &&) = delete;
+        // コピー／ムーブ不可
+        Streams(Streams const&) = delete;
+        Streams(Streams     &&) = delete;
+        Streams& operator=(Streams const&) = default;   // friendのみ許可
+        Streams& operator=(Streams     &&) = delete;
 };
+
+}   // namespace internal
 
 //----------------------------------------------------------------------------
 //      本体
 //----------------------------------------------------------------------------
 
-class DllIntegrator
+class DllIntegrator : public internal::BaseIntegrator
 {
-    friend  void ::CppInitialize(Streams*);
+    friend  void ::CppInitialize(internal::Streams*);
 
     std::thread*    mMainThread;        // メイン・スレッド
     bool            mTerminated;        // サービス終了
@@ -107,6 +220,17 @@ class DllIntegrator
     DllIntegrator& operator=(DllIntegrator const&) = delete;
     DllIntegrator& operator=(DllIntegrator     &&) = delete;
 
+    class AutoTerminate
+    {
+        DllIntegrator&  mDllIntegrator;
+    public:
+        AutoTerminate(DllIntegrator& iDllIntegrator) : mDllIntegrator(iDllIntegrator) { }
+        ~AutoTerminate()
+        {
+            mDllIntegrator.terminate();
+        }
+    };
+
     // メイン・スレッド起動と終了管理
     template<class F, class ...Args>
     void startThread(F&& f, Args&&... args)
@@ -117,34 +241,43 @@ class DllIntegrator
                 (
                     [&]()
                     {
+                        AutoTerminate aAutoTerminate(*this);
                         f(std::forward<Args>(args)...);
-                        terminate();
                     }
                 );
         }
     }
+
     // 終了
     void terminate()
     {
-        mTerminated = true;
-        mStreams.mRequest->disconnect();
-        mStreams.mResponse->disconnect();
-        mStreams.mNotify->disconnect();
+        if (!mTerminated)
+        {
+            mTerminated = true;
+            if (mStreams.mRequest)  mStreams.mRequest->disconnect();
+            if (mStreams.mResponse) mStreams.mResponse->disconnect();
+            if (mStreams.mNotify)   mStreams.mNotify->disconnect();
+        }
     }
 
     //      ---<<< 管理領域 >>>---
 
-    Streams mStreams;
-    Streams* getStreams() { return &mStreams; }
+    internal::Streams                       mStreams;
+    internal::Streams*                      getStreams() { return &mStreams; }
+    theolizer::internal::BaseSerializer*    mRequestSerializer;
+    theolizer::internal::BaseSerializer*    mResponseSerializer;
+    theolizer::internal::BaseSerializer*    mNotirySerializer;
 
 public:
     //      ---<<< API >>>---
 
+    // コンストラクタ
     static DllIntegrator& getInstance()
     {
         static DllIntegrator instance;
         return instance;
     }
+    // デストラクタ
     ~DllIntegrator();
 
     void setSize(std::size_t iResposeSize, std::size_t iNotifySize)
@@ -153,11 +286,43 @@ public:
         mStreams.mNotify->setSize(iNotifySize);
     }
 
+    // 受付処理開始
+    //  派生シリアライザのコンストラクタへGlobalVersionNoTableを渡すためにヘッダで定義する。
+    void start(SerializerType iSerializerType)
+    {
+        // 保存先しては後日「連携先」へ変更する
+        mRequestSerializer=makeISerializer<theolizerD::All>
+            (
+                SerializerType::Json, *mStreams.mRequest
+            );
+std::cout << mRequestSerializer->getGlobalVersionNo();
+
+        mResponseSerializer=makeOSerializer<theolizerD::All>
+            (
+                SerializerType::Json, *mStreams.mResponse,
+                mRequestSerializer->getGlobalVersionNo()
+            );
+
+        // C#からの受信処理
+        theolizer::JsonOSerializer<> debug(std::cout);
+#if 0
+		while (!isTerminated())
+        {
+            exchange::func0Theolizer    afunc0Theolizer;
+            THEOLIZER_PROCESS(*mResponseSerializer, afunc0Theolizer);
+            THEOLIZER_PROCESS(debug, afunc0Theolizer);
+            THEOLIZER_PROCESS(*mRequestSerializer, afunc0Theolizer);
+            mStreams.mResponse->flush();
+        }
+#endif
+	}
+
+    bool isTerminated() { return mTerminated; }
+
+    // 以下は削除予定
     std::istream& getRequestStream()  { return *(mStreams.mRequest); }
     std::ostream& getResponseStream() { return *(mStreams.mResponse); }
     std::ostream& getNotifyStream()   { return *(mStreams.mNotify); }
-
-    bool isTerminated() { return mTerminated; }
 };
 
 //############################################################################

@@ -1,5 +1,5 @@
 ﻿//############################################################################
-//      Theolizer Test Project for C# Integration
+//      Theolizerライブラリの連携処理クラス(C#側)
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
@@ -28,59 +28,62 @@
 */
 //############################################################################
 
-#if !defined(THEOLIZER_INTERNAL_TYPE_H)
-#define THEOLIZER_INTERNAL_CPP_SERVER_H
-
-#include <theolizer/serializer_json.h>
+using System.Threading;
+using theolizer.internal_space;
 
 // ***************************************************************************
-//      データ処理用クラス群
+//      各種ヘルパー
 // ***************************************************************************
 
-namespace exchange
+namespace theolizer
 {
+    //----------------------------------------------------------------------------
+    //      スレッドで使用するインテグレータを管理
+    //----------------------------------------------------------------------------
 
-class UserClassSub
-{
-    //      ---<<< メンバ変数群 >>>---
-public:
-    unsigned    mUIntSub;
-    std::string mStringSub = "";
-    THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassSub), 1);
-};
-
-class UserClassMain
-{
-public:
-    //      ---<<< メンバ変数群 >>>---
-
-    int     mIntMain;
-
-    //      ---<<< メンバ関数群 >>>---
-
-    void func0(UserClassSub const& iUserClassSub)
+    static class ThreadIntegrator
     {
-        std::cout << "func0()\n"
-                  << "    mIntMain=" << mIntMain << "\n"
-                  << "    iUserClassSub.mUIntSub  =" << iUserClassSub.mUIntSub << "\n"
-                  << "    iUserClassSub.mStringSub=" << iUserClassSub.mStringSub << "\n";
+        static ThreadLocal<IIntegrator> sThreadIntegrator;
+        static ThreadIntegrator()
+        {
+            sThreadIntegrator = new ThreadLocal<IIntegrator>();
+        }
+        public static IIntegrator Integrator
+        {
+            get { return sThreadIntegrator.Value; }
+            set
+            {
+                if (sThreadIntegrator.Value != value)
+                {
+                    if (sThreadIntegrator.Value != null)  sThreadIntegrator.Value.Dispose();
+                    sThreadIntegrator.Value = value;
+                }
+            }
+        }
     }
 
-    THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassMain), 1);
-};
+    //----------------------------------------------------------------------------
+    //      シリアライザの指定
+    //----------------------------------------------------------------------------
+
+    public enum SerializerType
+    {
+        Binary,             // Binary
+        Json                // Json
+    }
+
+}   // theolizer
 
 // ***************************************************************************
-//      自動生成予定のクラス群
+//      内部用（ユーザプログラムから使用不可）
 // ***************************************************************************
 
-class func0Theolizer
+namespace theolizer.internal_space
 {
-public:
-    UserClassMain   mThis;
-    UserClassSub    miUserClassSub;
-    THEOLIZER_INTRUSIVE_ORDER(CS, (func0Theolizer), 1);
-};
+    interface IIntegrator
+    {
+        BaseSerializer Serializer { get; }
+        void Dispose();
+    }
 
-} // namespace exchange
-
-#endif  // THEOLIZER_INTERNAL_TYPE_H
+}   // theolizer.internal_space

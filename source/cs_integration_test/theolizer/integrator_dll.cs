@@ -35,52 +35,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using theolizer.internal_space;
 
 namespace theolizer
 {
-    // ***************************************************************************
-    //      各種ヘルパー
-    // ***************************************************************************
-
-    //----------------------------------------------------------------------------
-    //      スレッドで使用するインテグレータを管理
-    //----------------------------------------------------------------------------
-
-    static class ThreadIntegrator
-    {
-        static ThreadLocal<IIntegrator> sThreadIntegrator;
-        static ThreadIntegrator()
-        {
-            sThreadIntegrator = new ThreadLocal<IIntegrator>();
-        }
-        public static IIntegrator Integrator
-        {
-            get { return sThreadIntegrator.Value; }
-            set
-            {
-                if (sThreadIntegrator.Value != value)
-                {
-                    if (sThreadIntegrator.Value != null)  sThreadIntegrator.Value.Dispose();
-                    sThreadIntegrator.Value = value;
-                }
-            }
-        }
-    }
-
-    //----------------------------------------------------------------------------
-    //      シリアライザの指定
-    //----------------------------------------------------------------------------
-
-    public enum SerializerType
-    {
-        Binary,             // Binary
-        Json                // Json
-    }
-
     // ***************************************************************************
     //      C++DLL用連携処理統括クラス
     //          DLLの場合、通常１つしかインスタンス不要なのでシングルトンとする
@@ -201,18 +161,5 @@ namespace theolizer
         {
             get { return mRequestSerializer; }
         }
-    }
-}
-
-//############################################################################
-//      内部用（ユーザプログラムから使用不可）
-//############################################################################
-
-namespace theolizer.internal_space
-{
-    interface IIntegrator
-    {
-        BaseSerializer Serializer { get; }
-        void Dispose();
     }
 }

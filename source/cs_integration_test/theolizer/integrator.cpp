@@ -45,7 +45,7 @@
 
 extern "C" int main();
 
-void CppInitialize(theolizer::Streams* oStreams)
+void CppInitialize(theolizer::internal::Streams* oStreams)
 {
     auto&   aDllIntegrator = theolizer::DllIntegrator::getInstance();
     *oStreams = *aDllIntegrator.getStreams();
@@ -53,11 +53,14 @@ void CppInitialize(theolizer::Streams* oStreams)
     aDllIntegrator.startThread(main);
 }
 
+namespace theolizer
+{
+
 //----------------------------------------------------------------------------
 //      C#への接続情報
 //----------------------------------------------------------------------------
 
-namespace theolizer
+namespace internal
 {
 
 Streams::Streams() :
@@ -68,16 +71,25 @@ Streams::Streams() :
 
 Streams::~Streams()
 {
-    delete mRequest;
     delete mResponse;
+    delete mRequest;
     delete mNotify;
 }
+
+}   // namespace internal
 
 //----------------------------------------------------------------------------
 //      コンストラクタ
 //----------------------------------------------------------------------------
+
 FILE *fp;
-DllIntegrator::DllIntegrator() : mMainThread(nullptr), mTerminated(false)
+DllIntegrator::DllIntegrator() :
+    mMainThread(nullptr),
+    mTerminated(false),
+    mStreams(),
+    mRequestSerializer(nullptr),
+    mResponseSerializer(nullptr),
+    mNotirySerializer(nullptr)
 {
 AllocConsole();
 freopen_s(&fp, "CON", "w", stdout);
@@ -89,11 +101,16 @@ freopen_s(&fp, "CON", "w", stdout);
 
 DllIntegrator::~DllIntegrator()
 {
+    terminate();
     if (mMainThread)
     {
         mMainThread->join();
         delete mMainThread;
     }
+    deleteSerializer(mResponseSerializer);
+    deleteSerializer(mRequestSerializer);
+    deleteSerializer(mNotirySerializer);
+
 fclose(fp);
 FreeConsole();
 }
