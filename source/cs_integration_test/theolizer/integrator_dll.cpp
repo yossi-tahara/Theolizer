@@ -1,5 +1,5 @@
 ﻿//############################################################################
-//      Theolizerライブラリの連携処理クラス(C++側)
+//      Theolizerライブラリの連携処理クラス(C++側dll用)
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
@@ -33,7 +33,7 @@
 #define NOMINMAX
 #include <windows.h>
 
-#include "integrator.h"
+#include "integrator_dll.h"
 
 //############################################################################
 //      C# I/F

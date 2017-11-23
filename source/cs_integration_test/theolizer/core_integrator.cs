@@ -1,5 +1,5 @@
 ﻿//############################################################################
-//      Theolizerライブラリの連携処理クラス(C#側)
+//      Theolizerライブラリの連携処理クラス(C#側コア部)
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.

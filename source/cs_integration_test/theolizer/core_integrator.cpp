@@ -1,5 +1,5 @@
 ﻿//############################################################################
-//      Theolizer Test Project for C# Integration
+//      Theolizerライブラリの連携処理クラス(C++側コア部)
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
@@ -28,9 +28,14 @@
 */
 //############################################################################
 
-#if !defined(THEOLIZER_INTERNAL_CPP_SERVER_H)
-#define THEOLIZER_INTERNAL_CPP_SERVER_H
+#define THEOLIZER_NO_ANALYZE
 
-#include <theolizer/integrator_dll.h>
+#include "core_integrator.h"
 
-#endif  // THEOLIZER_INTERNAL_CPP_SERVER_H
+//############################################################################
+//      
+//############################################################################
+namespace theolizer
+{
+
+}   // namespace theolizer

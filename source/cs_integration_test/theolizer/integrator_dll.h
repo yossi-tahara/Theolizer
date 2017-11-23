@@ -1,5 +1,5 @@
 ﻿//############################################################################
-//      Theolizerライブラリの連携処理クラス(C++側)
+//      Theolizerライブラリの連携処理クラス(C++側dll用)
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
@@ -28,10 +28,10 @@
 */
 //############################################################################
 
-#if !defined(THEOLIZER_INTERNAL_INTEGRATOR_H)
-#define THEOLIZER_INTERNAL_INTEGRATOR_H
+#if !defined(THEOLIZER_INTERNAL_INTEGRATOR_DLL_H)
+#define THEOLIZER_INTERNAL_INTEGRATOR_DLL_H
 
-#include <memory>
+//#include <memory>
 #include <thread>
 #include <utility>
 
@@ -39,112 +39,11 @@
 #include <theolizer/serializer_json.h>
 #include <theolizer/serializer_binary.h>
 
+#include "core_integrator.h"
 #include "memory_stream.h"
 
 //############################################################################
-//      core_integratorへ分離予定
-//############################################################################
-
-namespace theolizer
-{
-// ***************************************************************************
-//      各種ヘルパー
-// ***************************************************************************
-
-namespace internal
-{
-class BaseIntegrator;
-}
-
-//----------------------------------------------------------------------------
-//      スレッドで使用するインテグレータを管理
-//----------------------------------------------------------------------------
-
-class ThreadIntegrator
-{
-    static thread_local internal::BaseIntegrator  *mIntegrator;
-public:
-    static void setIntegrator(internal::BaseIntegrator* iIntegrator)
-    {
-        mIntegrator = iIntegrator;
-    }
-    static internal::BaseIntegrator* getIntegrator()
-    {
-        return mIntegrator;
-    }
-};
-
-//----------------------------------------------------------------------------
-//      シリアライザの指定
-//----------------------------------------------------------------------------
-
-enum class SerializerType
-{
-    Binary,             // Binary
-    Json                // Json
-};
-
-// ***************************************************************************
-//      内部用（ユーザプログラムから使用不可）
-// ***************************************************************************
-
-namespace internal
-{
-//----------------------------------------------------------------------------
-//      基底インテグレータ
-//----------------------------------------------------------------------------
-
-class BaseIntegrator
-{
-protected:
-    template<Destination uDefault>
-    BaseSerializer* makeISerializer(SerializerType iSerializerType, std::istream& iIStream)
-    {
-        switch(iSerializerType)
-        {
-        case SerializerType::Binary:
-            return new BinaryISerializer<uDefault>(iIStream);
-
-        case SerializerType::Json:
-            return new JsonISerializer<uDefault>(iIStream);
-        }
-    }
-
-    template<Destination uDefault>
-    BaseSerializer*  makeOSerializer
-    (
-        SerializerType  iSerializerType,
-        std::ostream&   iOStream,
-        unsigned        iGlobalVersionNo
-    )
-    {
-        switch(iSerializerType)
-        {
-        case SerializerType::Binary:
-            return new BinaryOSerializer<uDefault>(iOStream, iGlobalVersionNo);
-
-        case SerializerType::Json:
-            return new JsonOSerializer<uDefault>(iOStream, iGlobalVersionNo);
-        }
-    }
-
-    void deleteSerializer(BaseSerializer* iBaseSerializer)
-    {
-        delete iBaseSerializer;
-    }
-public:
-    virtual ~BaseIntegrator()
-    {
-    }
-
-};
-
-}   // namespace internal
-
-}   // namespace theolizer
-
-//############################################################################
-//      C++内部処理
+//      DLL用インテグレータ
 //############################################################################
 
 // ***************************************************************************
@@ -180,24 +79,24 @@ namespace internal
 
 struct Streams
 {
-        IMemoryStream*  mRequest;           // C#->Cpp要求用ストリーム
-        OMemoryStream*  mResponse;          // Cpp->C#応答用ストリーム
-        OMemoryStream*  mNotify;            // Cpp->C#通知用ストリーム
+    IMemoryStream*  mRequest;           // C#->Cpp要求用ストリーム
+    OMemoryStream*  mResponse;          // Cpp->C#応答用ストリーム
+    OMemoryStream*  mNotify;            // Cpp->C#通知用ストリーム
 
-        // コンストラクタ
-        Streams();
+    // コンストラクタ
+    Streams();
 
-        // デストラクタ
-        ~Streams();
+    // デストラクタ
+    ~Streams();
 
 private:
-    friend  void ::CppInitialize(Streams*);
+friend  void ::CppInitialize(Streams*);
 
-        // コピー／ムーブ不可
-        Streams(Streams const&) = delete;
-        Streams(Streams     &&) = delete;
-        Streams& operator=(Streams const&) = default;   // friendのみ許可
-        Streams& operator=(Streams     &&) = delete;
+    // コピー／ムーブ不可
+    Streams(Streams const&) = delete;
+    Streams(Streams     &&) = delete;
+    Streams& operator=(Streams const&) = default;   // friendのみ許可
+    Streams& operator=(Streams     &&) = delete;
 };
 
 }   // namespace internal
@@ -306,7 +205,7 @@ std::cout << mRequestSerializer->getGlobalVersionNo();
         // C#からの受信処理
         theolizer::JsonOSerializer<> debug(std::cout);
 #if 0
-		while (!isTerminated())
+        while (!isTerminated())
         {
             exchange::func0Theolizer    afunc0Theolizer;
             THEOLIZER_PROCESS(*mResponseSerializer, afunc0Theolizer);
@@ -315,7 +214,7 @@ std::cout << mRequestSerializer->getGlobalVersionNo();
             mStreams.mResponse->flush();
         }
 #endif
-	}
+    }
 
     bool isTerminated() { return mTerminated; }
 
@@ -331,4 +230,4 @@ std::cout << mRequestSerializer->getGlobalVersionNo();
 
 }   // namespace theolizer
 
-#endif  // THEOLIZER_INTERNAL_INTEGRATOR_H
+#endif  // THEOLIZER_INTERNAL_INTEGRATOR_DLL_H
