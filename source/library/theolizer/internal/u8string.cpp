@@ -42,7 +42,9 @@
 #include <algorithm>            // for find
 
 #if defined(_WIN32)
-    #define NOMINMAX
+    #ifndef NOMINMAX            // MinGWでは事前定義されている模様
+        #define NOMINMAX
+    #endif
     #include <windows.h>
 #endif
 

@@ -28,11 +28,8 @@
 
 ]]############################################################################
 
-# 開発用
-if(NOT "${DEVELOPING_INTEGRATOR}" STREQUAL "")
-    message(STATUS "DEVELOPING_INTEGRATOR=${DEVELOPING_INTEGRATOR}")
-    include_directories("${CMAKE_SOURCE_DIR}")
-endif()
+# 暫定開発用(Theolizerプロジェクトへ完全に組込んだら削除する)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 #-----------------------------------------------------------------------------
 #       target definition

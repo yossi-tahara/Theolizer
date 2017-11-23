@@ -437,10 +437,7 @@ add_subdirectory(reference_and_test)
 
 #       ---<<< C# Integration >>>---
 
-if(MSVC)
-#    message(STATUS "add_subdirectory(cs_integration_test)")
-#    add_subdirectory(cs_integration_test)
-endif()
+add_subdirectory(cs_integration_test)
 
 #       ---<<< Theolizer Document >>>---
 

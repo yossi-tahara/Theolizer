@@ -45,4 +45,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 
 add_subdirectory(cpp_server)
-add_subdirectory(cs_client)
+
+if(MSVC)
+    message(STATUS "add_subdirectory(cs_client)")
+    add_subdirectory(cs_client)
+endif()
