@@ -1179,7 +1179,7 @@ private:
     void processElement(QualType iQualType, Decl const* iErrorPos, bool iIsRegisterdClass=false)
     {
         QualType qt=iQualType.getDesugaredType(*gASTContext);
-        // TheolizerNonKeepStepなら、Type取り出し
+        // TheolizerNonKeepStep or TheolizerParameterなら、Type取り出し
         do
         {
             CXXRecordDecl* crd=qt->getAsCXXRecordDecl();
@@ -1190,8 +1190,8 @@ private:
                 =dyn_cast<ClassTemplateSpecializationDecl >(crd);
             if (!ctsd)
         break;
-
-            if (crd->getName().startswith("TheolizerNonKeepStep") == false)
+            if ((crd->getName().startswith("TheolizerNonKeepStep") == false)
+             && (crd->getName().startswith("TheolizerParameter") == false))
         break;
 
             TemplateArgumentList const& tal=ctsd->getTemplateArgs();

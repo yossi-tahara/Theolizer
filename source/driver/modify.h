@@ -1445,6 +1445,30 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
 
                 // 型取り出し
                 QualType qt=field->getType().getDesugaredType(*gASTContext);
+
+                // TheolizerParameterなら、Type取り出し
+                do
+                {
+                    CXXRecordDecl* crd=qt->getAsCXXRecordDecl();
+                    if (!crd)
+                break;
+
+                    ClassTemplateSpecializationDecl const* ctsd
+                        =dyn_cast<ClassTemplateSpecializationDecl >(crd);
+                    if (!ctsd)
+                break;
+                    if (crd->getName().startswith("TheolizerParameter") == false)
+                break;
+
+                    TemplateArgumentList const& tal=ctsd->getTemplateArgs();
+                    if (tal.size() < 1)
+                break;
+
+                    TemplateArgument const& ta = tal.get(0);
+                    qt = ta.getAsType();
+                }
+                while(0);
+
                 Type const* type = qt.getTypePtr();
 
                 // 要素リストへ登録
@@ -1483,7 +1507,7 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
                 // クラス／構造体
                 else if (clang::CXXRecordDecl const* crd=type->getAsCXXRecordDecl())
                 {
-                    createClass(field->getName(), field->getType(), crd);
+                    createClass(field->getName(), qt, crd);
                 }
 
                 // enum型

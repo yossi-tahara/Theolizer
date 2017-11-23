@@ -1241,6 +1241,20 @@ struct Memory<tType, EnableIf<(sizeof(tType) > 128)> >
     tType* operator->() { return mInstance.get(); }
 };
 
+// ***************************************************************************
+//      関数クラスのメンバ変数領域
+//          非共有の場合
+//              Memoryを使って領域獲得
+//          共有の場合(共有クラス && ポインタ)←2017/11/23現在未対応
+// ***************************************************************************
+
+template<typename tType, class tEnable = void>
+struct TheolizerParameter : public Memory<tType>
+{
+    template<typename... tArgs>
+    TheolizerParameter(tArgs&&... iArgs) : Memory{std::forward<tArgs>(iArgs)...} { }
+};
+
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
 

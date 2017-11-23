@@ -63,9 +63,9 @@ int main()
     }
     {
         exchange::func0Theolizer    afunc0Theolizer;
-        afunc0Theolizer.mThis.mIntMain=123;
-        afunc0Theolizer.miUserClassSub.mUIntSub=456;
-        afunc0Theolizer.miUserClassSub.mStringSub="test";
+        afunc0Theolizer.mThis->mIntMain=123;
+        afunc0Theolizer.miUserClassSub->mUIntSub=456;
+        afunc0Theolizer.miUserClassSub->mStringSub="test";
 
         theolizer::JsonOSerializer<> jos(std::cout);
         THEOLIZER_PROCESS(jos, afunc0Theolizer);

@@ -76,8 +76,8 @@ public:
 class func0Theolizer
 {
 public:
-    UserClassMain   mThis;
-    UserClassSub    miUserClassSub;
+    theolizer::internal::TheolizerParameter<UserClassMain>  mThis;
+    theolizer::internal::TheolizerParameter<UserClassSub>   miUserClassSub;
     THEOLIZER_INTRUSIVE_ORDER(CS, (func0Theolizer), 1);
 };
 
