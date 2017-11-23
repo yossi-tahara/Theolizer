@@ -865,11 +865,7 @@ THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
         typedef THEOLIZER_GENERATED_CLASS_TYPE::
             TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO> TheolizerVersion;
 
-        std::unique_ptr<TheolizerVersion> aVersion=
-            std::unique_ptr<TheolizerVersion>
-            (
-                new TheolizerVersion(*this, iVersionNo, true)
-            );
+        theolizer::internal::Memory<TheolizerVersion> aVersion(*this, iVersionNo, true);
         aVersion->saveClass(iSerializer, iVersionNo);
     }
     else
@@ -895,11 +891,7 @@ THEOLIZER_GENERATED_CLASS_TYPE::TheolizerVersion
         typedef THEOLIZER_GENERATED_CLASS_TYPE::
             TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO> TheolizerVersion;
 
-        std::unique_ptr<TheolizerVersion> aVersion=
-            std::unique_ptr<TheolizerVersion>
-            (
-                new TheolizerVersion(*this, iVersionNo, false)
-            );
+        theolizer::internal::Memory<TheolizerVersion> aVersion(*this, iVersionNo, false);
         aVersion->loadClass(iSerializer, iVersionNo);
     }
     else
@@ -1133,12 +1125,7 @@ THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::saveClass
         Theolizer::kLastVersionNo
     > TheolizerVersion;
 
-    std::unique_ptr<TheolizerVersion> aVersion=
-        std::unique_ptr<TheolizerVersion>
-        (
-            new TheolizerVersion(*iPointer, iVersionNo, true)
-        );
-
+    theolizer::internal::Memory<TheolizerVersion> aVersion(*iPointer, iVersionNo, true);
     aVersion->saveClass(iSerializer, iVersionNo);
 }
 
@@ -1159,11 +1146,7 @@ THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::loadClass
         Theolizer::kLastVersionNo
     > TheolizerVersion;
 
-    std::unique_ptr<TheolizerVersion> aVersion=
-        std::unique_ptr<TheolizerVersion>
-        (
-            new TheolizerVersion(*ioPointer, iVersionNo, false)
-        );
+    theolizer::internal::Memory<TheolizerVersion> aVersion(*ioPointer, iVersionNo, false);
     aVersion->loadClass(iSerializer, iVersionNo);
 }
 

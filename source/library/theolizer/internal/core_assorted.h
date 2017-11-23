@@ -38,6 +38,7 @@
 #define THEOLIZER_INTERNAL_CORE_ASSORTED_H
 
 #include <limits>
+#include <utility>  // std::forward
 
 // ***************************************************************************
 //      基本ツールのインクルード
@@ -1212,6 +1213,32 @@ public:
         return tMidSerializer::getCppName(iPrimitiveName, iSerializerVersionNo);
     }
 #endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
+};
+
+// ***************************************************************************
+//      領域獲得補助
+//          128バイトを超えるならヒープに獲得する
+// ***************************************************************************
+
+template<typename tType, class tEnable = void>
+struct Memory
+{
+    tType   mInstance;
+    template<typename... tArgs>
+    Memory(tArgs&&... iArgs) : mInstance{std::forward<tArgs>(iArgs)...} { }
+    operator tType&() { return mInstance; }
+    tType* operator->() { return &mInstance; }
+};
+
+// 128バイトを超えるならヒープ
+template<typename tType>
+struct Memory<tType, EnableIf<(sizeof(tType) > 128)> >
+{
+    std::unique_ptr<tType>  mInstance;
+    template<typename... tArgs>
+    Memory(tArgs&&... iArgs) : mInstance(new tType{std::forward<tArgs>(iArgs)...}) { }
+    operator tType&() { return *(mInstance.get()); }
+    tType* operator->() { return mInstance.get(); }
 };
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
