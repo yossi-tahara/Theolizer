@@ -54,10 +54,14 @@
 //      main()
 // ***************************************************************************
 
-int main()
+int main(theolizer::DllIntegrator& iDllIntegrator)
 {
     DEBUG_PRINT("---------------- main()");
 
+    iDllIntegrator.setSize(1024, 4096);
+    iDllIntegrator.start(theolizer::SerializerType::Json);
+
+#if 0
     {
 ///        theolizer::JsonOSerializer<> jos(std::cout);  // シリアライザを生成
     }
@@ -96,6 +100,7 @@ int main()
         aResponseStream.flush();
 #endif
     }
+#endif
 
     return 0;
 }

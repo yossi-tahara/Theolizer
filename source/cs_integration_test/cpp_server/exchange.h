@@ -31,7 +31,7 @@
 #if !defined(THEOLIZER_INTERNAL_TYPE_H)
 #define THEOLIZER_INTERNAL_CPP_SERVER_H
 
-#include <theolizer/serializer_json.h>
+#include <theolizer/integrator/core_integrator.h>
 
 // ***************************************************************************
 //      データ処理用クラス群
@@ -64,6 +64,7 @@ public:
                   << "    mIntMain=" << mIntMain << "\n"
                   << "    iUserClassSub.mUIntSub  =" << iUserClassSub.mUIntSub << "\n"
                   << "    iUserClassSub.mStringSub=" << iUserClassSub.mStringSub << "\n";
+        mIntMain *= 2;
     }
 
     THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassMain), 1);
@@ -79,8 +80,16 @@ public:
     theolizer::internal::TheolizerParameter<UserClassMain>  mThis;
     theolizer::internal::TheolizerParameter<UserClassSub>   miUserClassSub;
     THEOLIZER_INTRUSIVE_ORDER(CS, (func0Theolizer), 1);
+
+    void callFunc()
+    {
+        // 戻り値が有るときはそのメンバへ代入する
+        mThis->func0(miUserClassSub);
+    }
 };
 
 } // namespace exchange
+
+THEOLIZER_INTERNAL_REGISTER_FUNC((exchange::func0Theolizer));
 
 #endif  // THEOLIZER_INTERNAL_TYPE_H

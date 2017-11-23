@@ -527,8 +527,9 @@ return;
 //      前処理
 //----------------------------------------------------------------------------
 
-void BaseSerializer::loadProcessStart(std::size_t iTypeIndex)
+TypeIndexList* BaseSerializer::loadProcessStart(std::size_t iTypeIndex)
 {
+    TypeIndexList* ret = nullptr;
     loadGroupStart(true);
 
     switch(mCheckMode)
@@ -550,18 +551,25 @@ void BaseSerializer::loadProcessStart(std::size_t iTypeIndex)
 
             // 型名から、現在のTypeIndexListを求める
             TypeIndexList& aTypeIndexList=mTypeNameMap->mMap[aTypeName];
-            bool aIsMatch=false;
-            for (auto aTypeIndex : aTypeIndexList)
+            if (iTypeIndex != kInvalidSize)
             {
-                if (aTypeIndex == iTypeIndex)
+                bool aIsMatch=false;
+                for (auto aTypeIndex : aTypeIndexList)
                 {
-                    aIsMatch=true;
-            break;
+                    if (aTypeIndex == iTypeIndex)
+                    {
+                        aIsMatch=true;
+                break;
+                    }
+                }
+                if (!aIsMatch)
+                {
+                    THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.(%1%)", aTypeName);
                 }
             }
-            if (!aIsMatch)
+            else
             {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.(%1%)", aTypeName);
+                ret = &aTypeIndexList;
             }
         }
         break;
@@ -574,9 +582,24 @@ void BaseSerializer::loadProcessStart(std::size_t iTypeIndex)
 
         size_t aTypeIndex;
         loadControl(aTypeIndex);
-        if (!isMatchTypeIndex(aTypeIndex, iTypeIndex))
+        if (iTypeIndex != kInvalidSize)
         {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.");
+            if (!isMatchTypeIndex(aTypeIndex, iTypeIndex))
+            {
+                THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.");
+            }
+        }
+        else
+        {
+#if 1   // ヘッダ処理を実装するまでの仮実装(仮なのでかなりいい加減だがデバッグには使える)
+            static TypeIndexList    aTemp;      // 本来staticではダメだが、仮実装なので手抜き
+            aTemp.clear();
+            aTemp.push_back(aTypeIndex);
+            ret = &aTemp;
+#else
+            auto& aElementType = mSerializedTypeListI->at(aTypeIndex);
+            ret = aElementType.mProgramTypeIndex;
+#endif
         }
         break;
 
@@ -589,6 +612,8 @@ void BaseSerializer::loadProcessStart(std::size_t iTypeIndex)
     {
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
     }
+
+    return ret;
 }
 
 //----------------------------------------------------------------------------
@@ -967,6 +992,7 @@ BaseSerializer::AutoRestoreSaveStructure::~AutoRestoreSaveStructure() noexcept(f
 //      トップ・レベル処理補助クラス
 //----------------------------------------------------------------------------
 
+// TypeCheckする
 BaseSerializer::AutoRestoreLoadProcess::AutoRestoreLoadProcess
 (
     BaseSerializer& iSerializer,
@@ -974,6 +1000,16 @@ BaseSerializer::AutoRestoreLoadProcess::AutoRestoreLoadProcess
 ) : mSerializer(iSerializer)
 {
     mSerializer.loadProcessStart(iTypeIndex);
+}
+
+// TypeIndex返却
+BaseSerializer::AutoRestoreLoadProcess::AutoRestoreLoadProcess
+(
+    BaseSerializer& iSerializer,
+    TypeIndexList*& oTypeIndexList
+) : mSerializer(iSerializer)
+{
+    oTypeIndexList=mSerializer.loadProcessStart(kInvalidSize);
 }
 
 BaseSerializer::AutoRestoreLoadProcess::~AutoRestoreLoadProcess() noexcept(false)

@@ -43,14 +43,14 @@
 //      スレッド起動処理(main()呼び出し)
 //----------------------------------------------------------------------------
 
-extern "C" int main();
+int main(theolizer::DllIntegrator& iDllIntegrator);
 
 void CppInitialize(theolizer::internal::Streams* oStreams)
 {
     auto&   aDllIntegrator = theolizer::DllIntegrator::getInstance();
     *oStreams = *aDllIntegrator.getStreams();
 
-    aDllIntegrator.startThread(main);
+    aDllIntegrator.startThread(main, aDllIntegrator);
 }
 
 namespace theolizer
@@ -85,7 +85,6 @@ Streams::~Streams()
 FILE *fp;
 DllIntegrator::DllIntegrator() :
     mMainThread(nullptr),
-    mTerminated(false),
     mStreams(),
     mRequestSerializer(nullptr),
     mResponseSerializer(nullptr),

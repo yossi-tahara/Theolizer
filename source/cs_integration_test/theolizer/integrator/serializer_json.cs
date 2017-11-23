@@ -103,6 +103,25 @@ namespace theolizer.internal_space
         //      シリアライズ補助関数群
         //----------------------------------------------------------------------------
 
+        // 関数クラス（トップ・レベル）出力開始
+        protected override void saveProcessStart(UInt64 iTypeIndex)
+        {
+            mWriteComma=false;
+            if (!mCancelPrettyPrint) mIndent++;
+            mOStream.Write("[");
+            writePreElement();
+            mOStream.Write(iTypeIndex);
+            writePreElement();
+        }
+
+        // 関数クラス（トップ・レベル）出力終了
+        protected override void saveProcessEnd()
+        {
+            mWriteComma=false;
+            writeCommaIndent();
+            mOStream.Write("]");
+        }
+
         // 構造出力開始
         protected override void saveStructureStart()
         {

@@ -109,7 +109,6 @@ class DllIntegrator : public internal::BaseIntegrator
     friend  void ::CppInitialize(internal::Streams*);
 
     std::thread*    mMainThread;        // メイン・スレッド
-    bool            mTerminated;        // サービス終了
 
     // 生成／コピー／ムーブ不可
     DllIntegrator();
@@ -188,34 +187,26 @@ public:
     //  派生シリアライザのコンストラクタへGlobalVersionNoTableを渡すためにヘッダで定義する。
     void start(SerializerType iSerializerType)
     {
-        // 保存先しては後日「連携先」へ変更する
+        // 保存先指定は後日「連携先」へ変更する
         mRequestSerializer=makeISerializer<theolizerD::All>
             (
-                SerializerType::Json, *mStreams.mRequest
+                iSerializerType, *mStreams.mRequest
             );
 std::cout << mRequestSerializer->getGlobalVersionNo();
 
         mResponseSerializer=makeOSerializer<theolizerD::All>
             (
-                SerializerType::Json, *mStreams.mResponse,
+                iSerializerType, *mStreams.mResponse,
                 mRequestSerializer->getGlobalVersionNo()
             );
 
         // C#からの受信処理
-        theolizer::JsonOSerializer<> debug(std::cout);
-#if 0
         while (!isTerminated())
         {
-            exchange::func0Theolizer    afunc0Theolizer;
-            THEOLIZER_PROCESS(*mResponseSerializer, afunc0Theolizer);
-            THEOLIZER_PROCESS(debug, afunc0Theolizer);
-            THEOLIZER_PROCESS(*mRequestSerializer, afunc0Theolizer);
+            callFunc(*mRequestSerializer, *mResponseSerializer);
             mStreams.mResponse->flush();
         }
-#endif
     }
-
-    bool isTerminated() { return mTerminated; }
 
     // 以下は削除予定
     std::istream& getRequestStream()  { return *(mStreams.mRequest); }

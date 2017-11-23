@@ -146,18 +146,22 @@ int IMemoryStreamBuf::underflow()
 
     if (mNextChar != EOF)
     {
+DEBUG_PRINT("    return(1) ", static_cast<char>(mNextChar));
 return mNextChar;
     }
     if (mBuffChar != EOF)
     {
+DEBUG_PRINT("    return(2) ", static_cast<char>(mBuffChar));
 return mBuffChar;
     }
     std::unique_lock<std::mutex> lock(mMutex);
     mConditionVariable.wait(lock, [&]{ return mDisconnected || (mCount != 0); });
     if (mDisconnected)
+{DEBUG_PRINT("    return(3) EOF");
 return EOF;
-
+}
     mBuffChar = *mTransBuff;
+DEBUG_PRINT("    return(4) ", static_cast<char>(mBuffChar));
     return mBuffChar;
 }
 
@@ -172,14 +176,16 @@ int IMemoryStreamBuf::uflow()
         mLastChar = mNextChar;
         mNextChar = EOF;
         mBuffChar = EOF;
+DEBUG_PRINT("    return(1) ", static_cast<char>(mLastChar));
 return mLastChar;
     }
 
     std::unique_lock<std::mutex> lock(mMutex);
     mConditionVariable.wait(lock, [&]{ return mDisconnected || (mCount != 0); });
     if (mDisconnected)
+{DEBUG_PRINT("    return(2) EOF");
 return EOF;
-
+}
     mLastChar = *mTransBuff++;
     --mCount;
     mBuffChar = EOF;
@@ -187,6 +193,7 @@ return EOF;
     {
         mConditionVariable.notify_all();
     }
+DEBUG_PRINT("    return(3) ", static_cast<char>(mLastChar));
 
     return mLastChar;
 }
@@ -214,7 +221,7 @@ int         mCount;
 StreamStatus IMemoryStreamBuf::write(uint8_t* buffer, int count)
 {
 std::string temp((char*)buffer, count);
-DEBUG_PRINT("---------------- IMemoryStreamBuf::write() : [", temp, "]");
+DEBUG_PRINT("---------------- IMemoryStreamBuf::write() : (", temp, ")");
 
     std::unique_lock<std::mutex> lock(mMutex);
 
@@ -375,7 +382,7 @@ int OMemoryStreamBuf::sync()
 
 int OMemoryStreamBuf::overflow(int c)
 {
-    DEBUG_PRINT("overflow(..., [", static_cast<char>(c) , "]) ", this);
+    DEBUG_PRINT("overflow(..., (", static_cast<char>(c) , ")) ", this);
 
     if (mDisconnected)
 return EOF;
@@ -415,7 +422,7 @@ return sync();
 
 std::streamsize OMemoryStreamBuf::xsputn(char const* buffer, std::streamsize count)
 {
-    DEBUG_PRINT("xsputn(...,", count, ") [", std::string(buffer, count), "] ", this);
+    DEBUG_PRINT("xsputn(...,", count, ") (", std::string(buffer, count), ") ", this);
 
     std::streamsize ret = 0;
     while (ret < count)
@@ -568,7 +575,7 @@ uint8_t* debug_buf=buffer;
 
 std::string temp((char*)debug_buf, *out_count);
 DEBUG_PRINT("---------------- OMemoryStreamBuf::read() : ",
-mDisconnected, " out_count=", *out_count, " [", temp, "]");
+mDisconnected, " out_count=", *out_count, " (", temp, ")");
 
     return (mDisconnected)?StreamStatus::Disconnected:StreamStatus::NoError;
 }

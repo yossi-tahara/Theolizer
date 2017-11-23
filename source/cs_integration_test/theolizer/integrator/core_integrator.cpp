@@ -37,5 +37,7 @@
 //############################################################################
 namespace theolizer
 {
-
+namespace internal
+{
+}   // namespace internal
 }   // namespace theolizer

@@ -31,6 +31,7 @@
 #if !defined(THEOLIZER_INTERNAL_CORE_INTEGRATOR_H)
 #define THEOLIZER_INTERNAL_CORE_INTEGRATOR_H
 
+#include <map>
 #include <theolizer/serializer.h>
 
 #include "memory_stream.h"
@@ -81,13 +82,110 @@ enum class SerializerType
 
 namespace internal
 {
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+
 // ***************************************************************************
 //      基底インテグレータ
 // ***************************************************************************
 
 class BaseIntegrator
 {
+//----------------------------------------------------------------------------
+//      関数クラス処理
+//----------------------------------------------------------------------------
+
+//      ---<<< ホルダ >>>---
+
+    struct HolderBase
+    {
+        virtual void processFunction
+        (
+            BaseSerializer& iISerializer,
+            BaseSerializer& iOSerializer
+        )=0;
+        virtual ~HolderBase() { }
+    };
+
+    // 派生クラスのsaveTypeInstance/loadTypeInstance呼び出し用クラス
+    template<class tFuncClass>
+    struct Holder : public HolderBase
+    {
+        Holder() { }
+        ~Holder() = default;
+        void processFunction
+        (
+            BaseSerializer& iISerializer,
+            BaseSerializer& iOSerializer
+        )
+        {
+            exchange::func0Theolizer    afunc0Theolizer;
+            THEOLIZER_INTERNAL_LOAD(iISerializer, afunc0Theolizer, etmDefault);
+            afunc0Theolizer.callFunc();
+            // 暫定的に要求クラスを返却するが、ここは返却クラスを返すのが正しい
+            BaseSerializer::AutoRestoreSaveProcess
+                aAutoRestoreSaveProcess(iOSerializer, 0);
+            THEOLIZER_INTERNAL_SAVE(iOSerializer, afunc0Theolizer, etmDefault);
+        }
+    };
+
+    // 関数クラス・リスト
+    typedef std::map<std::size_t, std::unique_ptr<HolderBase> > FuncClassList;
+    static FuncClassList& getFuncClassList()
+    {
+        static FuncClassList    sFuncClassList;
+        return sFuncClassList;
+    }
+
+public:
+
+//      ---<<< 関数クラスをsFuncClassListへ登録する >>>---
+
+    template<class tFuncClass>
+    static void registerFuncClass()
+    {
+        // ここで渡すシリアライザが保存先指定を持っている必要がある!!
+        RegisterType<BaseSerializer, tFuncClass, tTheolizerVersion>::getInstance();
+        std::size_t aTypeIndex = ClassTypeInfo<tFuncClass>::getInstance().mTypeIndex;
+
+DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
+    THEOLIZER_INTERNAL_TYPE_NAME(tFuncClass), ">()");
+        getFuncClassList().emplace(aTypeIndex, new Holder<tFuncClass>);
+    }
+
+//      ---<<< 関数クラスを呼び出す >>>---
+
+    void callFunc(BaseSerializer& iISerializer, BaseSerializer& iOSerializer)
+    {
+        // CheckMode変更はヘッダ処理を実装するまでの仮実装
+        //  (仮でかなりいい加減だがデバッグには使える)
+        iISerializer.mCheckMode = CheckMode::TypeCheckByIndex;
+        iOSerializer.mCheckMode = CheckMode::TypeCheckByIndex;
+
+        TypeIndexList*  aTypeIndexList = nullptr;
+        BaseSerializer::AutoRestoreLoadProcess
+            aAutoRestoreLoadProcess(iISerializer, aTypeIndexList);
+        std::size_t aTypeIndex = (*aTypeIndexList)[0];      // 先頭のみ使用する(１つしかないので)
+
+        // 受信→関数呼び出し→送信処理
+        getFuncClassList()[aTypeIndex]->processFunction(iISerializer, iOSerializer);
+    }
+
+//----------------------------------------------------------------------------
+//      インテグレータ管理
+//----------------------------------------------------------------------------
+public:
+    bool            mTerminated;        // サービス終了
+
+    BaseIntegrator() : mTerminated(false) { }
+    virtual ~BaseIntegrator() { }
+
+    bool isTerminated() { return mTerminated; }
+
+//----------------------------------------------------------------------------
+//      シリアライザの生成／破棄処理
+//----------------------------------------------------------------------------
 protected:
+
     template<Destination uDefault>
     BaseSerializer* makeISerializer(SerializerType iSerializerType, std::istream& iIStream)
     {
@@ -99,6 +197,7 @@ protected:
         case SerializerType::Json:
             return new JsonISerializer<uDefault>(iIStream);
         }
+        return nullptr;
     }
 
     template<Destination uDefault>
@@ -117,23 +216,54 @@ protected:
         case SerializerType::Json:
             return new JsonOSerializer<uDefault>(iOStream, iGlobalVersionNo);
         }
+        return nullptr;
     }
 
     void deleteSerializer(BaseSerializer* iBaseSerializer)
     {
         delete iBaseSerializer;
     }
-public:
-    virtual ~BaseIntegrator()
-    {
-    }
-
 };
+
+// ***************************************************************************
+//      関数クラス登録処理
+// ***************************************************************************
+
+#define THEOLIZER_INTERNAL_REGISTER_FUNC(dFuncClass)                        \
+    namespace theolizer{namespace internal{namespace{                       \
+    template                                                                \
+    class RegisterFuncClass<THEOLIZER_INTERNAL_UNPAREN dFuncClass>;         \
+    }}}
+
+template<class tFuncClass>
+class RegisterFuncClass
+{
+    static RegisterFuncClass& mInstance;
+    static void use(RegisterFuncClass const&) {}
+
+    RegisterFuncClass()
+    {
+        DEBUG_PRINT("RegisterFuncClass<", THEOLIZER_INTERNAL_TYPE_NAME(tFuncClass), ">();");
+        theolizer::internal::BaseIntegrator::registerFuncClass<tFuncClass>();
+    }
+public:
+    static RegisterFuncClass& getInstance()
+    {
+        static RegisterFuncClass instance;
+        use(mInstance);
+        return instance;
+    }
+};
+
+template<class tFuncClass>
+RegisterFuncClass<tFuncClass>&
+    RegisterFuncClass<tFuncClass>::mInstance = RegisterFuncClass<tFuncClass>::getInstance();
 
 //############################################################################
 //      End
 //############################################################################
 
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
 
 }   // namespace theolizer

@@ -86,7 +86,7 @@ namespace exchange
         // シリアライズ
         void ITheolizer.save(BaseSerializer iBaseSerializer)
         {
-            using (var temp = new BaseSerializer.AutoRestoreSaveStructure(iBaseSerializer))
+            using (var temp1 = new BaseSerializer.AutoRestoreSaveStructure(iBaseSerializer))
             {
                 iBaseSerializer.writePreElement();
                 iBaseSerializer.savePrimitive(mIntMain);
@@ -132,6 +132,8 @@ namespace exchange
         // シリアライズ
         void ITheolizer.save(BaseSerializer iBaseSerializer)
         {
+            // 暫定的にTypeIndex = 1固定。後日、メタ・デシリアライズで決定するよう変更
+            using (var temp0 = new BaseSerializer.AutoRestoreSaveProcess(iBaseSerializer, 0))
             using (var temp = new BaseSerializer.AutoRestoreSaveStructure(iBaseSerializer))
             {
                 iBaseSerializer.writePreElement();

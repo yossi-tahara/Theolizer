@@ -1040,7 +1040,16 @@ protected:
     {
         BaseSerializer&     mSerializer;
 
-        AutoRestoreLoadProcess(BaseSerializer& iSerializer, size_t iTypeIndex);
+        AutoRestoreLoadProcess
+        (
+            BaseSerializer& iSerializer,
+            size_t iTypeIndex
+        );
+        AutoRestoreLoadProcess
+        (
+            BaseSerializer& iSerializer,
+            TypeIndexList*& oTypeIndexList
+        );
         ~AutoRestoreLoadProcess() noexcept(false);
     };
 
@@ -1125,7 +1134,7 @@ protected:
 
 //      ---<<< トップ・レベル回復前後処理 >>>---
 
-    void loadProcessStart(size_t iTypeIndex);
+    TypeIndexList* loadProcessStart(size_t iTypeIndex);
     void loadProcessEnd();
 
 //----------------------------------------------------------------------------

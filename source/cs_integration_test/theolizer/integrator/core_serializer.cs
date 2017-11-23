@@ -103,6 +103,48 @@ namespace theolizer.internal_space
         }
 
         //----------------------------------------------------------------------------
+        //      関数クラス（トップ・レベル）の保存開始／終了
+        //----------------------------------------------------------------------------
+
+        public sealed class AutoRestoreSaveProcess : IDisposable
+        {
+            BaseSerializer  mSerializer;
+            ElementsMapping mElementsMapping;
+            bool            mCancelPrettyPrint;
+            int             mIndent;
+
+            //      ---<<< コンストラクタ >>>---
+
+            public AutoRestoreSaveProcess
+            (
+                BaseSerializer  iSerializer,
+                UInt64          iTypeIndex
+            )
+            {
+                mSerializer = iSerializer;
+                mIndent = mSerializer.mIndent;
+
+                mElementsMapping=mSerializer.mElementsMapping;
+                mSerializer.mElementsMapping=ElementsMapping.emOrder;
+
+                mCancelPrettyPrint=mSerializer.mCancelPrettyPrint;
+                mSerializer.mCancelPrettyPrint=true;
+
+                mSerializer.saveProcessStart(iTypeIndex);
+            }
+
+            //      ---<<< 破棄処理 >>>---
+
+            public void Dispose()
+            {
+                mSerializer.mIndent=mIndent;
+                mSerializer.saveProcessEnd();
+                mSerializer.mCancelPrettyPrint=mCancelPrettyPrint;
+                mSerializer.mElementsMapping=mElementsMapping;
+            }
+        }
+
+        //----------------------------------------------------------------------------
         //      内部構造を持つデータの保存開始／終了
         //----------------------------------------------------------------------------
 
@@ -149,6 +191,8 @@ namespace theolizer.internal_space
         //      派生シリアライザで実装するシリアライズ補助関数群
         //----------------------------------------------------------------------------
 
+        protected virtual void saveProcessStart(UInt64 iTypeIndex)  {throw new NotImplementedException();}
+        protected virtual void saveProcessEnd()                     {throw new NotImplementedException();}
         protected virtual void saveStructureStart() {throw new NotImplementedException();}
         protected virtual void saveStructureEnd()   {throw new NotImplementedException();}
         public    virtual void writePreElement()    {throw new NotImplementedException();}

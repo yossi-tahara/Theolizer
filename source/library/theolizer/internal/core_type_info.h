@@ -360,6 +360,7 @@ private:
     template<typename, bool, class>                         friend struct Switcher2;
     template<typename...>                                   friend struct ParameterName;
     template<class>                                         friend class Element;
+    friend class BaseIntegrator;
 
     // TypeIndexを記録する
     void registerTypeIndex(std::size_t iTypeIndex)

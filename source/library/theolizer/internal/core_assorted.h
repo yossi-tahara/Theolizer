@@ -857,7 +857,7 @@ namespace internal
 //      不正値
 // ***************************************************************************
 
-THEOLIZER_INTERNAL_DLL extern const std::size_t kInvalidSize;
+constexpr std::size_t kInvalidSize = std::numeric_limits<std::size_t>::max();
 
 // ***************************************************************************
 //      型分岐用補助ツール
