@@ -30,7 +30,6 @@
 
 # 暫定開発用(Theolizerプロジェクトへ完全に組込んだら削除する)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../")
-message(STATUS "INCLUDE=${CMAKE_CURRENT_SOURCE_DIR}/../")
 
 #-----------------------------------------------------------------------------
 #       target definition
@@ -39,13 +38,13 @@ message(STATUS "INCLUDE=${CMAKE_CURRENT_SOURCE_DIR}/../")
 set(TARGET_NAME cpp_server)
 set(CPP_SOURCES cpp_server.cpp cpp_server.h exchange.cpp exchange.h)
 set(CPP_LIBRALY
-    ../theolizer/core_integrator.cpp
-    ../theolizer/core_integrator.h
-    ../theolizer/integrator_dll.cpp
-    ../theolizer/integrator_dll.h
-    ../theolizer/memory_stream.cpp
-    ../theolizer/memory_stream.h
-    ../theolizer/temp.h
+    ../theolizer/integrator/core_integrator.cpp
+    ../theolizer/integrator/core_integrator.h
+    ../theolizer/integrator/integrator_dll.cpp
+    ../theolizer/integrator/integrator_dll.h
+    ../theolizer/integrator/memory_stream.cpp
+    ../theolizer/integrator/memory_stream.h
+    ../theolizer/integrator/base_integrator.h
 )
 
 #-----------------------------------------------------------------------------

@@ -31,6 +31,6 @@
 #if !defined(THEOLIZER_INTERNAL_CPP_SERVER_H)
 #define THEOLIZER_INTERNAL_CPP_SERVER_H
 
-#include <theolizer/integrator_dll.h>
+#include <theolizer/integrator/integrator_dll.h>
 
 #endif  // THEOLIZER_INTERNAL_CPP_SERVER_H

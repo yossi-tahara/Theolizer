@@ -1,5 +1,5 @@
 ﻿//############################################################################
-//      Theolizer全体のベース部的な部分へ移動予定
+//      Theolizerライブラリの連携処理クラス(C++側ベース部)
 /*
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.

@@ -31,10 +31,6 @@
 #if !defined(THEOLIZER_INTERNAL_CORE_INTEGRATOR_H)
 #define THEOLIZER_INTERNAL_CORE_INTEGRATOR_H
 
-//#include <memory>
-//#include <thread>
-//#include <utility>
-
 #include <theolizer/serializer.h>
 
 #include "memory_stream.h"

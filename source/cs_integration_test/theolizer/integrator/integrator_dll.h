@@ -31,7 +31,6 @@
 #if !defined(THEOLIZER_INTERNAL_INTEGRATOR_DLL_H)
 #define THEOLIZER_INTERNAL_INTEGRATOR_DLL_H
 
-//#include <memory>
 #include <thread>
 #include <utility>
 
