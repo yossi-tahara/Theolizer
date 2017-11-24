@@ -58,38 +58,55 @@ public:
 
     //      ---<<< メンバ関数群 >>>---
 
-    void func0(UserClassSub const& iUserClassSub)
+    int func0(UserClassSub const& iUserClassSub)
     {
         std::cout << "func0()\n"
                   << "    mIntMain=" << mIntMain << "\n"
                   << "    iUserClassSub.mUIntSub  =" << iUserClassSub.mUIntSub << "\n"
                   << "    iUserClassSub.mStringSub=" << iUserClassSub.mStringSub << "\n";
         mIntMain *= 2;
+        return iUserClassSub.mUIntSub * 3;
     }
 
     THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassMain), 1);
 };
 
+}   // namespace exchange
+
 // ***************************************************************************
 //      自動生成予定のクラス群
 // ***************************************************************************
 
-class func0Theolizer
+namespace theolizer_integrator
+{
+
+class func0UserClassMainReturn
 {
 public:
-    theolizer::internal::TheolizerParameter<UserClassMain>  mThis;
-    theolizer::internal::TheolizerParameter<UserClassSub>   miUserClassSub;
-    THEOLIZER_INTRUSIVE_ORDER(CS, (func0Theolizer), 1);
+    int                                                                 mReturn;
+    theolizer::internal::TheolizerParameter<exchange::UserClassMain>    mThis;
+    THEOLIZER_INTRUSIVE_ORDER(CS, (func0UserClassMainReturn), 1);
+};
 
-    void callFunc()
+class func0UserClassMain
+{
+public:
+    theolizer::internal::TheolizerParameter<exchange::UserClassMain>    mThis;
+    theolizer::internal::TheolizerParameter<exchange::UserClassSub>     miUserClassSub;
+    THEOLIZER_INTRUSIVE_ORDER(CS, (func0UserClassMain), 1);
+
+    func0UserClassMainReturn callFunc()
     {
-        // 戻り値が有るときはそのメンバへ代入する
-        mThis->func0(miUserClassSub);
+        func0UserClassMainReturn    ret;
+
+        ret.mReturn = mThis->func0(miUserClassSub);
+        ret.mThis = mThis;
+        return ret;
     }
 };
 
-} // namespace exchange
+}   // namespace theolizer_user_functions
 
-THEOLIZER_INTERNAL_REGISTER_FUNC((exchange::func0Theolizer));
+THEOLIZER_INTERNAL_REGISTER_FUNC((theolizer_integrator::func0UserClassMain));
 
 #endif  // THEOLIZER_INTERNAL_TYPE_H

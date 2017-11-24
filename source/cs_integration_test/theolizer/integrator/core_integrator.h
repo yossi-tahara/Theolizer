@@ -120,21 +120,24 @@ class BaseIntegrator
             BaseSerializer::AutoRestoreLoadProcess&& iAutoRestoreLoadProcess
         )
         {
-            exchange::func0Theolizer    afunc0Theolizer;
+            tFuncClass  aFuncClass;
             {
                 BaseSerializer::AutoRestoreLoadProcess
                     AutoRestoreLoadProcess(std::move(iAutoRestoreLoadProcess));
-                THEOLIZER_INTERNAL_LOAD(iISerializer, afunc0Theolizer, etmDefault);
+                THEOLIZER_INTERNAL_LOAD(iISerializer, aFuncClass, etmDefault);
             }
             iISerializer.clearTracking();   // flush
 
-DEBUG_PRINT("----- pre  callFunc()");
-            afunc0Theolizer.callFunc();
-DEBUG_PRINT("----- post callFunc()");
-            // 暫定的に要求クラスを返却するが、ここは返却クラスを返すのが正しい
-            BaseSerializer::AutoRestoreSaveProcess
-                aAutoRestoreSaveProcess(iOSerializer, 0);
-            THEOLIZER_INTERNAL_SAVE(iOSerializer, afunc0Theolizer, etmDefault);
+            auto ret = aFuncClass.callFunc();
+
+            typedef decltype(ret)   ReturnClass;
+            RegisterType<BaseSerializer, ReturnClass, tTheolizerVersion>::getInstance();
+
+            {
+                BaseSerializer::AutoRestoreSaveProcess
+                    aAutoRestoreSaveProcess(iOSerializer, getTypeIndex<ReturnClass>());
+                THEOLIZER_INTERNAL_SAVE(iOSerializer, ret, etmDefault);
+            }
         }
     };
 
