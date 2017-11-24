@@ -149,6 +149,7 @@ public:
 
 DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
     THEOLIZER_INTERNAL_TYPE_NAME(tFuncClass), ">()");
+
         getFuncClassList().emplace(aTypeIndex, new Holder<tFuncClass>);
     }
 
@@ -168,6 +169,7 @@ DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
 
         // 受信→関数呼び出し→送信処理
         getFuncClassList()[aTypeIndex]->processFunction(iISerializer, iOSerializer);
+        iOSerializer.clearTracking();   // flush
     }
 
 //----------------------------------------------------------------------------

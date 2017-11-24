@@ -192,7 +192,6 @@ public:
             (
                 iSerializerType, *mStreams.mRequest
             );
-std::cout << mRequestSerializer->getGlobalVersionNo();
 
         mResponseSerializer=makeOSerializer<theolizerD::All>
             (
@@ -204,7 +203,7 @@ std::cout << mRequestSerializer->getGlobalVersionNo();
         while (!isTerminated())
         {
             callFunc(*mRequestSerializer, *mResponseSerializer);
-            mStreams.mResponse->flush();
+            //mStreams.mResponse->flush();
         }
     }
 

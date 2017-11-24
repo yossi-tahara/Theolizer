@@ -345,13 +345,14 @@ private:
 
     void saveObjectId(std::size_t iObjectId, std::size_t iTypeIndex);
 
-    void saveControl(int)                  {}
-    void saveControl(long)                 {}
-    void saveControl(long long)            {}
-    void saveControl(unsigned)             {}
-    void saveControl(unsigned long)        {}
-    void saveControl(unsigned long long)   {}
-    void saveControl(std::string const&)   {}
+    void saveControl(int)                   {}
+    void saveControl(long)                  {}
+    void saveControl(long long)             {}
+    void saveControl(unsigned)              {}
+    void saveControl(unsigned long)         {}
+    void saveControl(unsigned long long)    {}
+    void saveControl(std::string const&)    {}
+    void flush()                            {mOStream.flush();}
 
 //      ---<<< 要素名処理 >>>---
 

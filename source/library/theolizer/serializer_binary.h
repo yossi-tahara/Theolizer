@@ -413,6 +413,7 @@ private:
     void saveControl(unsigned long iControl)        {saveUnsigned(iControl);}
     void saveControl(unsigned long long iControl)   {saveUnsigned(iControl);}
     void saveControl(std::string const& iControl)   {saveByteString(iControl);}
+    void flush()                                    {mOStream.flush();}
 
 //      ---<<< プリミティブ保存 >>>---
 

@@ -308,6 +308,7 @@ private:
     void saveControl(unsigned long iControl)        {savePrimitive(iControl);}
     void saveControl(unsigned long long iControl)   {savePrimitive(iControl);}
     void saveControl(std::string const& iControl)   {encodeJsonString(iControl);}
+    void flush()                                    {mOStream.flush();}
 
 //      ---<<< プリミティブ保存 >>>---
 

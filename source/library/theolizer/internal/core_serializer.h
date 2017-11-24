@@ -945,6 +945,7 @@ protected:
     virtual void saveControl(std::string const& iControl)   {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveElementName(ElementsMapping iElementsMapping, char const* iElementName)
                                                             {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void flush()                                    {THEOLIZER_INTERNAL_ABORT("");}
 
 //      ---<<< プリミティブ用 >>>---
 

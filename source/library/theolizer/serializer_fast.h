@@ -169,6 +169,7 @@ private:
     void saveControl(unsigned long iControl)        {savePrimitive(iControl);}
     void saveControl(unsigned long long iControl)   {savePrimitive(iControl);}
     void saveControl(std::string const& iControl)   {saveString(iControl);}
+    void flush()                                    {mOStream.flush();}
 
 //      ---<<< プリミティブ保存 >>>---
 

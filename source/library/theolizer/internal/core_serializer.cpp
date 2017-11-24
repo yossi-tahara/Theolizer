@@ -1344,6 +1344,7 @@ void BaseSerializer::clearTrackingImpl()
         // 初期状態へ戻す(先頭はnullptr用)
         mSerializeList->clear();
         initSerializeList();
+        flush();
     }
 
     if (mDeserializeList)
