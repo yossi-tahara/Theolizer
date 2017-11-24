@@ -193,6 +193,7 @@ DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
 //----------------------------------------------------------------------------
 //      インテグレータ管理
 //----------------------------------------------------------------------------
+
 public:
     bool            mTerminated;        // サービス終了
 
@@ -204,8 +205,8 @@ public:
 //----------------------------------------------------------------------------
 //      シリアライザの生成／破棄処理
 //----------------------------------------------------------------------------
-protected:
 
+protected:
     template<Destination uDefault>
     BaseSerializer* makeISerializer(SerializerType iSerializerType, std::istream& iIStream)
     {

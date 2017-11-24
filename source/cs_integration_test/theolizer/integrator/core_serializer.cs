@@ -57,6 +57,12 @@ namespace theolizer.internal_space
     // シリアライズ・データ読出状態
     enum ReadStat {Terminated=0, Continue, DontCare}
 
+    // 定数
+    static partial class Constants
+    {
+        public static UInt64 kInvalidSize = 18446744073709551615;
+    }
+
     // ***************************************************************************
     //      基底シリアライザ
     // ***************************************************************************
@@ -102,6 +108,10 @@ namespace theolizer.internal_space
             GC.SuppressFinalize(this);
         }
 
+        // ***************************************************************************
+        //      シリアライズ機能群
+        // ***************************************************************************
+
         //----------------------------------------------------------------------------
         //      関数クラス（トップ・レベル）の保存開始／終了
         //----------------------------------------------------------------------------
@@ -137,10 +147,14 @@ namespace theolizer.internal_space
 
             public void Dispose()
             {
-                mSerializer.mIndent=mIndent;
-                mSerializer.saveProcessEnd();
-                mSerializer.mCancelPrettyPrint=mCancelPrettyPrint;
-                mSerializer.mElementsMapping=mElementsMapping;
+                if (mSerializer != null)
+                {
+                    mSerializer.mIndent=mIndent;
+                    mSerializer.saveProcessEnd();
+                    mSerializer.mCancelPrettyPrint=mCancelPrettyPrint;
+                    mSerializer.mElementsMapping=mElementsMapping;
+                    mSerializer = null;
+                }
             }
         }
 
@@ -173,17 +187,21 @@ namespace theolizer.internal_space
                 mCancelPrettyPrint=mSerializer.mCancelPrettyPrint;
                 mSerializer.mCancelPrettyPrint=iCancelPrettyPrint;
 
-                mSerializer.saveStructureStart();
+                mSerializer.saveGroupStart();
             }
 
             //      ---<<< 破棄処理 >>>---
 
             public void Dispose()
             {
-                mSerializer.mIndent=mIndent;
-                mSerializer.saveStructureEnd();
-                mSerializer.mCancelPrettyPrint=mCancelPrettyPrint;
-                mSerializer.mElementsMapping=mElementsMapping;
+                if (mSerializer != null)
+                {
+                    mSerializer.mIndent=mIndent;
+                    mSerializer.saveGroupEnd();
+                    mSerializer.mCancelPrettyPrint=mCancelPrettyPrint;
+                    mSerializer.mElementsMapping=mElementsMapping;
+                    mSerializer = null;
+                }
             }
         }
 
@@ -191,20 +209,20 @@ namespace theolizer.internal_space
         //      派生シリアライザで実装するシリアライズ補助関数群
         //----------------------------------------------------------------------------
 
-        protected virtual void saveProcessStart(UInt64 iTypeIndex)  {throw new NotImplementedException();}
-        protected virtual void saveProcessEnd()                     {throw new NotImplementedException();}
-        protected virtual void saveStructureStart() {throw new NotImplementedException();}
-        protected virtual void saveStructureEnd()   {throw new NotImplementedException();}
-        public    virtual void writePreElement()    {throw new NotImplementedException();}
-        public    virtual void flush()              {throw new NotImplementedException();}
+        public    virtual void writePreElement()                    {throw new NotSupportedException();}
+        protected virtual void saveGroupStart(bool iIsTop=false)    {throw new NotSupportedException();}
+        protected virtual void saveGroupEnd(bool iIsTop=false)      {throw new NotSupportedException();}
+        protected virtual void saveStructureStart()                 {throw new NotSupportedException();}
+        protected virtual void saveStructureEnd()                   {throw new NotSupportedException();}
+        public    virtual void flush()                              {throw new NotSupportedException();}
 
-        protected virtual void saveControl(Int32  iControl) {throw new NotImplementedException();}
-        protected virtual void saveControl(Int64  iControl) {throw new NotImplementedException();}
-        protected virtual void saveControl(UInt32 iControl) {throw new NotImplementedException();}
-        protected virtual void saveControl(UInt64 iControl) {throw new NotImplementedException();}
-        protected virtual void saveControl(String iControl) {throw new NotImplementedException();}
+        protected virtual void saveControl(Int32  iControl)         {throw new NotSupportedException();}
+        protected virtual void saveControl(Int64  iControl)         {throw new NotSupportedException();}
+        protected virtual void saveControl(UInt32 iControl)         {throw new NotSupportedException();}
+        protected virtual void saveControl(UInt64 iControl)         {throw new NotSupportedException();}
+        protected virtual void saveControl(String iControl)         {throw new NotSupportedException();}
         protected virtual void saveElementName(ElementsMapping iElementsMapping, String iElementName)
-                                                            {throw new NotImplementedException();}
+                                                                    {throw new NotSupportedException();}
 
         //----------------------------------------------------------------------------
         //      プリミティブ保存関数群
@@ -212,19 +230,19 @@ namespace theolizer.internal_space
         //          Objectはクラスにてサポート
         //----------------------------------------------------------------------------
 
-        public    virtual void savePrimitive(Boolean iPrimitive) {throw new NotImplementedException();}
-        public    virtual void savePrimitive(Byte    iPrimitive) {throw new NotImplementedException();}
-        public    virtual void savePrimitive(SByte   iPrimitive) {throw new NotImplementedException();}
-        public    virtual void savePrimitive(Char    iPrimitive) {throw new NotImplementedException();}
-        public    virtual void savePrimitive(Int16   iPrimitive) {throw new NotImplementedException();}
-        public    virtual void savePrimitive(UInt16  iPrimitive) {throw new NotImplementedException();}
-        public    virtual void savePrimitive(Int32   iPrimitive) {throw new NotImplementedException();}
-        public    virtual void savePrimitive(UInt32  iPrimitive) {throw new NotImplementedException();}
-        public    virtual void savePrimitive(Int64   iPrimitive) {throw new NotImplementedException();}
-        public    virtual void savePrimitive(UInt64  iPrimitive) {throw new NotImplementedException();}
-        public    virtual void savePrimitive(Single  iPrimitive) {throw new NotImplementedException();}
-        public    virtual void savePrimitive(Double  iPrimitive) {throw new NotImplementedException();}
-        public    virtual void savePrimitive(String  iPrimitive) {throw new NotImplementedException();}
+        public    virtual void savePrimitive(Boolean iPrimitive)    {throw new NotSupportedException();}
+        public    virtual void savePrimitive(Byte    iPrimitive)    {throw new NotSupportedException();}
+        public    virtual void savePrimitive(SByte   iPrimitive)    {throw new NotSupportedException();}
+        public    virtual void savePrimitive(Char    iPrimitive)    {throw new NotSupportedException();}
+        public    virtual void savePrimitive(Int16   iPrimitive)    {throw new NotSupportedException();}
+        public    virtual void savePrimitive(UInt16  iPrimitive)    {throw new NotSupportedException();}
+        public    virtual void savePrimitive(Int32   iPrimitive)    {throw new NotSupportedException();}
+        public    virtual void savePrimitive(UInt32  iPrimitive)    {throw new NotSupportedException();}
+        public    virtual void savePrimitive(Int64   iPrimitive)    {throw new NotSupportedException();}
+        public    virtual void savePrimitive(UInt64  iPrimitive)    {throw new NotSupportedException();}
+        public    virtual void savePrimitive(Single  iPrimitive)    {throw new NotSupportedException();}
+        public    virtual void savePrimitive(Double  iPrimitive)    {throw new NotSupportedException();}
+        public    virtual void savePrimitive(String  iPrimitive)    {throw new NotSupportedException();}
 
         //----------------------------------------------------------------------------
         //      ヘッダ内型情報保存
@@ -239,6 +257,199 @@ namespace theolizer.internal_space
                 writePreElement();
                 saveControl((int)CheckMode.NoTypeCheck);
             }
+        }
+
+        void saveProcessStart(UInt64 iTypeIndex)
+        {
+            saveGroupStart();
+
+            writePreElement();
+            saveControl(iTypeIndex);
+
+            writePreElement();
+        }
+
+        void saveProcessEnd()
+        {
+            saveGroupEnd();
+        }
+
+        // ***************************************************************************
+        //      デシリアライズ機能群
+        // ***************************************************************************
+
+        //----------------------------------------------------------------------------
+        //      関数クラス（トップ・レベル）の回復開始／終了
+        //----------------------------------------------------------------------------
+
+        public sealed class AutoRestoreLoadProcess : IDisposable
+        {
+            BaseSerializer  mSerializer;
+            ElementsMapping mElementsMapping;
+
+            //      ---<<< コンストラクタ >>>---
+
+            // iTypeIndexがkInvalidSizeの時は回復したTypeIndexを返却する
+            public AutoRestoreLoadProcess
+            (
+                BaseSerializer  iSerializer,
+                ref UInt64      iTypeIndex
+            )
+            {
+                mSerializer = iSerializer;
+
+                mElementsMapping=mSerializer.mElementsMapping;
+                mSerializer.mElementsMapping=ElementsMapping.emOrder;
+
+                mSerializer.loadProcessStart(ref iTypeIndex);
+            }
+
+            //      ---<<< 破棄処理 >>>---
+
+            public void Dispose()
+            {
+                if (mSerializer != null)
+                {
+                    mSerializer.loadProcessEnd();
+                    mSerializer.mElementsMapping=mElementsMapping;
+                    mSerializer = null;
+                }
+            }
+        }
+
+        //----------------------------------------------------------------------------
+        //      内部構造を持つデータの回復開始／終了
+        //----------------------------------------------------------------------------
+
+        public sealed class AutoRestoreLoadStructure : IDisposable
+        {
+            BaseSerializer  mSerializer;
+            ElementsMapping mElementsMapping;
+
+            //      ---<<< コンストラクタ >>>---
+
+            public AutoRestoreLoadStructure
+            (
+                BaseSerializer  iSerializer,
+                ElementsMapping iElementsMapping = ElementsMapping.emOrder
+            )
+            {
+                mSerializer = iSerializer;
+
+                mElementsMapping=mSerializer.mElementsMapping;
+                mSerializer.mElementsMapping=iElementsMapping;
+
+                mSerializer.loadStructureStart();
+            }
+
+            //      ---<<< 破棄処理 >>>---
+
+            public void Dispose()
+            {
+                if (mSerializer != null)
+                {
+                    mSerializer.loadStructureEnd();
+                    mSerializer.mElementsMapping=mElementsMapping;
+                    mSerializer = null;
+                }
+            }
+        }
+
+        //----------------------------------------------------------------------------
+        //      派生シリアライザで実装するデシリアライズ補助関数群
+        //----------------------------------------------------------------------------
+
+        protected virtual ReadStat readPreElement()                 {throw new NotSupportedException();}
+        protected virtual void loadGroupStart(bool iIsTop=false)    {throw new NotSupportedException();}
+        protected virtual void loadGroupEnd(bool iIsTop=false)      {throw new NotSupportedException();}
+        protected virtual void loadStructureStart()                 {throw new NotSupportedException();}
+        protected virtual void loadStructureEnd()                   {throw new NotSupportedException();}
+
+        protected virtual void loadControl(out Int32  iControl)     {throw new NotSupportedException();}
+        protected virtual void loadControl(out Int64  iControl)     {throw new NotSupportedException();}
+        protected virtual void loadControl(out UInt32 iControl)     {throw new NotSupportedException();}
+        protected virtual void loadControl(out UInt64 iControl)     {throw new NotSupportedException();}
+        protected virtual void loadControl(out String iControl)     {throw new NotSupportedException();}
+        protected virtual String loadElementName(ElementsMapping iElementsMapping)
+                                                                    {throw new NotSupportedException();}
+
+        //----------------------------------------------------------------------------
+        //      プリミティブ回復関数群
+        //          DecimalはC++に対応する型がないので非サポート
+        //          Objectはクラスにてサポート
+        //----------------------------------------------------------------------------
+
+        public virtual void loadPrimitive(out Boolean iPrimitive)   {throw new NotSupportedException();}
+        public virtual void loadPrimitive(out Byte    iPrimitive)   {throw new NotSupportedException();}
+        public virtual void loadPrimitive(out SByte   iPrimitive)   {throw new NotSupportedException();}
+        public virtual void loadPrimitive(out Char    iPrimitive)   {throw new NotSupportedException();}
+        public virtual void loadPrimitive(out Int16   iPrimitive)   {throw new NotSupportedException();}
+        public virtual void loadPrimitive(out UInt16  iPrimitive)   {throw new NotSupportedException();}
+        public virtual void loadPrimitive(out Int32   iPrimitive)   {throw new NotSupportedException();}
+        public virtual void loadPrimitive(out UInt32  iPrimitive)   {throw new NotSupportedException();}
+        public virtual void loadPrimitive(out Int64   iPrimitive)   {throw new NotSupportedException();}
+        public virtual void loadPrimitive(out UInt64  iPrimitive)   {throw new NotSupportedException();}
+        public virtual void loadPrimitive(out Single  iPrimitive)   {throw new NotSupportedException();}
+        public virtual void loadPrimitive(out Double  iPrimitive)   {throw new NotSupportedException();}
+        public virtual void loadPrimitive(out String  iPrimitive)   {throw new NotSupportedException();}
+
+        //----------------------------------------------------------------------------
+        //      ヘッダ内型情報回復
+        //----------------------------------------------------------------------------
+
+        protected void readHeaderTypeInfo()
+        {
+            using (var temp =
+                new BaseSerializer.AutoRestoreLoadStructure(this, ElementsMapping.emOrder))
+            {
+                // 型チェックのモード確認
+                readPreElement();
+                int aCheckMode;
+                loadControl(out aCheckMode);
+                if (aCheckMode != (int)CheckMode.NoTypeCheck)
+            throw new InvalidOperationException("CheckMode Error : " + aCheckMode);
+            }
+        }
+
+        void loadProcessStart(ref UInt64 iTypeIndex)
+        {
+            loadGroupStart(true);
+
+            if (readPreElement() != ReadStat.Terminated)
+            {
+        throw new InvalidOperationException("Format Error.");
+            }
+
+            UInt64 aTypeIndex;
+            loadControl(out aTypeIndex);
+            if (iTypeIndex != Constants.kInvalidSize)
+            {
+#if false   // ヘッダ処理を実装するまでの仮実装(仮なのでかなりいい加減だがデバッグには使える)
+                if (!isMatchTypeIndex(aTypeIndex, iTypeIndex))
+                {
+        throw new InvalidOperationException("Unmatch type.");
+                }
+#endif
+            }
+            else
+            {
+#if true    // ヘッダ処理を実装するまでの仮実装(仮なのでかなりいい加減だがデバッグには使える)
+                iTypeIndex = aTypeIndex;
+#else
+                auto& aElementType = mSerializedTypeListI->at(aTypeIndex);
+                ret = aElementType.mProgramTypeIndex;
+#endif
+            }
+
+            if (readPreElement() != ReadStat.Terminated)
+            {
+        throw new InvalidOperationException("Format Error.");
+            }
+        }
+
+        void loadProcessEnd()
+        {
+            loadGroupEnd(true);
         }
     }
 }

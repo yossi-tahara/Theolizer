@@ -28,6 +28,7 @@
 */
 //############################################################################
 
+using System;
 using System.Threading;
 using theolizer.internal_space;
 
@@ -82,8 +83,20 @@ namespace theolizer.internal_space
 {
     interface IIntegrator
     {
-        BaseSerializer Serializer { get; }
+        // 要求を発行し応答を受信
+        void sendRequest(ITheolizerInternal iFuncObject, ITheolizerInternal oReturnObject);
+
+        // 通知受信
+        void receiveNotify();
+
+        // 破棄処理
         void Dispose();
     }
 
+    interface ITheolizerInternal
+    {
+        UInt64 getTypeIndex();
+        void save(BaseSerializer iBaseSerializer);
+        void load(BaseSerializer iBaseSerializer);
+    }
 }   // theolizer.internal_space

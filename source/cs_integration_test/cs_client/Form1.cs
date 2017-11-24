@@ -27,24 +27,11 @@ namespace cs_client
         {
             // 送信
             int data = (int)numericUpDown.Value;
-#if false
-            mDllIntegrator.RequestWriter.WriteLine(data);
-            mDllIntegrator.RequestWriter.Flush();
-            numericUpDown.UpButton();
-Debug.WriteLine("Wrote");
-
-            // 受信
-            var str = mDllIntegrator.ResponseReader.ReadLine();
-Debug.WriteLine("ReadLine(" + str + ")");
-
-            // 表示
-            textBox.AppendText("Send(" + data + ") -> " + str + Environment.NewLine);
-#else
             var aUserClassMain = new exchange.UserClassMain();
             aUserClassMain.mIntMain = data;
             var aUserClassSub=new exchange.UserClassSub(5678, "test [\"][\\][/][\x08][\x0c][\n][\r][\t]");
-            aUserClassMain.func0(aUserClassSub);
-
+            var ret = aUserClassMain.func0(aUserClassSub);
+#if true
             do
             {
                 var str = mDllIntegrator.ResponseReader.ReadLine();

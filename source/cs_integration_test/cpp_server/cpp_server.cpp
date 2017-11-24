@@ -59,48 +59,7 @@ int main(theolizer::DllIntegrator& iDllIntegrator)
     DEBUG_PRINT("---------------- main()");
 
     iDllIntegrator.setSize(1024, 4096);
-    iDllIntegrator.start(theolizer::SerializerType::Json);
-
-#if 0
-    {
-///        theolizer::JsonOSerializer<> jos(std::cout);  // シリアライザを生成
-    }
-    {
-        exchange::func0Theolizer    afunc0Theolizer;
-        afunc0Theolizer.mThis->mIntMain=123;
-        afunc0Theolizer.miUserClassSub->mUIntSub=456;
-        afunc0Theolizer.miUserClassSub->mStringSub="test";
-
-        theolizer::JsonOSerializer<> jos(std::cout);
-        THEOLIZER_PROCESS(jos, afunc0Theolizer);
-    }
-
-
-    auto&   aDllIntegrator  = theolizer::DllIntegrator::getInstance();
-    aDllIntegrator.setSize(1024, 4096);
-
-    auto&   aRequestStream  = aDllIntegrator.getRequestStream();
-    auto&   aResponseStream = aDllIntegrator.getResponseStream();
-
-    theolizer::JsonISerializer<> jis(aRequestStream);
-    theolizer::JsonOSerializer<> debug(std::cout);
-    theolizer::JsonOSerializer<> jos(aResponseStream);
-
-    while (!aDllIntegrator.isTerminated())
-    {
-#if 0
-        std::string aLine;
-        getline(aRequestStream, aLine);
-        aResponseStream << aLine << std::endl;
-#else
-        exchange::func0Theolizer    afunc0Theolizer;
-        THEOLIZER_PROCESS(jis, afunc0Theolizer);
-        THEOLIZER_PROCESS(debug, afunc0Theolizer);
-        THEOLIZER_PROCESS(jos, afunc0Theolizer);
-        aResponseStream.flush();
-#endif
-    }
-#endif
+    iDllIntegrator.recieveRequest(theolizer::SerializerType::Json);
 
     return 0;
 }

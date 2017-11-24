@@ -103,27 +103,8 @@ namespace theolizer.internal_space
         //      シリアライズ補助関数群
         //----------------------------------------------------------------------------
 
-        // 関数クラス（トップ・レベル）出力開始
-        protected override void saveProcessStart(UInt64 iTypeIndex)
-        {
-            mWriteComma=false;
-            if (!mCancelPrettyPrint) mIndent++;
-            mOStream.Write("[");
-            writePreElement();
-            mOStream.Write(iTypeIndex);
-            writePreElement();
-        }
-
-        // 関数クラス（トップ・レベル）出力終了
-        protected override void saveProcessEnd()
-        {
-            mWriteComma=false;
-            writeCommaIndent();
-            mOStream.Write("]");
-        }
-
-        // 構造出力開始
-        protected override void saveStructureStart()
+        // クラス出力開始
+        protected override void saveGroupStart(bool iIsTop=false)
         {
             mWriteComma=false;
             if (!mCancelPrettyPrint) mIndent++;
@@ -139,8 +120,8 @@ namespace theolizer.internal_space
             }
         }
 
-        // 構造出力終了
-        protected override void saveStructureEnd()
+        // クラス出力終了
+        protected override void saveGroupEnd(bool iIsTop=false)
         {
             mWriteComma=false;
             writeCommaIndent();
@@ -154,6 +135,14 @@ namespace theolizer.internal_space
                 mOStream.Write("]");
                 break;
             }
+            if ((iIsTop) && (mIndent == 0))
+                mOStream.Write("\n");
+        }
+
+        // 構造出力開始
+        protected override void saveStructureStart()
+        {
+            saveGroupStart();
         }
 
         // 次の要素出力準備
@@ -162,6 +151,13 @@ namespace theolizer.internal_space
             writeCommaIndent(mWriteComma);
         }
 
+        // 構造出力終了
+        protected override void saveStructureEnd()
+        {
+            saveGroupEnd();
+        }
+
+        // カンマとインデント出力
         void writeCommaIndent(bool iWriteComma = false)
         {
             if (iWriteComma)
@@ -182,7 +178,6 @@ namespace theolizer.internal_space
         // flush
         public    override void flush()
         {
-            mOStream.Write("\n");
             mOStream.Flush();
         }
 
@@ -279,27 +274,60 @@ namespace theolizer.internal_space
         }
     }
 
-    // ***************************************************************************
-    //      定義
-    //          現時点ではNoCheckType用。将来的にメタ・シリアライズ情報交換用
-    // ***************************************************************************
-#if false
-{
-    "SerialzierName":"JsonTheolizer",
-    "GlobalVersionNo":1,
-    "TypeInfoList":[2]
-}
-#endif
+//############################################################################
+//      デシリアライザ
+//############################################################################
 
-    //############################################################################
-    //      デシリアライザ
-    //############################################################################
+    // ***************************************************************************
+    //      StreamReader拡張
+    //          数値を読めるようにする
+    //          デリミタは、" ,\n]}\t"
+    // ***************************************************************************
+
+    class StreamReaderEx : StreamReader
+    {
+        public StreamReaderEx(Stream iStream, Encoding iEncoding) : base(iStream, iEncoding) { }
+
+        // デリミタまでの文字列を読み出す
+        const String sDelimiter = " ,\n]}\t";
+        String ReadDelim()
+        {
+            var sb = new StringBuilder();
+            while(Peek() > -1)
+            {
+                int ch = Read();
+                if (sDelimiter.IndexOf((char)ch) > -1)
+            break;
+                sb.Append(ch);
+            }
+            return sb.ToString();
+        }
+
+        public void Read(out Boolean iPrimitive) {iPrimitive=(int.Parse(ReadDelim())!=0)?true:false;}
+        public void Read(out Byte    iPrimitive) {iPrimitive=Byte.Parse(ReadDelim());}
+        public void Read(out SByte   iPrimitive) {iPrimitive=SByte.Parse(ReadDelim());}
+        public void Read(out Char    iPrimitive) {iPrimitive=(char)(int.Parse(ReadDelim()));}
+        public void Read(out Int16   iPrimitive) {iPrimitive=Int16.Parse(ReadDelim());}
+        public void Read(out UInt16  iPrimitive) {iPrimitive=UInt16.Parse(ReadDelim());}
+        public void Read(out Int32   iPrimitive) {iPrimitive=Int32.Parse(ReadDelim());}
+        public void Read(out UInt32  iPrimitive) {iPrimitive=UInt32.Parse(ReadDelim());}
+        public void Read(out Int64   iPrimitive) {iPrimitive=Int64.Parse(ReadDelim());}
+        public void Read(out UInt64  iPrimitive) {iPrimitive=UInt64.Parse(ReadDelim());}
+        public void Read(out Single  iPrimitive) {iPrimitive=Single.Parse(ReadDelim());}
+        public void Read(out Double  iPrimitive) {iPrimitive=Double.Parse(ReadDelim());}
+    }
+
+    // ***************************************************************************
+    //      本体
+    // ***************************************************************************
 
     class JsonISerializer : BaseSerializer
     {
 
         Stream          mStream;
-        StreamReader    mStreamReader;
+        StreamReaderEx  mIStream;
+        bool            mReadComma;
+        bool            mTerminated;
 
         //----------------------------------------------------------------------------
         //      コンストラクタ
@@ -313,7 +341,12 @@ namespace theolizer.internal_space
             }
 
             mStream = iStream;
-            mStreamReader = new StreamReader(mStream, new UTF8Encoding(false));
+            mIStream = new StreamReaderEx(mStream, new UTF8Encoding(false));
+            mReadComma = false;
+            mTerminated = false;
+
+            // 通常ヘッダ回復
+            readHeader();
         }
 
         //----------------------------------------------------------------------------
@@ -330,10 +363,283 @@ namespace theolizer.internal_space
             // マネージド・リソースの開放(デストラクタから呼ばれた時はGCに任せる)
             if (disposing)
             {
-                mStreamReader.Dispose();
+                mIStream.Dispose();
                 mStream.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        //----------------------------------------------------------------------------
+        //      デシリアライズ補助関数群
+        //----------------------------------------------------------------------------
+
+        // クラス入力開始
+        protected override void loadGroupStart(bool iIsTop=false)
+        {
+            mReadComma=false;
+            char ch = getValidChar();
+            switch (mElementsMapping)
+            {
+            case ElementsMapping.emName:
+                if (ch != '{')
+                {
+        throw new InvalidOperationException("Format Error.");
+                }
+                break;
+
+            case ElementsMapping.emOrder:
+                if (ch != '[')
+                {
+        throw new InvalidOperationException("Format Error.");
+                }
+                break;
+            }
+        }
+
+        // クラス入力終了
+        protected override void loadGroupEnd(bool iIsTop=false)
+        {
+            // まだ終了処理されてないなら、エラー(C#側は変更対処しない)
+            if (!mTerminated)
+            {
+        throw new InvalidOperationException("Format Error.");
+            }
+            mTerminated=false;
+            mReadComma=true;
+        }
+
+        // 構造入力開始
+        protected override void loadStructureStart()
+        {
+            loadGroupStart();
+        }
+
+        // 構造入力終了
+        protected override void loadStructureEnd()
+        {
+            loadGroupEnd();
+        }
+
+        // 次の読み出し準備
+        protected override ReadStat readPreElement()
+        {
+            bool aContinue=readComma(mReadComma);
+            mReadComma=true;
+
+            return (aContinue)?ReadStat.Continue:ReadStat.Terminated;
+        }
+
+        // カンマまで読み飛ばし
+        bool readComma(bool iReadComma)
+        {
+            int     ch;
+            while((ch = mIStream.Peek()) > -1)
+            {
+                if (sSpaceChar.IndexOf((char)ch) > -1)
+            break;
+            }
+            if (ch < 0)
+        throw new InvalidOperationException("Format Error.");
+
+            if (ch == ',')
+            {
+                if (iReadComma)
+                {
+        return true;
+                }
+                else
+                {
+        throw new InvalidOperationException("Format Error.");
+                }
+            }
+
+            // 終端マークなら、false返却
+            if (checkTerminal((char)ch))
+        return false;
+
+            return true;
+        }
+
+        // 終了マーク確認
+        bool checkTerminal(char iCh)
+        {
+            switch (mElementsMapping)
+            {
+            case ElementsMapping.emName:
+                if (iCh != '}')
+        return false;
+                break;
+
+            case ElementsMapping.emOrder:
+                if (iCh != ']')
+        return false;
+                break;
+            }
+            mTerminated=true;
+
+            return true;
+        }
+
+        // 各種制御コード入力
+        protected override void loadControl(out Int32  iControl)    {loadPrimitive(out iControl);}
+        protected override void loadControl(out Int64  iControl)    {loadPrimitive(out iControl);}
+        protected override void loadControl(out UInt32 iControl)    {loadPrimitive(out iControl);}
+        protected override void loadControl(out UInt64 iControl)    {loadPrimitive(out iControl);}
+        protected override void loadControl(out String iControl)    {decodeJsonString(out iControl);}
+        protected override String loadElementName(ElementsMapping iElementsMapping)
+        {
+            String aElementName;
+            decodeJsonString(out aElementName);
+            char ch = getValidChar();
+            if (ch != ':')
+            {
+        throw new InvalidOperationException("Format Error.");
+            }
+            return aElementName;
+        }
+
+        // 有効な文字入力(スペース等を読み飛ばす)
+        const String sSpaceChar = " ,\t\n";
+        char getValidChar()
+        {
+            int     ch;
+            while((ch = mIStream.Read()) > -1)
+            {
+                if (sSpaceChar.IndexOf((char)ch) > -1)
+        return (char)ch;
+            }
+
+            throw new InvalidOperationException("EOF occured.");
+        }
+
+        //----------------------------------------------------------------------------
+        //      プリミティブ保存関数群
+        //----------------------------------------------------------------------------
+
+        public    override void loadPrimitive(out Boolean iPrimitive) {mIStream.Read(out iPrimitive);}
+        public    override void loadPrimitive(out Byte    iPrimitive) {mIStream.Read(out iPrimitive);}
+        public    override void loadPrimitive(out SByte   iPrimitive) {mIStream.Read(out iPrimitive);}
+        public    override void loadPrimitive(out Char    iPrimitive) {mIStream.Read(out iPrimitive);}
+        public    override void loadPrimitive(out Int16   iPrimitive) {mIStream.Read(out iPrimitive);}
+        public    override void loadPrimitive(out UInt16  iPrimitive) {mIStream.Read(out iPrimitive);}
+        public    override void loadPrimitive(out Int32   iPrimitive) {mIStream.Read(out iPrimitive);}
+        public    override void loadPrimitive(out UInt32  iPrimitive) {mIStream.Read(out iPrimitive);}
+        public    override void loadPrimitive(out Int64   iPrimitive) {mIStream.Read(out iPrimitive);}
+        public    override void loadPrimitive(out UInt64  iPrimitive) {mIStream.Read(out iPrimitive);}
+        public    override void loadPrimitive(out Single  iPrimitive) {mIStream.Read(out iPrimitive);}
+        public    override void loadPrimitive(out Double iPrimitive)  {mIStream.Read(out iPrimitive);}
+        public    override void loadPrimitive(out String  iPrimitive)
+        {
+            decodeJsonString(out iPrimitive);
+        }
+
+        // Json文字列へデコード
+        void decodeJsonString(out string iString)
+        {
+            //      ---<<< "までスキップ >>>---
+
+            char ch = getValidChar();
+            if (ch != '\"')
+        throw new InvalidOperationException("Json String Format Error.");
+
+            //      ---<<< "の直前までを追加する >>>---
+
+            var sb = new StringBuilder();
+            while(true)
+            {
+                ch = getValidChar();
+
+                // Escape文字
+                if (ch == '\\')
+                {
+                    ch=getValidChar();
+                    switch (ch)
+                    {
+                    case '\"':              break;
+                    case '\\':              break;
+                    case '/':               break;
+                    case 'b':   ch='\x08';  break;
+                    case 'f':   ch='\x0C';  break;
+                    case 'n':   ch='\n';    break;
+                    case 'r':   ch='\r';    break;
+                    case 't':   ch='\t';    break;
+                    default:
+        throw new InvalidOperationException("Json String Format Error.");
+                    }
+
+                // "(終了文字)
+                }
+                else if (ch == '\"')
+                {
+            break;
+                }
+                sb.Append(ch);
+            }
+            iString = sb.ToString();
+        }
+
+        //----------------------------------------------------------------------------
+        //      ヘッダ回復
+        //----------------------------------------------------------------------------
+
+        void readHeader()
+        {
+            using (var temp = new BaseSerializer.AutoRestoreLoadStructure(this, ElementsMapping.emName))
+            {
+                //      ---<<< 名前に従って回復 >>>---
+
+                bool aExistSerializerName=false;
+                bool aExistGlobalVersionNo=false;
+                bool aExistTypeInfo=false;
+
+                while(readPreElement() != ReadStat.Terminated)
+                {
+                    String aInfoName=loadElementName(ElementsMapping.emName);
+
+                    if (aInfoName == "SerialzierName")
+                    {
+                        aExistSerializerName=true;
+                        String aSerialzierName;
+                        loadControl(out aSerialzierName);
+                        if (aSerialzierName != Constants.kJsonSerializerName)
+                        {
+        throw new InvalidOperationException
+                                ("JsonMidISerializer : Unmatch serializer name("+aSerialzierName+")");
+                        }
+                    }
+                    else if (aInfoName == "GlobalVersionNo")
+                    {
+                        aExistGlobalVersionNo=true;
+                        loadControl(out mGlobalVersionNo);
+                    }
+                    else if (aInfoName == "TypeInfoList")
+                    {
+                        aExistTypeInfo=true;
+                        readHeaderTypeInfo();
+                    }
+                    else
+                    {
+        throw new InvalidOperationException("Format Error.");
+                    }
+                }
+
+                //      ---<<< 情報無しチェック >>>---
+
+                if (!aExistSerializerName)
+                {
+        throw new InvalidOperationException("JsonMidISerializer : No Serializer name.");
+                }
+
+                if (!aExistGlobalVersionNo)
+                {
+        throw new InvalidOperationException("JsonMidISerializer : No global version number.");
+                }
+
+                if (!aExistTypeInfo)
+                {
+        throw new InvalidOperationException("JsonMidISerializer : No types infomation.");
+                }
+            }
         }
     }
 }

@@ -183,9 +183,9 @@ public:
         mStreams.mNotify->setSize(iNotifySize);
     }
 
-    // 受付処理開始
+    // 要求受付処理
     //  派生シリアライザのコンストラクタへGlobalVersionNoTableを渡すためにヘッダで定義する。
-    void start(SerializerType iSerializerType)
+    void recieveRequest(SerializerType iSerializerType)
     {
         // 保存先指定は後日「連携先」へ変更する
         mRequestSerializer=makeISerializer<theolizerD::All>
@@ -195,7 +195,8 @@ public:
 
         mResponseSerializer=makeOSerializer<theolizerD::All>
             (
-                iSerializerType, *mStreams.mResponse,
+                iSerializerType,
+                *mStreams.mResponse,
                 mRequestSerializer->getGlobalVersionNo()
             );
 
@@ -205,11 +206,6 @@ public:
             callFunc(*mRequestSerializer, *mResponseSerializer);
         }
     }
-
-    // 以下は削除予定
-    std::istream& getRequestStream()  { return *(mStreams.mRequest); }
-    std::ostream& getResponseStream() { return *(mStreams.mResponse); }
-    std::ostream& getNotifyStream()   { return *(mStreams.mNotify); }
 };
 
 //############################################################################

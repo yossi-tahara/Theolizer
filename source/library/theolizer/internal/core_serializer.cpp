@@ -439,6 +439,7 @@ void BaseSerializer::saveProcessStart(std::size_t iTypeIndex)
         writePreElement();
         saveControl(iTypeIndex);
         break;
+
     default:
         THEOLIZER_INTERNAL_ABORT("mCheckMode=%d", static_cast<int>(mCheckMode));
         break;

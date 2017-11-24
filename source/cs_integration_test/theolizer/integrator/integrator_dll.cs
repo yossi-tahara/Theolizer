@@ -86,6 +86,7 @@ namespace theolizer
 
             case SerializerType.Json:
                 mRequestSerializer = new JsonOSerializer(mRequestStream, iGlobalVersionNo);
+///                mResponseSerializer = new JsonISerializer(mResponseStream);
                 break;
             }
         }
@@ -156,10 +157,21 @@ namespace theolizer
         BaseSerializer   mResponseSerializer;
         BaseSerializer   mNotifySerializer;
 
-        // クライアント用インテグレータなので要求用シリアライザを返却する
-        public BaseSerializer Serializer
+        // 要求を発行し応答を受信
+        public void sendRequest(ITheolizerInternal iFuncObject, ITheolizerInternal oReturnObject)
         {
-            get { return mRequestSerializer; }
+            using (var temp = new BaseSerializer.AutoRestoreSaveProcess
+                (mRequestSerializer, iFuncObject.getTypeIndex()))
+            {
+                iFuncObject.save(mRequestSerializer);
+            }
+            mRequestSerializer.flush();
+        }
+
+        // 通知受信
+        public void receiveNotify()
+        {
+            throw new NotImplementedException();
         }
     }
 }
