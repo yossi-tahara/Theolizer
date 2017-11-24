@@ -579,6 +579,32 @@ bool JsonMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
+//      バッファ内の無効データを破棄する
+//----------------------------------------------------------------------------
+
+void JsonMidISerializer::flush()
+{
+    static const std::string    sSkipChars(" \t\n");
+
+#if 1
+char ch;
+while (auto num=mIStream.readsome(&ch, 1))
+{
+    if (sSkipChars.find(ch) == std::string::npos)
+    {
+        mIStream.unget();
+break;
+    }
+}
+#else
+    while(mIStream.gcount() && (sSkipChars.find(mIStream.peek()) != std::string::npos))
+    {
+        getChar();
+    }
+#endif
+}
+
+//----------------------------------------------------------------------------
 //      プリミティブ処理
 //----------------------------------------------------------------------------
 

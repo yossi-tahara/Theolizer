@@ -137,6 +137,7 @@ class IMemoryStreamBuf : public std::streambuf
     int underflow() override;
     int uflow() override;
     int pbackfail(int c = EOF) override;
+    std::streamsize showmanyc() override;
 
 //      ---<<< C# I/F >>>---
 

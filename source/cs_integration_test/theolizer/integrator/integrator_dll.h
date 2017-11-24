@@ -203,7 +203,6 @@ public:
         while (!isTerminated())
         {
             callFunc(*mRequestSerializer, *mResponseSerializer);
-            //mStreams.mResponse->flush();
         }
     }
 

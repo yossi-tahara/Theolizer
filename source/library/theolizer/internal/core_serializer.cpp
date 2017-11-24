@@ -997,9 +997,9 @@ BaseSerializer::AutoRestoreLoadProcess::AutoRestoreLoadProcess
 (
     BaseSerializer& iSerializer,
     size_t iTypeIndex
-) : mSerializer(iSerializer)
+) : mSerializer(&iSerializer)
 {
-    mSerializer.loadProcessStart(iTypeIndex);
+    mSerializer->loadProcessStart(iTypeIndex);
 }
 
 // TypeIndex返却
@@ -1007,17 +1007,21 @@ BaseSerializer::AutoRestoreLoadProcess::AutoRestoreLoadProcess
 (
     BaseSerializer& iSerializer,
     TypeIndexList*& oTypeIndexList
-) : mSerializer(iSerializer)
+) : mSerializer(&iSerializer)
 {
-    oTypeIndexList=mSerializer.loadProcessStart(kInvalidSize);
+    oTypeIndexList=mSerializer->loadProcessStart(kInvalidSize);
 }
 
 BaseSerializer::AutoRestoreLoadProcess::~AutoRestoreLoadProcess() noexcept(false)
 {
+    // ムーブ対応
+    if (!mSerializer)
+return;
+
     theolizer::internal::Releasing aReleasing{};
     try
     {
-        mSerializer.loadProcessEnd();
+        mSerializer->loadProcessEnd();
     }
     catch (std::exception& e)
     {
@@ -1344,7 +1348,6 @@ void BaseSerializer::clearTrackingImpl()
         // 初期状態へ戻す(先頭はnullptr用)
         mSerializeList->clear();
         initSerializeList();
-        flush();
     }
 
     if (mDeserializeList)
@@ -1373,6 +1376,9 @@ void BaseSerializer::clearTrackingImpl()
         mDeserializeList->resize(1);
         (*mDeserializeList)[0].mStatus=etsNullPtr;
     }
+    // save時はバッファ内データのフラッシュ
+    // load時はバッファ内の無効データの破棄
+    flush();
 }
 
 void BaseSerializer::clearTracking()

@@ -461,6 +461,7 @@ private:
     void loadControl(unsigned long& oControl)       {loadPrimitive(oControl);}
     void loadControl(unsigned long long& oControl)  {loadPrimitive(oControl);}
     void loadControl(std::string& oControl)         {decodeJsonString(oControl);}
+    void flush();
 
 //      ---<<< プリミティブ回復 >>>---
 

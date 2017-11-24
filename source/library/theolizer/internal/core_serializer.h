@@ -945,7 +945,7 @@ protected:
     virtual void saveControl(std::string const& iControl)   {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveElementName(ElementsMapping iElementsMapping, char const* iElementName)
                                                             {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void flush()                                    {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void flush()                                    {}
 
 //      ---<<< プリミティブ用 >>>---
 
@@ -1039,7 +1039,7 @@ protected:
 
     struct THEOLIZER_INTERNAL_DLL AutoRestoreLoadProcess
     {
-        BaseSerializer&     mSerializer;
+        BaseSerializer*     mSerializer;
 
         AutoRestoreLoadProcess
         (
@@ -1051,6 +1051,13 @@ protected:
             BaseSerializer& iSerializer,
             TypeIndexList*& oTypeIndexList
         );
+        // ムーブ・コンストラクトをサポートする
+        AutoRestoreLoadProcess(AutoRestoreLoadProcess&& iRhs) :
+            mSerializer(iRhs.mSerializer)
+        {
+            iRhs.mSerializer = nullptr;
+        }
+
         ~AutoRestoreLoadProcess() noexcept(false);
     };
 

@@ -101,7 +101,8 @@ class BaseIntegrator
         virtual void processFunction
         (
             BaseSerializer& iISerializer,
-            BaseSerializer& iOSerializer
+            BaseSerializer& iOSerializer,
+            BaseSerializer::AutoRestoreLoadProcess&& iAutoRestoreLoadProcess
         )=0;
         virtual ~HolderBase() { }
     };
@@ -115,12 +116,21 @@ class BaseIntegrator
         void processFunction
         (
             BaseSerializer& iISerializer,
-            BaseSerializer& iOSerializer
+            BaseSerializer& iOSerializer,
+            BaseSerializer::AutoRestoreLoadProcess&& iAutoRestoreLoadProcess
         )
         {
             exchange::func0Theolizer    afunc0Theolizer;
-            THEOLIZER_INTERNAL_LOAD(iISerializer, afunc0Theolizer, etmDefault);
+            {
+                BaseSerializer::AutoRestoreLoadProcess
+                    AutoRestoreLoadProcess(std::move(iAutoRestoreLoadProcess));
+                THEOLIZER_INTERNAL_LOAD(iISerializer, afunc0Theolizer, etmDefault);
+            }
+            iISerializer.clearTracking();   // flush
+
+DEBUG_PRINT("----- pre  callFunc()");
             afunc0Theolizer.callFunc();
+DEBUG_PRINT("----- post callFunc()");
             // 暫定的に要求クラスを返却するが、ここは返却クラスを返すのが正しい
             BaseSerializer::AutoRestoreSaveProcess
                 aAutoRestoreSaveProcess(iOSerializer, 0);
@@ -168,7 +178,12 @@ DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
         std::size_t aTypeIndex = (*aTypeIndexList)[0];      // 先頭のみ使用する(１つしかないので)
 
         // 受信→関数呼び出し→送信処理
-        getFuncClassList()[aTypeIndex]->processFunction(iISerializer, iOSerializer);
+        getFuncClassList()[aTypeIndex]->processFunction
+        (
+            iISerializer,
+            iOSerializer,
+            std::move(aAutoRestoreLoadProcess)
+        );
         iOSerializer.clearTracking();   // flush
     }
 
