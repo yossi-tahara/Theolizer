@@ -123,6 +123,9 @@ BinaryMidOSerializer::BinaryMidOSerializer
         // 通常ヘッダ保存
         writeHeader();
     }
+
+    // ヘッダを追い出す(ピンポン通信時デッドロックさせないため)
+    mOStream.flush();
 }
 
 // ***************************************************************************

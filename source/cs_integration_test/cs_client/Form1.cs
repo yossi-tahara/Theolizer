@@ -16,9 +16,11 @@ namespace cs_client
     {
         DllIntegrator   mDllIntegrator;
 
+public static TextBox sTextBox;
         public Form1()
         {
             InitializeComponent();
+sTextBox = textBox;
             mDllIntegrator = DllIntegrator.getInstance(SerializerType.Json, Theolizer.GlobalVersionNo);
             ThreadIntegrator.Integrator = mDllIntegrator;
         }

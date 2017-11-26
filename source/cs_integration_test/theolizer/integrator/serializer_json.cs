@@ -75,6 +75,7 @@ namespace theolizer.internal_space
             // 通常ヘッダ保存
             writeHeader();
             mOStream.Write("\n");
+            mOStream.Flush();
             mWriteComma=false;
         }
 
@@ -293,12 +294,15 @@ namespace theolizer.internal_space
         String ReadDelim()
         {
             var sb = new StringBuilder();
-            while(Peek() > -1)
+            int ch;
+            while((ch = Peek()) > -1)
             {
-                int ch = Read();
                 if (sDelimiter.IndexOf((char)ch) > -1)
             break;
-                sb.Append(ch);
+                sb.Append((char)ch);
+
+                // 読み捨て
+                Read();
             }
             return sb.ToString();
         }
@@ -402,6 +406,7 @@ namespace theolizer.internal_space
             // まだ終了処理されてないなら、エラー(C#側は変更対処しない)
             if (!mTerminated)
             {
+                if (readPreElement() != ReadStat.Terminated)
         throw new InvalidOperationException("Format Error.");
             }
             mTerminated=false;
@@ -429,14 +434,17 @@ namespace theolizer.internal_space
             return (aContinue)?ReadStat.Continue:ReadStat.Terminated;
         }
 
-        // カンマまで読み飛ばし
+        // カンマまで読み飛ばし(C++と異なりungetがないのでPeek→読み捨てで処理する)
         bool readComma(bool iReadComma)
         {
             int     ch;
             while((ch = mIStream.Peek()) > -1)
             {
-                if (sSpaceChar.IndexOf((char)ch) > -1)
+                if (sSpaceChar.IndexOf((char)ch) < 0)
             break;
+
+                // 読み捨て
+                mIStream.Read();
             }
             if (ch < 0)
         throw new InvalidOperationException("Format Error.");
@@ -445,6 +453,8 @@ namespace theolizer.internal_space
             {
                 if (iReadComma)
                 {
+                    // 読み捨て
+                    mIStream.Read();
         return true;
                 }
                 else
@@ -455,7 +465,11 @@ namespace theolizer.internal_space
 
             // 終端マークなら、false返却
             if (checkTerminal((char)ch))
+            {
+                // 読み捨て
+                mIStream.Read();
         return false;
+            }
 
             return true;
         }
@@ -505,7 +519,7 @@ namespace theolizer.internal_space
             int     ch;
             while((ch = mIStream.Read()) > -1)
             {
-                if (sSpaceChar.IndexOf((char)ch) > -1)
+                if (sSpaceChar.IndexOf((char)ch) < 0)
         return (char)ch;
             }
 
@@ -587,6 +601,7 @@ namespace theolizer.internal_space
             using (var temp = new BaseSerializer.AutoRestoreLoadStructure(this, ElementsMapping.emName))
             {
                 //      ---<<< 名前に従って回復 >>>---
+System.Windows.Forms.TextBox textBox = cs_client.Form1.sTextBox;
 
                 bool aExistSerializerName=false;
                 bool aExistGlobalVersionNo=false;
@@ -601,6 +616,7 @@ namespace theolizer.internal_space
                         aExistSerializerName=true;
                         String aSerialzierName;
                         loadControl(out aSerialzierName);
+textBox.AppendText(aSerialzierName + Environment.NewLine);
                         if (aSerialzierName != Constants.kJsonSerializerName)
                         {
         throw new InvalidOperationException
@@ -611,6 +627,7 @@ namespace theolizer.internal_space
                     {
                         aExistGlobalVersionNo=true;
                         loadControl(out mGlobalVersionNo);
+textBox.AppendText(mGlobalVersionNo + Environment.NewLine);
                     }
                     else if (aInfoName == "TypeInfoList")
                     {

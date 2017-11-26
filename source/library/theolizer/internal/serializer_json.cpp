@@ -130,6 +130,9 @@ JsonMidOSerializer::JsonMidOSerializer
 
     mOStream << "\n";
 
+    // ヘッダを追い出す(ピンポン通信時デッドロックさせないため)
+    mOStream.flush();
+
     mWriteComma=false;
 }
 

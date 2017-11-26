@@ -221,7 +221,8 @@ XmlMidOSerializer::XmlMidOSerializer
         writeHeader();
     }
 
-//    mOStream << "\n";
+    // ヘッダを追い出す(ピンポン通信時デッドロックさせないため)
+    mOStream.flush();
 }
 
 // ***************************************************************************

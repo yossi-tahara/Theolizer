@@ -86,7 +86,7 @@ namespace theolizer
 
             case SerializerType.Json:
                 mRequestSerializer = new JsonOSerializer(mRequestStream, iGlobalVersionNo);
-///                mResponseSerializer = new JsonISerializer(mResponseStream);
+                mResponseSerializer = new JsonISerializer(mResponseStream);
                 break;
             }
         }
