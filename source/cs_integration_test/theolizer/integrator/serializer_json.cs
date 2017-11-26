@@ -426,7 +426,7 @@ namespace theolizer.internal_space
         }
 
         // 次の読み出し準備
-        protected override ReadStat readPreElement()
+        public    override ReadStat readPreElement()
         {
             bool aContinue=readComma(mReadComma);
             mReadComma=true;
@@ -601,7 +601,6 @@ namespace theolizer.internal_space
             using (var temp = new BaseSerializer.AutoRestoreLoadStructure(this, ElementsMapping.emName))
             {
                 //      ---<<< 名前に従って回復 >>>---
-System.Windows.Forms.TextBox textBox = cs_client.Form1.sTextBox;
 
                 bool aExistSerializerName=false;
                 bool aExistGlobalVersionNo=false;
@@ -616,7 +615,6 @@ System.Windows.Forms.TextBox textBox = cs_client.Form1.sTextBox;
                         aExistSerializerName=true;
                         String aSerialzierName;
                         loadControl(out aSerialzierName);
-textBox.AppendText(aSerialzierName + Environment.NewLine);
                         if (aSerialzierName != Constants.kJsonSerializerName)
                         {
         throw new InvalidOperationException
@@ -627,7 +625,6 @@ textBox.AppendText(aSerialzierName + Environment.NewLine);
                     {
                         aExistGlobalVersionNo=true;
                         loadControl(out mGlobalVersionNo);
-textBox.AppendText(mGlobalVersionNo + Environment.NewLine);
                     }
                     else if (aInfoName == "TypeInfoList")
                     {

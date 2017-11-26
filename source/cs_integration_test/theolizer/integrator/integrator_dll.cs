@@ -71,15 +71,10 @@ namespace theolizer
             CppInitialize(out mStreams);
 
             mRequestStream = new CppOStream(mStreams.mRequest);
-            mRequestWriter = new StreamWriter(mRequestStream, new UTF8Encoding(false));
-
             mResponseStream = new CppIStream(mStreams.mResponse);
-            mResponseReader = new StreamReader(mResponseStream, new UTF8Encoding(false));
+             mNotifyStream = new CppIStream(mStreams.mNotify);
 
-            mNotifyStream = new CppIStream(mStreams.mNotify);
-            mNotifyReader = new StreamReader(mNotifyStream, new UTF8Encoding(false));
-
-            switch(iSerializerType)
+            switch (iSerializerType)
             {
             case SerializerType.Binary:
                 throw new NotImplementedException();
@@ -127,27 +122,10 @@ namespace theolizer
 
         Streams     mStreams = new Streams();
 
-        // 内部ストリーム（現在は暫定的にStreamWriter/StreamReader)
+        // 内部ストリーム
         Stream          mRequestStream;
-        StreamWriter    mRequestWriter;
-        public StreamWriter RequestWriter
-        {
-            get { return mRequestWriter; }
-        }
-
         Stream          mResponseStream;
-        StreamReader    mResponseReader;
-        public StreamReader ResponseReader
-        {
-            get { return mResponseReader; }
-        }
-
         Stream          mNotifyStream;
-        StreamReader    mNotifyReader;
-        public StreamReader NotifyReader
-        {
-            get { return mNotifyReader; }
-        }
 
         //----------------------------------------------------------------------------
         //      シリアライザ
@@ -160,18 +138,33 @@ namespace theolizer
         // 要求を発行し応答を受信
         public void sendRequest(ITheolizerInternal iFuncObject, ITheolizerInternal oReturnObject)
         {
+            // 要求送信
             using (var temp = new BaseSerializer.AutoRestoreSaveProcess
                 (mRequestSerializer, iFuncObject.getTypeIndex()))
             {
                 iFuncObject.save(mRequestSerializer);
             }
             mRequestSerializer.flush();
+
+            // 応答受信
+            UInt64 aTypeIndex = oReturnObject.getTypeIndex();
+            using (var temp = new BaseSerializer.AutoRestoreLoadProcess
+                (mResponseSerializer, ref aTypeIndex))
+            {
+                oReturnObject.load(mResponseSerializer);
+            }
         }
 
         // 通知受信
         public void receiveNotify()
         {
             throw new NotImplementedException();
+        }
+
+        // 応答シリアライザのグローバル・バージョン番号(デバッグ用)
+        public UInt32 GlobalVersionNo
+        {
+            get { return mResponseSerializer.getGlobalVersionNo(); }
         }
     }
 }

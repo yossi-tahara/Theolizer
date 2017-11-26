@@ -106,8 +106,16 @@ namespace exchange
             }
             public void load(BaseSerializer iBaseSerializer)
             {
-                // 省略
-                throw new NotImplementedException();
+                using (var temp = new BaseSerializer.AutoRestoreLoadStructure(iBaseSerializer))
+                {
+                    if (iBaseSerializer.readPreElement() == ReadStat.Terminated)
+            throw new InvalidOperationException("Format Error.");
+                    iBaseSerializer.loadPrimitive(out mTheolizer.mUIntSub);
+
+                    if (iBaseSerializer.readPreElement() == ReadStat.Terminated)
+            throw new InvalidOperationException("Format Error.");
+                    iBaseSerializer.loadPrimitive(out mTheolizer.mStringSub);
+                }
             }
         }
     }
@@ -149,8 +157,12 @@ namespace exchange
             }
             public void load(BaseSerializer iBaseSerializer)
             {
-                // 省略
-                throw new NotImplementedException();
+                using (var temp = new BaseSerializer.AutoRestoreLoadStructure(iBaseSerializer))
+                {
+                    if (iBaseSerializer.readPreElement() == ReadStat.Terminated)
+            throw new InvalidOperationException("Format Error.");
+                    iBaseSerializer.loadPrimitive(out mTheolizer.mIntMain);
+                }
             }
         }
 
@@ -166,7 +178,7 @@ namespace exchange
             var aReturnObject = new theolizer_integrator.func0UserClassMainReturn(this);
             aIntegrator.sendRequest(aFuncObject, aReturnObject);
 
-            return aReturnObject.mRet;
+            return aReturnObject.mReturn;
         }
     }
 }
@@ -180,8 +192,8 @@ namespace theolizer_integrator
     // UserClassMain::func0用戻り値クラス
     class func0UserClassMainReturn : ITheolizerInternal
     {
+        public Int32    mReturn;
         exchange.UserClassMain mThis;
-        public Int32    mRet;
         public func0UserClassMainReturn
         (
             exchange.UserClassMain iThis
@@ -199,6 +211,16 @@ namespace theolizer_integrator
         }
         public void load(BaseSerializer iBaseSerializer)
         {
+            using (var temp = new BaseSerializer.AutoRestoreLoadStructure(iBaseSerializer))
+            {
+                if (iBaseSerializer.readPreElement() == ReadStat.Terminated)
+        throw new InvalidOperationException("Format Error.");
+                iBaseSerializer.loadPrimitive(out mReturn);
+
+                if (iBaseSerializer.readPreElement() == ReadStat.Terminated)
+        throw new InvalidOperationException("Format Error.");
+                ((ITheolizer)mThis).getTheolizer().load(iBaseSerializer);
+            }
         }
     }
 
@@ -228,6 +250,7 @@ namespace theolizer_integrator
             {
                 iBaseSerializer.writePreElement();
                 ((ITheolizer)mThis).getTheolizer().save(iBaseSerializer);
+
                 iBaseSerializer.writePreElement();
                 ((ITheolizer)miUserClassSub).getTheolizer().save(iBaseSerializer);
             }

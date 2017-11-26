@@ -16,13 +16,14 @@ namespace cs_client
     {
         DllIntegrator   mDllIntegrator;
 
-public static TextBox sTextBox;
         public Form1()
         {
             InitializeComponent();
-sTextBox = textBox;
             mDllIntegrator = DllIntegrator.getInstance(SerializerType.Json, Theolizer.GlobalVersionNo);
             ThreadIntegrator.Integrator = mDllIntegrator;
+
+            textBox.AppendText("GlobalVersionNo = "
+                + mDllIntegrator.GlobalVersionNo + Environment.NewLine);
         }
 
         private void buttonSend_Click(object sender, EventArgs e)
@@ -33,14 +34,18 @@ sTextBox = textBox;
             aUserClassMain.mIntMain = data;
             var aUserClassSub=new exchange.UserClassSub(5678, "test [\"][\\][/][\x08][\x0c][\n][\r][\t]");
             var ret = aUserClassMain.func0(aUserClassSub);
-#if true
-            do
-            {
-                var str = mDllIntegrator.ResponseReader.ReadLine();
-                textBox.AppendText(str + Environment.NewLine);
-            }
-            while(mDllIntegrator.ResponseReader.Peek() > -1);
-#endif
+
+            textBox.AppendText("Request : " + Environment.NewLine);
+            textBox.AppendText("  UserClassMain.mIntMain="
+                + aUserClassMain.mIntMain + Environment.NewLine);
+            textBox.AppendText("  UserClassSub.mUIntSub="
+                + aUserClassSub.mUIntSub + Environment.NewLine);
+            textBox.AppendText("  UserClassSub.mIntMain="
+                + aUserClassSub.mStringSub + Environment.NewLine);
+            textBox.AppendText("Response : " + Environment.NewLine);
+            textBox.AppendText("  ret =" + ret + Environment.NewLine);
+            textBox.AppendText("  UserClassMain.mIntMain="
+                + aUserClassMain.mIntMain + Environment.NewLine);
         }
     }
 }

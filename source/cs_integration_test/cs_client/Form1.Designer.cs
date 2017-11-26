@@ -36,7 +36,7 @@
             // 
             // buttonSend
             // 
-            this.buttonSend.Location = new System.Drawing.Point(182, 12);
+            this.buttonSend.Location = new System.Drawing.Point(214, 12);
             this.buttonSend.Name = "buttonSend";
             this.buttonSend.Size = new System.Drawing.Size(75, 23);
             this.buttonSend.TabIndex = 0;
@@ -68,17 +68,19 @@
             // 
             // textBox
             // 
-            this.textBox.Location = new System.Drawing.Point(12, 41);
+            this.textBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.textBox.Location = new System.Drawing.Point(0, 50);
             this.textBox.Multiline = true;
             this.textBox.Name = "textBox";
-            this.textBox.Size = new System.Drawing.Size(261, 322);
+            this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBox.Size = new System.Drawing.Size(328, 325);
             this.textBox.TabIndex = 2;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(285, 375);
+            this.ClientSize = new System.Drawing.Size(328, 375);
             this.Controls.Add(this.textBox);
             this.Controls.Add(this.numericUpDown);
             this.Controls.Add(this.buttonSend);

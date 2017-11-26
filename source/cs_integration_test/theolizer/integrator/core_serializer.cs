@@ -69,7 +69,7 @@ namespace theolizer.internal_space
 
     abstract class BaseSerializer : IDisposable
     {
-        protected uint              mGlobalVersionNo;
+        protected UInt32            mGlobalVersionNo;
         protected ElementsMapping   mElementsMapping;
         protected bool              mCancelPrettyPrint;
         protected int               mIndent;
@@ -111,6 +111,8 @@ namespace theolizer.internal_space
         // ***************************************************************************
         //      シリアライズ機能群
         // ***************************************************************************
+
+        public UInt32 getGlobalVersionNo() {return mGlobalVersionNo;}
 
         //----------------------------------------------------------------------------
         //      関数クラス（トップ・レベル）の保存開始／終了
@@ -359,7 +361,7 @@ namespace theolizer.internal_space
         //      派生シリアライザで実装するデシリアライズ補助関数群
         //----------------------------------------------------------------------------
 
-        protected virtual ReadStat readPreElement()                 {throw new NotSupportedException();}
+        public    virtual ReadStat readPreElement()                 {throw new NotSupportedException();}
         protected virtual void loadGroupStart(bool iIsTop=false)    {throw new NotSupportedException();}
         protected virtual void loadGroupEnd(bool iIsTop=false)      {throw new NotSupportedException();}
         protected virtual void loadStructureStart()                 {throw new NotSupportedException();}
@@ -415,7 +417,7 @@ namespace theolizer.internal_space
         {
             loadGroupStart(true);
 
-            if (readPreElement() != ReadStat.Terminated)
+            if (readPreElement() == ReadStat.Terminated)
             {
         throw new InvalidOperationException("Format Error.");
             }
@@ -441,7 +443,7 @@ namespace theolizer.internal_space
 #endif
             }
 
-            if (readPreElement() != ReadStat.Terminated)
+            if (readPreElement() == ReadStat.Terminated)
             {
         throw new InvalidOperationException("Format Error.");
             }
