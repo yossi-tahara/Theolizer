@@ -1252,7 +1252,7 @@ template<typename tType, class tEnable = void>
 struct TheolizerParameter : public Memory<tType>
 {
     template<typename... tArgs>
-    TheolizerParameter(tArgs&&... iArgs) : Memory{std::forward<tArgs>(iArgs)...} { }
+    TheolizerParameter(tArgs&&... iArgs) : Memory<tType>{std::forward<tArgs>(iArgs)...} { }
 };
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN

@@ -28,9 +28,6 @@
 
 ]]############################################################################
 
-# インクルード・パス指定
-include_directories("${CMAKE_BINARY_DIR}/include")
-
 #-----------------------------------------------------------------------------
 #       Sub Functions
 #-----------------------------------------------------------------------------
@@ -123,7 +120,7 @@ macro(add_build_and_test TARGET_NAME NOW_VERSION PREV_VERSION ERROR_CHECK TEST_F
         set(PARAMETERS ${PARAMETERS} ${ARGN})
         set(PARAMETERS ${PARAMETERS} -o${TEST_NAME})
         set(PARAMETERS ${PARAMETERS} -I${CMAKE_SOURCE_DIR}/library)
-        set(PARAMETERS ${PARAMETERS} -L${CMAKE_BINARY_DIR}/library)
+        set(PARAMETERS ${PARAMETERS} -L${CMAKE_BINARY_DIR}/library/${CMAKE_BUILD_TYPE})
         set(PARAMETERS ${PARAMETERS} -l${TheolizerLib})
         set(PARAMETERS ${PARAMETERS} -l${TheolizerTest})
 

@@ -89,7 +89,7 @@ struct Streams
     ~Streams();
 
 private:
-friend  void ::CppInitialize(Streams*);
+    friend  void (::CppInitialize)(Streams*);
 
     // コピー／ムーブ不可
     Streams(Streams const&) = delete;
@@ -106,7 +106,7 @@ friend  void ::CppInitialize(Streams*);
 
 class DllIntegrator : public internal::BaseIntegrator
 {
-    friend  void ::CppInitialize(internal::Streams*);
+    friend  void (::CppInitialize)(theolizer::internal::Streams*);
 
     std::thread*    mMainThread;        // メイン・スレッド
 

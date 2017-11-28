@@ -413,6 +413,7 @@ endif()
 # ライブラリのハッシュ計算用ソース
 set(VERSION_SOURCE "")
 
+include_directories("${CMAKE_SOURCE_DIR}/library")
 add_subdirectory(library)
 link_directories("${CMAKE_BINARY_DIR}/library")
 
@@ -437,8 +438,8 @@ add_subdirectory(reference_and_test)
 
 #       ---<<< C# Integration >>>---
 
-# Travis-CIで上手く行かないので暫定
-if("${CI_SERVICE}" STREQUAL "")
+# MinGW/gccで成功しない。全体の姿が見えてから対処する
+if (MSVC)
     add_subdirectory(cs_integration_test)
 endif()
 

@@ -32,8 +32,6 @@
 #       Test-Projects
 #-----------------------------------------------------------------------------
 
-include_directories("${CMAKE_BINARY_DIR}/include")
-
 add_subdirectory(base)
 add_subdirectory(report)
 add_subdirectory(serializer)

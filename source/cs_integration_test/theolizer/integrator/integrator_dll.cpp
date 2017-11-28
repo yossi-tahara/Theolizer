@@ -30,8 +30,10 @@
 
 #define THEOLIZER_NO_ANALYZE
 
-#define NOMINMAX
-#include <windows.h>
+#if defined(_WIN32)
+    #define NOMINMAX
+    #include <windows.h>
+#endif
 
 #include "integrator_dll.h"
 
@@ -40,17 +42,17 @@
 //############################################################################
 
 //----------------------------------------------------------------------------
-//      スレッド起動処理(main()呼び出し)
+//      スレッド起動処理(ユーザ()呼び出し)
 //----------------------------------------------------------------------------
 
-int main(theolizer::DllIntegrator& iDllIntegrator);
+void startup(theolizer::DllIntegrator& iDllIntegrator);
 
 void CppInitialize(theolizer::internal::Streams* oStreams)
 {
     auto&   aDllIntegrator = theolizer::DllIntegrator::getInstance();
     *oStreams = *aDllIntegrator.getStreams();
 
-    aDllIntegrator.startThread(main, aDllIntegrator);
+    aDllIntegrator.startThread(startup, aDllIntegrator);
 }
 
 namespace theolizer
@@ -90,8 +92,10 @@ DllIntegrator::DllIntegrator() :
     mResponseSerializer(nullptr),
     mNotirySerializer(nullptr)
 {
+#if defined(_WIN32)
 AllocConsole();
 freopen_s(&fp, "CON", "w", stdout);
+#endif
 }
 
 //----------------------------------------------------------------------------
@@ -110,8 +114,10 @@ DllIntegrator::~DllIntegrator()
     deleteSerializer(mRequestSerializer);
     deleteSerializer(mNotirySerializer);
 
+#if defined(_WIN32)
 fclose(fp);
 FreeConsole();
+#endif
 }
 
 }   // namespace theolizer

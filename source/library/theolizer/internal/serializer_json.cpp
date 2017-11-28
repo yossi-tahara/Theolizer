@@ -590,7 +590,7 @@ void JsonMidISerializer::flush()
     static const std::string    sSkipChars(" \t\n");
 
     char ch;
-    while (auto num=mIStream.readsome(&ch, 1))
+    while (mIStream.readsome(&ch, 1))
     {
         if (sSkipChars.find(ch) == std::string::npos)
         {

@@ -95,7 +95,11 @@ macro(setup_theolizer TARGET_NAME LIB_TYPE)
     endif()
 
     # Header
-    include_directories(${THEOLIZER_ROOT}/include)
+    if ("${PROJECT_NAME}" STREQUAL "Theolizer")
+        include_directories(${CMAKE_SOURCE_DIR}/library)
+    else()
+        include_directories(${THEOLIZER_ROOT}/include)
+    endif()
 
     # Library
     link_directories("${THEOLIZER_ROOT}/library/${CMAKE_BUILD_TYPE}")

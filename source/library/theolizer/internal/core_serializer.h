@@ -538,7 +538,7 @@ class BaseIntegrator;
                                                 friend struct MetaDeserializer;             \
                                                 friend class AdditionalInfo;                \
                                                 friend class AutoRestoreIsShared;           \
-                                                friend class BaseIntegrator
+    friend class BaseIntegrator
 
 // theolizer名前空間のクラスにて使用する
 #define THEOLIZER_INTERNAL_FRIENDS                                                          \
@@ -551,7 +551,7 @@ class BaseIntegrator;
     template<class>                             friend class internal::TypeFunctions;       \
     template<class, class, class, bool, bool>   friend class internal::RegisterType;        \
     template<class>                             friend int internal::registerMidSerializer();\
-                                                friend class internal::BaseIntegrator
+    friend class internal::BaseIntegrator
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 //############################################################################
@@ -609,6 +609,7 @@ protected:
         return internal::Destinations{};
     }
 
+public:
     BaseSerializer
     (
         Destinations const& iDestinations,
@@ -630,7 +631,6 @@ protected:
 //      シリアライズ／デシリアライズ補助API
 // ***************************************************************************
 
-public:
     //! 処理中のグローバル・バージョン番号返却（@ref MemberFunctions 参照）
     unsigned getGlobalVersionNo() const {return mGlobalVersionNo;}
 
@@ -808,8 +808,9 @@ private:
 //      シリアライズ機能群
 // ***************************************************************************
 
-protected:
+public:
     CheckMode               mCheckMode;
+protected:
     ElementsMapping         mElementsMapping;
     bool                    mIsShared;
     int                     mIndent;
@@ -823,7 +824,6 @@ public:
 //      トップ・レベル処理補助クラス
 //----------------------------------------------------------------------------
 
-protected:
     struct THEOLIZER_INTERNAL_DLL AutoRestoreSaveProcess
     {
         BaseSerializer&     mSerializer;
@@ -1031,12 +1031,11 @@ private:
 //      デシリアライズ機能群
 // ***************************************************************************
 
-protected:
-
 //----------------------------------------------------------------------------
 //      トップ・レベル処理補助クラス
 //----------------------------------------------------------------------------
 
+public:
     struct THEOLIZER_INTERNAL_DLL AutoRestoreLoadProcess
     {
         BaseSerializer*     mSerializer;

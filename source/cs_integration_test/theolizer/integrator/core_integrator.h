@@ -32,7 +32,8 @@
 #define THEOLIZER_INTERNAL_CORE_INTEGRATOR_H
 
 #include <map>
-#include <theolizer/serializer.h>
+#include <theolizer/serializer_binary.h>
+#include <theolizer/serializer_json.h>
 
 #include "memory_stream.h"
 

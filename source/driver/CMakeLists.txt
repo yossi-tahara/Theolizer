@@ -84,7 +84,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}/bin/Debug")
 # Header
 include_directories("${Boost_INCLUDE_DIR}")
 include_directories("${LLVM_INCLUDE_DIRS}")
-include_directories("${CMAKE_SOURCE_DIR}/library")
 
 # Library
 link_directories("${Boost_LIBRARY_DIR}")

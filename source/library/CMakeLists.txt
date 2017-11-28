@@ -63,6 +63,13 @@ macro(extract FOLDER ARCHIVE_FILE)
     file(GLOB FILE_LIST RELATIVE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/${FOLDER}/*)
 endmacro(extract)
 
+#       ---<<< output >>>---
+
+if (NOT MSVC)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/library/${CMAKE_BUILD_TYPE}/")
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/library/${CMAKE_BUILD_TYPE}/")
+endif()
+
 #-----------------------------------------------------------------------------
 #       make target
 #-----------------------------------------------------------------------------
@@ -71,10 +78,10 @@ endmacro(extract)
 
 # Header
 include_directories("${Boost_INCLUDE_DIR}")
-include_directories("${CMAKE_SOURCE_DIR}/library")
 
 # Library
 link_directories("${Boost_LIBRARY_DIR}")
+
 
 #       ---<<< static-link boost to TheolizerLib >>>---
 
@@ -220,6 +227,7 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/theolizer
              PATTERN internal.h      EXCLUDE
 )
 
+if(FALSE)
 if(WIN32)
     STRING(REPLACE "/" "\\" INCLUDE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
     execute_process(
@@ -236,6 +244,10 @@ if(WIN32)
             WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
 else()
     execute_process(
+        COMMAND ${CMAKE_COMMAND} -E remove include
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+    execute_process(
         COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR} include
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
+endif()
 endif()
