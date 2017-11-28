@@ -553,7 +553,6 @@ class BaseIntegrator;
     template<class>                             friend int internal::registerMidSerializer();\
     friend class internal::BaseIntegrator
 
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
 //############################################################################
 /*!
     @brief      基底Serializer
@@ -589,10 +588,8 @@ private:
     bool                                    mRequireClearTracking;
 
 public:
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
     // デフォルトは保存先無し
     static const bool                       kHasDestination=false;
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
 
     //! std::stringをマルチ・パイト文字コードとして処理することを指定する(NOP)
     virtual void setCharIsMultiByte(bool) { }
@@ -1528,7 +1525,6 @@ protected:
     }
 #endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 };
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 //############################################################################
 //      internal化のための中継処理
