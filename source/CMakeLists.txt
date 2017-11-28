@@ -429,8 +429,8 @@ endif()
 # テストに必要なツールのコピー
 if (MSVC)
     file(COPY ${CMAKE_SOURCE_DIR}/tools/theolizer.props.in    DESTINATION ${CMAKE_BINARY_DIR})
-    file(COPY ${CMAKE_SOURCE_DIR}/tools/THEOLIZERConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
 endif()
+file(COPY ${CMAKE_SOURCE_DIR}/tools/THEOLIZERConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
 
 # テスト
 add_subdirectory(reference_and_test)
