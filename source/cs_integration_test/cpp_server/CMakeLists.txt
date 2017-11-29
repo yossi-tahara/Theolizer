@@ -56,10 +56,7 @@ set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
 set(CMAKE_SUPPRESS_REGENERATION TRUE)
 
 # Theolizer
-if ("${THEOLIZER_DIR}" STREQUAL "")
-    set(THEOLIZER_DIR "${THEOLIZER_ROOT}")
-endif()
-message(STATUS "THEOLIZER_DIR=${THEOLIZER_DIR}")
+message(STATUS "cpp_server : THEOLIZER_DIR=${THEOLIZER_DIR}")
 find_package(THEOLIZER)
 
 # Options

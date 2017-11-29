@@ -294,7 +294,7 @@ OMemoryStreamBuf::OMemoryStreamBuf() :
     mDisconnected(false),
     mSize(1024),
     mIsFull(false),
-    mBuffer(new uint8_t[mSize]),
+    mBuffer(new uint8_t[static_cast<std::size_t>(mSize)]),
     mSynchronized(false)
 {
     setbuf(nullptr, 0);
@@ -331,7 +331,7 @@ throw std::runtime_error("can not resize theolizer::OMemoryStreamBuf while Count
     mSize = static_cast<std::streamsize>(iSize);
     mWriteMan.mRead = mWriteMan.mWrite = 0;
     mReadMan.mRead  = mReadMan.mWrite  = 0;
-    mBuffer.reset(new uint8_t[mSize]);
+    mBuffer.reset(new uint8_t[static_cast<std::size_t>(mSize)]);
 }
 
 //      ---<<< フラッシュ >>>---
@@ -430,7 +430,7 @@ return sync();
 
 std::streamsize OMemoryStreamBuf::xsputn(char const* buffer, std::streamsize count)
 {
-    DEBUG_PRINT("xsputn(...,", count, ") (", std::string(buffer, count), ") ", this);
+    DEBUG_PRINT("xsputn(...,", count, ") (", std::string(buffer, (std::size_t)count), ") ", this);
 
     std::streamsize ret = 0;
     while (ret < count)

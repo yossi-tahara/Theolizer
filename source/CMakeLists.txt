@@ -398,6 +398,9 @@ endfunction(add_test_function)
 #       Sub-Projects
 #-----------------------------------------------------------------------------
 
+# インストール前のテストに用いるTHEOLIZER_DIR
+set(THEOLIZER_DIR "${CMAKE_BINARY_DIR}" CACHE PATH "for pre install test" FORCE)
+
 #       ---<<< sub-tool >>>---
 
 add_subdirectory(tools)
@@ -439,7 +442,9 @@ add_subdirectory(reference_and_test)
 #       ---<<< C# Integration >>>---
 
 # MinGW/gccで成功しない。全体の姿が見えてから対処する
-if (MSVC)
+# 更にmsvcのSharedとStaticでエラー(cs_testがStaticWithBoostのみ指定しているため)
+# 上記同様全体の姿が見えてから対処する
+if (MSVC AND STATIC_WITH_BOOST)
     add_subdirectory(cs_integration_test)
 endif()
 

@@ -206,7 +206,7 @@ macro(end LOG_FILE BREAK)
     string(REGEX REPLACE
             "warning: jobserver unavailable"
             "WARNING: jobserver unavailable"
-            OUTPUT_LOG ${OUTPUT_LOG})
+            OUTPUT_LOG "${OUTPUT_LOG}")
 
     get_current_time()
     parameter_log(${LOG_FILE})
@@ -489,18 +489,10 @@ function(check_pass)
 endfunction()
 
 #-----------------------------------------------------------------------------
-#       実行
+#		CMake生成サブ
 #-----------------------------------------------------------------------------
 
-if (NOT "${CC_PATH}" STREQUAL "")
-    set(ENV{PATH} "${CC_PATH};$ENV{PATH}")
-endif()
-
-#       ---<<< configure >>>---
-
-if("${PROC}" STREQUAL "config")
-
-    start("Configuring   ...")
+macro(cmake_generation)
     if("${BUILD_DRIVER}" STREQUAL "TRUE")
         execute_process(
             COMMAND ${CMAKE_COMMAND}
@@ -533,6 +525,32 @@ if("${PROC}" STREQUAL "config")
             OUTPUT_VARIABLE OUTPUT_LOG
             RESULT_VARIABLE RETURN_CODE
         )
+    endif()
+endmacro()
+
+#-----------------------------------------------------------------------------
+#       実行
+#-----------------------------------------------------------------------------
+
+if (NOT "${CC_PATH}" STREQUAL "")
+    set(ENV{PATH} "${CC_PATH};$ENV{PATH}")
+endif()
+
+#       ---<<< configure >>>---
+
+if("${PROC}" STREQUAL "config")
+
+    start("Configuring   ...")
+    cmake_generation()
+
+    # C#プロジェクト生成する時は2回行う
+    #  C#バージョンを指定していると2回しないと適切なバージョンにならないため
+    #  CMakeが修正されるまでの暫定対処だが、必要性が低いので悩ましい。
+    if (("${COMPILER}" MATCHES "msvc") AND ("${LIB_TYPE}" STREQUAL "StaticWithBoost"))
+        set(TEMP "${OUTPUT_LOG}")
+        relay("  Second CMake generation for C# ...")
+        cmake_generation()
+        set(OUTPUT_LOG "${TEMP}------------ Second CMake generation for C#\n${OUTPUT_LOG}")
     endif()
     end("z0_config.log" TRUE)
 
