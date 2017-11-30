@@ -226,28 +226,3 @@ install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/theolizer
              PATTERN avoid-trouble.h EXCLUDE
              PATTERN internal.h      EXCLUDE
 )
-
-if(FALSE)
-if(WIN32)
-    STRING(REPLACE "/" "\\" INCLUDE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
-    execute_process(
-        COMMAND ${CMAKE_COMMAND}
-            -D "TARGET_NAME=cmd.exe"
-            -D "PARAM_LIST=/C if exist include rmdir include"
-            -P ${CMAKE_SOURCE_DIR}/tools/execute_process.cmake
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-    execute_process(
-        COMMAND ${CMAKE_COMMAND}
-            -D "TARGET_NAME=cmd.exe"
-            -D "PARAM_LIST=/C mklink /D include ${INCLUDE_PATH}"
-            -P ${CMAKE_SOURCE_DIR}/tools/execute_process.cmake
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-else()
-    execute_process(
-        COMMAND ${CMAKE_COMMAND} -E remove include
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-    execute_process(
-        COMMAND ln -s ${CMAKE_CURRENT_SOURCE_DIR} include
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
-endif()
-endif()

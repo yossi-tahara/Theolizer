@@ -334,7 +334,7 @@ function(add_test_sub_base TEST_NAME TARGET_NAME)
             STRING(REPLACE ";" "\\;" PATH "${PATH}")
         else()
             STRING(REPLACE ";" ":" PATH "${PATH}")
-            set(LD_LIBRARY_PATH ";LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/library")
+            set(LD_LIBRARY_PATH ";LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/library/${CMAKE_BUILD_TYPE}")
         endif()
     endif()
 
