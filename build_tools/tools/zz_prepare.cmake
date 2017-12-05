@@ -308,7 +308,7 @@ endif()
 
         # 展開
         if(NOT EXISTS "${LLVM}${FILE_NAME}")
-message(STATUS "llvm : ${LLVM}${FILE_NAME}")
+            message(STATUS "llvm : ${LLVM}${FILE_NAME}")
             execute_process(
                 COMMAND ${CMAKE_COMMAND} -E tar xvf "${LLVM}${FILE_NAME}.tar.bz2"
                 WORKING_DIRECTORY "${LLVM}"

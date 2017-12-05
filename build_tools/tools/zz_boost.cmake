@@ -198,12 +198,17 @@ function(build_boost)
     # ツールセット生成
     if("${COMPILER}" STREQUAL "msvc2017")
         set(TOOLSET "msvc-14.1")
+        if("${BIT_NUM}" STREQUAL "64")
+            set(ARCH "x86_amd64")
+        else()
+            set(ARCH "x86")
+        endif()
         execute_process(
-            COMMAND vswhere/vswhere.exe -version 15.0 -property installationPath
+            COMMAND cmd.exe /C "vswhere\\vssearch.bat" "${ARCH}"
             OUTPUT_VARIABLE MSVC_PATH)
-        string(REPLACE "\n" "" MSVC_PATH "${MSVC_PATH}")
-        set(MSVC_PATH "${MSVC_PATH}/VC/Tools/MSVC/14.10.25017/bin/HostX86/x86")
+        string(REPLACE "\n" ""  MSVC_PATH "${MSVC_PATH}")
         string(REPLACE "\\" "/" MSVC_PATH "${MSVC_PATH}")
+        get_filename_component(MSVC_PATH "${MSVC_PATH}" DIRECTORY)
         set(CC_PATH "")
     elseif("${COMPILER}" STREQUAL "msvc2015")
         set(TOOLSET "msvc-14.0")
@@ -252,7 +257,7 @@ function(build_boost)
 
     if(WIN32)
         if(NOT EXISTS "${BOOST_SOURCE}/b2.exe")
-            start("bootstrap     ...")
+            start("boost:bootstrap..")
             execute_process(
                 COMMAND bootstrap.bat
                 OUTPUT_VARIABLE OUTPUT_LOG
@@ -282,7 +287,7 @@ function(build_boost)
         set(VARIANT "release")
     endif()
 
-    start("Build         ...")
+    start("boost:Build   ...")
     if(fPIC)
         execute_process(
             COMMAND ./b2
