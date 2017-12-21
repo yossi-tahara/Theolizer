@@ -37,6 +37,8 @@
 
 #include "memory_stream.h"
 
+THEOLIZER_PROVIDED_BY("Theoride Technology");
+
 //############################################################################
 //      各種ヘルパー
 //############################################################################
@@ -55,7 +57,7 @@ class BaseIntegrator;
 
 class ThreadIntegrator
 {
-    static thread_local internal::BaseIntegrator  *mIntegrator;
+    static thread_local internal::BaseIntegrator*   mIntegrator;
 public:
     static void setIntegrator(internal::BaseIntegrator* iIntegrator)
     {
@@ -75,6 +77,25 @@ enum class SerializerType
 {
     Binary,             // Binary
     Json                // Json
+};
+
+// ***************************************************************************
+//      ユーザ・プログラムでの共有インスタンス保持用クラス
+// ***************************************************************************
+
+namespace internal
+{
+class BaseIntegrator;
+}
+
+template<typename tType>
+class SharedPointer
+{
+    internal::BaseIntegrator&   mIntegrator;    // インテグレータへの参照
+    std::size_t                 mIndex;         // 共有テーブルのインデックス番号
+    std::shared_ptr<tType>      mInstance;      // インスタンス管理
+public:
+    
 };
 
 //############################################################################
@@ -97,7 +118,7 @@ class BaseIntegrator
 
 //      ---<<< ホルダ >>>---
 
-    struct HolderBase
+    struct FuncClassHolderBase
     {
         virtual void processFunction
         (
@@ -105,15 +126,15 @@ class BaseIntegrator
             BaseSerializer& iOSerializer,
             BaseSerializer::AutoRestoreLoadProcess&& iAutoRestoreLoadProcess
         )=0;
-        virtual ~HolderBase() { }
+        virtual ~FuncClassHolderBase() { }
     };
 
     // 派生クラスのsaveTypeInstance/loadTypeInstance呼び出し用クラス
     template<class tFuncClass>
-    struct Holder : public HolderBase
+    struct FuncClassHolder : public FuncClassHolderBase
     {
-        Holder() { }
-        ~Holder() = default;
+        FuncClassHolder() { }
+        ~FuncClassHolder() = default;
         void processFunction
         (
             BaseSerializer& iISerializer,
@@ -143,7 +164,7 @@ class BaseIntegrator
     };
 
     // 関数クラス・リスト
-    typedef std::map<std::size_t, std::unique_ptr<HolderBase> > FuncClassList;
+    typedef std::map<std::size_t, std::unique_ptr<FuncClassHolderBase> > FuncClassList;
     static FuncClassList& getFuncClassList()
     {
         static FuncClassList    sFuncClassList;
@@ -164,7 +185,7 @@ public:
 DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
     THEOLIZER_INTERNAL_TYPE_NAME(tFuncClass), ">()");
 
-        getFuncClassList().emplace(aTypeIndex, new Holder<tFuncClass>);
+        getFuncClassList().emplace(aTypeIndex, new FuncClassHolder<tFuncClass>);
     }
 
 //      ---<<< 関数クラスを呼び出す >>>---
@@ -189,6 +210,104 @@ DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
             std::move(aAutoRestoreLoadProcess)
         );
         iOSerializer.clearTracking();   // flush
+    }
+
+//----------------------------------------------------------------------------
+//      共有テーブル管理
+//----------------------------------------------------------------------------
+
+private:
+    //      ---<<< 共有テーブルの要素 >>>---
+
+    // 基底クラス
+    class SharedHolderBase
+    {
+    public:
+        virtual void* getPointer() = 0;
+    };
+
+    // 派生クラス
+    template<typename tType>
+    class SharedHolder : public SharedHolderBase
+    {
+        std::shared_ptr<tType>      mInstance;      // インスタンス管理
+    public:
+        SharedHolder() : mInstance(std::make_shared<tType>())
+        { };
+        SharedHolder(tType* iPointer) : mInstance(std::shared_ptr<tType>(iPointer))
+        { };
+        void* getPointer()
+        {
+            return mInstance.get();
+        }
+        tType* get() { return mInstance.get(); }
+    };
+
+    //      ---<<< 共有テーブル >>>---
+
+    typedef std::unique_ptr<SharedHolderBase>   SharedElement;
+    typedef std::vector<SharedElement>          SharedTable;
+
+    SharedTable                                 mSharedTable;
+
+public:
+    // 受信時に使用
+    //  Indexを受け取り、
+    //      登録済ならそのインスタンスを返却
+    //      未登録ならデフォルト・コンストラクタで生成して返却
+    template<typename tType>
+    tType* registerSharedInstance(std::size_t iIndex)
+    {
+        if (iIndex < mSharedTable.size())
+        {
+            if (mSharedTable[iIndex] == nullptr)
+            {
+                auto aInstance = new SharedHolder<tType>();
+                mSharedTable[iIndex].reset(aInstance);
+    return aInstance->get();
+            }
+            else
+            {
+    return reinterpret_cast<tType*>(mSharedTable[iIndex]->getPointer());
+            }
+        }
+
+        auto aInstance = new SharedHolder<tType>();
+        mSharedTable.emplace_back(aInstance);
+        return aInstance->get();
+    }
+
+    // 送信処理用：指定領域を共有テーブルへ登録。
+    //  未登録なら新規登録し、そのIndex返却
+    //  登録済ならそのIndex返却。
+    template<typename tType>
+    std::size_t registerSharedInstance(tType* iInstance)
+    {
+        std::size_t ret;
+
+        // 既に登録済チェック
+        for (ret=0; ret < mSharedTable.size(); ++ret)
+        {
+            if ((mSharedTable[ret] != nullptr)
+             && (mSharedTable[ret]->getPointer() == iInstance))
+            {
+    return ret;
+            }
+        }
+
+        // 登録済でないなら先頭のnullptrを探す
+        for (ret=0; ret < mSharedTable.size(); ++ret)
+        {
+            if (mSharedTable[ret] == nullptr)
+            {
+                mSharedTable[ret].reset(new SharedHolder<tType>(iInstance));
+    return ret;
+            }
+        }
+
+        // 新たに領域を増やす
+        mSharedTable.emplace_back(new SharedHolder<tType>(iInstance));
+        return ret;
     }
 
 //----------------------------------------------------------------------------
@@ -282,12 +401,93 @@ RegisterFuncClass<tFuncClass>&
     RegisterFuncClass<tFuncClass>::mInstance = RegisterFuncClass<tFuncClass>::getInstance();
 
 //############################################################################
-//      End
+//      共有インスタンス交換用クラス
 //############################################################################
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
-
 }   // namespace theolizer
+
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+
+template<typename tType>
+struct SharedHelperTheolizer
+{
+    std::size_t mIndex;         // 共有テーブルのインデックス番号
+    tType*      mInstance;      // 交換対象インスタンスへのポインタ
+    SharedHelperTheolizer() : mIndex(theolizer::internal::kInvalidSize), mInstance(nullptr) { }
+    operator tType&() { return *mInstance; }
+    tType* operator->() { return mInstance; }
+};
+
+THEOLIZER_NON_INTRUSIVE_TEMPLATE_ORDER((template<typename T>),
+                                        (SharedHelperTheolizer<T>), 1,
+                                        SharedExchangerTheolizer);
+
+//----------------------------------------------------------------------------
+//      ユーザ定義
+//----------------------------------------------------------------------------
+
+//      ---<<< Version.1 >>>---
+
+template<typename T>
+template<class tMidSerializer, class tTheolizerVersion>
+struct TheolizerNonIntrusive<SharedHelperTheolizer<T>>::
+    TheolizerUserDefine<tMidSerializer, tTheolizerVersion, 1>
+{
+    // 保存
+    static void saveClassManual
+    (
+        tMidSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget const*const& iInstance
+    )
+    {
+        THEOLIZER_PROCESS(iSerializer, iInstance->mIndex);
+        THEOLIZER_PROCESS(iSerializer, *(iInstance->mInstance));
+    }
+
+    // 回復
+    static void loadClassManual
+    (
+        tMidSerializer& iSerializer,
+        typename tTheolizerVersion::TheolizerTarget*& oInstance
+    )
+    {
+        // もし、nullptrなら、インスタンス生成
+        if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
+
+        THEOLIZER_PROCESS(iSerializer, oInstance->mIndex);
+        oInstance->mInstance = theolizer::ThreadIntegrator::getIntegrator()->
+            registerSharedInstance<T>(oInstance->mIndex);
+        THEOLIZER_PROCESS(iSerializer, *(oInstance->mInstance));
+    }
+};
+
+//----------------------------------------------------------------------------
+//      自動生成
+//----------------------------------------------------------------------------
+
+#ifdef  THEOLIZER_WRITE_CODE // ###### SharedHelperTheolizer<T> ######
+
+#define THEOLIZER_GENERATED_LAST_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kLastVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_TYPE THEOLIZER_INTERNAL_UNPAREN(SharedHelperTheolizer<T>)
+#define THEOLIZER_GENERATED_PARAMETER_LIST template<typename T>
+#define THEOLIZER_GENERATED_UNIQUE_NAME SharedExchangerTheolizer
+
+//      ---<<< Version.1 >>>---
+
+#define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
+#define THEOLIZER_GENERATED_CLASS_NAME()\
+    THEOLIZER_INTERNAL_TEMPLATE_NAME((u8"SharedHelperTheolizer",T))
+#include <theolizer/internal/version_manual.inc>
+#undef  THEOLIZER_GENERATED_VERSION_NO
+
+#endif//THEOLIZER_WRITE_CODE // ###### SharedHelperTheolizer<T> ######
+
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
+
+//############################################################################
+//      End
+//############################################################################
 
 #endif  // THEOLIZER_INTERNAL_CORE_INTEGRATOR_H

@@ -83,15 +83,15 @@ namespace theolizer_integrator
 class func0UserClassMainReturn
 {
 public:
-    int                                                                 mReturn;
-    theolizer::internal::TheolizerParameter<exchange::UserClassMain>    mThis;
+    int                                             mReturn;
+    SharedHelperTheolizer<exchange::UserClassMain>  mThis;
     THEOLIZER_INTRUSIVE_ORDER(CS, (func0UserClassMainReturn), 1);
 };
 
 class func0UserClassMain
 {
 public:
-    theolizer::internal::TheolizerParameter<exchange::UserClassMain>    mThis;
+    SharedHelperTheolizer<exchange::UserClassMain>                      mThis;
     theolizer::internal::TheolizerParameter<exchange::UserClassSub>     miUserClassSub;
     THEOLIZER_INTRUSIVE_ORDER(CS, (func0UserClassMain), 1);
 

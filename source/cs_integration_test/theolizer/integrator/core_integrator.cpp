@@ -33,11 +33,15 @@
 #include "core_integrator.h"
 
 //############################################################################
-//      
+//      各種ヘルパー
 //############################################################################
+
 namespace theolizer
 {
 namespace internal
 {
 }   // namespace internal
+
+thread_local internal::BaseIntegrator*  ThreadIntegrator::mIntegrator = nullptr;
+
 }   // namespace theolizer

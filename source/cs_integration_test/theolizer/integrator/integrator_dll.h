@@ -129,8 +129,8 @@ class DllIntegrator : public internal::BaseIntegrator
     };
 
     // メイン・スレッド起動と終了管理
-    template<class F, class ...Args>
-    void startThread(F&& f, Args&&... args)
+    template<class F>
+    void startThread(F&& f, DllIntegrator& iDllIntegrator)
     {
         if (!mMainThread)
         {
@@ -139,7 +139,8 @@ class DllIntegrator : public internal::BaseIntegrator
                     [&]()
                     {
                         AutoTerminate aAutoTerminate(*this);
-                        f(std::forward<Args>(args)...);
+                        ThreadIntegrator::setIntegrator(&iDllIntegrator);
+                        f(iDllIntegrator);
                     }
                 );
         }
