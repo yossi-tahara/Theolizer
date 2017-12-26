@@ -81,6 +81,10 @@ namespace theolizer
 
 namespace theolizer.internal_space
 {
+    //----------------------------------------------------------------------------
+    //      共通インテグレータ
+    //----------------------------------------------------------------------------
+
     interface IIntegrator
     {
         // 要求を発行し応答を受信
@@ -98,5 +102,37 @@ namespace theolizer.internal_space
         UInt64 getTypeIndex();
         void save(BaseSerializer iBaseSerializer);
         void load(BaseSerializer iBaseSerializer);
+    }
+
+    //----------------------------------------------------------------------------
+    //      共有インスタンス交換用基底クラス
+    //----------------------------------------------------------------------------
+
+    abstract class SharedHelperTheolizer<tType> : ITheolizerInternal
+    {
+        UInt64      mIndex;         // 共有テーブルのインデックス番号
+        tType       mInstance;      // 交換対象インスタンス
+
+        abstract public UInt64 getTypeIndex();
+
+        // シリアライズ
+        public void save(BaseSerializer iBaseSerializer)
+        {
+            using (var temp = new BaseSerializer.AutoRestoreSaveStructure(iBaseSerializer))
+            {
+                iBaseSerializer.writePreElement();
+                iBaseSerializer.savePrimitive(mIndex);
+                iBaseSerializer.writePreElement();
+                ((ITheolizer)mInstance).getTheolizer().save(iBaseSerializer);
+            }
+        }
+
+        // デシリアライズ
+        public void load(BaseSerializer iBaseSerializer)
+        {
+            using (var temp = new BaseSerializer.AutoRestoreLoadStructure(iBaseSerializer))
+            {
+            }
+        }
     }
 }   // theolizer.internal_space

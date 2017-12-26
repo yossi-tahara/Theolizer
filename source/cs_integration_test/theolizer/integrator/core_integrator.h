@@ -400,13 +400,13 @@ template<class tFuncClass>
 RegisterFuncClass<tFuncClass>&
     RegisterFuncClass<tFuncClass>::mInstance = RegisterFuncClass<tFuncClass>::getInstance();
 
-//############################################################################
-//      共有インスタンス交換用クラス
-//############################################################################
-
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
 }   // namespace theolizer
+
+//############################################################################
+//      共有インスタンス交換用クラス
+//############################################################################
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 

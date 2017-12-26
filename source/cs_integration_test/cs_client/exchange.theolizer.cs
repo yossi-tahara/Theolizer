@@ -189,6 +189,14 @@ namespace exchange
 
 namespace theolizer_integrator
 {
+    // 共有用クラス定義
+    class SharedHelperTheolizer_exchange_UserClassMain :
+        theolizer.internal_space.SharedHelperTheolizer<exchange.UserClassMain>
+    {
+        const UInt64 kTypeIndex = 4;
+        public override UInt64 getTypeIndex() { return kTypeIndex; }
+    }
+
     // UserClassMain::func0用戻り値クラス
     class func0UserClassMainReturn : ITheolizerInternal
     {
@@ -240,7 +248,7 @@ namespace theolizer_integrator
         }
 
         // TypeIndex
-        public const UInt64 kTypeIndex = 0;
+        const UInt64 kTypeIndex = 0;
         public UInt64 getTypeIndex() { return kTypeIndex; }
 
         // シリアライズ
