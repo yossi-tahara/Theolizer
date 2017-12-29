@@ -46,7 +46,7 @@ namespace theolizer
     //          DLLの場合、通常１つしかインスタンス不要なのでシングルトンとする
     // ***************************************************************************
 
-    sealed class DllIntegrator : internal_space.IIntegrator, IDisposable
+    sealed class DllIntegrator : internal_space.CoreIntegrator, IDisposable
     {
         //----------------------------------------------------------------------------
         //      コンストラクタ
@@ -102,7 +102,7 @@ namespace theolizer
             if (mNotifySerializer != null)      mNotifySerializer.Dispose();
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
@@ -136,7 +136,7 @@ namespace theolizer
         BaseSerializer   mNotifySerializer;
 
         // 要求を発行し応答を受信
-        public void sendRequest(ITheolizerInternal iFuncObject, ITheolizerInternal oReturnObject)
+        public override void sendRequest(ITheolizerInternal iFuncObject, ITheolizerInternal oReturnObject)
         {
             // 要求送信
             using (var temp = new BaseSerializer.AutoRestoreSaveProcess
@@ -156,7 +156,7 @@ namespace theolizer
         }
 
         // 通知受信
-        public void receiveNotify()
+        public override void receiveNotify()
         {
             throw new NotImplementedException();
         }

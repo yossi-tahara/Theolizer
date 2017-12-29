@@ -258,23 +258,19 @@ public:
     template<typename tType>
     tType* registerSharedInstance(std::size_t iIndex)
     {
-        if (iIndex < mSharedTable.size())
+        if (mSharedTable.size() <= iIndex)
         {
-            if (mSharedTable[iIndex] == nullptr)
-            {
-                auto aInstance = new SharedHolder<tType>();
-                mSharedTable[iIndex].reset(aInstance);
-    return aInstance->get();
-            }
-            else
-            {
-    return reinterpret_cast<tType*>(mSharedTable[iIndex]->getPointer());
-            }
+            mSharedTable.resize(iIndex+1);
         }
 
-        auto aInstance = new SharedHolder<tType>();
-        mSharedTable.emplace_back(aInstance);
-        return aInstance->get();
+        if (mSharedTable[iIndex] == nullptr)
+        {
+            auto aInstance = new SharedHolder<tType>();
+            mSharedTable[iIndex].reset(aInstance);
+    return aInstance->get();
+        }
+
+        return reinterpret_cast<tType*>(mSharedTable[iIndex]->getPointer());
     }
 
     // 送信処理用：指定領域を共有テーブルへ登録。

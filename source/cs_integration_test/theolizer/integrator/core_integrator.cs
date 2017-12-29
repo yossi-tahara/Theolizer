@@ -29,27 +29,29 @@
 //############################################################################
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using theolizer.internal_space;
 
-// ***************************************************************************
+//############################################################################
 //      各種ヘルパー
-// ***************************************************************************
+//############################################################################
 
 namespace theolizer
 {
-    //----------------------------------------------------------------------------
+    // ***************************************************************************
     //      スレッドで使用するインテグレータを管理
-    //----------------------------------------------------------------------------
+    // ***************************************************************************
 
     static class ThreadIntegrator
     {
-        static ThreadLocal<IIntegrator> sThreadIntegrator;
+        static ThreadLocal<CoreIntegrator> sThreadIntegrator;
         static ThreadIntegrator()
         {
-            sThreadIntegrator = new ThreadLocal<IIntegrator>();
+            sThreadIntegrator = new ThreadLocal<CoreIntegrator>();
         }
-        public static IIntegrator Integrator
+        public static CoreIntegrator Integrator
         {
             get { return sThreadIntegrator.Value; }
             set
@@ -63,9 +65,9 @@ namespace theolizer
         }
     }
 
-    //----------------------------------------------------------------------------
+    // ***************************************************************************
     //      シリアライザの指定
-    //----------------------------------------------------------------------------
+    // ***************************************************************************
 
     public enum SerializerType
     {
@@ -75,27 +77,15 @@ namespace theolizer
 
 }   // theolizer
 
-// ***************************************************************************
+//############################################################################
 //      内部用（ユーザプログラムから使用不可）
-// ***************************************************************************
+//############################################################################
 
 namespace theolizer.internal_space
 {
-    //----------------------------------------------------------------------------
-    //      共通インテグレータ
-    //----------------------------------------------------------------------------
-
-    interface IIntegrator
-    {
-        // 要求を発行し応答を受信
-        void sendRequest(ITheolizerInternal iFuncObject, ITheolizerInternal oReturnObject);
-
-        // 通知受信
-        void receiveNotify();
-
-        // 破棄処理
-        void Dispose();
-    }
+    // ***************************************************************************
+    //      シリアライズ対象用基底クラス
+    // ***************************************************************************
 
     interface ITheolizerInternal
     {
@@ -104,35 +94,192 @@ namespace theolizer.internal_space
         void load(BaseSerializer iBaseSerializer);
     }
 
-    //----------------------------------------------------------------------------
-    //      共有インスタンス交換用基底クラス
-    //----------------------------------------------------------------------------
-
-    abstract class SharedHelperTheolizer<tType> : ITheolizerInternal
+    abstract class SharedDisposer : IDisposable
     {
-        UInt64      mIndex;         // 共有テーブルのインデックス番号
-        tType       mInstance;      // 交換対象インスタンス
+        CoreIntegrator  mIntegrator = null;
+        int             mIndex = -1;
+        bool            mDisposed = false;
 
-        abstract public UInt64 getTypeIndex();
-
-        // シリアライズ
-        public void save(BaseSerializer iBaseSerializer)
+        public void setIntegrator(CoreIntegrator iIntegrator, int iIndex)
         {
-            using (var temp = new BaseSerializer.AutoRestoreSaveStructure(iBaseSerializer))
+            // 破棄済なら例外
+            if (mDisposed)
+        throw new InvalidOperationException("SharedDisposer was disposed.");
+
+            mIntegrator = iIntegrator;
+            mIndex      = iIndex;
+        }
+
+        ~SharedDisposer()
+        {
+            Dispose(false);
+        }
+
+        void Dispose(bool disposing)
+        {
+            // 破棄済なら何もしない
+            if (mDisposed)
+        return;
+
+            // 登録済でDispose処理なら破棄できるかどうかチェックする
+            if ((mIntegrator != null) && disposing)
             {
-                iBaseSerializer.writePreElement();
-                iBaseSerializer.savePrimitive(mIndex);
-                iBaseSerializer.writePreElement();
-                ((ITheolizer)mInstance).getTheolizer().save(iBaseSerializer);
+                if (!mIntegrator.canDispose(mIndex))
+        throw new InvalidOperationException(
+            "Can not dispose SharedDisposer, because this is preserved by C++.");
+            }
+
+            mDisposed = true;
+
+            if (mIntegrator != null)
+            {
+                mIntegrator.disposeShared(mIndex);
             }
         }
 
-        // デシリアライズ
-        public void load(BaseSerializer iBaseSerializer)
+        public void Dispose()
         {
-            using (var temp = new BaseSerializer.AutoRestoreLoadStructure(iBaseSerializer))
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+    }
+
+    // ***************************************************************************
+    //      共有テーブルのオブジェクト管理クラス
+    // ***************************************************************************
+
+    class SharedHolder
+    {
+        Object          mStrongRef;
+        WeakReference   mWeakRef;
+
+        public SharedHolder(Object iInstance)
+        {
+            mStrongRef = null;
+            mWeakRef = new WeakReference(iInstance);
+        }
+
+        public void setStrong(bool iIsStrong)
+        {
+            if (iIsStrong)
             {
+                mStrongRef = mWeakRef.Target;
+            }
+            else
+            {
+                mStrongRef = null;
             }
         }
+
+        public bool canDispose()
+        {
+            return (mStrongRef == null);
+        }
+
+        public Object get()
+        {
+            return mWeakRef.Target;
+        }
+    }
+
+    // ***************************************************************************
+    //      共通インテグレータ
+    // ***************************************************************************
+
+    abstract class CoreIntegrator
+    {
+        //----------------------------------------------------------------------------
+        //      共有テーブル管理
+        //----------------------------------------------------------------------------
+
+        List<SharedHolder>  mSharedTable = new List<SharedHolder>();
+
+        // 受信時に使用
+        //  Indexを受け取り、
+        //      登録済ならそのインスタンスを返却
+        //      未登録ならデフォルト・コンストラクタで生成して返却
+        public tType registerSharedInstanceR<tType>(int iIndex) where tType : SharedDisposer, new()
+        {
+            if (mSharedTable.Count <= iIndex)
+            {
+                mSharedTable.Capacity = iIndex+1;
+            }
+
+            if (mSharedTable[iIndex] == null)
+            {
+                mSharedTable[iIndex] = new SharedHolder(new tType());
+            }
+
+            return (tType)mSharedTable[iIndex].get();
+        }
+
+        // 送信処理用：指定領域を共有テーブルへ登録。
+        //  未登録なら新規登録し、そのIndex返却
+        //  登録済ならそのIndex返却。
+        public int registerSharedInstanceS<tType>(tType iInstance) where tType : SharedDisposer, new()
+        {
+            int ret;
+
+            // 既に登録済チェック
+            for (ret=0; ret < mSharedTable.Count; ++ret)
+            {
+                if ((mSharedTable[ret] != null)
+                 && (mSharedTable[ret].get() == (Object)iInstance))
+                {
+        return ret;
+                }
+            }
+
+            // 登録済でないなら先頭のnullを探す
+            for (ret=0; ret < mSharedTable.Count; ++ret)
+            {
+                if (mSharedTable[ret] == null)
+                {
+                    mSharedTable[ret] = new SharedHolder(iInstance);
+        return ret;
+                }
+            }
+
+            // 新たに領域を増やす
+            mSharedTable.Add(new SharedHolder(iInstance));
+            return ret;
+        }
+
+        // Dispose可能判定
+        public bool canDispose(int iIndex)
+        {
+            if (mSharedTable.Count <= iIndex)
+        throw new InvalidOperationException(
+            String.Format("mSharedTable[{0}] has no element.(0)", iIndex));
+
+            if (mSharedTable[iIndex] == null)
+        throw new InvalidOperationException(
+            String.Format("mSharedTable[{0}] has no element.(1)", iIndex));
+
+            return mSharedTable[iIndex].canDispose();
+        }
+
+        // Dispose処理
+        public void disposeShared(int iIndex)
+        {
+            // ここには、下記処理を記述する。
+            //  C++側へ伝達してC++側のオブジェクトをデストラクトして共有テーブルから削除し、
+
+            // C#側共有テーブル削除
+            mSharedTable[iIndex] = null;
+        }
+
+        //----------------------------------------------------------------------------
+        //      C++側との通信用
+        //----------------------------------------------------------------------------
+
+        // 要求を発行し応答を受信
+        public abstract void sendRequest(ITheolizerInternal iFuncObject, ITheolizerInternal oReturnObject);
+
+        // 通知受信
+        public abstract void receiveNotify();
+
+        // 破棄(ThreadIntegrator経由で呼び出す)
+        public abstract void Dispose();
     }
 }   // theolizer.internal_space
