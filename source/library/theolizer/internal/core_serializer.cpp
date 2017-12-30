@@ -419,7 +419,7 @@ std::string BaseSerializer::getTypeName(std::size_t iTypeIndex)
 
 void BaseSerializer::saveProcessStart(std::size_t iTypeIndex)
 {
-    saveGroupStart(true);
+    saveGroupStart(mDoCheck);
 
     switch(mCheckMode)
     {
@@ -717,6 +717,7 @@ BaseSerializer::BaseSerializer
     mIsShared(false),
     mIndent(0),
     mCancelPrettyPrint(false),
+    mDoCheck(true),
     mSerializerVersionNo(0),
     mVersionNoList(),
     mSerializedTypeListI(new SerializedTypeListI),

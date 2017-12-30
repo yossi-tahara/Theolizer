@@ -812,6 +812,7 @@ protected:
     bool                    mIsShared;
     int                     mIndent;
     bool                    mCancelPrettyPrint;
+    bool                    mDoCheck;
 
 public:
     //! 現在のCheckMode返却（@ref MemberFunctions 参照）

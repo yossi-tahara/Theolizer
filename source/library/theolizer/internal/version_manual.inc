@@ -395,9 +395,26 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 return;
     }
 
+    // データ内に型名保存
+    std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+    if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+    {
+        aTypeIndex = theolizer::internal::getTypeIndex<THEOLIZER_GENERATED_CLASS_TYPE>();
+    }
+
     // 当バージョン／クラスの処理
-    theolizer::internal::BaseSerializer::AutoRestoreSave
-        aAutoSaveEnd(iSerializer, theolizer::internal::emOrder);
+    theolizer::internal::BaseSerializer::AutoRestoreSaveStructure
+        aAutoRestoreSaveStructure
+        (
+            iSerializer,
+            theolizer::internal::emOrder,
+            theolizer::internal::Structure::Class,
+            aTypeIndex
+        );
+
+    // 型チェック有効／無効の自動回復準備
+    theolizer::internal::AutoRestore<bool>  aDoCheck(iSerializer.mDoCheck, iSerializer.mDoCheck);
+
     THEOLIZER_INTERNAL_DERIVED::TheolizerUserDefine
     <
         tBaseSerializer,
@@ -429,9 +446,26 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 return;
     }
 
+    // データ内に型名保存
+    std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+    if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
+    {
+        aTypeIndex = theolizer::internal::getTypeIndex<THEOLIZER_GENERATED_CLASS_TYPE>();
+    }
+
     // 当バージョン／クラスの処理
-    theolizer::internal::BaseSerializer::AutoRestoreLoad
-        aAutoLoadEnd(iSerializer, theolizer::internal::emOrder);
+    theolizer::internal::BaseSerializer::AutoRestoreLoadStructure
+        aAutoRestoreLoadStructure
+        (
+            iSerializer,
+            theolizer::internal::emOrder,
+            theolizer::internal::Structure::Class,
+            aTypeIndex
+        );
+
+    // 型チェック有効／無効の自動回復準備
+    theolizer::internal::AutoRestore<bool>  aDoCheck(iSerializer.mDoCheck, iSerializer.mDoCheck);
+
     THEOLIZER_INTERNAL_DERIVED::TheolizerUserDefine
     <
         tBaseSerializer,
@@ -553,6 +587,10 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion<tBaseSerializer, 1>::saveClass
             theolizer::internal::Structure::Class,
             aTypeIndex
         );
+
+    // 型チェック有効／無効の自動回復準備
+    theolizer::internal::AutoRestore<bool>  aDoCheck(iSerializer.mDoCheck, iSerializer.mDoCheck);
+
     THEOLIZER_INTERNAL_DERIVED::TheolizerUserDefine
     <
         tBaseSerializer,
@@ -587,6 +625,10 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion<tBaseSerializer, 1>::loadClass
             theolizer::internal::Structure::Class,
             aTypeIndex
         );
+
+    // 型チェック有効／無効の自動回復準備
+    theolizer::internal::AutoRestore<bool>  aDoCheck(iSerializer.mDoCheck, iSerializer.mDoCheck);
+
     THEOLIZER_INTERNAL_DERIVED::TheolizerUserDefine
     <
         tBaseSerializer,
