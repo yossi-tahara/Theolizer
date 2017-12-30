@@ -419,30 +419,33 @@ std::string BaseSerializer::getTypeName(std::size_t iTypeIndex)
 
 void BaseSerializer::saveProcessStart(std::size_t iTypeIndex)
 {
-    saveGroupStart(mDoCheck);
-
-    switch(mCheckMode)
+    if (mDoCheck)
     {
-    case CheckMode::InMemory:
-    case CheckMode::TypeCheckInData:
-    case CheckMode::NoTypeCheck:
-        break;
+        saveGroupStart(true);
 
-    case CheckMode::TypeCheck:
+        switch(mCheckMode)
         {
+        case CheckMode::InMemory:
+        case CheckMode::TypeCheckInData:
+        case CheckMode::NoTypeCheck:
+            break;
+
+        case CheckMode::TypeCheck:
+            {
+                writePreElement();
+                saveControl(getTypeName(iTypeIndex));
+            }
+            break;
+
+        case CheckMode::TypeCheckByIndex:
             writePreElement();
-            saveControl(getTypeName(iTypeIndex));
+            saveControl(iTypeIndex);
+            break;
+
+        default:
+            THEOLIZER_INTERNAL_ABORT("mCheckMode=%d", static_cast<int>(mCheckMode));
+            break;
         }
-        break;
-
-    case CheckMode::TypeCheckByIndex:
-        writePreElement();
-        saveControl(iTypeIndex);
-        break;
-
-    default:
-        THEOLIZER_INTERNAL_ABORT("mCheckMode=%d", static_cast<int>(mCheckMode));
-        break;
     }
 
     writePreElement();
@@ -454,7 +457,10 @@ void BaseSerializer::saveProcessStart(std::size_t iTypeIndex)
 
 void BaseSerializer::saveProcessEnd()
 {
-    saveGroupEnd(true);
+    if (mDoCheck)
+    {
+        saveGroupEnd(true);
+    }
 }
 
 // ***************************************************************************
@@ -531,82 +537,87 @@ return;
 TypeIndexList* BaseSerializer::loadProcessStart(std::size_t iTypeIndex)
 {
     TypeIndexList* ret = nullptr;
-    loadGroupStart(true);
 
-    switch(mCheckMode)
+    if (mDoCheck)
     {
-    case CheckMode::InMemory:
-    case CheckMode::TypeCheckInData:
-    case CheckMode::NoTypeCheck:
-        break;
 
-    case CheckMode::TypeCheck:
+        loadGroupStart(true);
+
+        switch(mCheckMode)
         {
+        case CheckMode::InMemory:
+        case CheckMode::TypeCheckInData:
+        case CheckMode::NoTypeCheck:
+            break;
+
+        case CheckMode::TypeCheck:
+            {
+                if (!readPreElement())
+                {
+                    THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+                }
+
+                std::string  aTypeName;
+                loadControl(aTypeName);
+
+                // 型名から、現在のTypeIndexListを求める
+                TypeIndexList& aTypeIndexList=mTypeNameMap->mMap[aTypeName];
+                if (iTypeIndex != kInvalidSize)
+                {
+                    bool aIsMatch=false;
+                    for (auto aTypeIndex : aTypeIndexList)
+                    {
+                        if (aTypeIndex == iTypeIndex)
+                        {
+                            aIsMatch=true;
+                    break;
+                        }
+                    }
+                    if (!aIsMatch)
+                    {
+                        THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.(%1%)", aTypeName);
+                    }
+                }
+                else
+                {
+                    ret = &aTypeIndexList;
+                }
+            }
+            break;
+
+        case CheckMode::TypeCheckByIndex:
             if (!readPreElement())
             {
                 THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
             }
 
-            std::string  aTypeName;
-            loadControl(aTypeName);
-
-            // 型名から、現在のTypeIndexListを求める
-            TypeIndexList& aTypeIndexList=mTypeNameMap->mMap[aTypeName];
+            size_t aTypeIndex;
+            loadControl(aTypeIndex);
             if (iTypeIndex != kInvalidSize)
             {
-                bool aIsMatch=false;
-                for (auto aTypeIndex : aTypeIndexList)
+                if (!isMatchTypeIndex(aTypeIndex, iTypeIndex))
                 {
-                    if (aTypeIndex == iTypeIndex)
-                    {
-                        aIsMatch=true;
-                break;
-                    }
-                }
-                if (!aIsMatch)
-                {
-                    THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.(%1%)", aTypeName);
+                    THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.");
                 }
             }
             else
             {
-                ret = &aTypeIndexList;
+    #if 1   // ヘッダ処理を実装するまでの仮実装(仮なのでかなりいい加減だがデバッグには使える)
+                static TypeIndexList    aTemp;      // 本来staticではダメだが、仮実装なので手抜き
+                aTemp.clear();
+                aTemp.push_back(aTypeIndex);
+                ret = &aTemp;
+    #else
+                auto& aElementType = mSerializedTypeListI->at(aTypeIndex);
+                ret = aElementType.mProgramTypeIndex;
+    #endif
             }
-        }
-        break;
+            break;
 
-    case CheckMode::TypeCheckByIndex:
-        if (!readPreElement())
-        {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+        default:
+            THEOLIZER_INTERNAL_ABORT("mCheckMode=%d", static_cast<int>(mCheckMode));
+            break;
         }
-
-        size_t aTypeIndex;
-        loadControl(aTypeIndex);
-        if (iTypeIndex != kInvalidSize)
-        {
-            if (!isMatchTypeIndex(aTypeIndex, iTypeIndex))
-            {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.");
-            }
-        }
-        else
-        {
-#if 1   // ヘッダ処理を実装するまでの仮実装(仮なのでかなりいい加減だがデバッグには使える)
-            static TypeIndexList    aTemp;      // 本来staticではダメだが、仮実装なので手抜き
-            aTemp.clear();
-            aTemp.push_back(aTypeIndex);
-            ret = &aTemp;
-#else
-            auto& aElementType = mSerializedTypeListI->at(aTypeIndex);
-            ret = aElementType.mProgramTypeIndex;
-#endif
-        }
-        break;
-
-    default:
-        THEOLIZER_INTERNAL_ABORT("mCheckMode=%d", static_cast<int>(mCheckMode));
-        break;
     }
 
     if (!readPreElement())
@@ -623,7 +634,10 @@ TypeIndexList* BaseSerializer::loadProcessStart(std::size_t iTypeIndex)
 
 void BaseSerializer::loadProcessEnd()
 {
-    loadGroupEnd(true);
+    if (mDoCheck)
+    {
+        loadGroupEnd(true);
+    }
 }
 
 //############################################################################

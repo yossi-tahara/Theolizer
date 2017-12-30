@@ -438,6 +438,7 @@ struct TheolizerNonIntrusive<SharedHelperTheolizer<T>>::
         typename tTheolizerVersion::TheolizerTarget const*const& iInstance
     )
     {
+        iSerializer.mDoCheck = false;
         THEOLIZER_PROCESS(iSerializer, iInstance->mIndex);
         THEOLIZER_PROCESS(iSerializer, *(iInstance->mInstance));
     }
@@ -452,6 +453,7 @@ struct TheolizerNonIntrusive<SharedHelperTheolizer<T>>::
         // もし、nullptrなら、インスタンス生成
         if (!oInstance)   oInstance=new typename tTheolizerVersion::TheolizerTarget();
 
+        iSerializer.mDoCheck = false;
         THEOLIZER_PROCESS(iSerializer, oInstance->mIndex);
         oInstance->mInstance = theolizer::ThreadIntegrator::getIntegrator()->
             registerSharedInstance<T>(oInstance->mIndex);
