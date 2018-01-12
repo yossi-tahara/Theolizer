@@ -44,6 +44,12 @@
 //      Export関数
 //############################################################################
 
+#if 0
+    #define LOW_DEBUG_PRINT(...)    DEBUG_PRINT(__VA_ARGS__)
+#else
+    #define LOW_DEBUG_PRINT(...)
+#endif
+
 // ***************************************************************************
 //      書き込み
 // ***************************************************************************
@@ -142,26 +148,26 @@ void IMemoryStreamBuf::disconnect()
 
 int IMemoryStreamBuf::underflow()
 {
-    DEBUG_PRINT("underflow() ", this);
+    LOW_DEBUG_PRINT("underflow() ", this);
 
     if (mNextChar != EOF)
     {
-DEBUG_PRINT("    return(1) ", static_cast<char>(mNextChar));
+LOW_DEBUG_PRINT("    return(1) ", static_cast<char>(mNextChar));
 return mNextChar;
     }
     if (mBuffChar != EOF)
     {
-DEBUG_PRINT("    return(2) ", static_cast<char>(mBuffChar));
+LOW_DEBUG_PRINT("    return(2) ", static_cast<char>(mBuffChar));
 return mBuffChar;
     }
     std::unique_lock<std::mutex> lock(mMutex);
     mConditionVariable.wait(lock, [&]{ return mDisconnected || (mCount != 0); });
     if (mDisconnected)
-{DEBUG_PRINT("    return(3) EOF");
+{LOW_DEBUG_PRINT("    return(3) EOF");
 return EOF;
 }
     mBuffChar = *mTransBuff;
-DEBUG_PRINT("    return(4) ", static_cast<char>(mBuffChar));
+LOW_DEBUG_PRINT("    return(4) ", static_cast<char>(mBuffChar));
     return mBuffChar;
 }
 
@@ -169,21 +175,21 @@ DEBUG_PRINT("    return(4) ", static_cast<char>(mBuffChar));
 
 int IMemoryStreamBuf::uflow()
 {
-    DEBUG_PRINT("uflow() ", this);
+    LOW_DEBUG_PRINT("uflow() ", this);
 
     if (mNextChar != EOF)
     {
         mLastChar = mNextChar;
         mNextChar = EOF;
         mBuffChar = EOF;
-DEBUG_PRINT("    return(1) ", static_cast<char>(mLastChar));
+LOW_DEBUG_PRINT("    return(1) ", static_cast<char>(mLastChar));
 return mLastChar;
     }
 
     std::unique_lock<std::mutex> lock(mMutex);
     mConditionVariable.wait(lock, [&]{ return mDisconnected || (mCount != 0); });
     if (mDisconnected)
-{DEBUG_PRINT("    return(2) EOF");
+{LOW_DEBUG_PRINT("    return(2) EOF");
 return EOF;
 }
     mLastChar = *mTransBuff++;
@@ -193,7 +199,7 @@ return EOF;
     {
         mConditionVariable.notify_all();
     }
-DEBUG_PRINT("    return(3) ", static_cast<char>(mLastChar));
+LOW_DEBUG_PRINT("    return(3) ", static_cast<char>(mLastChar));
 
     return mLastChar;
 }
@@ -202,7 +208,7 @@ DEBUG_PRINT("    return(3) ", static_cast<char>(mLastChar));
 
 int IMemoryStreamBuf::pbackfail(int c)
 {
-    DEBUG_PRINT("pbackfail(", c ,") EOF=", EOF, " ", this);
+    LOW_DEBUG_PRINT("pbackfail(", c ,") EOF=", EOF, " ", this);
 
     // 1回のみ戻せるものとする
     if (mNextChar != EOF)
@@ -216,7 +222,7 @@ return EOF;
 
 std::streamsize IMemoryStreamBuf::showmanyc()
 {
-DEBUG_PRINT("showmanyc() " , mCount);
+LOW_DEBUG_PRINT("showmanyc() " , mCount);
     return mCount;
 }
 
@@ -373,11 +379,11 @@ return EOF;
 
 int OMemoryStreamBuf::sync()
 {
-    DEBUG_PRINT("sync() mSynchronized=", mSynchronized, " ", this);
+    LOW_DEBUG_PRINT("sync() mSynchronized=", mSynchronized, " ", this);
 
     if (!mSynchronized)
     {
-        DEBUG_PRINT("process sync() ");
+        LOW_DEBUG_PRINT("process sync() ");
         mSynchronized = true;
         std::lock_guard<std::mutex> lock(mMutex);
         flush();
@@ -390,7 +396,7 @@ int OMemoryStreamBuf::sync()
 
 int OMemoryStreamBuf::overflow(int c)
 {
-    DEBUG_PRINT("overflow(..., (", static_cast<char>(c) , ")) ", this);
+    LOW_DEBUG_PRINT("overflow(..., (", static_cast<char>(c) , ")) ", this);
 
     if (mDisconnected)
 return EOF;
@@ -420,7 +426,7 @@ return EOF;
     // フル、もしくは、十分に溜まっていたらflushする
     if (mIsFull || (128 <= mWriteMan.mCount))
     {
-        DEBUG_PRINT("call sync(1) mIsFull=", mIsFull);
+        LOW_DEBUG_PRINT("call sync(1) mIsFull=", mIsFull);
 return sync();
     }
     return 0;
@@ -430,7 +436,7 @@ return sync();
 
 std::streamsize OMemoryStreamBuf::xsputn(char const* buffer, std::streamsize count)
 {
-    DEBUG_PRINT("xsputn(...,", count, ") (", std::string(buffer, (std::size_t)count), ") ", this);
+    LOW_DEBUG_PRINT("xsputn(...,", count, ") (", std::string(buffer, (std::size_t)count), ") ", this);
 
     std::streamsize ret = 0;
     while (ret < count)
@@ -505,7 +511,7 @@ return EOF;
         // フル、もしくは、十分に溜まっていたらflushする
         if (mIsFull || (128 <= mWriteMan.mCount))
         {
-            DEBUG_PRINT("call sync(2) mIsFull=", mIsFull);
+            LOW_DEBUG_PRINT("call sync(2) mIsFull=", mIsFull);
             if (sync() == EOF)
 return EOF;
         }

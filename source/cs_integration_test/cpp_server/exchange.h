@@ -46,6 +46,11 @@ class UserClassSub
 public:
     unsigned    mUIntSub;
     std::string mStringSub = "";
+    short       mShortSub THEOLIZER_ANNOTATE(FN);
+
+    UserClassSub() : mUIntSub(100), mShortSub(200)
+    { }
+
     THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassSub), 1);
 };
 
@@ -55,17 +60,29 @@ public:
     //      ---<<< メンバ変数群 >>>---
 
     int     mIntMain;
+    short   mShortMain THEOLIZER_ANNOTATE(FN);
+
+    UserClassMain() : mIntMain(10), mShortMain(20)
+    { }
 
     //      ---<<< メンバ関数群 >>>---
 
-    int func0(UserClassSub const& iUserClassSub)
+    int func0(UserClassSub const& iUserClassSub, UserClassSub& ioUserClassSub2)
     {
         std::cout << "func0()\n"
-                  << "    mIntMain=" << mIntMain << "\n"
-                  << "    iUserClassSub.mUIntSub  =" << iUserClassSub.mUIntSub << "\n"
-                  << "    iUserClassSub.mStringSub=" << iUserClassSub.mStringSub << "\n";
+                  << "    mIntMain  =" << mIntMain << "\n"
+                  << "    mShortMain=" << mShortMain << "\n"
+                  << "    iUserClassSub.mUIntSub    =" << iUserClassSub.mUIntSub << "\n"
+                  << "    iUserClassSub.mStringSub  =" << iUserClassSub.mStringSub << "\n"
+                  << "    iUserClassSub.mShortSub   =" << iUserClassSub.mShortSub << "\n"
+                  << "    ioUserClassSub2.mUIntSub  =" << ioUserClassSub2.mUIntSub << "\n"
+                  << "    ioUserClassSub2.mStringSub=" << ioUserClassSub2.mStringSub << "\n"
+                  << "    ioUserClassSub2.mShortSub =" << ioUserClassSub2.mShortSub << "\n";
         mIntMain *= 2;
-        return iUserClassSub.mUIntSub * 3;
+        ++mShortMain;
+        ++ioUserClassSub2.mUIntSub;
+        ++ioUserClassSub2.mShortSub;
+        return mShortMain;
     }
 
     THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassMain), 1);
@@ -85,6 +102,7 @@ class func0UserClassMainReturn
 public:
     int                                             mReturn;
     SharedHelperTheolizer<exchange::UserClassMain>  mThis;
+    SharedHelperTheolizer<exchange::UserClassSub>   mioUserClassSub2;
     THEOLIZER_INTRUSIVE_ORDER(CS, (func0UserClassMainReturn), 1);
 };
 
@@ -93,14 +111,16 @@ class func0UserClassMain
 public:
     SharedHelperTheolizer<exchange::UserClassMain>                      mThis;
     theolizer::internal::TheolizerParameter<exchange::UserClassSub>     miUserClassSub;
+    SharedHelperTheolizer<exchange::UserClassSub>                       mioUserClassSub2;
     THEOLIZER_INTRUSIVE_ORDER(CS, (func0UserClassMain), 1);
 
     func0UserClassMainReturn callFunc()
     {
         func0UserClassMainReturn    ret;
 
-        ret.mReturn = mThis->func0(miUserClassSub);
+        ret.mReturn = mThis->func0(miUserClassSub, mioUserClassSub2);
         ret.mThis = mThis;
+        ret.mioUserClassSub2 = mioUserClassSub2;
         return ret;
     }
 };

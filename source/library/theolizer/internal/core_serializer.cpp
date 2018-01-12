@@ -446,9 +446,9 @@ void BaseSerializer::saveProcessStart(std::size_t iTypeIndex)
             THEOLIZER_INTERNAL_ABORT("mCheckMode=%d", static_cast<int>(mCheckMode));
             break;
         }
-    }
 
-    writePreElement();
+        writePreElement();
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -618,11 +618,11 @@ TypeIndexList* BaseSerializer::loadProcessStart(std::size_t iTypeIndex)
             THEOLIZER_INTERNAL_ABORT("mCheckMode=%d", static_cast<int>(mCheckMode));
             break;
         }
-    }
 
-    if (!readPreElement())
-    {
-        THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+        if (!readPreElement())
+        {
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+        }
     }
 
     return ret;

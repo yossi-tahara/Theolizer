@@ -77,7 +77,7 @@ namespace exchange
 
         const UInt64 kTypeIndex = 2;
 
-        TheolizerInternal   mTheolizerInternal;
+        TheolizerInternal   mTheolizerInternal = null;
         ITheolizerInternal ITheolizer.getTheolizer()
         {
             if (mTheolizerInternal == null)
@@ -130,7 +130,7 @@ namespace exchange
 
         const UInt64 kTypeIndex = 3;
 
-        TheolizerInternal   mTheolizerInternal;
+        TheolizerInternal   mTheolizerInternal = null;
         ITheolizerInternal ITheolizer.getTheolizer()
         {
             if (mTheolizerInternal == null)
@@ -168,18 +168,14 @@ namespace exchange
 
         //      ---<<< メンバ関数群 >>>---
 
-        public Int32 func0(UserClassSub iUserClassSub)
+        public Int32 func0(UserClassSub iUserClassSub, UserClassSub ioUserClassSub2)
         {
             // インテグレータ獲得
             var aIntegrator = ThreadIntegrator.Integrator;
 
             // 要求送信と応答受信
-            var aFuncObject = new theolizer_integrator.func0UserClassMain(this, iUserClassSub);
-#if false
-            var aReturnObject = new theolizer_integrator.func0UserClassMainReturn(this);
-#else
+            var aFuncObject = new theolizer_integrator.func0UserClassMain(this, iUserClassSub, ioUserClassSub2);
             var aReturnObject = new theolizer_integrator.func0UserClassMainReturn();
-#endif
 
             aIntegrator.sendRequest(aFuncObject, aReturnObject);
 
@@ -194,7 +190,7 @@ namespace exchange
 
 namespace theolizer_integrator
 {
-    // 共有処理クラス定義
+    // 共有処理クラス定義(exchange::UserClassMain)
     class SharedHelperTheolizer_exchange_UserClassMain : ITheolizerInternal
     {
         int                     mIndex;     // 共有テーブルのインデックス番号
@@ -251,22 +247,71 @@ namespace theolizer_integrator
         }
     }
 
+    // 共有処理クラス定義(exchange::UserClassSub)
+    class SharedHelperTheolizer_exchange_UserClassSub : ITheolizerInternal
+    {
+        int                     mIndex;     // 共有テーブルのインデックス番号
+        exchange.UserClassSub   mInstance;  // 交換対象インスタンス
+
+        // インスタンスを共有テーブルへ登録する
+        public void setInstance(exchange.UserClassSub iInstance)
+        {
+            // インテグレータ獲得
+            var aIntegrator = ThreadIntegrator.Integrator;
+
+            // 共有テーブルへ登録
+            mInstance = iInstance;
+            mIndex = aIntegrator.registerSharedInstanceS<exchange.UserClassSub>(mInstance);
+        }
+
+        const UInt64 kTypeIndex = 4;
+        public UInt64 getTypeIndex() { return kTypeIndex; }
+
+        // シリアライズ
+        public void save(BaseSerializer iBaseSerializer)
+        {
+            using (var temp = new BaseSerializer.AutoRestoreSaveStructure(iBaseSerializer))
+            {
+                // mIndex保存
+                iBaseSerializer.writePreElement();
+                iBaseSerializer.savePrimitive(mIndex);
+
+                // mInstance保存
+                iBaseSerializer.writePreElement();
+                ((ITheolizer)mInstance).getTheolizer().save(iBaseSerializer);
+            }
+        }
+
+        // デシリアライズ
+        public void load(BaseSerializer iBaseSerializer)
+        {
+            using (var temp = new BaseSerializer.AutoRestoreLoadStructure(iBaseSerializer))
+            {
+                // mIndex回復
+                if (iBaseSerializer.readPreElement() == ReadStat.Terminated)
+        throw new InvalidOperationException("Format Error.");
+                iBaseSerializer.loadPrimitive(out mIndex);
+
+                // インテグレータ獲得し、共有テーブルからインスタンス取り出し
+                var aIntegrator = ThreadIntegrator.Integrator;
+                mInstance = aIntegrator.registerSharedInstanceR<exchange.UserClassSub>(mIndex);
+
+                // mInstance回復
+                if (iBaseSerializer.readPreElement() == ReadStat.Terminated)
+        throw new InvalidOperationException("Format Error.");
+                ((ITheolizer)mInstance).getTheolizer().load(iBaseSerializer);
+            }
+        }
+    }
+
     // UserClassMain::func0用戻り値クラス
     class func0UserClassMainReturn : ITheolizerInternal
     {
         public Int32 mReturn;
         SharedHelperTheolizer_exchange_UserClassMain mThis =
             new SharedHelperTheolizer_exchange_UserClassMain();
-
-#if false
-        public func0UserClassMainReturn
-        (
-            exchange.UserClassMain iThis
-        )
-        {
-            mThis.setInstance(iThis);
-        }
-#endif
+        SharedHelperTheolizer_exchange_UserClassSub mioUserClassSub2 =
+            new SharedHelperTheolizer_exchange_UserClassSub();
 
         const UInt64 kTypeIndex = 1;
         public UInt64 getTypeIndex() { return kTypeIndex; }
@@ -286,6 +331,10 @@ namespace theolizer_integrator
                 if (iBaseSerializer.readPreElement() == ReadStat.Terminated)
         throw new InvalidOperationException("Format Error.");
                 mThis.load(iBaseSerializer);
+
+                if (iBaseSerializer.readPreElement() == ReadStat.Terminated)
+        throw new InvalidOperationException("Format Error.");
+                mioUserClassSub2.load(iBaseSerializer);
             }
         }
     }
@@ -296,15 +345,19 @@ namespace theolizer_integrator
         SharedHelperTheolizer_exchange_UserClassMain mThis =
             new SharedHelperTheolizer_exchange_UserClassMain();
         exchange.UserClassSub miUserClassSub;
+        SharedHelperTheolizer_exchange_UserClassSub mioUserClassSub2 =
+            new SharedHelperTheolizer_exchange_UserClassSub();
 
         public func0UserClassMain
         (
             exchange.UserClassMain iThis,
-            exchange.UserClassSub iUserClassSub
+            exchange.UserClassSub iUserClassSub,
+            exchange.UserClassSub ioUserClassSub2
         )
         {
             mThis.setInstance(iThis);
             miUserClassSub=iUserClassSub;
+            mioUserClassSub2.setInstance(ioUserClassSub2);
         }
 
         // TypeIndex
@@ -321,6 +374,9 @@ namespace theolizer_integrator
 
                 iBaseSerializer.writePreElement();
                 ((ITheolizer)miUserClassSub).getTheolizer().save(iBaseSerializer);
+
+                iBaseSerializer.writePreElement();
+                mioUserClassSub2.save(iBaseSerializer);
             }
         }
 

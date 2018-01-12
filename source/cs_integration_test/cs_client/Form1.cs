@@ -16,6 +16,10 @@ namespace cs_client
     {
         DllIntegrator   mDllIntegrator;
 
+        // 共有するため寿命を長くする
+        exchange.UserClassMain  mUserClassMain;
+        exchange.UserClassSub   mUserClassSub2;
+
         public Form1()
         {
             InitializeComponent();
@@ -24,28 +28,45 @@ namespace cs_client
 
             textBox.AppendText("GlobalVersionNo = "
                 + mDllIntegrator.GlobalVersionNo + Environment.NewLine);
+
+            mUserClassMain = new exchange.UserClassMain();
+            mUserClassSub2 = new exchange.UserClassSub(5678, "mUserClassSub2 [\"][\\][/][\x08][\x0c][\n][\r][\t]");
         }
 
         private void buttonSend_Click(object sender, EventArgs e)
         {
-            // 送信
-            int data = (int)numericUpDown.Value;
-            var aUserClassMain = new exchange.UserClassMain();
-            aUserClassMain.mIntMain = data;
-            var aUserClassSub=new exchange.UserClassSub(5678, "test [\"][\\][/][\x08][\x0c][\n][\r][\t]");
-            var ret = aUserClassMain.func0(aUserClassSub);
+            // 送信準備
+            mUserClassMain.mIntMain = (int)numericUpDown.Value;
+            var aUserClassSub=new exchange.UserClassSub(5678, "aUserClassSub");
 
+            // 送信前
             textBox.AppendText("Request : " + Environment.NewLine);
-            textBox.AppendText("  UserClassMain.mIntMain="
-                + aUserClassMain.mIntMain + Environment.NewLine);
-            textBox.AppendText("  UserClassSub.mUIntSub="
+            textBox.AppendText("  mUserClassMain.mIntMain="
+                + mUserClassMain.mIntMain + Environment.NewLine);
+
+            textBox.AppendText("  aUserClassSub.mUIntSub="
                 + aUserClassSub.mUIntSub + Environment.NewLine);
-            textBox.AppendText("  UserClassSub.mIntMain="
+            textBox.AppendText("  aUserClassSub.mStringSub="
                 + aUserClassSub.mStringSub + Environment.NewLine);
+
+            textBox.AppendText("  mUserClassSub2.mUIntSub="
+                + mUserClassSub2.mUIntSub + Environment.NewLine);
+            textBox.AppendText("  mUserClassSub2.mStringSub="
+                + mUserClassSub2.mStringSub + Environment.NewLine);
+
+            // 送信
+            var ret = mUserClassMain.func0(aUserClassSub, mUserClassSub2);
+
+            // 結果
             textBox.AppendText("Response : " + Environment.NewLine);
             textBox.AppendText("  ret =" + ret + Environment.NewLine);
             textBox.AppendText("  UserClassMain.mIntMain="
-                + aUserClassMain.mIntMain + Environment.NewLine);
+                + mUserClassMain.mIntMain + Environment.NewLine);
+
+            textBox.AppendText("  mUserClassSub2.mUIntSub="
+                + mUserClassSub2.mUIntSub + Environment.NewLine);
+            textBox.AppendText("  mUserClassSub2.mStringSub="
+                + mUserClassSub2.mStringSub + Environment.NewLine);
         }
     }
 }

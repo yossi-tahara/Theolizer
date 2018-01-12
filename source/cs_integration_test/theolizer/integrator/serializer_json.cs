@@ -513,7 +513,7 @@ namespace theolizer.internal_space
         }
 
         // 有効な文字入力(スペース等を読み飛ばす)
-        const String sSpaceChar = " ,\t\n";
+        const String sSpaceChar = " \t\n";
         char getValidChar()
         {
             int     ch;

@@ -40,5 +40,9 @@ namespace exchange
             mUIntSub=iUIntSub;
             mStringSub=iStringSub;
         }
+
+        // デフォルト・コンストラクタ(共有テーブル登録のために必要)
+        //  非デフォルト・コンストラクタを定義すると自動生成されない模様
+        public UserClassSub() {}
     };
 }
