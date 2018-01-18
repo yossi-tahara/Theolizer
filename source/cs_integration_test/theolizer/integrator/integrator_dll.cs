@@ -44,6 +44,7 @@ namespace theolizer
     // ***************************************************************************
     //      C++DLL用連携処理統括クラス
     //          DLLの場合、通常１つしかインスタンス不要なのでシングルトンとする
+    //          ただし、Dispose可能とする。
     // ***************************************************************************
 
     sealed class DllIntegrator : internal_space.CoreIntegrator, IDisposable
@@ -54,25 +55,39 @@ namespace theolizer
         //----------------------------------------------------------------------------
 
         private static DllIntegrator sInstance;
-        public static DllIntegrator getInstance(SerializerType iSerializerType, uint iGlobalVersionNo)
+        public static DllIntegrator getInstance
+            (SerializerType iSerializerType, bool iNotify, uint iGlobalVersionNo)
         {
             if (sInstance == null)
             {
-                sInstance = new DllIntegrator(iSerializerType, iGlobalVersionNo);
+                sInstance = new DllIntegrator(iSerializerType, iNotify, iGlobalVersionNo);
             }
             return sInstance;
         }
+        public static void disposeInstance()
+        {
+            if (sInstance != null)
+            {
+                sInstance.Dispose();
+                sInstance = null;
+            }
+        }
 
         [DllImport(Constants.CppDllName)]
-        extern static void CppInitialize(out Streams oStreams);
+        extern static void CppInitialize
+            (out Streams oStreams, SerializerType iSerializerType, bool iNotify);
 
-        private DllIntegrator(SerializerType iSerializerType, uint iGlobalVersionNo)
+        private bool mDisposed = false;
+        private DllIntegrator(SerializerType iSerializerType, bool iNotify, uint iGlobalVersionNo)
         {
-            CppInitialize(out mStreams);
+            CppInitialize(out mStreams, iSerializerType, iNotify);
 
             mRequestStream = new CppOStream(mStreams.mRequest);
             mResponseStream = new CppIStream(mStreams.mResponse);
-             mNotifyStream = new CppIStream(mStreams.mNotify);
+            if (iNotify)
+            {
+                mNotifyStream = new CppIStream(mStreams.mNotify);
+            }
 
             switch (iSerializerType)
             {
@@ -82,6 +97,10 @@ namespace theolizer
             case SerializerType.Json:
                 mRequestSerializer = new JsonOSerializer(mRequestStream, iGlobalVersionNo);
                 mResponseSerializer = new JsonISerializer(mResponseStream);
+                if (iNotify)
+                {
+                    mNotifySerializer = new JsonISerializer(mNotifyStream);
+                }
                 break;
             }
         }
@@ -95,11 +114,19 @@ namespace theolizer
             Dispose(false);
         }
 
+        [DllImport(Constants.CppDllName)]
+        extern static void CppFinalize();
+
         protected void Dispose(bool disposing)
         {
-            if (mRequestSerializer != null)     mRequestSerializer.Dispose();
+            if (mDisposed)
+        return;
+            mDisposed = true;
+
+            CppFinalize();
+            if (mRequestSerializer  != null)    mRequestSerializer.Dispose();
             if (mResponseSerializer != null)    mResponseSerializer.Dispose();
-            if (mNotifySerializer != null)      mNotifySerializer.Dispose();
+            if (mNotifySerializer   != null)    mNotifySerializer.Dispose();
         }
 
         public override void Dispose()
@@ -162,7 +189,7 @@ namespace theolizer
         }
 
         // 応答シリアライザのグローバル・バージョン番号(デバッグ用)
-        public UInt32 GlobalVersionNo
+        public override UInt32 GlobalVersionNo
         {
             get { return mResponseSerializer.getGlobalVersionNo(); }
         }

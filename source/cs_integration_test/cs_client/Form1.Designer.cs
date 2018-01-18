@@ -31,12 +31,13 @@
             this.buttonSend = new System.Windows.Forms.Button();
             this.numericUpDown = new System.Windows.Forms.NumericUpDown();
             this.textBox = new System.Windows.Forms.TextBox();
+            this.buttonDispose = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonSend
             // 
-            this.buttonSend.Location = new System.Drawing.Point(214, 12);
+            this.buttonSend.Location = new System.Drawing.Point(151, 13);
             this.buttonSend.Name = "buttonSend";
             this.buttonSend.Size = new System.Drawing.Size(75, 23);
             this.buttonSend.TabIndex = 0;
@@ -46,7 +47,7 @@
             // 
             // numericUpDown
             // 
-            this.numericUpDown.Location = new System.Drawing.Point(34, 15);
+            this.numericUpDown.Location = new System.Drawing.Point(12, 16);
             this.numericUpDown.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -76,11 +77,22 @@
             this.textBox.Size = new System.Drawing.Size(328, 325);
             this.textBox.TabIndex = 2;
             // 
+            // buttonDispose
+            // 
+            this.buttonDispose.Location = new System.Drawing.Point(241, 13);
+            this.buttonDispose.Name = "buttonDispose";
+            this.buttonDispose.Size = new System.Drawing.Size(75, 23);
+            this.buttonDispose.TabIndex = 3;
+            this.buttonDispose.Text = "Dispose";
+            this.buttonDispose.UseVisualStyleBackColor = true;
+            this.buttonDispose.Click += new System.EventHandler(this.buttonDispose_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(328, 375);
+            this.Controls.Add(this.buttonDispose);
             this.Controls.Add(this.textBox);
             this.Controls.Add(this.numericUpDown);
             this.Controls.Add(this.buttonSend);
@@ -97,6 +109,7 @@
         private System.Windows.Forms.Button buttonSend;
         private System.Windows.Forms.NumericUpDown numericUpDown;
         private System.Windows.Forms.TextBox textBox;
+        private System.Windows.Forms.Button buttonDispose;
     }
 }
 

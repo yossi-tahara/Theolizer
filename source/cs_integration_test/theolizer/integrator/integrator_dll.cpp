@@ -47,12 +47,22 @@
 
 void startup(theolizer::DllIntegrator& iDllIntegrator);
 
-void CppInitialize(theolizer::internal::Streams* oStreams)
+void CppInitialize
+(
+    theolizer::internal::Streams* oStreams,
+    theolizer::SerializerType iSerializerType,
+    bool iNotify
+)
 {
-    auto&   aDllIntegrator = theolizer::DllIntegrator::getInstance();
+    auto&   aDllIntegrator = theolizer::DllIntegrator::makeInstance(iSerializerType, iNotify);
     *oStreams = *aDllIntegrator.getStreams();
 
-    aDllIntegrator.startThread(startup, aDllIntegrator);
+	aDllIntegrator.startThread(startup, aDllIntegrator);
+}
+
+void CppFinalize()
+{
+    theolizer::DllIntegrator::disposeInstance();
 }
 
 namespace theolizer
@@ -65,17 +75,22 @@ namespace theolizer
 namespace internal
 {
 
-Streams::Streams() :
+Streams::Streams(bool iNotify) :
     mRequest(new IMemoryStream),
     mResponse(new OMemoryStream),
-    mNotify(new OMemoryStream)
-{ }
+    mNotify(nullptr)
+{
+    if (iNotify)
+    {
+        mNotify = new OMemoryStream;
+    }
+}
 
 Streams::~Streams()
 {
-    delete mResponse;
-    delete mRequest;
     delete mNotify;
+    delete mRequest;
+    delete mResponse;
 }
 
 }   // namespace internal
@@ -84,13 +99,23 @@ Streams::~Streams()
 //      コンストラクタ
 //----------------------------------------------------------------------------
 
+DllIntegrator*  DllIntegrator::sDllIntegrator = nullptr;
+
+#if defined(_WIN32)
 FILE *fp;
-DllIntegrator::DllIntegrator() :
+#endif
+
+DllIntegrator::DllIntegrator
+(
+    theolizer::SerializerType iSerializerType,
+    bool iNotify
+) : mSerializerType(iSerializerType),
+    mNotify(iNotify),
     mMainThread(nullptr),
-    mStreams(),
+    mStreams(iNotify),
     mRequestSerializer(nullptr),
     mResponseSerializer(nullptr),
-    mNotirySerializer(nullptr)
+    mNotifySerializer(nullptr)
 {
 #if defined(_WIN32)
 AllocConsole();
@@ -110,9 +135,9 @@ DllIntegrator::~DllIntegrator()
         mMainThread->join();
         delete mMainThread;
     }
-    deleteSerializer(mResponseSerializer);
-    deleteSerializer(mRequestSerializer);
-    deleteSerializer(mNotirySerializer);
+    delete mNotifySerializer;
+    delete mRequestSerializer;
+    delete mResponseSerializer;
 
 #if defined(_WIN32)
 fclose(fp);

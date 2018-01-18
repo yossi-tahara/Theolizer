@@ -14,8 +14,6 @@ namespace cs_client
 {
     public partial class Form1 : Form
     {
-        DllIntegrator   mDllIntegrator;
-
         // 共有するため寿命を長くする
         exchange.UserClassMain  mUserClassMain;
         exchange.UserClassSub   mUserClassSub2;
@@ -23,11 +21,6 @@ namespace cs_client
         public Form1()
         {
             InitializeComponent();
-            mDllIntegrator = DllIntegrator.getInstance(SerializerType.Json, Theolizer.GlobalVersionNo);
-            ThreadIntegrator.Integrator = mDllIntegrator;
-
-            textBox.AppendText("GlobalVersionNo = "
-                + mDllIntegrator.GlobalVersionNo + Environment.NewLine);
 
             mUserClassMain = new exchange.UserClassMain();
             mUserClassSub2 = new exchange.UserClassSub(5678, "mUserClassSub2 [\"][\\][/][\x08][\x0c][\n][\r][\t]");
@@ -35,6 +28,16 @@ namespace cs_client
 
         private void buttonSend_Click(object sender, EventArgs e)
         {
+            // インテグレータ準備
+            if (ThreadIntegrator.Integrator == null)
+            {
+                ThreadIntegrator.Integrator = DllIntegrator.getInstance
+                    (SerializerType.Json, false, Theolizer.GlobalVersionNo);
+
+                textBox.AppendText("GlobalVersionNo = "
+                    + ThreadIntegrator.Integrator.GlobalVersionNo + Environment.NewLine);
+            }
+
             // 送信準備
             mUserClassMain.mIntMain = (int)numericUpDown.Value;
             var aUserClassSub=new exchange.UserClassSub(5678, "aUserClassSub");
@@ -67,6 +70,12 @@ namespace cs_client
                 + mUserClassSub2.mUIntSub + Environment.NewLine);
             textBox.AppendText("  mUserClassSub2.mStringSub="
                 + mUserClassSub2.mStringSub + Environment.NewLine);
+        }
+
+         private void buttonDispose_Click(object sender, EventArgs e)
+        {
+            DllIntegrator.disposeInstance();
+            ThreadIntegrator.Integrator = null;
         }
     }
 }

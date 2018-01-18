@@ -80,10 +80,10 @@ namespace theolizer
         //      C# → C++転送
         //----------------------------------------------------------------------------
 
-        [DllImport("cpp_server.dll")]
+        [DllImport(Constants.CppDllName)]
         extern static StreamStatus CppWrite(IntPtr handle, IntPtr buffer, int offset, int count);
 
-        [DllImport("cpp_server.dll")]
+        [DllImport(Constants.CppDllName)]
         extern static StreamStatus CppFlush(IntPtr handle);
 
         public override void Write(byte[] buffer, int offset, int count)
@@ -176,7 +176,7 @@ namespace theolizer
         //      C++ → C#転送
         //----------------------------------------------------------------------------
 
-        [DllImport("cpp_server.dll")]
+        [DllImport(Constants.CppDllName)]
         extern static StreamStatus CppRead
         (
             IntPtr handle,

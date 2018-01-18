@@ -67,12 +67,13 @@ namespace theolizer
 
     // ***************************************************************************
     //      シリアライザの指定
+    //          C++/C#共通
     // ***************************************************************************
 
     public enum SerializerType
     {
-        Binary,             // Binary
-        Json                // Json
+        Binary=1,           // Binary
+        Json  =2            // Json
     }
 
 }   // theolizer
@@ -188,6 +189,8 @@ namespace theolizer.internal_space
 
     abstract class CoreIntegrator
     {
+        public abstract UInt32 GlobalVersionNo { get; }
+
         //----------------------------------------------------------------------------
         //      共有テーブル管理
         //----------------------------------------------------------------------------

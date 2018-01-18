@@ -59,7 +59,14 @@ namespace internal
 
 extern "C"
 {
-    THEOLIZER_INTERNAL_EXPORT void CppInitialize(theolizer::internal::Streams* oStreams);
+    THEOLIZER_INTERNAL_EXPORT void CppInitialize
+    (
+        theolizer::internal::Streams* oStreams,
+        theolizer::SerializerType iSerializerType,
+        bool iNotify
+    );
+
+    THEOLIZER_INTERNAL_EXPORT void CppFinalize();
 }
 
 // ***************************************************************************
@@ -83,13 +90,13 @@ struct Streams
     OMemoryStream*  mNotify;            // Cpp->C#通知用ストリーム
 
     // コンストラクタ
-    Streams();
+    Streams(bool iNotify);
 
     // デストラクタ
     ~Streams();
 
 private:
-    friend  void (::CppInitialize)(Streams*);
+    friend  void (::CppInitialize)(Streams*, SerializerType, bool);
 
     // コピー／ムーブ不可
     Streams(Streams const&) = delete;
@@ -106,16 +113,55 @@ private:
 
 class DllIntegrator : public internal::BaseIntegrator
 {
-    friend  void (::CppInitialize)(theolizer::internal::Streams*);
+    friend  void (::CppInitialize)(theolizer::internal::Streams*, theolizer::SerializerType, bool);
+    friend  void (::CppFinalize)();
 
+    static DllIntegrator*   sDllIntegrator;
+
+    SerializerType  mSerializerType;    // 生成する派生シリアライザ
+    bool            mNotify;            // 通知対応の有無
     std::thread*    mMainThread;        // メイン・スレッド
 
-    // 生成／コピー／ムーブ不可
-    DllIntegrator();
+    DllIntegrator
+    (
+        SerializerType iSerializerType,
+        bool iNotify
+    );
+
+    // コピー／ムーブ不可
     DllIntegrator(DllIntegrator const&) = delete;
     DllIntegrator(DllIntegrator     &&) = delete;
     DllIntegrator& operator=(DllIntegrator const&) = delete;
     DllIntegrator& operator=(DllIntegrator     &&) = delete;
+
+    // デストラクタ
+    ~DllIntegrator();
+
+    // 生成
+    static DllIntegrator& makeInstance
+    (
+        theolizer::SerializerType iSerializerType,
+        bool iNotify
+    )
+    {
+        if (sDllIntegrator == nullptr)
+        {
+            sDllIntegrator = new DllIntegrator(iSerializerType, iNotify);
+        }
+        return *sDllIntegrator;
+    }
+    // 破棄
+    static void disposeInstance()
+    {
+        if (sDllIntegrator != nullptr)
+        {
+            delete sDllIntegrator;
+            sDllIntegrator = nullptr;
+        }
+    }
+
+
+
 
     class AutoTerminate
     {
@@ -164,24 +210,19 @@ class DllIntegrator : public internal::BaseIntegrator
     internal::Streams*                      getStreams() { return &mStreams; }
     theolizer::internal::BaseSerializer*    mRequestSerializer;
     theolizer::internal::BaseSerializer*    mResponseSerializer;
-    theolizer::internal::BaseSerializer*    mNotirySerializer;
+    theolizer::internal::BaseSerializer*    mNotifySerializer;
 
 public:
     //      ---<<< API >>>---
 
-    // コンストラクタ
-    static DllIntegrator& getInstance()
-    {
-        static DllIntegrator instance;
-        return instance;
-    }
-    // デストラクタ
-    ~DllIntegrator();
-
+    // FIFOサイズ設定
     void setSize(std::size_t iResposeSize, std::size_t iNotifySize)
     {
         mStreams.mResponse->setSize(iResposeSize);
-        mStreams.mNotify->setSize(iNotifySize);
+        if (mNotify)
+        {
+            mStreams.mNotify->setSize(iNotifySize);
+        }
     }
 
     // 要求受付処理
@@ -201,10 +242,37 @@ public:
                 mRequestSerializer->getGlobalVersionNo()
             );
 
+        if (mNotify)
+        {
+            mNotifySerializer=
+                makeOSerializer<theolizerD::All>
+                (
+                    iSerializerType,
+                    *mStreams.mNotify,
+                    mRequestSerializer->getGlobalVersionNo()
+                );
+        }
+
         // C#からの受信処理
         while (!isTerminated())
         {
-            callFunc(*mRequestSerializer, *mResponseSerializer);
+            try
+            {
+                callFunc(*mRequestSerializer, *mResponseSerializer);
+            }
+            catch(ErrorInfo& e)
+            {
+                if ((e.getErrorType() == ErrorType::Error)
+                 && (e.getErrorKind() == ErrorKind::UnknownData)
+                 && (isTerminated()))
+                {
+                    // CppFinalize()によるEOF終了
+                }
+                else
+                {
+            throw;
+                }
+            }
         }
     }
 };

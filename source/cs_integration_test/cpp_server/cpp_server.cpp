@@ -56,7 +56,7 @@
 
 void startup(theolizer::DllIntegrator& iDllIntegrator)
 {
-    DEBUG_PRINT("---------------- main()");
+    DEBUG_PRINT("---------------- startup()");
 
     iDllIntegrator.setSize(1024, 4096);
     iDllIntegrator.recieveRequest(theolizer::SerializerType::Json);

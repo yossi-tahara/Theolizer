@@ -71,12 +71,13 @@ public:
 
 // ***************************************************************************
 //      シリアライザの指定
+//          C++/C#共通
 // ***************************************************************************
 
 enum class SerializerType
 {
-    Binary,             // Binary
-    Json                // Json
+    Binary=1,           // Binary
+    Json  =2            // Json
 };
 
 // ***************************************************************************
@@ -354,11 +355,6 @@ protected:
             return new JsonOSerializer<uDefault>(iOStream, iGlobalVersionNo);
         }
         return nullptr;
-    }
-
-    void deleteSerializer(BaseSerializer* iBaseSerializer)
-    {
-        delete iBaseSerializer;
     }
 };
 
