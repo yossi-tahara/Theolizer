@@ -32,6 +32,7 @@
 #define THEOLIZER_INTERNAL_CORE_INTEGRATOR_H
 
 #include <map>
+#include <mutex>
 #include <theolizer/serializer_binary.h>
 #include <theolizer/serializer_json.h>
 
@@ -189,9 +190,9 @@ DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
         getFuncClassList().emplace(aTypeIndex, new FuncClassHolder<tFuncClass>);
     }
 
-//      ---<<< 関数クラスを呼び出す >>>---
+//      ---<<< 要求を受信して処理する >>>---
 
-    void callFunc(BaseSerializer& iISerializer, BaseSerializer& iOSerializer)
+    void processRequest(BaseSerializer& iISerializer, BaseSerializer& iOSerializer)
     {
         // CheckMode変更はヘッダ処理を実装するまでの仮実装
         //  (仮でかなりいい加減だがデバッグには使える)

@@ -28,6 +28,8 @@
 */
 //############################################################################
 
+//#define THEOLIZER_NO_ANALYZE
+
 // ***************************************************************************
 //          警告抑止
 // ***************************************************************************
@@ -47,17 +49,20 @@
 
 // 固有ヘッダ
 #include "cpp_server.h"
-#include "exchange.h"
 #include "cpp_server.cpp.theolizer.hpp"
 
 // ***************************************************************************
 //      user_main()
 // ***************************************************************************
 
+void finalizeNotify();
+
 void user_main(theolizer::DllIntegrator& iDllIntegrator)
 {
-    DEBUG_PRINT("---------------- startup()");
+    DEBUG_PRINT("---------------- user_main()");
 
-    iDllIntegrator.setSize(1024, 4096);
-    iDllIntegrator.recieveRequest();
+    iDllIntegrator.recieveLoop(1024, 4096);
+
+    // 通知スレッド終了処理
+    finalizeNotify();
 }

@@ -40,6 +40,10 @@
 namespace exchange
 {
 
+//----------------------------------------------------------------------------
+//      サブ・クラス
+//----------------------------------------------------------------------------
+
 class UserClassSub
 {
     //      ---<<< メンバ変数群 >>>---
@@ -48,11 +52,22 @@ public:
     std::string mStringSub = "";
     short       mShortSub THEOLIZER_ANNOTATE(FN);
 
+    // コンストラクタ
     UserClassSub() : mUIntSub(100), mShortSub(200)
     { }
 
+    //      ---<<< メンバ関数群 >>>---
+
+    // C++ → C#(アノテーションで指定する)
+    //  中身はユーザが記述するが、特定のマクロを
+    void notify() const;
+
     THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassSub), 1);
 };
+
+//----------------------------------------------------------------------------
+//      メイン・クラス
+//----------------------------------------------------------------------------
 
 class UserClassMain
 {
@@ -62,28 +77,15 @@ public:
     int     mIntMain;
     short   mShortMain THEOLIZER_ANNOTATE(FN);
 
+    // コンストラクタ
     UserClassMain() : mIntMain(10), mShortMain(20)
     { }
 
     //      ---<<< メンバ関数群 >>>---
 
-    int func0(UserClassSub const& iUserClassSub, UserClassSub& ioUserClassSub2)
-    {
-        std::cout << "func0()\n"
-                  << "    mIntMain  =" << mIntMain << "\n"
-                  << "    mShortMain=" << mShortMain << "\n"
-                  << "    iUserClassSub.mUIntSub    =" << iUserClassSub.mUIntSub << "\n"
-                  << "    iUserClassSub.mStringSub  =" << iUserClassSub.mStringSub << "\n"
-                  << "    iUserClassSub.mShortSub   =" << iUserClassSub.mShortSub << "\n"
-                  << "    ioUserClassSub2.mUIntSub  =" << ioUserClassSub2.mUIntSub << "\n"
-                  << "    ioUserClassSub2.mStringSub=" << ioUserClassSub2.mStringSub << "\n"
-                  << "    ioUserClassSub2.mShortSub =" << ioUserClassSub2.mShortSub << "\n";
-        mIntMain *= 2;
-        ++mShortMain;
-        ++ioUserClassSub2.mUIntSub;
-        ++ioUserClassSub2.mShortSub;
-        return mShortMain;
-    }
+    // C# → C++(アノテーションで指定する)
+    //  中身はユーザが自由に記述する
+    int func0(UserClassSub const& iUserClassSub, UserClassSub& ioUserClassSub2);
 
     THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassMain), 1);
 };
@@ -91,8 +93,66 @@ public:
 }   // namespace exchange
 
 // ***************************************************************************
+//      通知処理
+// ***************************************************************************
+
+class Notify
+{
+    std::thread mThread;
+    bool        mTerminated;
+
+public:
+    Notify() : mTerminated(false) { }
+    ~Notify()
+    {
+        finalize();
+    }
+
+    int startAsync(exchange::UserClassSub& iUserClassSub)
+    {
+        if (mThread.joinable())
+    return -1;
+
+        mThread = std::move
+        (
+            std::thread
+            (
+                [&, iUserClassSub]()
+                {
+                    std::this_thread::sleep_for (std::chrono::seconds(1));
+                    if (!mTerminated)
+                    {
+                        iUserClassSub.notify();
+						mThread.detach();
+					}
+                }
+            )
+        );
+        return 1000;
+    }
+
+    void finalize()
+    {
+        if (mThread.joinable())
+        {
+            mTerminated = true;
+            mThread.join();
+            mTerminated = false;
+        }
+    }
+};
+
+// ***************************************************************************
 //      自動生成予定のクラス群
 // ***************************************************************************
+
+namespace exchange
+{
+    inline void UserClassSub::notify() const
+    {
+        std::cout << "notify()\n";
+    }
+}
 
 namespace theolizer_integrator
 {

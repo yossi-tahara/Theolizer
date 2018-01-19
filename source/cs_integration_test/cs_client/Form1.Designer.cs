@@ -98,6 +98,7 @@
             this.Controls.Add(this.buttonSend);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

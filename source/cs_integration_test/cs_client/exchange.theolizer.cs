@@ -264,7 +264,7 @@ namespace theolizer_integrator
             mIndex = aIntegrator.registerSharedInstanceS<exchange.UserClassSub>(mInstance);
         }
 
-        const UInt64 kTypeIndex = 4;
+        const UInt64 kTypeIndex = 5;
         public UInt64 getTypeIndex() { return kTypeIndex; }
 
         // シリアライズ

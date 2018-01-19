@@ -218,20 +218,19 @@ class DllIntegrator : public internal::BaseIntegrator
 public:
     //      ---<<< API >>>---
 
-    // FIFOサイズ設定
-    void setSize(std::size_t iResposeSize, std::size_t iNotifySize)
+    // 要求受付処理
+    void recieveLoop(std::size_t iResposeSize=0, std::size_t iNotifySize=0)
     {
-        mStreams.mResponse->setSize(iResposeSize);
-        if (mNotify)
+        // ストリームのFIFOサイズ設定
+        if (iResposeSize)
+        {
+            mStreams.mResponse->setSize(iResposeSize);
+        }
+        if (mNotify && iNotifySize)
         {
             mStreams.mNotify->setSize(iNotifySize);
         }
-    }
 
-    // 要求受付処理
-    //  派生シリアライザのコンストラクタへGlobalVersionNoTableを渡すためにヘッダで定義する。
-    void recieveRequest()
-    {
         // 保存先指定は後日「連携先」へ変更する
         mRequestSerializer=makeISerializer<theolizerD::All>
             (
@@ -256,12 +255,12 @@ public:
                 );
         }
 
-        // C#からの受信処理
+        // C#からの受信処理ループ
         while (!isTerminated())
         {
             try
             {
-                callFunc(*mRequestSerializer, *mResponseSerializer);
+                processRequest(*mRequestSerializer, *mResponseSerializer);
             }
             catch(ErrorInfo& e)
             {

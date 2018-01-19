@@ -48,10 +48,40 @@
 #include "exchange.cpp.theolizer.hpp"
 
 // ***************************************************************************
-//      データ処理用クラス群
+//      通知オブジェクト
 // ***************************************************************************
+
+Notify  gNotify;
+void finalizeNotify()
+{
+    gNotify.finalize();
+}
 
 namespace exchange
 {
+
+// ***************************************************************************
+//      メイン・クラス
+// ***************************************************************************
+
+int UserClassMain::func0(UserClassSub const& iUserClassSub, UserClassSub& ioUserClassSub2)
+{
+    std::cout << "func0()\n"
+              << "    mIntMain  =" << mIntMain << "\n"
+              << "    mShortMain=" << mShortMain << "\n"
+              << "    iUserClassSub.mUIntSub    =" << iUserClassSub.mUIntSub << "\n"
+              << "    iUserClassSub.mStringSub  =" << iUserClassSub.mStringSub << "\n"
+              << "    iUserClassSub.mShortSub   =" << iUserClassSub.mShortSub << "\n"
+              << "    ioUserClassSub2.mUIntSub  =" << ioUserClassSub2.mUIntSub << "\n"
+              << "    ioUserClassSub2.mStringSub=" << ioUserClassSub2.mStringSub << "\n"
+              << "    ioUserClassSub2.mShortSub =" << ioUserClassSub2.mShortSub << "\n";
+    mIntMain *= 2;
+    ++mShortMain;
+    ++ioUserClassSub2.mUIntSub;
+    ++ioUserClassSub2.mShortSub;
+
+    // 非同期処理起動
+    return gNotify.startAsync(ioUserClassSub2);
+}
 
 }

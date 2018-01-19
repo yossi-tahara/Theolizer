@@ -77,6 +77,11 @@ namespace cs_client
             DllIntegrator.disposeInstance();
             ThreadIntegrator.Integrator = null;
         }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            DllIntegrator.disposeInstance();
+        }
     }
 }
 
