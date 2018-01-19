@@ -74,11 +74,18 @@ extern "C"
 //          DLLの場合、通常１つしかインスタンス不要なのでシングルトンとする
 // ***************************************************************************
 
-namespace theolizer
-{
+//----------------------------------------------------------------------------
+//      ユーザ・プログラム
+//----------------------------------------------------------------------------
+
+void user_main(theolizer::DllIntegrator& iDllIntegrator);
+
 //----------------------------------------------------------------------------
 //      C#への接続情報
 //----------------------------------------------------------------------------
+
+namespace theolizer
+{
 
 namespace internal
 {
@@ -160,9 +167,6 @@ class DllIntegrator : public internal::BaseIntegrator
         }
     }
 
-
-
-
     class AutoTerminate
     {
         DllIntegrator&  mDllIntegrator;
@@ -175,8 +179,7 @@ class DllIntegrator : public internal::BaseIntegrator
     };
 
     // メイン・スレッド起動と終了管理
-    template<class F>
-    void startThread(F&& f, DllIntegrator& iDllIntegrator)
+    void startMainThread()
     {
         if (!mMainThread)
         {
@@ -185,8 +188,8 @@ class DllIntegrator : public internal::BaseIntegrator
                     [&]()
                     {
                         AutoTerminate aAutoTerminate(*this);
-                        ThreadIntegrator::setIntegrator(&iDllIntegrator);
-                        f(iDllIntegrator);
+                        ThreadIntegrator::setIntegrator(this);
+                        user_main(*this);
                     }
                 );
         }
@@ -227,17 +230,17 @@ public:
 
     // 要求受付処理
     //  派生シリアライザのコンストラクタへGlobalVersionNoTableを渡すためにヘッダで定義する。
-    void recieveRequest(SerializerType iSerializerType)
+    void recieveRequest()
     {
         // 保存先指定は後日「連携先」へ変更する
         mRequestSerializer=makeISerializer<theolizerD::All>
             (
-                iSerializerType, *mStreams.mRequest
+                mSerializerType, *mStreams.mRequest
             );
 
         mResponseSerializer=makeOSerializer<theolizerD::All>
             (
-                iSerializerType,
+                mSerializerType,
                 *mStreams.mResponse,
                 mRequestSerializer->getGlobalVersionNo()
             );
@@ -247,7 +250,7 @@ public:
             mNotifySerializer=
                 makeOSerializer<theolizerD::All>
                 (
-                    iSerializerType,
+                    mSerializerType,
                     *mStreams.mNotify,
                     mRequestSerializer->getGlobalVersionNo()
                 );

@@ -45,8 +45,6 @@
 //      スレッド起動処理(ユーザ()呼び出し)
 //----------------------------------------------------------------------------
 
-void startup(theolizer::DllIntegrator& iDllIntegrator);
-
 void CppInitialize
 (
     theolizer::internal::Streams* oStreams,
@@ -57,7 +55,7 @@ void CppInitialize
     auto&   aDllIntegrator = theolizer::DllIntegrator::makeInstance(iSerializerType, iNotify);
     *oStreams = *aDllIntegrator.getStreams();
 
-	aDllIntegrator.startThread(startup, aDllIntegrator);
+    aDllIntegrator.startMainThread();
 }
 
 void CppFinalize()

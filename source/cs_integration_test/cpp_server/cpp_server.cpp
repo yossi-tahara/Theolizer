@@ -51,13 +51,13 @@
 #include "cpp_server.cpp.theolizer.hpp"
 
 // ***************************************************************************
-//      startup()
+//      user_main()
 // ***************************************************************************
 
-void startup(theolizer::DllIntegrator& iDllIntegrator)
+void user_main(theolizer::DllIntegrator& iDllIntegrator)
 {
     DEBUG_PRINT("---------------- startup()");
 
     iDllIntegrator.setSize(1024, 4096);
-    iDllIntegrator.recieveRequest(theolizer::SerializerType::Json);
+    iDllIntegrator.recieveRequest();
 }
