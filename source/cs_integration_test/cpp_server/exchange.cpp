@@ -45,28 +45,23 @@
 
 // 固有ヘッダ
 #include "exchange.h"
+#include "cpp_server.h"
 #include "exchange.cpp.theolizer.hpp"
-
-// ***************************************************************************
-//      通知オブジェクト
-// ***************************************************************************
-
-Notify  gNotify;
-void finalizeNotify()
-{
-    gNotify.finalize();
-}
-
-namespace exchange
-{
 
 // ***************************************************************************
 //      メイン・クラス
 // ***************************************************************************
 
-int UserClassMain::func0(UserClassSub const& iUserClassSub, UserClassSub& ioUserClassSub2)
+namespace exchange
 {
-    std::cout << "func0()\n"
+
+//----------------------------------------------------------------------------
+//      メイン・クラス
+//----------------------------------------------------------------------------
+
+int UserClassMain::request(UserClassSub const& iUserClassSub, UserClassSub& ioUserClassSub2)
+{
+    std::cout << "request()\n"
               << "    mIntMain  =" << mIntMain << "\n"
               << "    mShortMain=" << mShortMain << "\n"
               << "    iUserClassSub.mUIntSub    =" << iUserClassSub.mUIntSub << "\n"

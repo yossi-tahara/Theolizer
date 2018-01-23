@@ -32,5 +32,24 @@
 #define THEOLIZER_INTERNAL_CPP_SERVER_H
 
 #include <theolizer/integrator/integrator_dll.h>
+#include "exchange.h"
+
+// ***************************************************************************
+//      通知処理
+// ***************************************************************************
+
+class Notify
+{
+    std::thread mThread;
+    bool        mTerminated;
+
+public:
+    Notify();
+    ~Notify();
+
+    int startAsync(exchange::UserClassSub& iUserClassSub);
+    void finalize();
+};
+extern Notify  gNotify;
 
 #endif  // THEOLIZER_INTERNAL_CPP_SERVER_H

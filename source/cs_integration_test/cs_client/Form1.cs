@@ -32,7 +32,7 @@ namespace cs_client
             if (ThreadIntegrator.Integrator == null)
             {
                 ThreadIntegrator.Integrator = DllIntegrator.getInstance
-                    (SerializerType.Json, false, Theolizer.GlobalVersionNo);
+                    (SerializerType.Json, true, Theolizer.GlobalVersionNo);
 
                 textBox.AppendText("GlobalVersionNo = "
                     + ThreadIntegrator.Integrator.GlobalVersionNo + Environment.NewLine);

@@ -28,8 +28,8 @@
 */
 //############################################################################
 
-#if !defined(THEOLIZER_INTERNAL_TYPE_H)
-#define THEOLIZER_INTERNAL_CPP_SERVER_H
+#if !defined(THEOLIZER_INTERNAL_EXCHANGE_H)
+#define THEOLIZER_INTERNAL_EXCHANGE_H
 
 #include <theolizer/integrator/core_integrator.h>
 
@@ -59,7 +59,6 @@ public:
     //      ---<<< メンバ関数群 >>>---
 
     // C++ → C#(アノテーションで指定する)
-    //  中身はユーザが記述するが、特定のマクロを
     void notify() const;
 
     THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassSub), 1);
@@ -85,7 +84,7 @@ public:
 
     // C# → C++(アノテーションで指定する)
     //  中身はユーザが自由に記述する
-    int func0(UserClassSub const& iUserClassSub, UserClassSub& ioUserClassSub2);
+    int request(UserClassSub const& iUserClassSub, UserClassSub& ioUserClassSub2);
 
     THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassMain), 1);
 };
@@ -93,92 +92,51 @@ public:
 }   // namespace exchange
 
 // ***************************************************************************
-//      通知処理
-// ***************************************************************************
-
-class Notify
-{
-    std::thread mThread;
-    bool        mTerminated;
-
-public:
-    Notify() : mTerminated(false) { }
-    ~Notify()
-    {
-        finalize();
-    }
-
-    int startAsync(exchange::UserClassSub& iUserClassSub)
-    {
-        if (mThread.joinable())
-    return -1;
-
-        mThread = std::move
-        (
-            std::thread
-            (
-                [&, iUserClassSub]()
-                {
-                    std::this_thread::sleep_for (std::chrono::seconds(1));
-                    if (!mTerminated)
-                    {
-                        iUserClassSub.notify();
-						mThread.detach();
-					}
-                }
-            )
-        );
-        return 1000;
-    }
-
-    void finalize()
-    {
-        if (mThread.joinable())
-        {
-            mTerminated = true;
-            mThread.join();
-            mTerminated = false;
-        }
-    }
-};
-
-// ***************************************************************************
 //      自動生成予定のクラス群
 // ***************************************************************************
 
-namespace exchange
-{
-    inline void UserClassSub::notify() const
-    {
-        std::cout << "notify()\n";
-    }
-}
+//----------------------------------------------------------------------------
+//      関数クラス
+//----------------------------------------------------------------------------
 
 namespace theolizer_integrator
 {
 
-class func0UserClassMainReturn
+//      ---<<< UserClassSubのnotify() >>>---
+
+class notifyUserClassSub
+{
+public:
+    SharedHelperTheolizer<exchange::UserClassSub>                       mThis;
+    THEOLIZER_INTRUSIVE_ORDER(CS, (notifyUserClassSub), 1);
+};
+
+//      ---<<< UserClassMainのrequest()の応答 >>>---
+
+class requestUserClassMainReturn
 {
 public:
     int                                             mReturn;
     SharedHelperTheolizer<exchange::UserClassMain>  mThis;
     SharedHelperTheolizer<exchange::UserClassSub>   mioUserClassSub2;
-    THEOLIZER_INTRUSIVE_ORDER(CS, (func0UserClassMainReturn), 1);
+    THEOLIZER_INTRUSIVE_ORDER(CS, (requestUserClassMainReturn), 1);
 };
 
-class func0UserClassMain
+//      ---<<< UserClassMainのrequest()の要求 >>>---
+
+class requestUserClassMain
 {
 public:
     SharedHelperTheolizer<exchange::UserClassMain>                      mThis;
     theolizer::internal::TheolizerParameter<exchange::UserClassSub>     miUserClassSub;
     SharedHelperTheolizer<exchange::UserClassSub>                       mioUserClassSub2;
-    THEOLIZER_INTRUSIVE_ORDER(CS, (func0UserClassMain), 1);
+    THEOLIZER_INTRUSIVE_ORDER(CS, (requestUserClassMain), 1);
 
-    func0UserClassMainReturn callFunc()
+    requestUserClassMainReturn callFunc()
     {
-        func0UserClassMainReturn    ret;
+        requestUserClassMainReturn    ret;
 
-        ret.mReturn = mThis->func0(miUserClassSub, mioUserClassSub2);
+        ret.mReturn = mThis->request(miUserClassSub, mioUserClassSub2);
         ret.mThis = mThis;
         ret.mioUserClassSub2 = mioUserClassSub2;
         return ret;
@@ -187,6 +145,19 @@ public:
 
 }   // namespace theolizer_user_functions
 
-THEOLIZER_INTERNAL_REGISTER_FUNC((theolizer_integrator::func0UserClassMain));
+THEOLIZER_INTERNAL_REGISTER_FUNC((theolizer_integrator::requestUserClassMain));
 
-#endif  // THEOLIZER_INTERNAL_TYPE_H
+//----------------------------------------------------------------------------
+//      通知関数のシリアライズ処理
+//----------------------------------------------------------------------------
+
+namespace exchange
+{
+    inline void UserClassSub::notify() const
+    {
+        std::cout << "notify()\n";
+        theolizer::ThreadIntegrator::getIntegrator()->notify(*this);
+    }
+}
+
+#endif  // THEOLIZER_INTERNAL_EXCHANGE_H

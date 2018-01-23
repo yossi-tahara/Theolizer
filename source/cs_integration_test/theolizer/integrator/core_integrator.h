@@ -357,6 +357,40 @@ protected:
         }
         return nullptr;
     }
+
+//  ---<<< シリアライザ返却 >>>---
+
+private:
+    // 通知用シリアライザ返却
+    virtual BaseSerializer* getNotifySerializer()
+    {
+        THEOLIZER_INTERNAL_WRONG_USING("Not Supported getNotify() by this derived-serializer.");
+        return nullptr;
+    }
+
+public:
+    // 通知処理
+    template<typename tType>
+    void notify(tType const& iInstance)
+    {
+        theolizer::internal::RegisterType
+        <
+            theolizer::internal::BaseSerializer,
+            tType,
+            tTheolizerVersion
+        >::getInstance();
+
+        {
+            auto& aSerializer = *getNotifySerializer();
+            theolizer::internal::BaseSerializer::AutoRestoreSaveProcess aAutoRestoreSaveProcess
+                (
+                    aSerializer,
+                    theolizer::internal::getTypeIndex<tType>()
+                );
+            THEOLIZER_INTERNAL_SAVE(aSerializer, const_cast<tType&>(iInstance), etmDefault);
+            aSerializer.flush();
+        }
+    }
 };
 
 // ***************************************************************************

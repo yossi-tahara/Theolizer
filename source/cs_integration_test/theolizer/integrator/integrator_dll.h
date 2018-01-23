@@ -215,6 +215,17 @@ class DllIntegrator : public internal::BaseIntegrator
     theolizer::internal::BaseSerializer*    mResponseSerializer;
     theolizer::internal::BaseSerializer*    mNotifySerializer;
 
+private:
+    // 通知用シリアライザ返却
+    theolizer::internal::BaseSerializer* getNotifySerializer()
+    {
+        if (!mNotify)
+        {
+            THEOLIZER_INTERNAL_WRONG_USING("Not Supported getNotify() becase mNotiry==false.");
+        }
+        return mNotifySerializer;
+    }
+
 public:
     //      ---<<< API >>>---
 
