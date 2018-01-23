@@ -35,6 +35,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using theolizer.internal_space;
@@ -77,14 +78,17 @@ namespace theolizer
         extern static void CppInitialize
             (out Streams oStreams, SerializerType iSerializerType, bool iNotify);
 
+        private bool mNotify = false;
         private bool mDisposed = false;
         private DllIntegrator(SerializerType iSerializerType, bool iNotify, uint iGlobalVersionNo)
         {
-            CppInitialize(out mStreams, iSerializerType, iNotify);
+            mNotify = iNotify;
+
+            CppInitialize(out mStreams, iSerializerType, mNotify);
 
             mRequestStream = new CppOStream(mStreams.mRequest);
             mResponseStream = new CppIStream(mStreams.mResponse);
-            if (iNotify)
+            if (mNotify)
             {
                 mNotifyStream = new CppIStream(mStreams.mNotify);
             }
@@ -97,11 +101,20 @@ namespace theolizer
             case SerializerType.Json:
                 mRequestSerializer = new JsonOSerializer(mRequestStream, iGlobalVersionNo);
                 mResponseSerializer = new JsonISerializer(mResponseStream);
-                if (iNotify)
+                if (mNotify)
                 {
                     mNotifySerializer = new JsonISerializer(mNotifyStream);
                 }
                 break;
+            }
+
+            // 通知用スレッド起動
+            if (mNotify)
+            {
+                mTerminated = false;
+                mUserContext = SynchronizationContext.Current;
+                mNotifyThread = new Thread(new ThreadStart(notifyThread));
+                mNotifyThread.Start();
             }
         }
 
@@ -124,9 +137,20 @@ namespace theolizer
             mDisposed = true;
 
             CppFinalize();
+
             if (mRequestSerializer  != null)    mRequestSerializer.Dispose();
             if (mResponseSerializer != null)    mResponseSerializer.Dispose();
-            if (mNotifySerializer   != null)    mNotifySerializer.Dispose();
+            mRequestStream.Dispose();
+            mResponseStream.Dispose();
+
+            if (mNotify)
+            {
+                mTerminated = true;
+                mNotifyThread.Join();
+
+                if (mNotifySerializer   != null)    mNotifySerializer.Dispose();
+                mNotifyStream.Dispose();
+            }
         }
 
         public override void Dispose()
@@ -182,16 +206,48 @@ namespace theolizer
             }
         }
 
-        // 通知受信
-        public override void receiveNotify()
-        {
-            throw new NotImplementedException();
-        }
-
         // 応答シリアライザのグローバル・バージョン番号(デバッグ用)
         public override UInt32 GlobalVersionNo
         {
             get { return mResponseSerializer.getGlobalVersionNo(); }
+        }
+
+        //----------------------------------------------------------------------------
+        //      通知用スレッド
+        //          スレッド内で例外が発生した場合、
+        //          インテグレータ生成時にSynchronizationContext.Currentが有効なら、
+        //              当該コンテキストにて例外を投げる。
+        //          そうでないなら、そのまま再throw
+        //----------------------------------------------------------------------------
+
+        Thread mNotifyThread;
+        bool mTerminated;
+        SynchronizationContext mUserContext;
+        void notifyThread()
+        {
+            try
+            {
+                while(!mTerminated)
+                {
+                    // 応答受信(暫定→通知関数テーブルを作る必要がある)
+                    var aNotifyObject = new theolizer_integrator.notifyUserClassSub();
+                    UInt64 aTypeIndex = aNotifyObject.getTypeIndex();
+                    using (var temp = new BaseSerializer.AutoRestoreLoadProcess
+                        (mNotifySerializer, ref aTypeIndex))
+                    {
+                        aNotifyObject.load(mNotifySerializer);
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+Debug.WriteLine(e.StackTrace);
+
+                if (mUserContext == null)
+        throw;
+
+                mUserContext.Post(_=>{ throw new Exception("Exception in notifyThread()", e); }, null);
+            }
         }
     }
 }

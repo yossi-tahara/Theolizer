@@ -58,7 +58,7 @@ namespace cs_client
                 + mUserClassSub2.mStringSub + Environment.NewLine);
 
             // 送信
-            var ret = mUserClassMain.func0(aUserClassSub, mUserClassSub2);
+            var ret = mUserClassMain.request(aUserClassSub, mUserClassSub2);
 
             // 結果
             textBox.AppendText("Response : " + Environment.NewLine);

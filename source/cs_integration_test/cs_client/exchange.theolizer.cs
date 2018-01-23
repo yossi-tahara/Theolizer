@@ -65,6 +65,9 @@ namespace theolizer
 
 namespace exchange
 {
+    //----------------------------------------------------------------------------
+    //      サブ・クラス
+    //----------------------------------------------------------------------------
 
     partial class UserClassSub : SharedDisposer, ITheolizer
     {
@@ -120,6 +123,10 @@ namespace exchange
         }
     }
 
+    //----------------------------------------------------------------------------
+    //      メイン・クラス
+    //----------------------------------------------------------------------------
+
     partial class UserClassMain : SharedDisposer, ITheolizer
     {
         //      ---<<< メンバ変数群 >>>---
@@ -168,14 +175,14 @@ namespace exchange
 
         //      ---<<< メンバ関数群 >>>---
 
-        public Int32 func0(UserClassSub iUserClassSub, UserClassSub ioUserClassSub2)
+        public Int32 request(UserClassSub iUserClassSub, UserClassSub ioUserClassSub2)
         {
             // インテグレータ獲得
             var aIntegrator = ThreadIntegrator.Integrator;
 
             // 要求送信と応答受信
-            var aFuncObject = new theolizer_integrator.func0UserClassMain(this, iUserClassSub, ioUserClassSub2);
-            var aReturnObject = new theolizer_integrator.func0UserClassMainReturn();
+            var aFuncObject = new theolizer_integrator.requestUserClassMain(this, iUserClassSub, ioUserClassSub2);
+            var aReturnObject = new theolizer_integrator.requestUserClassMainReturn();
 
             aIntegrator.sendRequest(aFuncObject, aReturnObject);
 
@@ -190,7 +197,10 @@ namespace exchange
 
 namespace theolizer_integrator
 {
-    // 共有処理クラス定義(exchange::UserClassMain)
+    //----------------------------------------------------------------------------
+    //      共有処理クラス定義(exchange::UserClassMain)
+    //----------------------------------------------------------------------------
+
     class SharedHelperTheolizer_exchange_UserClassMain : ITheolizerInternal
     {
         int                     mIndex;     // 共有テーブルのインデックス番号
@@ -247,7 +257,10 @@ namespace theolizer_integrator
         }
     }
 
-    // 共有処理クラス定義(exchange::UserClassSub)
+    //----------------------------------------------------------------------------
+    //      共有処理クラス定義(exchange::UserClassSub)
+    //----------------------------------------------------------------------------
+
     class SharedHelperTheolizer_exchange_UserClassSub : ITheolizerInternal
     {
         int                     mIndex;     // 共有テーブルのインデックス番号
@@ -304,8 +317,11 @@ namespace theolizer_integrator
         }
     }
 
-    // UserClassMain::func0用戻り値クラス
-    class func0UserClassMainReturn : ITheolizerInternal
+    //----------------------------------------------------------------------------
+    //      UserClassMain::request用戻り値クラス
+    //----------------------------------------------------------------------------
+
+    class requestUserClassMainReturn : ITheolizerInternal
     {
         public Int32 mReturn;
         SharedHelperTheolizer_exchange_UserClassMain mThis =
@@ -339,8 +355,11 @@ namespace theolizer_integrator
         }
     }
 
-    // UserClassMain::func0用関数クラス
-    class func0UserClassMain : ITheolizerInternal
+    //----------------------------------------------------------------------------
+    //      UserClassMain::request用関数クラス
+    //----------------------------------------------------------------------------
+
+    class requestUserClassMain : ITheolizerInternal
     {
         SharedHelperTheolizer_exchange_UserClassMain mThis =
             new SharedHelperTheolizer_exchange_UserClassMain();
@@ -348,7 +367,7 @@ namespace theolizer_integrator
         SharedHelperTheolizer_exchange_UserClassSub mioUserClassSub2 =
             new SharedHelperTheolizer_exchange_UserClassSub();
 
-        public func0UserClassMain
+        public requestUserClassMain
         (
             exchange.UserClassMain iThis,
             exchange.UserClassSub iUserClassSub,
@@ -387,4 +406,33 @@ namespace theolizer_integrator
             throw new NotImplementedException();
         }
     }
+
+    //----------------------------------------------------------------------------
+    //      UserClassSub::notify用クラス
+    //----------------------------------------------------------------------------
+
+    class notifyUserClassSub : ITheolizerInternal
+    {
+        public Int32 mReturn;
+        SharedHelperTheolizer_exchange_UserClassSub mThis =
+            new SharedHelperTheolizer_exchange_UserClassSub();
+
+        const UInt64 kTypeIndex = 6;
+        public UInt64 getTypeIndex() { return kTypeIndex; }
+        public void save(BaseSerializer iBaseSerializer)
+        {
+            // 省略
+            throw new NotImplementedException();
+        }
+        public void load(BaseSerializer iBaseSerializer)
+        {
+            using (var temp = new BaseSerializer.AutoRestoreLoadStructure(iBaseSerializer))
+            {
+                if (iBaseSerializer.readPreElement() == ReadStat.Terminated)
+        throw new InvalidOperationException("Format Error.");
+                mThis.load(iBaseSerializer);
+            }
+        }
+    }
+
 }

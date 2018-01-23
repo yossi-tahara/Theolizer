@@ -44,5 +44,10 @@ namespace exchange
         // デフォルト・コンストラクタ(共有テーブル登録のために必要)
         //  非デフォルト・コンストラクタを定義すると自動生成されない模様
         public UserClassSub() {}
+
+        // 通知関数
+        void notify()
+        {
+        }
     };
 }

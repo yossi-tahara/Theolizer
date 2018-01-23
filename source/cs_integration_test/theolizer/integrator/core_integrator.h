@@ -380,16 +380,20 @@ public:
             tTheolizerVersion
         >::getInstance();
 
+        auto& aSerializer = *getNotifySerializer();
+        // CheckMode変更はヘッダ処理を実装するまでの仮実装
+        //  (仮でかなりいい加減だがデバッグには使える)
+        aSerializer.mCheckMode = CheckMode::TypeCheckByIndex;
         {
-            auto& aSerializer = *getNotifySerializer();
+
             theolizer::internal::BaseSerializer::AutoRestoreSaveProcess aAutoRestoreSaveProcess
                 (
                     aSerializer,
                     theolizer::internal::getTypeIndex<tType>()
                 );
             THEOLIZER_INTERNAL_SAVE(aSerializer, const_cast<tType&>(iInstance), etmDefault);
-            aSerializer.flush();
         }
+        aSerializer.flush();
     }
 };
 
@@ -470,8 +474,11 @@ struct TheolizerNonIntrusive<SharedHelperTheolizer<T>>::
     )
     {
         iSerializer.mDoCheck = false;
-        THEOLIZER_PROCESS(iSerializer, iInstance->mIndex);
-        THEOLIZER_PROCESS(iSerializer, *(iInstance->mInstance));
+        auto& aInstance = const_cast<typename tTheolizerVersion::TheolizerTarget*&>(iInstance);
+        aInstance->mIndex = theolizer::ThreadIntegrator::getIntegrator()->
+            registerSharedInstance<T>(aInstance->mInstance);
+        THEOLIZER_PROCESS(iSerializer, aInstance->mIndex);
+        THEOLIZER_PROCESS(iSerializer, *(aInstance->mInstance));
     }
 
     // 回復

@@ -279,9 +279,6 @@ namespace theolizer.internal_space
         // 要求を発行し応答を受信
         public abstract void sendRequest(ITheolizerInternal iFuncObject, ITheolizerInternal oReturnObject);
 
-        // 通知受信
-        public abstract void receiveNotify();
-
         // 破棄(ThreadIntegrator経由で呼び出す)
         public abstract void Dispose();
     }

@@ -107,7 +107,7 @@ namespace theolizer_integrator
 class notifyUserClassSub
 {
 public:
-    SharedHelperTheolizer<exchange::UserClassSub>                       mThis;
+    SharedHelperTheolizer<exchange::UserClassSub>   mThis;
     THEOLIZER_INTRUSIVE_ORDER(CS, (notifyUserClassSub), 1);
 };
 
@@ -156,7 +156,10 @@ namespace exchange
     inline void UserClassSub::notify() const
     {
         std::cout << "notify()\n";
-        theolizer::ThreadIntegrator::getIntegrator()->notify(*this);
+
+        theolizer_integrator::notifyUserClassSub  aNotifyUserClassSub;
+        aNotifyUserClassSub.mThis.mInstance = const_cast<UserClassSub*>(this);
+        theolizer::ThreadIntegrator::getIntegrator()->notify(aNotifyUserClassSub);
     }
 }
 
