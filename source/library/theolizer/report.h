@@ -808,6 +808,12 @@ public:
         aErrorReporter.mAdditionalInfo=iAdditionalInfo;
         aErrorReporter.mRegistered=true;
     }
+    ApiBoundary(ApiBoundary&& iApiBoundary) :
+        mRegistered(iApiBoundary.mRegistered),
+        mConstructor(iApiBoundary.mConstructor)
+    {
+        mRegistered = false;
+    }
     ~ApiBoundary() noexcept
     {
         auto&& aErrorReporter=ErrorReporter::getInstance();

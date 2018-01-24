@@ -126,6 +126,7 @@ class BaseIntegrator
         (
             BaseSerializer& iISerializer,
             BaseSerializer& iOSerializer,
+            ApiBoundarySerializer&& iApiBoundary,
             BaseSerializer::AutoRestoreLoadProcess&& iAutoRestoreLoadProcess
         )=0;
         virtual ~FuncClassHolderBase() { }
@@ -141,11 +142,15 @@ class BaseIntegrator
         (
             BaseSerializer& iISerializer,
             BaseSerializer& iOSerializer,
+            ApiBoundarySerializer&& iApiBoundary,
             BaseSerializer::AutoRestoreLoadProcess&& iAutoRestoreLoadProcess
         )
         {
             tFuncClass  aFuncClass;
             {
+                // エラー情報登録
+                ApiBoundarySerializer aApiBoundary(std::move(iApiBoundary));
+
                 BaseSerializer::AutoRestoreLoadProcess
                     AutoRestoreLoadProcess(std::move(iAutoRestoreLoadProcess));
                 THEOLIZER_INTERNAL_LOAD(iISerializer, aFuncClass, etmDefault);
@@ -158,6 +163,9 @@ class BaseIntegrator
             RegisterType<BaseSerializer, ReturnClass, tTheolizerVersion>::getInstance();
 
             {
+                // エラー情報登録
+                ApiBoundarySerializer aApiBoundary(&iOSerializer,iOSerializer.getAdditionalInfo());
+
                 BaseSerializer::AutoRestoreSaveProcess
                     aAutoRestoreSaveProcess(iOSerializer, getTypeIndex<ReturnClass>());
                 THEOLIZER_INTERNAL_SAVE(iOSerializer, ret, etmDefault);
@@ -199,6 +207,9 @@ DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
         iISerializer.mCheckMode = CheckMode::TypeCheckByIndex;
         iOSerializer.mCheckMode = CheckMode::TypeCheckByIndex;
 
+        // エラー情報登録
+        ApiBoundarySerializer aApiBoundary(&iISerializer, iISerializer.getAdditionalInfo());
+
         TypeIndexList*  aTypeIndexList = nullptr;
         BaseSerializer::AutoRestoreLoadProcess
             aAutoRestoreLoadProcess(iISerializer, aTypeIndexList);
@@ -209,6 +220,7 @@ DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
         (
             iISerializer,
             iOSerializer,
+            std::move(aApiBoundary),
             std::move(aAutoRestoreLoadProcess)
         );
         iOSerializer.clearTracking();   // flush
@@ -381,6 +393,10 @@ public:
         >::getInstance();
 
         auto& aSerializer = *getNotifySerializer();
+
+        // エラー情報登録
+        ApiBoundarySerializer aApiBoundary(&aSerializer, aSerializer.getAdditionalInfo());
+
         // CheckMode変更はヘッダ処理を実装するまでの仮実装
         //  (仮でかなりいい加減だがデバッグには使える)
         aSerializer.mCheckMode = CheckMode::TypeCheckByIndex;

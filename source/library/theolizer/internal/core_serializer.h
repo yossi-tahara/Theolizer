@@ -571,8 +571,6 @@ private:
 
     virtual void AbstructSerializer() = 0;      // インスタンス生成禁止
 
-    BaseSerializer*         mSerializerBack;    // 前回処理中のSerializer(退避領域)
-
 protected:
     Destinations const&     mDestinations;
     bool                    mIsSaver;
@@ -639,6 +637,9 @@ private:
     using ErrorBase::setError;  // ErrorBaseにAdditionalInfoをfriend指定したくないので
 
 //      ---<<< シリアライズ情報管理 >>>---
+
+public:
+    AdditionalInfo*         getAdditionalInfo() { return &mAdditionalInfo; }
 
 protected:
     AdditionalInfo          mAdditionalInfo;
@@ -1554,6 +1555,28 @@ void loadClass(BaseSerializer& iBaseSerializer, tVersionType& iVersion)
 THEOLIZER_INTERNAL_DLL bool isLastVersion();
 THEOLIZER_INTERNAL_DLL bool isSaver();
 THEOLIZER_INTERNAL_DLL unsigned& getUpVersionCount();
+
+// ***************************************************************************
+//      API境界にてxNowSerializer設定／回復
+// ***************************************************************************
+
+class ApiBoundarySerializer : public ApiBoundary
+{
+    BaseSerializer*         mSerializerBack;    // 前回処理中のSerializer(退避領域)
+
+public:
+    ApiBoundarySerializer
+    (
+        BaseSerializer* iBaseSerializer,
+        BaseAdditionalInfo* iAdditionalInfo,
+        bool iConstructor=false
+    ) noexcept;
+    ApiBoundarySerializer
+    (
+        ApiBoundarySerializer&& iApiBoundarySerializer
+    ) noexcept;
+    ~ApiBoundarySerializer();
+};
 
 //############################################################################
 //      std::shared_ptrサポート

@@ -102,7 +102,7 @@ BinaryMidOSerializer::BinaryMidOSerializer
     mOStream(iOStream)
 {
     // エラー情報登録準備
-    theolizer::internal::ApiBoundary aApiBoundary(&mAdditionalInfo);
+    theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 
     // 型情報取得中継クラス登録
     TypeFunctions<BinaryMidOSerializer> aTypeFunctions;
@@ -475,7 +475,7 @@ BinaryMidISerializer::BinaryMidISerializer
     mTerminated(false)
 {
     // エラー情報登録準備
-    theolizer::internal::ApiBoundary aApiBoundary(&mAdditionalInfo, true);
+    theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 
     // 型情報取得中継クラス登録
     TypeFunctions<BinaryMidISerializer> aTypeFunctions;

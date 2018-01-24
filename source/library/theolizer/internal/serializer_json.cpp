@@ -106,7 +106,7 @@ JsonMidOSerializer::JsonMidOSerializer
     mCharIsMultiByte(false)
 {
     // エラー情報登録準備
-    theolizer::internal::ApiBoundary aApiBoundary(&mAdditionalInfo);
+    theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 
     // 型情報取得中継クラス登録
     TypeFunctions<JsonMidOSerializer>   aTypeFunctions;
@@ -460,7 +460,7 @@ JsonMidISerializer::JsonMidISerializer
     mCharIsMultiByte(false)
 {
     // エラー情報登録準備
-    theolizer::internal::ApiBoundary aApiBoundary(&mAdditionalInfo, true);
+    theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 
     // 型情報取得中継クラス登録
     TypeFunctions<JsonMidISerializer>   aTypeFunctions;

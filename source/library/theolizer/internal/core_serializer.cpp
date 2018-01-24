@@ -644,6 +644,10 @@ void BaseSerializer::loadProcessEnd()
 //      現在処理中のSerializer
 //############################################################################
 
+// ***************************************************************************
+//      現在処理中のSerializerの状態獲得
+// ***************************************************************************
+
 thread_local BaseSerializer* xNowSerializer=nullptr;
 
 bool isLastVersion()
@@ -659,6 +663,32 @@ bool isSaver()
 unsigned& getUpVersionCount()
 {
     return xNowSerializer->mUpVersionCount;
+}
+
+// ***************************************************************************
+//      API境界にてxNowSerializer設定／回復
+// ***************************************************************************
+
+ApiBoundarySerializer::ApiBoundarySerializer
+(
+    BaseSerializer* iBaseSerializer,
+    BaseAdditionalInfo* iAdditionalInfo,
+    bool iConstructor
+) noexcept : ApiBoundary(iAdditionalInfo, iConstructor)
+{
+    mSerializerBack=xNowSerializer;
+    xNowSerializer=iBaseSerializer;
+}
+
+ApiBoundarySerializer::ApiBoundarySerializer
+(
+    ApiBoundarySerializer&& iApiBoundarySerializer
+) noexcept : ApiBoundary(std::move(iApiBoundarySerializer))
+{ }
+
+ApiBoundarySerializer::~ApiBoundarySerializer()
+{
+    xNowSerializer=mSerializerBack;
 }
 
 //############################################################################
@@ -711,7 +741,6 @@ BaseSerializer::BaseSerializer
     std::ostream* iOStream,
     bool iNoThrowException
 ) : ErrorBase(),
-    mSerializerBack(nullptr),
     mDestinations(iDestinations),
     mIsSaver(iIsSaver),
     mNoThrowException(iNoThrowException),
@@ -746,6 +775,9 @@ BaseSerializer::BaseSerializer
     , mIsMetaMode((iCheckMode == CheckMode::MetaMode) || (iOStream != nullptr))
 #endif // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 {
+    // エラー情報登録準備
+    theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo);
+
     THEOLIZER_INTERNAL_ASSERT(mGlobalVersionNoTable != nullptr,
         "GlobalVersionNoTable is illegal.");
 
@@ -760,11 +792,6 @@ BaseSerializer::BaseSerializer
         mDeserializeList->emplace_back();
         (*mDeserializeList)[0].mStatus=etsNullPtr;
     }
-
-    // 処理中のSerializerをバックアップし、自分に切り替える。
-    //  例外が怖いので最後で設定
-    mSerializerBack=xNowSerializer;
-    xNowSerializer=this;
 }
 
 //----------------------------------------------------------------------------
@@ -792,7 +819,7 @@ void BaseSerializer::initSerializeList()
 BaseSerializer::~BaseSerializer() noexcept
 {
     // エラー情報登録準備
-    theolizer::internal::ApiBoundary aApiBoundary(&mAdditionalInfo);
+    theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo);
 
     // エラー／警告が残っていたら、プロセス停止する。
     //  ただし、コンストラクト中と例外有りの時を除く
@@ -814,9 +841,6 @@ BaseSerializer::~BaseSerializer() noexcept
         THEOLIZER_INTERNAL_ABORT
             (u8"For object tracking, please call clearTracking() before destructing serializer.");
     }
-
-    // 処理中のSerializerを回復する
-    xNowSerializer=mSerializerBack;
 }
 
 // ***************************************************************************
@@ -1400,7 +1424,7 @@ void BaseSerializer::clearTrackingImpl()
 void BaseSerializer::clearTracking()
 {
     // エラー情報登録準備
-    theolizer::internal::ApiBoundary aApiBoundary(&mAdditionalInfo);
+    theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo);
 
     mRequireClearTracking=false;
     if (mNoThrowException)
