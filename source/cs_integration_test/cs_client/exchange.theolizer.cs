@@ -207,14 +207,21 @@ namespace theolizer_integrator
         exchange.UserClassMain  mInstance;  // 交換対象インスタンス
 
         // インスタンスを共有テーブルへ登録する
-        public void setInstance(exchange.UserClassMain iInstance)
+        public exchange.UserClassMain Instance
         {
-            // インテグレータ獲得
-            var aIntegrator = ThreadIntegrator.Integrator;
+            set
+            {
+                // インテグレータ獲得
+                var aIntegrator = ThreadIntegrator.Integrator;
 
-            // 共有テーブルへ登録
-            mInstance = iInstance;
-            mIndex = aIntegrator.registerSharedInstanceS<exchange.UserClassMain>(mInstance);
+                // 共有テーブルへ登録
+                mInstance = value;
+                mIndex = aIntegrator.registerSharedInstanceS<exchange.UserClassMain>(mInstance);
+            }
+            get
+            {
+                return mInstance;
+            }
         }
 
         const UInt64 kTypeIndex = 4;
@@ -267,14 +274,21 @@ namespace theolizer_integrator
         exchange.UserClassSub   mInstance;  // 交換対象インスタンス
 
         // インスタンスを共有テーブルへ登録する
-        public void setInstance(exchange.UserClassSub iInstance)
+        public exchange.UserClassSub Instance
         {
-            // インテグレータ獲得
-            var aIntegrator = ThreadIntegrator.Integrator;
+            set
+            {
+                // インテグレータ獲得
+                var aIntegrator = ThreadIntegrator.Integrator;
 
-            // 共有テーブルへ登録
-            mInstance = iInstance;
-            mIndex = aIntegrator.registerSharedInstanceS<exchange.UserClassSub>(mInstance);
+                // 共有テーブルへ登録
+                mInstance = value;
+                mIndex = aIntegrator.registerSharedInstanceS<exchange.UserClassSub>(mInstance);
+            }
+            get
+            {
+                return mInstance;
+            }
         }
 
         const UInt64 kTypeIndex = 5;
@@ -374,9 +388,9 @@ namespace theolizer_integrator
             exchange.UserClassSub ioUserClassSub2
         )
         {
-            mThis.setInstance(iThis);
+            mThis.Instance = iThis;
             miUserClassSub=iUserClassSub;
-            mioUserClassSub2.setInstance(ioUserClassSub2);
+            mioUserClassSub2.Instance = ioUserClassSub2;
         }
 
         // TypeIndex
@@ -411,7 +425,7 @@ namespace theolizer_integrator
     //      UserClassSub::notify用クラス
     //----------------------------------------------------------------------------
 
-    class notifyUserClassSub : ITheolizerInternal
+    class notifyUserClassSub : ITheolizerInternal, ICallFunc
     {
         public Int32 mReturn;
         SharedHelperTheolizer_exchange_UserClassSub mThis =
@@ -432,6 +446,10 @@ namespace theolizer_integrator
         throw new InvalidOperationException("Format Error.");
                 mThis.load(iBaseSerializer);
             }
+        }
+        public void callFunc()
+        {
+            mThis.Instance.notify();
         }
     }
 

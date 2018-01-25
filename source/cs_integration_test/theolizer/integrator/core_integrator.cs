@@ -93,6 +93,11 @@ namespace theolizer.internal_space
         UInt64 getTypeIndex();
         void save(BaseSerializer iBaseSerializer);
         void load(BaseSerializer iBaseSerializer);
+        //void callFunc();
+    }
+    interface ICallFunc
+    {
+        void callFunc();
     }
 
     abstract class SharedDisposer : IDisposable
@@ -205,7 +210,10 @@ namespace theolizer.internal_space
         {
             if (mSharedTable.Count <= iIndex)
             {
-                mSharedTable.Capacity = iIndex+1;
+                for (int i=mSharedTable.Count; i < iIndex+1; ++i)
+                {
+                    mSharedTable.Add(null);
+                }
             }
 
             if (mSharedTable[iIndex] == null)

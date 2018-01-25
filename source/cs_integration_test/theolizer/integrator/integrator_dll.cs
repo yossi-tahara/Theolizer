@@ -225,17 +225,20 @@ namespace theolizer
         SynchronizationContext mUserContext;
         void notifyThread()
         {
+            ThreadIntegrator.Integrator = this;
+
             try
             {
                 while(!mTerminated)
                 {
                     // 応答受信(暫定→通知関数テーブルを作る必要がある)
-                    var aNotifyObject = new theolizer_integrator.notifyUserClassSub();
+                    ITheolizerInternal aNotifyObject = new theolizer_integrator.notifyUserClassSub();
                     UInt64 aTypeIndex = aNotifyObject.getTypeIndex();
                     using (var temp = new BaseSerializer.AutoRestoreLoadProcess
                         (mNotifySerializer, ref aTypeIndex))
                     {
                         aNotifyObject.load(mNotifySerializer);
+                        mUserContext.Post(_=>{ ((ICallFunc)aNotifyObject).callFunc(); }, null);
                     }
                 }
             }

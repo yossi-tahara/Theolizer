@@ -289,21 +289,38 @@ namespace theolizer.internal_space
     {
         public StreamReaderEx(Stream iStream, Encoding iEncoding) : base(iStream, iEncoding) { }
 
+        bool mValidLastChar = false;
+        int mLastChar;
+        public int getChar()
+        {
+            if (mValidLastChar)
+            {
+                mValidLastChar = false;
+            }
+            else
+            {
+                mLastChar = Read();
+            }
+            return mLastChar;
+        }
+        public void unget()
+        {
+            mValidLastChar = true;
+        }
+
         // デリミタまでの文字列を読み出す
         const String sDelimiter = " ,\n]}\t";
         String ReadDelim()
         {
             var sb = new StringBuilder();
             int ch;
-            while((ch = Peek()) > -1)
+            while((ch = getChar()) > -1)
             {
                 if (sDelimiter.IndexOf((char)ch) > -1)
             break;
                 sb.Append((char)ch);
-
-                // 読み捨て
-                Read();
             }
+            unget();
             return sb.ToString();
         }
 
@@ -437,24 +454,11 @@ namespace theolizer.internal_space
         // カンマまで読み飛ばし(C++と異なりungetがないのでPeek→読み捨てで処理する)
         bool readComma(bool iReadComma)
         {
-            int     ch;
-            while((ch = mIStream.Peek()) > -1)
-            {
-                if (sSpaceChar.IndexOf((char)ch) < 0)
-            break;
-
-                // 読み捨て
-                mIStream.Read();
-            }
-            if (ch < 0)
-        throw new InvalidOperationException("Format Error.");
-
+            int     ch = getValidChar();
             if (ch == ',')
             {
                 if (iReadComma)
                 {
-                    // 読み捨て
-                    mIStream.Read();
         return true;
                 }
                 else
@@ -465,11 +469,10 @@ namespace theolizer.internal_space
 
             // 終端マークなら、false返却
             if (checkTerminal((char)ch))
-            {
-                // 読み捨て
-                mIStream.Read();
         return false;
-            }
+
+            // 読みだした文字は要素の先頭なので、戻しておく
+            mIStream.unget();
 
             return true;
         }
@@ -517,7 +520,7 @@ namespace theolizer.internal_space
         char getValidChar()
         {
             int     ch;
-            while((ch = mIStream.Read()) > -1)
+            while((ch = mIStream.getChar()) > -1)
             {
                 if (sSpaceChar.IndexOf((char)ch) < 0)
         return (char)ch;

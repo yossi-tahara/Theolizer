@@ -46,7 +46,7 @@ namespace exchange
         public UserClassSub() {}
 
         // 通知関数
-        void notify()
+        public void notify()
         {
         }
     };
