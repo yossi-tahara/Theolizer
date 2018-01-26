@@ -29,10 +29,12 @@
 //############################################################################
 
 using System;
+using System.Windows.Forms;
+using cs_client;
 
 namespace exchange
 {
-    // ユーザ・クラスのユーザ追加部
+    // ユーザ・クラス(パラメータでやり取りするもの)のユーザ追加部
     partial class UserClassSub
     {
         public UserClassSub(UInt32 iUIntSub, string iStringSub)
@@ -44,10 +46,30 @@ namespace exchange
         // デフォルト・コンストラクタ(共有テーブル登録のために必要)
         //  非デフォルト・コンストラクタを定義すると自動生成されない模様
         public UserClassSub() {}
+    };
+
+    // ユーザ・クラス(通知用)のユーザ追加部
+    partial class UserClassNotify
+    {
+        TextBox   mTextBox;     // このメンバはC++へは送られない
+
+        public UserClassNotify(TextBox iTextBox)
+        {
+            mMessage = "Constructed by user constructor";
+            mCount = 12345;
+            mTextBox = iTextBox;
+        }
+
+        // デフォルト・コンストラクタ(共有テーブル登録のために必要)
+        //  非デフォルト・コンストラクタを定義すると自動生成されない模様
+        public UserClassNotify() {}
 
         // 通知関数
         public void notify()
         {
+            mTextBox.AppendText("Notify : " + Environment.NewLine);
+            mTextBox.AppendText("  mMessage=" + mMessage + Environment.NewLine);
+            mTextBox.AppendText("  mCount=" + mCount + Environment.NewLine);
         }
     };
 }

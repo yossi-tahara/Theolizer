@@ -58,9 +58,6 @@ public:
 
     //      ---<<< メンバ関数群 >>>---
 
-    // C++ → C#(アノテーションで指定する)
-    void notify() const;
-
     THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassSub), 1);
 };
 
@@ -89,6 +86,32 @@ public:
     THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassMain), 1);
 };
 
+//----------------------------------------------------------------------------
+//      通知用クラス
+//----------------------------------------------------------------------------
+
+class UserClassNotify
+{
+    //      ---<<< メンバ変数群 >>>---
+public:
+    std::string mMessage;
+    int         mCount;
+
+    // コンストラクタ
+    UserClassNotify() : mMessage("Default")
+    { }
+
+    //      ---<<< メンバ関数群 >>>---
+
+    // C# → C++(アノテーションで指定する)
+    void initialize();
+
+    // C++ → C#(アノテーションで指定する)
+    void notify() const;
+
+    THEOLIZER_INTRUSIVE_ORDER(CS, (UserClassNotify), 1);
+};
+
 }   // namespace exchange
 
 // ***************************************************************************
@@ -96,22 +119,13 @@ public:
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
-//      関数クラス
+//      UserClassMain関数クラス
 //----------------------------------------------------------------------------
 
 namespace theolizer_integrator
 {
 
-//      ---<<< UserClassSubのnotify() >>>---
-
-class notifyUserClassSub
-{
-public:
-    SharedHelperTheolizer<exchange::UserClassSub>   mThis;
-    THEOLIZER_INTRUSIVE_ORDER(CS, (notifyUserClassSub), 1);
-};
-
-//      ---<<< UserClassMainのrequest()の応答 >>>---
+//      ---<<< request()の応答 >>>---
 
 class requestUserClassMainReturn
 {
@@ -122,7 +136,7 @@ public:
     THEOLIZER_INTRUSIVE_ORDER(CS, (requestUserClassMainReturn), 1);
 };
 
-//      ---<<< UserClassMainのrequest()の要求 >>>---
+//      ---<<< request()の要求 >>>---
 
 class requestUserClassMain
 {
@@ -148,18 +162,67 @@ public:
 THEOLIZER_INTERNAL_REGISTER_FUNC((theolizer_integrator::requestUserClassMain));
 
 //----------------------------------------------------------------------------
+//      UserClassNotify関数クラス
+//----------------------------------------------------------------------------
+
+namespace theolizer_integrator
+{
+
+//      ---<<< initialize()の応答 >>>---
+
+class initializeUserClassNotifyReturn
+{
+public:
+    SharedHelperTheolizer<exchange::UserClassNotify>    mThis;
+    THEOLIZER_INTRUSIVE_ORDER(CS, (initializeUserClassNotifyReturn), 1);
+};
+
+//      ---<<< initialize()の要求 >>>---
+
+class initializeUserClassNotify
+{
+public:
+    SharedHelperTheolizer<exchange::UserClassNotify>    mThis;
+    THEOLIZER_INTRUSIVE_ORDER(CS, (initializeUserClassNotify), 1);
+
+    initializeUserClassNotify callFunc()
+    {
+        initializeUserClassNotify   ret;
+
+        mThis->initialize();
+        ret.mThis = mThis;
+        return ret;
+    }
+};
+
+//      ---<<< notify() >>>---
+
+class notifyUserClassNotify
+{
+public:
+    SharedHelperTheolizer<exchange::UserClassNotify>   mThis;
+    THEOLIZER_INTRUSIVE_ORDER(CS, (notifyUserClassNotify), 1);
+};
+
+}   // namespace theolizer_user_functions
+
+THEOLIZER_INTERNAL_REGISTER_FUNC((theolizer_integrator::initializeUserClassNotify));
+
+//----------------------------------------------------------------------------
 //      通知関数のシリアライズ処理
 //----------------------------------------------------------------------------
 
 namespace exchange
 {
-    inline void UserClassSub::notify() const
+    inline void UserClassNotify::notify() const
     {
-        std::cout << "notify()\n";
+        std::cout << "notify()\n"
+                  << "  mMessage=" << mMessage << "\n"
+                  << "  mCount=" << mCount << "\n";
 
-        theolizer_integrator::notifyUserClassSub  aNotifyUserClassSub;
-        aNotifyUserClassSub.mThis.mInstance = const_cast<UserClassSub*>(this);
-        theolizer::ThreadIntegrator::getIntegrator()->notify(aNotifyUserClassSub);
+        theolizer_integrator::notifyUserClassNotify  aNotifyUserClassNotify;
+        aNotifyUserClassNotify.mThis.mInstance = const_cast<UserClassNotify*>(this);
+        theolizer::ThreadIntegrator::getIntegrator()->notify(aNotifyUserClassNotify);
     }
 }
 

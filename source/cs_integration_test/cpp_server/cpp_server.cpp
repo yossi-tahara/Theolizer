@@ -69,11 +69,26 @@ Notify::~Notify()
 }
 
 //----------------------------------------------------------------------------
+//      通知用インスタンス登録
+//----------------------------------------------------------------------------
+
+void Notify::setUserClassNotify(exchange::UserClassNotify* iInstance)
+{
+    auto aIntegrator = theolizer::ThreadIntegrator::getIntegrator();
+    mUserClassNotify = aIntegrator->getSharedPointer(iInstance);
+}
+
+//----------------------------------------------------------------------------
 //      通知スレッド開始
 //----------------------------------------------------------------------------
 
-int Notify::startAsync(exchange::UserClassSub& iUserClassSub)
+int Notify::startAsync()
 {
+    // UserClassNotifyが未登録ならエラー
+    if (!mUserClassNotify)
+return -2;
+
+    // スレッド動作中ならエラー
     if (mThread.joinable())
 return -1;
 
@@ -87,13 +102,15 @@ return -1;
     (
         std::thread
         (
-            [&, iUserClassSub]()
+            [&]()
             {
                 std::this_thread::sleep_for (std::chrono::seconds(1));
                 if (!mTerminated)
                 {
                     theolizer::ThreadIntegrator::setIntegrator(&aIntegrator);
-                    iUserClassSub.notify();
+                    auto& aUserClassNotify = mUserClassNotify.get();
+                    ++aUserClassNotify.mCount;
+                    aUserClassNotify.notify();
                     mThread.detach();
                 }
             }

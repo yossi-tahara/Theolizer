@@ -42,12 +42,14 @@ class Notify
 {
     std::thread mThread;
     bool        mTerminated;
+    theolizer::SharedPointer<exchange::UserClassNotify> mUserClassNotify;
 
 public:
     Notify();
     ~Notify();
 
-    int startAsync(exchange::UserClassSub& iUserClassSub);
+    void setUserClassNotify(exchange::UserClassNotify* iInstance);
+    int startAsync();
     void finalize();
 };
 extern Notify  gNotify;

@@ -93,11 +93,45 @@ class BaseIntegrator;
 template<typename tType>
 class SharedPointer
 {
-    internal::BaseIntegrator&   mIntegrator;    // インテグレータへの参照
+    internal::BaseIntegrator*   mIntegrator;    // インテグレータ
     std::size_t                 mIndex;         // 共有テーブルのインデックス番号
     std::shared_ptr<tType>      mInstance;      // インスタンス管理
 public:
-    
+    // コンストラクタ
+    SharedPointer() :
+        mIntegrator(nullptr),
+        mIndex(0),
+        mInstance()
+    { }
+    SharedPointer
+    (
+        internal::BaseIntegrator*   iIntegrator,
+        std::size_t                 iIndex,
+        std::shared_ptr<tType>&     iSharedPtr
+    ) : mIntegrator(iIntegrator),
+        mIndex(iIndex),
+        mInstance(iSharedPtr)
+    {
+        // 共有テーブルへ破棄しないよう登録
+    }
+
+    // デストラクタ
+    ~SharedPointer()
+    {
+        // 共有テーブルへ破棄許諾
+    }
+
+    // 有効性
+    operator bool() const
+    {
+        return static_cast<bool>(mInstance);    // 登録済ならtrue(operator bool())
+    }
+
+    // オブジェクト獲得
+    tType& get()
+    {
+        return *mInstance.get();
+    }
 };
 
 //############################################################################
@@ -237,7 +271,7 @@ private:
     class SharedHolderBase
     {
     public:
-        virtual void* getPointer() = 0;
+        virtual void* getVoidPointer() = 0;
     };
 
     // 派生クラス
@@ -250,11 +284,12 @@ private:
         { };
         SharedHolder(tType* iPointer) : mInstance(std::shared_ptr<tType>(iPointer))
         { };
-        void* getPointer()
+        void* getVoidPointer()
         {
             return mInstance.get();
         }
         tType* get() { return mInstance.get(); }
+        std::shared_ptr<tType>& getSharedPointer() { return mInstance; }
     };
 
     //      ---<<< 共有テーブル >>>---
@@ -279,12 +314,12 @@ public:
 
         if (mSharedTable[iIndex] == nullptr)
         {
-            auto aInstance = new SharedHolder<tType>();
-            mSharedTable[iIndex].reset(aInstance);
-    return aInstance->get();
+            auto aSharedHolder = new SharedHolder<tType>();
+            mSharedTable[iIndex].reset(aSharedHolder);
+    return aSharedHolder->get();
         }
 
-        return reinterpret_cast<tType*>(mSharedTable[iIndex]->getPointer());
+        return reinterpret_cast<tType*>(mSharedTable[iIndex]->getVoidPointer());
     }
 
     // 送信処理用：指定領域を共有テーブルへ登録。
@@ -299,7 +334,7 @@ public:
         for (ret=0; ret < mSharedTable.size(); ++ret)
         {
             if ((mSharedTable[ret] != nullptr)
-             && (mSharedTable[ret]->getPointer() == iInstance))
+             && (mSharedTable[ret]->getVoidPointer() == iInstance))
             {
     return ret;
             }
@@ -318,6 +353,24 @@ public:
         // 新たに領域を増やす
         mSharedTable.emplace_back(new SharedHolder<tType>(iInstance));
         return ret;
+    }
+
+    //      ---<<< ユーザ側共有オブジェクト保持用クラス返却 >>>---
+
+    template<typename tType>
+    SharedPointer<tType> getSharedPointer(tType* iInstance)
+    {
+        // 登録済サーチ
+        for (std::size_t index=0; index < mSharedTable.size(); ++index)
+        {
+            if ((mSharedTable[index] != nullptr)
+             && (mSharedTable[index]->getVoidPointer() == iInstance))
+            {
+                auto& aSharedHolder=static_cast<SharedHolder<tType>& >(*mSharedTable[index].get());
+    return SharedPointer<tType>(this, index, aSharedHolder.getSharedPointer());
+            }
+        }
+        throw new std::invalid_argument("Not registered C# shared-object.");
     }
 
 //----------------------------------------------------------------------------

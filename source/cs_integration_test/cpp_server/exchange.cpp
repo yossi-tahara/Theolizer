@@ -56,27 +56,44 @@ namespace exchange
 {
 
 //----------------------------------------------------------------------------
-//      メイン・クラス
+//      要求関数
 //----------------------------------------------------------------------------
 
 int UserClassMain::request(UserClassSub const& iUserClassSub, UserClassSub& ioUserClassSub2)
 {
-    std::cout << "request()\n"
-              << "    mIntMain  =" << mIntMain << "\n"
-              << "    mShortMain=" << mShortMain << "\n"
-              << "    iUserClassSub.mUIntSub    =" << iUserClassSub.mUIntSub << "\n"
-              << "    iUserClassSub.mStringSub  =" << iUserClassSub.mStringSub << "\n"
-              << "    iUserClassSub.mShortSub   =" << iUserClassSub.mShortSub << "\n"
-              << "    ioUserClassSub2.mUIntSub  =" << ioUserClassSub2.mUIntSub << "\n"
-              << "    ioUserClassSub2.mStringSub=" << ioUserClassSub2.mStringSub << "\n"
-              << "    ioUserClassSub2.mShortSub =" << ioUserClassSub2.mShortSub << "\n";
+    std::cout << "UserClassMain::request()\n"
+              << "  mIntMain  =" << mIntMain << "\n"
+              << "  mShortMain=" << mShortMain << "\n"
+              << "  iUserClassSub.mUIntSub    =" << iUserClassSub.mUIntSub << "\n"
+              << "  iUserClassSub.mStringSub  =" << iUserClassSub.mStringSub << "\n"
+              << "  iUserClassSub.mShortSub   =" << iUserClassSub.mShortSub << "\n"
+              << "  ioUserClassSub2.mUIntSub  =" << ioUserClassSub2.mUIntSub << "\n"
+              << "  ioUserClassSub2.mStringSub=" << ioUserClassSub2.mStringSub << "\n"
+              << "  ioUserClassSub2.mShortSub =" << ioUserClassSub2.mShortSub << "\n";
     mIntMain *= 2;
     ++mShortMain;
     ++ioUserClassSub2.mUIntSub;
     ++ioUserClassSub2.mShortSub;
 
     // 非同期処理起動
-    return gNotify.startAsync(ioUserClassSub2);
+    return gNotify.startAsync();
 }
 
+// ***************************************************************************
+//      通知クラス
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      初期化
+//          現インスタンスを保持する
+//----------------------------------------------------------------------------
+
+void UserClassNotify::initialize()
+{
+    std::cout << "UserClassNotify::initialize()\n"
+              << "  mMessage  =" << mMessage << "\n"
+              << "  mCount    =" << mCount << "\n";
+    gNotify.setUserClassNotify(this);
 }
+
+}   // exchange

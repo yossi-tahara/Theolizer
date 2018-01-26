@@ -310,16 +310,29 @@ namespace theolizer.internal_space
 
         // デリミタまでの文字列を読み出す
         const String sDelimiter = " ,\n]}\t";
+        const String sSpaceChar = " \t\n";
         String ReadDelim()
         {
             var sb = new StringBuilder();
             int ch;
             while((ch = getChar()) > -1)
             {
+                if (sSpaceChar.IndexOf((char)ch) < 0)
+                {
+                    unget();
+            break;
+                }
+            }
+            if (ch < 0)
+        return "";
+            while((ch = getChar()) > -1)
+            {
                 if (sDelimiter.IndexOf((char)ch) > -1)
             break;
                 sb.Append((char)ch);
             }
+            if (ch < 0)
+        return "";
             unget();
             return sb.ToString();
         }

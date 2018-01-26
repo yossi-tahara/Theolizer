@@ -36,6 +36,10 @@ namespace cs_client
 
                 textBox.AppendText("GlobalVersionNo = "
                     + ThreadIntegrator.Integrator.GlobalVersionNo + Environment.NewLine);
+
+                // 通知用オブジェクト登録
+                var aUserClassNotify = new exchange.UserClassNotify(textBox);
+                aUserClassNotify.initialize();
             }
 
             // 送信準備
