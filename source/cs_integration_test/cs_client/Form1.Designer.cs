@@ -32,7 +32,7 @@
             this.numericUpDown = new System.Windows.Forms.NumericUpDown();
             this.textBox = new System.Windows.Forms.TextBox();
             this.buttonDispose = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.buttonGC = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown)).BeginInit();
             this.SuspendLayout();
             // 
@@ -70,12 +70,14 @@
             // 
             // textBox
             // 
-            this.textBox.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.textBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox.Location = new System.Drawing.Point(0, 50);
             this.textBox.Multiline = true;
             this.textBox.Name = "textBox";
             this.textBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox.Size = new System.Drawing.Size(328, 325);
+            this.textBox.Size = new System.Drawing.Size(419, 325);
             this.textBox.TabIndex = 2;
             // 
             // buttonDispose
@@ -88,22 +90,22 @@
             this.buttonDispose.UseVisualStyleBackColor = true;
             this.buttonDispose.Click += new System.EventHandler(this.buttonDispose_Click);
             // 
-            // button1
+            // buttonGC
             // 
-            this.button1.Location = new System.Drawing.Point(241, 340);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 4;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.buttonGC.Location = new System.Drawing.Point(333, 13);
+            this.buttonGC.Name = "buttonGC";
+            this.buttonGC.Size = new System.Drawing.Size(75, 23);
+            this.buttonGC.TabIndex = 4;
+            this.buttonGC.Text = "G.C.";
+            this.buttonGC.UseVisualStyleBackColor = true;
+            this.buttonGC.Click += new System.EventHandler(this.buttonGC_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(328, 375);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(418, 375);
+            this.Controls.Add(this.buttonGC);
             this.Controls.Add(this.buttonDispose);
             this.Controls.Add(this.textBox);
             this.Controls.Add(this.numericUpDown);
@@ -123,7 +125,7 @@
         private System.Windows.Forms.NumericUpDown numericUpDown;
         private System.Windows.Forms.TextBox textBox;
         private System.Windows.Forms.Button buttonDispose;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button buttonGC;
     }
 }
 

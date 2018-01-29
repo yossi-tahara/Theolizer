@@ -166,15 +166,26 @@ namespace theolizer
         }
 
         //----------------------------------------------------------------------------
-        //      共有オブジェクト状態通知用コールバック(C++からのコールバック)
+        //      共有オブジェクト管理
         //----------------------------------------------------------------------------
 
+        // 状態通知用コールバック(C++からのコールバック)
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void DelegateNotifySharedObject(int iIndex, bool iUserPresaved);
 
-        private void notifySharedObject(int iIndex, bool iUserPresaved)
+        void notifySharedObject(int iIndex, bool iUserPresaved)
         {
 System.Diagnostics.Debug.WriteLine("notifySharedObject(" + iIndex + ", " + iUserPresaved + ")");
+        }
+
+        // 共有オブジェクトの破棄
+        [DllImport(Constants.CppDllName)]
+        extern static bool CppDisposeShared(int iIndex);
+
+        protected override void disposeSharedDerived(int iIndex)
+        {
+            if (CppDisposeShared(iIndex) == false)
+        throw new InvalidOperationException("Presaved shared object by C++ user program.");
         }
 
         //----------------------------------------------------------------------------

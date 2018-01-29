@@ -290,6 +290,9 @@ namespace theolizer_integrator
                 // 共有テーブルへ登録
                 mInstance = value;
                 mIndex = aIntegrator.registerSharedInstanceS<exchange.UserClassMain>(mInstance);
+
+                // SharedDisposeへ登録
+                mInstance.setIntegrator(aIntegrator, mIndex);
             }
             get
             {
@@ -357,6 +360,9 @@ namespace theolizer_integrator
                 // 共有テーブルへ登録
                 mInstance = value;
                 mIndex = aIntegrator.registerSharedInstanceS<exchange.UserClassSub>(mInstance);
+
+                // SharedDisposeへ登録
+                mInstance.setIntegrator(aIntegrator, mIndex);
             }
             get
             {
@@ -424,6 +430,9 @@ namespace theolizer_integrator
                 // 共有テーブルへ登録
                 mInstance = value;
                 mIndex = aIntegrator.registerSharedInstanceS<exchange.UserClassNotify>(mInstance);
+
+                // SharedDisposeへ登録
+                mInstance.setIntegrator(aIntegrator, mIndex);
             }
             get
             {

@@ -278,7 +278,8 @@ System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetTyp
         public void disposeShared(int iIndex)
         {
             // ここには、下記処理を記述する。
-            //  C++側へ伝達してC++側のオブジェクトをデストラクトして共有テーブルから削除し、
+            //  C++側へ伝達してC++側のオブジェクトをデストラクトして共有テーブルから削除する
+            disposeSharedDerived(iIndex);
 
             // C#側共有テーブル削除
             mSharedTable[iIndex] = null;
@@ -293,5 +294,8 @@ System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetTyp
 
         // 破棄(ThreadIntegrator経由で呼び出す)
         public abstract void Dispose();
+
+        // 共有オブジェクトの破棄
+        protected abstract void disposeSharedDerived(int iIndex);
     }
 }   // theolizer.internal_space
