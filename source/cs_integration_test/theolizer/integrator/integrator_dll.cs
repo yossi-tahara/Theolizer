@@ -76,7 +76,12 @@ namespace theolizer
 
         [DllImport(Constants.CppDllName)]
         extern static void CppInitialize
-            (out Streams oStreams, SerializerType iSerializerType, bool iNotify);
+        (
+            out Streams oStreams,
+            [MarshalAs(UnmanagedType.FunctionPtr)]DelegateNotifySharedObject iCallback,
+            SerializerType iSerializerType,
+            bool iNotify
+        );
 
         private bool mNotify = false;
         private bool mDisposed = false;
@@ -84,7 +89,8 @@ namespace theolizer
         {
             mNotify = iNotify;
 
-            CppInitialize(out mStreams, iSerializerType, mNotify);
+            DelegateNotifySharedObject callback = notifySharedObject;
+            CppInitialize(out mStreams, callback, iSerializerType, mNotify);
 
             mRequestStream = new CppOStream(mStreams.mRequest);
             mResponseStream = new CppIStream(mStreams.mResponse);
@@ -157,6 +163,18 @@ namespace theolizer
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        //----------------------------------------------------------------------------
+        //      共有オブジェクト状態通知用コールバック(C++からのコールバック)
+        //----------------------------------------------------------------------------
+
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        delegate void DelegateNotifySharedObject(int iIndex, bool iUserPresaved);
+
+        private void notifySharedObject(int iIndex, bool iUserPresaved)
+        {
+System.Diagnostics.Debug.WriteLine("notifySharedObject(" + iIndex + ", " + iUserPresaved + ")");
         }
 
         //----------------------------------------------------------------------------

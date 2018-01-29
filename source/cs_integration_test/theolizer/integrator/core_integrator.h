@@ -49,7 +49,8 @@ namespace theolizer
 
 namespace internal
 {
-class BaseIntegrator;
+    class BaseIntegrator;
+    using DelegateNotifySharedObject = void(*)(int, bool);
 }
 
 // ***************************************************************************
@@ -85,11 +86,6 @@ enum class SerializerType
 //      ユーザ・プログラムでの共有インスタンス保持用クラス
 // ***************************************************************************
 
-namespace internal
-{
-class BaseIntegrator;
-}
-
 template<typename tType>
 class SharedPointer
 {
@@ -100,25 +96,46 @@ public:
     // コンストラクタ
     SharedPointer() :
         mIntegrator(nullptr),
-        mIndex(0),
+        mIndex(theolizer::internal::kInvalidSize),
         mInstance()
     { }
     SharedPointer
     (
-        internal::BaseIntegrator*   iIntegrator,
-        std::size_t                 iIndex,
-        std::shared_ptr<tType>&     iSharedPtr
-    ) : mIntegrator(iIntegrator),
-        mIndex(iIndex),
-        mInstance(iSharedPtr)
+        internal::BaseIntegrator&       iIntegrator,
+        std::size_t                     iIndex,
+        std::shared_ptr<tType> const&   iSharedPtr
+    );
+    SharedPointer(SharedPointer const& iSharedPointer) : 
+        mIntegrator(iSharedPointer.mIntegrator),
+        mIndex(iSharedPointer.mIndex),
+        mInstance(iSharedPointer.mInstance)
+    { }
+    SharedPointer(SharedPointer&& iSharedPointer) noexcept : // std::vector<>管理用にnoexcept
+        mIntegrator(iSharedPointer.mIntegrator),
+        mIndex(iSharedPointer.mIndex),
+        mInstance(std::move(iSharedPointer.mInstance))
     {
-        // 共有テーブルへ破棄しないよう登録
+        iSharedPointer.mIndex = kInvalidSize;
     }
 
     // デストラクタ
-    ~SharedPointer()
+    ~SharedPointer();
+
+    // 代入演算子
+    SharedPointer& operator=(SharedPointer const& iSharedPointer)       // コピー
     {
-        // 共有テーブルへ破棄許諾
+        mIntegrator = iSharedPointer.mIntegrator;
+        mIndex      = iSharedPointer.mIndex;
+        mInstance   = iSharedPointer.mInstance;
+        return *this;
+    }
+    SharedPointer& operator=(SharedPointer&& iSharedPointer) noexcept   // ムーブ
+    {
+        mIntegrator = iSharedPointer.mIntegrator;
+        mIndex      = iSharedPointer.mIndex;
+        iSharedPointer.mIndex = theolizer::internal::kInvalidSize;
+        mInstance   = std::move(iSharedPointer.mInstance);
+        return *this;
     }
 
     // 有効性
@@ -307,6 +324,7 @@ public:
     template<typename tType>
     tType* registerSharedInstance(std::size_t iIndex)
     {
+std::cout << "(1)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType) << "> index=" << iIndex << "\n";
         if (mSharedTable.size() <= iIndex)
         {
             mSharedTable.resize(iIndex+1);
@@ -336,6 +354,7 @@ public:
             if ((mSharedTable[ret] != nullptr)
              && (mSharedTable[ret]->getVoidPointer() == iInstance))
             {
+std::cout << "(2)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType) << "> index=" << ret << "\n";
     return ret;
             }
         }
@@ -346,12 +365,14 @@ public:
             if (mSharedTable[ret] == nullptr)
             {
                 mSharedTable[ret].reset(new SharedHolder<tType>(iInstance));
+std::cout << "(3)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType) << "> index=" << ret << "\n";
     return ret;
             }
         }
 
         // 新たに領域を増やす
         mSharedTable.emplace_back(new SharedHolder<tType>(iInstance));
+std::cout << "(4)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType) << "> index=" << ret << "\n";
         return ret;
     }
 
@@ -367,10 +388,18 @@ public:
              && (mSharedTable[index]->getVoidPointer() == iInstance))
             {
                 auto& aSharedHolder=static_cast<SharedHolder<tType>& >(*mSharedTable[index].get());
-    return SharedPointer<tType>(this, index, aSharedHolder.getSharedPointer());
+    return SharedPointer<tType>(*this, index, aSharedHolder.getSharedPointer());
             }
         }
         throw new std::invalid_argument("Not registered C# shared-object.");
+    }
+
+    //      ---<<< 共有オブジェクト状態通知 >>>---
+
+public:
+    void notifySharedObject(std::size_t iIndex, bool iUserPresaved)
+    {
+        mDelegateNotifySharedObject(static_cast<int>(iIndex), iUserPresaved);
     }
 
 //----------------------------------------------------------------------------
@@ -378,9 +407,18 @@ public:
 //----------------------------------------------------------------------------
 
 public:
-    bool            mTerminated;        // サービス終了
+    // 共有オブジェクト状態通知用コールバック
+    DelegateNotifySharedObject  mDelegateNotifySharedObject;
 
-    BaseIntegrator() : mTerminated(false) { }
+    // サービス終了
+    bool                        mTerminated;
+
+    BaseIntegrator(DelegateNotifySharedObject iCallback) :
+        mDelegateNotifySharedObject(iCallback),
+        mTerminated(false)
+    {
+mDelegateNotifySharedObject(123456, true);
+    }
     virtual ~BaseIntegrator() { }
 
     bool isTerminated() { return mTerminated; }
@@ -502,6 +540,44 @@ RegisterFuncClass<tFuncClass>&
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
+
+// ***************************************************************************
+//      ユーザ・プログラムでの共有インスタンス保持用クラスの後置定義
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//  コンストラクタ
+//----------------------------------------------------------------------------
+
+template<typename tType>
+SharedPointer<tType>::SharedPointer
+(
+    internal::BaseIntegrator&       iIntegrator,
+    std::size_t                     iIndex,
+    std::shared_ptr<tType> const&   iSharedPtr
+) : mIntegrator(&iIntegrator),
+    mIndex(iIndex),
+    mInstance(iSharedPtr)
+{
+    // C#側共有テーブルへ破棄禁止を通知
+    mIntegrator->notifySharedObject(mIndex, true);
+}
+
+//----------------------------------------------------------------------------
+//  デストラクタ
+//----------------------------------------------------------------------------
+
+template<typename tType>
+SharedPointer<tType>::~SharedPointer()
+{
+    // 共有オブジェクトを管理していたら
+    // C#側共有テーブルへ破棄許諾を通知
+    if (mInstance)
+    {
+        mIntegrator->notifySharedObject(mIndex, false);
+    }
+}
+
 }   // namespace theolizer
 
 //############################################################################

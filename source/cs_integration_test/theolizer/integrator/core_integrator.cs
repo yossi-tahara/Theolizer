@@ -123,6 +123,7 @@ namespace theolizer.internal_space
 
         void Dispose(bool disposing)
         {
+System.Diagnostics.Debug.WriteLine(this.GetType().Name + ".SharedDisposer.Dispose(" + disposing + ")");
             // 破棄済なら何もしない
             if (mDisposed)
         return;
@@ -220,7 +221,7 @@ namespace theolizer.internal_space
             {
                 mSharedTable[iIndex] = new SharedHolder(new tType());
             }
-
+System.Diagnostics.Debug.WriteLine("registerSharedInstanceR<" + mSharedTable[iIndex].get().GetType().Name + "> index=" + iIndex);
             return (tType)mSharedTable[iIndex].get();
         }
 
@@ -237,6 +238,7 @@ namespace theolizer.internal_space
                 if ((mSharedTable[ret] != null)
                  && (mSharedTable[ret].get() == (Object)iInstance))
                 {
+System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetType().Name + "> index=" + ret);
         return ret;
                 }
             }
@@ -247,12 +249,14 @@ namespace theolizer.internal_space
                 if (mSharedTable[ret] == null)
                 {
                     mSharedTable[ret] = new SharedHolder(iInstance);
+System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetType().Name + "> index=" + ret);
         return ret;
                 }
             }
 
             // 新たに領域を増やす
             mSharedTable.Add(new SharedHolder(iInstance));
+System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetType().Name + "> index=" + ret);
             return ret;
         }
 

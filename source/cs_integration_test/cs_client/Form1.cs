@@ -86,6 +86,11 @@ namespace cs_client
         {
             DllIntegrator.disposeInstance();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            GC.Collect();
+        }
     }
 }
 

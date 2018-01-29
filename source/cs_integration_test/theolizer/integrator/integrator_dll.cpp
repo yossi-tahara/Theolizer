@@ -48,11 +48,13 @@
 void CppInitialize
 (
     theolizer::internal::Streams* oStreams,
+    theolizer::internal::DelegateNotifySharedObject iCallback,
     theolizer::SerializerType iSerializerType,
     bool iNotify
 )
 {
-    auto&   aDllIntegrator = theolizer::DllIntegrator::makeInstance(iSerializerType, iNotify);
+    auto& aDllIntegrator =
+        theolizer::DllIntegrator::makeInstance(iCallback, iSerializerType, iNotify);
     *oStreams = *aDllIntegrator.getStreams();
 
     aDllIntegrator.startMainThread();
@@ -105,9 +107,11 @@ FILE *fp;
 
 DllIntegrator::DllIntegrator
 (
+    theolizer::internal::DelegateNotifySharedObject iCallback,
     theolizer::SerializerType iSerializerType,
     bool iNotify
-) : mSerializerType(iSerializerType),
+) : BaseIntegrator(iCallback),
+    mSerializerType(iSerializerType),
     mNotify(iNotify),
     mMainThread(nullptr),
     mStreams(iNotify),

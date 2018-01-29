@@ -62,6 +62,7 @@ extern "C"
     THEOLIZER_INTERNAL_EXPORT void CppInitialize
     (
         theolizer::internal::Streams* oStreams,
+        theolizer::internal::DelegateNotifySharedObject iCallback,
         theolizer::SerializerType iSerializerType,
         bool iNotify
     );
@@ -103,7 +104,7 @@ struct Streams
     ~Streams();
 
 private:
-    friend  void (::CppInitialize)(Streams*, SerializerType, bool);
+    friend  void (::CppInitialize)(Streams*, DelegateNotifySharedObject, SerializerType, bool);
 
     // コピー／ムーブ不可
     Streams(Streams const&) = delete;
@@ -120,7 +121,13 @@ private:
 
 class DllIntegrator : public internal::BaseIntegrator
 {
-    friend  void (::CppInitialize)(theolizer::internal::Streams*, theolizer::SerializerType, bool);
+    friend  void (::CppInitialize)
+        (
+            theolizer::internal::Streams*,
+            theolizer::internal::DelegateNotifySharedObject,
+            theolizer::SerializerType,
+            bool
+        );
     friend  void (::CppFinalize)();
 
     static DllIntegrator*   sDllIntegrator;
@@ -131,6 +138,7 @@ class DllIntegrator : public internal::BaseIntegrator
 
     DllIntegrator
     (
+        theolizer::internal::DelegateNotifySharedObject iCallback,
         SerializerType iSerializerType,
         bool iNotify
     );
@@ -147,13 +155,14 @@ class DllIntegrator : public internal::BaseIntegrator
     // 生成
     static DllIntegrator& makeInstance
     (
+        theolizer::internal::DelegateNotifySharedObject iCallback,
         theolizer::SerializerType iSerializerType,
         bool iNotify
     )
     {
         if (sDllIntegrator == nullptr)
         {
-            sDllIntegrator = new DllIntegrator(iSerializerType, iNotify);
+            sDllIntegrator = new DllIntegrator(iCallback, iSerializerType, iNotify);
         }
         return *sDllIntegrator;
     }
