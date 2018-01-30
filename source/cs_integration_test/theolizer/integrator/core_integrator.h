@@ -149,6 +149,12 @@ public:
     {
         return *mInstance.get();
     }
+
+    // オブジェクト開放
+    void release()
+    {
+        mInstance.reset();
+    }
 };
 
 //############################################################################
@@ -189,6 +195,7 @@ class BaseIntegrator
     {
         FuncClassHolder() { }
         ~FuncClassHolder() = default;
+
         void processFunction
         (
             BaseSerializer& iISerializer,
@@ -289,6 +296,7 @@ private:
     {
     public:
         virtual void* getVoidPointer() = 0;
+        virtual long getUseCount() = 0;
     };
 
     // 派生クラス
@@ -301,12 +309,17 @@ private:
         { };
         SharedHolder(tType* iPointer) : mInstance(std::shared_ptr<tType>(iPointer))
         { };
+        tType* get() { return mInstance.get(); }
+        std::shared_ptr<tType>& getSharedPointer() { return mInstance; }
+
         void* getVoidPointer()
         {
             return mInstance.get();
         }
-        tType* get() { return mInstance.get(); }
-        std::shared_ptr<tType>& getSharedPointer() { return mInstance; }
+        long getUseCount()
+        {
+            return mInstance.use_count();
+        }
     };
 
     //      ---<<< 共有テーブル >>>---
@@ -315,6 +328,7 @@ private:
     typedef std::vector<SharedElement>          SharedTable;
 
     SharedTable                                 mSharedTable;
+    std::mutex                                  mMutex;
 
 public:
     // 受信時に使用
@@ -324,6 +338,8 @@ public:
     template<typename tType>
     tType* registerSharedInstance(std::size_t iIndex)
     {
+        std::lock_guard<std::mutex> aLock(mMutex);
+
 std::cout << "(1)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType) << "> index=" << iIndex << "\n";
         if (mSharedTable.size() <= iIndex)
         {
@@ -346,6 +362,7 @@ std::cout << "(1)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType)
     template<typename tType>
     std::size_t registerSharedInstance(tType* iInstance)
     {
+        std::lock_guard<std::mutex> aLock(mMutex);
         std::size_t ret;
 
         // 既に登録済チェック
@@ -381,6 +398,8 @@ std::cout << "(4)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType)
     template<typename tType>
     SharedPointer<tType> getSharedPointer(tType* iInstance)
     {
+        std::lock_guard<std::mutex> aLock(mMutex);
+
         // 登録済サーチ
         for (std::size_t index=0; index < mSharedTable.size(); ++index)
         {
@@ -400,6 +419,24 @@ public:
     void notifySharedObject(std::size_t iIndex, bool iUserPresaved)
     {
         mDelegateNotifySharedObject(static_cast<int>(iIndex), iUserPresaved);
+    }
+
+    //      ---<<< 共有オブジェクト破棄 >>>---
+protected:
+    bool disposeShared(std::size_t iIndex)
+    {
+        std::lock_guard<std::mutex> aLock(mMutex);
+
+std::cout << "BaseIntegrator::disposeShared(" << iIndex << ")\n";
+        if ((iIndex < mSharedTable.size())
+         && (mSharedTable[iIndex])
+         && (mSharedTable[iIndex]->getUseCount() <= 1))
+        {
+            mSharedTable[iIndex].reset();
+            return true;
+        }
+
+        return false;
     }
 
 //----------------------------------------------------------------------------

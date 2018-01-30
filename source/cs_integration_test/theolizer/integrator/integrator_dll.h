@@ -130,6 +130,7 @@ class DllIntegrator : public internal::BaseIntegrator
             bool
         );
     friend  void (::CppFinalize)();
+    friend  bool (::CppDisposeShared)(int iIndex);
 
     static DllIntegrator*   sDllIntegrator;
 
@@ -175,6 +176,14 @@ class DllIntegrator : public internal::BaseIntegrator
             delete sDllIntegrator;
             sDllIntegrator = nullptr;
         }
+    }
+    // 共有オブジェクト破棄
+    static bool disposeShared(std::size_t iIndex)
+    {
+        if (sDllIntegrator == nullptr)
+    return false;
+
+        return sDllIntegrator->BaseIntegrator::disposeShared(iIndex);
     }
 
     class AutoTerminate

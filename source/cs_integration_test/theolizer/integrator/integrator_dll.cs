@@ -258,7 +258,7 @@ System.Diagnostics.Debug.WriteLine("notifySharedObject(" + iIndex + ", " + iUser
 
             try
             {
-                while(!mTerminated)
+//                while(!mTerminated)
                 {
                     // 応答受信(暫定→通知関数テーブルを作る必要がある)
                     ITheolizerInternal aNotifyObject = new theolizer_integrator.notifyUserClassNotify();

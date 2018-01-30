@@ -67,8 +67,8 @@ void CppFinalize()
 
 bool CppDisposeShared(int iIndex)
 {
-    std::cout << "CppDisposeShared(" << iIndex << ")\n";
-    return true;
+std::cout << "CppDisposeShared(" << iIndex << ")\n";
+    return theolizer::DllIntegrator::disposeShared(iIndex);
 }
 
 namespace theolizer
