@@ -76,7 +76,7 @@ int UserClassMain::request(UserClassSub const& iUserClassSub, UserClassSub& ioUs
     ++ioUserClassSub2.mShortSub;
 
     // 非同期処理起動
-    return gNotify.startAsync();
+    return gNotifyData->startAsync();
 }
 
 // ***************************************************************************
@@ -93,7 +93,7 @@ void UserClassNotify::initialize()
     std::cout << "UserClassNotify::initialize()\n"
               << "  mMessage  =" << mMessage << "\n"
               << "  mCount    =" << mCount << "\n";
-    gNotify.setUserClassNotify(this);
+    gNotifyData.reset(new Notify(this));
 }
 
 }   // exchange

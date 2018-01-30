@@ -85,6 +85,43 @@ namespace theolizer
 namespace theolizer.internal_space
 {
     // ***************************************************************************
+    //      mutex用lockクラス(C++のstd::lock_guardに当たる)
+    // ***************************************************************************
+
+    class Lock : IDisposable
+    {
+        Mutex   mMutex;
+        bool    mDisposed = false;
+
+        public Lock(Mutex iMutex)
+        {
+            mMutex = iMutex;
+            mMutex.WaitOne();
+        }
+
+        ~Lock()
+        {
+            Dispose(false);
+        }
+
+        void Dispose(bool disposing)
+        {
+            // 破棄済なら何もしない
+            if (mDisposed)
+        return;
+
+            mDisposed = true;
+
+            mMutex.ReleaseMutex();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+    }
+
+    // ***************************************************************************
     //      シリアライズ対象用基底クラス
     // ***************************************************************************
 
@@ -100,54 +137,29 @@ namespace theolizer.internal_space
         void callFunc();
     }
 
-    abstract class SharedDisposer : IDisposable
+    abstract class SharedDestructor
     {
         CoreIntegrator  mIntegrator = null;
         int             mIndex = -1;
-        bool            mDisposed = false;
 
         public void setIntegrator(CoreIntegrator iIntegrator, int iIndex)
         {
-            // 破棄済なら例外
-            if (mDisposed)
-        throw new InvalidOperationException("SharedDisposer was disposed.");
-
             mIntegrator = iIntegrator;
             mIndex      = iIndex;
         }
 
-        ~SharedDisposer()
+        ~SharedDestructor()
         {
-            Dispose(false);
-        }
-
-        void Dispose(bool disposing)
-        {
-System.Diagnostics.Debug.WriteLine(this.GetType().Name + ".SharedDisposer.Dispose(" + disposing + ")");
-            // 破棄済なら何もしない
-            if (mDisposed)
-        return;
-
-            // 登録済でDispose処理なら破棄できるかどうかチェックする
-            if ((mIntegrator != null) && disposing)
+System.Diagnostics.Debug.WriteLine(this.GetType().Name + ".~SharedDestructor()");
+            // 登録済なら破棄できるかどうかチェックして破棄する
+            if (mIntegrator != null)
             {
                 if (!mIntegrator.canDispose(mIndex))
         throw new InvalidOperationException(
-            "Can not dispose SharedDisposer, because this is preserved by C++.");
-            }
+            "Can not dispose SharedDestructor, because this is preserved by C++.");
 
-            mDisposed = true;
-
-            if (mIntegrator != null)
-            {
                 mIntegrator.disposeShared(mIndex);
             }
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
     }
 
@@ -202,62 +214,82 @@ System.Diagnostics.Debug.WriteLine(this.GetType().Name + ".SharedDisposer.Dispos
         //----------------------------------------------------------------------------
 
         List<SharedHolder>  mSharedTable = new List<SharedHolder>();
+        Mutex               mMutex = new Mutex();
 
         // 受信時に使用
         //  Indexを受け取り、
         //      登録済ならそのインスタンスを返却
         //      未登録ならデフォルト・コンストラクタで生成して返却
-        public tType registerSharedInstanceR<tType>(int iIndex) where tType : SharedDisposer, new()
+        public tType registerSharedInstanceR<tType>(int iIndex) where tType : SharedDestructor, new()
         {
-            if (mSharedTable.Count <= iIndex)
+            using (var aLock = new Lock(mMutex))
             {
-                for (int i=mSharedTable.Count; i < iIndex+1; ++i)
+                if (mSharedTable.Count <= iIndex)
                 {
-                    mSharedTable.Add(null);
+                    for (int i=mSharedTable.Count; i < iIndex+1; ++i)
+                    {
+                        mSharedTable.Add(null);
+                    }
                 }
-            }
 
-            if (mSharedTable[iIndex] == null)
-            {
-                mSharedTable[iIndex] = new SharedHolder(new tType());
-            }
+                if (mSharedTable[iIndex] == null)
+                {
+                    mSharedTable[iIndex] = new SharedHolder(new tType());
+                }
 System.Diagnostics.Debug.WriteLine("registerSharedInstanceR<" + mSharedTable[iIndex].get().GetType().Name + "> index=" + iIndex);
-            return (tType)mSharedTable[iIndex].get();
+                return (tType)mSharedTable[iIndex].get();
+            }
         }
 
         // 送信処理用：指定領域を共有テーブルへ登録。
         //  未登録なら新規登録し、そのIndex返却
         //  登録済ならそのIndex返却。
-        public int registerSharedInstanceS<tType>(tType iInstance) where tType : SharedDisposer, new()
+        public int registerSharedInstanceS<tType>(tType iInstance) where tType : SharedDestructor, new()
         {
             int ret;
 
-            // 既に登録済チェック
-            for (ret=0; ret < mSharedTable.Count; ++ret)
+            using (var aLock = new Lock(mMutex))
             {
-                if ((mSharedTable[ret] != null)
-                 && (mSharedTable[ret].get() == (Object)iInstance))
+                // 既に登録済チェック
+                for (ret=0; ret < mSharedTable.Count; ++ret)
                 {
-System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetType().Name + "> index=" + ret);
-        return ret;
-                }
-            }
-
-            // 登録済でないなら先頭のnullを探す
-            for (ret=0; ret < mSharedTable.Count; ++ret)
-            {
-                if (mSharedTable[ret] == null)
-                {
-                    mSharedTable[ret] = new SharedHolder(iInstance);
-System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetType().Name + "> index=" + ret);
-        return ret;
-                }
-            }
-
-            // 新たに領域を増やす
-            mSharedTable.Add(new SharedHolder(iInstance));
-System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetType().Name + "> index=" + ret);
+                    if ((mSharedTable[ret] != null)
+                     && (mSharedTable[ret].get() == (Object)iInstance))
+                    {
+System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetType().Name + "> index="+ret);
             return ret;
+                    }
+                }
+
+                // 登録済でないなら先頭のnullを探す
+                for (ret=0; ret < mSharedTable.Count; ++ret)
+                {
+                    if (mSharedTable[ret] == null)
+                    {
+                        mSharedTable[ret] = new SharedHolder(iInstance);
+System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetType().Name + "> index="+ret);
+            return ret;
+                    }
+                }
+
+                // 新たに領域を増やす
+                mSharedTable.Add(new SharedHolder(iInstance));
+System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetType().Name + "> index="+ret);
+            }
+            return ret;
+        }
+
+        // 共有オブジェクト状態をC++側から受け取る
+        protected void notifySharedObject(int iIndex, bool iUserPresaved)
+        {
+            using (var aLock = new Lock(mMutex))
+            {
+System.Diagnostics.Debug.WriteLine("notifySharedObject(" + iIndex + ", " + iUserPresaved + ")");
+
+                // 存在確認(無い時はバグなので例外)
+                canDispose(iIndex);
+                mSharedTable[iIndex].setStrong(iUserPresaved);
+            }
         }
 
         // Dispose可能判定
@@ -265,11 +297,11 @@ System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetTyp
         {
             if (mSharedTable.Count <= iIndex)
         throw new InvalidOperationException(
-            String.Format("mSharedTable[{0}] has no element.(0)", iIndex));
+                String.Format("mSharedTable[{0}] has no element.(0)", iIndex));
 
             if (mSharedTable[iIndex] == null)
         throw new InvalidOperationException(
-            String.Format("mSharedTable[{0}] has no element.(1)", iIndex));
+                String.Format("mSharedTable[{0}] has no element.(1)", iIndex));
 
             return mSharedTable[iIndex].canDispose();
         }

@@ -173,11 +173,6 @@ namespace theolizer
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         delegate void DelegateNotifySharedObject(int iIndex, bool iUserPresaved);
 
-        void notifySharedObject(int iIndex, bool iUserPresaved)
-        {
-System.Diagnostics.Debug.WriteLine("notifySharedObject(" + iIndex + ", " + iUserPresaved + ")");
-        }
-
         // 共有オブジェクトの破棄
         [DllImport(Constants.CppDllName)]
         extern static bool CppDisposeShared(int iIndex);

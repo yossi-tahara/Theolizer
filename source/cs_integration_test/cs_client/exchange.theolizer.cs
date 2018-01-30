@@ -69,7 +69,7 @@ namespace exchange
     //      サブ・クラス
     //----------------------------------------------------------------------------
 
-    partial class UserClassSub : SharedDisposer, ITheolizer
+    partial class UserClassSub : SharedDestructor, ITheolizer
     {
         //      ---<<< メンバ変数群 >>>---
 
@@ -127,7 +127,7 @@ namespace exchange
     //      メイン・クラス
     //----------------------------------------------------------------------------
 
-    partial class UserClassMain : SharedDisposer, ITheolizer
+    partial class UserClassMain : SharedDestructor, ITheolizer
     {
         //      ---<<< メンバ変数群 >>>---
 
@@ -194,7 +194,7 @@ namespace exchange
 //      通知用クラス
 //----------------------------------------------------------------------------
 
-    partial class UserClassNotify : SharedDisposer, ITheolizer
+    partial class UserClassNotify : SharedDestructor, ITheolizer
     {
         //      ---<<< メンバ変数群 >>>---
 

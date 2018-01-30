@@ -45,13 +45,13 @@ class Notify
     theolizer::SharedPointer<exchange::UserClassNotify> mUserClassNotifyPointer;
 
 public:
-    Notify();
+    Notify(exchange::UserClassNotify* iInstance);
     ~Notify();
 
-    void setUserClassNotify(exchange::UserClassNotify* iInstance);
     int startAsync();
-    void finalize();
 };
-extern Notify  gNotify;
+
+typedef std::unique_ptr<Notify> NotifyData;
+extern NotifyData   gNotifyData;
 
 #endif  // THEOLIZER_INTERNAL_CPP_SERVER_H

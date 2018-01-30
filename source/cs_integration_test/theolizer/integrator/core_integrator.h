@@ -453,9 +453,7 @@ public:
     BaseIntegrator(DelegateNotifySharedObject iCallback) :
         mDelegateNotifySharedObject(iCallback),
         mTerminated(false)
-    {
-mDelegateNotifySharedObject(123456, true);
-    }
+    { }
     virtual ~BaseIntegrator() { }
 
     bool isTerminated() { return mTerminated; }

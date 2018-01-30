@@ -53,29 +53,26 @@
 //      通知オブジェクト
 // ***************************************************************************
 
-Notify  gNotify;
+NotifyData  gNotifyData;
 
 //----------------------------------------------------------------------------
 //      コンストラクタ／デストラクタ
 //----------------------------------------------------------------------------
 
-Notify::Notify() : mTerminated(false)
+Notify::Notify(exchange::UserClassNotify* iInstance) : mTerminated(false)
 {
+    auto aIntegrator = theolizer::ThreadIntegrator::getIntegrator();
+    mUserClassNotifyPointer = aIntegrator->getSharedPointer(iInstance);
 }
 
 Notify::~Notify()
 {
-    finalize();
-}
-
-//----------------------------------------------------------------------------
-//      通知用インスタンス登録
-//----------------------------------------------------------------------------
-
-void Notify::setUserClassNotify(exchange::UserClassNotify* iInstance)
-{
-    auto aIntegrator = theolizer::ThreadIntegrator::getIntegrator();
-    mUserClassNotifyPointer = aIntegrator->getSharedPointer(iInstance);
+    if (mThread.joinable())
+    {
+        mTerminated = true;
+        mThread.join();
+        mTerminated = false;
+    }
 }
 
 //----------------------------------------------------------------------------
@@ -104,34 +101,20 @@ return -1;
         (
             [&]()
             {
-                std::this_thread::sleep_for (std::chrono::seconds(1));
+                std::this_thread::sleep_for (std::chrono::seconds(3));
                 if (!mTerminated)
                 {
                     theolizer::ThreadIntegrator::setIntegrator(&aIntegrator);
                     auto& aUserClassNotify = mUserClassNotifyPointer.get();
                     ++aUserClassNotify.mCount;
                     aUserClassNotify.notify();
-mUserClassNotifyPointer.release();
                     mThread.detach();
+//gNotifyData.reset();
                 }
             }
         )
     );
     return 1000;
-}
-
-//----------------------------------------------------------------------------
-//      通知スレッド終了処理
-//----------------------------------------------------------------------------
-
-void Notify::finalize()
-{
-    if (mThread.joinable())
-    {
-        mTerminated = true;
-        mThread.join();
-        mTerminated = false;
-    }
 }
 
 // ***************************************************************************
@@ -144,6 +127,6 @@ void user_main(theolizer::DllIntegrator& iDllIntegrator)
 
     iDllIntegrator.recieveLoop(1024, 4096);
 
-    // 通知スレッド終了処理
-    gNotify.finalize();
+    // 通知管理クラス開放
+    gNotifyData.reset();
 }
