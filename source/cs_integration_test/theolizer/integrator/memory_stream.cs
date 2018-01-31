@@ -42,6 +42,13 @@ namespace theolizer
     //      ストリーム状態管理
     // ***************************************************************************
 
+    class CppDisconnected : Exception
+    {
+        public CppDisconnected(String message) : base(message)
+        {
+        }
+    }
+
     enum StreamStatus : int
     {
         NoError,
@@ -55,7 +62,7 @@ namespace theolizer
             switch(iStreamStatus)
             {
             case StreamStatus.Disconnected:
-                throw new ObjectDisposedException("theolizer : CppOStream disconnected");
+                throw new CppDisconnected("theolizer : CppOStream disconnected");
             }
         }
     }

@@ -69,7 +69,6 @@ namespace theolizer
         {
             if (sInstance != null)
             {
-                sInstance.Dispose();
                 sInstance = null;
             }
         }
@@ -78,19 +77,23 @@ namespace theolizer
         extern static void CppInitialize
         (
             out Streams oStreams,
-            [MarshalAs(UnmanagedType.FunctionPtr)]DelegateNotifySharedObject iCallback,
+//            [MarshalAs(UnmanagedType.FunctionPtr)]DelegateNotifySharedObject iCallback,
+            IntPtr iCallback,
             SerializerType iSerializerType,
             bool iNotify
         );
 
-        private bool mNotify = false;
-        private bool mDisposed = false;
+        bool mNotify = false;
+        bool mDisposed = false;
+        GCHandle mCallbackHandle;
         private DllIntegrator(SerializerType iSerializerType, bool iNotify, uint iGlobalVersionNo)
         {
             mNotify = iNotify;
 
             DelegateNotifySharedObject callback = notifySharedObject;
-            CppInitialize(out mStreams, callback, iSerializerType, mNotify);
+            mCallbackHandle = GCHandle.Alloc(callback);
+            IntPtr ptr = Marshal.GetFunctionPointerForDelegate(callback);
+            CppInitialize(out mStreams, ptr, iSerializerType, mNotify);
 
             mRequestStream = new CppOStream(mStreams.mRequest);
             mResponseStream = new CppIStream(mStreams.mResponse);
@@ -133,6 +136,11 @@ namespace theolizer
             Dispose(false);
         }
 
+        public override bool Disposed
+        {
+            get { return mDisposed; }
+        }
+
         [DllImport(Constants.CppDllName)]
         extern static void CppFinalize();
 
@@ -141,6 +149,7 @@ namespace theolizer
             if (mDisposed)
         return;
             mDisposed = true;
+            mTerminated = true;
 
             CppFinalize();
 
@@ -151,12 +160,12 @@ namespace theolizer
 
             if (mNotify)
             {
-                mTerminated = true;
                 mNotifyThread.Join();
 
                 if (mNotifySerializer   != null)    mNotifySerializer.Dispose();
                 mNotifyStream.Dispose();
             }
+            mCallbackHandle.Free();
         }
 
         public override void Dispose()
@@ -253,26 +262,32 @@ namespace theolizer
 
             try
             {
-//                while(!mTerminated)
+                while(!mTerminated)
                 {
-                    // 応答受信(暫定→通知関数テーブルを作る必要がある)
-                    ITheolizerInternal aNotifyObject = new theolizer_integrator.notifyUserClassNotify();
-                    UInt64 aTypeIndex = aNotifyObject.getTypeIndex();
+                    UInt64 aTypeIndex = theolizer.internal_space.Constants.kInvalidSize;
                     using (var temp = new BaseSerializer.AutoRestoreLoadProcess
                         (mNotifySerializer, ref aTypeIndex))
                     {
+                        var aNotifyObject = theolizer_integrator.FuncClassList.get(aTypeIndex);
                         aNotifyObject.load(mNotifySerializer);
                         mUserContext.Post(_=>{ ((ICallFunc)aNotifyObject).callFunc(); }, null);
                     }
                 }
             }
+            catch(CppDisconnected e)
+            {
+                // 終了していない場合はバグ
+                if (!mTerminated)
+                {
+                    if (mUserContext == null)
+        throw;
+                    mUserContext.Post(_=>{ throw new Exception("Exception in notifyThread()", e); }, null);
+                }
+            }
             catch(Exception e)
             {
-Debug.WriteLine(e.StackTrace);
-
                 if (mUserContext == null)
         throw;
-
                 mUserContext.Post(_=>{ throw new Exception("Exception in notifyThread()", e); }, null);
             }
         }

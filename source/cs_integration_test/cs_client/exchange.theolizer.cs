@@ -29,6 +29,7 @@
 //############################################################################
 
 using System;
+using System.Collections.Generic;
 using theolizer;
 using theolizer.internal_space;
 
@@ -78,7 +79,7 @@ namespace exchange
 
         //      ---<<< シリアライズ処理 >>>---
 
-        const UInt64 kTypeIndex = 5;
+        public const UInt64 kTypeIndex = 6;
 
         TheolizerInternal   mTheolizerInternal = null;
         ITheolizerInternal ITheolizer.getTheolizer()
@@ -135,7 +136,7 @@ namespace exchange
 
         //      ---<<< シリアライズ処理 >>>---
 
-        const UInt64 kTypeIndex = 6;
+        public const UInt64 kTypeIndex = 12;
 
         TheolizerInternal   mTheolizerInternal = null;
         ITheolizerInternal ITheolizer.getTheolizer()
@@ -203,7 +204,7 @@ namespace exchange
 
         //      ---<<< シリアライズ処理 >>>---
 
-        const UInt64 kTypeIndex = 7;
+        public const UInt64 kTypeIndex = 13;
 
         TheolizerInternal   mTheolizerInternal = null;
         ITheolizerInternal ITheolizer.getTheolizer()
@@ -300,7 +301,7 @@ namespace theolizer_integrator
             }
         }
 
-        const UInt64 kTypeIndex = 8;
+        public const UInt64 kTypeIndex = 5;
         public UInt64 getTypeIndex() { return kTypeIndex; }
 
         // シリアライズ
@@ -370,7 +371,7 @@ namespace theolizer_integrator
             }
         }
 
-        const UInt64 kTypeIndex = 9;
+        public const UInt64 kTypeIndex = 7;
         public UInt64 getTypeIndex() { return kTypeIndex; }
 
         // シリアライズ
@@ -440,7 +441,7 @@ namespace theolizer_integrator
             }
         }
 
-        const UInt64 kTypeIndex = 20;
+        public const UInt64 kTypeIndex = 4;
         public UInt64 getTypeIndex() { return kTypeIndex; }
 
         // シリアライズ
@@ -492,7 +493,7 @@ namespace theolizer_integrator
         SharedHelperTheolizer_exchange_UserClassSub mioUserClassSub2 =
             new SharedHelperTheolizer_exchange_UserClassSub();
 
-        const UInt64 kTypeIndex = 2;
+        public const UInt64 kTypeIndex = 3;
         public UInt64 getTypeIndex() { return kTypeIndex; }
         public void save(BaseSerializer iBaseSerializer)
         {
@@ -543,7 +544,7 @@ namespace theolizer_integrator
         }
 
         // TypeIndex
-        const UInt64 kTypeIndex = 0;
+        public const UInt64 kTypeIndex = 0;
         public UInt64 getTypeIndex() { return kTypeIndex; }
 
         // シリアライズ
@@ -579,7 +580,7 @@ namespace theolizer_integrator
         SharedHelperTheolizer_exchange_UserClassNotify mThis =
             new SharedHelperTheolizer_exchange_UserClassNotify();
 
-        const UInt64 kTypeIndex = 3;
+        public const UInt64 kTypeIndex = 3;
         public UInt64 getTypeIndex() { return kTypeIndex; }
         public void save(BaseSerializer iBaseSerializer)
         {
@@ -615,7 +616,7 @@ namespace theolizer_integrator
         }
 
         // TypeIndex
-        const UInt64 kTypeIndex = 1;
+        public const UInt64 kTypeIndex = 1;
         public UInt64 getTypeIndex() { return kTypeIndex; }
 
         // シリアライズ
@@ -645,7 +646,7 @@ namespace theolizer_integrator
         SharedHelperTheolizer_exchange_UserClassNotify mThis =
             new SharedHelperTheolizer_exchange_UserClassNotify();
 
-        const UInt64 kTypeIndex = 4;
+        public const UInt64 kTypeIndex = 2;
         public UInt64 getTypeIndex() { return kTypeIndex; }
         public void save(BaseSerializer iBaseSerializer)
         {
@@ -664,6 +665,26 @@ namespace theolizer_integrator
         public void callFunc()
         {
             mThis.Instance.notify();
+        }
+    }
+
+    //----------------------------------------------------------------------------
+    //      関数クラス・テーブル
+    //----------------------------------------------------------------------------
+
+    static class FuncClassList
+    {
+        static Dictionary<UInt64,ITheolizerInternal> mFuncClassList;
+        static FuncClassList()
+        {
+            mFuncClassList = new Dictionary<UInt64,ITheolizerInternal>
+            {
+                {notifyUserClassNotify.kTypeIndex, new notifyUserClassNotify()}
+            };
+        }
+        public static ITheolizerInternal get(UInt64 iTypeIndex)
+        {
+            return mFuncClassList[iTypeIndex];
         }
     }
 }
