@@ -152,7 +152,7 @@ namespace theolizer.internal_space
         {
 System.Diagnostics.Debug.WriteLine(this.GetType().Name + ".~SharedDestructor()");
             // 登録済なら破棄できるかどうかチェックして破棄する
-            if ((mIntegrator != null) && (!mIntegrator.Disposed))
+            if (mIntegrator != null)
             {
                 if (!mIntegrator.canDispose(mIndex))
         throw new InvalidOperationException(
@@ -291,9 +291,6 @@ System.Diagnostics.Debug.WriteLine("notifySharedObject(" + iIndex + ", " + iUser
                 mSharedTable[iIndex].setStrong(iUserPresaved);
             }
         }
-
-        // インテグレータ破棄済
-        public virtual bool Disposed {get;}
 
         // Dispose可能判定
         public bool canDispose(int iIndex)

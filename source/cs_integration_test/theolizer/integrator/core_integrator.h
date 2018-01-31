@@ -423,20 +423,27 @@ public:
 
     //      ---<<< 共有オブジェクト破棄 >>>---
 protected:
+    // 破棄出来ない時、false返却(破棄した時と既に破棄されている時はtrue返却)
     bool disposeShared(std::size_t iIndex)
     {
         std::lock_guard<std::mutex> aLock(mMutex);
 
 std::cout << "BaseIntegrator::disposeShared(" << iIndex << ")\n";
         if ((iIndex < mSharedTable.size())
-         && (mSharedTable[iIndex])
-         && (mSharedTable[iIndex]->getUseCount() <= 1))
+         && (mSharedTable[iIndex]))
         {
-            mSharedTable[iIndex].reset();
-            return true;
+            if (mSharedTable[iIndex]->getUseCount() <= 1)
+            {
+                mSharedTable[iIndex].reset();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        return false;
+        return true;
     }
 
 //----------------------------------------------------------------------------

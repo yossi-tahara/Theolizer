@@ -69,6 +69,7 @@ namespace theolizer
         {
             if (sInstance != null)
             {
+                sInstance.Dispose();
                 sInstance = null;
             }
         }
@@ -77,7 +78,6 @@ namespace theolizer
         extern static void CppInitialize
         (
             out Streams oStreams,
-//            [MarshalAs(UnmanagedType.FunctionPtr)]DelegateNotifySharedObject iCallback,
             IntPtr iCallback,
             SerializerType iSerializerType,
             bool iNotify
@@ -136,11 +136,6 @@ namespace theolizer
             Dispose(false);
         }
 
-        public override bool Disposed
-        {
-            get { return mDisposed; }
-        }
-
         [DllImport(Constants.CppDllName)]
         extern static void CppFinalize();
 
@@ -188,6 +183,9 @@ namespace theolizer
 
         protected override void disposeSharedDerived(int iIndex)
         {
+            if (mDisposed)
+        return;
+
             if (CppDisposeShared(iIndex) == false)
         throw new InvalidOperationException("Presaved shared object by C++ user program.");
         }
@@ -222,6 +220,9 @@ namespace theolizer
         // 要求を発行し応答を受信
         public override void sendRequest(ITheolizerInternal iFuncObject, ITheolizerInternal oReturnObject)
         {
+            if (mDisposed)
+        return;
+
             // 要求送信
             using (var temp = new BaseSerializer.AutoRestoreSaveProcess
                 (mRequestSerializer, iFuncObject.getTypeIndex()))
@@ -258,6 +259,9 @@ namespace theolizer
         SynchronizationContext mUserContext;
         void notifyThread()
         {
+            if (mDisposed)
+        return;
+
             ThreadIntegrator.Integrator = this;
 
             try
