@@ -98,7 +98,7 @@ public:
     int         mCount;
 
     // コンストラクタ
-    UserClassNotify() : mMessage("Default")
+    UserClassNotify() : mMessage("Default"), mCount(-1)
     { }
 
     //      ---<<< メンバ関数群 >>>---

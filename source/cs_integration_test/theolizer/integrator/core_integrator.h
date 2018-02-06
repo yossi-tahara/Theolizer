@@ -115,7 +115,7 @@ public:
         mIndex(iSharedPointer.mIndex),
         mInstance(std::move(iSharedPointer.mInstance))
     {
-        iSharedPointer.mIndex = kInvalidSize;
+        iSharedPointer.mIndex = theolizer::internal::kInvalidSize;
     }
 
     // デストラクタ
@@ -398,6 +398,7 @@ std::cout << "(4)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType)
     template<typename tType>
     SharedPointer<tType> getSharedPointer(tType* iInstance)
     {
+#if 0
         std::lock_guard<std::mutex> aLock(mMutex);
 
         // 登録済サーチ
@@ -411,6 +412,11 @@ std::cout << "(4)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType)
             }
         }
         throw new std::invalid_argument("Not registered C# shared-object.");
+#else
+        std::size_t aIndex = registerSharedInstance(iInstance);
+        auto& aSharedHolder=static_cast<SharedHolder<tType>& >(*mSharedTable[aIndex].get());
+        return std::move(SharedPointer<tType>(*this, aIndex, aSharedHolder.getSharedPointer()));
+#endif
     }
 
     //      ---<<< 共有オブジェクト状態通知 >>>---

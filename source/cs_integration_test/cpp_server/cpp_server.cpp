@@ -101,15 +101,21 @@ return -1;
         (
             [&]()
             {
-                std::this_thread::sleep_for (std::chrono::seconds(3));
+                std::this_thread::sleep_for(std::chrono::seconds(3));
                 if (!mTerminated)
                 {
                     theolizer::ThreadIntegrator::setIntegrator(&aIntegrator);
                     auto& aUserClassNotify = mUserClassNotifyPointer.get();
                     ++aUserClassNotify.mCount;
                     aUserClassNotify.notify();
-                    mThread.detach();
 //gNotifyData.reset();
+
+                    exchange::UserClassNotify   aUserClassNotify2;
+                    aUserClassNotify2.mCount = -12345;
+                    auto aSharedPointer = aIntegrator.getSharedPointer(&aUserClassNotify2);
+                    aUserClassNotify2.notify();
+                    std::this_thread::sleep_for(std::chrono::seconds(3));
+                    mThread.detach();
                 }
             }
         )

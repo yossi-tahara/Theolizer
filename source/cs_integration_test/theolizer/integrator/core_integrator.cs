@@ -165,38 +165,77 @@ System.Diagnostics.Debug.WriteLine(this.GetType().Name + ".~SharedDestructor()")
 
     // ***************************************************************************
     //      共有テーブルのオブジェクト管理クラス
+    //          C++側で共有オブジェクトを獲得／保持したが、
+    //          それを送って来る前のmWeakRefはnullである。
     // ***************************************************************************
 
     class SharedHolder
     {
         Object          mStrongRef;
         WeakReference   mWeakRef;
+        bool            mUserPresaved;
 
+        // C#側で共有オブジェクトを獲得した際に使用する
         public SharedHolder(Object iInstance)
         {
             mStrongRef = null;
             mWeakRef = new WeakReference(iInstance);
+            mUserPresaved = false;
         }
 
-        public void setStrong(bool iIsStrong)
+        // C++側で共有オブジェクトを獲得した際に使用する
+        public SharedHolder()
         {
-            if (iIsStrong)
+            mStrongRef = null;
+            mWeakRef = null;
+            mUserPresaved = false;
+        }
+
+        // C++側で共有オブジェクトを獲得後に送信してきた時に設定する際に使用する
+        public void setWeak<tType>() where tType : new()
+        {
+            if (mWeakRef == null)
             {
-                mStrongRef = mWeakRef.Target;
+                mWeakRef = new WeakReference(new tType());
+                if (mUserPresaved)
+                {
+                    mStrongRef = mWeakRef.Target;
+                }
+            }
+        }
+
+        // C++側で共有オブジェクトを保持しているかどうかを設定する
+        //  戻り値：テーブルから破棄して良い時true(iUserPresaved==false、かつ、インスタンス未登録)
+        public bool setStrong(bool iUserPresaved)
+        {
+            mUserPresaved = iUserPresaved;
+            if (mUserPresaved)
+            {
+                if (mWeakRef != null)
+                {
+                    mStrongRef = mWeakRef.Target;
+                }
             }
             else
             {
                 mStrongRef = null;
+                if (mWeakRef == null)
+        return true;
             }
+            return false;
         }
 
+        // C++側で共有オブジェクトを保持していたらDispose不可
         public bool canDispose()
         {
-            return (mStrongRef == null);
+            return !mUserPresaved;
         }
 
+        // オブジェクトがあれば返却する
         public Object get()
         {
+            if (mWeakRef == null)
+        return null;
             return mWeakRef.Target;
         }
     }
@@ -235,6 +274,10 @@ System.Diagnostics.Debug.WriteLine(this.GetType().Name + ".~SharedDestructor()")
                 if (mSharedTable[iIndex] == null)
                 {
                     mSharedTable[iIndex] = new SharedHolder(new tType());
+                }
+                else
+                {
+                    mSharedTable[iIndex].setWeak<tType>();
                 }
 System.Diagnostics.Debug.WriteLine("registerSharedInstanceR<" + mSharedTable[iIndex].get().GetType().Name + "> index=" + iIndex);
                 return (tType)mSharedTable[iIndex].get();
@@ -286,9 +329,25 @@ System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetTyp
             {
 System.Diagnostics.Debug.WriteLine("notifySharedObject(" + iIndex + ", " + iUserPresaved + ")");
 
-                // 存在確認(無い時はバグなので例外)
-                canDispose(iIndex);
-                mSharedTable[iIndex].setStrong(iUserPresaved);
+                if (iUserPresaved)
+                {
+                    if (mSharedTable.Count <= iIndex)
+                    {
+                        for (int i=mSharedTable.Count; i < iIndex+1; ++i)
+                        {
+                            mSharedTable.Add(null);
+                        }
+                    }
+
+                    if (mSharedTable[iIndex] == null)
+                    {
+                        mSharedTable[iIndex] = new SharedHolder();
+                    }
+                }
+                if (mSharedTable[iIndex].setStrong(iUserPresaved))
+                {
+                    disposeShared(iIndex);
+                }
             }
         }
 

@@ -8,6 +8,8 @@ namespace cs_client
 {
     static class Program
     {
+        public static Form1 sForm1;
+
         /// <summary>
         /// アプリケーションのメイン エントリ ポイントです。
         /// </summary>
@@ -16,7 +18,8 @@ namespace cs_client
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            sForm1 = new Form1();
+            Application.Run(sForm1);
         }
     }
 }

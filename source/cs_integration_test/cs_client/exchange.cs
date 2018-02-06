@@ -67,9 +67,21 @@ namespace exchange
         // 通知関数
         public void notify()
         {
-            mTextBox.AppendText("Notify : " + Environment.NewLine);
-            mTextBox.AppendText("  mMessage=" + mMessage + Environment.NewLine);
-            mTextBox.AppendText("  mCount=" + mCount + Environment.NewLine);
+            if (mTextBox != null)
+            {
+                mTextBox.AppendText("Notify : " + Environment.NewLine);
+                mTextBox.AppendText("  mMessage=" + mMessage + Environment.NewLine);
+                mTextBox.AppendText("  mCount=" + mCount + Environment.NewLine);
+            }
+            else
+            {
+                TextBox aTextBox = Program.sForm1.textBox;
+                aTextBox.AppendText("----------------------------------" + Environment.NewLine);
+                aTextBox.AppendText("Notify : " + Environment.NewLine);
+                aTextBox.AppendText("  mMessage=" + mMessage + Environment.NewLine);
+                aTextBox.AppendText("  mCount=" + mCount + Environment.NewLine);
+                aTextBox.AppendText("----------------------------------" + Environment.NewLine);
+            }
         }
     };
 }

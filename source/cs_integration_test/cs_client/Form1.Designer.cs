@@ -123,9 +123,9 @@
 
         private System.Windows.Forms.Button buttonSend;
         private System.Windows.Forms.NumericUpDown numericUpDown;
-        private System.Windows.Forms.TextBox textBox;
         private System.Windows.Forms.Button buttonDispose;
         private System.Windows.Forms.Button buttonGC;
+        public System.Windows.Forms.TextBox textBox;
     }
 }
 
