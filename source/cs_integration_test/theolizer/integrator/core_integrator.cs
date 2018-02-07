@@ -250,6 +250,8 @@ System.Diagnostics.Debug.WriteLine(this.GetType().Name + ".~SharedDestructor()")
 
         //----------------------------------------------------------------------------
         //      共有テーブル管理
+        //          C#側で新規にIndexを獲得する場合は、偶数とする。C++側は奇数とする。
+        //          これにより、両方同時に獲得しようとした時の被りを回避する。
         //----------------------------------------------------------------------------
 
         List<SharedHolder>  mSharedTable = new List<SharedHolder>();
@@ -293,7 +295,7 @@ System.Diagnostics.Debug.WriteLine("registerSharedInstanceR<" + mSharedTable[iIn
 
             using (var aLock = new Lock(mMutex))
             {
-                // 既に登録済チェック
+                // 既に登録済チェック(C++側も含めて探す)
                 for (ret=0; ret < mSharedTable.Count; ++ret)
                 {
                     if ((mSharedTable[ret] != null)
@@ -304,8 +306,8 @@ System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetTyp
                     }
                 }
 
-                // 登録済でないなら先頭のnullを探す
-                for (ret=0; ret < mSharedTable.Count; ++ret)
+                // 登録済でないなら先頭のnullを探す(偶数のみ)
+                for (ret=0; ret < mSharedTable.Count; ret += 2)
                 {
                     if (mSharedTable[ret] == null)
                     {
@@ -315,7 +317,11 @@ System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetTyp
                     }
                 }
 
-                // 新たに領域を増やす
+                // 新たに領域を増やす(偶数位置に追加する)
+                if ((mSharedTable.Count % 2) == 1)
+                {
+                    mSharedTable.Add(null);
+                }
                 mSharedTable.Add(new SharedHolder(iInstance));
 System.Diagnostics.Debug.WriteLine("registerSharedInstanceS<" + iInstance.GetType().Name + "> index="+ret);
             }

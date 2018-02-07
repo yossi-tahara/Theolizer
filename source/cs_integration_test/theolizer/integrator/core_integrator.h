@@ -365,7 +365,7 @@ std::cout << "(1)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType)
         std::lock_guard<std::mutex> aLock(mMutex);
         std::size_t ret;
 
-        // 既に登録済チェック
+        // 既に登録済チェック(C#側も含めて探す)
         for (ret=0; ret < mSharedTable.size(); ++ret)
         {
             if ((mSharedTable[ret] != nullptr)
@@ -376,8 +376,8 @@ std::cout << "(2)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType)
             }
         }
 
-        // 登録済でないなら先頭のnullptrを探す
-        for (ret=0; ret < mSharedTable.size(); ++ret)
+        // 登録済でないなら先頭のnullptrを探す(奇数のみ)
+        for (ret=1; ret < mSharedTable.size(); ret += 2)
         {
             if (mSharedTable[ret] == nullptr)
             {
@@ -387,7 +387,11 @@ std::cout << "(3)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType)
             }
         }
 
-        // 新たに領域を増やす
+        // 新たに領域を増やす(奇数になるように増やす)
+        if ((mSharedTable.size() % 2) == 1)
+        {
+            mSharedTable.emplace_back(nullptr);
+        }
         mSharedTable.emplace_back(new SharedHolder<tType>(iInstance));
 std::cout << "(4)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType) << "> index=" << ret << "\n";
         return ret;
@@ -398,25 +402,9 @@ std::cout << "(4)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType)
     template<typename tType>
     SharedPointer<tType> getSharedPointer(tType* iInstance)
     {
-#if 0
-        std::lock_guard<std::mutex> aLock(mMutex);
-
-        // 登録済サーチ
-        for (std::size_t index=0; index < mSharedTable.size(); ++index)
-        {
-            if ((mSharedTable[index] != nullptr)
-             && (mSharedTable[index]->getVoidPointer() == iInstance))
-            {
-                auto& aSharedHolder=static_cast<SharedHolder<tType>& >(*mSharedTable[index].get());
-    return SharedPointer<tType>(*this, index, aSharedHolder.getSharedPointer());
-            }
-        }
-        throw new std::invalid_argument("Not registered C# shared-object.");
-#else
         std::size_t aIndex = registerSharedInstance(iInstance);
         auto& aSharedHolder=static_cast<SharedHolder<tType>& >(*mSharedTable[aIndex].get());
         return std::move(SharedPointer<tType>(*this, aIndex, aSharedHolder.getSharedPointer()));
-#endif
     }
 
     //      ---<<< 共有オブジェクト状態通知 >>>---
