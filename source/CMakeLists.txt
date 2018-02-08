@@ -437,14 +437,14 @@ endif()
 file(COPY ${CMAKE_SOURCE_DIR}/tools/THEOLIZERConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
 
 # テスト
-add_subdirectory(reference_and_test)
+###add_subdirectory(reference_and_test)
 
 #       ---<<< C# Integration >>>---
 
 # MinGW/gccで成功しない。全体の姿が見えてから対処する
 # 更にmsvcのSharedとStaticでエラー(cs_testがStaticWithBoostのみ指定しているため)
 # 上記同様全体の姿が見えてから対処する
-if (MSVC AND STATIC_WITH_BOOST)
+if (STATIC_WITH_BOOST)
     add_subdirectory(cs_integration_test)
 endif()
 

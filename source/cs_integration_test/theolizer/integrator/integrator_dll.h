@@ -51,6 +51,8 @@
 
 namespace theolizer
 {
+class DllIntegrator;
+
 namespace internal
 {
     struct Streams;
@@ -105,7 +107,13 @@ struct Streams
     ~Streams();
 
 private:
-    friend  void (::CppInitialize)(Streams*, DelegateNotifySharedObject, SerializerType, bool);
+    friend  void (::CppInitialize)
+        (
+            Streams*,
+            ::theolizer::internal::DelegateNotifySharedObject,
+            ::theolizer::SerializerType,
+            bool
+        );
 
     // コピー／ムーブ不可
     Streams(Streams const&) = delete;

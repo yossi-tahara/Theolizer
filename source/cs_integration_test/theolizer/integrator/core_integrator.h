@@ -46,7 +46,6 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 
 namespace theolizer
 {
-
 namespace internal
 {
     class BaseIntegrator;
@@ -545,10 +544,10 @@ public:
 // ***************************************************************************
 
 #define THEOLIZER_INTERNAL_REGISTER_FUNC(dFuncClass)                        \
-    namespace theolizer{namespace internal{namespace{                       \
+    namespace theolizer{namespace internal{                                 \
     template                                                                \
     class RegisterFuncClass<THEOLIZER_INTERNAL_UNPAREN dFuncClass>;         \
-    }}}
+    }}
 
 template<class tFuncClass>
 class RegisterFuncClass
