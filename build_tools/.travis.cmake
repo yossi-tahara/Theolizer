@@ -56,6 +56,9 @@
 set(CI_SERVICE "Travis")
 message(STATUS "CI_SERVICE=${CI_SERVICE}")
 
+# Static用のコンパイル・オプション指定
+set(fPIC_ON TRUE)
+
 # Theolizerのソース・フォルダ
 set(THEOLIZER_SOURCE "../source")
 
