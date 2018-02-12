@@ -44,7 +44,7 @@
 
 #ifdef _MSC_VER
   #pragma warning(push)
-  #pragma warning(disable:4100 4127 4251)
+  #pragma warning(disable:4100 4127 4251 4275)
 #endif
 
 namespace theolizer
@@ -1560,7 +1560,7 @@ THEOLIZER_INTERNAL_DLL unsigned& getUpVersionCount();
 //      API境界にてxNowSerializer設定／回復
 // ***************************************************************************
 
-class ApiBoundarySerializer : public ApiBoundary
+class THEOLIZER_INTERNAL_DLL ApiBoundarySerializer : public ApiBoundary
 {
     BaseSerializer*         mSerializerBack;    // 前回処理中のSerializer(退避領域)
 

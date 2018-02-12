@@ -437,15 +437,41 @@ endif()
 file(COPY ${CMAKE_SOURCE_DIR}/tools/THEOLIZERConfig.cmake DESTINATION ${CMAKE_BINARY_DIR})
 
 # テスト
-###add_subdirectory(reference_and_test)
+add_subdirectory(reference_and_test)
 
 #       ---<<< C# Integration >>>---
 
-# MinGW/gccで成功しない。全体の姿が見えてから対処する
-# 更にmsvcのSharedとStaticでエラー(cs_testがStaticWithBoostのみ指定しているため)
-# 上記同様全体の姿が見えてから対処する
+# cs_testがStaticWithBoostのみ指定しているためSTATIC_WITH_BOOSTのみ
+# 全体のビルドの姿が見えてから他のケースに対応する
 if (STATIC_WITH_BOOST)
+
     add_subdirectory(cs_integration_test)
+
+    # ドライバをビルドするなら、ドライバに依存
+    if(BUILD_DRIVER)
+        add_dependencies(cpp_server TheolizerDriver)
+    else()
+        add_dependencies(cpp_server ${TheolizerLib})
+    endif()
+
+    # msvcならcs_clinetをビルドするので、cs_clientを依存させる
+    # cs_clientはcpp_serverに依存するのでこれでビルドできる
+    if(MSVC)
+        add_dependencies(FullTest  cs_client)
+        add_dependencies(FullTest1 cs_client)
+    else()
+        add_dependencies(FullTest  cpp_server)
+        add_dependencies(FullTest1 cpp_server)
+    endif()
+
+    # デフォルトのビルド対象から外す
+    # インストールでビルドされると、
+    # Debug時にビルドされ、TheolizerDriverでエラーになる
+    exclude_all_target(cpp_server)
+    if(MSVC)
+        exclude_all_target(cs_client)
+    endif()
+
 endif()
 
 #       ---<<< Theolizer Document >>>---

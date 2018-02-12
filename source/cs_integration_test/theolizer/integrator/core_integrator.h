@@ -252,7 +252,11 @@ public:
 DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
     THEOLIZER_INTERNAL_TYPE_NAME(tFuncClass), ">()");
 
-        getFuncClassList().emplace(aTypeIndex, new FuncClassHolder<tFuncClass>);
+        getFuncClassList().emplace
+        (
+            aTypeIndex,
+            std::unique_ptr<FuncClassHolderBase>(new FuncClassHolder<tFuncClass>)
+        );
     }
 
 //      ---<<< 要求を受信して処理する >>>---

@@ -46,6 +46,8 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
 add_subdirectory(cpp_server)
 
 if(MSVC)
+    cmake_minimum_required(VERSION 3.10)
     message(STATUS "add_subdirectory(cs_client)")
     add_subdirectory(cs_client)
+    add_dependencies(cs_client cpp_server)
 endif()
