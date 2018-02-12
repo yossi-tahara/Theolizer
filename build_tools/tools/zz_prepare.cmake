@@ -109,6 +109,8 @@ if(TRUE)
     message(STATUS "PROC_ALL                =${PROC_ALL}")
     message(STATUS "CI_SERVICE              =${CI_SERVICE}")
     message(STATUS "REQUIRE_CMAKE_VERSION   =${REQUIRE_CMAKE_VERSION}")
+    message(STATUS "fPIC_ON                 =${fPIC_ON}")
+
 endif()
 
     #       ---<<< パラメータ・チェック >>>---
@@ -201,7 +203,7 @@ endif()
     set(BOOST_VARIABLE_NAME "BOOST_INSTALLEDx${BIT_NUM}")
     set(fPIC FALSE)
     if(NOT WIN32)
-        if("${LIB_TYPE}" STREQUAL "Shared")
+        if(("${LIB_TYPE}" STREQUAL "Shared") OR (${fPIC_ON}))
             set(BOOST_VARIABLE_NAME "${BOOST_VARIABLE_NAME}fPIC")
             set(fPIC TRUE)
         endif()

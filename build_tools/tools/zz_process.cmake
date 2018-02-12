@@ -53,6 +53,7 @@ set(MAKE                    "@MAKE@")
 set(PARALLEL                "@PARALLEL@")
 set(CC_PATH                 "@CC_PATH@")
 set(ORIGINAL_DIR            "@CMAKE_SOURCE_DIR@")
+set(fPIC_ON                 "@fPIC_ON@")
 
 set(THEOLIZER_ROOT "${THEOLIZER_PREFIX}${COMPILER}x${BIT_NUM}")
 
@@ -76,6 +77,7 @@ if(FALSE)
     message(STATUS "PARALLEL                =${PARALLEL}")
     message(STATUS "CC_PATH                 =${CC_PATH}")
     message(STATUS "ORIGINAL_DIR            =${ORIGINAL_DIR}")
+    message(STATUS "fPIC_ON                 =${fPIC_ON}")
 
     message(STATUS "PROC_ALL                =${PROC_ALL}")
     message(STATUS "THEOLIZER_ROOT          =${THEOLIZER_ROOT}")
@@ -115,6 +117,7 @@ function(parameter_log LOG_FILE)
     file(APPEND ${LOG_FILE} "PARALLEL               =${PARALLEL}\n")
     file(APPEND ${LOG_FILE} "CC_PATH                =${CC_PATH}\n")
     file(APPEND ${LOG_FILE} "ORIGINAL_DIR           =${ORIGINAL_DIR}\n")
+    file(APPEND ${LOG_FILE} "fPIC_ON                =${fPIC_ON}\n")
 
     file(APPEND ${LOG_FILE} "PROC_ALL               =${PROC_ALL}\n")
     file(APPEND ${LOG_FILE} "THEOLIZER_ROOT         =${THEOLIZER_ROOT}\n")
@@ -507,6 +510,7 @@ macro(cmake_generation)
                 "-DCMAKE_VERSION=${REQUIRE_CMAKE_VERSION}"
                 "-DBUILD_DOCUMENT=${BUILD_DOCUMENT}"
                 "-DCI_SERVICE=${CI_SERVICE}"
+                "-DfPIC_ON=${fPIC_ON}"
                 ${BUILD_TYPE}
             OUTPUT_VARIABLE OUTPUT_LOG
             RESULT_VARIABLE RETURN_CODE
@@ -521,6 +525,7 @@ macro(cmake_generation)
                 "-DBOOST_ROOT=${BOOST_ROOT}"
                 "-DBUILD_DOCUMENT=${BUILD_DOCUMENT}"
                 "-DCI_SERVICE=${CI_SERVICE}"
+                "-DfPIC_ON=${fPIC_ON}"
                 ${BUILD_TYPE}
             OUTPUT_VARIABLE OUTPUT_LOG
             RESULT_VARIABLE RETURN_CODE

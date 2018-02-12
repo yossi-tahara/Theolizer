@@ -149,6 +149,10 @@ if(${BUILD_SHARED_LIBS})
     endif()
 endif()
 
+if(${fPIC_ON})
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+endif()
+
 #       ---<<< TheolizerLib >>>---
 
 message(STATUS "OBJECT_FILES=${OBJECT_FILES}")
