@@ -356,8 +356,6 @@ private:
     static const unsigned   kLastVersionNo=kBinarySerializerVersionNo;
 
     typedef BinaryMidOSerializer  MidSerializer;
-    typedef BinaryMidOSerializer  MetaOSerializer;   // メタ・シリアライザ
-    typedef BinaryMidISerializer  MetaISerializer;   // メタ・デシリアライザ
 
 protected:
     static char const* const        kSerializerName;
@@ -502,8 +500,6 @@ private:
     static const unsigned   kLastVersionNo=kBinarySerializerVersionNo;
 
     typedef BinaryMidISerializer  MidSerializer;
-    typedef BinaryMidOSerializer  MetaOSerializer;   // メタ・シリアライザ
-    typedef BinaryMidISerializer  MetaISerializer;   // メタ・デシリアライザ
 
 protected:
     static char const* const        kSerializerName;

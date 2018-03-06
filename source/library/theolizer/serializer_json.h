@@ -256,8 +256,6 @@ private:
     static const unsigned   kLastVersionNo=kJsonSerializerVersionNo;
 
     typedef JsonMidOSerializer  MidSerializer;
-    typedef JsonMidOSerializer  MetaOSerializer;    // メタ・シリアライザ
-    typedef JsonMidISerializer  MetaISerializer;    // メタ・デシリアライザ
 
 protected:
     bool                            mCharIsMultiByte;
@@ -395,8 +393,6 @@ private:
     static const unsigned   kLastVersionNo=kJsonSerializerVersionNo;
 
     typedef JsonMidISerializer  MidSerializer;
-    typedef JsonMidOSerializer  MetaOSerializer;    // メタ・シリアライザ
-    typedef JsonMidISerializer  MetaISerializer;    // メタ・デシリアライザ
 
 protected:
     bool                            mCharIsMultiByte;

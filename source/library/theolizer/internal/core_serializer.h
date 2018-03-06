@@ -535,7 +535,6 @@ class BaseIntegrator;
                                                 friend class BaseTypeInfo;                  \
     template<typename>                          friend class Element;                       \
     template<typename>                          friend struct EnumElement;                  \
-                                                friend struct MetaDeserializer;             \
                                                 friend class AdditionalInfo;                \
                                                 friend class AutoRestoreIsShared;           \
     friend class BaseIntegrator

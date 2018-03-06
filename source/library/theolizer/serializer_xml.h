@@ -298,8 +298,6 @@ private:
     static const unsigned   kLastVersionNo=kXmlSerializerVersionNo;
 
     typedef XmlMidOSerializer  MidSerializer;
-    typedef XmlMidOSerializer  MetaOSerializer;    // メタ・シリアライザ
-    typedef XmlMidISerializer  MetaISerializer;    // メタ・デシリアライザ
 
 protected:
     bool                            mCharIsMultiByte;
@@ -458,8 +456,6 @@ private:
     static const unsigned   kLastVersionNo=kXmlSerializerVersionNo;
 
     typedef XmlMidISerializer  MidSerializer;
-    typedef XmlMidOSerializer  MetaOSerializer;    // メタ・シリアライザ
-    typedef XmlMidISerializer  MetaISerializer;    // メタ・デシリアライザ
 
 protected:
     bool                            mCharIsMultiByte;

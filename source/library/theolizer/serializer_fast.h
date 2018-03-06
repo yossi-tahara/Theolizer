@@ -130,8 +130,6 @@ private:
     static const unsigned   kLastVersionNo=kFastSerializerVersionNo;
 
     typedef FastMidOSerializer  MidSerializer;
-    typedef FastMidOSerializer  MetaOSerializer;    // メタ・シリアライザ
-    typedef FastMidISerializer  MetaISerializer;    // メタ・デシリアライザ
 
 protected:
     static char const* const        kSerializerName;
@@ -243,8 +241,6 @@ private:
     static const unsigned   kLastVersionNo=kFastSerializerVersionNo;
 
     typedef FastMidISerializer  MidSerializer;
-    typedef FastMidOSerializer  MetaOSerializer;    // メタ・シリアライザ
-    typedef FastMidISerializer  MetaISerializer;    // メタ・デシリアライザ
 
 protected:
     static char const* const        kSerializerName;
