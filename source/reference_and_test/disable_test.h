@@ -46,7 +46,7 @@
 // ***************************************************************************
 
 #ifndef BUILD_ERROR_TEST
-  #if 0
+  #if 1
     #define ENABLE_XML_BINARY_TEST
 
     #define ENABLE_BASIC_PROCESS_TEST
