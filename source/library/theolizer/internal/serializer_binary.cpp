@@ -538,17 +538,11 @@ void BinaryMidISerializer::readHeader()
             aExistGlobalVersionNo=true;
             loadControl(mGlobalVersionNo);
 
-#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-            // メタ・データ回復時は型情報は存在しないので生成しない
-            if (!mIsMetaMode)
-#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-            {
-                // バージョン番号対応表生成
-                createVersionNoTable();
+            // バージョン番号対応表生成
+            createVersionNoTable();
 
-                // 型名と型／バージョン番号対応表生成
-                createTypeNameMap();
-            }
+            // 型名と型／バージョン番号対応表生成
+            createTypeNameMap();
 
 //std::cout << "mGlobalVersionNo=" << mGlobalVersionNo << "\n";
         }
@@ -1017,27 +1011,6 @@ uint8_t BinaryMidISerializer::readByte()
 
     return static_cast<uint8_t>(in);
 }
-
-// ***************************************************************************
-//      プリミティブ名からC++名へ変換実体
-//          変換できなかったものはそのまま返却する
-// ***************************************************************************
-
-#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-char const* getCppNameBinary(std::string const& iPrimitiveName, unsigned iSerializerVersionNo)
-{
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                  \
-    if (iPrimitiveName ==                                                   \
-        PrimitiveName<BinaryMidOSerializer, dType>::getPrimitiveName(iSerializerVersionNo))\
-return #dType;
-#include "primitive.inc"
-
-    if (iPrimitiveName == "String")
-return "std::string";
-
-    return iPrimitiveName.c_str();
-}
-#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 
 }   // namespace internal
 }   // namespace theolizer

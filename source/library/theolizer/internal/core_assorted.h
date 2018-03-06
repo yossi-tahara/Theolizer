@@ -1155,14 +1155,6 @@ public:
     virtual std::type_index getStdTypeIndex() const=0;
     virtual unsigned getLastVersionNo()       const=0;
     virtual char const* getSerializerName()   const=0;
-
-#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-    virtual char const* getCppName
-    (
-        std::string const& iPrimitiveName,
-        unsigned iSerializerVersionNo
-    ) const=0;
-#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 };
 
 //----------------------------------------------------------------------------
@@ -1202,17 +1194,6 @@ public:
     std::type_index getStdTypeIndex() const {return std::type_index(typeid(tMidSerializer));}
     unsigned getLastVersionNo()       const {return tMidSerializer::kLastVersionNo;}
     char const* getSerializerName()   const {return tMidSerializer::kSerializerName;}
-
-#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-    char const* getCppName
-    (
-        std::string const& iPrimitiveName,
-        unsigned iSerializerVersionNo
-    ) const
-    {
-        return tMidSerializer::getCppName(iPrimitiveName, iSerializerVersionNo);
-    }
-#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 };
 
 // ***************************************************************************

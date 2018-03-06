@@ -1464,68 +1464,6 @@ private:
 //----------------------------------------------------------------------------
 
     virtual TypeIndexList& getProgramTypeIndex();
-
-// ***************************************************************************
-//      メタ処理
-// ***************************************************************************
-
-#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-
-//----------------------------------------------------------------------------
-//      メタ・シリアライズ
-//----------------------------------------------------------------------------
-
-protected:
-    std::ostream*   mOStream;
-    bool            mIsMetaMode;
-
-    // メタ・データのシリアライズ
-    void writeMetaData();
-
-private:
-    // メタ・シリアライズ保存判定
-    void judgeWriteTypes
-    (
-        std::size_t iTypeIndex,
-        BaseTypeInfo* iTypeInfo,
-        TypeInfoListImpl const& iTypeInfoList,
-        std::vector<SaveStat>& ioSaveStatList
-    );
-
-    // プリミティブ(派生Serializer)のメタ・シリアライズ処理
-    void writeMetaPrimitive();
-
-    // enum型のメタ・シリアライズ処理
-    void writeMetaEnum
-    (
-        std::vector<VersionNoList> const& iVersionNoLists,
-        TypeInfoListImpl const& iTypeInfoList,
-        std::vector<SaveStat>& ioSaveStatList
-    );
-
-    // クラスのメタ・シリアライズ処理
-    struct UniqueNameSet;
-    void writeMetaClass
-    (
-        std::vector<VersionNoList> const& iVersionNoLists,
-        TypeInfoListImpl const& iTypeInfoList,
-        std::vector<SaveStat>& ioSaveStatList,
-        UniqueNameSet& ioUniqueNameSet
-    );
-
-//----------------------------------------------------------------------------
-//      メタ・デシリアライズ
-//----------------------------------------------------------------------------
-
-protected:
-    // メタ・データのデシリアライズ
-    void readMetaData();
-
-    static char const* getCppName(std::string const& iPrimitiveName, unsigned iSerializerVersionNo)
-    {
-        return "";
-    }
-#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 };
 
 //############################################################################

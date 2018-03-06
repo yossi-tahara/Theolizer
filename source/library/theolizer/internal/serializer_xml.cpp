@@ -682,17 +682,13 @@ void XmlMidISerializer::readHeader()
             ("XmlMidISerializer : No global version number.");
     }
     mGlobalVersionNo = aAttribute.mGlobalVersionNo;
-#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-    // メタ・データ回復時は型情報は存在しないので生成しない
-    if (!mIsMetaMode)
-#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-    {
-        // バージョン番号対応表生成
-        createVersionNoTable();
 
-        // 型名と型／バージョン番号対応表生成
-        createTypeNameMap();
-    }
+    // バージョン番号対応表生成
+    createVersionNoTable();
+
+    // 型名と型／バージョン番号対応表生成
+    createTypeNameMap();
+
 //std::cout << "mGlobalVersionNo=" << mGlobalVersionNo << "\n";
 }
 
@@ -1263,27 +1259,6 @@ return 0;
 
     return in;
 }
-
-// ***************************************************************************
-//      プリミティブ名からC++名へ変換実体
-//          変換できなかったものはそのまま返却する
-// ***************************************************************************
-
-#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-char const* getCppNameXml(std::string const& iPrimitiveName, unsigned iSerializerVersionNo)
-{
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                    \
-    if (iPrimitiveName ==                                                   \
-        PrimitiveName<XmlMidOSerializer, dType>::getPrimitiveName(iSerializerVersionNo))\
-return #dType;
-#include "primitive.inc"
-
-    if (iPrimitiveName == "String")
-return "std::string";
-
-    return iPrimitiveName.c_str();
-}
-#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 
 }   // namespace internal
 }   // namespace theolizer

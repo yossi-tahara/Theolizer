@@ -321,15 +321,6 @@ THEOLIZER_INTERNAL_STRING(4,        "U32string");
 #undef  THEOLIZER_INTERNAL_FLOAT
 #undef  THEOLIZER_INTERNAL_STRING
 
-//----------------------------------------------------------------------------
-//      プリミティブ名からC++名へ変換
-//----------------------------------------------------------------------------
-
-#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-THEOLIZER_INTERNAL_DLL
-char const* getCppNameBinary(std::string const& iPrimitiveName, unsigned iSerializerVersionNo);
-#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 //############################################################################
 //      Binary Serializer実装部
@@ -470,15 +461,6 @@ private:
 //      ---<<< 1バイト書き込み >>>---
 
     void writeByte(uint8_t iByte);
-
-//      ---<<< プリミティブ名からC++型名返却 >>>---
-
-#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-    static char const* getCppName(std::string const& iPrimitiveName, unsigned iSerializerVersionNo)
-    {
-        return getCppNameBinary(iPrimitiveName, iSerializerVersionNo);
-    }
-#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 };
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
@@ -641,15 +623,6 @@ private:
 //      ---<<< 1バイト読み出し >>>---
 
     uint8_t readByte();
-
-//      ---<<< プリミティブ名からC++型名返却 >>>---
-
-#ifdef THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
-    static char const* getCppName(std::string const& iPrimitiveName, unsigned iSerializerVersionNo)
-    {
-        return getCppNameBinary(iPrimitiveName, iSerializerVersionNo);
-    }
-#endif  // THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 };
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 

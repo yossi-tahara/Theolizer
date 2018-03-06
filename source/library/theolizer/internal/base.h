@@ -83,7 +83,7 @@ namespace theolizer
 // ***************************************************************************
 
 // メタ・シリアライザ・コードを出力する
-#define THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
+//#define THEOLIZER_INTERNAL_ENABLE_META_SERIALIZER
 
 //############################################################################
 //      ユーティリティ
