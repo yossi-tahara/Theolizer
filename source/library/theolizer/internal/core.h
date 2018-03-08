@@ -385,6 +385,9 @@ THEOLIZER_INTERNAL_VER_DEBUG((
                     tTrackingMode,
                     &aIsSaved
                 );
+
+            iSerializer.writePreElement();
+            iSerializer.saveControl(aSerializeInfo.mObjectId);
 #else
             bool aIsSaved;
             theolizer::internal::SerializeInfo& aSerializeInfo=
@@ -414,9 +417,6 @@ THEOLIZER_INTERNAL_VER_DEBUG((
                     true
                 );
 #endif
-
-            iSerializer.writePreElement();
-            iSerializer.saveControl(aSerializeInfo.mObjectId);
             // 未保存の時のみ保存する
             if (!aIsSaved)
             {
@@ -440,6 +440,8 @@ THEOLIZER_INTERNAL_VER_DEBUG((
 #if 0
             BaseSerializer::AutoRestoreLoad aAutoRestoreLoad(iSerializer);
             size_t aObjectId;
+            iSerializer.readPreElement();
+            iSerializer.loadControl(aObjectId);
 #else
             // 型のTypeIndex取り出し
             std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
@@ -459,8 +461,6 @@ THEOLIZER_INTERNAL_VER_DEBUG((
                     &aObjectId
                 );
 #endif
-            iSerializer.readPreElement();
-            iSerializer.loadControl(aObjectId);
             bool aIsLoaded;
             iSerializer.recoverObject
             (
