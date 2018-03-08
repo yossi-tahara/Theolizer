@@ -258,10 +258,7 @@ public:
 
 class THEOLIZER_INTERNAL_DLL VersionNoList : public std::vector<unsigned>
 {
-    bool    mIsMetaMode;
 public:
-    VersionNoList(bool iIsMetaMode=false) : mIsMetaMode(iIsMetaMode) { }
-    bool isMetaMode() const {return mIsMetaMode;}
     unsigned at(std::size_t iTypeIndex) const;
 };
 
@@ -1788,25 +1785,9 @@ std::string ArrayTypeInfo<tArrayType>::
 {
     typedef typename std::remove_extent<tArrayType>::type   ParentType;
     std::string ret = Switcher2<ParentType>::getTypeName(iVersionNoList);
-    if (iVersionNoList.isMetaMode())
-    {
-        // []の順序が逆になるのでひっくり返す
-        std::size_t pos=ret.find('[');
-        std::string aExtent;
-        if (pos != std::string::npos)
-        {
-            aExtent = ret.substr(pos);
-            ret     = ret.substr(0, pos);
-        }
-        ret.push_back('[');
-        ret.append(std::to_string(std::extent<tArrayType>::value));
-        ret.push_back(']');
-        ret.append(aExtent);
-    }
-    else
-    {   // []の順序は逆だが、中身がないのでひっくり返す必要無し
-        ret.append("[]");
-    }
+
+    // []の順序は逆だが、中身がないのでひっくり返す必要無し
+    ret.append("[]");
     return ret;
 }
 
@@ -1975,20 +1956,10 @@ char const* makeTemplateName(char const* iName, VersionNoList const& iVersionNoL
 {
     static std::string gStaticString;
 
-    if (iVersionNoList.isMetaMode())
-    {
-        gStaticString = std::string(iName) + "<"
-                     + ParameterName<tArgs...>::get(iVersionNoList)
-                     + ">";
-return gStaticString.c_str();
-    }
-    else
-    {
-        gStaticString = std::string(iName) + "<"
-                     + ParameterName<tArgs...>::get(iVersionNoList)
-                     + ">";
-return gStaticString.c_str();
-    }
+    gStaticString = std::string(iName) + "<"
+                 + ParameterName<tArgs...>::get(iVersionNoList)
+                 + ">";
+    return gStaticString.c_str();
 }
 
 #define THEOLIZER_INTERNAL_MAKE_TEMPLATE_NAME(dName, ...)                   \
