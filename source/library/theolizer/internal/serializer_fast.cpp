@@ -163,7 +163,7 @@ void FastMidOSerializer::writeHeader()
 //      プリミティブ処理
 //----------------------------------------------------------------------------
 
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSimbol)                    \
+#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
     void FastMidOSerializer::savePrimitive(dType const& iPrimitive)         \
     {                                                                       \
         std::size_t size=sizeof(dType);                                     \
@@ -181,7 +181,7 @@ void FastMidOSerializer::writeHeader()
 
 //      ---<<< 文字列型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_STRING(dType, dSimbol)                       \
+#define THEOLIZER_INTERNAL_DEF_STRING(dType)                       \
     void FastMidOSerializer::savePrimitive(dType const& iPrimitive)         \
     {                                                                       \
         unsigned aDataSize=sizeof(dType::value_type);                       \
@@ -307,7 +307,7 @@ bool FastMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
 //      プリミティブ処理
 //----------------------------------------------------------------------------
 
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSimbol)                    \
+#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
     void FastMidISerializer::loadPrimitive(dType& oPrimitive)               \
     {                                                                       \
         std::size_t size=sizeof(dType);                                     \
@@ -323,7 +323,7 @@ bool FastMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
         checkStreamError(mIStream.rdstate());                               \
     }
 
-#define THEOLIZER_INTERNAL_DEF_SIGNED_INT(dType, dSimbol)
+#define THEOLIZER_INTERNAL_DEF_SIGNED_INT(dType)
 
     void FastMidISerializer::loadPrimitive(int& oPrimitive)
     {
@@ -333,7 +333,7 @@ bool FastMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
 
 //      ---<<< 文字列型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_STRING(dType, dSimbol)                       \
+#define THEOLIZER_INTERNAL_DEF_STRING(dType)                                \
     void FastMidISerializer::loadPrimitive(dType& oPrimitive)               \
     {                                                                       \
         unsigned aDataSize=sizeof(dType::value_type);                       \

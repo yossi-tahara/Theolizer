@@ -59,14 +59,14 @@
 // ***************************************************************************
 
 #if defined(THEOLIZER_INTERNAL_DEF_SAVE) && defined(THEOLIZER_INTERNAL_DEF_LOAD)
-    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSimbol)                \
-        void savePrimitive(dType const& iPrimitive);                        \
+    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                \
+        void savePrimitive(dType const& iPrimitive);               \
         void loadPrimitive(dType      & iPrimitive);
 #elif defined(THEOLIZER_INTERNAL_DEF_SAVE)
-    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSimbol)                \
+    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                \
         void savePrimitive(dType const& iPrimitive);
 #elif defined(THEOLIZER_INTERNAL_DEF_LOAD)
-    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSimbol)                \
+    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                \
         void loadPrimitive(dType& iPrimitive);
 #endif
 
@@ -90,8 +90,8 @@
 //----------------------------------------------------------------------------
 
 #ifndef THEOLIZER_INTERNAL_DEF_ARITHMETIC
-    #define THEOLIZER_INTERNAL_DEF_ARITHMETIC(dType, dSymbol)               \
-        THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_ARITHMETIC(dType)               \
+        THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)
 #endif
 
 //----------------------------------------------------------------------------
@@ -99,33 +99,33 @@
 //----------------------------------------------------------------------------
 
 #ifndef THEOLIZER_INTERNAL_DEF_INTEGRAL
-    #define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSymbol)                 \
-        THEOLIZER_INTERNAL_DEF_ARITHMETIC(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType)                 \
+        THEOLIZER_INTERNAL_DEF_ARITHMETIC(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_BOOL
-    #define THEOLIZER_INTERNAL_DEF_BOOL(dType, dSymbol)                     \
-        THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_BOOL(dType)                     \
+        THEOLIZER_INTERNAL_DEF_INTEGRAL(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_CHAR
-    #define THEOLIZER_INTERNAL_DEF_CHAR(dType, dSymbol)                     \
-        THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_CHAR(dType)                     \
+        THEOLIZER_INTERNAL_DEF_INTEGRAL(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_WCHAR
-    #define THEOLIZER_INTERNAL_DEF_WCHAR(dType, dSymbol)                    \
-        THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_WCHAR(dType)                    \
+        THEOLIZER_INTERNAL_DEF_INTEGRAL(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_CHAR16
-    #define THEOLIZER_INTERNAL_DEF_CHAR16(dType, dSymbol)                   \
-        THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_CHAR16(dType)                   \
+        THEOLIZER_INTERNAL_DEF_INTEGRAL(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_CHAR32
-    #define THEOLIZER_INTERNAL_DEF_CHAR32(dType, dSymbol)                   \
-        THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_CHAR32(dType)                   \
+        THEOLIZER_INTERNAL_DEF_INTEGRAL(dType)
 #endif
 
 //----------------------------------------------------------------------------
@@ -133,33 +133,33 @@
 //----------------------------------------------------------------------------
 
 #ifndef THEOLIZER_INTERNAL_DEF_SIGNED_INTEGRAL
-    #define THEOLIZER_INTERNAL_DEF_SIGNED_INTEGRAL(dType, dSymbol)          \
-        THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_SIGNED_INTEGRAL(dType)          \
+        THEOLIZER_INTERNAL_DEF_INTEGRAL(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_SIGNED_CHAR
-    #define THEOLIZER_INTERNAL_DEF_SIGNED_CHAR(dType, dSymbol)              \
-        THEOLIZER_INTERNAL_DEF_SIGNED_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_SIGNED_CHAR(dType)              \
+        THEOLIZER_INTERNAL_DEF_SIGNED_INTEGRAL(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_SIGNED_SHORT
-    #define THEOLIZER_INTERNAL_DEF_SIGNED_SHORT(dType, dSymbol)             \
-        THEOLIZER_INTERNAL_DEF_SIGNED_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_SIGNED_SHORT(dType)             \
+        THEOLIZER_INTERNAL_DEF_SIGNED_INTEGRAL(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_SIGNED_INT
-    #define THEOLIZER_INTERNAL_DEF_SIGNED_INT(dType, dSymbol)               \
-        THEOLIZER_INTERNAL_DEF_SIGNED_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_SIGNED_INT(dType)               \
+        THEOLIZER_INTERNAL_DEF_SIGNED_INTEGRAL(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_SIGNED_LONG
-    #define THEOLIZER_INTERNAL_DEF_SIGNED_LONG(dType, dSymbol)              \
-        THEOLIZER_INTERNAL_DEF_SIGNED_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_SIGNED_LONG(dType)              \
+        THEOLIZER_INTERNAL_DEF_SIGNED_INTEGRAL(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_SIGNED_LONG_LONG
-    #define THEOLIZER_INTERNAL_DEF_SIGNED_LONG_LONG(dType, dSymbol)         \
-        THEOLIZER_INTERNAL_DEF_SIGNED_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_SIGNED_LONG_LONG(dType)         \
+        THEOLIZER_INTERNAL_DEF_SIGNED_INTEGRAL(dType)
 #endif
 
 //----------------------------------------------------------------------------
@@ -167,33 +167,33 @@
 //----------------------------------------------------------------------------
 
 #ifndef THEOLIZER_INTERNAL_DEF_UNSIGNED_INTEGRAL
-    #define THEOLIZER_INTERNAL_DEF_UNSIGNED_INTEGRAL(dType, dSymbol)        \
-        THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_UNSIGNED_INTEGRAL(dType)        \
+        THEOLIZER_INTERNAL_DEF_INTEGRAL(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_UNSIGNED_CHAR
-    #define THEOLIZER_INTERNAL_DEF_UNSIGNED_CHAR(dType, dSymbol)            \
-        THEOLIZER_INTERNAL_DEF_UNSIGNED_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_UNSIGNED_CHAR(dType)            \
+        THEOLIZER_INTERNAL_DEF_UNSIGNED_INTEGRAL(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_UNSIGNED_SHORT
-    #define THEOLIZER_INTERNAL_DEF_UNSIGNED_SHORT(dType, dSymbol)           \
-        THEOLIZER_INTERNAL_DEF_UNSIGNED_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_UNSIGNED_SHORT(dType)           \
+        THEOLIZER_INTERNAL_DEF_UNSIGNED_INTEGRAL(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_UNSIGNED_INT
-    #define THEOLIZER_INTERNAL_DEF_UNSIGNED_INT(dType, dSymbol)             \
-        THEOLIZER_INTERNAL_DEF_UNSIGNED_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_UNSIGNED_INT(dType)             \
+        THEOLIZER_INTERNAL_DEF_UNSIGNED_INTEGRAL(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_UNSIGNED_LONG
-    #define THEOLIZER_INTERNAL_DEF_UNSIGNED_LONG(dType, dSymbol)            \
-        THEOLIZER_INTERNAL_DEF_UNSIGNED_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_UNSIGNED_LONG(dType)            \
+        THEOLIZER_INTERNAL_DEF_UNSIGNED_INTEGRAL(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_UNSIGNED_LONG_LONG
-    #define THEOLIZER_INTERNAL_DEF_UNSIGNED_LONG_LONG(dType, dSymbol)       \
-        THEOLIZER_INTERNAL_DEF_UNSIGNED_INTEGRAL(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_UNSIGNED_LONG_LONG(dType)       \
+        THEOLIZER_INTERNAL_DEF_UNSIGNED_INTEGRAL(dType)
 #endif
 
 //----------------------------------------------------------------------------
@@ -201,23 +201,23 @@
 //----------------------------------------------------------------------------
 
 #ifndef THEOLIZER_INTERNAL_DEF_FLOATING_POINT
-    #define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSymbol)           \
-        THEOLIZER_INTERNAL_DEF_ARITHMETIC(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType)           \
+        THEOLIZER_INTERNAL_DEF_ARITHMETIC(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_FLOAT
-    #define THEOLIZER_INTERNAL_DEF_FLOAT(dType, dSymbol)                    \
-        THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_FLOAT(dType)                    \
+        THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_DOUBLE
-    #define THEOLIZER_INTERNAL_DEF_DOUBLE(dType, dSymbol)                   \
-        THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_DOUBLE(dType)                   \
+        THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_LONG_DOUBLE
-    #define THEOLIZER_INTERNAL_DEF_LONG_DOUBLE(dType, dSymbol)              \
-        THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_LONG_DOUBLE(dType)              \
+        THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType)
 #endif
 
 //----------------------------------------------------------------------------
@@ -226,72 +226,72 @@
 
 // 文字列型全部
 #ifndef THEOLIZER_INTERNAL_DEF_STRING
-    #define THEOLIZER_INTERNAL_DEF_STRING(dType, dSymbol)                   \
-        THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_STRING(dType)                   \
+        THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)
 #endif
 
 // Narrow文字列
 #ifndef THEOLIZER_INTERNAL_DEF_NARROW_STRING
-    #define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType, dSymbol)            \
-        THEOLIZER_INTERNAL_DEF_STRING(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType)            \
+        THEOLIZER_INTERNAL_DEF_STRING(dType)
 #endif
 
 // Wide文字列
 #ifndef THEOLIZER_INTERNAL_DEF_WIDE_STRING
-    #define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType, dSymbol)              \
-        THEOLIZER_INTERNAL_DEF_STRING(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType)              \
+        THEOLIZER_INTERNAL_DEF_STRING(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_WSTRING
-    #define THEOLIZER_INTERNAL_DEF_WSTRING(dType, dSymbol)                  \
-        THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_WSTRING(dType)                  \
+        THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_CHAR16_STRING
-    #define THEOLIZER_INTERNAL_DEF_CHAR16_STRING(dType, dSymbol)            \
-        THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_CHAR16_STRING(dType)            \
+        THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType)
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DEF_CHAR32_STRING
-    #define THEOLIZER_INTERNAL_DEF_CHAR32_STRING(dType, dSymbol)            \
-        THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_CHAR32_STRING(dType)            \
+        THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType)
 #endif
 
 // ***************************************************************************
 //      実体化
 // ***************************************************************************
 
-THEOLIZER_INTERNAL_DEF_BOOL(bool,                             Bool)
-THEOLIZER_INTERNAL_DEF_CHAR(char,                             Char)
+THEOLIZER_INTERNAL_DEF_BOOL(bool)
+THEOLIZER_INTERNAL_DEF_CHAR(char)
 
-THEOLIZER_INTERNAL_DEF_SIGNED_CHAR(signed char,               SignedChar)
-THEOLIZER_INTERNAL_DEF_SIGNED_SHORT(short,                    SignedShort)
-THEOLIZER_INTERNAL_DEF_SIGNED_INT(int,                        SignedInt)
-THEOLIZER_INTERNAL_DEF_SIGNED_LONG(long,                      SignedLong)
-THEOLIZER_INTERNAL_DEF_SIGNED_LONG_LONG(long long,            SignedLongLong)
+THEOLIZER_INTERNAL_DEF_SIGNED_CHAR(signed char)
+THEOLIZER_INTERNAL_DEF_SIGNED_SHORT(short)
+THEOLIZER_INTERNAL_DEF_SIGNED_INT(int)
+THEOLIZER_INTERNAL_DEF_SIGNED_LONG(long)
+THEOLIZER_INTERNAL_DEF_SIGNED_LONG_LONG(long long)
 
-THEOLIZER_INTERNAL_DEF_UNSIGNED_CHAR(unsigned char,           UnsignedChar)
-THEOLIZER_INTERNAL_DEF_UNSIGNED_SHORT(unsigned short,         UnsignedShort)
-THEOLIZER_INTERNAL_DEF_UNSIGNED_INT(unsigned int,             UnsignedInt)
-THEOLIZER_INTERNAL_DEF_UNSIGNED_LONG(unsigned long,           UnsignedLong)
-THEOLIZER_INTERNAL_DEF_UNSIGNED_LONG_LONG(unsigned long long, UnsignedLongLong)
+THEOLIZER_INTERNAL_DEF_UNSIGNED_CHAR(unsigned char)
+THEOLIZER_INTERNAL_DEF_UNSIGNED_SHORT(unsigned short)
+THEOLIZER_INTERNAL_DEF_UNSIGNED_INT(unsigned int)
+THEOLIZER_INTERNAL_DEF_UNSIGNED_LONG(unsigned long)
+THEOLIZER_INTERNAL_DEF_UNSIGNED_LONG_LONG(unsigned long long)
 
 // メタ・デシリアライザでC++型名へ変換する際、符号とサイズが合致するものを選択する。
 // 下記は頻繁に使われるものではないのて優先順位を落とす。
 #ifndef THEOLIZER_INTERNAL_NO_U16_U32
-    THEOLIZER_INTERNAL_DEF_CHAR16(char16_t,                   Char16)
-    THEOLIZER_INTERNAL_DEF_CHAR32(char32_t,                   Char32)
+    THEOLIZER_INTERNAL_DEF_CHAR16(char16_t)
+    THEOLIZER_INTERNAL_DEF_CHAR32(char32_t)
 #endif
-THEOLIZER_INTERNAL_DEF_WCHAR(wchar_t,                         WChar)
+THEOLIZER_INTERNAL_DEF_WCHAR(wchar_t)
 
-THEOLIZER_INTERNAL_DEF_FLOAT(float,                           Float)
-THEOLIZER_INTERNAL_DEF_DOUBLE(double,                         Double)
-THEOLIZER_INTERNAL_DEF_LONG_DOUBLE(long double,               LongDouble)
+THEOLIZER_INTERNAL_DEF_FLOAT(float)
+THEOLIZER_INTERNAL_DEF_DOUBLE(double)
+THEOLIZER_INTERNAL_DEF_LONG_DOUBLE(long double)
 
-THEOLIZER_INTERNAL_DEF_NARROW_STRING(std::string,             String)
-THEOLIZER_INTERNAL_DEF_WSTRING(std::wstring,                  Wstring)
-THEOLIZER_INTERNAL_DEF_CHAR16_STRING(std::u16string,          U16string)
-THEOLIZER_INTERNAL_DEF_CHAR32_STRING(std::u32string,          U32string)
+THEOLIZER_INTERNAL_DEF_NARROW_STRING(std::string)
+THEOLIZER_INTERNAL_DEF_WSTRING(std::wstring)
+THEOLIZER_INTERNAL_DEF_CHAR16_STRING(std::u16string)
+THEOLIZER_INTERNAL_DEF_CHAR32_STRING(std::u32string)
 
 // ***************************************************************************
 //      マクロ定義の後始末

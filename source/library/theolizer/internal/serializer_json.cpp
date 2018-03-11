@@ -228,7 +228,7 @@ struct Decimal
 
 //      ---<<< 整数型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSimbol)                     \
+#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType)                              \
     void JsonMidOSerializer::savePrimitive(dType const& iPrimitive)         \
     {                                                                       \
         if (std::numeric_limits<dType>::is_signed) {                        \
@@ -241,7 +241,7 @@ struct Decimal
 
 //      ---<<< 浮動小数点型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSimbol)               \
+#define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType)                        \
     void JsonMidOSerializer::savePrimitive(dType const& iPrimitive)         \
     {                                                                       \
         std::streamsize precision=mOStream.precision();                     \
@@ -253,7 +253,7 @@ struct Decimal
 
 //      ---<<< 文字列型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType, dSimbol)                \
+#define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType)                         \
     void JsonMidOSerializer::savePrimitive(dType const& iPrimitive)         \
     {                                                                       \
         if (mCharIsMultiByte)                                               \
@@ -267,7 +267,7 @@ struct Decimal
         }                                                                   \
     }
 
-#define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType, dSimbol)                  \
+#define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType)                           \
     void JsonMidOSerializer::savePrimitive(dType const& iPrimitive)         \
     {                                                                       \
         u8string temp(iPrimitive);                                          \
@@ -599,7 +599,7 @@ void JsonMidISerializer::flush()
 
 //      ---<<< bool型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_BOOL(dType, dSimbol)                         \
+#define THEOLIZER_INTERNAL_DEF_BOOL(dType)                                  \
     void JsonMidISerializer::loadPrimitive(bool& oPrimitive)                \
     {                                                                       \
         long long data(0);                                                  \
@@ -615,7 +615,7 @@ void JsonMidISerializer::flush()
 
 //      ---<<< 整数型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSimbol)                     \
+#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType)                              \
     void JsonMidISerializer::loadPrimitive(dType& oPrimitive)               \
     {                                                                       \
         if (std::numeric_limits<dType>::is_signed)                          \
@@ -645,7 +645,7 @@ void JsonMidISerializer::flush()
 
 //      ---<<< 浮動小数点型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSimbol)               \
+#define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType)                        \
     void JsonMidISerializer::loadPrimitive(dType& oPrimitive)               \
     {                                                                       \
         mIStream >> oPrimitive;                                             \
@@ -654,7 +654,7 @@ void JsonMidISerializer::flush()
 
 //      ---<<< 文字列型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType, dSimbol)                \
+#define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType)                         \
     void JsonMidISerializer::loadPrimitive(dType& oPrimitive)               \
     {                                                                       \
         if (mCharIsMultiByte)                                               \
@@ -669,7 +669,7 @@ void JsonMidISerializer::flush()
         }                                                                   \
     }
 
-#define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType, dSimbol)                  \
+#define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType)                           \
     void JsonMidISerializer::loadPrimitive(dType& oPrimitive)               \
     {                                                                       \
         u8string temp;                                                      \

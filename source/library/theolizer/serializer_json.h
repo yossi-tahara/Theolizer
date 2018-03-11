@@ -359,7 +359,7 @@ private:
 //      プリミティブ名返却
 //----------------------------------------------------------------------------
 
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                    \
+#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
     template<>                                                              \
     inline char const* JsonMidOSerializer::                                 \
         getPrimitiveName<dType>(unsigned iSerializerVersionNo)              \
@@ -531,7 +531,7 @@ private:
 //      プリミティブ名返却
 //----------------------------------------------------------------------------
 
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                    \
+#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
     template<>                                                              \
     inline char const* JsonMidISerializer::                                 \
         getPrimitiveName<dType>(unsigned iSerializerVersionNo)              \

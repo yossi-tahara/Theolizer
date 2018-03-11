@@ -127,7 +127,7 @@ PrimitiveTypeInfo<tPrimitiveType>& PrimitiveTypeInfo<tPrimitiveType>::getInstanc
 }
 
 // 明示的実体化
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                    \
+#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
     template class PrimitiveTypeInfo<dType>;
 #include "primitive.inc"
 

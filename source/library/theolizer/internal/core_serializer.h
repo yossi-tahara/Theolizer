@@ -943,7 +943,7 @@ protected:
 
 //      ---<<< プリミティブ用 >>>---
 
-    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                \
+    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                         \
         virtual void savePrimitive(dType const& iPrimitive) {THEOLIZER_INTERNAL_ABORT("");}
 
     #include "primitive.inc"
@@ -1170,7 +1170,7 @@ protected:
 
 //      ---<<< プリミティブ用 >>>---
 
-    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                \
+    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                         \
         virtual void loadPrimitive(dType& iPrimitive)     {THEOLIZER_INTERNAL_ABORT("");}
 
     #include "primitive.inc"

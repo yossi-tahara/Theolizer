@@ -312,7 +312,7 @@ THEOLIZER_INTERNAL_VER_DEBUG((std::cout << "    *mTarget=" << mValue << ";" << s
 //      明示的実体化
 //----------------------------------------------------------------------------
 
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSimbol)                \
+#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
     template struct THEOLIZER_INTERNAL_DLL TheolizerNonKeepStep<dType>;
 #include "primitive.inc"
 

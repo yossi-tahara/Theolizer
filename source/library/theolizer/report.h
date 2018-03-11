@@ -129,17 +129,17 @@ public:
     Format& clear();
 
     // 出力演算子
-    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                \
+    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                         \
         Format& operator%(dType iValue);
-    #define THEOLIZER_INTERNAL_DEF_CHAR(dType, dSymbol)                     \
+    #define THEOLIZER_INTERNAL_DEF_CHAR(dType)                              \
         Format& operator%(dType const* iValue);
     Format& operator%(const u8string& iValue);
 
-    #define THEOLIZER_INTERNAL_DEF_BOOL(dType, dSymbol)
-    #define THEOLIZER_INTERNAL_DEF_STRING(dType, dSymbol)
-    #define THEOLIZER_INTERNAL_DEF_WCHAR(dType, dSymbol)
-    #define THEOLIZER_INTERNAL_DEF_CHAR16(dType, dSymbol)
-    #define THEOLIZER_INTERNAL_DEF_CHAR32(dType, dSymbol)
+    #define THEOLIZER_INTERNAL_DEF_BOOL(dType)
+    #define THEOLIZER_INTERNAL_DEF_STRING(dType)
+    #define THEOLIZER_INTERNAL_DEF_WCHAR(dType)
+    #define THEOLIZER_INTERNAL_DEF_CHAR16(dType)
+    #define THEOLIZER_INTERNAL_DEF_CHAR32(dType)
     #include "internal/primitive.inc"
 
     Format& operator%(void* iValue);

@@ -1881,7 +1881,7 @@ struct ParameterName<NonType<tType, tValue>, tRest...>
 
 //      ---<<< プリミティブ用特殊化 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                    \
+#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
     template<typename... tRest>                                             \
     struct ParameterName<dType, tRest...>                                   \
     {                                                                       \
@@ -1900,7 +1900,7 @@ struct ParameterName<NonType<tType, tValue>, tRest...>
     };
 #include "primitive.inc"
 
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                    \
+#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
     template<typename... tRest>                                             \
     struct ParameterName<dType const, tRest...>                             \
     {                                                                       \

@@ -290,7 +290,7 @@ template void BinaryMidOSerializer::saveFloat<long double>(long double iFloat);
 
 //      ---<<< 整数型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSimbol)                     \
+#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType)                              \
     void BinaryMidOSerializer::savePrimitive(dType const& iPrimitive)       \
     {                                                                       \
         if (std::numeric_limits<dType>::is_signed)                          \
@@ -306,7 +306,7 @@ template void BinaryMidOSerializer::saveFloat<long double>(long double iFloat);
 //      ---<<< 浮動小数点型 >>>---
 
 // 実マクロ
-#define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSimbol)               \
+#define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType)                        \
     void BinaryMidOSerializer::savePrimitive(dType const& iPrimitive)       \
     {                                                                       \
         saveFloat(iPrimitive);                                              \
@@ -314,13 +314,13 @@ template void BinaryMidOSerializer::saveFloat<long double>(long double iFloat);
 
 //      ---<<< 文字列型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType, dSimbol)                \
+#define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType)                         \
     void BinaryMidOSerializer::savePrimitive(dType const& iPrimitive)       \
     {                                                                       \
         saveByteString(iPrimitive);                                         \
     }
 
-#define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType, dSimbol)                  \
+#define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType)                           \
     void BinaryMidOSerializer::savePrimitive(dType const& iPrimitive)       \
     {                                                                       \
         unsigned aDataSize=sizeof(dType::value_type);                       \
@@ -697,7 +697,7 @@ template void BinaryMidISerializer::loadFloat<long double>(long double& oFloat);
 
 //      ---<<< bool型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_BOOL(dType, dSimbol)                         \
+#define THEOLIZER_INTERNAL_DEF_BOOL(dType)                                  \
     void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
     {                                                                       \
         long long data=loadSigned();                                        \
@@ -711,7 +711,7 @@ template void BinaryMidISerializer::loadFloat<long double>(long double& oFloat);
 
 //      ---<<< 整数型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSimbol)                     \
+#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType)                              \
     void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
     {                                                                       \
         if (std::numeric_limits<dType>::is_signed)                          \
@@ -737,7 +737,7 @@ template void BinaryMidISerializer::loadFloat<long double>(long double& oFloat);
 
 //      ---<<< 浮動小数点型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSimbol)               \
+#define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType)                        \
     void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
     {                                                                       \
         loadFloat(oPrimitive);                                              \
@@ -745,13 +745,13 @@ template void BinaryMidISerializer::loadFloat<long double>(long double& oFloat);
 
 //      ---<<< 文字列型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType, dSimbol)                \
+#define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType)                         \
     void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
     {                                                                       \
         loadByteString(oPrimitive);                                         \
     }
 
-#define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType, dSimbol)                  \
+#define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType)                           \
     void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
     {                                                                       \
         if (!mBinaryTag.isByteString()) {                                   \

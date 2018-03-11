@@ -466,7 +466,7 @@ private:
 //      プリミティブ名返却
 //----------------------------------------------------------------------------
 
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                    \
+#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
     template<>                                                              \
     inline char const* BinaryMidOSerializer::                               \
         getPrimitiveName<dType>(unsigned iSerializerVersionNo)              \
@@ -626,7 +626,7 @@ private:
 //      プリミティブ名返却
 //----------------------------------------------------------------------------
 
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSymbol)                    \
+#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
     template<>                                                              \
     inline char const* BinaryMidISerializer::                               \
         getPrimitiveName<dType>(unsigned iSerializerVersionNo)              \

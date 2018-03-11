@@ -369,7 +369,7 @@ struct Decimal
 
 //      ---<<< 整数型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSimbol)                     \
+#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType)                              \
     void XmlMidOSerializer::savePrimitive(dType const& iPrimitive)          \
     {                                                                       \
         AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
@@ -383,7 +383,7 @@ struct Decimal
 
 //      ---<<< 浮動小数点型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSimbol)               \
+#define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType)                        \
     void XmlMidOSerializer::savePrimitive(dType const& iPrimitive)          \
     {                                                                       \
         AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
@@ -396,7 +396,7 @@ struct Decimal
 
 //      ---<<< 文字列型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType, dSimbol)                \
+#define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType)                         \
     void XmlMidOSerializer::savePrimitive(dType const& iPrimitive)          \
     {                                                                       \
         AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
@@ -411,7 +411,7 @@ struct Decimal
         }                                                                   \
     }
 
-#define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType, dSimbol)                  \
+#define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType)                           \
     void XmlMidOSerializer::savePrimitive(dType const& iPrimitive)          \
     {                                                                       \
         AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
@@ -752,7 +752,7 @@ XmlMidISerializer::AutoReleaseTagName::~AutoReleaseTagName()
 
 //      ---<<< bool型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_BOOL(dType, dSimbol)                         \
+#define THEOLIZER_INTERNAL_DEF_BOOL(dType)                                  \
     void XmlMidISerializer::loadPrimitive(bool& oPrimitive)                 \
     {                                                                       \
         AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
@@ -769,7 +769,7 @@ XmlMidISerializer::AutoReleaseTagName::~AutoReleaseTagName()
 
 //      ---<<< 整数型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType, dSimbol)                     \
+#define THEOLIZER_INTERNAL_DEF_INTEGRAL(dType)                              \
     void XmlMidISerializer::loadPrimitive(dType& oPrimitive)                \
     {                                                                       \
         AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
@@ -800,7 +800,7 @@ XmlMidISerializer::AutoReleaseTagName::~AutoReleaseTagName()
 
 //      ---<<< 浮動小数点型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType, dSimbol)               \
+#define THEOLIZER_INTERNAL_DEF_FLOATING_POINT(dType)                        \
     void XmlMidISerializer::loadPrimitive(dType& oPrimitive)                \
     {                                                                       \
         AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
@@ -810,7 +810,7 @@ XmlMidISerializer::AutoReleaseTagName::~AutoReleaseTagName()
 
 //      ---<<< 文字列型 >>>---
 
-#define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType, dSimbol)                \
+#define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType)                         \
     void XmlMidISerializer::loadPrimitive(dType& oPrimitive)                \
     {                                                                       \
         AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\
@@ -826,7 +826,7 @@ XmlMidISerializer::AutoReleaseTagName::~AutoReleaseTagName()
         }                                                                   \
     }
 
-#define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType, dSimbol)                  \
+#define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType)                           \
     void XmlMidISerializer::loadPrimitive(dType& oPrimitive)                \
     {                                                                       \
         AutoReleaseTagName aAutoReleaseTagName(*this, getTypeIndex<dType>());\

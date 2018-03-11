@@ -1144,10 +1144,10 @@ public:
         return *ret;
     }
 
-    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSimbol)                \
+    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                         \
         virtual char const* getPrimitiveName(unsigned iSerializerVersionNo, dType) const=0;
 
-    #define THEOLIZER_INTERNAL_DEF_STRING(dType, dSimbol)                   \
+    #define THEOLIZER_INTERNAL_DEF_STRING(dType)                            \
         virtual char const* getPrimitiveName(unsigned iSerializerVersionNo, dType const&) const=0;
 
     #include "primitive.inc"
@@ -1178,12 +1178,12 @@ public:
         setTypeFunctions(mBackup);
     }
 
-    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType, dSimbol)                \
+    #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                         \
         char const* getPrimitiveName(unsigned iSerializerVersionNo, dType) const\
         {                                                                   \
             return tMidSerializer::template getPrimitiveName<dType>(iSerializerVersionNo);\
         }
-    #define THEOLIZER_INTERNAL_DEF_STRING(dType, dSimbol)                   \
+    #define THEOLIZER_INTERNAL_DEF_STRING(dType)                            \
         char const* getPrimitiveName(unsigned iSerializerVersionNo, dType const&) const\
         {                                                                   \
             return tMidSerializer::template getPrimitiveName<dType>(iSerializerVersionNo);\
