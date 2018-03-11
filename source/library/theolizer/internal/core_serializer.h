@@ -887,10 +887,6 @@ public:
 //      バージョン番号対応表
 //----------------------------------------------------------------------------
 
-    // 派生Serializerに対するバージョン番号
-protected:
-    unsigned            mSerializerVersionNo;
-
     // 各TypeIndexに対するバージョン番号
 private:
     VersionNoList       mVersionNoList;

@@ -122,9 +122,6 @@ FastMidOSerializer::FastMidOSerializer
     // 型情報取得中継クラス登録
     TypeFunctions<FastMidOSerializer>   aTypeFunctions;
 
-    // 派生Serializerのバージョン番号獲得
-    mSerializerVersionNo=kLastVersionNo;
-
     if (getNoThrowException())
     {
         try

@@ -534,7 +534,6 @@ void JsonMidISerializer::readHeader()
         {
             aExistTypeInfo=true;
             BaseSerializer::readHeaderTypeInfo();
-//std::cout << "mSerializerVersionNo=" << mSerializerVersionNo << "\n";
         }
         else
         {

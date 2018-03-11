@@ -220,14 +220,10 @@ class THEOLIZER_INTERNAL_DLL TypeInfoList
 private:
     template<class, class, class, bool, bool> friend class RegisterType;
 
-    TypeInfoList() : mPrimitiveTypeIndex(kInvalidSize)  // 無効値
-    { }
+    TypeInfoList() { }
 
     // 型のリスト
     TypeInfoListImpl                        mList;
-
-    // プリミティブのTypeIndex
-    std::size_t                             mPrimitiveTypeIndex;
 
 public:
     static TypeInfoList& getInstance();
@@ -243,9 +239,6 @@ public:
 
     // リスト返却
     TypeInfoListImpl& getList() {return mList;}
-
-    // プリミティブのTypeIndex返却
-    std::size_t getPrimitiveTypeIndex() {return mPrimitiveTypeIndex;}
 };
 
 //----------------------------------------------------------------------------

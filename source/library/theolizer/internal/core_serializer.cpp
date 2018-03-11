@@ -174,25 +174,6 @@ void BaseSerializer::createVersionNoTable()
     {
         mVersionNoList.resize(0);
     }
-
-//----------------------------------------------------------------------------
-//      派生Serializerのバージョン番号
-//----------------------------------------------------------------------------
-
-    // 最新版でない時
-    if (mLastGlobalVersionNo != mGlobalVersionNo)
-    {
-        mSerializerVersionNo = mGlobalVersionNoTable->
-            getLocalVersionNo
-            (
-                mGlobalVersionNo,
-                BaseTypeFunctions::getInstance().getStdTypeIndex()
-            );
-    }
-    else
-    {
-        mSerializerVersionNo=BaseTypeFunctions::getInstance().getLastVersionNo();
-    }
 }
 
 // ***************************************************************************
@@ -752,7 +733,6 @@ BaseSerializer::BaseSerializer
     mIndent(0),
     mCancelPrettyPrint(false),
     mDoCheck(true),
-    mSerializerVersionNo(0),
     mVersionNoList(),
     mSerializedTypeListI(new SerializedTypeListI),
     mSerializedTypeListN(new SerializedTypeListN),
