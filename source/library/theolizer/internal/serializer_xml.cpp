@@ -301,7 +301,11 @@ XmlMidOSerializer::AutoReleaseTagName::AutoReleaseTagName
     XmlMidOSerializer& iXmlMidOSerializer,
     std::size_t iTypeIndex
 ) : mXmlMidOSerializer(iXmlMidOSerializer),
-    mTagName(mXmlMidOSerializer.getTypeName(iTypeIndex))
+    mTagName
+    (
+        std::string(THEOLIZER_INTERNAL_XML_NAMESPACE ":") + 
+        mXmlMidOSerializer.getTypeName(iTypeIndex)
+    )
 {
     mXmlMidOSerializer.writeIndent();
     mXmlMidOSerializer.saveTag(TagKind::Start, mTagName);
@@ -736,7 +740,11 @@ XmlMidISerializer::AutoReleaseTagName::AutoReleaseTagName
     XmlMidISerializer& iXmlMidISerializer,
     std::size_t iTypeIndex
 ) : mXmlMidISerializer(iXmlMidISerializer),
-    mTagName(mXmlMidISerializer.getTypeName(iTypeIndex))
+    mTagName
+    (
+        std::string(THEOLIZER_INTERNAL_XML_NAMESPACE ":") + 
+        mXmlMidISerializer.getTypeName(iTypeIndex)
+    )
 {
     mXmlMidISerializer.loadTag(TagKind::Start, mTagName);
 }
