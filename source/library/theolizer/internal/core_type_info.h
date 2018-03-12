@@ -1003,6 +1003,113 @@ public:
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
+//      プリミティブ名生成
+//----------------------------------------------------------------------------
+
+template<class tMidSerializer, typename tPrimitive, class tEnable=void>
+struct PrimitiveName { };
+
+template<typename tPrimitive, class tEnable=void>
+struct PrimitiveNameXX { };
+
+#define THEOLIZER_INTERNAL_INTEGRAL(dSigned, dDigits, dName1)               \
+    template<typename tPrimitive>                                           \
+    struct PrimitiveNameXX                                                    \
+    <                                                                       \
+        tPrimitive,                                                         \
+        EnableIf                                                            \
+        <                                                                   \
+               (std::numeric_limits<tPrimitive>::is_signed == dSigned)      \
+            && (std::numeric_limits<tPrimitive>::radix == 2)                \
+            && (std::numeric_limits<tPrimitive>::digits == dDigits)         \
+            && (std::numeric_limits<tPrimitive>::max_exponent == 0)         \
+        >                                                                   \
+    >                                                                       \
+    {                                                                       \
+        static char const* getPrimitiveName()                               \
+        {                                                                   \
+            return dName1;                                                  \
+        }                                                                   \
+    }
+
+#define THEOLIZER_INTERNAL_FLOAT(dDigits, dMaxExponent, dName1)             \
+    template<typename tPrimitive>                                           \
+    struct PrimitiveNameXX                                                    \
+    <                                                                       \
+        tPrimitive,                                                         \
+        EnableIf                                                            \
+        <                                                                   \
+               (std::numeric_limits<tPrimitive>::is_signed == 1)            \
+            && (std::numeric_limits<tPrimitive>::radix == 2)                \
+            && (std::numeric_limits<tPrimitive>::digits == dDigits)         \
+            && (std::numeric_limits<tPrimitive>::max_exponent == dMaxExponent)\
+        >                                                                   \
+    >                                                                       \
+    {                                                                       \
+        static char const* getPrimitiveName()                               \
+        {                                                                   \
+            return dName1;                                                  \
+        }                                                                   \
+    }
+
+#define THEOLIZER_INTERNAL_STRING(dBytes, dName1)                           \
+    template<typename tPrimitive>                                           \
+    struct PrimitiveNameXX                                                    \
+    <                                                                       \
+        tPrimitive,                                                         \
+        EnableIf                                                            \
+        <                                                                   \
+               (IsString<tPrimitive>::value)                                \
+            && (sizeof(typename tPrimitive::value_type) == dBytes)          \
+        >                                                                   \
+    >                                                                       \
+    {                                                                       \
+        static char const* getPrimitiveName()                               \
+        {                                                                   \
+            return dName1;                                                  \
+        }                                                                   \
+    }
+
+THEOLIZER_INTERNAL_INTEGRAL(0,  1,  "bool");
+
+THEOLIZER_INTERNAL_INTEGRAL(1,  7,  "int8");
+THEOLIZER_INTERNAL_INTEGRAL(1, 15,  "int16");
+THEOLIZER_INTERNAL_INTEGRAL(1, 31,  "int32");
+THEOLIZER_INTERNAL_INTEGRAL(1, 63,  "int64");
+
+THEOLIZER_INTERNAL_INTEGRAL(0,  8,  "unit8");
+THEOLIZER_INTERNAL_INTEGRAL(0, 16,  "uint16");
+THEOLIZER_INTERNAL_INTEGRAL(0, 32,  "uint32");
+THEOLIZER_INTERNAL_INTEGRAL(0, 64,  "uint64");
+
+THEOLIZER_INTERNAL_FLOAT(24,   128, "float32");
+THEOLIZER_INTERNAL_FLOAT(53,  1024, "float64");
+THEOLIZER_INTERNAL_FLOAT(64, 16384, "float80");
+
+THEOLIZER_INTERNAL_STRING(1,        "string");
+THEOLIZER_INTERNAL_STRING(2,        "string");
+THEOLIZER_INTERNAL_STRING(4,        "string");
+
+#undef  THEOLIZER_INTERNAL_INTEGRAL
+#undef  THEOLIZER_INTERNAL_FLOAT
+#undef  THEOLIZER_INTERNAL_STRING
+
+template<typename tType>
+char const* getPrimitiveName()
+{
+    static_assert(Ignore<tType>::kFalse, "Unknown primitive name.");
+    return "";
+}
+
+#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
+    template<>                                                              \
+    inline char const* getPrimitiveName<dType>()                            \
+    {                                                                       \
+        return PrimitiveNameXX<dType>::getPrimitiveName();                  \
+    }
+#include "primitive.inc"
+
+//----------------------------------------------------------------------------
 //      PrimitiveType管理クラス本体
 //----------------------------------------------------------------------------
 
@@ -1037,8 +1144,7 @@ public:
     // 型名返却
     std::string getTypeName(VersionNoList const& iVersionNoList)
     {
-        unsigned aVersionNo = iVersionNoList.at(BaseTypeInfo::mTypeIndex);
-        return BaseTypeFunctions::getInstance().getPrimitiveName(aVersionNo, tPrimitiveType());
+        return getPrimitiveName<tPrimitiveType>();
     }
     // C言語名返却(デバッグ用)
     char const* getCName() const
@@ -1798,13 +1904,6 @@ std::size_t ArrayTypeInfo<tArrayType>::
 //############################################################################
 
 // ***************************************************************************
-//      派生Serializerが提供するプリミティブ名獲得用クラスのプライマリー定義
-// ***************************************************************************
-
-template<class tMidSerializer, typename tPrimitive, class tEnable=void>
-struct PrimitiveName { };
-
-// ***************************************************************************
 //      クラス・テンプレート型名
 // ***************************************************************************
 
@@ -1887,11 +1986,7 @@ struct ParameterName<NonType<tType, tValue>, tRest...>
     {                                                                       \
         static std::string get(VersionNoList const& iVersionNoList)         \
         {                                                                   \
-            std::size_t aTypeIndex=PrimitiveTypeInfo<dType>::getInstance().mTypeIndex;\
-            unsigned aSerializerVersionNo=iVersionNoList.at(aTypeIndex);    \
-            static dType aType;                                             \
-            std::string aName=BaseTypeFunctions::getInstance().             \
-                getPrimitiveName(aSerializerVersionNo, aType);              \
+            std::string aName=getPrimitiveName<dType>();                    \
             if (sizeof...(tRest)) {                                         \
                 aName = aName+","+ParameterName<tRest...>::get(iVersionNoList);\
             }                                                               \
@@ -1906,11 +2001,7 @@ struct ParameterName<NonType<tType, tValue>, tRest...>
     {                                                                       \
         static std::string get(VersionNoList const& iVersionNoList)         \
         {                                                                   \
-            std::size_t aTypeIndex=PrimitiveTypeInfo<dType>::getInstance().mTypeIndex;\
-            unsigned aSerializerVersionNo=iVersionNoList.at(aTypeIndex);    \
-            static dType aType;                                             \
-            std::string aName=BaseTypeFunctions::getInstance().             \
-                getPrimitiveName(aSerializerVersionNo, aType);              \
+            std::string aName=getPrimitiveName<dType>();                    \
             if (sizeof...(tRest)) {                                         \
                 aName = aName+","+ParameterName<tRest...>::get(iVersionNoList);\
             }                                                               \

@@ -1144,6 +1144,7 @@ public:
         return *ret;
     }
 
+#if 0
     #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                         \
         virtual char const* getPrimitiveName(unsigned iSerializerVersionNo, dType) const=0;
 
@@ -1151,6 +1152,7 @@ public:
         virtual char const* getPrimitiveName(unsigned iSerializerVersionNo, dType const&) const=0;
 
     #include "primitive.inc"
+#endif
 
     virtual std::type_index getStdTypeIndex() const=0;
     virtual unsigned getLastVersionNo()       const=0;
@@ -1178,6 +1180,7 @@ public:
         setTypeFunctions(mBackup);
     }
 
+#if 0
     #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                         \
         char const* getPrimitiveName(unsigned iSerializerVersionNo, dType) const\
         {                                                                   \
@@ -1190,6 +1193,7 @@ public:
         }
 
     #include "primitive.inc"
+#endif
 
     std::type_index getStdTypeIndex() const {return std::type_index(typeid(tMidSerializer));}
     unsigned getLastVersionNo()       const {return tMidSerializer::kLastVersionNo;}
