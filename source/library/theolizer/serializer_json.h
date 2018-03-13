@@ -106,119 +106,6 @@ inline bool hasPropertyJson(Property iProperty, bool iIsSaver)
     return ret;
 }
 
-// ***************************************************************************
-//      プリミティブ(組み込み型)名生成
-// ***************************************************************************
-
-class JsonMidOSerializer;
-class JsonMidISerializer;
-
-#define THEOLIZER_INTERNAL_INTEGRAL(dSigned, dDigits, dName1)               \
-    template<class tMidSerializer, typename tPrimitive>                     \
-    struct PrimitiveName                                                    \
-    <                                                                       \
-        tMidSerializer,                                                     \
-        tPrimitive,                                                         \
-        EnableIf                                                            \
-        <                                                                   \
-               (std::is_same<tMidSerializer, JsonMidOSerializer>::value     \
-             || std::is_same<tMidSerializer, JsonMidISerializer>::value)    \
-            && (std::numeric_limits<tPrimitive>::is_signed == dSigned)      \
-            && (std::numeric_limits<tPrimitive>::radix == 2)                \
-            && (std::numeric_limits<tPrimitive>::digits == dDigits)         \
-            && (std::numeric_limits<tPrimitive>::max_exponent == 0)         \
-        >                                                                   \
-    >                                                                       \
-    {                                                                       \
-        static char const* getPrimitiveName(unsigned iSerializerVersionNo)  \
-        {                                                                   \
-            switch(iSerializerVersionNo)                                    \
-            {                                                               \
-            case 1: return dName1;                                          \
-            }                                                               \
-            THEOLIZER_INTERNAL_ABORT("getPrimitiveName() : iVersionNo is illegal.");\
-            return "";                                                      \
-        }                                                                   \
-    }
-
-#define THEOLIZER_INTERNAL_FLOAT(dDigits, dMaxExponent, dName1)             \
-    template<class tMidSerializer, typename tPrimitive>                     \
-    struct PrimitiveName                                                    \
-    <                                                                       \
-        tMidSerializer,                                                     \
-        tPrimitive,                                                         \
-        EnableIf                                                            \
-        <                                                                   \
-               (std::is_same<tMidSerializer, JsonMidOSerializer>::value     \
-             || std::is_same<tMidSerializer, JsonMidISerializer>::value)    \
-            && (std::numeric_limits<tPrimitive>::is_signed == 1)            \
-            && (std::numeric_limits<tPrimitive>::radix == 2)                \
-            && (std::numeric_limits<tPrimitive>::digits == dDigits)         \
-            && (std::numeric_limits<tPrimitive>::max_exponent == dMaxExponent)\
-        >                                                                   \
-    >                                                                       \
-    {                                                                       \
-        static char const* getPrimitiveName(unsigned iSerializerVersionNo)  \
-        {                                                                   \
-            switch(iSerializerVersionNo)                                    \
-            {                                                               \
-            case 1: return dName1;                                          \
-            }                                                               \
-            THEOLIZER_INTERNAL_ABORT("getPrimitiveName() : iVersionNo is illegal.");\
-            return "";                                                      \
-        }                                                                   \
-    }
-
-#define THEOLIZER_INTERNAL_STRING(dBytes, dName1)                           \
-    template<class tMidSerializer, typename tPrimitive>                     \
-    struct PrimitiveName                                                    \
-    <                                                                       \
-        tMidSerializer,                                                     \
-        tPrimitive,                                                         \
-        EnableIf                                                            \
-        <                                                                   \
-               (std::is_same<tMidSerializer, JsonMidOSerializer>::value     \
-             || std::is_same<tMidSerializer, JsonMidISerializer>::value)    \
-            && (IsString<tPrimitive>::value)                                \
-            && (sizeof(typename tPrimitive::value_type) == dBytes)          \
-        >                                                                   \
-    >                                                                       \
-    {                                                                       \
-        static char const* getPrimitiveName(unsigned iSerializerVersionNo)  \
-        {                                                                   \
-            switch(iSerializerVersionNo)                                    \
-            {                                                               \
-            case 1: return dName1;                                          \
-            }                                                               \
-            THEOLIZER_INTERNAL_ABORT("getPrimitiveName() : iVersionNo is illegal.");\
-            return "";                                                      \
-        }                                                                   \
-    }
-
-THEOLIZER_INTERNAL_INTEGRAL(0,  1,  "bool");
-
-THEOLIZER_INTERNAL_INTEGRAL(1,  7,  "int8");
-THEOLIZER_INTERNAL_INTEGRAL(1, 15,  "int16");
-THEOLIZER_INTERNAL_INTEGRAL(1, 31,  "int32");
-THEOLIZER_INTERNAL_INTEGRAL(1, 63,  "int64");
-
-THEOLIZER_INTERNAL_INTEGRAL(0,  8,  "unit8");
-THEOLIZER_INTERNAL_INTEGRAL(0, 16,  "uint16");
-THEOLIZER_INTERNAL_INTEGRAL(0, 32,  "uint32");
-THEOLIZER_INTERNAL_INTEGRAL(0, 64,  "uint64");
-
-THEOLIZER_INTERNAL_FLOAT(24,   128, "float32");
-THEOLIZER_INTERNAL_FLOAT(53,  1024, "float64");
-THEOLIZER_INTERNAL_FLOAT(64, 16384, "float80");
-
-THEOLIZER_INTERNAL_STRING(1,        "string");
-THEOLIZER_INTERNAL_STRING(2,        "string");
-THEOLIZER_INTERNAL_STRING(4,        "string");
-
-#undef  THEOLIZER_INTERNAL_INTEGRAL
-#undef  THEOLIZER_INTERNAL_FLOAT
-#undef  THEOLIZER_INTERNAL_STRING
-
 //############################################################################
 //      Json Serializer実装部
 //
@@ -323,15 +210,6 @@ private:
     void saveStructureStart(Structure iStructure, std::string& ioTypeName, std::size_t iOjbectId);
     void saveStructureEnd(Structure iStructure, std::string const& iTypeName);
 
-//      ---<<< プリミティブ名返却 >>>---
-
-    template<typename tType>
-    static char const* getPrimitiveName(unsigned iSerializerVersionNo)
-    {
-        static_assert(Ignore<tType>::kFalse, "Unknown primitive name.");
-        return "";
-    }
-
 //      ---<<< Element名保存 >>>---
 //          名前対応時のみ保存する
 
@@ -352,22 +230,7 @@ private:
 
     void encodeJsonString(std::string const& iString);
 };
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
 
-//----------------------------------------------------------------------------
-//      プリミティブ名返却
-//----------------------------------------------------------------------------
-
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
-    template<>                                                              \
-    inline char const* JsonMidOSerializer::                                 \
-        getPrimitiveName<dType>(unsigned iSerializerVersionNo)              \
-    {                                                                       \
-        return PrimitiveName<JsonMidOSerializer, dType>::getPrimitiveName(iSerializerVersionNo);\
-    }
-#include "internal/primitive.inc"
-
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
 // ***************************************************************************
 /*!
 @brief      回復用中間JsonSerializer
@@ -474,15 +337,6 @@ private:
     void loadStructureStart(Structure iStructure, std::string& ioTypeName, std::size_t* oObjectId);
     void loadStructureEnd(Structure iStructure, std::string const& iTypeName);
 
-//      ---<<< プリミティブ名返却 >>>---
-
-    template<typename tType>
-    static char const* getPrimitiveName(unsigned iSerializerVersionNo)
-    {
-        static_assert(Ignore<tType>::kFalse, "Unknown primitive name.");
-        return "";
-    }
-
 //      ---<<< Element名回復 >>>---
 //          ヘッダが有る時はElementsMappingの値に関係なく名前対応可能である。
 //              そのような派生Serializerに対応するためのI/Fである。
@@ -523,22 +377,7 @@ private:
 
     char find_not_of(std::string const& iSkipChars);
 };
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
 
-//----------------------------------------------------------------------------
-//      プリミティブ名返却
-//----------------------------------------------------------------------------
-
-#define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
-    template<>                                                              \
-    inline char const* JsonMidISerializer::                                 \
-        getPrimitiveName<dType>(unsigned iSerializerVersionNo)              \
-    {                                                                       \
-        return PrimitiveName<JsonMidISerializer, dType>::getPrimitiveName(iSerializerVersionNo);\
-    }
-#include "internal/primitive.inc"
-
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
 
 //############################################################################

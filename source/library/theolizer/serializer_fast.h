@@ -200,14 +200,6 @@ private:
     void saveStructureEnd(Structure, std::string const& )
     { }
 
-//      ---<<< プリミティブ名返却 >>>---
-
-    template<typename tType>
-    static char const* getPrimitiveName(unsigned iSerializerVersionNo)
-    {
-        return "";
-    }
-
 //      ---<<< Element名保存 >>>---
 
     void saveElementName(ElementsMapping,  char const*)
@@ -321,12 +313,6 @@ private:
     }
     void loadStructureEnd(Structure, std::string const&)
     { }
-
-//      ---<<< プリミティブ名返却 >>>---
-
-    template<typename tType>
-    static char const* getPrimitiveName(unsigned iSerializerVersionNo)
-    {return "";}
 
 //      ---<<< Element名回復 >>>---
 

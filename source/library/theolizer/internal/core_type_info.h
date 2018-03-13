@@ -1006,15 +1006,12 @@ public:
 //      プリミティブ名生成
 //----------------------------------------------------------------------------
 
-template<class tMidSerializer, typename tPrimitive, class tEnable=void>
-struct PrimitiveName { };
-
 template<typename tPrimitive, class tEnable=void>
-struct PrimitiveNameXX { };
+struct PrimitiveName { };
 
 #define THEOLIZER_INTERNAL_INTEGRAL(dSigned, dDigits, dName1)               \
     template<typename tPrimitive>                                           \
-    struct PrimitiveNameXX                                                    \
+    struct PrimitiveName                                                    \
     <                                                                       \
         tPrimitive,                                                         \
         EnableIf                                                            \
@@ -1034,7 +1031,7 @@ struct PrimitiveNameXX { };
 
 #define THEOLIZER_INTERNAL_FLOAT(dDigits, dMaxExponent, dName1)             \
     template<typename tPrimitive>                                           \
-    struct PrimitiveNameXX                                                    \
+    struct PrimitiveName                                                    \
     <                                                                       \
         tPrimitive,                                                         \
         EnableIf                                                            \
@@ -1054,7 +1051,7 @@ struct PrimitiveNameXX { };
 
 #define THEOLIZER_INTERNAL_STRING(dBytes, dName1)                           \
     template<typename tPrimitive>                                           \
-    struct PrimitiveNameXX                                                    \
+    struct PrimitiveName                                                    \
     <                                                                       \
         tPrimitive,                                                         \
         EnableIf                                                            \
@@ -1105,7 +1102,7 @@ char const* getPrimitiveName()
     template<>                                                              \
     inline char const* getPrimitiveName<dType>()                            \
     {                                                                       \
-        return PrimitiveNameXX<dType>::getPrimitiveName();                  \
+        return PrimitiveName<dType>::getPrimitiveName();                    \
     }
 #include "primitive.inc"
 
