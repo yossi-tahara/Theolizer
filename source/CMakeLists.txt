@@ -136,6 +136,11 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
 endif()
 
+include (TestBigEndian)
+TEST_BIG_ENDIAN(IS_BIG_ENDIAN)
+message(STATUS "IS_BIG_ENDIAN=${IS_BIG_ENDIAN}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DIS_BIG_ENDIAN=${IS_BIG_ENDIAN}")
+
 #-----------------------------------------------------------------------------
 #       Boost
 #-----------------------------------------------------------------------------

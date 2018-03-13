@@ -195,7 +195,6 @@ XmlMidOSerializer::XmlMidOSerializer
     ),
     mOStream(iOStream),
     mNoPrettyPrint(iNoPrettyPrint),
-    mCharIsMultiByte(false),
     mElementName(nullptr)
 {
     // エラー情報登録準備
@@ -407,7 +406,7 @@ struct Decimal
         if (mCharIsMultiByte)                                               \
         {                                                                   \
             u8string temp(iPrimitive, MultiByte());                         \
-            encodeXmlString(std::move(temp.str()));                         \
+            encodeXmlString(temp.str());                                    \
         }                                                                   \
         else                                                                \
         {                                                                   \
@@ -604,8 +603,7 @@ XmlMidISerializer::XmlMidISerializer
         mNoThrowException
     ),
     mIStream(iIStream),
-    mTerminated(false),
-    mCharIsMultiByte(false)
+    mTerminated(false)
 {
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);

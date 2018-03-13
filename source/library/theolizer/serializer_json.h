@@ -258,7 +258,6 @@ private:
     typedef JsonMidOSerializer  MidSerializer;
 
 protected:
-    bool                            mCharIsMultiByte;
     static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
@@ -395,7 +394,6 @@ private:
     typedef JsonMidISerializer  MidSerializer;
 
 protected:
-    bool                            mCharIsMultiByte;
     static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
@@ -643,12 +641,7 @@ public:
         return internal::hasPropertyJson(iProperty, true);
     }
 
-    //! std::stringをマルチ・パイト文字コードとして処理するかどうか指定する
-    void setCharIsMultiByte(bool iCharIsMultiByte)
-    {
-        mCharIsMultiByte=iCharIsMultiByte;
-    }
-
+    using BaseSerializer::setCharIsMultiByte;
     using BaseSerializer::getGlobalVersionNo;
     using BaseSerializer::clearTracking;
     using BaseSerializer::getRequireClearTracking;
@@ -722,12 +715,7 @@ public:
         return internal::hasPropertyJson(iProperty, false);
     }
 
-    //! std::stringをマルチ・パイト文字コードとして処理することを指定する
-    void setCharIsMultiByte(bool iCharIsMultiByte)
-    {
-        mCharIsMultiByte=iCharIsMultiByte;
-    }
-
+    using BaseSerializer::setCharIsMultiByte;
     using BaseSerializer::getGlobalVersionNo;
     using BaseSerializer::clearTracking;
     using BaseSerializer::getRequireClearTracking;

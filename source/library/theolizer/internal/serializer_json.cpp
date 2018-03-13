@@ -102,8 +102,7 @@ JsonMidOSerializer::JsonMidOSerializer
     ),
     mOStream(iOStream),
     mNoPrettyPrint(iNoPrettyPrint),
-    mWriteComma(false),
-    mCharIsMultiByte(false)
+    mWriteComma(false)
 {
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
@@ -259,7 +258,7 @@ struct Decimal
         if (mCharIsMultiByte)                                               \
         {                                                                   \
             u8string temp(iPrimitive, MultiByte());                         \
-            encodeJsonString(std::move(temp.str()));                        \
+            encodeJsonString(temp.str());                                   \
         }                                                                   \
         else                                                                \
         {                                                                   \
@@ -456,8 +455,7 @@ JsonMidISerializer::JsonMidISerializer
     ),
     mIStream(iIStream),
     mReadComma(false),
-    mTerminated(false),
-    mCharIsMultiByte(false)
+    mTerminated(false)
 {
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);

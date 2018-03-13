@@ -578,6 +578,7 @@ protected:
     GlobalVersionNoTableBase const*const    mGlobalVersionNoTable;
     unsigned                                mGlobalVersionNo;
     unsigned                                mLastGlobalVersionNo;
+    bool                                    mCharIsMultiByte;
     TypeInfoListImpl&                       mTypeInfoList;
 
 private:
@@ -587,9 +588,6 @@ private:
 public:
     // デフォルトは保存先無し
     static const bool                       kHasDestination=false;
-
-    //! std::stringをマルチ・パイト文字コードとして処理することを指定する(NOP)
-    virtual void setCharIsMultiByte(bool) { }
 
 protected:
     //! clearTracking()が必要な時true返却（@ref MemberFunctions 参照）
@@ -627,6 +625,12 @@ public:
 
     //! 処理中のグローバル・バージョン番号返却（@ref MemberFunctions 参照）
     unsigned getGlobalVersionNo() const {return mGlobalVersionNo;}
+
+    //! std::stringをマルチ・パイト文字コードとして処理するかどうか指定する
+    void setCharIsMultiByte(bool iCharIsMultiByte)
+    {
+        mCharIsMultiByte=iCharIsMultiByte;
+    }
 
 // ***************************************************************************
 //      エラー処理用

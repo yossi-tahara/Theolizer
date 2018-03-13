@@ -84,12 +84,26 @@ public:
             MinusValue8     = 0x24,     //  8バイトの負の整数の絶対値
             MinusValue10    = 0x25,     // 10バイトの負の整数の絶対値
 
-        ByteString      = 0x30,         // バイト列
-            ByteString1     = 0x31,     // バイト列(長さフィールド= 1バイト)
-            ByteString2     = 0x32,     // バイト列(長さフィールド= 2バイト)
-            ByteString4     = 0x33,     // バイト列(長さフィールド= 4バイト)
-            ByteString8     = 0x34,     // バイト列(長さフィールド= 8バイト)
-            ByteString10    = 0x35,     // バイト列(長さフィールド=10バイト)
+        String      = 0x30,             // 文字列
+            CharString1     = 0x31,     // char列(長さフィールド= 1バイト)
+            CharString2     = 0x32,     // char列(長さフィールド= 2バイト)
+            CharString4     = 0x33,     // char列(長さフィールド= 4バイト)
+            CharString8     = 0x34,     // char列(長さフィールド= 8バイト)
+            CharString10    = 0x35,     // char列(長さフィールド=10バイト)
+
+            U16String       = 0x35,     // char16_t文字列
+            U16String1      = 0x36,     // char16_t列(長さフィールド= 1バイト)
+            U16String2      = 0x37,     // char16_t列(長さフィールド= 2バイト)
+            U16String4      = 0x38,     // char16_t列(長さフィールド= 4バイト)
+            U16String8      = 0x39,     // char16_t列(長さフィールド= 8バイト)
+            U16String10     = 0x3a,     // char16_t列(長さフィールド=10バイト)
+
+            U32String       = 0x3a,     // char32_t文字列
+            U32String1      = 0x3b,     // char32_t列(長さフィールド= 1バイト)
+            U32String2      = 0x3c,     // char32_t列(長さフィールド= 2バイト)
+            U32String4      = 0x3d,     // char32_t列(長さフィールド= 4バイト)
+            U32String8      = 0x3e,     // char32_t列(長さフィールド= 8バイト)
+            U32String10     = 0x3f,     // char32_t列(長さフィールド=10バイト)
 
         ClassEnd        = 0x40,         // クラス終了マーク
         ClassStartName  = 0x50,         // クラス開始マーク(名前対応)
@@ -103,12 +117,12 @@ private:
     {
         switch(iSize)
         {
-        case  0: return static_cast<TagCode>(iTagKind | 0);
-        case  1: return static_cast<TagCode>(iTagKind | 1);
-        case  2: return static_cast<TagCode>(iTagKind | 2);
-        case  4: return static_cast<TagCode>(iTagKind | 3);
-        case  8: return static_cast<TagCode>(iTagKind | 4);
-        case 10: return static_cast<TagCode>(iTagKind | 5);
+        case  0: return static_cast<TagCode>(iTagKind + 0);
+        case  1: return static_cast<TagCode>(iTagKind + 1);
+        case  2: return static_cast<TagCode>(iTagKind + 2);
+        case  4: return static_cast<TagCode>(iTagKind + 3);
+        case  8: return static_cast<TagCode>(iTagKind + 4);
+        case 10: return static_cast<TagCode>(iTagKind + 5);
         }
         THEOLIZER_INTERNAL_ABORT(u8"Illegal size in BinaryTag::getByteSize().");
     }
@@ -135,7 +149,11 @@ public:
         return ((mTagCode&KindMask)==Primitive)||(mTagCode&KindMask)==MinusValue;
     }
     bool isMinusValue() const {return (mTagCode&KindMask) == MinusValue;}
-    bool isByteString() const {return (mTagCode&KindMask) == ByteString;}
+    bool isString() const {return (mTagCode&KindMask) == String;}
+    bool isCharString() const
+    {
+        return (String <= (mTagCode&KindMask)) && ((mTagCode&KindMask) <= CharString10);
+    }
     bool isClassEnd()   const {return (mTagCode == ClassEnd);}
     bool isClassStart() const {return (mTagCode==ClassStartName)||(mTagCode==ClassStartOrder);}
     bool isClassStartName()  const {return (mTagCode==ClassStartName);}
@@ -149,7 +167,19 @@ public:
 
     unsigned getSize() const
     {
-        switch(mTagCode & SizeMask)
+        uint8_t aSize = mTagCode & SizeMask;
+        if ((mTagCode&KindMask) == String)
+        {
+            if (U16String < mTagCode)
+            {
+                aSize = mTagCode-U16String;
+            }
+            if (U32String < mTagCode)
+            {
+                aSize = mTagCode-U32String;
+            }
+        }
+        switch(aSize)
         {
         case 0: return 0;
         case 1: return 1;
@@ -161,6 +191,22 @@ public:
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Illegal BinaryTag size(TagCode=0x%02x).", get());
 
         return 0;
+    }
+
+    template<typename tChar>
+    static TagCode getStringTag()
+    {
+        switch(sizeof(tChar))
+        {
+        default:
+    return String;
+
+        case 2:
+    return U16String;
+
+        case 4:
+    return U32String;
+        }
     }
 };
 
@@ -193,7 +239,7 @@ inline bool hasPropertyBinary(Property iProperty, bool iIsSaver)
         break;
 
     case Property::EncodedString:
-        ret=false;
+        ret=true;
         break;
 
     case Property::SupportModifying:
@@ -401,7 +447,7 @@ private:
     void saveControl(unsigned iControl)             {saveUnsigned(iControl);}
     void saveControl(unsigned long iControl)        {saveUnsigned(iControl);}
     void saveControl(unsigned long long iControl)   {saveUnsigned(iControl);}
-    void saveControl(std::string const& iControl)   {saveByteString(iControl);}
+    void saveControl(std::string const& iControl)   {saveCharString(iControl);}
     void flush()                                    {mOStream.flush();}
 
 //      ---<<< プリミティブ保存 >>>---
@@ -412,9 +458,9 @@ private:
     #define THEOLIZER_INTERNAL_DEF_SAVE
     #include "internal/primitive.inc"
 
-//      ---<<< バイト列保存 >>>---
+//      ---<<< char列保存 >>>---
 
-    void saveByteString(std::string const& iString);
+    void saveCharString(std::string const& iString);
 
 //      ---<<< Element前処理 >>>---
 
@@ -452,9 +498,14 @@ private:
     {
         if (iElementsMapping == emName)
         {
-            saveByteString(iElementName);
+            saveCharString(iElementName);
         }
     }
+
+//      ---<<< 文字列保存 >>>---
+
+    template<typename tString>
+    void encodeString(tString const& iString);
 
 //      ---<<< 1バイト書き込み >>>---
 
@@ -545,7 +596,7 @@ private:
     void loadControl(unsigned& oControl)           {oControl=static_cast<unsigned>(loadSigned());}
     void loadControl(unsigned long& oControl)  {oControl=static_cast<unsigned long>(loadSigned());}
     void loadControl(unsigned long long& oControl) {oControl=loadSigned();}
-    void loadControl(std::string& oControl)        {loadByteString(oControl);}
+    void loadControl(std::string& oControl)        {loadCharString(oControl);}
 
 //      ---<<< プリミティブ回復 >>>---
 
@@ -555,9 +606,9 @@ private:
     #define THEOLIZER_INTERNAL_DEF_LOAD
     #include "internal/primitive.inc"
 
-//      ---<<< バイト列回復 >>>---
+//      ---<<< char列回復 >>>---
 
-    void loadByteString(std::string& iString);
+    void loadCharString(std::string& iString);
 
 //      ---<<< Element前処理 >>>---
 //          戻り値：
@@ -570,6 +621,7 @@ private:
 //      ---<<< 要素破棄処理 >>>---
 
     void disposeElement();
+    void disposeString();
 
 //----------------------------------------------------------------------------
 //      内部処理
@@ -610,6 +662,11 @@ private:
 //              同じTheolizerVersion<>に対しては名前対応と順序対応を変えてはいけない
 
     std::string loadElementName(ElementsMapping iElementsMapping);
+
+//      ---<<< 文字列回復 >>>---
+
+    template<typename tString>
+    void decodeString(tString& oString);
 
 //      ---<<< 次のバイト獲得 >>>---
 //      クラス終了ならfalse

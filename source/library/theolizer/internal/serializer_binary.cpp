@@ -163,6 +163,15 @@ void BinaryMidOSerializer::writeHeader()
 //      内部処理
 // ***************************************************************************
 
+namespace
+{
+#if defined(_WIN32)
+    typedef wchar_t DefChar;
+#else
+    typedef char    DefChar;
+#endif
+}   // namespace
+
 //----------------------------------------------------------------------------
 //      コントロール整数保存
 //          値に応じて適切なサイズのPrimitiveで保存する
@@ -204,26 +213,24 @@ void BinaryMidOSerializer::saveUnsigned(unsigned long long iControl, BinaryTag::
         aSize=8;
     }
     writeByte(BinaryTag(iTagCode, aSize));
+    // リトル・エンディアンで保存する
+#if IS_BIG_ENDIAN == 1  // CPUがビッグ・エンディアンならエンディアン変換する
     for (int i=aSize-1; 0 <= i ; --i)
     {
         writeByte(static_cast<uint8_t>(iControl >> (8*i)));
     }
+#else
+    mOStream.write(reinterpret_cast<char const*>(&iControl), aSize);
+    if (!mOStream.good())
+    {
+        THEOLIZER_INTERNAL_IO_ERROR(u8"Write Error(iControl=%llu).", iControl);
+    }
+#endif
 }
 
 //----------------------------------------------------------------------------
 //      浮動小数点数のエンディアン変換保存
 //----------------------------------------------------------------------------
-
-namespace
-{
-
-bool isLittleEndian()
-{
-  int t=1;
-  return (*reinterpret_cast<char*>(&t) == 1);
-}
-
-}   // namespace
 
 template<typename tType>
 void BinaryMidOSerializer::saveFloat(tType iFloat)
@@ -262,22 +269,21 @@ void BinaryMidOSerializer::saveFloat(tType iFloat)
     }
     writeByte(BinaryTag(BinaryTag::Primitive, aSize));
 
+    // リトル・エンディアンで保存する
     char const* begin=reinterpret_cast<char const*>(&iFloat);
+#if IS_BIG_ENDIAN == 1  // CPUがビッグ・エンディアンならエンディアン変換する
     char const* end  =begin + aSize;
-    if (isLittleEndian())
+    for (char const* p=end-1; begin <= p; --p)
     {
-        for (char const* p=end-1; begin <= p; --p)
-        {
-            writeByte(*p);
-        }
+        writeByte(*p);
     }
-    else
+#else
+    mOStream.write(begin, aSize);
+    if (!mOStream.good())
     {
-        for (char const* p=begin; p < end; ++p)
-        {
-            writeByte(*p);
-        }
+        THEOLIZER_INTERNAL_IO_ERROR(u8"Write Error(iFloat=%f).", iFloat);
     }
+#endif
 }
 
 template void BinaryMidOSerializer::saveFloat<float>(float iFloat);
@@ -317,21 +323,20 @@ template void BinaryMidOSerializer::saveFloat<long double>(long double iFloat);
 #define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType)                         \
     void BinaryMidOSerializer::savePrimitive(dType const& iPrimitive)       \
     {                                                                       \
-        saveByteString(iPrimitive);                                         \
+        if (mCharIsMultiByte)                                               \
+        {                                                                   \
+            encodeString(Converter<DefChar, MultiByte>::conv(iPrimitive));  \
+        }                                                                   \
+        else                                                                \
+        {                                                                   \
+            encodeString(iPrimitive);                                       \
+        }                                                                   \
     }
 
 #define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType)                           \
     void BinaryMidOSerializer::savePrimitive(dType const& iPrimitive)       \
     {                                                                       \
-        unsigned aDataSize=sizeof(dType::value_type);                       \
-        std::size_t size=iPrimitive.size()*aDataSize;                       \
-        saveUnsigned(size, BinaryTag::TagCode::ByteString);                 \
-        for (auto data : iPrimitive)                                        \
-        {                                                                   \
-            for (int i=aDataSize-1; 0 <= i ; --i) {                         \
-                writeByte(static_cast<uint8_t>(data >> (8*i)));             \
-            }                                                               \
-        }                                                                   \
+        encodeString(iPrimitive);                                           \
     }
 
 //      ---<<< 実体定義 >>>---
@@ -404,17 +409,53 @@ void BinaryMidOSerializer::saveStructureEnd(Structure, std::string const&)
 }
 
 //----------------------------------------------------------------------------
-//      Byte列保存
+//      char列保存
 //----------------------------------------------------------------------------
 
-void BinaryMidOSerializer::saveByteString(std::string const& iString)
+void BinaryMidOSerializer::saveCharString(std::string const& iString)
 {
     std::size_t size=iString.size();
-    saveUnsigned(size, BinaryTag::TagCode::ByteString);
+    saveUnsigned(size, BinaryTag::TagCode::String);
     mOStream.write(iString.data(), size);
     if (!mOStream.good())
     {
         THEOLIZER_INTERNAL_IO_ERROR(u8"Write Error(size=%1%).", size);
+    }
+}
+
+//----------------------------------------------------------------------------
+//      文字列をエンコードして保存
+//----------------------------------------------------------------------------
+
+template
+<
+    typename tString
+>
+void BinaryMidOSerializer::encodeString(tString const& iString)
+{
+    // Tag
+    unsigned aDataSize=sizeof(char16_t);
+    std::size_t size=iString.size()*aDataSize;
+    saveUnsigned(size, BinaryTag::getStringTag<char16_t>());
+
+    // 中身
+    std::u16string  temp = Converter<char16_t, tString::value_type>::conv(iString);
+#if IS_BIG_ENDIAN == 1
+    for (auto data : temp)
+    {
+        writeByte(static_cast<uint8_t>(data >> 8));
+        writeByte(static_cast<uint8_t>(data));
+    }
+#else
+    mOStream.write(reinterpret_cast<char const*>(temp.data()), size);
+#endif
+    if (!mOStream.good())
+    {
+        THEOLIZER_INTERNAL_IO_ERROR
+        (
+            u8"Write Error(%s).",
+            Converter<char, tString::value_type>::conv(iString)
+        );
     }
 }
 
@@ -624,18 +665,23 @@ long long BinaryMidISerializer::loadSigned()
 unsigned long long BinaryMidISerializer::loadUnsigned(BinaryTag::TagCode iTagCode)
 {
     if (((iTagCode == BinaryTag::TagCode::Primitive)  && (!mBinaryTag.isPrimitive()))
-     || ((iTagCode == BinaryTag::TagCode::ByteString) && (!mBinaryTag.isByteString())))
+     || ((iTagCode == BinaryTag::TagCode::String) && (!mBinaryTag.isString())))
     {
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
     }
 
     unsigned long long ret=0;
     unsigned size=mBinaryTag.getSize();
+#if IS_BIG_ENDIAN == 1  // CPUがビッグ・エンディアンならエンディアン変換する
     for (unsigned i=0; i < size; ++i)
     {
         ret <<= 8;
         ret |= readByte();
     }
+#else
+    mIStream.read(reinterpret_cast<char*>(&ret), size);
+    checkStreamError(mIStream.rdstate());
+#endif
     return ret;
 }
 
@@ -667,20 +713,17 @@ void BinaryMidISerializer::loadFloat(tType& oFloat)
 
     char* begin=reinterpret_cast<char*>(&oFloat);
     char* end  =begin + aDataLen;
-    if (isLittleEndian())
+    // リトル・エンディアンで回復する
+#if IS_BIG_ENDIAN == 1  // CPUがビッグ・エンディアンならエンディアン変換する
+    for (char* p=begin; p < end; ++p)
     {
-        for (char* p=end-1; begin <= p; --p)
-        {
-            *p=readByte();
-        }
+        *p=readByte();
     }
-    else
-    {
-        for (char* p=begin; p < end; ++p)
-        {
-            *p=readByte();
-        }
-    }
+#else
+    mIStream.read(begin, aDataLen);
+    checkStreamError(mIStream.rdstate());
+#endif
+    // パディング
     for (char* p=end; p < (begin+sizeof(tType)); ++p)
     {
         *p=0;
@@ -748,30 +791,22 @@ template void BinaryMidISerializer::loadFloat<long double>(long double& oFloat);
 #define THEOLIZER_INTERNAL_DEF_NARROW_STRING(dType)                         \
     void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
     {                                                                       \
-        loadByteString(oPrimitive);                                         \
+        if (mCharIsMultiByte)                                               \
+        {                                                                   \
+            u8string temp;                                                  \
+            decodeString(temp.str());                                       \
+            oPrimitive=std::move(temp.getMultiByte());                      \
+        }                                                                   \
+        else                                                                \
+        {                                                                   \
+            decodeString(oPrimitive);                                       \
+        }                                                                   \
     }
 
 #define THEOLIZER_INTERNAL_DEF_WIDE_STRING(dType)                           \
     void BinaryMidISerializer::loadPrimitive(dType& oPrimitive)             \
     {                                                                       \
-        if (!mBinaryTag.isByteString()) {                                   \
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");               \
-        }                                                                   \
-        unsigned aDataSize=sizeof(dType::value_type);                       \
-        unsigned long long size=loadUnsigned(BinaryTag::TagCode::ByteString);\
-        oPrimitive.resize(static_cast<std::size_t>(size/aDataSize));        \
-        if (size)                                                           \
-        {                                                                   \
-            for (auto& data : oPrimitive)                                   \
-            {                                                               \
-                data=0;                                                     \
-                for (unsigned i=0; i < aDataSize; ++i)                      \
-                {                                                           \
-                    data <<= 8;                                             \
-                    data |= readByte();                                     \
-                }                                                           \
-            }                                                               \
-        }                                                                   \
+        decodeString(oPrimitive);                                           \
     }
 
 //      ---<<< 実体定義 >>>---
@@ -805,7 +840,7 @@ std::string BinaryMidISerializer::loadElementName(ElementsMapping iElementsMappi
     std::string aElementName;
     if (iElementsMapping == emName)
     {
-        loadByteString(aElementName);
+        loadCharString(aElementName);
 
         // 次の準備
         mBinaryTag = readByte();
@@ -833,11 +868,8 @@ void BinaryMidISerializer::disposeElement()
         }
         break;
 
-    case BinaryTag::ByteString:
-        {
-            std::string temp;
-            loadControl(temp);
-        }
+    case BinaryTag::String:
+        disposeString();
         break;
 
     case BinaryTag::ClassStartName:
@@ -851,6 +883,21 @@ void BinaryMidISerializer::disposeElement()
     default:
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
         break;
+    }
+}
+
+void BinaryMidISerializer::disposeString()
+{
+    // 中身
+    std::size_t size=loadUnsigned(BinaryTag::getStringTag<char16_t>());
+    if (size)
+    {
+        unsigned aDataSize=sizeof(char16_t);
+        for (std::size_t i=0; i < size/aDataSize; ++i)
+        {
+            char16_t    dummy;
+            mIStream.read(reinterpret_cast<char*>(&dummy), aDataSize);
+        }
     }
 }
 
@@ -976,17 +1023,17 @@ return false;
 }
 
 //----------------------------------------------------------------------------
-//      Byte列回復
+//      char文字列回復
 //----------------------------------------------------------------------------
 
-void BinaryMidISerializer::loadByteString(std::string& iString)
+void BinaryMidISerializer::loadCharString(std::string& iString)
 {
-    if (!mBinaryTag.isByteString())
+    if (!mBinaryTag.isCharString())
     {
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
     }
 
-    std::size_t size=static_cast<std::size_t>(loadUnsigned(BinaryTag::TagCode::ByteString));
+    std::size_t size=static_cast<std::size_t>(loadUnsigned(BinaryTag::TagCode::String));
     iString.resize(size);
     if (size)
     {
@@ -996,6 +1043,38 @@ void BinaryMidISerializer::loadByteString(std::string& iString)
     {
         THEOLIZER_INTERNAL_IO_ERROR(u8"Read Error.");
     }
+}
+
+//----------------------------------------------------------------------------
+//      回復してデコード
+//----------------------------------------------------------------------------
+
+template<typename tString>
+void BinaryMidISerializer::decodeString(tString& oString)
+{
+    // Tag
+    if (!mBinaryTag.isString())
+    {
+        THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+    }
+
+    // 中身
+    std::size_t size=loadUnsigned(BinaryTag::getStringTag<char16_t>());
+    std::u16string  temp;
+    if (size)
+    {
+        unsigned aDataSize=sizeof(char16_t);
+        temp.resize(size/aDataSize);
+#if IS_BIG_ENDIAN == 1
+        for (auto& data : temp)
+        {
+            data = (static_cast<char16_t>(readByte()) << 8) | readByte();
+        }
+#else
+        mIStream.read(reinterpret_cast<char*>(&(*temp.begin())), size);
+#endif
+    }
+    oString=Converter<tString::value_type, char16_t>::conv(temp);
 }
 
 //----------------------------------------------------------------------------

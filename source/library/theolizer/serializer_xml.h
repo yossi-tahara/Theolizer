@@ -300,7 +300,6 @@ private:
     typedef XmlMidOSerializer  MidSerializer;
 
 protected:
-    bool                            mCharIsMultiByte;
     static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
@@ -458,7 +457,6 @@ private:
     typedef XmlMidISerializer  MidSerializer;
 
 protected:
-    bool                            mCharIsMultiByte;
     static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
@@ -722,12 +720,7 @@ public:
         return internal::hasPropertyXml(iProperty, true);
     }
 
-    //! std::stringをマルチ・パイト文字コードとして処理するかどうか指定する
-    void setCharIsMultiByte(bool iCharIsMultiByte)
-    {
-        mCharIsMultiByte=iCharIsMultiByte;
-    }
-
+    using BaseSerializer::setCharIsMultiByte;
     using BaseSerializer::getGlobalVersionNo;
     using BaseSerializer::clearTracking;
     using BaseSerializer::getRequireClearTracking;
@@ -801,12 +794,7 @@ public:
         return internal::hasPropertyXml(iProperty, false);
     }
 
-    //! std::stringをマルチ・パイト文字コードとして処理することを指定する
-    void setCharIsMultiByte(bool iCharIsMultiByte)
-    {
-        mCharIsMultiByte=iCharIsMultiByte;
-    }
-
+    using BaseSerializer::setCharIsMultiByte;
     using BaseSerializer::getGlobalVersionNo;
     using BaseSerializer::clearTracking;
     using BaseSerializer::getRequireClearTracking;
