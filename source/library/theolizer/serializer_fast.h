@@ -357,10 +357,6 @@ class FastOSerializer : protected internal::FastMidOSerializer
         return destinations;
     }
 
-    // グローバル・バージョン番号テーブルへのポインタへのポインタ
-    constexpr static internal::GlobalVersionNoTableBase const*const*const
-        kPtrGlobalVersionNoTable=&internal::sGlobalVersionNoTable;
-
     typedef FastOSerializer                 DestOSerializer;
     typedef internal::FastMidOSerializer    MidSerializer;
 
@@ -419,10 +415,6 @@ class FastISerializer : protected internal::FastMidISerializer
         static const internal::Destinations destinations{uDefault, uDestinations...};
         return destinations;
     }
-
-    // グローバル・バージョン番号テーブルへのポインタへのポインタ
-    constexpr static internal::GlobalVersionNoTableBase const*const*const
-        kPtrGlobalVersionNoTable=&internal::sGlobalVersionNoTable;
 
     typedef FastISerializer                 DestISerializer;
     typedef internal::FastMidISerializer    MidSerializer;

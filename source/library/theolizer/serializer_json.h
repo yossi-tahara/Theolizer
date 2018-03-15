@@ -409,15 +409,6 @@ class JsonOSerializer : protected internal::JsonMidOSerializer
         return destinations;
     }
 
-    // グローバル・バージョン番号テーブルへのポインタへのポインタ
-    //  グローバル・バージョン番号テーブルへのポインタの値は初期化時、
-    //  確定していない可能性があるが、ポインタ自身のアドレスは確定している。
-    //  なお、sGlobalVersionNoTableは外部リンケージを持たないものであり、
-    //  Theolizerのクライアントをコンパイルする時に使われるsGlobalVersionNoTableを
-    //  取込む必要があるため、テンプレートであるトップ・シリアライザで処理する。
-    constexpr static internal::GlobalVersionNoTableBase const*const*const
-        kPtrGlobalVersionNoTable=&internal::sGlobalVersionNoTable;
-
     typedef JsonOSerializer                 DestOSerializer;
     typedef internal::JsonMidOSerializer    MidSerializer;
 
@@ -512,10 +503,6 @@ class JsonISerializer : protected internal::JsonMidISerializer
         static const internal::Destinations destinations{uDefault, uDestinations...};
         return destinations;
     }
-
-    // グローバル・バージョン番号テーブルへのポインタへのポインタ
-    constexpr static internal::GlobalVersionNoTableBase const*const*const
-        kPtrGlobalVersionNoTable=&internal::sGlobalVersionNoTable;
 
     typedef JsonISerializer                 DestISerializer;
     typedef internal::JsonMidISerializer    MidSerializer;

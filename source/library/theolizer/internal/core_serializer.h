@@ -593,9 +593,6 @@ protected:
     //! clearTracking()が必要な時true返却（@ref MemberFunctions 参照）
     bool getRequireClearTracking() { return mRequireClearTracking; }
 
-    // RegisterTypeコンストラクト時の余分なstruct定義回避
-    constexpr static GlobalVersionNoTableBase const*const*const
-        kPtrGlobalVersionNoTable=nullptr;
     static internal::Destinations   getDestinations()
     {
         return internal::Destinations{};
