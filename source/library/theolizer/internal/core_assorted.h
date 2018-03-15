@@ -595,11 +595,13 @@ public:
             std::type_index iStdTypeIndex
         ) const = 0;
 
+#if 0
     virtual unsigned getGlobalVersionNo
         (
             unsigned iLocalVersionNo,
             std::type_index iStdTypeIndex
         ) const = 0;
+#endif
 
     // コピー／ムーブ禁止(デストラクタ定義がないとis_trivially_copyableになる)
     GlobalVersionNoTableBase(const GlobalVersionNoTableBase&)  = delete;
@@ -689,6 +691,7 @@ public:
         return ret;
     }
 
+#if 0
     // 指定クラスの指定ローカル・バージョン番号に該当する最大のグローバル・バージョン番号返却
     //  未登録クラスはuLastGlobalVersionNoを返却する
     unsigned getGlobalVersionNo(unsigned iLocalVersionNo, std::type_index iStdTypeIndex) const
@@ -711,6 +714,7 @@ public:
 
         return uLastGlobalVersionNo;
     }
+#endif
 };
 
 //----------------------------------------------------------------------------

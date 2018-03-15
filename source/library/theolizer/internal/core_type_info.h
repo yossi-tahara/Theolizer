@@ -93,6 +93,115 @@ enum TrackingMode
 };
 
 //############################################################################
+//      TypeIndexクラス定義
+//############################################################################
+
+class TypeIndex
+{
+    unsigned    mTypeIndexImpl;
+public:
+    TypeIndex() : mTypeIndexImpl(0) { }
+    TypeIndex(unsigned iIndex) : mTypeIndexImpl(iIndex*TypeIndexRadix) { }
+    TypeIndex(TypeIndex const& iTypeIndex) : mTypeIndexImpl(iTypeIndex.mTypeIndexImpl) { }
+    TypeIndex& operator=(unsigned iIndex)
+    {
+        mTypeIndexImpl = iIndex*TypeIndexRadix;
+        return *this;
+    }
+    TypeIndex& operator=(TypeIndex const& iTypeIndex)
+    {
+        mTypeIndexImpl = iTypeIndex.mTypeIndexImpl;
+        return *this;
+    }
+    void set(unsigned iIndex, unsigned iAdditional)
+    {
+        mTypeIndexImpl = iIndex*TypeIndexRadix + iAdditional;
+    }
+    operator unsigned()
+    {
+        return mTypeIndexImpl / TypeIndexRadix;
+    }
+    bool operator==(TypeIndex iTypeIndex)
+    {
+        return mTypeIndexImpl == iTypeIndex.mTypeIndexImpl;
+    }
+    bool operator!=(TypeIndex iTypeIndex)
+    {
+        return mTypeIndexImpl != iTypeIndex.mTypeIndexImpl;
+    }
+    unsigned getDim()
+    {
+        return mTypeIndexImpl & etiaMask;
+    }
+    unsigned getPointer()
+    {
+        return mTypeIndexImpl & etipMask;
+    }
+
+    // 配列種別
+    enum TypeIndexArray : unsigned
+    {
+        etiaMask                =0x03,
+        etiaNone                =0x00,      // 非配列
+        etiaArray1              =0x01,      // 1次元配列
+        etiaArray2              =0x02,      // 2次元配列
+        etiaArray3              =0x03,      // 3次元配列
+    };
+
+    // ポインタ種別
+    enum TypeIndexPointer : unsigned
+    {
+        etipMask                =0x0c,
+        etipNone                =0x00,
+        etipPointee             =0x04,
+        etipNormalPointer       =0x08,
+        etipOwnerPointer        =0x0c
+    };
+
+    // TypeIndexの基数
+    constexpr static unsigned   TypeIndexRadix = 0x10;
+    constexpr static unsigned   TypeIndexMask  = 0xffffff0u;
+
+    // 文字列型への出力
+    friend std::ostream& operator<<(std::ostream& iOStream, TypeIndex iTypeIndex)
+    {
+        iOStream << (iTypeIndex.mTypeIndexImpl/TypeIndexRadix) << "e"
+                 << (iTypeIndex.mTypeIndexImpl&~TypeIndexMask);
+        return iOStream;
+    }
+
+    // 文字列型からの入力
+    friend std::istream& operator>>(std::istream& iIStream, TypeIndex& iTypeIndex)
+    {
+        unsigned aIndex;
+        iIStream >> aIndex;
+        if (iIStream.get() != 'e')
+        {
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+        }
+        unsigned aAdditional;
+        iIStream >> aAdditional;
+        iTypeIndex.set(aIndex, aAdditional);
+
+        // I/Oエラーチェック
+        auto aStat = iIStream.rdstate();
+        if (aStat & std::istream::eofbit)
+        {
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"EOF occured.");
+        }
+        else if (aStat & std::istream::failbit)
+        {
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Logical Error on stream.");
+        }
+        else if (aStat & std::istream::badbit)
+        {
+            THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");
+        }
+        return iIStream;
+    }
+};
+
+//############################################################################
 //      internal化のための前方宣言
 //############################################################################
 
@@ -183,31 +292,12 @@ enum TypeCategory
 };
 
 //----------------------------------------------------------------------------
-//      型名リストの要素(型名→TypeIndex)
-//----------------------------------------------------------------------------
-
-struct TypeName
-{
-    char const* mTypeName;
-    std::size_t mTypeIndex;
-
-    TypeName(char const* iTypeName, std::size_t iTypeIndex) :
-        mTypeName(iTypeName),
-        mTypeIndex(iTypeIndex)
-    { }
-};
-typedef std::vector<TypeName>   TypeNameList;
-
-TypeNameList::const_iterator findTypeName(TypeNameList const& iTypeNameList,
-                                          char const* iTypeName);
-
-//----------------------------------------------------------------------------
-//      リスト型
+//      型リスト
 //----------------------------------------------------------------------------
 
 typedef std::vector<std::size_t>    TypeIndexList;
 
-using TypeInfoListImpl=std::vector<BaseTypeInfo*>;
+typedef std::vector<BaseTypeInfo*>  TypeInfoListImpl;
 
 //----------------------------------------------------------------------------
 //      型リスト本体
@@ -225,6 +315,9 @@ private:
     // 型のリスト
     TypeInfoListImpl                        mList;
 
+    // 型のリスト（開発中）
+    TypeInfoListImpl                        mList2;
+
 public:
     static TypeInfoList& getInstance();
 
@@ -236,6 +329,7 @@ public:
 
     // 型登録(TypeIndex返却)
     std::size_t registerType(BaseTypeInfo* iTypeInfo);
+    TypeIndex registerType2(BaseTypeInfo* iTypeInfo);
 
     // リスト返却
     TypeInfoListImpl& getList() {return mList;}
@@ -388,7 +482,12 @@ protected:
 private:
     bool                    mIsRegistered;
 
+protected:
+    // 新TypeIndex
+    TypeIndex               mTypeIndex2;
+
 public:
+    TypeIndex   getTypeIndex2() { return mTypeIndex2; }
 
 //      ---<<< トップ・レベルの保存先関連 >>>---
 
@@ -662,7 +761,11 @@ public:
 
 private:
     // コンストラクタ／デストラクタ
-    ClassTypeInfo() : BaseTypeInfo(etcClassType) { }
+    ClassTypeInfo() : BaseTypeInfo(etcClassType)
+    {
+std::cout << "ClassTypeInfo() : " << getCName() << "\n";
+//      mTypeIndex2 = TypeInfoList::getInstance().registerType2(this);
+    }
 public:
     static ClassTypeInfo& getInstance()
     {
@@ -1003,15 +1106,15 @@ public:
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
-//      プリミティブ名生成
+//      プリミティブID生成
 //----------------------------------------------------------------------------
 
 template<typename tPrimitive, class tEnable=void>
-struct PrimitiveName { };
+struct PrimitiveId { };
 
-#define THEOLIZER_INTERNAL_INTEGRAL(dSigned, dDigits, dName1)               \
+#define THEOLIZER_INTERNAL_INTEGRAL(dSigned, dDigits, dName, dIndex)        \
     template<typename tPrimitive>                                           \
-    struct PrimitiveName                                                    \
+    struct PrimitiveId                                                      \
     <                                                                       \
         tPrimitive,                                                         \
         EnableIf                                                            \
@@ -1023,15 +1126,13 @@ struct PrimitiveName { };
         >                                                                   \
     >                                                                       \
     {                                                                       \
-        static char const* getPrimitiveName()                               \
-        {                                                                   \
-            return dName1;                                                  \
-        }                                                                   \
+        static char const* getPrimitiveName()    {return dName;}            \
+        static TypeIndex getPrimitiveTypeIndex() {return dIndex;}           \
     }
 
-#define THEOLIZER_INTERNAL_FLOAT(dDigits, dMaxExponent, dName1)             \
+#define THEOLIZER_INTERNAL_FLOAT(dDigits, dMaxExponent, dName, dIndex)      \
     template<typename tPrimitive>                                           \
-    struct PrimitiveName                                                    \
+    struct PrimitiveId                                                      \
     <                                                                       \
         tPrimitive,                                                         \
         EnableIf                                                            \
@@ -1043,49 +1144,39 @@ struct PrimitiveName { };
         >                                                                   \
     >                                                                       \
     {                                                                       \
-        static char const* getPrimitiveName()                               \
-        {                                                                   \
-            return dName1;                                                  \
-        }                                                                   \
+        static char const* getPrimitiveName()    {return dName;}            \
+        static TypeIndex getPrimitiveTypeIndex() {return dIndex;}           \
     }
 
-#define THEOLIZER_INTERNAL_STRING(dBytes, dName1)                           \
+#define THEOLIZER_INTERNAL_STRING(dName, dIndex)                            \
     template<typename tPrimitive>                                           \
-    struct PrimitiveName                                                    \
+    struct PrimitiveId                                                      \
     <                                                                       \
         tPrimitive,                                                         \
         EnableIf                                                            \
         <                                                                   \
                (IsString<tPrimitive>::value)                                \
-            && (sizeof(typename tPrimitive::value_type) == dBytes)          \
         >                                                                   \
     >                                                                       \
     {                                                                       \
-        static char const* getPrimitiveName()                               \
-        {                                                                   \
-            return dName1;                                                  \
-        }                                                                   \
+        static char const* getPrimitiveName()    {return dName;}            \
+        static TypeIndex getPrimitiveTypeIndex() {return dIndex;}           \
     }
 
-THEOLIZER_INTERNAL_INTEGRAL(0,  1,  "bool");
-
-THEOLIZER_INTERNAL_INTEGRAL(1,  7,  "int8");
-THEOLIZER_INTERNAL_INTEGRAL(1, 15,  "int16");
-THEOLIZER_INTERNAL_INTEGRAL(1, 31,  "int32");
-THEOLIZER_INTERNAL_INTEGRAL(1, 63,  "int64");
-
-THEOLIZER_INTERNAL_INTEGRAL(0,  8,  "unit8");
-THEOLIZER_INTERNAL_INTEGRAL(0, 16,  "uint16");
-THEOLIZER_INTERNAL_INTEGRAL(0, 32,  "uint32");
-THEOLIZER_INTERNAL_INTEGRAL(0, 64,  "uint64");
-
-THEOLIZER_INTERNAL_FLOAT(24,   128, "float32");
-THEOLIZER_INTERNAL_FLOAT(53,  1024, "float64");
-THEOLIZER_INTERNAL_FLOAT(64, 16384, "float80");
-
-THEOLIZER_INTERNAL_STRING(1,        "string");
-THEOLIZER_INTERNAL_STRING(2,        "string");
-THEOLIZER_INTERNAL_STRING(4,        "string");
+THEOLIZER_INTERNAL_INTEGRAL(0,  1,  "bool",     0u);
+THEOLIZER_INTERNAL_INTEGRAL(0,  8,  "unit8",    1u);
+THEOLIZER_INTERNAL_INTEGRAL(1,  7,   "int8",    2u);
+THEOLIZER_INTERNAL_INTEGRAL(0, 16,  "uint16",   3u);
+THEOLIZER_INTERNAL_INTEGRAL(1, 15,   "int16",   4u);
+THEOLIZER_INTERNAL_INTEGRAL(0, 32,  "uint32",   5u);
+THEOLIZER_INTERNAL_INTEGRAL(1, 31,   "int32",   6u);
+THEOLIZER_INTERNAL_INTEGRAL(0, 64,  "uint64",   7u);
+THEOLIZER_INTERNAL_INTEGRAL(1, 63,   "int64",   8u);
+THEOLIZER_INTERNAL_FLOAT(24,   128, "float32",  9u);
+THEOLIZER_INTERNAL_FLOAT(53,  1024, "float64", 10u);
+THEOLIZER_INTERNAL_FLOAT(64, 16384, "float80", 11u);
+THEOLIZER_INTERNAL_FLOAT(113,16384, "float128",12u);
+THEOLIZER_INTERNAL_STRING(          "string",  13u);
 
 #undef  THEOLIZER_INTERNAL_INTEGRAL
 #undef  THEOLIZER_INTERNAL_FLOAT
@@ -1097,12 +1188,23 @@ char const* getPrimitiveName()
     static_assert(Ignore<tType>::kFalse, "Unknown primitive name.");
     return "";
 }
+template<typename tType>
+TypeIndex getPrimitiveTypeIndex()
+{
+    static_assert(Ignore<tType>::kFalse, "Unknown primitive TypeIndex.");
+    return "";
+}
 
 #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
     template<>                                                              \
     inline char const* getPrimitiveName<dType>()                            \
     {                                                                       \
-        return PrimitiveName<dType>::getPrimitiveName();                    \
+        return PrimitiveId<dType>::getPrimitiveName();                      \
+    }                                                                       \
+    template<>                                                              \
+    inline TypeIndex getPrimitiveTypeIndex<dType>()                         \
+    {                                                                       \
+        return PrimitiveId<dType>::getPrimitiveTypeIndex();                 \
     }
 #include "primitive.inc"
 
@@ -1115,7 +1217,11 @@ class THEOLIZER_INTERNAL_DLL PrimitiveTypeInfo : public BaseTypeInfo
 {
 private:
     // コンストラクタ／デストラクタ
-    PrimitiveTypeInfo() : BaseTypeInfo(etcPrimitiveType) { }
+    PrimitiveTypeInfo() : BaseTypeInfo(etcPrimitiveType)
+    {
+std::cout << "PrimitiveTypeInfo() : " << getPrimitiveName<tPrimitiveType>() << "\n";
+        mTypeIndex2 = getPrimitiveTypeIndex<tPrimitiveType>();
+    }
 public:
     static PrimitiveTypeInfo& getInstance();
 
@@ -1339,12 +1445,13 @@ private:
         typedef typename GetTypeInfo<RemovedCVType>::Type   TypeInfo;
         mBaseTypeInfo=&TypeInfo::getInstance();
 
-#if 0
+#if 1
 std::cout << "RegisterType<" << THEOLIZER_INTERNAL_TYPE_NAME(tSerializer) << ",\n"
           << "             " << THEOLIZER_INTERNAL_TYPE_NAME(tType) << ",\n"
           << "             " << THEOLIZER_INTERNAL_TYPE_NAME(TypeInfo) << ",\n"
           << "             " << THEOLIZER_INTERNAL_TYPE_NAME(tTheolizerVersion) << ",\n"
           << "             uIsDerived=" << uIsDerived << ">\n";
+std::cout << "mTypeIndex2=" << mBaseTypeInfo->getTypeIndex2() << "\n";
 #endif
 
         // 保存先があるTopLevelシリアライザなら、TypeInfoに保存先を登録する

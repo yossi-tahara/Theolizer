@@ -39,6 +39,7 @@
 
 #include <cstring>
 #include <algorithm>
+#include <unordered_map>
 
 #include "core.h"
 
@@ -58,22 +59,6 @@ namespace internal
 // ***************************************************************************
 //      型リスト(シングルトン)
 // ***************************************************************************
-
-//----------------------------------------------------------------------------
-//      型名リストの要素(型名→TypeIndex)
-//----------------------------------------------------------------------------
-
-TypeNameList::const_iterator findTypeName(const TypeNameList& iTypeNameList,
-                                          char const* iTypeName)
-{
-    return lower_bound(iTypeNameList.begin(),
-                       iTypeNameList.end(),
-                       iTypeName,
-                       [](const TypeName& iLhs, char const* iTypeName)
-                       {
-                          return strcmp(iLhs.mTypeName, iTypeName)<0;
-                       });
-}
 
 //----------------------------------------------------------------------------
 //      TypeInfoList実体定義
@@ -97,6 +82,11 @@ std::size_t TypeInfoList::registerType(BaseTypeInfo* iTypeInfo)
     std::size_t ret=mList.size();
     mList.push_back(iTypeInfo);
     return ret;
+}
+
+TypeIndex TypeInfoList::registerType2(BaseTypeInfo* iTypeInfo)
+{
+    return 0;
 }
 
 //----------------------------------------------------------------------------
