@@ -369,7 +369,7 @@ namespace theolizer
         RegisterLocalVersions::getInstance();                               \
     }}  /* namespace internal */                                            \
     namespace {                                                             \
-    constexpr unsigned kLastGlobalVersionNo=dLastGlobalVersionNo;           \
+    const unsigned kLastGlobalVersionNo=dLastGlobalVersionNo;               \
     }}  /* namespace theolizer */
 #else
 //! グローバル・バージョン番号テーブル定義用マクロ

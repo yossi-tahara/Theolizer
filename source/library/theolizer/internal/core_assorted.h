@@ -790,7 +790,7 @@ namespace
 
 namespace
 {
-    extern unsigned const kLastGlobalVersionNo;
+    extern const unsigned kLastGlobalVersionNo;
 }   // namespace
 
 namespace internal

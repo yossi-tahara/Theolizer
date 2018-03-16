@@ -87,8 +87,10 @@ std::size_t TypeInfoList::registerType(BaseTypeInfo* iTypeInfo)
 TypeIndex TypeInfoList::registerType2(BaseTypeInfo* iTypeInfo)
 {
     std::size_t ret=mList2.size();
+    if (std::numeric_limits<unsigned>::max() < ret)
+    {THEOLIZER_INTERNAL_ERROR(u8"too many Types!!");}
     mList2.push_back(iTypeInfo);
-    return ret;
+    return static_cast<unsigned>(ret);
 }
 
 // ***************************************************************************
