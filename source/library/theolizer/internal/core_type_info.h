@@ -100,7 +100,7 @@ class TypeIndex
 {
     unsigned    mTypeIndexImpl;
 public:
-    TypeIndex() : mTypeIndexImpl(0) { }
+    TypeIndex() : mTypeIndexImpl(kInvalidUnsigned) { }
     TypeIndex(unsigned iIndex) : mTypeIndexImpl(iIndex*TypeIndexRadix) { }
     TypeIndex(TypeIndex const& iTypeIndex) : mTypeIndexImpl(iTypeIndex.mTypeIndexImpl) { }
     TypeIndex& operator=(unsigned iIndex)
@@ -120,6 +120,10 @@ public:
     operator unsigned()
     {
         return mTypeIndexImpl / TypeIndexRadix;
+    }
+    operator bool()
+    {
+        return mTypeIndexImpl != kInvalidUnsigned;
     }
     bool operator==(TypeIndex iTypeIndex)
     {
@@ -460,9 +464,6 @@ private:
     // 手動型からの保存
     bool                    mIsManual;
 
-    // 被ポインタ
-    bool                    mIsPointee;
-
     // 型種別
     TypeCategory            mTypeCategory;
 
@@ -470,7 +471,6 @@ protected:
     BaseTypeInfo(TypeCategory iTypeCategory) :
         mIsTopLevel(false),
         mIsManual(false),
-        mIsPointee(false),
         mTypeCategory(iTypeCategory),
         mTypeIndex(kInvalidSize),   // 無効値設定
         mIsRegistered(false)
@@ -540,10 +540,6 @@ public:
     // デバッグ用
     virtual char const*     getCName() const = 0;
     bool isTopLovel() {return mIsTopLevel;}
-
-//      ---<<< 被ポインタ・チェック用 >>>---
-
-    bool isPointee() { return mIsPointee; }
 
 //      ---<<< ポリモーフィズム対応 >>>---
 
@@ -764,7 +760,7 @@ private:
     ClassTypeInfo() : BaseTypeInfo(etcClassType)
     {
 std::cout << "ClassTypeInfo() : " << getCName() << "\n";
-//      mTypeIndex2 = TypeInfoList::getInstance().registerType2(this);
+        mTypeIndex2 = TypeInfoList::getInstance().registerType2(this);
     }
 public:
     static ClassTypeInfo& getInstance()
@@ -1177,6 +1173,7 @@ THEOLIZER_INTERNAL_FLOAT(53,  1024, "float64", 10u);
 THEOLIZER_INTERNAL_FLOAT(64, 16384, "float80", 11u);
 THEOLIZER_INTERNAL_FLOAT(113,16384, "float128",12u);
 THEOLIZER_INTERNAL_STRING(          "string",  13u);
+//THEOLIZER_INTERNAL_BYTES(           "bytes",   14u);
 
 #undef  THEOLIZER_INTERNAL_INTEGRAL
 #undef  THEOLIZER_INTERNAL_FLOAT
@@ -1434,16 +1431,13 @@ private:
     static RegisterType& mInstance;
     static void use(const RegisterType&) {}
 
-    // 登録した型情報
-    BaseTypeInfo*   mBaseTypeInfo;
-
     // コンストラクタ
     //  型リストへ登録し、型IDを入手する。
     RegisterType()
     {
         // XxxTypeInfo生成
         typedef typename GetTypeInfo<RemovedCVType>::Type   TypeInfo;
-        mBaseTypeInfo=&TypeInfo::getInstance();
+        auto& aBaseTypeInfo=TypeInfo::getInstance();
 
 #if 1
 std::cout << "RegisterType<" << THEOLIZER_INTERNAL_TYPE_NAME(tSerializer) << ",\n"
@@ -1451,34 +1445,34 @@ std::cout << "RegisterType<" << THEOLIZER_INTERNAL_TYPE_NAME(tSerializer) << ",\
           << "             " << THEOLIZER_INTERNAL_TYPE_NAME(TypeInfo) << ",\n"
           << "             " << THEOLIZER_INTERNAL_TYPE_NAME(tTheolizerVersion) << ",\n"
           << "             uIsDerived=" << uIsDerived << ">\n";
-std::cout << "mTypeIndex2=" << mBaseTypeInfo->getTypeIndex2() << "\n";
+std::cout << "mTypeIndex2=" << aBaseTypeInfo.getTypeIndex2() << "\n";
 #endif
 
         // 保存先があるTopLevelシリアライザなら、TypeInfoに保存先を登録する
         if (tSerializer::kHasDestination)
         {
 //std::cout << "    addDestination(" << tSerializer::getDestinations() << ")\n";
-            mBaseTypeInfo->addDestination(tSerializer::getDestinations());
+            aBaseTypeInfo.addDestination(tSerializer::getDestinations());
         }
 
         // 未登録なら、TypeInfoListへBaseTypeInfoを登録する
         std::size_t aTypeIndex=0;
-        if (mBaseTypeInfo->mIsRegistered)
+        if (aBaseTypeInfo.mIsRegistered)
         {
-            aTypeIndex=mBaseTypeInfo->mTypeIndex;
+            aTypeIndex=aBaseTypeInfo.mTypeIndex;
 //std::cout << "    aTypeIndex=" << aTypeIndex << " (Registered)\n";
         }
         else
         {
-            aTypeIndex=TypeInfoList::getInstance().registerType(mBaseTypeInfo);
+            aTypeIndex=TypeInfoList::getInstance().registerType(&aBaseTypeInfo);
 //std::cout << "    aTypeIndex=" << aTypeIndex << "\n";
 
             // TypeIndexをBaseTypeInfoへ設定する
-            mBaseTypeInfo->registerTypeIndex(aTypeIndex);
+            aBaseTypeInfo.registerTypeIndex(aTypeIndex);
         }
 
         // ポリモーフィズム用派生クラスの登録なら、基底クラスのリストへ追加する
-        RegisterToBaseClassEntrance<TypeInfo, uIsDerived>()(mBaseTypeInfo);
+        RegisterToBaseClassEntrance<TypeInfo, uIsDerived>()(&aBaseTypeInfo);
 
         // ポインタなら、その先の型を登録する
         // 配列なら、基本型を登録する
@@ -1496,6 +1490,9 @@ std::cout << "mTypeIndex2=" << mBaseTypeInfo->getTypeIndex2() << "\n";
         (
             []{return theolizer::internal::getTypeIndex<tType>();}
         );
+
+        // 手動型からの保存設定
+        aBaseTypeInfo.mIsManual=uIsManual;
     }
     // デストラクタ
     ~RegisterType() { }
@@ -1504,10 +1501,6 @@ public:
     {
         static RegisterType instance;
         use(mInstance);
-
-        // 手動型からの保存設定
-        instance.mBaseTypeInfo->mIsManual=uIsManual;
-
         return instance;
     }
 
@@ -1516,9 +1509,6 @@ public:
     RegisterType(      RegisterType&&) = delete;
     RegisterType& operator=(const RegisterType&)  = delete;
     RegisterType& operator=(      RegisterType&&) = delete;
-
-    // 被ポインタ登録
-    void setPointee() { mBaseTypeInfo->mIsPointee=true; }
 };
 
 // プロセス起動時にシングルトンを生成させる
@@ -1526,6 +1516,20 @@ template<class tSerializer, class tType, class tTheolizerVersion, bool uIsDerive
 RegisterType<tSerializer, tType, tTheolizerVersion, uIsDerived, uIsManual>&
         RegisterType<tSerializer, tType, tTheolizerVersion, uIsDerived, uIsManual>::mInstance
       = RegisterType<tSerializer, tType, tTheolizerVersion, uIsDerived, uIsManual>::getInstance();
+
+//----------------------------------------------------------------------------
+//      TypeIndex登録専用関数テンプレート
+//----------------------------------------------------------------------------
+
+template<typename tType>
+TypeIndex registerTypeIndex()
+{
+    // XxxTypeInfo生成し、登録する
+    typedef typename GetTypeInfo<RemovedCVType>::Type   TypeInfo;
+    auto& aBaseTypeInfo=TypeInfo::getInstance();
+
+    return aBaseTypeInfo.getTypeIndex2();
+}
 
 //----------------------------------------------------------------------------
 //      ポインタの場合、ポイント先の型を登録する関数本体
@@ -1549,7 +1553,7 @@ void RegisterPointeeUnderlying
         tTheolizerVersion,
         uIsDerived,
         uIsManual
-    >::getInstance().setPointee();
+    >::getInstance();
 }
 
 //----------------------------------------------------------------------------

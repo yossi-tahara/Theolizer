@@ -862,6 +862,7 @@ namespace internal
 // ***************************************************************************
 
 constexpr std::size_t kInvalidSize = std::numeric_limits<std::size_t>::max();
+constexpr unsigned    kInvalidUnsigned = std::numeric_limits<unsigned>::max();
 
 // ***************************************************************************
 //      型分岐用補助ツール
