@@ -546,6 +546,26 @@ public:
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
+//      現在のグローバル・バージョン番号に対応したローカル・バージョン番号
+//          下記パラメータをハンドリングする
+//              特定のグローバル・バージョン番号に対する
+//                  各TypeIndexのローカル・バージョン番号表
+//              メタ・シリアライズ／デシリアライズ・モード・フラグ
+//----------------------------------------------------------------------------
+
+class THEOLIZER_INTERNAL_DLL VersionNoList : public std::vector<unsigned>
+{
+public:
+    unsigned at(std::size_t iTypeIndex) const;
+};
+
+
+
+
+
+
+
+//----------------------------------------------------------------------------
 //      キーとローカル・バージョン番号リスト・インデックス
 //----------------------------------------------------------------------------
 
@@ -619,6 +639,17 @@ template<unsigned uLastGlobalVersionNo>
 class GlobalVersionNoTable : public GlobalVersionNoTableBase
 {
     static_assert(uLastGlobalVersionNo != 0, "Global VersionNo.0 is illegal.");
+
+//      ---<<< ローカル・バージョン番号のリスト >>>---
+
+    VersionNoList   mVersionNoList[uLastGlobalVersionNo];
+
+//    template<typename... tLocalVersionNoList>
+//    void add(std::type_info const& iTypeInfo, tLocalVersionNoList... iLocalVersionNoList)
+
+
+
+
 
 //      ---<<< ローカル・バージョン番号のリスト >>>---
 

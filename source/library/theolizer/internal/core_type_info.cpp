@@ -89,21 +89,6 @@ TypeIndex TypeInfoList::registerType2(BaseTypeInfo* iTypeInfo)
     return 0;
 }
 
-//----------------------------------------------------------------------------
-//      現在のグローバル・バージョン番号に対応したローカル・バージョン番号
-//----------------------------------------------------------------------------
-
-unsigned VersionNoList::at(std::size_t iTypeIndex) const
-{
-    // テーブルが生成されていない場合、最新版を返却する
-    if (size() == 0)
-    {
-        auto& aTypeInfoListImpl=TypeInfoList::getInstance().getList();
-return aTypeInfoListImpl[iTypeIndex]->getLastVersionNoV();
-    }
-    return std::vector<unsigned>::at(iTypeIndex);
-}
-
 // ***************************************************************************
 //      プリミティブ管理クラス(シングルトン)
 //          プリミティブ型を型リストへ登録する

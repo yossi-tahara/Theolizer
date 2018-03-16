@@ -188,6 +188,29 @@ void setTypeFunctions(BaseTypeFunctions* iTypeFunctions)
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
+//      現在のグローバル・バージョン番号に対応したローカル・バージョン番号
+//----------------------------------------------------------------------------
+
+unsigned VersionNoList::at(std::size_t iTypeIndex) const
+{
+    // テーブルが生成されていない場合、最新版を返却する
+    if (size() == 0)
+    {
+        auto& aTypeInfoListImpl=TypeInfoList::getInstance().getList();
+return aTypeInfoListImpl[iTypeIndex]->getLastVersionNoV();
+    }
+    // テーブルに登録されていない時は完全自動型なのでVer.1
+    else if (size() <= iTypeIndex)
+    {
+return 1;
+    }
+    return std::vector<unsigned>::at(iTypeIndex);
+}
+
+
+
+
+//----------------------------------------------------------------------------
 //      キー登録
 //----------------------------------------------------------------------------
 
