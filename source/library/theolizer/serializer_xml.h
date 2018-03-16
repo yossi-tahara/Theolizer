@@ -75,8 +75,14 @@ namespace internal
 
 #define THEOLIZER_INTERNAL_XML_THEOLIZER_NAME   "XmlTheolizer"
 
-const static char kXmlSerializerName[]=THEOLIZER_INTERNAL_XML_THEOLIZER_NAME;
-const static unsigned kXmlSerializerVersionNo=1;
+constexpr static char kXmlSerializerName[]=THEOLIZER_INTERNAL_XML_THEOLIZER_NAME;
+constexpr static unsigned kXmlSerializerVersionNo=1;
+
+// ***************************************************************************
+//          バージョン管理
+// ***************************************************************************
+
+THEOLIZER_INTERNAL_REGISTER_SERIALIZER(XmlSerializerVersion, 1, "XmlTheolizer");
 
 // ***************************************************************************
 //      XMLヘッダ関係
@@ -149,6 +155,7 @@ inline bool hasPropertyXml(Property iProperty, bool iIsSaver)
     return ret;
 }
 
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
 //############################################################################
 //      Xml Serializer実装部
 //
@@ -161,7 +168,6 @@ inline bool hasPropertyXml(Property iProperty, bool iIsSaver)
 //              std::stringがMultiByteエンコードされているとして処理する。
 //############################################################################
 
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
 // ***************************************************************************
 /*!
 @brief      保存用中間XmlSerializer

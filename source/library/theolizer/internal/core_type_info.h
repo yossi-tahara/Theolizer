@@ -164,13 +164,13 @@ public:
 
     // TypeIndexの基数
     constexpr static unsigned   TypeIndexRadix = 0x10;
-    constexpr static unsigned   TypeIndexMask  = 0xffffff0u;
+    constexpr static unsigned   TypeIndexMask  = (~0xfu);
 
     // 文字列型への出力
     friend std::ostream& operator<<(std::ostream& iOStream, TypeIndex iTypeIndex)
     {
         iOStream << (iTypeIndex.mTypeIndexImpl/TypeIndexRadix) << "e"
-                 << (iTypeIndex.mTypeIndexImpl&~TypeIndexMask);
+                 << (iTypeIndex.mTypeIndexImpl&(~TypeIndexMask));
         return iOStream;
     }
 
@@ -185,6 +185,10 @@ public:
         }
         unsigned aAdditional;
         iIStream >> aAdditional;
+        if (TypeIndexRadix <= aAdditional)
+        {
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+        }
         iTypeIndex.set(aIndex, aAdditional);
 
         // I/Oエラーチェック
@@ -547,7 +551,8 @@ private:
     // enum型の時、iVersionNoは有効。その他はDon't care
     virtual unsigned getTypeFlags(unsigned iVersionNo) {return 0;}
 
-    virtual TypeKind getTypeKind() = 0;
+    virtual TypeKind getTypeKind()
+    {THEOLIZER_INTERNAL_ABORT("BaseTypeInfo::getTypeKind()");}
 };
 
 // ***************************************************************************
@@ -1024,7 +1029,11 @@ private:
     typedef TheolizerNonIntrusive<tEnumType> EnumNonIntrusive;
 
     // コンストラクタ／デストラクタ
-    EnumTypeInfo() : BaseTypeInfo(etcEnumType) { }
+    EnumTypeInfo() : BaseTypeInfo(etcEnumType)
+    {
+std::cout << "EnumTypeInfo() : " << getCName() << "\n";
+        mTypeIndex2 = TypeInfoList::getInstance().registerType2(this);
+    }
 public:
     static EnumTypeInfo& getInstance()
     {
@@ -1244,6 +1253,57 @@ public:
 };
 
 // ***************************************************************************
+//      追加のTypeIndex管理クラス(シングルトン)
+// ***************************************************************************
+
+template<typename tAdditionalClass>
+class THEOLIZER_INTERNAL_DLL AdditionalTypeInfo : public BaseTypeInfo
+{
+private:
+    // コンストラクタ／デストラクタ
+    AdditionalTypeInfo() : BaseTypeInfo(etcPrimitiveType)
+    {
+std::cout << "AdditionalTypeInfo() : " << getCName() << "\n";
+        mTypeIndex2 = TypeInfoList::getInstance().registerType2(this);
+    }
+public:
+    static AdditionalTypeInfo& getInstance()
+    {
+        static AdditionalTypeInfo instance;
+        return instance;
+    }
+
+    // コピー／ムーブ禁止(仮想関数があるのでis_trivially_copyableにならない)
+    AdditionalTypeInfo(const AdditionalTypeInfo&)  = delete;
+    AdditionalTypeInfo(      AdditionalTypeInfo&&) = delete;
+    AdditionalTypeInfo& operator=(const AdditionalTypeInfo&)  = delete;
+    AdditionalTypeInfo& operator=(      AdditionalTypeInfo&&) = delete;
+
+//      ---<<< 型チェック用 >>>---
+
+    // type_index返却
+    std::type_index getStdTypeIndex(bool iRaw) const
+    {return std::type_index(typeid(tAdditionalClass));}
+    // 最新版のバージョン番号返却(シリアライザのバージョン番号を返却する)
+    static unsigned getLastVersionNo()
+    {THEOLIZER_INTERNAL_ABORT("AdditionalTypeInfo::getLastVersionNo()");}
+    unsigned getLastVersionNoV() const {return getLastVersionNo();}
+    // 型名返却
+    std::string getTypeName(VersionNoList const& iVersionNoList)
+    {THEOLIZER_INTERNAL_ABORT("AdditionalTypeInfo::getTypeName()");}
+
+    // C言語名返却(デバッグ用)
+    char const* getCName() const
+    {
+        return THEOLIZER_INTERNAL_TYPE_NAME(tAdditionalClass);
+    }
+
+//      ---<<< メタ・シリアライズ用 >>>---
+
+//    TypeKind    getTypeKind() {return etkPrimitive;}
+};
+
+// ***************************************************************************
 //      TypeをTypeInfoListへ登録する
 // ***************************************************************************
 
@@ -1311,6 +1371,14 @@ template<typename tType>
 struct GetTypeInfo<tType, EnableIf<IsPrimitive<tType>::value> >
 {
     typedef PrimitiveTypeInfo<tType>        Type;
+};
+
+//      ---<<< 派生シリアライザ・バージョン定義クラス >>>---
+
+template<typename tType>
+struct GetTypeInfo<tType, EnableIf<IsAdditionalType<tType>::value> >
+{
+    typedef AdditionalTypeInfo<tType>       Type;
 };
 
 //      ---<<< 参照型 >>>---
@@ -1504,14 +1572,14 @@ RegisterType<tSerializer, tType, tTheolizerVersion, uIsDerived, uIsManual>&
       = RegisterType<tSerializer, tType, tTheolizerVersion, uIsDerived, uIsManual>::getInstance();
 
 //----------------------------------------------------------------------------
-//      TypeIndex登録専用関数テンプレート
+//      GVNT登録専用関数テンプレート
 //----------------------------------------------------------------------------
 
 template<typename tType>
 TypeIndex registerTypeIndex()
 {
     // XxxTypeInfo生成し、登録する
-    typedef typename GetTypeInfo<RemovedCVType>::Type   TypeInfo;
+    typedef typename GetTypeInfo<tType>::Type   TypeInfo;
     auto& aBaseTypeInfo=TypeInfo::getInstance();
 
     return aBaseTypeInfo.getTypeIndex2();

@@ -221,8 +221,14 @@ public:
 //          long doubleはdouble形式で保存する
 // ***************************************************************************
 
-const static char kBinarySerializerName[]="BinaryTheolizer";
-const static unsigned kBinarySerializerVersionNo=1;
+constexpr static char kBinarySerializerName[]="BinaryTheolizer";
+constexpr static unsigned kBinarySerializerVersionNo=1;
+
+// ***************************************************************************
+//          バージョン管理
+// ***************************************************************************
+
+THEOLIZER_INTERNAL_REGISTER_SERIALIZER(BinarySerializerVersion, 1, "BinaryTheolizer");
 
 // ***************************************************************************
 //      プロバティ返却

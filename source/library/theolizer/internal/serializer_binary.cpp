@@ -439,7 +439,7 @@ void BinaryMidOSerializer::encodeString(tString const& iString)
     saveUnsigned(size, BinaryTag::getStringTag<char16_t>());
 
     // 中身
-    std::u16string  temp = Converter<char16_t, tString::value_type>::conv(iString);
+    std::u16string  temp = Converter<char16_t, typename tString::value_type>::conv(iString);
 #if IS_BIG_ENDIAN == 1
     for (auto data : temp)
     {
@@ -454,7 +454,7 @@ void BinaryMidOSerializer::encodeString(tString const& iString)
         THEOLIZER_INTERNAL_IO_ERROR
         (
             u8"Write Error(%s).",
-            Converter<char, tString::value_type>::conv(iString)
+            Converter<char, typename tString::value_type>::conv(iString)
         );
     }
 }
@@ -1074,7 +1074,7 @@ void BinaryMidISerializer::decodeString(tString& oString)
         mIStream.read(reinterpret_cast<char*>(&(*temp.begin())), size);
 #endif
     }
-    oString=Converter<tString::value_type, char16_t>::conv(temp);
+    oString=Converter<typename tString::value_type, char16_t>::conv(temp);
 }
 
 //----------------------------------------------------------------------------

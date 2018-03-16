@@ -546,6 +546,21 @@ public:
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
+//      グローバル・バージョン番号登録用マクロ
+//----------------------------------------------------------------------------
+
+#define THEOLIZER_INTERNAL_ADDITIONAL_TYPE                                  \
+    typedef void                AdditionalVersion
+
+#define THEOLIZER_INTERNAL_REGISTER_SERIALIZER(dSerializer, dVersion, dName)\
+    struct dSerializer                                                      \
+    {                                                                       \
+        constexpr static unsigned   kLastVersionNo=dVersion;                \
+        constexpr static char       kName[]=dName;                          \
+        THEOLIZER_INTERNAL_ADDITIONAL_TYPE;                                 \
+    }
+
+//----------------------------------------------------------------------------
 //      現在のグローバル・バージョン番号に対応したローカル・バージョン番号
 //          下記パラメータをハンドリングする
 //              特定のグローバル・バージョン番号に対する
@@ -640,12 +655,31 @@ class GlobalVersionNoTable : public GlobalVersionNoTableBase
 {
     static_assert(uLastGlobalVersionNo != 0, "Global VersionNo.0 is illegal.");
 
+//      ---<<< シングルトン >>>---
+
+protected:
+    GlobalVersionNoTable() { }
+public:
+    static GlobalVersionNoTable& getInstance()
+    {
+        static GlobalVersionNoTable instance;
+        return instance;
+    }
+
 //      ---<<< ローカル・バージョン番号のリスト >>>---
 
     VersionNoList   mVersionNoList[uLastGlobalVersionNo];
 
-//    template<typename... tLocalVersionNoList>
-//    void add(std::type_info const& iTypeInfo, tLocalVersionNoList... iLocalVersionNoList)
+//      ---<<< 機能群 >>>---
+
+    // クラス登録
+    template<typename... tLocalVersionNoList>
+    void add2(unsigned iIndex, tLocalVersionNoList... iLocalVersionNoList)
+    {
+        static_assert(sizeof...(tLocalVersionNoList) == uLastGlobalVersionNo,
+                      "GlobalVersionNoTable::add() illegal number of parameters.");
+    }
+
 
 
 
@@ -665,17 +699,6 @@ class GlobalVersionNoTable : public GlobalVersionNoTableBase
 
     // type_indexによるキーでソート
     std::vector<GlobalVersionKey>   mKeyList;
-
-//      ---<<< シングルトン >>>---
-
-protected:
-    GlobalVersionNoTable() { }
-public:
-    static GlobalVersionNoTableBase* getInstance()
-    {
-        static GlobalVersionNoTable instance;
-        return &instance;
-    }
 
 //      ---<<< 機能群 >>>---
 
@@ -780,7 +803,7 @@ namespace internal
 #define THEOLIZER_GENERATED_GLOBAL_TABLE()                                  \
     namespace theolizer{namespace internal{namespace{                       \
         GlobalVersionNoTableBase const*const sGlobalVersionNoTable=         \
-            GlobalVersionNoTable<1>::getInstance();                         \
+            &(GlobalVersionNoTable<1>::getInstance());                      \
     }}  /* namespace internal */                                            \
     namespace{                                                              \
         unsigned const kLastGlobalVersionNo=1;                              \
@@ -954,6 +977,28 @@ struct IsPrimitive
 };
 
 //----------------------------------------------------------------------------
+//      派生シリアライザ・バージョン定義クラス判定
+//----------------------------------------------------------------------------
+
+template<typename tSerializer, class tEnable=void>
+struct IsAdditionalTypeImpl : public std::false_type
+{ };
+
+template<typename tSerializer>
+struct IsAdditionalTypeImpl
+<
+    tSerializer,
+    typename tSerializer::AdditionalVersion
+> : public std::true_type
+{ };
+
+template<typename tSerializer>
+struct IsAdditionalType
+{
+    static const bool value=IsAdditionalTypeImpl<tSerializer>::value;
+};
+
+//----------------------------------------------------------------------------
 //      侵入型と非侵入型のTheolizerVersion判定
 //----------------------------------------------------------------------------
 
@@ -1060,6 +1105,7 @@ struct IsIntrusiveImpl
      && !IsNonIntrusive<tClass>::value
      && !IsTheolizerBase<tClass>::value
      && !IsTheolizerNonKeepStep<tClass>::value
+     && !IsAdditionalType<tClass>::value
     >
 > : public std::true_type
 { };

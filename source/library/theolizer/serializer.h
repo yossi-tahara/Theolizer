@@ -343,20 +343,33 @@ namespace theolizer
         static const unsigned kLastGlobalVersionNo=dLastGlobalVersionNo;    \
         dName();                                                            \
     public:                                                                 \
-        static GlobalVersionNoTableBase* getInstance()                      \
+        static GlobalVersionNoTable& getInstance()                          \
         {                                                                   \
             static dName instance;                                          \
-            return &instance;                                               \
+            return instance;                                                \
         }                                                                   \
         char const* getTableName() const {return #dName;}                   \
     };                                                                      \
     }   /* namespace namespace */                                           \
     namespace {                                                             \
     GlobalVersionNoTableBase const*const sGlobalVersionNoTable=             \
-        global_table::dName::getInstance();                                 \
+        &(global_table::dName::getInstance());                              \
+    class RegisterLocalVersions                                             \
+    {                                                                       \
+        static RegisterLocalVersions& mInstance;                            \
+        RegisterLocalVersions();                                            \
+    public:                                                                 \
+        static RegisterLocalVersions& getInstance()                         \
+        {                                                                   \
+            static RegisterLocalVersions instance;                          \
+            return instance;                                                \
+        }                                                                   \
+    };                                                                      \
+    RegisterLocalVersions& RegisterLocalVersions::mInstance=                \
+        RegisterLocalVersions::getInstance();                               \
     }}  /* namespace internal */                                            \
     namespace {                                                             \
-    unsigned const kLastGlobalVersionNo=dLastGlobalVersionNo;               \
+    constexpr unsigned kLastGlobalVersionNo=dLastGlobalVersionNo;           \
     }}  /* namespace theolizer */
 #else
 //! グローバル・バージョン番号テーブル定義用マクロ
@@ -364,7 +377,16 @@ namespace theolizer
 #endif
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
-    #define THEOLIZER_INTERNAL_ADD(dType, ...)  add(typeid(::dType),__VA_ARGS__)
+
+//----------------------------------------------------------------------------
+//      ローカル・バージョン番号リスト登録マクロ
+//----------------------------------------------------------------------------
+
+#define THEOLIZER_INTERNAL_ADD(dType, ...)  add(typeid(::dType), __VA_ARGS__)
+
+#define THEOLIZER_INTERNAL_ADD2(dType, ...)                                 \
+    GlobalVersionNoTable<kLastGlobalVersionNo>::getInstance().              \
+        add2(registerTypeIndex<::dType>(), __VA_ARGS__)
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 

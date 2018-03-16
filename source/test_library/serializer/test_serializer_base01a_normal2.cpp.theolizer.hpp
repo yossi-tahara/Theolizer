@@ -29,3 +29,9 @@
 //############################################################################
 
 #include "test_serializer_base_auto_gen.h"
+
+namespace theolizer{namespace internal{namespace{
+    RegisterLocalVersions::RegisterLocalVersions()
+    {
+    }
+}}}  // namespace theolizer

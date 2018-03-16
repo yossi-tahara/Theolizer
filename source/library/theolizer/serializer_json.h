@@ -73,8 +73,14 @@ namespace internal
 {
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
-const static char kJsonSerializerName[]="JsonTheolizer";
-const static unsigned kJsonSerializerVersionNo=1;
+constexpr static char kJsonSerializerName[]="JsonTheolizer";
+constexpr static unsigned kJsonSerializerVersionNo=1;
+
+// ***************************************************************************
+//          バージョン管理
+// ***************************************************************************
+
+THEOLIZER_INTERNAL_REGISTER_SERIALIZER(JsonSerializerVersion, 1, "JsonTheolizer");
 
 // ***************************************************************************
 //      プロバティ返却
@@ -106,6 +112,7 @@ inline bool hasPropertyJson(Property iProperty, bool iIsSaver)
     return ret;
 }
 
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
 //############################################################################
 //      Json Serializer実装部
 //
@@ -118,7 +125,6 @@ inline bool hasPropertyJson(Property iProperty, bool iIsSaver)
 //              std::stringがMultiByteエンコードされているとして処理する。
 //############################################################################
 
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
 // ***************************************************************************
 /*!
 @brief      保存用中間JsonSerializer

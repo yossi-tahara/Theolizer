@@ -37,8 +37,7 @@ namespace theolizer{namespace internal{
 namespace global_table{
     MyGVNT::MyGVNT()
     {
-        THEOLIZER_INTERNAL_ADD(theolizer::internal::JsonMidOSerializer,1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD(theolizer::internal::JsonMidISerializer,1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(theolizer::internal::JsonSerializerVersion, 1u, 1u, 1u, 1u);
         THEOLIZER_INTERNAL_ADD(IntrusiveBase,                      1u,1u,2u,2u);
         THEOLIZER_INTERNAL_ADD(IntrusiveBase2,                     1u,1u,1u,1u);
         THEOLIZER_INTERNAL_ADD(IntrusiveDerived,                   1u,2u,3u,4u);
@@ -64,3 +63,32 @@ namespace global_table{
     }
 }   // namespace global_table
 }}  // namespace theolizer
+
+namespace theolizer{namespace internal{namespace{
+    RegisterLocalVersions::RegisterLocalVersions()
+    {
+        THEOLIZER_INTERNAL_ADD2(theolizer::internal::JsonSerializerVersion, 1u, 1u, 1u, 1u);
+        THEOLIZER_INTERNAL_ADD2(IntrusiveBase,                      1u,1u,2u,2u);
+        THEOLIZER_INTERNAL_ADD2(IntrusiveBase2,                     1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(IntrusiveDerived,                   1u,2u,3u,4u);
+        THEOLIZER_INTERNAL_ADD2(IntrusiveDerived2,                  1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(DerivedChange,                      1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(change_order::dummy::DerivedChange, 1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(DerivedDelete,                      1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(EnumTest,                           1u,2u,2u,2u);
+        THEOLIZER_INTERNAL_ADD2(another::EnumTest,                  1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(DestinationTest,                    1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(Included1,                          1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(Included2,                          1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(Tracking,                           1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(Dynamic,                            1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(ArrayClass,                         1u,1u,2u,2u);
+        THEOLIZER_INTERNAL_ADD2(NonIntrusiveBase,                   1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(NonIntrusiveDrived,                 1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(ArrayClassTemplatePrimary,          1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(Pointers,                           1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(vectorTheolizer,                    1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(listTheolizer,                      1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD2(unique_ptrTheolizer,                1u,1u,1u,1u);
+    }
+}}}  // namespace theolizer

@@ -86,7 +86,9 @@ std::size_t TypeInfoList::registerType(BaseTypeInfo* iTypeInfo)
 
 TypeIndex TypeInfoList::registerType2(BaseTypeInfo* iTypeInfo)
 {
-    return 0;
+    std::size_t ret=mList2.size();
+    mList2.push_back(iTypeInfo);
+    return ret;
 }
 
 // ***************************************************************************
