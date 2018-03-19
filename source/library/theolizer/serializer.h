@@ -383,9 +383,8 @@ namespace theolizer
 
 #define THEOLIZER_INTERNAL_ADD(dType, ...)  add(typeid(::dType), __VA_ARGS__)
 
-#define THEOLIZER_INTERNAL_ADD2(dType, ...)                                 \
-    GlobalVersionNoTable<kLastGlobalVersionNo>::getInstance().              \
-        add2(registerTypeIndex<::dType>(), __VA_ARGS__)
+#define THEOLIZER_INTERNAL_ADD2(dGvnt, dType, ...)                          \
+    global_table::dGvnt::getInstance().add2(registerTypeIndex<::dType>(), __VA_ARGS__)
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 

@@ -892,6 +892,8 @@ public:
 private:
     VersionNoList       mVersionNoList;
 
+    unsigned            getLocalVersionNo(TypeIndex iTypeIndex);
+
 //----------------------------------------------------------------------------
 //      型情報保存
 //----------------------------------------------------------------------------

@@ -157,6 +157,7 @@ void BaseSerializer::createVersionNoTable()
 //      TypeIndex対応表
 //----------------------------------------------------------------------------
 
+#if 0
     // 最新版でない時のみ生成する
     if (mLastGlobalVersionNo != mGlobalVersionNo)
     {
@@ -174,6 +175,12 @@ void BaseSerializer::createVersionNoTable()
     {
         mVersionNoList.resize(0);
     }
+#endif
+}
+
+unsigned BaseSerializer::getLocalVersionNo(TypeIndex iTypeIndex)
+{
+    return mGlobalVersionNoTable->getLocalVersionNo(mGlobalVersionNo, iTypeIndex);
 }
 
 // ***************************************************************************

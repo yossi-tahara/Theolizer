@@ -1170,6 +1170,8 @@ THEOLIZER_INTERNAL_FLOAT(113,16384, "float128",12u);
 THEOLIZER_INTERNAL_STRING(          "string",  13u);
 //THEOLIZER_INTERNAL_BYTES(           "bytes",   14u);
 
+constexpr unsigned kPrimitiveEnd = 16u;
+
 #undef  THEOLIZER_INTERNAL_INTEGRAL
 #undef  THEOLIZER_INTERNAL_FLOAT
 #undef  THEOLIZER_INTERNAL_STRING

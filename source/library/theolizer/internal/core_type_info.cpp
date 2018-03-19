@@ -90,7 +90,7 @@ TypeIndex TypeInfoList::registerType2(BaseTypeInfo* iTypeInfo)
     if (std::numeric_limits<unsigned>::max() < ret)
     {THEOLIZER_INTERNAL_ERROR(u8"too many Types!!");}
     mList2.push_back(iTypeInfo);
-    return static_cast<unsigned>(ret);
+    return static_cast<unsigned>(ret)+kPrimitiveEnd;
 }
 
 // ***************************************************************************

@@ -623,13 +623,15 @@ protected:
     GlobalVersionNoTableBase() { }
     ~GlobalVersionNoTableBase() { }
 public:
+    virtual unsigned getLocalVersionNo(unsigned iGlobalVersionNo, unsigned iIndex) const = 0;
+
+#if 0
     virtual unsigned getLocalVersionNo
         (
             unsigned iGlobalVersionNo,
             std::type_index iStdTypeIndex
         ) const = 0;
 
-#if 0
     virtual unsigned getGlobalVersionNo
         (
             unsigned iLocalVersionNo,
@@ -667,7 +669,7 @@ public:
 
 //      ---<<< ローカル・バージョン番号のリスト >>>---
 
-    VersionNoList   mVersionNoList[uLastGlobalVersionNo];
+    std::vector<unsigned>   mVersionNoList[uLastGlobalVersionNo];
 
 //      ---<<< 機能群 >>>---
 
@@ -693,6 +695,10 @@ std::cout << "add2() : mVersionNoList[" << i << "][" << iIndex << "]=" << aLocal
         }
     }
 
+    unsigned getLocalVersionNo(unsigned iGlobalVersionNo, unsigned iIndex) const
+    {
+        return mVersionNoList[iGlobalVersionNo-1].at(iIndex);
+    }
 
 
 
@@ -726,6 +732,7 @@ std::cout << "add2() : mVersionNoList[" << i << "][" << iIndex << "]=" << aLocal
         addGlobalVersionKey(GlobalVersionKey(iTypeInfo, aTypeIndex), mKeyList);
     }
 
+#if 0
     // 指定クラスの指定グローバル・バージョン番号に該当するローカル・バージョン番号返却
     //  未登録クラスは1を返却する(完全自動型なので)
     unsigned getLocalVersionNo(unsigned iGlobalVersionNo, std::type_index iStdTypeIndex) const
@@ -757,7 +764,6 @@ std::cout << "add2() : mVersionNoList[" << i << "][" << iIndex << "]=" << aLocal
         return ret;
     }
 
-#if 0
     // 指定クラスの指定ローカル・バージョン番号に該当する最大のグローバル・バージョン番号返却
     //  未登録クラスはuLastGlobalVersionNoを返却する
     unsigned getGlobalVersionNo(unsigned iLocalVersionNo, std::type_index iStdTypeIndex) const

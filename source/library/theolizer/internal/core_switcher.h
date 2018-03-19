@@ -618,7 +618,10 @@ struct Switcher
         }
 
         // 通常処理
-        unsigned aVersionNo=iSerializer.mVersionNoList.at(aClassTypeInfo.mTypeIndex);
+//      unsigned aVersionNo=iSerializer.mVersionNoList.at(aClassTypeInfo.mTypeIndex);
+        unsigned aVersionNo=iSerializer.getLocalVersionNo(aClassTypeInfo.mTypeIndex2);
+std::cout << THEOLIZER_INTERNAL_TYPE_NAME(tTargetClass) << " : "
+          << "aVersionNo=" << aVersionNo << " TypeIndex2=" << aClassTypeInfo.mTypeIndex2 << "\n";
         IntrusiveType* aInstancePtr = &iInstance;
 
         // 追跡モード修正(クラスのオブジェクト追跡中、かつ、基底クラス処理中なら追跡する)
@@ -727,7 +730,10 @@ struct Switcher
         }
 
         // 通常処理
-        unsigned aVersionNo=iSerializer.mVersionNoList.at(aClassTypeInfo.mTypeIndex);
+//      unsigned aVersionNo=iSerializer.mVersionNoList.at(aClassTypeInfo.mTypeIndex);
+        unsigned aVersionNo=iSerializer.getLocalVersionNo(aClassTypeInfo.mTypeIndex2);
+std::cout << THEOLIZER_INTERNAL_TYPE_NAME(tTargetClass) << " : "
+          << "aVersionNo=" << aVersionNo << " TypeIndex2=" << aClassTypeInfo.mTypeIndex2 << "\n";
         IntrusiveType* aInstancePtr = &oInstance;
 
         // 追跡モード修正(クラスのオブジェクト追跡中、かつ、基底クラス処理中なら追跡する)
