@@ -39,6 +39,7 @@
 
 #include <limits>
 #include <utility>  // std::forward
+#include <initializer_list>
 
 // ***************************************************************************
 //      基本ツールのインクルード
@@ -678,8 +679,21 @@ public:
     {
         static_assert(sizeof...(tLocalVersionNoList) == uLastGlobalVersionNo,
                       "GlobalVersionNoTable::add() illegal number of parameters.");
-    }
 
+        unsigned aLocalVersionNoList[]={iLocalVersionNoList...};
+std::cout << "add2() : uLastGlobalVersionNo=" << uLastGlobalVersionNo
+          << " sizeof...()=" << sizeof...(tLocalVersionNoList) << std::endl;
+        for (unsigned i=0; i < uLastGlobalVersionNo; ++i)
+        {
+            if (mVersionNoList[i].size() <= iIndex)
+            {
+std::cout << "add2() : mVersionNoList[" << i << "].resize(" << iIndex+1 << ")" << std::endl;
+                mVersionNoList[i].resize(iIndex+1, 1);  // デフォルトのローカル・バージョン番号は1
+            }
+std::cout << "add2() : mVersionNoList[" << i << "][" << iIndex << "]=" << aLocalVersionNoList[i] << ")" << std::endl;
+            mVersionNoList[i][iIndex] = aLocalVersionNoList[i];
+        }
+    }
 
 
 
