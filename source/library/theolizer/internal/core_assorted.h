@@ -623,8 +623,6 @@ protected:
     GlobalVersionNoTableBase() { }
     ~GlobalVersionNoTableBase() { }
 public:
-    virtual char const* getTableName() const {return "";}
-
     virtual unsigned getLocalVersionNo
         (
             unsigned iGlobalVersionNo,

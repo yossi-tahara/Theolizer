@@ -348,7 +348,6 @@ namespace theolizer
             static dName instance;                                          \
             return instance;                                                \
         }                                                                   \
-        char const* getTableName() const {return #dName;}                   \
     };                                                                      \
     }   /* namespace namespace */                                           \
     namespace {                                                             \
