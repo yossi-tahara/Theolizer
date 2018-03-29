@@ -341,6 +341,7 @@ public:
 
     // リスト返却
     TypeInfoListImpl& getList() {return mList;}
+    TypeInfoListImpl& getList2() {return mList2;}
 };
 
 // ***************************************************************************
@@ -515,7 +516,7 @@ public:
     // 下記は各TypeInfoで定義する
     virtual std::type_index getStdTypeIndex(bool iRaw=false) const = 0;
     virtual unsigned        getLastVersionNoV() const = 0;
-    virtual std::string     getTypeName(VersionNoList const& iVersionNoList) = 0;
+    virtual std::string     getTypeName(unsigned) = 0;
 
     // 下記はClassTypeInfoのみ有効
     virtual char const*     getUniqueName()
@@ -616,7 +617,11 @@ class PointerTypeInfo : public BaseTypeInfo
 {
 private:
     // コンストラクタ／デストラクタ
-    PointerTypeInfo() : BaseTypeInfo(etcPointerType) { }
+    PointerTypeInfo() : BaseTypeInfo(etcPointerType)
+    {
+std::cout << "PointerTypeInfo() : " << getCName() << "\n";
+        mTypeIndex2 = TypeInfoList::getInstance().registerType2(this);
+    }
 public:
     static PointerTypeInfo& getInstance()
     {
@@ -641,7 +646,7 @@ public:
     static unsigned getLastVersionNo();
     unsigned getLastVersionNoV() const {return getLastVersionNo();}
     // 型名返却
-    std::string getTypeName(VersionNoList const& iVersionNoList);
+    std::string getTypeName(unsigned);
     // C言語名返却(デバッグ用)
     char const* getCName() const
     {
@@ -676,7 +681,11 @@ class ArrayTypeInfo : public BaseTypeInfo
 {
 private:
     // コンストラクタ／デストラクタ
-    ArrayTypeInfo() : BaseTypeInfo(etcArrayType) { }
+    ArrayTypeInfo() : BaseTypeInfo(etcArrayType)
+    {
+std::cout << "ArrayTypeInfo() : " << getCName() << "\n";
+        mTypeIndex2 = TypeInfoList::getInstance().registerType2(this);
+    }
 public:
     static ArrayTypeInfo& getInstance()
     {
@@ -699,7 +708,7 @@ public:
     static unsigned getLastVersionNo();
     unsigned getLastVersionNoV() const {return getLastVersionNo();}
     // 型名返却
-    std::string getTypeName(VersionNoList const& iVersionNoList);
+    std::string getTypeName(unsigned);
     // C言語名返却(デバッグ用)
     char const* getCName() const
     {
@@ -785,15 +794,11 @@ public:
     static unsigned getLastVersionNo() {return tClassType::Theolizer::kLastVersionNo;}
     unsigned getLastVersionNoV() const {return getLastVersionNo();}
     // 型名返却
-    std::string getTypeName(VersionNoList const& iVersionNoList)
+    std::string getTypeName(unsigned iVersionNo)
     {
         THEOLIZER_INTERNAL_ASSERT(BaseTypeInfo::mTypeIndex != kInvalidSize,
             "Not registered class %1%.", getCName());
-        return tClassType::Theolizer::getClassName
-                (
-                    iVersionNoList,
-                    iVersionNoList.at(BaseTypeInfo::mTypeIndex)
-                );
+        return tClassType::Theolizer::getClassName(iVersionNo);
     }
     char const* getUniqueName()
     {
@@ -1059,13 +1064,9 @@ public:
     }
     unsigned getLastVersionNoV() const {return getLastVersionNo();}
     // 型名返却
-    std::string getTypeName(VersionNoList const& iVersionNoList)
+    std::string getTypeName(unsigned iVersionNo)
     {
-        return EnumNonIntrusive::Theolizer::getEnumName
-            (
-                iVersionNoList.
-                at(BaseTypeInfo::mTypeIndex)
-            );
+        return EnumNonIntrusive::Theolizer::getEnumName(iVersionNo);
     }
     // C言語名返却(デバッグ用)
     char const* getCName() const
@@ -1239,7 +1240,7 @@ public:
     }
     unsigned getLastVersionNoV() const {return getLastVersionNo();}
     // 型名返却
-    std::string getTypeName(VersionNoList const& iVersionNoList)
+    std::string getTypeName(unsigned)
     {
         return getPrimitiveName<tPrimitiveType>();
     }
@@ -1291,7 +1292,7 @@ public:
     {THEOLIZER_INTERNAL_ABORT("AdditionalTypeInfo::getLastVersionNo()");}
     unsigned getLastVersionNoV() const {return getLastVersionNo();}
     // 型名返却
-    std::string getTypeName(VersionNoList const& iVersionNoList)
+    std::string getTypeName(unsigned)
     {THEOLIZER_INTERNAL_ABORT("AdditionalTypeInfo::getTypeName()");}
 
     // C言語名返却(デバッグ用)
@@ -1710,7 +1711,7 @@ struct Switcher2
         return 0;
     }
     // 型名返却
-    static std::string getTypeName(VersionNoList const& iVersionNoList)
+    static std::string getTypeName(unsigned)
     {
         static_assert(Ignore<tType>::kFalse, "This is not serializable class.");
         return 0;
@@ -1749,9 +1750,9 @@ struct Switcher2
         return PointerTypeInfo<PointerType>::getLastVersionNo();
     }
     // 型名返却
-    static std::string getTypeName(VersionNoList const& iVersionNoList)
+    static std::string getTypeName(unsigned iVersionNo)
     {
-        return PointerTypeInfo<PointerType>::getInstance().getTypeName(iVersionNoList);
+        return PointerTypeInfo<PointerType>::getInstance().getTypeName(iVersionNo);
     }
     // TypeIndex返却
     static std::size_t getTypeIndex()
@@ -1785,9 +1786,9 @@ struct Switcher2
         return ArrayTypeInfo<ArrayType>::getLastVersionNo();
     }
     // 型名返却
-    static std::string getTypeName(VersionNoList const& iVersionNoList)
+    static std::string getTypeName(unsigned iVersionNo)
     {
-        return ArrayTypeInfo<ArrayType>::getInstance().getTypeName(iVersionNoList);
+        return ArrayTypeInfo<ArrayType>::getInstance().getTypeName(iVersionNo);
     }
     // TypeIndex返却
     static std::size_t getTypeIndex()
@@ -1823,9 +1824,9 @@ struct Switcher2
         return ClassTypeInfo<ClassType>::getLastVersionNo();
     }
     // 型名返却
-    static std::string getTypeName(VersionNoList const& iVersionNoList)
+    static std::string getTypeName(unsigned iVersionNo)
     {
-        return ClassTypeInfo<ClassType>::getInstance().getTypeName(iVersionNoList);
+        return ClassTypeInfo<ClassType>::getInstance().getTypeName(iVersionNo);
     }
     // TypeIndex返却
     static std::size_t getTypeIndex()
@@ -1860,10 +1861,9 @@ struct Switcher2
         return ClassTypeInfo<ClassType>::getLastVersionNo();
     }
     // 型名返却
-    static std::string getTypeName(VersionNoList const& iVersionNoList)
+    static std::string getTypeName(unsigned iVersionNo)
     {
-        return ClassTypeInfo<ClassType>::
-            getInstance().getTypeName(iVersionNoList);
+        return ClassTypeInfo<ClassType>::getInstance().getTypeName(iVersionNo);
     }
     // TypeIndex返却
     static std::size_t getTypeIndex()
@@ -1897,9 +1897,9 @@ struct Switcher2
         return EnumTypeInfo<EnumType>::getLastVersionNo();
     }
     // 型名返却
-    static std::string getTypeName(VersionNoList const& iVersionNoList)
+    static std::string getTypeName(unsigned iVersionNo)
     {
-        return EnumTypeInfo<EnumType>::getInstance().getTypeName(iVersionNoList);
+        return EnumTypeInfo<EnumType>::getInstance().getTypeName(iVersionNo);
     }
     // TypeIndex返却
     static std::size_t getTypeIndex()
@@ -1937,9 +1937,9 @@ struct Switcher2
         return PrimitiveTypeInfo<PrimitiveType>::getLastVersionNo();
     }
     // 型名返却
-    static std::string getTypeName(VersionNoList const& iVersionNoList)
+    static std::string getTypeName(unsigned iVersionNo)
     {
-        return PrimitiveTypeInfo<PrimitiveType>::getInstance().getTypeName(iVersionNoList);
+        return PrimitiveTypeInfo<PrimitiveType>::getInstance().getTypeName(iVersionNo);
     }
     // TypeIndex返却
     static std::size_t getTypeIndex()
@@ -2014,11 +2014,10 @@ unsigned PointerTypeInfo<tPointerType>::getLastVersionNo()
 }
 
 template<typename tPointerType>
-std::string PointerTypeInfo<tPointerType>::
-    getTypeName(VersionNoList const& iVersionNoList)
+std::string PointerTypeInfo<tPointerType>::getTypeName(unsigned iVersionNo)
 {
     typedef typename std::remove_pointer<tPointerType>::type    ParentType;
-    return Switcher2<ParentType>::getTypeName(iVersionNoList)+"*";
+    return Switcher2<ParentType>::getTypeName(iVersionNo)+"*";
 }
 
 //      ---<<< ポイントされている型のBaseTypeInfo*獲得 >>>---
@@ -2043,11 +2042,10 @@ unsigned ArrayTypeInfo<tArrayType>::getLastVersionNo()
 }
 
 template<typename tArrayType>
-std::string ArrayTypeInfo<tArrayType>::
-    getTypeName(VersionNoList const& iVersionNoList)
+std::string ArrayTypeInfo<tArrayType>::getTypeName(unsigned iVersionNo)
 {
     typedef typename std::remove_extent<tArrayType>::type   ParentType;
-    std::string ret = Switcher2<ParentType>::getTypeName(iVersionNoList);
+    std::string ret = Switcher2<ParentType>::getTypeName(iVersionNo);
 
     // []の順序は逆だが、中身がないのでひっくり返す必要無し
     ret.append("[]");
@@ -2104,7 +2102,7 @@ struct NonType<tType, tValue, EnableIf<std::is_enum<tType>::value> >
 template<typename... tRest>
 struct ParameterName
 {
-    static std::string get(VersionNoList const& iVersionNoList)
+    static std::string get(unsigned iVersionNo)
     {
         return "";
     }
@@ -2115,12 +2113,12 @@ struct ParameterName
 template<typename tClass, typename... tRest>
 struct ParameterName<tClass, tRest...>
 {
-    static std::string get(VersionNoList const& iVersionNoList)
+    static std::string get(unsigned iVersionNo)
     {
-        std::string aName=Switcher2<tClass>::getTypeName(iVersionNoList);
+        std::string aName=Switcher2<tClass>::getTypeName(iVersionNo);
         if (sizeof...(tRest))
         {
-            aName = aName+","+ParameterName<tRest...>::get(iVersionNoList);
+            aName = aName+","+ParameterName<tRest...>::get(iVersionNo);
         }
         return aName;
     }
@@ -2131,12 +2129,12 @@ struct ParameterName<tClass, tRest...>
 template<typename tType, tType tValue, typename... tRest>
 struct ParameterName<NonType<tType, tValue>, tRest...>
 {
-    static std::string get(VersionNoList const& iVersionNoList)
+    static std::string get(unsigned iVersionNo)
     {
         std::string aName=NonType<tType, tValue>::get();
         if (sizeof...(tRest))
         {
-            aName = aName+","+ParameterName<tRest...>::get(iVersionNoList);
+            aName = aName+","+ParameterName<tRest...>::get(iVersionNo);
         }
         return aName;
     }
@@ -2148,11 +2146,11 @@ struct ParameterName<NonType<tType, tValue>, tRest...>
     template<typename... tRest>                                             \
     struct ParameterName<dType, tRest...>                                   \
     {                                                                       \
-        static std::string get(VersionNoList const& iVersionNoList)         \
+        static std::string get(unsigned iVersionNo)                         \
         {                                                                   \
             std::string aName=getPrimitiveName<dType>();                    \
             if (sizeof...(tRest)) {                                         \
-                aName = aName+","+ParameterName<tRest...>::get(iVersionNoList);\
+                aName = aName+","+ParameterName<tRest...>::get(iVersionNo); \
             }                                                               \
             return aName;                                                   \
         }                                                                   \
@@ -2163,11 +2161,11 @@ struct ParameterName<NonType<tType, tValue>, tRest...>
     template<typename... tRest>                                             \
     struct ParameterName<dType const, tRest...>                             \
     {                                                                       \
-        static std::string get(VersionNoList const& iVersionNoList)         \
+        static std::string get(unsigned iVersionNo)                         \
         {                                                                   \
             std::string aName=getPrimitiveName<dType>();                    \
             if (sizeof...(tRest)) {                                         \
-                aName = aName+","+ParameterName<tRest...>::get(iVersionNoList);\
+                aName = aName+","+ParameterName<tRest...>::get(iVersionNo); \
             }                                                               \
             return aName;                                                   \
         }                                                                   \
@@ -2200,18 +2198,18 @@ struct ParameterName<void, tRest...>
 //----------------------------------------------------------------------------
 
 template<typename... tArgs>
-char const* makeTemplateName(char const* iName, VersionNoList const& iVersionNoList)
+char const* makeTemplateName(char const* iName, unsigned iVersionNo)
 {
     static std::string gStaticString;
 
     gStaticString = std::string(iName) + "<"
-                 + ParameterName<tArgs...>::get(iVersionNoList)
+                 + ParameterName<tArgs...>::get(iVersionNo)
                  + ">";
     return gStaticString.c_str();
 }
 
 #define THEOLIZER_INTERNAL_MAKE_TEMPLATE_NAME(dName, ...)                   \
-    theolizer::internal::makeTemplateName<__VA_ARGS__>(dName, iVersionNoList)
+    theolizer::internal::makeTemplateName<__VA_ARGS__>(dName, iVersionNo)
 
 //############################################################################
 //      End

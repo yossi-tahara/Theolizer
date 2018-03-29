@@ -124,8 +124,7 @@ namespace internal
         static const bool kIsAuto=true;                                     \
         static const bool kIsVersion=false;                                 \
                                                                             \
-        static std::string getClassName(                                    \
-            theolizer::internal::VersionNoList const&, unsigned);           \
+        static std::string getClassName(unsigned);                          \
         static char const* getUniqueName();                                 \
         static theolizer::internal::ElementsMapping getElementsMapping(unsigned);\
         static theolizer::internal::ElementRange getElementRange(unsigned); \
@@ -167,8 +166,7 @@ public:                                                                     \
         static const bool kIsAuto=false;                                    \
         static const bool kIsVersion=false;                                 \
                                                                             \
-        static std::string getClassName(                                    \
-            theolizer::internal::VersionNoList const&, unsigned);           \
+        static std::string getClassName(unsigned);                          \
         static char const* getUniqueName();                                 \
         static theolizer::internal::ElementsMapping getElementsMapping(unsigned);\
         static theolizer::internal::ElementRange getElementRange(unsigned); \
@@ -218,8 +216,7 @@ public:                                                                     \
         static const bool kIsAuto=false;                                    \
         static const bool kIsVersion=false;                                 \
                                                                             \
-        static std::string getClassName(                                    \
-            theolizer::internal::VersionNoList const& iVersionNoList, unsigned)\
+        static std::string getClassName(unsigned iVersionNo)                \
         {return THEOLIZER_INTERNAL_MAKE_TEMPLATE_NAME(                      \
             u8"" #dName,THEOLIZER_INTERNAL_UNPAREN dParam);}                \
         static char const* getUniqueName() {return #dUniqueClass;}          \
@@ -890,7 +887,7 @@ public:
 
     // 各TypeIndexに対するバージョン番号
 private:
-    VersionNoList       mVersionNoList;
+////    VersionNoList       mVersionNoList;
 
     unsigned            getLocalVersionNo(TypeIndex iTypeIndex);
 

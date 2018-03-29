@@ -618,7 +618,6 @@ struct Switcher
         }
 
         // 通常処理
-//      unsigned aVersionNo=iSerializer.mVersionNoList.at(aClassTypeInfo.mTypeIndex);
         unsigned aVersionNo=iSerializer.getLocalVersionNo(aClassTypeInfo.mTypeIndex2);
 std::cout << THEOLIZER_INTERNAL_TYPE_NAME(tTargetClass) << " : "
           << "aVersionNo=" << aVersionNo << " TypeIndex2=" << aClassTypeInfo.mTypeIndex2 << "\n";
@@ -730,7 +729,6 @@ std::cout << THEOLIZER_INTERNAL_TYPE_NAME(tTargetClass) << " : "
         }
 
         // 通常処理
-//      unsigned aVersionNo=iSerializer.mVersionNoList.at(aClassTypeInfo.mTypeIndex);
         unsigned aVersionNo=iSerializer.getLocalVersionNo(aClassTypeInfo.mTypeIndex2);
 std::cout << THEOLIZER_INTERNAL_TYPE_NAME(tTargetClass) << " : "
           << "aVersionNo=" << aVersionNo << " TypeIndex2=" << aClassTypeInfo.mTypeIndex2 << "\n";
@@ -864,7 +862,7 @@ struct Switcher
         }
 
         // 通常処理
-        unsigned aVersionNo=iSerializer.mVersionNoList.at(aClassTypeInfo.mTypeIndex);
+        unsigned aVersionNo=iSerializer.getLocalVersionNo(aClassTypeInfo.mTypeIndex2);
         NonIntrusiveType* aInstancePtr = static_cast<NonIntrusiveType*>(&iInstance);
 
         // 追跡モード修正(クラスのオブジェクト追跡中、かつ、基底クラス処理中なら追跡する)
@@ -973,7 +971,7 @@ struct Switcher
         }
 
         // 通常処理
-        unsigned aVersionNo=iSerializer.mVersionNoList.at(aClassTypeInfo.mTypeIndex);
+        unsigned aVersionNo=iSerializer.getLocalVersionNo(aClassTypeInfo.mTypeIndex2);
         NonIntrusiveType* aInstancePtr = static_cast<NonIntrusiveType*>(&oInstance);
 
         // 追跡モード修正(クラスのオブジェクト追跡中、かつ、基底クラス処理中なら追跡する)
@@ -1218,8 +1216,8 @@ struct Switcher
     // 保存
     static void save(tBaseSerializer& iSerializer, tEnumType& iInstance)
     {
-        unsigned aVersionNo=iSerializer.mVersionNoList.at(
-            EnumTypeInfo<tEnumType>::getInstance().mTypeIndex);
+        unsigned aVersionNo=iSerializer.getLocalVersionNo(
+            EnumTypeInfo<tEnumType>::getInstance().mTypeIndex2);
 
         if (tTrackingMode == etmDefault)
         {
@@ -1269,8 +1267,8 @@ struct Switcher
     // 回復
     static void load(tBaseSerializer& iSerializer, tEnumType& oInstance)
     {
-        unsigned aVersionNo=iSerializer.mVersionNoList.at(
-            EnumTypeInfo<tEnumType>::getInstance().mTypeIndex);
+        unsigned aVersionNo=iSerializer.getLocalVersionNo(
+            EnumTypeInfo<tEnumType>::getInstance().mTypeIndex2);
 
         if (tTrackingMode == etmDefault)
         {

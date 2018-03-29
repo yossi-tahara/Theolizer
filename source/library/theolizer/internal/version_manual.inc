@@ -207,7 +207,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
         return dName
     #define THEOLIZER_INTERNAL_TEMPLATE_NAME(dName)                         \
         return THEOLIZER_INTERNAL_MAKE_TEMPLATE_NAME dName
-    static std::string getClassName(theolizer::internal::VersionNoList const& iVersionNoList)
+    static std::string getClassNameImpl(unsigned iVersionNo)
     {THEOLIZER_GENERATED_CLASS_NAME();}
     #undef THEOLIZER_INTERNAL_CLASS_NAME
     #undef THEOLIZER_INTERNAL_TEMPLATE_NAME
@@ -226,11 +226,7 @@ struct THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 
 //      ---<<< 型チェック用 >>>---
 
-    static std::string getClassName
-    (
-        theolizer::internal::VersionNoList const& iVersionNoList,
-        unsigned iVersionNo
-    );
+    static std::string getClassName(unsigned iVersionNo);
 
 //      ---<<< ターゲットへのポインタ >>>---
 
@@ -487,22 +483,18 @@ THEOLIZER_INTERNAL_DERIVED::TheolizerVersion
 <
     tBaseSerializer,
     THEOLIZER_GENERATED_VERSION_NO+1
->::getClassName
-(
-    theolizer::internal::VersionNoList const& iVersionNoList,
-    unsigned iVersionNo
-)
+>::getClassName(unsigned iVersionNo)
 {
     // 旧バージョン名返却
     if (iVersionNo < (THEOLIZER_GENERATED_VERSION_NO+1))
     {
         return THEOLIZER_INTERNAL_DERIVED::
             TheolizerVersion<tBaseSerializer, THEOLIZER_GENERATED_VERSION_NO>::
-                getClassName(iVersionNoList, iVersionNo);
+                getClassName(iVersionNo);
     }
 
     // 当バージョン／クラス名返却
-    return getClassName(iVersionNoList);
+    return getClassNameImpl(iVersionNo);
 }
 
 //      ---<<< メンバ変数対応方法返却 >>>---
@@ -646,14 +638,11 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion<tBaseSerializer, 1>::loadClass
 THEOLIZER_GENERATED_PARAMETER_LIST
 template<class tBaseSerializer>
 std::string
-THEOLIZER_INTERNAL_DERIVED::TheolizerVersion<tBaseSerializer, 1>::getClassName
-(
-    theolizer::internal::VersionNoList const& iVersionNoList,
-    unsigned iVersionNo
-)
+THEOLIZER_INTERNAL_DERIVED::TheolizerVersion<tBaseSerializer, 1>::
+    getClassName(unsigned iVersionNo)
 {
     // 当バージョン／クラス名返却
-    return getClassName(iVersionNoList);
+    return getClassNameImpl(iVersionNo);
 }
 
 //      ---<<< メンバ変数対応方法返却 >>>---
@@ -737,15 +726,11 @@ inline void THEOLIZER_INTERNAL_DERIVED::Theolizer::loadClass
 
 THEOLIZER_GENERATED_PARAMETER_LIST
 inline std::string
-THEOLIZER_INTERNAL_DERIVED::Theolizer::getClassName
-(
-    theolizer::internal::VersionNoList const& iVersionNoList,
-    unsigned iVersionNo
-)
+THEOLIZER_INTERNAL_DERIVED::Theolizer::getClassName(unsigned iVersionNo)
 {
     return THEOLIZER_INTERNAL_DERIVED::
         TheolizerVersion<theolizer::internal::BaseSerializer, Theolizer::kLastVersionNo>::
-            getClassName(iVersionNoList, iVersionNo);
+            getClassName(iVersionNo);
 }
 
 //          ---<<< ユニーク名返却 >>>---

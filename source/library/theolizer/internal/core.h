@@ -512,8 +512,7 @@ struct ElementBase
     // クラス/enum共通
     virtual void writeMetaData
     (
-        BaseSerializer& iSerializer,
-        VersionNoList const* iVersionNoList=nullptr
+        BaseSerializer& iSerializer
     ) const = 0;
 
     // クラスのみ
@@ -667,8 +666,7 @@ public:
 
     void writeMetaData
     (
-        BaseSerializer& iSerializer,
-        VersionNoList const* iVersionNoList
+        BaseSerializer& iSerializer
     ) const
     {
         // 要素毎の塊
@@ -678,6 +676,9 @@ public:
         // TypeInfo獲得
         auto aTypeIndex=getTypeIndex();
         auto aTypeInfo=TypeInfoList::getInstance().getList()[aTypeIndex];
+
+        // バージョン番号獲得
+        unsigned aVersionNo = iSerializer.getLocalVersionNo(aTypeInfo->getTypeIndex2());
 
         // 要素名
         iSerializer.writePreElement();
@@ -693,7 +694,7 @@ public:
 
         // 形名(*/[]修飾付き)
         iSerializer.writePreElement();
-        iSerializer.saveControl(aTypeInfo->getTypeName(*iVersionNoList));
+        iSerializer.saveControl(aTypeInfo->getTypeName(aVersionNo));
 
         // バージョン番号
         iSerializer.writePreElement();
@@ -860,8 +861,7 @@ struct EnumElement : public ElementBase
     // メタ・データ保存
     void writeMetaData
     (
-        BaseSerializer& iSerializer,
-        VersionNoList const*
+        BaseSerializer& iSerializer
     ) const
     {
         // シンボル名リスト
@@ -1146,7 +1146,7 @@ bool ClassTypeInfo<tClassType>::saveTypeInstance
     std::type_index iStdTypeIndex
 )
 {
-    unsigned aVersionNo=iSerializer.mVersionNoList.at(BaseTypeInfo::mTypeIndex);
+    unsigned aVersionNo=iSerializer.getLocalVersionNo(BaseTypeInfo::mTypeIndex);
 
     if (getTargetStdTypeIndex() == iStdTypeIndex)
     {
@@ -1154,7 +1154,7 @@ bool ClassTypeInfo<tClassType>::saveTypeInstance
          && (iSerializer.mCheckMode != CheckMode::InMemory))
         {
             // 型名保存
-            std::string aTypeName=getTypeName(iSerializer.mVersionNoList);
+            std::string aTypeName=getTypeName(aVersionNo);
             iSerializer.saveControl(aTypeName);
         }
         else
@@ -1315,7 +1315,7 @@ bool ClassTypeInfo<tClassType>::loadTypeInstance
             (
                 iSerializer,
                 iPointer,
-                iSerializer.mVersionNoList.at(aFoundTypeIndex)
+                iSerializer.getLocalVersionNo(aFoundTypeIndex)
             );
         }
 return true;

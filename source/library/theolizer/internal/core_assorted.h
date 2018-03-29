@@ -57,7 +57,7 @@
 
 #ifdef _MSC_VER
   #pragma warning(push)
-  #pragma warning(disable:4100 4251)
+  #pragma warning(disable:4100 4127 4251)
 #endif
 
 //############################################################################
@@ -697,6 +697,13 @@ std::cout << "add2() : mVersionNoList[" << i << "][" << iIndex << "]=" << aLocal
 
     unsigned getLocalVersionNo(unsigned iGlobalVersionNo, unsigned iIndex) const
     {
+        // 最新GlobalVersionNoが1の処理
+        if (uLastGlobalVersionNo == 1)
+        {
+            auto aTypeInfoList = TypeInfoList::getInstance().getList2();
+            return aTypeInfoList[iIndex]->getLastVersionNoV();
+        }
+
         return mVersionNoList[iGlobalVersionNo-1].at(iIndex);
     }
 

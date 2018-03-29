@@ -209,11 +209,12 @@ void BaseSerializer::writeHeaderTypeInfo()
      && (mCheckMode != CheckMode::TypeCheckByIndex))
 return;
 
-#if 0
+#if 1
     for (auto&& aLoop : getRBForIndexer(mTypeInfoList))
     {
+        unsigned aVersionNo = getLocalVersionNo(aLoop.front()->getTypeIndex2());
         std::cout << "[" << aLoop.getIndex() << "] "
-                  << aLoop.front()->getTypeName(mVersionNoList)
+                  << aLoop.front()->getTypeName(aVersionNo)
                   << " isTopLevel()=" << aLoop.front()->isTopLovel()
                   << " isManual()=" << aLoop.front()->isManual() << "\n";
     }
@@ -254,6 +255,7 @@ return;
         {
             auto aTypeIndex =aLoop.getIndex();
             auto aTypeInfo=aLoop.front();
+            unsigned aVersionNo = getLocalVersionNo(aLoop.front()->getTypeIndex2());
 
             if (aSaveStatList[aTypeIndex] != essSaving)
         continue;
@@ -304,14 +306,14 @@ return;
 
             // TypeName
             writePreElement();
-            std::string aTypeName=aTypeInfo->getTypeName(mVersionNoList);
+            std::string aTypeName=aTypeInfo->getTypeName(aVersionNo);
             saveControl(aTypeName);
+std::cout << "aTypeName=" << aTypeName << "\n";
 
             if (aTypeInfo->mTypeCategory != etcClassType)
         continue;
 
             // バージョン番号と対応方法獲得
-            unsigned aVersionNo=mVersionNoList.at(aTypeIndex);
             ElementsMapping aElementsMapping = aTypeInfo->getElementsMapping(aVersionNo);
 
             // 手動型なら出力せず、クラス要素のヘッダ出力を指示する
@@ -344,6 +346,7 @@ return;
 
             for (auto&& aElement : aTypeInfo->getElementRange(aVersionNo))
             {
+std::cout << "    ElementName=" << aElement.getName() << "\n";
                 // 保存先一致確認
                 if (!mDestinations.isMatch(aElement.getDestinations()))
             continue;
@@ -359,7 +362,8 @@ return;
                 {
                     // 処理中要素の型名取出し
                     BaseTypeInfo* aElementInfo = mTypeInfoList[aElementTypeIndex];
-                    std::string aElementTypeName=aElementInfo->getTypeName(mVersionNoList);
+                    unsigned aVersionNo2 = getLocalVersionNo(aElementInfo->getTypeIndex2());
+                    std::string aElementTypeName=aElementInfo->getTypeName(aVersionNo2);
                     saveControl(aElementTypeName);
                 }
                 else
@@ -393,7 +397,8 @@ return;
 
 std::string BaseSerializer::getTypeName(std::size_t iTypeIndex)
 {
-    return mTypeInfoList[iTypeIndex]->getTypeName(mVersionNoList);
+    unsigned aVersionNo = getLocalVersionNo(mTypeInfoList[iTypeIndex]->getTypeIndex2());
+    return mTypeInfoList[iTypeIndex]->getTypeName(aVersionNo);
 }
 
 void BaseSerializer::saveProcessStart(std::size_t iTypeIndex)
@@ -496,10 +501,11 @@ return;
         if (iIsClassOnly && (aIndexer.front()->mTypeCategory != etcClassType))
     continue;
 
+        unsigned aVersionNo = getLocalVersionNo(aIndexer.front()->getTypeIndex2());
         mTypeNameMap->
             add
             (
-                aIndexer.front()->getTypeName(mVersionNoList),
+                aIndexer.front()->getTypeName(aVersionNo),
                 aIndexer.getIndex()
             );
     }
@@ -741,7 +747,6 @@ BaseSerializer::BaseSerializer
     mIndent(0),
     mCancelPrettyPrint(false),
     mDoCheck(true),
-    mVersionNoList(),
     mSerializedTypeListI(new SerializedTypeListI),
     mSerializedTypeListN(new SerializedTypeListN),
     mTypeNameMap(nullptr),
@@ -1059,6 +1064,7 @@ BaseSerializer::AutoRestoreLoad::AutoRestoreLoad
 ) : mSerializer(iSerializer),
     mElementsMapping(iSerializer.mElementsMapping)
 {
+std::cout << "AutoRestoreLoad(" << iElementsMapping << ")\n";
     mSerializer.mElementsMapping=iElementsMapping;
     mSerializer.loadGroupStart();
 }
@@ -1079,6 +1085,7 @@ BaseSerializer::AutoRestoreLoad::~AutoRestoreLoad() noexcept(false)
     {
         THEOLIZER_INTERNAL_ERROR(u8"Unknown exception");
     }
+std::cout << "~AutoRestoreLoad(" << mSerializer.mElementsMapping << ")\n";
 }
 
 //----------------------------------------------------------------------------
@@ -1096,6 +1103,7 @@ BaseSerializer::AutoRestoreLoadStructure::AutoRestoreLoadStructure
     mElementsMapping(iSerializer.mElementsMapping),
     mStructure(iStructure)
 {
+std::cout << "AutoRestoreLoadStructure(" << iElementsMapping << ")\n";
     mSerializer.mElementsMapping=iElementsMapping;
     // データ内に型名を記録
     if (mSerializer.mCheckMode == CheckMode::TypeCheckInData)
@@ -1128,6 +1136,7 @@ BaseSerializer::AutoRestoreLoadStructure::~AutoRestoreLoadStructure() noexcept(f
     {
         THEOLIZER_INTERNAL_ERROR(u8"Unknown exception");
     }
+std::cout << "~AutoRestoreLoadStructure(" << mSerializer.mElementsMapping << ")\n";
 }
 
 // ***************************************************************************
@@ -1581,7 +1590,7 @@ return;
 
             // この先頭の型のElementsMappingを取り出す
             std::size_t aProgramTypeIndex = *(aTypeIndexList.begin());
-            unsigned aVersionNo = mVersionNoList.at(aProgramTypeIndex);
+            unsigned aVersionNo = getLocalVersionNo(aProgramTypeIndex);
             BaseTypeInfo* aTypeInfo = mTypeInfoList[aProgramTypeIndex];
             ElementsMapping aElementsMapping = aTypeInfo->getElementsMapping(aVersionNo);
 
@@ -1681,7 +1690,7 @@ return;
 
         // 先頭のBaseTypeInfoを用いる
         std::size_t aProgramTypeIndex = *(aSerializedTypeName.mProgramTypeIndex->begin());
-        unsigned aVersionNo = mVersionNoList.at(aProgramTypeIndex);
+        unsigned aVersionNo = getLocalVersionNo(aProgramTypeIndex);
         BaseTypeInfo* aTypeInfo = mTypeInfoList[aProgramTypeIndex];
 
 //      size_t aElementCount = aTypeInfo->getElementRange(aVersionNo).size();
@@ -1701,8 +1710,10 @@ return;
             size_t aElementTypeIndex=aElement.getTypeIndex();
             // 要素BaseTypeInfo
             BaseTypeInfo* aElementTypeInfo = mTypeInfoList[aElementTypeIndex];
+            // 要素のバージョン番号
+            unsigned aElementVersionNo = getLocalVersionNo(aElementTypeInfo->getTypeIndex2());
             // 要素の型名
-            std::string aElementTypeName=aElementTypeInfo->getTypeName(mVersionNoList);
+            std::string aElementTypeName=aElementTypeInfo->getTypeName(aElementVersionNo);
 //std::cout << "    " << aElementName
 //          << " : "  << aElementTypeName << "\n";
             // 登録
@@ -1776,7 +1787,7 @@ return;
 
         // 先頭のBaseTypeInfoを用いる
         std::size_t aProgramTypeIndex = *(aSerializedTypeIndex.mProgramTypeIndex->begin());
-        unsigned aVersionNo = mVersionNoList.at(aProgramTypeIndex);
+        unsigned aVersionNo = getLocalVersionNo(aProgramTypeIndex);
         BaseTypeInfo* aTypeInfo = mTypeInfoList[aProgramTypeIndex];
 
 //std::cout << "    [" << aProgramTypeIndex << "]"
@@ -1836,6 +1847,7 @@ return;
         }
 //std::cout << "\n";
     }
+std::cout << "----------------------- readHeaderTypeInfo()\n";
 }
 
 //----------------------------------------------------------------------------
