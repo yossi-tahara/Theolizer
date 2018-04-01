@@ -733,7 +733,7 @@ BaseSerializer::BaseSerializer
     mGlobalVersionNo(iGlobalVersionNo),
     mLastGlobalVersionNo(iLastGlobalVersionNo),
     mCharIsMultiByte(false),
-    mTypeInfoList(TypeInfoList::getInstance().getList()),
+    mTypeInfoList(TypeInfoList::getInstance().getList2()),
     mTypeIndexCount(mTypeInfoList.size()),
     mRequireClearTracking(false),
     mAdditionalInfo(*this),

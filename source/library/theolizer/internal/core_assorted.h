@@ -687,10 +687,10 @@ std::cout << "add2() : uLastGlobalVersionNo=" << uLastGlobalVersionNo
         {
             if (mVersionNoList[i].size() <= iIndex)
             {
-std::cout << "add2() : mVersionNoList[" << i << "].resize(" << iIndex+1 << ")" << std::endl;
+std::cout << "add2(0) : mVersionNoList[" << i << "].resize(" << iIndex+1 << ")" << std::endl;
                 mVersionNoList[i].resize(iIndex+1, 1);  // デフォルトのローカル・バージョン番号は1
             }
-std::cout << "add2() : mVersionNoList[" << i << "][" << iIndex << "]=" << aLocalVersionNoList[i] << ")" << std::endl;
+std::cout << "add2(1) : mVersionNoList[" << i << "][" << iIndex << "]=" << aLocalVersionNoList[i] << ")" << std::endl;
             mVersionNoList[i][iIndex] = aLocalVersionNoList[i];
         }
     }

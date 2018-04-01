@@ -133,14 +133,6 @@ public:
     {
         return mTypeIndexImpl != iTypeIndex.mTypeIndexImpl;
     }
-    unsigned getDim()
-    {
-        return mTypeIndexImpl & etiaMask;
-    }
-    unsigned getPointer()
-    {
-        return mTypeIndexImpl & etipMask;
-    }
 
     // 配列種別
     enum TypeIndexArray : unsigned
@@ -151,6 +143,18 @@ public:
         etiaArray2              =0x02,      // 2次元配列
         etiaArray3              =0x03,      // 3次元配列
     };
+    unsigned getRank()
+    {
+        return mTypeIndexImpl & etiaMask;
+    }
+    void setRank(unsigned iRank)
+    {
+        if (3 < iRank)
+        {
+            THEOLIZER_INTERNAL_ERROR(u8"too large array rank(%1%)", iRank);
+        }
+        mTypeIndexImpl |= iRank;
+    }
 
     // ポインタ種別
     enum TypeIndexPointer : unsigned
@@ -161,6 +165,10 @@ public:
         etipNormalPointer       =0x08,
         etipOwnerPointer        =0x0c
     };
+    unsigned getPointer()
+    {
+        return mTypeIndexImpl & etipMask;
+    }
 
     // TypeIndexの基数
     constexpr static unsigned   TypeIndexRadix = 0x10;
@@ -673,6 +681,25 @@ public:
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
+//      基本型取り出し
+//----------------------------------------------------------------------------
+
+template<typename tBaseType, class tEnable=void>
+struct GetBaseTypeImpl
+{
+    typedef tBaseType   Type;
+};
+
+template<typename tArrayType>
+struct GetBaseTypeImpl<tArrayType, EnableIf<std::is_array<tArrayType>::value> >
+{
+    typedef typename GetBaseTypeImpl<typename std::remove_extent<tArrayType>::type>::Type   Type;
+};
+
+template<typename tArrayType>
+using GetBaseType = typename GetBaseTypeImpl<tArrayType>::Type;
+
+//----------------------------------------------------------------------------
 //      ArrayType管理クラス本体
 //----------------------------------------------------------------------------
 
@@ -683,8 +710,15 @@ private:
     // コンストラクタ／デストラクタ
     ArrayTypeInfo() : BaseTypeInfo(etcArrayType)
     {
+        typedef GetBaseType<tArrayType> BaseType;
+        typedef typename GetTypeInfo<BaseType>::Type    TypeInfo;
+        auto& aBaseTypeInfo=TypeInfo::getInstance();
+        mTypeIndex2 = aBaseTypeInfo.getTypeIndex2();
+        mTypeIndex2.setRank(std::rank<tArrayType>::value);
+
 std::cout << "ArrayTypeInfo() : " << getCName() << "\n";
-        mTypeIndex2 = TypeInfoList::getInstance().registerType2(this);
+std::cout << "    " << THEOLIZER_INTERNAL_TYPE_NAME(BaseType) << "\n";
+std::cout << "    " << mTypeIndex2 << "\n";
     }
 public:
     static ArrayTypeInfo& getInstance()
