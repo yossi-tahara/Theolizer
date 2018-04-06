@@ -830,7 +830,7 @@ public:
     // 型名返却
     std::string getTypeName(unsigned iVersionNo)
     {
-        THEOLIZER_INTERNAL_ASSERT(BaseTypeInfo::mTypeIndex != kInvalidSize,
+        THEOLIZER_INTERNAL_ASSERT(BaseTypeInfo::mTypeIndex2,
             "Not registered class %1%.", getCName());
         return tClassType::Theolizer::getClassName(iVersionNo);
     }
@@ -1327,7 +1327,8 @@ public:
     unsigned getLastVersionNoV() const {return getLastVersionNo();}
     // 型名返却
     std::string getTypeName(unsigned)
-    {THEOLIZER_INTERNAL_ABORT("AdditionalTypeInfo::getTypeName()");}
+    {return getCName();}    // 新TypeIndexに置き換えが完了するまでの暫定処理
+//  {THEOLIZER_INTERNAL_ABORT("AdditionalTypeInfo::getTypeName()");}
 
     // C言語名返却(デバッグ用)
     char const* getCName() const
