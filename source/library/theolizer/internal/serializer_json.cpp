@@ -562,8 +562,8 @@ void JsonMidISerializer::readHeader()
 //      TypeIndex一致判定
 //----------------------------------------------------------------------------
 
-bool JsonMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
-                                          size_t iProgramTypeIndex)
+bool JsonMidISerializer::isMatchTypeIndex(TypeIndex iSerializedTypeIndex,
+                                          TypeIndex iProgramTypeIndex)
 {
     return BaseSerializer::isMatchTypeIndex(iSerializedTypeIndex, iProgramTypeIndex);
 }

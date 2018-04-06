@@ -277,8 +277,8 @@ void FastMidISerializer::readHeader()
 //      TypeIndex一致判定
 //----------------------------------------------------------------------------
 
-bool FastMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
-                                          size_t iProgramTypeIndex)
+bool FastMidISerializer::isMatchTypeIndex(TypeIndex iSerializedTypeIndex,
+                                          TypeIndex iProgramTypeIndex)
 {
     return BaseSerializer::isMatchTypeIndex(iSerializedTypeIndex, iProgramTypeIndex);
 }

@@ -827,7 +827,7 @@ public:
         int                 mIndent;
         bool                mCancelPrettyPrint;
 
-        AutoRestoreSaveProcess(BaseSerializer& iSerializer, size_t iTypeIndex);
+        AutoRestoreSaveProcess(BaseSerializer& iSerializer, TypeIndex iTypeIndex);
         ~AutoRestoreSaveProcess() noexcept(false);
     };
 
@@ -874,7 +874,7 @@ public:
             BaseSerializer&     iSerializer,
             ElementsMapping     iElementsMapping,
             Structure           iStructure,
-            std::size_t         iTypeIndex=kInvalidSize,
+            TypeIndex           iTypeIndex=TypeIndex(),
             std::size_t         iObjectId=kInvalidSize,
             bool                iCancelPrettyPrint=false
         );
@@ -887,8 +887,6 @@ public:
 
     // 各TypeIndexに対するバージョン番号
 private:
-////    VersionNoList       mVersionNoList;
-
     unsigned            getLocalVersionNo(TypeIndex iTypeIndex);
 
 //----------------------------------------------------------------------------
@@ -908,8 +906,8 @@ protected:
 
 //      ---<<< トップ・レベル保存前後処理 >>>---
 
-    std::string getTypeName(std::size_t iTypeIndex);
-    void saveProcessStart(std::size_t iTypeIndex);
+    std::string getTypeName(TypeIndex iTypeIndex);
+    void saveProcessStart(TypeIndex iTypeIndex);
     void saveProcessEnd();
 
 //----------------------------------------------------------------------------
@@ -937,6 +935,7 @@ protected:
     virtual void saveControl(unsigned long iControl)        {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveControl(unsigned long long iControl)   {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveControl(std::string const& iControl)   {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void saveControl(TypeIndex iTypeIndex)          {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveElementName(ElementsMapping iElementsMapping, char const* iElementName)
                                                             {THEOLIZER_INTERNAL_ABORT("");}
     virtual void flush()                                    {}
@@ -1037,7 +1036,7 @@ public:
         AutoRestoreLoadProcess
         (
             BaseSerializer& iSerializer,
-            size_t iTypeIndex
+            TypeIndex iTypeIndex
         );
         AutoRestoreLoadProcess
         (
@@ -1092,7 +1091,7 @@ public:
             BaseSerializer&     iSerializer,
             ElementsMapping     iElementsMapping,
             Structure           iStructure,
-            std::size_t         iTypeIndex=kInvalidSize,
+            TypeIndex           iTypeIndex=TypeIndex(),
             std::size_t*        oObjectId=nullptr
         );
         ~AutoRestoreLoadStructure() noexcept(false);
@@ -1130,12 +1129,11 @@ protected:
 
 //      ---<<< TypeIndex一致判定 >>>---
 
-    bool isMatchTypeIndex(size_t iSerializedTypeIndex,
-                          size_t iProgramTypeIndex);
+    bool isMatchTypeIndex(TypeIndex iSerializedTypeIndex, TypeIndex iProgramTypeIndex);
 
 //      ---<<< トップ・レベル回復前後処理 >>>---
 
-    TypeIndexList* loadProcessStart(size_t iTypeIndex);
+    TypeIndexList* loadProcessStart(TypeIndex iTypeIndex);
     void loadProcessEnd();
 
 //----------------------------------------------------------------------------
@@ -1165,6 +1163,7 @@ protected:
     virtual void loadControl(unsigned long& oControl)       {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadControl(unsigned long long& oControl)  {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadControl(std::string& oControl)         {THEOLIZER_INTERNAL_ABORT("");}
+    virtual void loadControl(TypeIndex& oTypeIndex)         {THEOLIZER_INTERNAL_ABORT("");}
     virtual std::string loadElementName(ElementsMapping iElementsMapping)
                                                             {THEOLIZER_INTERNAL_ABORT("");}
 

@@ -207,58 +207,6 @@ return 1;
     return std::vector<unsigned>::at(iTypeIndex);
 }
 
-
-
-
-//----------------------------------------------------------------------------
-//      キー登録
-//----------------------------------------------------------------------------
-
-void addGlobalVersionKey
-(
-    GlobalVersionKey const& iKey,
-    std::vector<GlobalVersionKey>& oKeyList
-)
-{
-    auto found = lower_bound(oKeyList.begin(),
-                             oKeyList.end(),
-                             iKey,
-                             [](GlobalVersionKey const& iLhs, GlobalVersionKey const& iRhs)
-                             {
-                                return iLhs.mTypeIndex < iRhs.mTypeIndex;
-                             });
-    THEOLIZER_INTERNAL_ASSERT((found == oKeyList.end())
-                 || (found->mTypeIndex != iKey.mTypeIndex), "Multipule adding class");
-    oKeyList.insert(found, iKey);
-}
-
-//----------------------------------------------------------------------------
-//      キー検索
-//          見つからなかった時、false返却
-//----------------------------------------------------------------------------
-
-bool findGlobalVersionKey
-(
-    std::vector<GlobalVersionKey> const& iKeyList,
-    std::type_index iTypeIndex,
-    std::size_t& oListIndex
-)
-{
-    auto found = lower_bound(iKeyList.begin(),
-                             iKeyList.end(),
-                             iTypeIndex,
-                             [](GlobalVersionKey const& iLhs, std::type_index iRhs)
-                             {
-                                return iLhs.mTypeIndex < iRhs;
-                             });
-
-    if ((found == iKeyList.end()) || (found->mTypeIndex != iTypeIndex))
-return false;
-
-    oListIndex=found->mListIndex;
-    return true;
-}
-
 }   // namespace internal
 
 // ***************************************************************************

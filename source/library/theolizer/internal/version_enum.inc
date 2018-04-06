@@ -974,7 +974,7 @@ inline void THEOLIZER_INTERNAL_DERIVED::Theolizer::saveEnum
     // データ内に型名保存
     if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
     {
-        std::size_t aTypeIndex=theolizer::internal::getTypeIndex<THEOLIZER_GENERATED_ENUM_TYPE>();
+        auto aTypeIndex=theolizer::internal::getTypeIndex<THEOLIZER_GENERATED_ENUM_TYPE>();
         theolizer::internal::BaseSerializer::AutoRestoreSaveStructure
             aAutoRestoreSaveStructure
             (
@@ -1010,7 +1010,7 @@ inline void THEOLIZER_INTERNAL_DERIVED::Theolizer::loadEnum
     // データ内に型名保存
     if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
     {
-        std::size_t aTypeIndex=theolizer::internal::getTypeIndex<THEOLIZER_GENERATED_ENUM_TYPE>();
+        auto aTypeIndex=theolizer::internal::getTypeIndex<THEOLIZER_GENERATED_ENUM_TYPE>();
         theolizer::internal::BaseSerializer::AutoRestoreLoadStructure
             aAutoRestoreLoadStructure
             (

@@ -262,8 +262,7 @@ private:
 
 //      ---<<<  TypeIndex一致判定 >>>---
 
-    bool isMatchTypeIndex(size_t iSerializedTypeIndex,
-                          size_t iProgramTypeIndex);
+    bool isMatchTypeIndex(TypeIndex iSerializedTypeIndex, TypeIndex iProgramTypeIndex);
 
 //----------------------------------------------------------------------------
 //      データ回復

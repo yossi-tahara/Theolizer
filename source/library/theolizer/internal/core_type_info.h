@@ -117,21 +117,29 @@ public:
     {
         mTypeIndexImpl = iIndex*TypeIndexRadix + iAdditional;
     }
-    operator unsigned()
+    void setRaw(unsigned iTypeIndexImpl)
     {
-        return mTypeIndexImpl / TypeIndexRadix;
+        mTypeIndexImpl = iTypeIndexImpl;
     }
-    operator bool()
+    unsigned getRaw() const
+    {
+        return mTypeIndexImpl;
+    }
+    operator bool() const
     {
         return mTypeIndexImpl != kInvalidUnsigned;
     }
-    bool operator==(TypeIndex iTypeIndex)
+    bool operator==(TypeIndex iTypeIndex) const
     {
         return mTypeIndexImpl == iTypeIndex.mTypeIndexImpl;
     }
-    bool operator!=(TypeIndex iTypeIndex)
+    bool operator!=(TypeIndex iTypeIndex) const
     {
         return mTypeIndexImpl != iTypeIndex.mTypeIndexImpl;
+    }
+    unsigned getIndex() const
+    {
+        return mTypeIndexImpl / TypeIndexRadix;
     }
 
     // 配列種別
@@ -143,7 +151,7 @@ public:
         etiaArray2              =0x02,      // 2次元配列
         etiaArray3              =0x03,      // 3次元配列
     };
-    unsigned getRank()
+    unsigned getRank() const
     {
         return mTypeIndexImpl & etiaMask;
     }
@@ -165,7 +173,7 @@ public:
         etipNormalPointer       =0x08,
         etipOwnerPointer        =0x0c
     };
-    unsigned getPointer()
+    unsigned getPointer() const
     {
         return mTypeIndexImpl & etipMask;
     }
@@ -311,7 +319,7 @@ enum TypeCategory
 //      型リスト
 //----------------------------------------------------------------------------
 
-typedef std::vector<std::size_t>    TypeIndexList;
+typedef std::vector<TypeIndex>      TypeIndexList;
 
 typedef std::vector<BaseTypeInfo*>  TypeInfoListImpl;
 
@@ -328,11 +336,8 @@ private:
 
     TypeInfoList() { }
 
-    // 型のリスト
-    TypeInfoListImpl                        mList;
-
     // 型のリスト（開発中）
-    TypeInfoListImpl                        mList2;
+    TypeInfoListImpl                        mTypeInfoList2;
 
 public:
     static TypeInfoList& getInstance();
@@ -348,8 +353,7 @@ public:
     TypeIndex registerType2(BaseTypeInfo* iTypeInfo);
 
     // リスト返却
-    TypeInfoListImpl& getList() {return mList;}
-    TypeInfoListImpl& getList2() {return mList2;}
+    TypeInfoListImpl& getList() {return mTypeInfoList2;}
 };
 
 // ***************************************************************************
@@ -449,13 +453,6 @@ private:
     template<class>                                         friend class Element;
     friend class BaseIntegrator;
 
-    // TypeIndexを記録する
-    void registerTypeIndex(std::size_t iTypeIndex)
-    {
-        mTypeIndex=iTypeIndex;
-        mIsRegistered=true;
-    }
-
     // トップ・レベルの保存先
     bool                    mIsTopLevel;
     Destinations            mTopDestinations;
@@ -470,23 +467,15 @@ protected:
     BaseTypeInfo(TypeCategory iTypeCategory) :
         mIsTopLevel(false),
         mIsManual(false),
-        mTypeCategory(iTypeCategory),
-        mTypeIndex(kInvalidSize),   // 無効値設定
-        mIsRegistered(false)
+        mTypeCategory(iTypeCategory)
     { }
 
-    // TypeInfoList<>::mListへの登録先インデックス
+    // TypeInfoList<>::mTypeInfoListへの登録先インデックス
 protected:
-    std::size_t             mTypeIndex;
-private:
-    bool                    mIsRegistered;
-
-protected:
-    // 新TypeIndex
     TypeIndex               mTypeIndex2;
 
 public:
-    TypeIndex   getTypeIndex2() { return mTypeIndex2; }
+    TypeIndex   getTypeIndex() { return mTypeIndex2; }
 
 //      ---<<< トップ・レベルの保存先関連 >>>---
 
@@ -552,7 +541,7 @@ private:
     virtual BaseTypeInfo* getPointeeTypeInfo() {return nullptr;}
 
     // 配列の基本型のTypeIndex獲得
-    virtual std::size_t getUnderlyingTypeIndex()
+    virtual TypeIndex getUnderlyingTypeIndex()
     {THEOLIZER_INTERNAL_ABORT("BaseTypeInfo::getUnderlyingTypeIndex()");}
 
 //      ---<<< メタ・シリアライズ用 >>>---
@@ -713,7 +702,7 @@ private:
         typedef GetBaseType<tArrayType> BaseType;
         typedef typename GetTypeInfo<BaseType>::Type    TypeInfo;
         auto& aBaseTypeInfo=TypeInfo::getInstance();
-        mTypeIndex2 = aBaseTypeInfo.getTypeIndex2();
+        mTypeIndex2 = aBaseTypeInfo.getTypeIndex();
         mTypeIndex2.setRank(std::rank<tArrayType>::value);
 
 std::cout << "ArrayTypeInfo() : " << getCName() << "\n";
@@ -749,14 +738,14 @@ public:
         return THEOLIZER_INTERNAL_TYPE_NAME(tArrayType);
     }
     // 配列の基本型のTypeIndex獲得
-    std::size_t getUnderlyingTypeIndex();
+    TypeIndex getUnderlyingTypeIndex();
 
 //      ---<<< メタ・シリアライズ用 >>>---
 
     TypeKind    getTypeKind()
     {
         BaseTypeInfo* aTypeInfo =
-            TypeInfoList::getInstance().getList().at(getUnderlyingTypeIndex());
+            TypeInfoList::getInstance().getList().at(getUnderlyingTypeIndex().getIndex());
         return aTypeInfo->getTypeKind();
     }
 };
@@ -880,7 +869,7 @@ private:
             std::vector<SaveStat>& ioSaveStatList
         )=0;
         virtual void const* getDerivedPointer(TheolizerTarget* iBasePointer)=0;
-        virtual std::size_t getTypeIndex()=0;
+        virtual TypeIndex getTypeIndex()=0;
         virtual ~HolderBase() { }
     };
 
@@ -942,9 +931,9 @@ private:
             return aPointer;
         }
 
-        std::size_t getTypeIndex()
+        TypeIndex getTypeIndex()
         {
-            return ClassTypeInfo<tDrivedClassType>::getInstance().mTypeIndex;
+            return ClassTypeInfo<tDrivedClassType>::getInstance().mTypeIndex2;
         }
     };
 
@@ -991,13 +980,13 @@ public:
 //          << " mDrivedClassList.size()=" << mDrivedClassList.size() << "\n";
         for (auto&& aDrivedClass : mDrivedClassList)
         {
-            std::size_t aTypeIndex = aDrivedClass->getTypeIndex();
+            TypeIndex aTypeIndex = aDrivedClass->getTypeIndex();
             SaveStat& aSaveStat = ioSaveStatList.at(aTypeIndex);
 //std::cout << "    " << aDrivedClass->getCName() << "\n";
             if (aSaveStat == essIdle)
             {
                 aSaveStat=essSaving;
-                if (aTypeIndex < mTypeIndex) ret=true;
+                if (aTypeIndex < mTypeIndex2.getIndex()) ret=true;
             }
             if (aDrivedClass->setSaving(iSerializer, ioSaveStatList)) ret=true;
         }
@@ -1346,7 +1335,7 @@ public:
 // ***************************************************************************
 
 template<typename tType>
-std::size_t getTypeIndex();
+TypeIndex getTypeIndex();
 
 //----------------------------------------------------------------------------
 //      TypeInfoを求める
@@ -1537,7 +1526,7 @@ std::cout << "RegisterType<" << THEOLIZER_INTERNAL_TYPE_NAME(tSerializer) << ",\
           << "             " << THEOLIZER_INTERNAL_TYPE_NAME(TypeInfo) << ",\n"
           << "             " << THEOLIZER_INTERNAL_TYPE_NAME(tTheolizerVersion) << ",\n"
           << "             uIsDerived=" << uIsDerived << ">\n";
-std::cout << "mTypeIndex2=" << aBaseTypeInfo.getTypeIndex2() << "\n";
+std::cout << "mTypeIndex2=" << aBaseTypeInfo.getTypeIndex() << "\n";
 #endif
 
         // 保存先があるTopLevelシリアライザなら、TypeInfoに保存先を登録する
@@ -1545,22 +1534,6 @@ std::cout << "mTypeIndex2=" << aBaseTypeInfo.getTypeIndex2() << "\n";
         {
 //std::cout << "    addDestination(" << tSerializer::getDestinations() << ")\n";
             aBaseTypeInfo.addDestination(tSerializer::getDestinations());
-        }
-
-        // 未登録なら、TypeInfoListへBaseTypeInfoを登録する
-        std::size_t aTypeIndex=0;
-        if (aBaseTypeInfo.mIsRegistered)
-        {
-            aTypeIndex=aBaseTypeInfo.mTypeIndex;
-//std::cout << "    aTypeIndex=" << aTypeIndex << " (Registered)\n";
-        }
-        else
-        {
-            aTypeIndex=TypeInfoList::getInstance().registerType(&aBaseTypeInfo);
-//std::cout << "    aTypeIndex=" << aTypeIndex << "\n";
-
-            // TypeIndexをBaseTypeInfoへ設定する
-            aBaseTypeInfo.registerTypeIndex(aTypeIndex);
         }
 
         // ポリモーフィズム用派生クラスの登録なら、基底クラスのリストへ追加する
@@ -1620,7 +1593,7 @@ TypeIndex registerTypeIndex()
     typedef typename GetTypeInfo<tType>::Type   TypeInfo;
     auto& aBaseTypeInfo=TypeInfo::getInstance();
 
-    return aBaseTypeInfo.getTypeIndex2();
+    return aBaseTypeInfo.getTypeIndex();
 }
 
 //----------------------------------------------------------------------------
@@ -1752,10 +1725,10 @@ struct Switcher2
         return 0;
     }
     // TypeIndex返却
-    static std::size_t getTypeIndex()
+    static TypeIndex getTypeIndex()
     {
         static_assert(Ignore<tType>::kFalse, "This is not serializable class.");
-        return 0;
+        return TypeIndex();
     }
     // そのまま返却
     static void const* getDerivedPointer(tType* iPointer)
@@ -1790,9 +1763,9 @@ struct Switcher2
         return PointerTypeInfo<PointerType>::getInstance().getTypeName(iVersionNo);
     }
     // TypeIndex返却
-    static std::size_t getTypeIndex()
+    static TypeIndex getTypeIndex()
     {
-        return PointerTypeInfo<PointerType>::getInstance().mTypeIndex;
+        return PointerTypeInfo<PointerType>::getInstance().mTypeIndex2;
     }
     // これは不要(多重ポインタは非サポート)
 //  static void const* getDerivedPointer(tPointerType* iPointer)
@@ -1826,9 +1799,9 @@ struct Switcher2
         return ArrayTypeInfo<ArrayType>::getInstance().getTypeName(iVersionNo);
     }
     // TypeIndex返却
-    static std::size_t getTypeIndex()
+    static TypeIndex getTypeIndex()
     {
-        return ArrayTypeInfo<ArrayType>::getInstance().mTypeIndex;
+        return ArrayTypeInfo<ArrayType>::getInstance().mTypeIndex2;
     }
     // そのまま返却
     static void const* getDerivedPointer(tArrayType* iPointer)
@@ -1864,9 +1837,9 @@ struct Switcher2
         return ClassTypeInfo<ClassType>::getInstance().getTypeName(iVersionNo);
     }
     // TypeIndex返却
-    static std::size_t getTypeIndex()
+    static TypeIndex getTypeIndex()
     {
-        return ClassTypeInfo<ClassType>::getInstance().mTypeIndex;
+        return ClassTypeInfo<ClassType>::getInstance().mTypeIndex2;
     }
     // 派生クラスのアドレスを返却
     static void const* getDerivedPointer(tClassType* iPointer)
@@ -1901,9 +1874,9 @@ struct Switcher2
         return ClassTypeInfo<ClassType>::getInstance().getTypeName(iVersionNo);
     }
     // TypeIndex返却
-    static std::size_t getTypeIndex()
+    static TypeIndex getTypeIndex()
     {
-        return ClassTypeInfo<ClassType>::getInstance().mTypeIndex;
+        return ClassTypeInfo<ClassType>::getInstance().mTypeIndex2;
     }
     // 派生クラスのアドレスを返却
     static void const* getDerivedPointer(tClassType* iPointer)
@@ -1937,9 +1910,9 @@ struct Switcher2
         return EnumTypeInfo<EnumType>::getInstance().getTypeName(iVersionNo);
     }
     // TypeIndex返却
-    static std::size_t getTypeIndex()
+    static TypeIndex getTypeIndex()
     {
-        return EnumTypeInfo<EnumType>::getInstance().mTypeIndex;
+        return EnumTypeInfo<EnumType>::getInstance().mTypeIndex2;
     }
     // そのまま返却
     static void const* getDerivedPointer(tEnumType* iPointer)
@@ -1977,9 +1950,9 @@ struct Switcher2
         return PrimitiveTypeInfo<PrimitiveType>::getInstance().getTypeName(iVersionNo);
     }
     // TypeIndex返却
-    static std::size_t getTypeIndex()
+    static TypeIndex getTypeIndex()
     {
-        return PrimitiveTypeInfo<PrimitiveType>::getInstance().mTypeIndex;
+        return PrimitiveTypeInfo<PrimitiveType>::getInstance().mTypeIndex2;
     }
     // そのまま返却
     static void const* getDerivedPointer(tPrimitiveType* iPointer)
@@ -1993,7 +1966,7 @@ struct Switcher2
 //----------------------------------------------------------------------------
 
 template<typename tType>
-std::size_t getTypeIndex()
+TypeIndex getTypeIndex()
 {
     typedef typename std::remove_reference<tType>::type Type;
     return Switcher2<Type>::getTypeIndex();
@@ -2061,8 +2034,8 @@ template<typename tPointerType>
 BaseTypeInfo* PointerTypeInfo<tPointerType>::getPointeeTypeInfo()
 {
     typedef typename std::remove_pointer<tPointerType>::type    ParentType;
-    std::size_t aTypeIndex = Switcher2<ParentType>::getTypeIndex();
-    return TypeInfoList::getInstance().getList().at(aTypeIndex);
+    TypeIndex aTypeIndex = Switcher2<ParentType>::getTypeIndex();
+    return TypeInfoList::getInstance().getList().at(aTypeIndex.getIndex());
 }
 
 //----------------------------------------------------------------------------
@@ -2089,11 +2062,10 @@ std::string ArrayTypeInfo<tArrayType>::getTypeName(unsigned iVersionNo)
 
 // 基本型のTypeIndex返却
 template<typename tArrayType>
-std::size_t ArrayTypeInfo<tArrayType>::
-    getUnderlyingTypeIndex()
+TypeIndex ArrayTypeInfo<tArrayType>::getUnderlyingTypeIndex()
 {
     typedef typename std::remove_all_extents<tArrayType>::type UnderlyingType;
-    return getTypeIndex<UnderlyingType>();
+    return Switcher2<UnderlyingType>::getTypeIndex();
 }
 
 //############################################################################

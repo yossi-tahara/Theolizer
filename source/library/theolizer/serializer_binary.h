@@ -341,6 +341,7 @@ private:
     void saveControl(unsigned long iControl)        {saveUnsigned(iControl);}
     void saveControl(unsigned long long iControl)   {saveUnsigned(iControl);}
     void saveControl(std::string const& iControl)   {saveCharString(iControl);}
+    void saveControl(TypeIndex iTypeIndex)          {saveUnsigned(iTypeIndex.getRaw());}
     void flush()                                    {mOStream.flush();}
 
 //      ---<<< プリミティブ保存 >>>---
@@ -447,8 +448,7 @@ private:
 
 //      ---<<<  TypeIndex一致判定 >>>---
 
-    bool isMatchTypeIndex(size_t iSerializedTypeIndex,
-                          size_t iProgramTypeIndex);
+    bool isMatchTypeIndex(TypeIndex iSerializedTypeIndex, TypeIndex iProgramTypeIndex);
 
 //----------------------------------------------------------------------------
 //      データ回復
@@ -466,6 +466,7 @@ private:
     void loadControl(unsigned long& oControl)  {oControl=static_cast<unsigned long>(loadSigned());}
     void loadControl(unsigned long long& oControl) {oControl=loadSigned();}
     void loadControl(std::string& oControl)        {loadCharString(oControl);}
+    void loadControl(TypeIndex& oTypeIndex)    {oTypeIndex=static_cast<unsigned>(loadSigned());}
 
 //      ---<<< プリミティブ回復 >>>---
 

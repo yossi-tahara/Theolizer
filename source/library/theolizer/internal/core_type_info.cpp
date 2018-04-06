@@ -79,17 +79,18 @@ TypeInfoList& TypeInfoList::getInstance()
 
 std::size_t TypeInfoList::registerType(BaseTypeInfo* iTypeInfo)
 {
-    std::size_t ret=mList.size();
-    mList.push_back(iTypeInfo);
-    return ret;
+//    std::size_t ret=mList.size();
+//    mList.push_back(iTypeInfo);
+//    return ret;
+    return 0;
 }
 
 TypeIndex TypeInfoList::registerType2(BaseTypeInfo* iTypeInfo)
 {
-    std::size_t ret=mList2.size();
+    std::size_t ret=mTypeInfoList2.size();
     if (std::numeric_limits<unsigned>::max() < ret)
     {THEOLIZER_INTERNAL_ERROR(u8"too many Types!!");}
-    mList2.push_back(iTypeInfo);
+    mTypeInfoList2.push_back(iTypeInfo);
     return static_cast<unsigned>(ret)+kPrimitiveEnd;
 }
 

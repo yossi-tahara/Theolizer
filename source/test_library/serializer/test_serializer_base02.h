@@ -107,8 +107,6 @@ namespace theolizer{namespace internal{
 namespace global_table{
     MyGVNT::MyGVNT()
     {
-        THEOLIZER_INTERNAL_ADD(theolizer::internal::JsonSerializerVersion, 1u, 1u, 1u, 1u);
-        THEOLIZER_INTERNAL_ADD(IntrusiveBase2,                             1u, 1u, 1u, 1u);
     }
 }   // namespace global_table
 }}  // namespace theolizer

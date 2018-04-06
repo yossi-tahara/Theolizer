@@ -595,25 +595,6 @@ struct GlobalVersionKey
 };
 
 //----------------------------------------------------------------------------
-//      実装用関数宣言
-//----------------------------------------------------------------------------
-
-// キー登録
-THEOLIZER_INTERNAL_DLL void addGlobalVersionKey
-(
-    GlobalVersionKey const& iKey,
-    std::vector<GlobalVersionKey>& oKeyList
-);
-
-// キー検索
-THEOLIZER_INTERNAL_DLL bool findGlobalVersionKey
-(
-    std::vector<GlobalVersionKey> const& iKeyList,
-    std::type_index iTypeIndex,
-    std::size_t& oListIndex
-);
-
-//----------------------------------------------------------------------------
 //      テーブルの基底クラス
 //----------------------------------------------------------------------------
 
@@ -624,20 +605,6 @@ protected:
     ~GlobalVersionNoTableBase() { }
 public:
     virtual unsigned getLocalVersionNo(unsigned iGlobalVersionNo, unsigned iIndex) const = 0;
-
-#if 0
-    virtual unsigned getLocalVersionNo
-        (
-            unsigned iGlobalVersionNo,
-            std::type_index iStdTypeIndex
-        ) const = 0;
-
-    virtual unsigned getGlobalVersionNo
-        (
-            unsigned iLocalVersionNo,
-            std::type_index iStdTypeIndex
-        ) const = 0;
-#endif
 
     // コピー／ムーブ禁止(デストラクタ定義がないとis_trivially_copyableになる)
     GlobalVersionNoTableBase(const GlobalVersionNoTableBase&)  = delete;
@@ -700,100 +667,12 @@ std::cout << "add2(B) : mVersionNoList[" << i << "][" << iIndex << "]=" << aLoca
         // 最新GlobalVersionNoが1の処理
         if (uLastGlobalVersionNo == 1)
         {
-            auto aTypeInfoList = TypeInfoList::getInstance().getList2();
+            auto aTypeInfoList = TypeInfoList::getInstance().getList();
             return aTypeInfoList[iIndex]->getLastVersionNoV();
         }
 
         return mVersionNoList[iGlobalVersionNo-1].at(iIndex);
     }
-
-
-
-
-//      ---<<< ローカル・バージョン番号のリスト >>>---
-
-    //  1つで1クラス/enum型のローカル・バージョン番号を保持する
-    struct LocalVersionNo
-    {
-        unsigned        mLocalVersionNo[uLastGlobalVersionNo];
-    };
-    // 登録順でローカル・バージョン番号を保持する
-    std::vector<LocalVersionNo>     mLocalVersionNoList;
-
-//      ---<<< std::type_index(キー)とmLocalVersionNoListとの対応表 >>>---
-
-    // type_indexによるキーでソート
-    std::vector<GlobalVersionKey>   mKeyList;
-
-//      ---<<< 機能群 >>>---
-
-    // クラス登録
-    template<typename... tLocalVersionNoList>
-    void add(std::type_info const& iTypeInfo, tLocalVersionNoList... iLocalVersionNoList)
-    {
-        static_assert(sizeof...(tLocalVersionNoList) == uLastGlobalVersionNo,
-                      "GlobalVersionNoTable::add() illegal number of parameters.");
-
-        std::size_t aTypeIndex=mLocalVersionNoList.size();
-        mLocalVersionNoList.push_back(LocalVersionNo{iLocalVersionNoList...});
-        addGlobalVersionKey(GlobalVersionKey(iTypeInfo, aTypeIndex), mKeyList);
-    }
-
-#if 0
-    // 指定クラスの指定グローバル・バージョン番号に該当するローカル・バージョン番号返却
-    //  未登録クラスは1を返却する(完全自動型なので)
-    unsigned getLocalVersionNo(unsigned iGlobalVersionNo, std::type_index iStdTypeIndex) const
-    {
-        if (iGlobalVersionNo == 0 )
-        {
-            THEOLIZER_INTERNAL_VERSION_ERROR("GlobalVersionNo(%1%) is illegal.", iGlobalVersionNo);
-        }
-        if (uLastGlobalVersionNo < iGlobalVersionNo)
-        {
-            THEOLIZER_INTERNAL_VERSION_ERROR("GlobalVersionNo(%1%) is too big.", iGlobalVersionNo);
-        }
-
-        std::size_t aListIndex;
-        if (!findGlobalVersionKey(mKeyList, iStdTypeIndex, aListIndex))
-    return 1;
-
-        unsigned ret = mLocalVersionNoList[aListIndex].mLocalVersionNo[iGlobalVersionNo-1];
-
-        // 無効な値ならエラー(iGlobalVersionNo時にシリアライズされていなかった時該当する)
-        if (!ret)
-        {
-            THEOLIZER_INTERNAL_DATA_ERROR(
-                u8"Can not process <%1%> for Global VersionNo.%2%",
-                getNameByTypeInfo(iStdTypeIndex),
-                iGlobalVersionNo
-            );
-        }
-        return ret;
-    }
-
-    // 指定クラスの指定ローカル・バージョン番号に該当する最大のグローバル・バージョン番号返却
-    //  未登録クラスはuLastGlobalVersionNoを返却する
-    unsigned getGlobalVersionNo(unsigned iLocalVersionNo, std::type_index iStdTypeIndex) const
-    {
-        THEOLIZER_INTERNAL_ASSERT(iLocalVersionNo != 0,
-            "GlobalVersionNoTable::getGlobalVersionNo() : iLocalVersionNo is illegal(0).");
-
-        std::size_t aListIndex;
-        if (!findGlobalVersionKey(mKeyList, iStdTypeIndex, aListIndex))
-    return uLastGlobalVersionNo;
-
-        unsigned ret;
-        for (ret=uLastGlobalVersionNo; 0 < ret; --ret)
-        {
-            if (mLocalVersionNoList[aListIndex].mLocalVersionNo[ret-1] == iLocalVersionNo)
-            {
-    return ret;
-            }
-        }
-
-        return uLastGlobalVersionNo;
-    }
-#endif
 };
 
 //----------------------------------------------------------------------------

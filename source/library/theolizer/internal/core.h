@@ -517,7 +517,7 @@ struct ElementBase
 
     // クラスのみ
     virtual char const* getName() const                 {return "";}
-    virtual std::size_t getTypeIndex() const            {return 0;}
+    virtual TypeIndex getTypeIndex() const              {return TypeIndex();}
     virtual bool isBaseClass() const                    {return false;}
     virtual Destinations const& getDestinations() const = 0;
 };
@@ -536,7 +536,7 @@ private:
 
     struct HolderBase
     {
-        virtual size_t getTypeIndex() const =0;
+        virtual TypeIndex getTypeIndex() const =0;
         virtual void saveElement(Serializer& iSerializer, tVersionType& iInstance) const=0;
         virtual void loadElement(Serializer& iSerializer, tVersionType& iInstance) const=0;
         virtual ~HolderBase() { }
@@ -559,7 +559,7 @@ private:
 
         ~Holder() = default;
 
-        virtual size_t getTypeIndex() const
+        virtual TypeIndex getTypeIndex() const
         {
             return mTypeFunc();
         }
@@ -649,7 +649,7 @@ public:
         return mDestinations;
     }
     bool isBaseClass() const {return mIsBaseClass;}
-    size_t getTypeIndex() const
+    TypeIndex getTypeIndex() const
     {
         return mHolder->getTypeIndex();
     }
@@ -678,7 +678,7 @@ public:
         auto aTypeInfo=TypeInfoList::getInstance().getList()[aTypeIndex];
 
         // バージョン番号獲得
-        unsigned aVersionNo = iSerializer.getLocalVersionNo(aTypeInfo->getTypeIndex2());
+        unsigned aVersionNo = iSerializer.getLocalVersionNo(aTypeInfo->getTypeIndex());
 
         // 要素名
         iSerializer.writePreElement();
@@ -1146,7 +1146,7 @@ bool ClassTypeInfo<tClassType>::saveTypeInstance
     std::type_index iStdTypeIndex
 )
 {
-    unsigned aVersionNo=iSerializer.getLocalVersionNo(BaseTypeInfo::mTypeIndex);
+    unsigned aVersionNo=iSerializer.getLocalVersionNo(BaseTypeInfo::mTypeIndex2);
 
     if (getTargetStdTypeIndex() == iStdTypeIndex)
     {
@@ -1160,7 +1160,7 @@ bool ClassTypeInfo<tClassType>::saveTypeInstance
         else
         {
             // TypeIndex保存
-            iSerializer.saveControl(BaseTypeInfo::mTypeIndex);
+            iSerializer.saveControl(BaseTypeInfo::mTypeIndex2);
         }
         // インスタンス保存
         iSerializer.writePreElement();
@@ -1245,7 +1245,7 @@ bool ClassTypeInfo<tClassType>::loadTypeInstance
     bool aDoRelease=true;
     for (auto aTypeIndex : iTypeIndexList)
     {
-        if (aTypeIndex != BaseTypeInfo::mTypeIndex)
+        if (aTypeIndex != BaseTypeInfo::mTypeIndex2)
     continue;
 
         if (!aFound)

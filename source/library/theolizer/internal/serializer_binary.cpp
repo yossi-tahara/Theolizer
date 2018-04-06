@@ -621,8 +621,8 @@ void BinaryMidISerializer::readHeader()
 //      TypeIndex一致判定
 //----------------------------------------------------------------------------
 
-bool BinaryMidISerializer::isMatchTypeIndex(size_t iSerializedTypeIndex,
-                                          size_t iProgramTypeIndex)
+bool BinaryMidISerializer::isMatchTypeIndex(TypeIndex iSerializedTypeIndex,
+                                            TypeIndex iProgramTypeIndex)
 {
     return BaseSerializer::isMatchTypeIndex(iSerializedTypeIndex, iProgramTypeIndex);
 }
