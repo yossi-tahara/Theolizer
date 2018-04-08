@@ -189,6 +189,7 @@ private:
     void saveControl(unsigned long iControl)        {savePrimitive(iControl);}
     void saveControl(unsigned long long iControl)   {savePrimitive(iControl);}
     void saveControl(std::string const& iControl)   {encodeJsonString(iControl);}
+    void saveControl(TypeIndex iTypeIndex)          {mOStream << iTypeIndex;}
     void flush()                                    {mOStream.flush();}
 
 //      ---<<< プリミティブ保存 >>>---
@@ -305,6 +306,7 @@ private:
     void loadControl(unsigned long& oControl)       {loadPrimitive(oControl);}
     void loadControl(unsigned long long& oControl)  {loadPrimitive(oControl);}
     void loadControl(std::string& oControl)         {decodeJsonString(oControl);}
+    void loadControl(TypeIndex& oTypeIndex)         {mIStream >> oTypeIndex;}
     void flush();
 
 //      ---<<< プリミティブ回復 >>>---

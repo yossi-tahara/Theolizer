@@ -170,6 +170,7 @@ private:
     void saveControl(unsigned long iControl)        {savePrimitive(iControl);}
     void saveControl(unsigned long long iControl)   {savePrimitive(iControl);}
     void saveControl(std::string const& iControl)   {saveString(iControl);}
+    void saveControl(TypeIndex iTypeIndex)          {savePrimitive(iTypeIndex.getRaw());}
     void flush()                                    {mOStream.flush();}
 
 //      ---<<< プリミティブ保存 >>>---
@@ -279,6 +280,12 @@ private:
     void loadControl(unsigned long& oControl)       {loadPrimitive(oControl);}
     void loadControl(unsigned long long& oControl)  {loadPrimitive(oControl);}
     void loadControl(std::string& oControl)         {loadString(oControl);}
+    void loadControl(TypeIndex& oTypeIndex)
+    {
+        unsigned aRaw;
+        loadPrimitive(aRaw);
+        oTypeIndex.setRaw(aRaw);
+    }
 
 //      ---<<< プリミティブ回復 >>>---
 

@@ -233,6 +233,7 @@ private:
     void saveControl(unsigned long)         {}
     void saveControl(unsigned long long)    {}
     void saveControl(std::string const&)    {}
+    void saveControl(TypeIndex)             {}
     void flush()                            {mOStream.flush();}
 
 //      ---<<< 要素名処理 >>>---
@@ -364,13 +365,14 @@ private:
 
     void loadObjectId(std::size_t& oObjectId, std::size_t iTypeIndex);
 
-    void loadControl(int&)                 {}
-    void loadControl(long&)                {}
-    void loadControl(long long&)           {}
-    void loadControl(unsigned&)            {}
-    void loadControl(unsigned long&)       {}
-    void loadControl(unsigned long long&)  {}
-    void loadControl(std::string&)         {}
+    void loadControl(int&)                  {}
+    void loadControl(long&)                 {}
+    void loadControl(long long&)            {}
+    void loadControl(unsigned&)             {}
+    void loadControl(unsigned long&)        {}
+    void loadControl(unsigned long long&)   {}
+    void loadControl(std::string&)          {}
+    void loadControl(TypeIndex&)            {}
 
 //      ---<<< 要素名処理 >>>---
 

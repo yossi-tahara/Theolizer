@@ -255,7 +255,8 @@ return;
         {
             auto aIndex =aLoop.getIndex();
             auto aTypeInfo=aLoop.front();
-            unsigned aVersionNo = getLocalVersionNo(aLoop.front()->getTypeIndex());
+			auto aTypeIndex = aTypeInfo->getTypeIndex();
+            unsigned aVersionNo = getLocalVersionNo(aTypeIndex);
 
             if (aSaveStatList[aIndex] != essSaving)
         continue;
@@ -301,7 +302,7 @@ return;
             if (mCheckMode == CheckMode::TypeCheckByIndex)
             {
                 writePreElement();
-                saveControl(aIndex);
+                saveControl(aTypeIndex);
             }
 
             // TypeName
