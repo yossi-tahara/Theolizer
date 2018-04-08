@@ -224,7 +224,7 @@ private:
 
 //      ---<<< 制御情報保存 >>>---
 
-    void saveObjectId(std::size_t iObjectId, std::size_t iTypeIndex);
+    void saveObjectId(std::size_t iObjectId, TypeIndex iTypeIndex);
 
     void saveControl(int)                   {}
     void saveControl(long)                  {}
@@ -243,7 +243,7 @@ private:
         XmlMidOSerializer&  mXmlMidOSerializer;
         std::string         mTagName;
     public:
-        AutoReleaseTagName(XmlMidOSerializer& iXmlMidOSerializer, std::size_t iTypeIndex);
+        AutoReleaseTagName(XmlMidOSerializer& iXmlMidOSerializer, TypeIndex iTypeIndex);
         ~AutoReleaseTagName();
     };
 
@@ -363,7 +363,7 @@ private:
 
 //      ---<<< 制御情報回復 >>>---
 
-    void loadObjectId(std::size_t& oObjectId, std::size_t iTypeIndex);
+    void loadObjectId(std::size_t& oObjectId, TypeIndex iTypeIndex);
 
     void loadControl(int&)                  {}
     void loadControl(long&)                 {}
@@ -381,7 +381,7 @@ private:
         XmlMidISerializer&  mXmlMidISerializer;
         std::string         mTagName;
     public:
-        AutoReleaseTagName(XmlMidISerializer& iXmlMidISerializer, std::size_t iTypeIndex);
+        AutoReleaseTagName(XmlMidISerializer& iXmlMidISerializer, TypeIndex iTypeIndex);
         ~AutoReleaseTagName();
     };
 

@@ -282,7 +282,7 @@ void XmlMidOSerializer::writeHeader()
 //      型情報保存
 //----------------------------------------------------------------------------
 
-void XmlMidOSerializer::saveObjectId(std::size_t iObjectId, std::size_t iTypeIndex)
+void XmlMidOSerializer::saveObjectId(std::size_t iObjectId, TypeIndex iTypeIndex)
 {
     Attribute   aAttribute;
     aAttribute.mStructure = Structure::Pointer;
@@ -298,7 +298,7 @@ void XmlMidOSerializer::saveObjectId(std::size_t iObjectId, std::size_t iTypeInd
 XmlMidOSerializer::AutoReleaseTagName::AutoReleaseTagName
 (
     XmlMidOSerializer& iXmlMidOSerializer,
-    std::size_t iTypeIndex
+    TypeIndex iTypeIndex
 ) : mXmlMidOSerializer(iXmlMidOSerializer),
     mTagName
     (
@@ -712,7 +712,7 @@ bool XmlMidISerializer::isMatchTypeIndex(TypeIndex iSerializedTypeIndex,
 //      型情報保存
 //----------------------------------------------------------------------------
 
-void XmlMidISerializer::loadObjectId(std::size_t& oObjectId, std::size_t iTypeIndex)
+void XmlMidISerializer::loadObjectId(std::size_t& oObjectId, TypeIndex iTypeIndex)
 {
     if (!mTagInfo.mValid)
     {
@@ -736,7 +736,7 @@ void XmlMidISerializer::loadObjectId(std::size_t& oObjectId, std::size_t iTypeIn
 XmlMidISerializer::AutoReleaseTagName::AutoReleaseTagName
 (
     XmlMidISerializer& iXmlMidISerializer,
-    std::size_t iTypeIndex
+    TypeIndex iTypeIndex
 ) : mXmlMidISerializer(iXmlMidISerializer),
     mTagName
     (

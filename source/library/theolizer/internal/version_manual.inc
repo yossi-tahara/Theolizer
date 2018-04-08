@@ -564,7 +564,7 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion<tBaseSerializer, 1>::saveClass
 )
 {
     // データ内に型名保存
-    std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+    theolizer::internal::TypeIndex aTypeIndex;
     if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
     {
         aTypeIndex = theolizer::internal::getTypeIndex<THEOLIZER_GENERATED_CLASS_TYPE>();
@@ -602,7 +602,7 @@ void THEOLIZER_INTERNAL_DERIVED::TheolizerVersion<tBaseSerializer, 1>::loadClass
 )
 {
     // データ内に型名保存
-    std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+    theolizer::internal::TypeIndex aTypeIndex;
     if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
     {
         aTypeIndex = theolizer::internal::getTypeIndex<THEOLIZER_GENERATED_CLASS_TYPE>();

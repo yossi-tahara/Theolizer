@@ -180,7 +180,7 @@ void BaseSerializer::createVersionNoTable()
 
 unsigned BaseSerializer::getLocalVersionNo(TypeIndex iTypeIndex)
 {
-    return mGlobalVersionNoTable->getLocalVersionNo(mGlobalVersionNo, iTypeIndex);
+    return mGlobalVersionNoTable->getLocalVersionNo(mGlobalVersionNo, iTypeIndex.getIndex());
 }
 
 // ***************************************************************************
@@ -255,7 +255,7 @@ return;
         {
             auto aIndex =aLoop.getIndex();
             auto aTypeInfo=aLoop.front();
-			auto aTypeIndex = aTypeInfo->getTypeIndex();
+            auto aTypeIndex = aTypeInfo->getTypeIndex();
             unsigned aVersionNo = getLocalVersionNo(aTypeIndex);
 
             if (aSaveStatList[aIndex] != essSaving)
@@ -280,10 +280,10 @@ return;
             // 配列ならば、基本型について出力指示する
             if (aTypeInfo->mTypeCategory == etcArrayType)
             {
-                unsigned aUnderlyingTypeIndex=aTypeInfo->getUnderlyingTypeIndex();
-                aSaveStatList[aUnderlyingTypeIndex]=essSaving;
+                TypeIndex aUnderlyingTypeIndex=aTypeInfo->getUnderlyingTypeIndex();
+                aSaveStatList[aUnderlyingTypeIndex.getIndex()]=essSaving;
                 // 自分より前のものなら、再ループ
-                if (aUnderlyingTypeIndex <= aIndex)
+                if (aUnderlyingTypeIndex.getIndex() <= aIndex)
                 {
                     aAgain=true;
                 }
@@ -327,12 +327,12 @@ std::cout << "aTypeName=" << aTypeName << "\n";
                 continue;
 
                     // まだ保存されてないなら、保存する
-                    unsigned aElementTypeIndex=aElement.getTypeIndex();
-                    if (aSaveStatList[aElementTypeIndex] == essIdle)
+                    unsigned aElementIndex=aElement.getTypeIndex().getIndex();
+                    if (aSaveStatList[aElementIndex] == essIdle)
                     {
-                        aSaveStatList[aElementTypeIndex]=essSaving;
+                        aSaveStatList[aElementIndex]=essSaving;
                         // 自分より前のものなら、再ループ
-                        if (aElementTypeIndex <= aIndex)
+                        if (aElementIndex <= aIndex)
                         {
                             aAgain=true;
                         }
@@ -358,11 +358,12 @@ std::cout << "    ElementName=" << aElement.getName() << "\n";
                 saveElementName(aElementsMapping, aElement.getName());
 
                 // 要素の形名、もしくは、TypeIndex
-                unsigned aElementTypeIndex=aElement.getTypeIndex();
+                TypeIndex aElementTypeIndex=aElement.getTypeIndex();
+                unsigned aElementIndex = aElementTypeIndex.getIndex();
                 if (mCheckMode == CheckMode::TypeCheck)
                 {
                     // 処理中要素の型名取出し
-                    BaseTypeInfo* aElementInfo = mTypeInfoList[aElementTypeIndex];
+                    BaseTypeInfo* aElementInfo = mTypeInfoList[aElementIndex];
                     unsigned aVersionNo2 = getLocalVersionNo(aElementInfo->getTypeIndex());
                     std::string aElementTypeName=aElementInfo->getTypeName(aVersionNo2);
                     saveControl(aElementTypeName);
@@ -373,11 +374,11 @@ std::cout << "    ElementName=" << aElement.getName() << "\n";
                 }
 
                 // まだ保存されてないなら、保存する
-                if (aSaveStatList[aElementTypeIndex] == essIdle)
+                if (aSaveStatList[aElementIndex] == essIdle)
                 {
-                    aSaveStatList[aElementTypeIndex]=essSaving;
+                    aSaveStatList[aElementIndex]=essSaving;
                     // 自分より前のものなら、再ループ
-                    if (aElementTypeIndex <= aIndex)
+                    if (aElementIndex <= aIndex)
                     {
                         aAgain=true;
                     }
@@ -549,7 +550,7 @@ TypeIndexList* BaseSerializer::loadProcessStart(TypeIndex iTypeIndex)
 
                 // 型名から、現在のTypeIndexListを求める
                 TypeIndexList& aTypeIndexList=mTypeNameMap->mMap[aTypeName];
-                if (iTypeIndex)
+                if (iTypeIndex.isValid())
                 {
                     bool aIsMatch=false;
                     for (auto aTypeIndex : aTypeIndexList)
@@ -581,7 +582,7 @@ TypeIndexList* BaseSerializer::loadProcessStart(TypeIndex iTypeIndex)
             {
                 TypeIndex aTypeIndex;
                 loadControl(aTypeIndex);
-                if (iTypeIndex)
+                if (iTypeIndex.isValid())
                 {
                     if (!isMatchTypeIndex(aTypeIndex, iTypeIndex))
                     {
@@ -831,17 +832,18 @@ BaseSerializer::~BaseSerializer() noexcept
 //      シリアライズ・データの指定TypeIndexのクラスの指定番目の要素の名前獲得
 // ***************************************************************************
 
-std::string BaseSerializer::getDataElementName(std::size_t iDataTypeIndex, std::size_t iDataIndex)
+std::string BaseSerializer::getDataElementName(TypeIndex iDataTypeIndex, std::size_t iDataIndex)
 {
     std::string ret;
+    unsigned aIndex = iDataTypeIndex.getIndex();
     switch(mCheckMode)
     {
     case CheckMode::TypeCheck:
-        ret=mSerializedTypeListN->at(iDataTypeIndex).mSerializedElementList[iDataIndex].mName;
+        ret=mSerializedTypeListN->at(aIndex).mSerializedElementList[iDataIndex].mName;
         break;
 
     case CheckMode::TypeCheckByIndex:
-        ret=mSerializedTypeListI->at(iDataTypeIndex).mSerializedElementList[iDataIndex].mName;
+        ret=mSerializedTypeListI->at(aIndex).mSerializedElementList[iDataIndex].mName;
         break;
 
     default:
@@ -980,7 +982,7 @@ BaseSerializer::AutoRestoreSaveStructure::AutoRestoreSaveStructure
     // データ内に型名を記録
     if (mSerializer.mCheckMode == CheckMode::TypeCheckInData)
     {
-        if (iTypeIndex)
+        if (iTypeIndex.isValid())
         {
             mTypeName.reset(new std::string(mSerializer.getTypeName(iTypeIndex)));
         }
@@ -1033,7 +1035,7 @@ BaseSerializer::AutoRestoreLoadProcess::AutoRestoreLoadProcess
     TypeIndexList*& oTypeIndexList
 ) : mSerializer(&iSerializer)
 {
-    oTypeIndexList=mSerializer->loadProcessStart(kInvalidSize);
+    oTypeIndexList=mSerializer->loadProcessStart(TypeIndex());
 }
 
 BaseSerializer::AutoRestoreLoadProcess::~AutoRestoreLoadProcess() noexcept(false)
@@ -1112,7 +1114,7 @@ std::cout << "AutoRestoreLoadStructure(" << iElementsMapping << ")\n";
     // データ内に型名を記録
     if (mSerializer.mCheckMode == CheckMode::TypeCheckInData)
     {
-        if (iTypeIndex)
+        if (iTypeIndex.isValid())
         {
             mTypeName.reset(new std::string(mSerializer.getTypeName(iTypeIndex)));
         }
@@ -1593,9 +1595,9 @@ return;
             }
 
             // この先頭の型のElementsMappingを取り出す
-            std::size_t aProgramTypeIndex = *(aTypeIndexList.begin());
+            TypeIndex aProgramTypeIndex = *(aTypeIndexList.begin());
             unsigned aVersionNo = getLocalVersionNo(aProgramTypeIndex);
-            BaseTypeInfo* aTypeInfo = mTypeInfoList[aProgramTypeIndex];
+            BaseTypeInfo* aTypeInfo = mTypeInfoList[aProgramTypeIndex.getIndex()];
             ElementsMapping aElementsMapping = aTypeInfo->getElementsMapping(aVersionNo);
 
             // 手動型なら要素情報なし
@@ -1637,7 +1639,7 @@ return;
         for (auto aTypeIndex : aTypeIndexList)
         {
 //std::cout << "mTypeIndexTable[" << aTypeIndex << "]=" << aDataTypeIndex << "\n";
-            mTypeIndexTable[aTypeIndex]=aDataTypeIndex;
+            mTypeIndexTable[aTypeIndex.getIndex()]=aDataTypeIndex;
         }
 //std::cout << "   ended...\n";
 
@@ -1693,9 +1695,9 @@ return;
 //      ---<<< プログラム側情報獲得 >>>---
 
         // 先頭のBaseTypeInfoを用いる
-        std::size_t aProgramTypeIndex = *(aSerializedTypeName.mProgramTypeIndex->begin());
+        TypeIndex aProgramTypeIndex = *(aSerializedTypeName.mProgramTypeIndex->begin());
         unsigned aVersionNo = getLocalVersionNo(aProgramTypeIndex);
-        BaseTypeInfo* aTypeInfo = mTypeInfoList[aProgramTypeIndex];
+        BaseTypeInfo* aTypeInfo = mTypeInfoList[aProgramTypeIndex.getIndex()];
 
 //      size_t aElementCount = aTypeInfo->getElementRange(aVersionNo).size();
 //std::cout << "    [" << aProgramTypeIndex << "]"
@@ -1711,9 +1713,9 @@ return;
             // 要素名
             char const* aElementName=aElement.getName();
             // 要素のTypeIndex
-            unsigned aElementTypeIndex=aElement.getTypeIndex();
+            TypeIndex aElementTypeIndex=aElement.getTypeIndex();
             // 要素BaseTypeInfo
-            BaseTypeInfo* aElementTypeInfo = mTypeInfoList[aElementTypeIndex];
+            BaseTypeInfo* aElementTypeInfo = mTypeInfoList[aElementTypeIndex.getIndex()];
             // 要素のバージョン番号
             unsigned aElementVersionNo = getLocalVersionNo(aElementTypeInfo->getTypeIndex());
             // 要素の型名
@@ -1790,20 +1792,20 @@ return;
 //      ---<<< プログラム側情報獲得 >>>---
 
         // 先頭のBaseTypeInfoを用いる
-        std::size_t aProgramTypeIndex = *(aSerializedTypeIndex.mProgramTypeIndex->begin());
+        TypeIndex aProgramTypeIndex = *(aSerializedTypeIndex.mProgramTypeIndex->begin());
         unsigned aVersionNo = getLocalVersionNo(aProgramTypeIndex);
-        BaseTypeInfo* aTypeInfo = mTypeInfoList[aProgramTypeIndex];
+        BaseTypeInfo* aTypeInfo = mTypeInfoList[aProgramTypeIndex.getIndex()];
 
 //std::cout << "    [" << aProgramTypeIndex << "]"
 //          << " getElementRange(" << aVersionNo << ").size()="
 //          << aTypeInfo->getElementRange(aVersionNo).size() << "\n";
-        std::vector<std::pair<char const*, size_t> > aProgramElements;
+        std::vector<std::pair<char const*, TypeIndex> > aProgramElements;
         for (auto&& aElement : aTypeInfo->getElementRange(aVersionNo))
         {
             // 要素名
             char const* aElementName=aElement.getName();
             // 要素のTypeIndex
-            unsigned aElementTypeIndex=aElement.getTypeIndex();
+            TypeIndex aElementTypeIndex=aElement.getTypeIndex();
             // 登録
             aProgramElements.emplace_back(aElementName, aElementTypeIndex);
 //std::cout << "    " << aElementName

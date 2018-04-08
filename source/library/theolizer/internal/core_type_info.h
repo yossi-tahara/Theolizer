@@ -125,7 +125,7 @@ public:
     {
         return mTypeIndexImpl;
     }
-    operator bool() const
+    bool isValid() const
     {
         return mTypeIndexImpl != kInvalidUnsigned;
     }
@@ -625,7 +625,6 @@ private:
         typedef typename GetTypeInfo<PointeeType>::Type    TypeInfo;
         auto& aTypeInfo=TypeInfo::getInstance();
         mTypeIndex2 = aTypeInfo.getTypeIndex();
-        mTypeIndex2.setPointer(TypeIndex::etipNormalPointer);
 
 std::cout << "PointerTypeInfo() : " << getCName() << "\n";
 std::cout << "    " << THEOLIZER_INTERNAL_TYPE_NAME(PointeeType) << "\n";
@@ -831,7 +830,7 @@ public:
     // 型名返却
     std::string getTypeName(unsigned iVersionNo)
     {
-        THEOLIZER_INTERNAL_ASSERT(BaseTypeInfo::mTypeIndex2,
+        THEOLIZER_INTERNAL_ASSERT(BaseTypeInfo::mTypeIndex2.isValid(),
             "Not registered class %1%.", getCName());
         return tClassType::Theolizer::getClassName(iVersionNo);
     }
@@ -993,12 +992,12 @@ public:
         for (auto&& aDrivedClass : mDrivedClassList)
         {
             TypeIndex aTypeIndex = aDrivedClass->getTypeIndex();
-            SaveStat& aSaveStat = ioSaveStatList.at(aTypeIndex);
+            SaveStat& aSaveStat = ioSaveStatList.at(aTypeIndex.getIndex());
 //std::cout << "    " << aDrivedClass->getCName() << "\n";
             if (aSaveStat == essIdle)
             {
                 aSaveStat=essSaving;
-                if (aTypeIndex < mTypeIndex2.getIndex()) ret=true;
+                if (aTypeIndex.getIndex() < mTypeIndex2.getIndex()) ret=true;
             }
             if (aDrivedClass->setSaving(iSerializer, ioSaveStatList)) ret=true;
         }

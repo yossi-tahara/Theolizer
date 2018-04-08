@@ -382,7 +382,7 @@ namespace theolizer
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_INTERNAL_ADD2(dGvnt, dType, ...)                          \
-    global_table::dGvnt::getInstance().add2(registerTypeIndex<::dType>(), __VA_ARGS__)
+    global_table::dGvnt::getInstance().add2(registerTypeIndex<::dType>().getIndex(), __VA_ARGS__)
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 

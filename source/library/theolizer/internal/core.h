@@ -400,7 +400,7 @@ THEOLIZER_INTERNAL_VER_DEBUG((
                 );
 
             // 型のTypeIndex取り出し
-            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            theolizer::internal::TypeIndex aTypeIndex;
             if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
             {
                 aTypeIndex = theolizer::internal::getTypeIndex<tPrimitiveType>();
@@ -444,7 +444,7 @@ THEOLIZER_INTERNAL_VER_DEBUG((
             iSerializer.loadControl(aObjectId);
 #else
             // 型のTypeIndex取り出し
-            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            theolizer::internal::TypeIndex aTypeIndex;
             if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
             {
                 aTypeIndex = theolizer::internal::getTypeIndex<tPrimitiveType>();
@@ -675,7 +675,7 @@ public:
 
         // TypeInfo獲得
         auto aTypeIndex=getTypeIndex();
-        auto aTypeInfo=TypeInfoList::getInstance().getList()[aTypeIndex];
+        auto aTypeInfo=TypeInfoList::getInstance().getList()[aTypeIndex.getIndex()];
 
         // バージョン番号獲得
         unsigned aVersionNo = iSerializer.getLocalVersionNo(aTypeInfo->getTypeIndex());
@@ -1240,7 +1240,7 @@ bool ClassTypeInfo<tClassType>::loadTypeInstance
 {
     typedef typename tClassType::TheolizerTarget    TheolizerTarget;
 
-    std::size_t aFoundTypeIndex=0;
+    TypeIndex aFoundTypeIndex;
     bool aFound=false;
     bool aDoRelease=true;
     for (auto aTypeIndex : iTypeIndexList)
@@ -1257,7 +1257,7 @@ bool ClassTypeInfo<tClassType>::loadTypeInstance
         // ポイント先領域のstd::type_indexと、シリアライズ・データ中のstd::type_indexが一致
         if ((iPointer != nullptr)
          && (std::type_index(typeid(*iPointer))
-          == TypeInfoList::getInstance().getList()[aTypeIndex]->getStdTypeIndex(true)))
+          == TypeInfoList::getInstance().getList()[aTypeIndex.getIndex()]->getStdTypeIndex(true)))
         {   // この場合のみ領域開放しない
             aDoRelease=false;
     break;

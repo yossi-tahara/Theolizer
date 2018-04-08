@@ -194,7 +194,7 @@ struct LoadPointer<tBaseSerializer, tClassType, EnableIf<IsIntrusive<tClassType>
         // メモリ内のデータ交換(TypeIndexが変化しない)
         else
         {
-            size_t aTypeIndex=0;
+            TypeIndex aTypeIndex;
             iSerializer.loadControl(aTypeIndex);
             TypeIndexList aTypeIndexList;
             aTypeIndexList.emplace_back(aTypeIndex);
@@ -235,7 +235,7 @@ struct LoadPointer<tBaseSerializer, tClassType, EnableIf<IsNonIntrusive<tClassTy
         // メモリ内のデータ交換(TypeIndexが変化しない)
         else
         {
-            size_t aTypeIndex=0;
+            TypeIndex aTypeIndex;
             iSerializer.loadControl(aTypeIndex);
             TypeIndexList aTypeIndexList;
             aTypeIndexList.emplace_back(aTypeIndex);
@@ -333,7 +333,7 @@ struct Switcher
             );
 
         // ポイント先の型のTypeIndex取り出し
-        std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+        TypeIndex aTypeIndex;
         if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
         {
             aTypeIndex = theolizer::internal::getTypeIndex<PointeeType>();
@@ -383,7 +383,7 @@ struct Switcher
         typedef typename std::remove_pointer<PointerType>::type PointeeType;
 
         // ポイント先の型のTypeIndex取り出し
-        std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+        TypeIndex aTypeIndex;
         if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
         {
             aTypeIndex = theolizer::internal::getTypeIndex<PointeeType>();
@@ -648,7 +648,7 @@ std::cout << THEOLIZER_INTERNAL_TYPE_NAME(tTargetClass) << " : "
                 );
 
             // 型のTypeIndex取り出し
-            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            TypeIndex aTypeIndex;
             if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
             {
                 aTypeIndex = theolizer::internal::getTypeIndex<tTargetClass>();
@@ -748,7 +748,7 @@ std::cout << THEOLIZER_INTERNAL_TYPE_NAME(tTargetClass) << " : "
         else
         {
             // 型のTypeIndex取り出し
-            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            TypeIndex aTypeIndex;
             if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
             {
                 aTypeIndex = theolizer::internal::getTypeIndex<tTargetClass>();
@@ -890,7 +890,7 @@ struct Switcher
                 );
 
             // 型のTypeIndex取り出し
-            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            TypeIndex aTypeIndex;
             if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
             {
                 aTypeIndex = theolizer::internal::getTypeIndex<tTargetClass>();
@@ -988,7 +988,7 @@ struct Switcher
         else
         {
             // 型のTypeIndex取り出し
-            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            TypeIndex aTypeIndex;
             if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
             {
                 aTypeIndex = theolizer::internal::getTypeIndex<tTargetClass>();
@@ -1077,7 +1077,7 @@ struct Switcher
                 );
 
             // 型のTypeIndex取り出し
-            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            TypeIndex aTypeIndex;
             if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
             {
                 aTypeIndex = theolizer::internal::getTypeIndex<TheolizerTarget>();
@@ -1122,7 +1122,7 @@ struct Switcher
         else
         {
             // 型のTypeIndex取り出し
-            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            TypeIndex aTypeIndex;
             if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
             {
                 aTypeIndex = theolizer::internal::getTypeIndex<TheolizerTarget>();
@@ -1238,7 +1238,7 @@ struct Switcher
                 );
 
             // 型のTypeIndex取り出し
-            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            TypeIndex aTypeIndex;
             if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
             {
                 aTypeIndex = theolizer::internal::getTypeIndex<tEnumType>();
@@ -1278,7 +1278,7 @@ struct Switcher
         else
         {
             // 型のTypeIndex取り出し
-            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            TypeIndex aTypeIndex;
             if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
             {
                 aTypeIndex = theolizer::internal::getTypeIndex<tEnumType>();
@@ -1355,7 +1355,7 @@ struct Switcher
                 );
 
             // 型のTypeIndex取り出し
-            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            TypeIndex aTypeIndex;
             if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
             {
                 aTypeIndex = theolizer::internal::getTypeIndex<TheolizerTarget>();
@@ -1390,7 +1390,7 @@ struct Switcher
         else
         {
             // 型のTypeIndex取り出し
-            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            TypeIndex aTypeIndex;
             if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
             {
                 aTypeIndex = theolizer::internal::getTypeIndex<TheolizerTarget>();
@@ -1465,7 +1465,7 @@ struct Switcher
                 );
 
             // 型のTypeIndex取り出し
-            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            TypeIndex aTypeIndex;
             if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
             {
                 aTypeIndex = theolizer::internal::getTypeIndex<tPrimitiveType>();
@@ -1500,7 +1500,7 @@ struct Switcher
         else
         {
             // 型のTypeIndex取り出し
-            std::size_t aTypeIndex = theolizer::internal::kInvalidSize;
+            TypeIndex aTypeIndex;
             if (iSerializer.mCheckMode == theolizer::CheckMode::TypeCheckInData)
             {
                 aTypeIndex = theolizer::internal::getTypeIndex<tPrimitiveType>();

@@ -926,7 +926,7 @@ protected:
                                                             {saveGroupStart();}
     virtual void saveStructureEnd(Structure iStructure, std::string const& iTypeName)
                                                             {saveGroupEnd();}
-    virtual void saveObjectId(std::size_t iObjectId, std::size_t iTypeIndex)
+    virtual void saveObjectId(std::size_t iObjectId, TypeIndex iTypeIndex)
                                                             {saveControl(iObjectId);}
     virtual void saveControl(int iControl)                  {THEOLIZER_INTERNAL_ABORT("");}
     virtual void saveControl(long iControl)                 {THEOLIZER_INTERNAL_ABORT("");}
@@ -992,7 +992,7 @@ private:
         }
 
         // データ内に型名保存
-        std::size_t aTypeIndex = kInvalidSize;
+        TypeIndex aTypeIndex;
         if (mCheckMode == CheckMode::TypeCheckInData)
         {
             aTypeIndex = getTypeIndex<typename tVersionType::TheolizerTarget>();
@@ -1153,7 +1153,7 @@ protected:
                                                             {THEOLIZER_INTERNAL_ABORT("");}
     virtual void loadStructureEnd(Structure iStructure, std::string const& iTypeName)
                                                             {THEOLIZER_INTERNAL_ABORT("");}
-    virtual void loadObjectId(std::size_t& oObjectId, std::size_t iTypeIndex)
+    virtual void loadObjectId(std::size_t& oObjectId, TypeIndex iTypeIndex)
                                                             {loadControl(oObjectId);}
     virtual void loadTypeName(std::string& oTypeName)       {loadControl(oTypeName);}
     virtual void loadControl(int& oControl)                 {THEOLIZER_INTERNAL_ABORT("");}
@@ -1218,7 +1218,7 @@ protected:
 //----------------------------------------------------------------------------
 
 private:
-    std::string getDataElementName(std::size_t iDataTypeIndex, std::size_t iDataIndex);
+    std::string getDataElementName(TypeIndex iDataTypeIndex, std::size_t iDataIndex);
 
 //      ---<<< ClassType回復 >>>---
 
@@ -1240,7 +1240,7 @@ std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
         }
 
         // データ内に型名保存
-        std::size_t aTypeIndex = kInvalidSize;
+        TypeIndex aTypeIndex;
         if (mCheckMode == CheckMode::TypeCheckInData)
         {
             aTypeIndex = getTypeIndex<typename tVersionType::TheolizerTarget>();
@@ -1253,7 +1253,7 @@ std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
         if (tVersionType::getElementTheolizer(0).isSentinel())
     return;
 
-        std::size_t aDataTypeIndex=0;
+        TypeIndex aDataTypeIndex;
         if ((tVersionType::Theolizer::kElementsMapping == emName)
          && (CheckMode::TypeCheck <= mCheckMode))
         {
@@ -1261,12 +1261,13 @@ std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
             {
                 aTypeIndex = getTypeIndex<typename tVersionType::TheolizerTarget>();
             }
-            aDataTypeIndex=mTypeIndexTable[aTypeIndex];
-            THEOLIZER_INTERNAL_ASSERT(aDataTypeIndex != kInvalidSize,
-                "aTypeIndex=%d aDataTypeIndex=%d TypeName=%s", aTypeIndex, aDataTypeIndex,
+            aDataTypeIndex=mTypeIndexTable[aTypeIndex.getIndex()];
+            THEOLIZER_INTERNAL_ASSERT(!aDataTypeIndex.isValid(),
+                "aTypeIndex=%d aDataTypeIndex=%d TypeName=%s",
+                aTypeIndex.getIndex(), aDataTypeIndex.getIndex(),
                 THEOLIZER_INTERNAL_TYPE_NAME(typename tVersionType::TheolizerTarget));
         }
-        std::size_t aDataIndex=0;   // シリアライデ・データ側クラスの要素Index
+        std::size_t aDataIndex;     // シリアライデ・データ側クラスの要素Index
         size_t aIndex=0;            // プログラム側クラスの要素Index
         while(true)
         {
