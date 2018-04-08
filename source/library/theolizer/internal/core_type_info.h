@@ -1432,58 +1432,6 @@ public:
 };
 
 //----------------------------------------------------------------------------
-//      ポインタか配列の場合、「ポイント先」／「配列の基本」の型を登録する
-//----------------------------------------------------------------------------
-
-//      ---<<< プライマリ >>>---
-
-template
-<
-    class tSerializer,
-    typename tType,
-    class tTheolizerVersion,
-    bool uIsDerived,
-    bool uIsManual=false,
-    class tEnable=void
->
-struct RegisterPointeeUnderlying
-{
-    static void registerType() { }
-};
-
-//      ---<<< ポインタ型 >>>---
-
-template<class tSerializer,typename tType,class tTheolizerVersion,bool uIsDerived,bool uIsManual>
-struct RegisterPointeeUnderlying
-<
-    tSerializer,
-    tType,
-    tTheolizerVersion,
-    uIsDerived,
-    uIsManual,
-    EnableIf<std::is_pointer<tType>::value>
->
-{
-    static void registerType();
-};
-
-//      ---<<< 配列 >>>---
-
-template<class tSerializer,typename tType,class tTheolizerVersion,bool uIsDerived,bool uIsManual>
-struct RegisterPointeeUnderlying
-<
-    tSerializer,
-    tType,
-    tTheolizerVersion,
-    uIsDerived,
-    uIsManual,
-    EnableIf<std::is_array<tType>::value>
->
-{
-    static void registerType();
-};
-
-//----------------------------------------------------------------------------
 //      基底クラスへ登録する
 //----------------------------------------------------------------------------
 
@@ -1551,17 +1499,6 @@ std::cout << "mTypeIndex2=" << aBaseTypeInfo.getTypeIndex() << "\n";
         // ポリモーフィズム用派生クラスの登録なら、基底クラスのリストへ追加する
         RegisterToBaseClassEntrance<TypeInfo, uIsDerived>()(&aBaseTypeInfo);
 
-        // ポインタなら、その先の型を登録する
-        // 配列なら、基本型を登録する
-        RegisterPointeeUnderlying
-        <
-            tSerializer,
-            RemovedCVType,
-            tTheolizerVersion,
-            uIsDerived,
-            uIsManual
-        >::registerType();
-
         // 手動型のkElementListへ登録する
         tTheolizerVersion::addElement
         (
@@ -1606,110 +1543,6 @@ TypeIndex registerTypeIndex()
     auto& aBaseTypeInfo=TypeInfo::getInstance();
 
     return aBaseTypeInfo.getTypeIndex();
-}
-
-//----------------------------------------------------------------------------
-//      ポインタの場合、ポイント先の型を登録する関数本体
-//----------------------------------------------------------------------------
-
-template<class tSerializer,typename tType,class tTheolizerVersion,bool uIsDerived,bool uIsManual>
-void RegisterPointeeUnderlying
-<
-    tSerializer,
-    tType,
-    tTheolizerVersion,
-    uIsDerived,
-    uIsManual,
-    EnableIf<std::is_pointer<tType>::value>
->::registerType()
-{
-    RegisterType
-    <
-        tSerializer,
-        typename std::remove_pointer<tType>::type,
-        tTheolizerVersion,
-        uIsDerived,
-        uIsManual
-    >::getInstance();
-}
-
-//----------------------------------------------------------------------------
-//      配列の場合、基本型を登録する関数本体
-//----------------------------------------------------------------------------
-
-//      ---<<< 基本型を取り出すためのプライマリ・テンプレート >>>---
-
-template
-<
-    class tSerializer,
-    typename tType,
-    class tTheolizerVersion,
-    bool uIsDerived,
-    bool uIsManual=false,
-    class tEnable=void
->
-struct RegisterUnderlying
-{
-    static void registerType()
-    {
-        RegisterType
-        <
-            tSerializer,
-            tType,
-            tTheolizerVersion,
-            uIsDerived,
-            uIsManual
-        >::getInstance();
-    }
-};
-
-//      ---<<< 基本型を取り出すための部分特殊化テンプレート >>>---
-
-template<class tSerializer,typename tType,class tTheolizerVersion,bool uIsDerived,bool uIsManual>
-struct RegisterUnderlying
-<
-    tSerializer,
-    tType,
-    tTheolizerVersion,
-    uIsDerived,
-    uIsManual,
-    EnableIf<std::is_array<tType>::value>
->
-{
-    static void registerType()
-    {
-        RegisterUnderlying
-        <
-            tSerializer,
-            typename std::remove_extent<tType>::type,
-            tTheolizerVersion,
-            uIsDerived,
-            uIsManual
-        >::registerType();
-    }
-};
-
-//      ---<<< 本体 >>>---
-
-template<class tSerializer,typename tType,class tTheolizerVersion,bool uIsDerived,bool uIsManual>
-void RegisterPointeeUnderlying
-<
-    tSerializer,
-    tType,
-    tTheolizerVersion,
-    uIsDerived,
-    uIsManual,
-    EnableIf<std::is_array<tType>::value>
->::registerType()
-{
-    RegisterUnderlying
-    <
-        tSerializer,
-        typename std::remove_extent<tType>::type,
-        tTheolizerVersion,
-        uIsDerived,
-        uIsManual
-    >::registerType();
 }
 
 // ***************************************************************************
