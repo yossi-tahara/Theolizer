@@ -1257,7 +1257,7 @@ std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
         if ((tVersionType::Theolizer::kElementsMapping == emName)
          && (CheckMode::TypeCheck <= mCheckMode))
         {
-            if (aTypeIndex == kInvalidSize)
+            if (!aTypeIndex.isValid())
             {
                 aTypeIndex = getTypeIndex<typename tVersionType::TheolizerTarget>();
             }

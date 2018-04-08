@@ -79,9 +79,9 @@ namespace internal
 struct SerializedElementTypeIndex
 {
     std::string mName;
-    std::size_t mTypeIndex;
+    TypeIndex   mTypeIndex;
 
-    SerializedElementTypeIndex(std::string iName, size_t iTypeIndex) :
+    SerializedElementTypeIndex(std::string iName, TypeIndex iTypeIndex) :
         mName(iName), mTypeIndex(iTypeIndex)
     { }
 };
@@ -467,7 +467,7 @@ void BaseSerializer::saveProcessEnd()
 struct BaseSerializer::TypeNameMap
 {
     std::map<std::string const, TypeIndexList>   mMap;
-    void add(std::string const& iTypeName, std::size_t iTypeIndex)
+    void add(std::string const& iTypeName, TypeIndex iTypeIndex)
     {
 //std::cout << "TypeNameMap::add(" << iTypeName << ", " << iTypeIndex << ");";
         auto pos = mMap.lower_bound(iTypeName);
@@ -499,18 +499,14 @@ return;
 
     mTypeNameMap=std::unique_ptr<TypeNameMap>(new TypeNameMap);
 
-    for (auto&& aIndexer : getRBForIndexer(mTypeInfoList))
+    for (auto aIndexer : getRBForIndexer(mTypeInfoList))
     {
         if (iIsClassOnly && (aIndexer.front()->mTypeCategory != etcClassType))
     continue;
 
-        unsigned aVersionNo = getLocalVersionNo(aIndexer.front()->getTypeIndex());
-        mTypeNameMap->
-            add
-            (
-                aIndexer.front()->getTypeName(aVersionNo),
-                aIndexer.getIndex()
-            );
+        TypeIndex aTypeIndex = aIndexer.front()->getTypeIndex();
+        unsigned aVersionNo = getLocalVersionNo(aTypeIndex);
+        mTypeNameMap->add(aIndexer.front()->getTypeName(aVersionNo), aTypeIndex);
     }
 }
 
@@ -1624,7 +1620,7 @@ return;
                 }
                 else
                 {
-                    size_t aElementTypeIndex;
+                    TypeIndex aElementTypeIndex;
                     loadControl(aElementTypeIndex);
 //std::cout << "        " << aElementName
 //          << ":"        << aElementTypeIndex << "\n";
