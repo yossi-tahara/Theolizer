@@ -1535,7 +1535,7 @@ return;
 //----------------------------------------------------------------------------
 
     // TypeIndex対応表確保
-    mTypeIndexTable.resize(mTypeIndexCount, kInvalidSize);
+    mTypeIndexTable.resize(mTypeIndexCount);
 
     // TypeIndexによるチェックなら、TypeIndex最大値入力し、mSerializedTypeListI領域確保
     if (mCheckMode == CheckMode::TypeCheckByIndex)
@@ -1553,7 +1553,7 @@ return;
         AutoRestoreLoad aAutoRestoreLoad2(*this);
 
         // TypeIndex取出し
-        size_t aDataTypeIndex=0;
+        TypeIndex aDataTypeIndex;
         if (mCheckMode == CheckMode::TypeCheckByIndex)
         {
             if (!readPreElement())
@@ -1649,7 +1649,7 @@ return;
             }
 #endif
             SerializedTypeIndex& aSerializedTypeIndex
-                                    =mSerializedTypeListI->at(aDataTypeIndex);
+                                    =mSerializedTypeListI->at(aDataTypeIndex.getIndex());
             aSerializedTypeIndex.mTypeName=std::move(aTypeName);
             aSerializedTypeIndex.mProgramTypeIndex=&aTypeIndexList;
             aSerializedTypeIndex.mSerializedElementList

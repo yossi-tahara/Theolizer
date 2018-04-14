@@ -817,7 +817,7 @@ public:
         nullptr,                                                            \
         false,                                                              \
         {theolizerD::All},                                                  \
-        [](){return size_t(0);},                                            \
+        [](){return theolizer::internal::TypeIndex();},                     \
         [](tBaseSerializer& iSerializer, dVersion& iInstance){},            \
         [](tBaseSerializer& iSerializer, dVersion& iInstance){},            \
         nullptr,                                                            \

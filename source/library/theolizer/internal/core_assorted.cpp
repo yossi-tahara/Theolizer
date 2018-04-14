@@ -160,6 +160,16 @@ std::string BitString::to_string(unsigned iStart, unsigned iEnd) const
 }
 
 //############################################################################
+//      グローバル・バージョン番号管理
+//############################################################################
+
+unsigned getLastVersionNo(unsigned iIndex)
+{
+    auto& aTypeInfoList = TypeInfoList::getInstance().getList();
+    return aTypeInfoList[iIndex]->getLastVersionNoV();
+}
+
+//############################################################################
 //      型管理
 //############################################################################
 
@@ -181,30 +191,6 @@ BaseTypeFunctions* getTypeFunctions()
 void setTypeFunctions(BaseTypeFunctions* iTypeFunctions)
 {
     xTypeFunctions=iTypeFunctions;
-}
-
-// ***************************************************************************
-//      グローバル・バージョン番号管理
-// ***************************************************************************
-
-//----------------------------------------------------------------------------
-//      現在のグローバル・バージョン番号に対応したローカル・バージョン番号
-//----------------------------------------------------------------------------
-
-unsigned VersionNoList::at(std::size_t iTypeIndex) const
-{
-    // テーブルが生成されていない場合、最新版を返却する
-    if (size() == 0)
-    {
-        auto& aTypeInfoListImpl=TypeInfoList::getInstance().getList();
-return aTypeInfoListImpl[iTypeIndex]->getLastVersionNoV();
-    }
-    // テーブルに登録されていない時は完全自動型なのでVer.1
-    else if (size() <= iTypeIndex)
-    {
-return 1;
-    }
-    return std::vector<unsigned>::at(iTypeIndex);
 }
 
 }   // namespace internal

@@ -77,14 +77,6 @@ TypeInfoList& TypeInfoList::getInstance()
 //      型をTypeInfoListへ登録する(TypeIndex返却)
 //----------------------------------------------------------------------------
 
-std::size_t TypeInfoList::registerType(BaseTypeInfo* iTypeInfo)
-{
-//    std::size_t ret=mList.size();
-//    mList.push_back(iTypeInfo);
-//    return ret;
-    return 0;
-}
-
 TypeIndex TypeInfoList::registerType2(BaseTypeInfo* iTypeInfo)
 {
     std::size_t ret=mTypeInfoList2.size();

@@ -118,6 +118,12 @@ public:
         mTypeIndexImpl = (iIndex+kPrimitiveEnd)*TypeIndexRadix;
         return *this;
     }
+    TypeIndex& operator=(std::size_t iIndex)
+    {
+        THEOLIZER_INTERNAL_ASSERT(iIndex <= kInvalidUnsigned, "TypeIndex : too large iIndex.");
+        *this = static_cast<unsigned>(iIndex);
+        return *this;
+    }
     TypeIndex& operator=(TypeIndex const& iTypeIndex)
     {
         mTypeIndexImpl = iTypeIndex.mTypeIndexImpl;
@@ -467,7 +473,6 @@ public:
     TypeInfoList& operator=(      TypeInfoList&&) = delete;
 
     // 型登録(TypeIndex返却)
-    std::size_t registerType(BaseTypeInfo* iTypeInfo);
     TypeIndex registerType2(BaseTypeInfo* iTypeInfo);
 
     // リスト返却
@@ -670,24 +675,6 @@ private:
     virtual TypeKind getTypeKind()
     {THEOLIZER_INTERNAL_ABORT("BaseTypeInfo::getTypeKind()");}
 };
-
-// ***************************************************************************
-//      グローバル・バージョン番号管理の残り
-// ***************************************************************************
-
-template<unsigned uLastGlobalVersionNo>
-unsigned GlobalVersionNoTable<uLastGlobalVersionNo>::
-    getLocalVersionNo(unsigned iGlobalVersionNo, unsigned iIndex) const
-{
-    // 最新GlobalVersionNoが1の処理
-    if (uLastGlobalVersionNo == 1)
-    {
-        auto& aTypeInfoList = TypeInfoList::getInstance().getList();
-        return aTypeInfoList[iIndex]->getLastVersionNoV();
-    }
-
-    return mVersionNoList[iGlobalVersionNo-1].at(iIndex);
-}
 
 // ***************************************************************************
 //      グローバル・バージョン・テーブル検索用type_index返却

@@ -1116,7 +1116,7 @@ protected:
 
     // プログラム側TypeIndexから
     // 型リスト(mSerializedTypeListI, mSerializedTypeListN)へのインデック対応表
-    std::vector<std::size_t>                mTypeIndexTable;
+    std::vector<TypeIndex>                  mTypeIndexTable;
 
 //      ---<<< 型名と型／バージョン番号対応表生成 >>>---
 

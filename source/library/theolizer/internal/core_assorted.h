@@ -562,39 +562,6 @@ public:
     }
 
 //----------------------------------------------------------------------------
-//      現在のグローバル・バージョン番号に対応したローカル・バージョン番号
-//          下記パラメータをハンドリングする
-//              特定のグローバル・バージョン番号に対する
-//                  各TypeIndexのローカル・バージョン番号表
-//              メタ・シリアライズ／デシリアライズ・モード・フラグ
-//----------------------------------------------------------------------------
-
-class THEOLIZER_INTERNAL_DLL VersionNoList : public std::vector<unsigned>
-{
-public:
-    unsigned at(std::size_t iTypeIndex) const;
-};
-
-
-
-
-
-
-
-//----------------------------------------------------------------------------
-//      キーとローカル・バージョン番号リスト・インデックス
-//----------------------------------------------------------------------------
-
-struct GlobalVersionKey
-{
-    std::type_index mTypeIndex;
-    std::size_t     mListIndex;
-    GlobalVersionKey(std::type_index iTypeIndex, std::size_t iListIndex) :
-        mTypeIndex(iTypeIndex), mListIndex(iListIndex)
-    { }
-};
-
-//----------------------------------------------------------------------------
 //      テーブルの基底クラス
 //----------------------------------------------------------------------------
 
@@ -617,6 +584,8 @@ public:
 //      テーブル本体
 //          シングルトン
 //----------------------------------------------------------------------------
+
+unsigned getLastVersionNo(unsigned iIndex);
 
 template<unsigned uLastGlobalVersionNo>
 class GlobalVersionNoTable : public GlobalVersionNoTableBase
@@ -662,7 +631,16 @@ std::cout << "add2(B) : mVersionNoList[" << i << "][" << iIndex << "]=" << aLoca
         }
     }
 
-    unsigned getLocalVersionNo(unsigned iGlobalVersionNo, unsigned iIndex) const;
+    unsigned getLocalVersionNo(unsigned iGlobalVersionNo, unsigned iIndex) const
+    {
+        // 最新GlobalVersionNoが1の処理
+        if (uLastGlobalVersionNo == 1)
+        {
+    return getLastVersionNo(iIndex);
+        }
+
+        return mVersionNoList[iGlobalVersionNo-1].at(iIndex);
+    }
 };
 
 //----------------------------------------------------------------------------
