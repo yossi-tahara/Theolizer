@@ -662,17 +662,7 @@ std::cout << "add2(B) : mVersionNoList[" << i << "][" << iIndex << "]=" << aLoca
         }
     }
 
-    unsigned getLocalVersionNo(unsigned iGlobalVersionNo, unsigned iIndex) const
-    {
-        // 最新GlobalVersionNoが1の処理
-        if (uLastGlobalVersionNo == 1)
-        {
-            auto aTypeInfoList = TypeInfoList::getInstance().getList();
-            return aTypeInfoList[iIndex]->getLastVersionNoV();
-        }
-
-        return mVersionNoList[iGlobalVersionNo-1].at(iIndex);
-    }
+    unsigned getLocalVersionNo(unsigned iGlobalVersionNo, unsigned iIndex) const;
 };
 
 //----------------------------------------------------------------------------

@@ -1267,7 +1267,7 @@ std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
                 aTypeIndex.getIndex(), aDataTypeIndex.getIndex(),
                 THEOLIZER_INTERNAL_TYPE_NAME(typename tVersionType::TheolizerTarget));
         }
-        std::size_t aDataIndex;     // シリアライデ・データ側クラスの要素Index
+        std::size_t aDataIndex=0;   // シリアライデ・データ側クラスの要素Index
         size_t aIndex=0;            // プログラム側クラスの要素Index
         while(true)
         {
