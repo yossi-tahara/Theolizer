@@ -208,6 +208,7 @@ void TestISerializerNormal2
     tArgs... iArgs
 )
 {
+return;
 std::cout << "TestISerializerNormal2(" << iFileName << ", "
           << THEOLIZER_INTERNAL_TYPE_NAME(tISerializer) << ")\n";
 
@@ -651,8 +652,8 @@ void TestNormalMain2()
 {
 //  theolizer::DisplayPass aDisplayPass;
 
-///    TestNormal2<theolizer::FastOSerializer<>,  theolizer::FastISerializer<> >("test_fast2");
-    TestNormal2<theolizer::XmlOSerializer<>,   theolizer::XmlISerializer<> >("test_xml2");
+//    TestNormal2<theolizer::FastOSerializer<>,  theolizer::FastISerializer<> >("test_fast2");
+//    TestNormal2<theolizer::XmlOSerializer<>,   theolizer::XmlISerializer<> >("test_xml2");
     TestNormal2<theolizer::JsonOSerializer<>,  theolizer::JsonISerializer<> >("test_json2");
-    TestNormal2<theolizer::BinaryOSerializer<>,theolizer::BinaryISerializer<> >("test_binary2");
+//    TestNormal2<theolizer::BinaryOSerializer<>,theolizer::BinaryISerializer<> >("test_binary2");
 }

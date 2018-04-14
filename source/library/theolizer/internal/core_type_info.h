@@ -109,8 +109,52 @@ constexpr unsigned kPrimitiveEnd = 16u;     // プリミティブIDの最後+1
 class TypeIndex
 {
     unsigned    mTypeIndexImpl;
+
+    // オブジェクト追跡
+    enum TypeIndexTracking : unsigned
+    {
+        etipMask                =0x0c,
+        etipNone                =0x00,
+        etipPointee             =0x04,
+        etipNormalPointer       =0x08,
+        etipOwnerPointer        =0x0c
+    };
+    static TypeIndexTracking makeTypeIndexTracking(bool iIsPointer, TrackingMode iTrackingMode)
+    {
+        if (iIsPointer)
+        {
+            switch(iTrackingMode)
+            {
+            case etmDefault:
+    return etipNormalPointer;
+
+            case etmOwner:
+    return etipOwnerPointer;
+
+            default:
+                break;
+            }
+        }
+        else
+        {
+            switch(iTrackingMode)
+            {
+            case etmDefault:
+    return etipNone;
+
+            case etmPointee:
+    return etipPointee;
+
+            default:
+                break;
+            }
+        }
+        THEOLIZER_INTERNAL_ERROR("makeTypeIndexTracking() error(1)");
+        return etipNone;
+    }
 public:
     TypeIndex() : mTypeIndexImpl(kInvalidUnsigned) { }
+    TypeIndex(short iIndex)    : mTypeIndexImpl(iIndex*TypeIndexRadix) { } // primitive用
     TypeIndex(unsigned iIndex) : mTypeIndexImpl((iIndex+kPrimitiveEnd)*TypeIndexRadix) { }
     TypeIndex(TypeIndex const& iTypeIndex) : mTypeIndexImpl(iTypeIndex.mTypeIndexImpl) { }
     TypeIndex& operator=(unsigned iIndex)
@@ -183,22 +227,14 @@ public:
         mTypeIndexImpl |= iRank;
     }
 
-    // ポインタ種別
-    enum TypeIndexPointer : unsigned
+    // オブジェクト追跡種別
+    void setTracking(bool iIsPointer, TrackingMode iTrackingMode)
     {
-        etipMask                =0x0c,
-        etipNone                =0x00,
-        etipPointee             =0x04,
-        etipNormalPointer       =0x08,
-        etipOwnerPointer        =0x0c
-    };
-    unsigned getPointer() const
-    {
-        return mTypeIndexImpl & etipMask;
+        mTypeIndexImpl |= makeTypeIndexTracking(iIsPointer, iTrackingMode);
     }
-    void setPointer(TypeIndexPointer iTypeIndexPointer)
+    bool checkTracking(bool iIsPointer, TrackingMode iTrackingMode) const
     {
-        mTypeIndexImpl |= iTypeIndexPointer;
+        return makeTypeIndexTracking(iIsPointer, iTrackingMode) == (mTypeIndexImpl & etipMask);
     }
 
     // TypeIndexの基数
@@ -270,7 +306,7 @@ struct PrimitiveId { };
     >                                                                       \
     {                                                                       \
         static char const* getPrimitiveName()    {return dName;}            \
-        static TypeIndex getPrimitiveTypeIndex() {return dIndex;}           \
+        static TypeIndex getPrimitiveTypeIndex() {return static_cast<short>(dIndex);}\
     }
 
 #define THEOLIZER_INTERNAL_FLOAT(dDigits, dMaxExponent, dName, dIndex)      \
@@ -288,7 +324,7 @@ struct PrimitiveId { };
     >                                                                       \
     {                                                                       \
         static char const* getPrimitiveName()    {return dName;}            \
-        static TypeIndex getPrimitiveTypeIndex() {return dIndex;}           \
+        static TypeIndex getPrimitiveTypeIndex() {return static_cast<short>(dIndex);}\
     }
 
 #define THEOLIZER_INTERNAL_STRING(dName, dIndex)                            \
@@ -303,24 +339,24 @@ struct PrimitiveId { };
     >                                                                       \
     {                                                                       \
         static char const* getPrimitiveName()    {return dName;}            \
-        static TypeIndex getPrimitiveTypeIndex() {return dIndex;}           \
+        static TypeIndex getPrimitiveTypeIndex() {return static_cast<short>(dIndex);}\
     }
 
-THEOLIZER_INTERNAL_INTEGRAL(0,  1,  "bool",     0u);
-THEOLIZER_INTERNAL_INTEGRAL(0,  8,  "unit8",    1u);
-THEOLIZER_INTERNAL_INTEGRAL(1,  7,   "int8",    2u);
-THEOLIZER_INTERNAL_INTEGRAL(0, 16,  "uint16",   3u);
-THEOLIZER_INTERNAL_INTEGRAL(1, 15,   "int16",   4u);
-THEOLIZER_INTERNAL_INTEGRAL(0, 32,  "uint32",   5u);
-THEOLIZER_INTERNAL_INTEGRAL(1, 31,   "int32",   6u);
-THEOLIZER_INTERNAL_INTEGRAL(0, 64,  "uint64",   7u);
-THEOLIZER_INTERNAL_INTEGRAL(1, 63,   "int64",   8u);
-THEOLIZER_INTERNAL_FLOAT(24,   128, "float32",  9u);
-THEOLIZER_INTERNAL_FLOAT(53,  1024, "float64", 10u);
-THEOLIZER_INTERNAL_FLOAT(64, 16384, "float80", 11u);
-THEOLIZER_INTERNAL_FLOAT(113,16384, "float128",12u);
-THEOLIZER_INTERNAL_STRING(          "string",  13u);
-//THEOLIZER_INTERNAL_BYTES(           "bytes",   14u);
+THEOLIZER_INTERNAL_INTEGRAL(0,  1,  "bool",     0);
+THEOLIZER_INTERNAL_INTEGRAL(0,  8,  "unit8",    1);
+THEOLIZER_INTERNAL_INTEGRAL(1,  7,   "int8",    2);
+THEOLIZER_INTERNAL_INTEGRAL(0, 16,  "uint16",   3);
+THEOLIZER_INTERNAL_INTEGRAL(1, 15,   "int16",   4);
+THEOLIZER_INTERNAL_INTEGRAL(0, 32,  "uint32",   5);
+THEOLIZER_INTERNAL_INTEGRAL(1, 31,   "int32",   6);
+THEOLIZER_INTERNAL_INTEGRAL(0, 64,  "uint64",   7);
+THEOLIZER_INTERNAL_INTEGRAL(1, 63,   "int64",   8);
+THEOLIZER_INTERNAL_FLOAT(24,   128, "float32",  9);
+THEOLIZER_INTERNAL_FLOAT(53,  1024, "float64", 10);
+THEOLIZER_INTERNAL_FLOAT(64, 16384, "float80", 11);
+THEOLIZER_INTERNAL_FLOAT(113,16384, "float128",12);
+THEOLIZER_INTERNAL_STRING(          "string",  13);
+//THEOLIZER_INTERNAL_BYTES(           "bytes",   14);
 
 #undef  THEOLIZER_INTERNAL_INTEGRAL
 #undef  THEOLIZER_INTERNAL_FLOAT

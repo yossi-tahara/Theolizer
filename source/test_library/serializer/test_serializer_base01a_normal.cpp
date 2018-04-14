@@ -228,6 +228,7 @@ void TestISerializerNormal
     tArgs... iArgs
 )
 {
+return;
 std::cout << "TestISerializerNormal(" << iFileName << ", "
           << THEOLIZER_INTERNAL_TYPE_NAME(tISerializer) << ")\n";
 

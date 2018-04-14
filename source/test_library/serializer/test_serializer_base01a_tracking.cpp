@@ -849,6 +849,7 @@ void TestObjectTracking(char const* iPreFix)
 {
 //      ---<<< InMemory形式 >>>---
 
+#if 0
     if (!tOSerialzer::hasProperty(theolizer::Property::SupportModifying))
     {
         string aFileName = string(iPreFix) + "_in_memory";
@@ -876,6 +877,7 @@ return;
         TestObjectTrackingImpl<tOSerialzer, tISerializer>(aFileName,
             aVerNo, theolizer::CheckMode::TypeCheck);
     }
+#endif
 
 //      ---<<< TypeCheckByIndex形式 >>>---
 
@@ -896,15 +898,15 @@ void TestTrackingMain()
 {
 //  theolizer::DisplayPass aDisplayPass;
 
-    TestObjectTracking<theolizer::FastOSerializer<>, theolizer::FastISerializer<>>
-        ("test_fast");
+//    TestObjectTracking<theolizer::FastOSerializer<>, theolizer::FastISerializer<>>
+//        ("test_fast");
 
-    TestObjectTracking<theolizer::XmlOSerializer<>, theolizer::XmlISerializer<>>
-        ("test_xml");
+//    TestObjectTracking<theolizer::XmlOSerializer<>, theolizer::XmlISerializer<>>
+//        ("test_xml");
 
     TestObjectTracking<theolizer::JsonOSerializer<>, theolizer::JsonISerializer<>>
         ("test_json");
 
-    TestObjectTracking<theolizer::BinaryOSerializer<>,theolizer::BinaryISerializer<>>
-        ("test_binary");
+//    TestObjectTracking<theolizer::BinaryOSerializer<>,theolizer::BinaryISerializer<>>
+//        ("test_binary");
 }
