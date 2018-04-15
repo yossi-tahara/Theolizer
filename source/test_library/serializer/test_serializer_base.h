@@ -32,6 +32,7 @@
 #define THEOLIZER_TEST_SERIALIZER_BASE_H
 
 //#define NO_ARRAY
+  #define NO_ARRAY_POINTER
 
 // ***************************************************************************
 //      通常のインクルード
@@ -462,16 +463,20 @@ public:
     Included2*      mIncluded2;
     string*         mString;
 
+#ifndef NO_ARRAY_POINTER
     int                                     (*mArrayInt)[2][3];
     FullAutoTemplate<int[2], short (*)[3]>  mFullAutoTemplateArray;
+#endif
 
     Pointers() : 
-        mUInt(nullptr),
-        mEnum(nullptr),
-        mIncluded2(nullptr),
-        mString(nullptr),
-        mArrayInt(nullptr),
-        mFullAutoTemplateArray()
+          mUInt(nullptr)
+        , mEnum(nullptr)
+        , mIncluded2(nullptr)
+        , mString(nullptr)
+#ifndef NO_ARRAY_POINTER
+        , mArrayInt(nullptr)
+        , mFullAutoTemplateArray()
+#endif
     { }
 };
 
@@ -489,10 +494,18 @@ public:
     Included1*      mIncluded1;
     string*         mString;
     int*            mArray[3];
+#ifndef NO_ARRAY_POINTER
     int             (*mArrayPtr)[2];
+#endif
 
-    Dynamic() : mUInt(nullptr), mEnum(nullptr), mIncluded1(nullptr),
-                mString(nullptr), mArray{nullptr}, mArrayPtr(nullptr)
+    Dynamic() :
+          mUInt(nullptr)
+        , mEnum(nullptr)
+        , mIncluded1(nullptr)
+        , mString(nullptr), mArray{nullptr}
+#ifndef NO_ARRAY_POINTER
+        , mArrayPtr(nullptr)
+#endif
     { }
 
     ~Dynamic()
@@ -503,7 +516,9 @@ public:
         delete mString;
         for (std::size_t i=0; i < std::extent<decltype(mArray)>::value; ++i)
             delete mArray[i];
+#ifndef NO_ARRAY_POINTER
         delete[] mArrayPtr;
+#endif
     }
 };
 

@@ -196,6 +196,12 @@ public:
         return mTypeIndexImpl/TypeIndexRadix;
     }
 
+    // 追加情報獲得
+    unsigned getAdditional() const
+    {
+        return mTypeIndexImpl & ~TypeIndexMask;
+    }
+
     // 配列種別
     enum TypeIndexArray : unsigned
     {

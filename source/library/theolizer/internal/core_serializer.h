@@ -1261,8 +1261,7 @@ std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
             {
                 aTypeIndex = getTypeIndex<typename tVersionType::TheolizerTarget>();
             }
-            aDataTypeIndex=mTypeIndexTable[aTypeIndex.getIndex()];
-            THEOLIZER_INTERNAL_ASSERT(!aDataTypeIndex.isValid(),
+            THEOLIZER_INTERNAL_ASSERT(aTypeIndex.isValid(),
                 "aTypeIndex=%d aDataTypeIndex=%d TypeName=%s",
                 aTypeIndex.getIndex(), aDataTypeIndex.getIndex(),
                 THEOLIZER_INTERNAL_TYPE_NAME(typename tVersionType::TheolizerTarget));
@@ -1279,7 +1278,7 @@ std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
             if ((tVersionType::Theolizer::kElementsMapping == emName)
              && (CheckMode::TypeCheck <= mCheckMode))
             {
-                aElementName=getDataElementName(aDataTypeIndex, aDataIndex++);
+                aElementName=getDataElementName(aTypeIndex, aDataIndex++);
             }
             else
             {

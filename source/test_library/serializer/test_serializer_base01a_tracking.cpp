@@ -163,7 +163,9 @@ std::cout << "TestOSerializerTracking(" << iFileName << ", "
     aDynamic->mIncluded1 = new Included1(402);
     aDynamic->mString = new string("403");
     aDynamic->mArray[1] = new int(404);
+#ifndef NO_ARRAY_POINTER
     aDynamic->mArrayPtr = reinterpret_cast<int(*)[2]>(new int[2]{405, 406});
+#endif
     THEOLIZER_PROCESS_OWNER(aSerializer, aDynamic);
 
 //      ---<<< 多重指定動的生成領域のポインタ処理(基本) >>>---
@@ -183,8 +185,10 @@ std::cout << "TestOSerializerTracking(" << iFileName << ", "
 #ifndef NO_ARRAY
     int*            mArrayElem  =aDynamic->mArray[1];
     THEOLIZER_PROCESS_OWNER(aSerializer, mArrayElem);
+  #ifndef NO_ARRAY_POINTER
     int         (*mArrayPtr)[2] =aDynamic->mArrayPtr;
     THEOLIZER_PROCESS_OWNER(aSerializer, mArrayPtr);
+  #endif
 #endif
 
 //      ---<<< 動的生成領域のオーナー指定(別領域有り) >>>---
@@ -198,7 +202,9 @@ std::cout << "TestOSerializerTracking(" << iFileName << ", "
     aDynamic2->mString = new string("503");
 #ifndef NO_ARRAY
     aDynamic2->mArray[1] = new int(504);
+  #ifndef NO_ARRAY_POINTER
     aDynamic2->mArrayPtr = reinterpret_cast<int(*)[2]>(new int[2]{505, 506});
+  #endif
 #endif
     THEOLIZER_PROCESS_OWNER(aSerializer, aDynamic2);
 
@@ -347,8 +353,10 @@ std::cout << "TestISerializerTracking(" << iFileName << ", "
     THEOLIZER_EQUAL(*(aDynamic->mString), "403");
 #ifndef NO_ARRAY
     THEOLIZER_EQUAL(*(aDynamic->mArray[1]), 404);
+  #ifndef NO_ARRAY_POINTER
     THEOLIZER_EQUAL((*(aDynamic->mArrayPtr))[0], 405);
     THEOLIZER_EQUAL((*(aDynamic->mArrayPtr))[1], 406);
+  #endif
 #endif
 
 //      ---<<< 多重指定動的生成領域のポインタ処理(基本) >>>---
@@ -374,9 +382,11 @@ std::cout << "TestISerializerTracking(" << iFileName << ", "
     THEOLIZER_PROCESS_OWNER(aSerializer, mArrayElem);
     THEOLIZER_EQUAL(mArrayElem, aDynamic->mArray[1]);
 
+  #ifndef NO_ARRAY_POINTER
     int         (*mArrayPtr)[2] =aDynamic->mArrayPtr;
     THEOLIZER_PROCESS_OWNER(aSerializer, mArrayPtr);
     THEOLIZER_EQUAL(mArrayPtr, aDynamic->mArrayPtr);
+  #endif
 #endif
 
 //      ---<<< 動的生成領域のオーナー指定(別領域有り) >>>---
@@ -390,7 +400,9 @@ std::cout << "TestISerializerTracking(" << iFileName << ", "
     aDynamic2->mString = new string("-503");
 #ifndef NO_ARRAY
     aDynamic2->mArray[1] = new int(-504);
+  #ifndef NO_ARRAY_POINTER
     aDynamic2->mArrayPtr = reinterpret_cast<int(*)[2]>(new int[2]{-505, -506});
+  #endif
 #endif
 
     THEOLIZER_PROCESS_OWNER(aSerializer, aDynamic2);
@@ -400,8 +412,10 @@ std::cout << "TestISerializerTracking(" << iFileName << ", "
     THEOLIZER_EQUAL(*(aDynamic2->mString), "503");
 #ifndef NO_ARRAY
     THEOLIZER_EQUAL(*(aDynamic2->mArray[1]) , 504);
+  #ifndef NO_ARRAY_POINTER
     THEOLIZER_EQUAL((*(aDynamic2->mArrayPtr))[0], 505);
     THEOLIZER_EQUAL((*(aDynamic2->mArrayPtr))[1], 506);
+  #endif
 #endif
 
 //      ---<<< 多重指定動的生成領域のポインタ処理(非侵入型領域有り) >>>---
@@ -849,7 +863,6 @@ void TestObjectTracking(char const* iPreFix)
 {
 //      ---<<< InMemory形式 >>>---
 
-#if 0
     if (!tOSerialzer::hasProperty(theolizer::Property::SupportModifying))
     {
         string aFileName = string(iPreFix) + "_in_memory";
@@ -877,7 +890,6 @@ return;
         TestObjectTrackingImpl<tOSerialzer, tISerializer>(aFileName,
             aVerNo, theolizer::CheckMode::TypeCheck);
     }
-#endif
 
 //      ---<<< TypeCheckByIndex形式 >>>---
 

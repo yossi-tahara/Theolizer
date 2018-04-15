@@ -624,6 +624,8 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_VERSION_NO THEOLIZER_INTERNAL_DEFINE(kVersionNo,1)
 #define THEOLIZER_GENERATED_CLASS_NAME() THEOLIZER_INTERNAL_CLASS_NAME((u8"Pointers"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
+
+#ifndef NO_ARRAY_POINTER
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
     THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
         (theolizerD::All),\
@@ -643,6 +645,21 @@ namespace change_order{namespace dummy{
     THEOLIZER_INTERNAL_ELEMENT_KN((mFullAutoTemplateArray),mFullAutoTemplateArray,etmDefault,\
         (theolizerD::All),\
         (FullAutoTemplate<int[2], short (*)[3]>),1)
+#else
+#define THEOLIZER_GENERATED_ELEMENT_LIST()\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmDefault,\
+        (theolizerD::All),\
+        (unsigned*))\
+    THEOLIZER_INTERNAL_ELEMENT_N((mEnum),mEnum,etmDefault,\
+        (theolizerD::All),\
+        (EnumTest*))\
+    THEOLIZER_INTERNAL_ELEMENT_N((mIncluded2),mIncluded2,etmDefault,\
+        (theolizerD::All),\
+        (Included2*))\
+    THEOLIZER_INTERNAL_ELEMENT_N((mString),mString,etmDefault,\
+        (theolizerD::All),\
+        (string*))
+#endif
 #include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
@@ -663,6 +680,7 @@ namespace change_order{namespace dummy{
 #define THEOLIZER_GENERATED_CLASS_NAME() THEOLIZER_INTERNAL_CLASS_NAME((u8"Dynamic"))
 #define THEOLIZER_GENERATED_ELEMENT_MAP emName
 #ifndef NO_ARRAY
+  #ifndef NO_ARRAY_POINTER
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
     THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmOwner,\
         (theolizerD::All),\
@@ -682,6 +700,24 @@ namespace change_order{namespace dummy{
     THEOLIZER_INTERNAL_ELEMENT_N((mArrayPtr),mArrayPtr,etmOwner,\
         (theolizerD::All),\
         (int(*)[2]))
+  #else
+#define THEOLIZER_GENERATED_ELEMENT_LIST()\
+    THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmOwner,\
+        (theolizerD::All),\
+        (unsigned*))\
+    THEOLIZER_INTERNAL_ELEMENT_N((mEnum),mEnum,etmOwner,\
+        (theolizerD::All),\
+        (EnumTest*))\
+    THEOLIZER_INTERNAL_ELEMENT_N((mIncluded1),mIncluded1,etmOwner,\
+        (theolizerD::All),\
+        (Included1*))\
+    THEOLIZER_INTERNAL_ELEMENT_N((mString),mString,etmOwner,\
+        (theolizerD::All),\
+        (string*))\
+    THEOLIZER_INTERNAL_ELEMENT_AN((mArray),mArray,etmOwner,\
+        (theolizerD::All),\
+        (int*),3)
+  #endif
 #else
 #define THEOLIZER_GENERATED_ELEMENT_LIST()\
     THEOLIZER_INTERNAL_ELEMENT_N((mUInt),mUInt,etmOwner,\
