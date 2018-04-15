@@ -400,6 +400,13 @@ public:
 
     // リスト返却
     TypeInfoListImpl& getList() {return mTypeInfoList2;}
+
+    // BaseTypeInfo*返却
+    BaseTypeInfo* operator[](TypeIndex iTypeIndex)
+    {
+        unsigned aIndex = iTypeIndex.getIndex();
+        return mTypeInfoList2[aIndex];
+    }
 };
 
 // ***************************************************************************
@@ -1473,7 +1480,25 @@ std::cout << "mTypeIndex2=" << aBaseTypeInfo.getTypeIndex() << "\n";
         if (tSerializer::kHasDestination)
         {
 //std::cout << "    addDestination(" << tSerializer::getDestinations() << ")\n";
-            aBaseTypeInfo.addDestination(tSerializer::getDestinations());
+            TypeIndex aTypeIndex = aBaseTypeInfo.getTypeIndex();
+            TypeInfoList& aTypeInfoList = TypeInfoList::getInstance();
+
+            // ポインタならば、ポイント先をトップ・レベル扱いとする
+            if (aBaseTypeInfo.mTypeCategory == etcPointerType)
+            {
+                aTypeInfoList[aTypeIndex]->addDestination(tSerializer::getDestinations());
+            }
+
+            // 配列ならば、基本型をトップ・レベル扱いとする
+            else if (aBaseTypeInfo.mTypeCategory == etcArrayType)
+            {
+                aTypeInfoList[aTypeIndex]->addDestination(tSerializer::getDestinations());
+            }
+
+            else
+            {
+                aBaseTypeInfo.addDestination(tSerializer::getDestinations());
+            }
         }
 
         // ポリモーフィズム用派生クラスの登録なら、基底クラスのリストへ追加する

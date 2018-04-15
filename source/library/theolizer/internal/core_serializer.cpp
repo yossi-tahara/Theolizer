@@ -262,33 +262,6 @@ return;
         continue;
             aSaveStatList[aIndex] = essSaved;
 
-            // ポインタ／参照で基底クラスが登録されていたら、その派生クラスの型情報を出力指示する
-            //  また基底クラス自身も出力指示する
-            if (aTypeInfo->mTypeCategory == etcPointerType)
-            {
-                BaseTypeInfo* aPointeeTypeInfo = aTypeInfo->getPointeeTypeInfo();
-                if (aSaveStatList[aPointeeTypeInfo->mTypeIndex2.getIndex()] != essSaved)
-                {
-                    aSaveStatList[aPointeeTypeInfo->mTypeIndex2.getIndex()] = essSaving;
-                }
-                if (aPointeeTypeInfo->setSaving(*this, aSaveStatList))
-                {
-                    aAgain=true;   // 自分より前のものなら、再ループ
-                }
-            }
-
-            // 配列ならば、基本型について出力指示する
-            if (aTypeInfo->mTypeCategory == etcArrayType)
-            {
-                TypeIndex aUnderlyingTypeIndex=aTypeInfo->getUnderlyingTypeIndex();
-                aSaveStatList[aUnderlyingTypeIndex.getIndex()]=essSaving;
-                // 自分より前のものなら、再ループ
-                if (aUnderlyingTypeIndex.getIndex() <= aIndex)
-                {
-                    aAgain=true;
-                }
-            }
-
             // TypeCheckの時はClassTypeのみ出力する
             if ((mCheckMode == CheckMode::TypeCheck)
              && (aTypeInfo->mTypeCategory != etcClassType))
