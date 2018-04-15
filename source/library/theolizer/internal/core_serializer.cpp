@@ -215,7 +215,7 @@ return;
         unsigned aVersionNo = getLocalVersionNo(aLoop.front()->getTypeIndex());
         std::cout << "[" << aLoop.getIndex() << "] "
                   << aLoop.front()->getTypeName(aVersionNo)
-                  << " isTopLevel()=" << aLoop.front()->isTopLovel()
+                  << " isTopLevel()=" << aLoop.front()->isTopLevel()
                   << " isManual()=" << aLoop.front()->isManual() << "\n";
     }
     std::cout.flush();

@@ -573,7 +573,7 @@ public:
 
     // デバッグ用
     virtual char const*     getCName() const = 0;
-    bool isTopLovel() {return mIsTopLevel;}
+    bool isTopLevel() {return mIsTopLevel;}
 
 //      ---<<< ポリモーフィズム対応 >>>---
 
