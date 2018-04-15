@@ -100,8 +100,6 @@ enum TrackingMode
 //              Primitiveには割り当てない
 //############################################################################
 
-constexpr unsigned kPrimitiveEnd = 16u;     // プリミティブIDの最後+1
-
 //----------------------------------------------------------------------------
 //      TypeIndex本体
 //----------------------------------------------------------------------------
@@ -155,11 +153,11 @@ class TypeIndex
 public:
     TypeIndex() : mTypeIndexImpl(kInvalidUnsigned) { }
     TypeIndex(short iIndex)    : mTypeIndexImpl(iIndex*TypeIndexRadix) { } // primitive用
-    TypeIndex(unsigned iIndex) : mTypeIndexImpl((iIndex+kPrimitiveEnd)*TypeIndexRadix) { }
+    TypeIndex(unsigned iIndex) : mTypeIndexImpl(iIndex*TypeIndexRadix) { }
     TypeIndex(TypeIndex const& iTypeIndex) : mTypeIndexImpl(iTypeIndex.mTypeIndexImpl) { }
     TypeIndex& operator=(unsigned iIndex)
     {
-        mTypeIndexImpl = (iIndex+kPrimitiveEnd)*TypeIndexRadix;
+        mTypeIndexImpl = iIndex*TypeIndexRadix;
         return *this;
     }
     TypeIndex& operator=(std::size_t iIndex)
@@ -175,7 +173,7 @@ public:
     }
     void set(unsigned iIndex, unsigned iAdditional)
     {
-        mTypeIndexImpl = (iIndex+kPrimitiveEnd)*TypeIndexRadix + iAdditional;
+        mTypeIndexImpl = iIndex*TypeIndexRadix + iAdditional;
     }
     void setRaw(unsigned iTypeIndexImpl)
     {
@@ -197,12 +195,9 @@ public:
     {
         return mTypeIndexImpl != iTypeIndex.mTypeIndexImpl;
     }
-    // PrimitiveにはIndexは割当らない
     unsigned getIndex() const
     {
-        unsigned aIndexOffseted = mTypeIndexImpl/TypeIndexRadix;
-        THEOLIZER_INTERNAL_ASSERT(kPrimitiveEnd <= aIndexOffseted, "getIndex() for primitive.");
-        return aIndexOffseted - kPrimitiveEnd;
+        return mTypeIndexImpl/TypeIndexRadix;
     }
 
     // 配列種別
@@ -357,6 +352,8 @@ THEOLIZER_INTERNAL_FLOAT(64, 16384, "float80", 11);
 THEOLIZER_INTERNAL_FLOAT(113,16384, "float128",12);
 THEOLIZER_INTERNAL_STRING(          "string",  13);
 //THEOLIZER_INTERNAL_BYTES(           "bytes",   14);
+
+constexpr unsigned kPrimitiveEnd = 16u;     // プリミティブIDの最後+1
 
 #undef  THEOLIZER_INTERNAL_INTEGRAL
 #undef  THEOLIZER_INTERNAL_FLOAT
@@ -1249,7 +1246,7 @@ private:
     PrimitiveTypeInfo() : BaseTypeInfo(etcPrimitiveType)
     {
 std::cout << "PrimitiveTypeInfo() : " << getPrimitiveName<tPrimitiveType>() << "\n";
-        mTypeIndex2 = getPrimitiveTypeIndex<tPrimitiveType>();
+        mTypeIndex2 = TypeInfoList::getInstance().registerType2(this);
     }
 public:
     static PrimitiveTypeInfo& getInstance();
