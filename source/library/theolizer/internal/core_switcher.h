@@ -1745,12 +1745,16 @@ struct BranchedProcess
         // エラーが発生していたら戻る
         iSerializer.checkError();
 
+        // 処理中の型
+        auto aTypeIndex = getTypeIndex<tType>();
+        aTypeIndex.setTracking(std::is_pointer<tType>::value, tTrackingMode);
+
         // 保存／回復処理
         if (iSerializer.mIsSaver)
         {
             iSerializer.writePreElement(true);
             BaseSerializer::AutoRestoreSaveProcess
-                aAutoRestoreSaveTop(iSerializer, getTypeIndex<tType>());
+                aAutoRestoreSaveTop(iSerializer, aTypeIndex);
             Switcher<BaseSerializer, tType, true, tTrackingMode>::save(iSerializer, ioInstance);
         }
         else
@@ -1758,7 +1762,7 @@ struct BranchedProcess
             if (iSerializer.readPreElement(true))
             {
                 BaseSerializer::AutoRestoreLoadProcess
-                    aAutoRestoreLoadTop(iSerializer, getTypeIndex<tType>());
+                    aAutoRestoreLoadTop(iSerializer, aTypeIndex);
                 Switcher<BaseSerializer, tType, true, tTrackingMode>::load(iSerializer,ioInstance);
             }
         }

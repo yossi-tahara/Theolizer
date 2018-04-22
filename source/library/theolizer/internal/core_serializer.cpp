@@ -1467,9 +1467,9 @@ return mTypeNameMap->mMap[aTypeName];
     else
     {
         // TypeIndex回復
-        size_t aTypeIndex=0;
+        TypeIndex aTypeIndex;
         loadControl(aTypeIndex);
-        auto& aElementType = mSerializedTypeListI->at(aTypeIndex);
+        auto& aElementType = mSerializedTypeListI->at(aTypeIndex.getIndex());
 return *(aElementType.mProgramTypeIndex);
     }
 }
@@ -1843,7 +1843,7 @@ return false;
         for (auto aProgramTypeIndex : *(aElementType.mProgramTypeIndex))
         {
 //std::cout << "        " << aProgramTypeIndex << " : " << iProgramTypeIndex << "\n";
-            if (aProgramTypeIndex == iProgramTypeIndex)
+            if (aProgramTypeIndex.getIndex() == iProgramTypeIndex.getIndex())
             {
 //std::cout << "        Match!!\n";
                 aIsMatch=true;
