@@ -524,7 +524,7 @@ TypeIndexList* BaseSerializer::loadProcessStart(TypeIndex iTypeIndex)
                     bool aIsMatch=false;
                     for (auto aTypeIndex : aTypeIndexList)
                     {
-                        if (aTypeIndex == iTypeIndex)
+                        if (aTypeIndex.getIndex() == iTypeIndex.getIndex())
                         {
                             aIsMatch=true;
                     break;
@@ -1831,6 +1831,10 @@ std::cout << "----------------------- readHeaderTypeInfo()\n";
 
 bool BaseSerializer::isMatchTypeIndex(TypeIndex iSerializedTypeIndex, TypeIndex iProgramTypeIndex)
 {
+    // 付加情報(オブジェクト追跡と配列)が異なれば不一致
+    if (iSerializedTypeIndex.getAdditional() != iProgramTypeIndex.getAdditional())
+return false;
+
     bool aIsMatch=false;
     // リストにある時だけチェックする(ないなら不一致)
     if (iSerializedTypeIndex.getIndex() < mSerializedTypeListI->size())
@@ -1846,6 +1850,7 @@ bool BaseSerializer::isMatchTypeIndex(TypeIndex iSerializedTypeIndex, TypeIndex 
     break;
             }
         }
+//std::cout << "    aIsMatch = " << aIsMatch << "\n";
     }
     return aIsMatch;
 }
