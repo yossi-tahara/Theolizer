@@ -451,6 +451,11 @@ int main(int argc, char** argv)
         std::cout << e.getMessage() << std::endl;
         ret=1;
     }
+    catch(...)
+    {
+        std::cout << "unknown exception!!" << std::endl;
+        ret = 2;
+    }
 
 // ***************************************************************************
 //      次のテストに備えてエラー・ログ削除
