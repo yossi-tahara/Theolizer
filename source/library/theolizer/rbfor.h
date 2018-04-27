@@ -186,7 +186,8 @@ public:
 
     //! @ingroup RbFor
     //! 先頭要素を取り出す
-    ValueType& front()      {return *mBegin;}
+    ValueType& front()             {return *mBegin;}
+    ValueType const& front() const {return *mBegin;}
 
     //! @ingroup RbFor
     //! 開始位置と終了位置が一致している時empty

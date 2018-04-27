@@ -550,15 +550,15 @@ public:
 //      グローバル・バージョン番号登録用マクロ
 //----------------------------------------------------------------------------
 
-#define THEOLIZER_INTERNAL_ADDITIONAL_TYPE                                  \
+#define THEOLIZER_INTERNAL_ADDITIONAL_TYPE(dVersion)                        \
+    constexpr static unsigned   kLastVersionNo=dVersion;                    \
     typedef void                AdditionalVersion
 
 #define THEOLIZER_INTERNAL_REGISTER_SERIALIZER(dSerializer, dVersion, dName)\
     struct dSerializer                                                      \
     {                                                                       \
-        constexpr static unsigned   kLastVersionNo=dVersion;                \
+        THEOLIZER_INTERNAL_ADDITIONAL_TYPE(dVersion);                       \
         constexpr static char       kName[]=dName;                          \
-        THEOLIZER_INTERNAL_ADDITIONAL_TYPE;                                 \
     }
 
 //----------------------------------------------------------------------------

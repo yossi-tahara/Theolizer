@@ -197,6 +197,9 @@ XmlMidOSerializer::XmlMidOSerializer
     mNoPrettyPrint(iNoPrettyPrint),
     mElementName(nullptr)
 {
+    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
+    registerTypeIndex<XmlSerializerVersion>();
+
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 
@@ -605,6 +608,9 @@ XmlMidISerializer::XmlMidISerializer
     mIStream(iIStream),
     mTerminated(false)
 {
+    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
+    registerTypeIndex<XmlSerializerVersion>();
+
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 

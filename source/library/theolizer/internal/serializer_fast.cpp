@@ -100,6 +100,9 @@ FastMidOSerializer::FastMidOSerializer
     ),
     mOStream(iOStream)
 {
+    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
+    registerTypeIndex<FastSerializerVersion>();
+
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 
@@ -234,6 +237,9 @@ FastMidISerializer::FastMidISerializer
     ),
     mIStream(iIStream)
 {
+    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
+    registerTypeIndex<FastSerializerVersion>();
+
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 

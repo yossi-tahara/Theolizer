@@ -104,6 +104,9 @@ JsonMidOSerializer::JsonMidOSerializer
     mNoPrettyPrint(iNoPrettyPrint),
     mWriteComma(false)
 {
+    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
+    registerTypeIndex<JsonSerializerVersion>();
+
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 
@@ -457,6 +460,9 @@ JsonMidISerializer::JsonMidISerializer
     mReadComma(false),
     mTerminated(false)
 {
+    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
+    registerTypeIndex<JsonSerializerVersion>();
+
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 

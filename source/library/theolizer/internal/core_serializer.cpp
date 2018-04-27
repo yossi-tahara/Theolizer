@@ -180,7 +180,14 @@ void BaseSerializer::createVersionNoTable()
 
 unsigned BaseSerializer::getLocalVersionNo(TypeIndex iTypeIndex)
 {
-    return mGlobalVersionNoTable->getLocalVersionNo(mGlobalVersionNo, iTypeIndex.getIndex());
+    unsigned aIndex = iTypeIndex.getIndex();
+
+    // プリミティブなら派生シリアライザのバージョン番号
+    if (mTypeInfoList[aIndex]->mTypeCategory == etcPrimitiveType)
+    {
+        aIndex=getSerializerTypeIndex().getIndex();
+    }
+    return mGlobalVersionNoTable->getLocalVersionNo(mGlobalVersionNo, aIndex);
 }
 
 // ***************************************************************************
@@ -440,6 +447,7 @@ void BaseSerializer::saveProcessEnd()
 struct BaseSerializer::TypeNameMap
 {
     std::map<std::string const, TypeIndexList>   mMap;
+
     void add(std::string const& iTypeName, TypeIndex iTypeIndex)
     {
 //std::cout << "TypeNameMap::add(" << iTypeName << ", " << iTypeIndex << ");";
@@ -465,6 +473,7 @@ struct BaseSerializer::TypeNameMap
 
 void BaseSerializer::createTypeNameMap(bool iIsClassOnly)
 {
+//std::cout << "createTypeNameMap()\n";
     // TypeIndexとInMemoryの時は生成不要
     if ((mCheckMode == CheckMode::TypeCheckByIndex)
      || (mCheckMode == CheckMode::InMemory))
@@ -472,7 +481,7 @@ return;
 
     mTypeNameMap=std::unique_ptr<TypeNameMap>(new TypeNameMap);
 
-    for (auto aIndexer : getRBForIndexer(mTypeInfoList))
+    for (auto const& aIndexer : getRBForIndexer(mTypeInfoList))
     {
         if (iIsClassOnly && (aIndexer.front()->mTypeCategory != etcClassType))
     continue;
@@ -480,6 +489,8 @@ return;
         TypeIndex aTypeIndex = aIndexer.front()->getTypeIndex();
         unsigned aVersionNo = getLocalVersionNo(aTypeIndex);
         mTypeNameMap->add(aIndexer.front()->getTypeName(aVersionNo), aTypeIndex);
+//std::cout << "    [" << aIndexer.getIndex() << "] "
+//          << aIndexer.front()->getTypeName(aVersionNo) << "\n";
     }
 }
 
@@ -1545,8 +1556,8 @@ return;
 
         // プログラム側のTypeIndexList獲得
         //  プログラム側に存在しない時はTypeIndexListのsize()==0
-//std::cout << "[" << aDataTypeIndex << ", " << aTypeName << "]\n";
         TypeIndexList& aTypeIndexList=mTypeNameMap->mMap[aTypeName];
+//std::cout << "[" << aDataTypeIndex << ", " << aTypeName << "] size()=" << aTypeIndexList.size() << "\n";
 
         // 要素記録エリア
         SerializedElementListI  aSerializedElementListI;

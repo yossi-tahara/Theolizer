@@ -138,6 +138,13 @@ protected:
     static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
+    // 派生シリアライザのTypeIndex
+    TypeIndex getSerializerTypeIndex() const
+    {
+        return AdditionalTypeInfo<FastSerializerVersion>::getInstance().getTypeIndex();
+    }
+
+    // コンストラクタ
     FastMidOSerializer
     (
         std::ostream& iOStream,
@@ -242,6 +249,13 @@ protected:
     static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
+    // 派生シリアライザのTypeIndex
+    TypeIndex getSerializerTypeIndex() const
+    {
+        return AdditionalTypeInfo<FastSerializerVersion>::getInstance().getTypeIndex();
+    }
+
+    // コンストラクタ
     FastMidISerializer
     (
         std::istream& iIStream,

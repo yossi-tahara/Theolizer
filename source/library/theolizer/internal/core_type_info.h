@@ -262,6 +262,7 @@ public:
             THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
         }
         iTypeIndex.set(aIndex, aAdditional);
+//std::cout << "{" << iTypeIndex << "}\n";
 
         // I/Oエラーチェック
         auto aStat = iIStream.rdstate();
@@ -538,10 +539,7 @@ public:
 
 //      ---<<< トップ・レベルの保存先関連 >>>---
 
-    void addDestination
-    (
-        Destinations const& iDestinations
-    )
+    void addDestination(Destinations const& iDestinations)
     {
         mIsTopLevel=true;
         mTopDestinations.add(iDestinations);
@@ -591,10 +589,10 @@ public:
 //      ---<<< ポリモーフィズム対応 >>>---
 
 private:
-    // 当クラスから派生したクラスについてヘッダへ型情報記録するよう指示する
-    //  自分より前にあるクラスについて保存要求したら、true返却
-    virtual bool setSaving(BaseSerializer& iSerializer, std::vector<SaveStat>& ioSaveStatList)
-    {return false;}
+    // 当クラスから派生したクラスについてトップレベル扱いとする
+    //  (クラス以外はオーバーライドされない。従ってこれは何もしない)
+    virtual void setTopLevel(Destinations const& iDestinations)
+    { }
 
     // 被ポインタのBaseTypeInfo*獲得
     virtual BaseTypeInfo* getPointeeTypeInfo() {return nullptr;}
@@ -884,11 +882,7 @@ private:
             tClassType*& ioPointer,
             TypeIndexList& iTypeIndexList
         )=0;
-        virtual bool setSaving
-        (
-            BaseSerializer& iSerializer,
-            std::vector<SaveStat>& ioSaveStatList
-        )=0;
+        virtual void setTopLevel(Destinations const& iDestinations) = 0;
         virtual void const* getDerivedPointer(TheolizerTarget* iBasePointer)=0;
         virtual TypeIndex getTypeIndex()=0;
         virtual ~HolderBase() { }
@@ -940,10 +934,9 @@ private:
             return ret;
         }
 
-        bool setSaving(BaseSerializer& iSerializer, std::vector<SaveStat>& ioSaveStatList)
+        void setTopLevel(Destinations const& iDestinations)
         {
-            return ClassTypeInfo<tDrivedClassType>::getInstance().
-                setSaving(iSerializer, ioSaveStatList);
+            ClassTypeInfo<tDrivedClassType>::getInstance().setTopLevel(iDestinations);
         }
 
         void const* getDerivedPointer(TheolizerTarget* iBasePointer)
@@ -990,28 +983,22 @@ public:
 
     // 当クラスから派生したクラスについてヘッダへ型情報記録するよう指示する
     //  自分より前にあるクラスについて保存要求したら、true返却
-    bool setSaving(BaseSerializer& iSerializer, std::vector<SaveStat>& ioSaveStatList)
+    void setTopLevel(Destinations const& iDestinations)
     {
         // 派生クラスが登録されていないなら、NOP
         if (!mDrivedClassList.size())
-    return false;
+    return;
 
-        bool ret=false;
-//std::cout << "setSaving(" << getCName()
+//std::cout << "setTopLevel(" << getCName()
 //          << " mDrivedClassList.size()=" << mDrivedClassList.size() << "\n";
         for (auto&& aDrivedClass : mDrivedClassList)
         {
             TypeIndex aTypeIndex = aDrivedClass->getTypeIndex();
-            SaveStat& aSaveStat = ioSaveStatList.at(aTypeIndex.getIndex());
+            TypeInfoList::getInstance().getList()[aTypeIndex.getIndex()]->
+                addDestination(iDestinations);
 //std::cout << "    " << aDrivedClass->getCName() << "\n";
-            if (aSaveStat == essIdle)
-            {
-                aSaveStat=essSaving;
-                if (aTypeIndex.getIndex() < mTypeIndex2.getIndex()) ret=true;
-            }
-            if (aDrivedClass->setSaving(iSerializer, ioSaveStatList)) ret=true;
+            aDrivedClass->setTopLevel(iDestinations);
         }
-        return ret;
     }
 
     // 現インスタンスの先頭アドレス返却
@@ -1316,8 +1303,7 @@ public:
     std::type_index getStdTypeIndex(bool iRaw) const
     {return std::type_index(typeid(tAdditionalClass));}
     // 最新版のバージョン番号返却(シリアライザのバージョン番号を返却する)
-    static unsigned getLastVersionNo()
-    {THEOLIZER_INTERNAL_ABORT("AdditionalTypeInfo::getLastVersionNo()");}
+    static unsigned getLastVersionNo() {return tAdditionalClass::kLastVersionNo;}
     unsigned getLastVersionNoV() const {return getLastVersionNo();}
     // 型名返却
     std::string getTypeName(unsigned)
@@ -1489,10 +1475,11 @@ std::cout << "mTypeIndex2=" << aBaseTypeInfo.getTypeIndex() << "\n";
             TypeIndex aTypeIndex = aBaseTypeInfo.getTypeIndex();
             TypeInfoList& aTypeInfoList = TypeInfoList::getInstance();
 
-            // ポインタならば、ポイント先をトップ・レベル扱いとする
+            // ポインタならば、ポイント先とその派生クラスをトップ・レベル扱いとする
             if (aBaseTypeInfo.mTypeCategory == etcPointerType)
             {
                 aTypeInfoList[aTypeIndex]->addDestination(tSerializer::getDestinations());
+                aTypeInfoList[aTypeIndex]->setTopLevel(tSerializer::getDestinations());
             }
 
             // 配列ならば、基本型をトップ・レベル扱いとする
@@ -1543,7 +1530,7 @@ RegisterType<tSerializer, tType, tTheolizerVersion, uIsDerived, uIsManual>&
       = RegisterType<tSerializer, tType, tTheolizerVersion, uIsDerived, uIsManual>::getInstance();
 
 //----------------------------------------------------------------------------
-//      GVNT登録専用関数テンプレート
+//      GVNTと派生シリアライザ登録専用関数テンプレート
 //----------------------------------------------------------------------------
 
 template<typename tType>

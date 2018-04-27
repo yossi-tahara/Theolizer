@@ -101,6 +101,9 @@ BinaryMidOSerializer::BinaryMidOSerializer
     ),
     mOStream(iOStream)
 {
+    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
+    registerTypeIndex<BinarySerializerVersion>();
+
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 
@@ -515,6 +518,9 @@ BinaryMidISerializer::BinaryMidISerializer
     mIStream(iIStream),
     mTerminated(false)
 {
+    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
+    registerTypeIndex<BinarySerializerVersion>();
+
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 

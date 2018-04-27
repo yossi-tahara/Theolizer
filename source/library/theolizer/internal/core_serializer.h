@@ -595,6 +595,9 @@ protected:
         return internal::Destinations{};
     }
 
+    // 派生シリアライザのTypeIndex
+    virtual TypeIndex getSerializerTypeIndex() const = 0;
+
 public:
     BaseSerializer
     (

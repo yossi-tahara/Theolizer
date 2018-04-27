@@ -300,6 +300,13 @@ protected:
     static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
+    // 派生シリアライザのTypeIndex
+    TypeIndex getSerializerTypeIndex() const
+    {
+        return AdditionalTypeInfo<BinarySerializerVersion>::getInstance().getTypeIndex();
+    }
+
+    // コンストラクタ
     BinaryMidOSerializer
     (
         std::ostream& iOStream,
@@ -426,6 +433,13 @@ protected:
     static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
+    // 派生シリアライザのTypeIndex
+    TypeIndex getSerializerTypeIndex() const
+    {
+        return AdditionalTypeInfo<BinarySerializerVersion>::getInstance().getTypeIndex();
+    }
+
+    // コンストラクタ
     BinaryMidISerializer
     (
         std::istream& iIStream,
