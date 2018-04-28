@@ -1307,8 +1307,7 @@ public:
     unsigned getLastVersionNoV() const {return getLastVersionNo();}
     // 型名返却
     std::string getTypeName(unsigned)
-    {return getCName();}    // 新TypeIndexに置き換えが完了するまでの暫定処理
-//  {THEOLIZER_INTERNAL_ABORT("AdditionalTypeInfo::getTypeName()");}
+    {return tAdditionalClass::kName;}
 
     // C言語名返却(デバッグ用)
     char const* getCName() const
