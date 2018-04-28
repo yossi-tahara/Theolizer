@@ -153,9 +153,6 @@ void BinaryMidOSerializer::writeHeader()
     saveElementName(emName, "GlobalVersionNo");
     saveControl(mGlobalVersionNo);
 
-    // バージョン番号対応表生成
-    createVersionNoTable();
-
     // 型情報出力
     writePreElement();
     saveElementName(emName, "TypeInfoList");
@@ -584,9 +581,6 @@ void BinaryMidISerializer::readHeader()
         {
             aExistGlobalVersionNo=true;
             loadControl(mGlobalVersionNo);
-
-            // バージョン番号対応表生成
-            createVersionNoTable();
 
             // 型名と型／バージョン番号対応表生成
             createTypeNameMap();

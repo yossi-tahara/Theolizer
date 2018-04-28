@@ -272,9 +272,6 @@ void XmlMidOSerializer::writeHeader()
         THEOLIZER_INTERNAL_XML_NAMESPACE ":" THEOLIZER_INTERNAL_XML_THEOLIZER_NAME,
         &aAttribute
     );
-
-    // バージョン番号対応表生成
-    createVersionNoTable();
 }
 
 // ***************************************************************************
@@ -690,9 +687,6 @@ void XmlMidISerializer::readHeader()
             ("XmlMidISerializer : No global version number.");
     }
     mGlobalVersionNo = aAttribute.mGlobalVersionNo;
-
-    // バージョン番号対応表生成
-    createVersionNoTable();
 
     // 型名と型／バージョン番号対応表生成
     createTypeNameMap();

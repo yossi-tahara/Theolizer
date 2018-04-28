@@ -898,10 +898,6 @@ private:
 
 protected:
 
-//      ---<<< 各TypeIndexに対するバージョン番号対応表作成 >>>---
-
-    void createVersionNoTable();
-
 //      ---<<< ヘッダ内型情報保存 >>>---
 
     // 通常シリアライズ

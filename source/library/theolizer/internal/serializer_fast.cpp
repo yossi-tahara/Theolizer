@@ -138,8 +138,6 @@ FastMidOSerializer::FastMidOSerializer
 
 void FastMidOSerializer::writeHeader()
 {
-    // バージョン番号対応表生成
-    createVersionNoTable();
 }
 
 // ***************************************************************************
@@ -275,8 +273,6 @@ FastMidISerializer::FastMidISerializer
 
 void FastMidISerializer::readHeader()
 {
-    // バージョン番号対応表生成
-    createVersionNoTable();
 }
 
 //----------------------------------------------------------------------------

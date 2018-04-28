@@ -148,35 +148,8 @@ struct BaseSerializer::SerializedTypeListN : public std::vector<SerializedTypeNa
 { };
 
 // ***************************************************************************
-//      バージョン番号対応表生成
+//      バージョン番号取得
 // ***************************************************************************
-
-void BaseSerializer::createVersionNoTable()
-{
-//----------------------------------------------------------------------------
-//      TypeIndex対応表
-//----------------------------------------------------------------------------
-
-#if 0
-    // 最新版でない時のみ生成する
-    if (mLastGlobalVersionNo != mGlobalVersionNo)
-    {
-        // バージョン番号領域確保
-        mVersionNoList.resize(mTypeIndexCount);
-        // バージョン番号リスト生成
-        auto aVersionNoIterator = mVersionNoList.begin();
-        for (auto&& aTypeInfo : mTypeInfoList)
-        {
-            *aVersionNoIterator++ = mGlobalVersionNoTable->
-                getLocalVersionNo(mGlobalVersionNo, aTypeInfo->getStdTypeIndex());
-        }
-    }
-    else if (mVersionNoList.size())
-    {
-        mVersionNoList.resize(0);
-    }
-#endif
-}
 
 unsigned BaseSerializer::getLocalVersionNo(TypeIndex iTypeIndex)
 {
