@@ -1119,7 +1119,7 @@ protected:
 
 //      ---<<< 型名と型／バージョン番号対応表生成 >>>---
 
-    void createTypeNameMap(bool iIsClassOnly=false);
+    void createTypeNameMap();
 
 //      ---<<< ヘッダ内型情報回復 >>>---
 

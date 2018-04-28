@@ -444,7 +444,7 @@ struct BaseSerializer::TypeNameMap
 //      対応表生成処理
 //----------------------------------------------------------------------------
 
-void BaseSerializer::createTypeNameMap(bool iIsClassOnly)
+void BaseSerializer::createTypeNameMap()
 {
 //std::cout << "createTypeNameMap()\n";
     // TypeIndexとInMemoryの時は生成不要
@@ -456,9 +456,6 @@ return;
 
     for (auto const& aIndexer : getRBForIndexer(mTypeInfoList))
     {
-        if (iIsClassOnly && (aIndexer.front()->mTypeCategory != etcClassType))
-    continue;
-
         TypeIndex aTypeIndex = aIndexer.front()->getTypeIndex();
         unsigned aVersionNo = getLocalVersionNo(aTypeIndex);
         mTypeNameMap->add(aIndexer.front()->getTypeName(aVersionNo), aTypeIndex);
