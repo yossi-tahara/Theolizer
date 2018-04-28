@@ -617,16 +617,16 @@ public:
                       "GlobalVersionNoTable::add() illegal number of parameters.");
 
         unsigned aLocalVersionNoList[]={iLocalVersionNoList...};
-std::cout << "add2(" << iIndex << ") : uLastGlobalVersionNo=" << uLastGlobalVersionNo
-          << " sizeof...()=" << sizeof...(tLocalVersionNoList) << std::endl;
+//std::cout << "add2(" << iIndex << ") : uLastGlobalVersionNo=" << uLastGlobalVersionNo
+//          << " sizeof...()=" << sizeof...(tLocalVersionNoList) << std::endl;
         for (unsigned i=0; i < uLastGlobalVersionNo; ++i)
         {
             if (mVersionNoList[i].size() <= iIndex)
             {
-std::cout << "add2(A) : mVersionNoList[" << i << "].resize(" << iIndex+1 << ")" << std::endl;
+//std::cout << "add2(A) : mVersionNoList[" << i << "].resize(" << iIndex+1 << ")" << std::endl;
                 mVersionNoList[i].resize(iIndex+1, 1);  // デフォルトのローカル・バージョン番号は1
             }
-std::cout << "add2(B) : mVersionNoList[" << i << "][" << iIndex << "]=" << aLocalVersionNoList[i] << ")" << std::endl;
+//std::cout << "add2(B) : mVersionNoList[" << i << "][" << iIndex << "]=" << aLocalVersionNoList[i] << ")" << std::endl;
             mVersionNoList[i][iIndex] = aLocalVersionNoList[i];
         }
     }

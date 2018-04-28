@@ -801,7 +801,7 @@ private:
     // コンストラクタ／デストラクタ
     ClassTypeInfo() : BaseTypeInfo(etcClassType)
     {
-std::cout << "ClassTypeInfo() : " << getCName() << "\n";
+//std::cout << "ClassTypeInfo() : " << getCName() << "\n";
         mTypeIndex2 = TypeInfoList::getInstance().registerType2(this);
     }
 public:
@@ -1067,7 +1067,7 @@ private:
     // コンストラクタ／デストラクタ
     EnumTypeInfo() : BaseTypeInfo(etcEnumType)
     {
-std::cout << "EnumTypeInfo() : " << getCName() << "\n";
+//std::cout << "EnumTypeInfo() : " << getCName() << "\n";
         mTypeIndex2 = TypeInfoList::getInstance().registerType2(this);
     }
 public:
@@ -1229,7 +1229,7 @@ private:
     // コンストラクタ／デストラクタ
     PrimitiveTypeInfo() : BaseTypeInfo(etcPrimitiveType)
     {
-std::cout << "PrimitiveTypeInfo() : " << getPrimitiveName<tPrimitiveType>() << "\n";
+//std::cout << "PrimitiveTypeInfo() : " << getPrimitiveName<tPrimitiveType>() << "\n";
         mTypeIndex2 = TypeInfoList::getInstance().registerType2(this);
     }
 public:
@@ -1281,7 +1281,7 @@ private:
     // コンストラクタ／デストラクタ
     AdditionalTypeInfo() : BaseTypeInfo(etcPrimitiveType)
     {
-std::cout << "AdditionalTypeInfo() : " << getCName() << "\n";
+//std::cout << "AdditionalTypeInfo() : " << getCName() << "\n";
         mTypeIndex2 = TypeInfoList::getInstance().registerType2(this);
     }
 public:
@@ -1459,7 +1459,7 @@ private:
         typedef typename GetTypeInfo<RemovedCVType>::Type   TypeInfo;
         auto& aBaseTypeInfo=TypeInfo::getInstance();
 
-#if 1
+#if 0
 std::cout << "RegisterType<" << THEOLIZER_INTERNAL_TYPE_NAME(tSerializer) << ",\n"
           << "             " << THEOLIZER_INTERNAL_TYPE_NAME(tType) << ",\n"
           << "             " << THEOLIZER_INTERNAL_TYPE_NAME(TypeInfo) << ",\n"
@@ -1556,9 +1556,9 @@ PointerTypeInfo<tPointerType>::PointerTypeInfo() : BaseTypeInfo(etcPointerType)
     auto& aTypeInfo=TypeInfo::getInstance();
     mTypeIndex2 = aTypeInfo.getTypeIndex();
 
-std::cout << "PointerTypeInfo() : " << getCName() << "\n";
-std::cout << "    " << THEOLIZER_INTERNAL_TYPE_NAME(PointeeType) << "\n";
-std::cout << "    " << mTypeIndex2 << "\n";
+//std::cout << "PointerTypeInfo() : " << getCName() << "\n";
+//std::cout << "    " << THEOLIZER_INTERNAL_TYPE_NAME(PointeeType) << "\n";
+//std::cout << "    " << mTypeIndex2 << "\n";
 }
 
 // ***************************************************************************
@@ -1597,9 +1597,9 @@ ArrayTypeInfo<tArrayType>::ArrayTypeInfo() : BaseTypeInfo(etcArrayType)
     mTypeIndex2=aTypeInfo.getTypeIndex();
     mTypeIndex2.setRank(std::rank<tArrayType>::value);
 
-std::cout << "ArrayTypeInfo() : " << getCName() << "\n";
-std::cout << "    " << THEOLIZER_INTERNAL_TYPE_NAME(UnderlyingType) << "\n";
-std::cout << "    " << mTypeIndex2 << "\n";
+//std::cout << "ArrayTypeInfo() : " << getCName() << "\n";
+//std::cout << "    " << THEOLIZER_INTERNAL_TYPE_NAME(UnderlyingType) << "\n";
+//std::cout << "    " << mTypeIndex2 << "\n";
 }
 
 // ***************************************************************************

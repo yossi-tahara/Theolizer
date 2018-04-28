@@ -216,7 +216,7 @@ void BaseSerializer::writeHeaderTypeInfo()
      && (mCheckMode != CheckMode::TypeCheckByIndex))
 return;
 
-#if 1
+#if 0
     for (auto&& aLoop : getRBForIndexer(mTypeInfoList))
     {
         unsigned aVersionNo = getLocalVersionNo(aLoop.front()->getTypeIndex());
@@ -289,7 +289,7 @@ return;
             writePreElement();
             std::string aTypeName=aTypeInfo->getTypeName(aVersionNo);
             saveControl(aTypeName);
-std::cout << "aTypeName=" << aTypeName << "\n";
+//std::cout << "aTypeName=" << aTypeName << "\n";
 
             if (aTypeInfo->mTypeCategory != etcClassType)
         continue;
@@ -327,7 +327,7 @@ std::cout << "aTypeName=" << aTypeName << "\n";
 
             for (auto&& aElement : aTypeInfo->getElementRange(aVersionNo))
             {
-std::cout << "    ElementName=" << aElement.getName() << "\n";
+//std::cout << "    ElementName=" << aElement.getName() << "\n";
                 // 保存先一致確認
                 if (!mDestinations.isMatch(aElement.getDestinations()))
             continue;
@@ -1050,7 +1050,7 @@ BaseSerializer::AutoRestoreLoad::AutoRestoreLoad
 ) : mSerializer(iSerializer),
     mElementsMapping(iSerializer.mElementsMapping)
 {
-std::cout << "AutoRestoreLoad(" << iElementsMapping << ")\n";
+//std::cout << "AutoRestoreLoad(" << iElementsMapping << ")\n";
     mSerializer.mElementsMapping=iElementsMapping;
     mSerializer.loadGroupStart();
 }
@@ -1071,7 +1071,7 @@ BaseSerializer::AutoRestoreLoad::~AutoRestoreLoad() noexcept(false)
     {
         THEOLIZER_INTERNAL_ERROR(u8"Unknown exception");
     }
-std::cout << "~AutoRestoreLoad(" << mSerializer.mElementsMapping << ")\n";
+//std::cout << "~AutoRestoreLoad(" << mSerializer.mElementsMapping << ")\n";
 }
 
 //----------------------------------------------------------------------------
@@ -1089,7 +1089,7 @@ BaseSerializer::AutoRestoreLoadStructure::AutoRestoreLoadStructure
     mElementsMapping(iSerializer.mElementsMapping),
     mStructure(iStructure)
 {
-std::cout << "AutoRestoreLoadStructure(" << iElementsMapping << ")\n";
+//std::cout << "AutoRestoreLoadStructure(" << iElementsMapping << ")\n";
     mSerializer.mElementsMapping=iElementsMapping;
     // データ内に型名を記録
     if (mSerializer.mCheckMode == CheckMode::TypeCheckInData)
@@ -1122,7 +1122,7 @@ BaseSerializer::AutoRestoreLoadStructure::~AutoRestoreLoadStructure() noexcept(f
     {
         THEOLIZER_INTERNAL_ERROR(u8"Unknown exception");
     }
-std::cout << "~AutoRestoreLoadStructure(" << mSerializer.mElementsMapping << ")\n";
+//std::cout << "~AutoRestoreLoadStructure(" << mSerializer.mElementsMapping << ")\n";
 }
 
 // ***************************************************************************
@@ -1557,7 +1557,8 @@ return;
         // プログラム側のTypeIndexList獲得
         //  プログラム側に存在しない時はTypeIndexListのsize()==0
         TypeIndexList& aTypeIndexList=mTypeNameMap->mMap[aTypeName];
-//std::cout << "[" << aDataTypeIndex << ", " << aTypeName << "] size()=" << aTypeIndexList.size() << "\n";
+//std::cout << "aTypeIndexList : " << aDataTypeIndex << ", " << aTypeName
+//          << " size()=" << aTypeIndexList.size() << " addr=" << &aTypeIndexList << "\n";
 
         // 要素記録エリア
         SerializedElementListI  aSerializedElementListI;
@@ -1636,6 +1637,7 @@ return;
                                     =mSerializedTypeListI->at(aDataTypeIndex.getIndex());
             aSerializedTypeIndex.mTypeName=std::move(aTypeName);
             aSerializedTypeIndex.mProgramTypeIndex=&aTypeIndexList;
+//std::cout << "   &aTypeIndexList=" << &aTypeIndexList << "\n";
             aSerializedTypeIndex.mSerializedElementList
                                             =std::move(aSerializedElementListI);
         }
@@ -1833,7 +1835,7 @@ return;
         }
 //std::cout << "\n";
     }
-std::cout << "----------------------- readHeaderTypeInfo()\n";
+//std::cout << "----------------------- readHeaderTypeInfo()\n";
 }
 
 //----------------------------------------------------------------------------
@@ -1851,6 +1853,9 @@ return false;
     if (iSerializedTypeIndex.getIndex() < mSerializedTypeListI->size())
     {
         auto& aElementType = mSerializedTypeListI->at(iSerializedTypeIndex.getIndex());
+//std::cout << "   Index=" << iSerializedTypeIndex.getIndex() 
+//          << " size()=" << aElementType.mProgramTypeIndex->size()
+//          << " mProgramTypeIndex=" << aElementType.mProgramTypeIndex << "\n";
         for (auto aProgramTypeIndex : *(aElementType.mProgramTypeIndex))
         {
 //std::cout << "        " << aProgramTypeIndex << " : " << iProgramTypeIndex << "\n";
