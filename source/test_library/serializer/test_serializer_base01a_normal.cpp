@@ -82,7 +82,6 @@ std::cout << "TestOSerializerNormal(" << iFileName << ", "
     std::ofstream   aStream(iFileName, iOpenMode);
     tOSerializer    aSerializer(aStream, iArgs...);
 
-#if 0
 //      ---<<< Primitive >>>---
 
     THEOLIZER_PROCESS(aSerializer, -100);
@@ -161,7 +160,6 @@ std::cout << "TestOSerializerNormal(" << iFileName << ", "
     THEOLIZER_EQUAL(aIntrusiveBase.getInt(), 201);
     THEOLIZER_EQUAL(aIntrusiveBase.mShort, 202);
     THEOLIZER_EQUAL(aIntrusiveBase.mString, u8"203)テスト");
-#endif
 
 //      ---<<< 侵入型(基底クラス／包含クラス) >>>---
 
@@ -234,7 +232,6 @@ std::cout << "TestISerializerNormal(" << iFileName << ", "
     std::ifstream   aStream(iFileName, iOpenMode);
     tISerializer    aSerializer(aStream, iArgs...);
 
-#if 0
 //      ---<<< Primitive >>>---
 
     int aTemp;
@@ -327,7 +324,6 @@ std::cout << "TestISerializerNormal(" << iFileName << ", "
     THEOLIZER_EQUAL(aIntrusiveBase.getInt(), 201);
     THEOLIZER_EQUAL(aIntrusiveBase.mShort, 202);
     THEOLIZER_EQUAL(aIntrusiveBase.mString, u8"203)テスト");
-#endif
 
 //      ---<<< 侵入型(基底クラス／包含クラス) >>>---
 
@@ -529,8 +525,8 @@ return;
 
 //      ---<<< 最新版(Version.4) >>>---
 
-//    TestNormalImpl<tOSerialzer, tISerializer>(string(iPreFix)+"_version4.log",
-//        4, theolizer::CheckMode::TypeCheck);
+    TestNormalImpl<tOSerialzer, tISerializer>(string(iPreFix)+"_version4.log",
+        4, theolizer::CheckMode::TypeCheck);
 
 //      ---<<< Version.3 >>>---
 
@@ -561,8 +557,8 @@ void TestNormalMain()
 {
 //  theolizer::DisplayPass aDisplayPass;
 
-//    TestNormal<theolizer::FastOSerializer<>,  theolizer::FastISerializer<> >("test_fast");
-//    TestNormal<theolizer::XmlOSerializer<>,   theolizer::XmlISerializer<> >("test_xml");
+    TestNormal<theolizer::FastOSerializer<>,  theolizer::FastISerializer<> >("test_fast");
+    TestNormal<theolizer::XmlOSerializer<>,   theolizer::XmlISerializer<> >("test_xml");
     TestNormal<theolizer::JsonOSerializer<>,  theolizer::JsonISerializer<> >("test_json");
-//    TestNormal<theolizer::BinaryOSerializer<>,theolizer::BinaryISerializer<> >("test_binary");
+    TestNormal<theolizer::BinaryOSerializer<>,theolizer::BinaryISerializer<> >("test_binary");
 }

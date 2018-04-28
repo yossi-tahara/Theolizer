@@ -454,7 +454,7 @@ int main(int argc, char** argv)
     catch(...)
     {
         std::cout << "unknown exception!!" << std::endl;
-        ret = 2;
+throw;
     }
 
 // ***************************************************************************

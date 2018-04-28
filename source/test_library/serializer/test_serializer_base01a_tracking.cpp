@@ -910,15 +910,15 @@ void TestTrackingMain()
 {
 //  theolizer::DisplayPass aDisplayPass;
 
-//    TestObjectTracking<theolizer::FastOSerializer<>, theolizer::FastISerializer<>>
-//        ("test_fast");
+    TestObjectTracking<theolizer::FastOSerializer<>, theolizer::FastISerializer<>>
+        ("test_fast");
 
-//    TestObjectTracking<theolizer::XmlOSerializer<>, theolizer::XmlISerializer<>>
-//        ("test_xml");
+    TestObjectTracking<theolizer::XmlOSerializer<>, theolizer::XmlISerializer<>>
+        ("test_xml");
 
     TestObjectTracking<theolizer::JsonOSerializer<>, theolizer::JsonISerializer<>>
         ("test_json");
 
-//    TestObjectTracking<theolizer::BinaryOSerializer<>,theolizer::BinaryISerializer<>>
-//        ("test_binary");
+    TestObjectTracking<theolizer::BinaryOSerializer<>,theolizer::BinaryISerializer<>>
+        ("test_binary");
 }

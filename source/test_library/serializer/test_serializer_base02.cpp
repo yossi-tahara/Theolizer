@@ -204,6 +204,11 @@ int main(int argc, char** argv)
     {
         std::cout << e.getMessage() << std::endl;
     }
+    catch(...)
+    {
+        std::cout << "unknown exception!!" << std::endl;
+throw;
+    }
 
     return 0;
 }
