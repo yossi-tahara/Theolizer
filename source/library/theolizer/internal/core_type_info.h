@@ -717,7 +717,19 @@ class PointerTypeInfo : public BaseTypeInfo
 {
 private:
     // コンストラクタ／デストラクタ
-    PointerTypeInfo();
+    PointerTypeInfo() : BaseTypeInfo(etcPointerType)
+    {
+        typedef typename std::remove_pointer<tPointerType>::type    PointeeType;
+        static_assert(!std::is_pointer<PointeeType>::value, "Not support pointer of pointer");
+        typedef typename GetTypeInfo<PointeeType>::Type TypeInfo;
+        auto& aTypeInfo=TypeInfo::getInstance();
+        mTypeIndex = aTypeInfo.getTypeIndex();
+        mTypeIndex.setPointer();
+//std::cout << "PointerTypeInfo() : " << getCName() << "\n";
+//std::cout << "    " << THEOLIZER_INTERNAL_TYPE_NAME(PointeeType) << "\n";
+//std::cout << "    " << mTypeIndex << "\n";
+    }
+
 public:
     static PointerTypeInfo& getInstance()
     {
@@ -739,10 +751,12 @@ public:
         return StdTypeIndex<tPointerType>::getStdTypeIndex();
     }
     // 最新版のバージョン番号返却
-    static unsigned getLastVersionNo();
+    static unsigned getLastVersionNo()
+    {THEOLIZER_INTERNAL_ERROR("bug(PointerTypeInfo::getLastVersionNo)");return 0;}
     unsigned getLastVersionNoV() const {return getLastVersionNo();}
     // 型名返却
-    std::string getTypeName(unsigned);
+    std::string getTypeName(unsigned)
+    {THEOLIZER_INTERNAL_ERROR("bug(PointerTypeInfo::getTypeName)");return "";}
     // C言語名返却(デバッグ用)
     char const* getCName() const
     {
@@ -767,12 +781,47 @@ public:
 //              これはClassTypeの要素が変化しても同じ型と認識することと同じ。
 // ***************************************************************************
 
+//----------------------------------------------------------------------------
+//      基本型取り出し
+//----------------------------------------------------------------------------
+
+template<typename tUnderlyingType, class tEnable=void>
+struct GetUnderlyingTypeImpl
+{
+    typedef tUnderlyingType   Type;
+};
+
+template<typename tArrayType>
+struct GetUnderlyingTypeImpl<tArrayType, EnableIf<std::is_array<tArrayType>::value> >
+{
+    typedef typename 
+        GetUnderlyingTypeImpl<typename std::remove_extent<tArrayType>::type>::Type  Type;
+};
+
+template<typename tArrayType>
+using GetUnderlyingType = typename GetUnderlyingTypeImpl<tArrayType>::Type;
+
+//----------------------------------------------------------------------------
+//      本体
+//----------------------------------------------------------------------------
+
 template<typename tArrayType>
 class ArrayTypeInfo : public BaseTypeInfo
 {
 private:
     // コンストラクタ／デストラクタ
-    ArrayTypeInfo();
+    ArrayTypeInfo() : BaseTypeInfo(etcArrayType)
+    {
+        typedef GetUnderlyingType<tArrayType>               UnderlyingType;
+        typedef typename GetTypeInfo<UnderlyingType>::Type  TypeInfo;
+        auto& aTypeInfo=TypeInfo::getInstance();
+        mTypeIndex=aTypeInfo.getTypeIndex();
+        mTypeIndex.setRank(std::rank<tArrayType>::value);
+//std::cout << "ArrayTypeInfo() : " << getCName() << "\n";
+//std::cout << "    " << THEOLIZER_INTERNAL_TYPE_NAME(UnderlyingType) << "\n";
+//std::cout << "    " << mTypeIndex << "\n";
+    }
+
 public:
     static ArrayTypeInfo& getInstance()
     {
@@ -792,10 +841,12 @@ public:
     std::type_index getStdTypeIndex(bool iRaw) const
     {return StdTypeIndex<tArrayType>::getStdTypeIndex();}
     // 最新版のバージョン番号返却
-    static unsigned getLastVersionNo();
+    static unsigned getLastVersionNo()
+    {THEOLIZER_INTERNAL_ERROR("bug(ArrayTypeInfo::getLastVersionNo)");return 0;}
     unsigned getLastVersionNoV() const {return getLastVersionNo();}
     // 型名返却
-    std::string getTypeName(unsigned);
+    std::string getTypeName(unsigned)
+    {THEOLIZER_INTERNAL_ERROR("bug(ArrayTypeInfo::getTypeName)");return "";}
     // C言語名返却(デバッグ用)
     char const* getCName() const
     {
@@ -1586,66 +1637,6 @@ TypeIndex registerTypeIndex()
 }
 
 // ***************************************************************************
-//      ポインタ型管理クラスの残り
-// ***************************************************************************
-
-template<typename tPointerType>
-PointerTypeInfo<tPointerType>::PointerTypeInfo() : BaseTypeInfo(etcPointerType)
-{
-    typedef typename std::remove_pointer<tPointerType>::type    PointeeType;
-    static_assert(!std::is_pointer<PointeeType>::value, "Not support pointer of pointer");
-    typedef typename GetTypeInfo<PointeeType>::Type TypeInfo;
-    auto& aTypeInfo=TypeInfo::getInstance();
-    mTypeIndex = aTypeInfo.getTypeIndex();
-    mTypeIndex.setPointer();
-
-//std::cout << "PointerTypeInfo() : " << getCName() << "\n";
-//std::cout << "    " << THEOLIZER_INTERNAL_TYPE_NAME(PointeeType) << "\n";
-//std::cout << "    " << mTypeIndex << "\n";
-}
-
-// ***************************************************************************
-//      生配列管理クラスの残り
-// ***************************************************************************
-
-//----------------------------------------------------------------------------
-//      基本型取り出し
-//----------------------------------------------------------------------------
-
-template<typename tUnderlyingType, class tEnable=void>
-struct GetUnderlyingTypeImpl
-{
-    typedef tUnderlyingType   Type;
-};
-
-template<typename tArrayType>
-struct GetUnderlyingTypeImpl<tArrayType, EnableIf<std::is_array<tArrayType>::value> >
-{
-    typedef typename GetUnderlyingTypeImpl<typename std::remove_extent<tArrayType>::type>::Type   Type;
-};
-
-template<typename tArrayType>
-using GetUnderlyingType = typename GetUnderlyingTypeImpl<tArrayType>::Type;
-
-//----------------------------------------------------------------------------
-//      生配列管理クラス本体
-//----------------------------------------------------------------------------
-
-template<typename tArrayType>
-ArrayTypeInfo<tArrayType>::ArrayTypeInfo() : BaseTypeInfo(etcArrayType)
-{
-    typedef GetUnderlyingType<tArrayType>               UnderlyingType;
-    typedef typename GetTypeInfo<UnderlyingType>::Type  TypeInfo;
-    auto& aTypeInfo=TypeInfo::getInstance();
-    mTypeIndex=aTypeInfo.getTypeIndex();
-    mTypeIndex.setRank(std::rank<tArrayType>::value);
-
-//std::cout << "ArrayTypeInfo() : " << getCName() << "\n";
-//std::cout << "    " << THEOLIZER_INTERNAL_TYPE_NAME(UnderlyingType) << "\n";
-//std::cout << "    " << mTypeIndex << "\n";
-}
-
-// ***************************************************************************
 //      Switcher2(管理する型毎に特殊化する)
 //          型管理における型毎の分岐を実現する
 // ***************************************************************************
@@ -1698,15 +1689,15 @@ struct Switcher2
     typedef typename RemoveCV<tPointerType>::type   PointerType;
 
     // 最新版のバージョン番号返却
-    static unsigned getLastVersionNo()
-    {
-        return PointerTypeInfo<PointerType>::getLastVersionNo();
-    }
+//  static unsigned getLastVersionNo()
+//  {
+//      return PointerTypeInfo<PointerType>::getLastVersionNo();
+//  }
     // 型名返却
-    static std::string getTypeName(unsigned iVersionNo)
-    {
-        return PointerTypeInfo<PointerType>::getInstance().getTypeName(iVersionNo);
-    }
+//  static std::string getTypeName(unsigned iVersionNo)
+//  {
+//      return PointerTypeInfo<PointerType>::getInstance().getTypeName(iVersionNo);
+//  }
     // TypeIndex返却
     static TypeIndex getTypeIndex()
     {
@@ -1734,15 +1725,15 @@ struct Switcher2
     typedef typename RemoveCV<tArrayType>::type     ArrayType;
 
     // 最新版のバージョン番号返却
-    static unsigned getLastVersionNo()
-    {
-        return ArrayTypeInfo<ArrayType>::getLastVersionNo();
-    }
+//  static unsigned getLastVersionNo()
+//  {
+//      return ArrayTypeInfo<ArrayType>::getLastVersionNo();
+//  }
     // 型名返却
-    static std::string getTypeName(unsigned iVersionNo)
-    {
-        return ArrayTypeInfo<ArrayType>::getInstance().getTypeName(iVersionNo);
-    }
+//  static std::string getTypeName(unsigned iVersionNo)
+//  {
+//      return ArrayTypeInfo<ArrayType>::getInstance().getTypeName(iVersionNo);
+//  }
     // TypeIndex返却
     static TypeIndex getTypeIndex()
     {
@@ -1906,6 +1897,10 @@ struct Switcher2
     }
 };
 
+// ***************************************************************************
+//      中継処理
+// ***************************************************************************
+
 //----------------------------------------------------------------------------
 //      TypeIndex取出し
 //----------------------------------------------------------------------------
@@ -1926,73 +1921,6 @@ template<typename tType>
 void const* getDerivedPointer(tType* iPointer)
 {
     return Switcher2<tType>::getDerivedPointer(iPointer);
-//return nullptr;
-}
-
-// ***************************************************************************
-//      TypeInfoからのSwitcher2呼び出し
-// ***************************************************************************
-
-//----------------------------------------------------------------------------
-//      PointerTypeInfo
-//          aIndexについて
-//              iVersionNoは
-//                  型がClassTypeの場合、プリミティブ化されている時
-//                      iSerializerVersionNoが変化する
-//                  型がプリミティブの場合、iSerializerVersionNoは0固定
-//                  型がenumの場合、iSerializerVersionNoは0固定
-//              tMidSerializerがiVersionNoとiSerializerVersionNoの組み合わせを
-//              決定する。
-//              また、iVersionNoとiSerializerVersionNoは、両方共単調増加である。
-//              従って、同じaIndex値となるiVersionNoとiSerializerVersionNoの
-//              組み合わせはtMidSerializer毎に一意である。
-//  例：
-//  プリミティブ化状況  ClassType 派生Serialzier  GlobalVersionNo aIndex
-//  ノーマル                0           0               0               0
-//  プリミティブ化          0           1               1               1
-//  クラスVersionUp         1           1               2               2
-//  他クラスVersionUp       1           1               3               2
-//  Serializer VersionUp    1           2               4               3
-//  非プリミティブ化        1           3               5               4
-//  クラスVersionUp         2           3               6               5
-//----------------------------------------------------------------------------
-
-//      ---<<< 型名獲得 >>>---
-
-template<typename tPointerType>
-unsigned PointerTypeInfo<tPointerType>::getLastVersionNo()
-{
-    typedef typename std::remove_pointer<tPointerType>::type    ParentType;
-    return Switcher2<ParentType>::getLastVersionNo();
-}
-
-template<typename tPointerType>
-std::string PointerTypeInfo<tPointerType>::getTypeName(unsigned iVersionNo)
-{
-    typedef typename std::remove_pointer<tPointerType>::type    ParentType;
-    return Switcher2<ParentType>::getTypeName(iVersionNo)+"*";
-}
-
-//----------------------------------------------------------------------------
-//      ArrayTypeInfo
-//----------------------------------------------------------------------------
-
-template<typename tArrayType>
-unsigned ArrayTypeInfo<tArrayType>::getLastVersionNo()
-{
-    typedef typename std::remove_extent<tArrayType>::type   ParentType;
-    return Switcher2<ParentType>::getLastVersionNo();
-}
-
-template<typename tArrayType>
-std::string ArrayTypeInfo<tArrayType>::getTypeName(unsigned iVersionNo)
-{
-    typedef typename std::remove_extent<tArrayType>::type   ParentType;
-    std::string ret = Switcher2<ParentType>::getTypeName(iVersionNo);
-
-    // []の順序は逆だが、中身がないのでひっくり返す必要無し
-    ret.append("[]");
-    return ret;
 }
 
 //############################################################################
