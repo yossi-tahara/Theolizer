@@ -201,6 +201,78 @@ public:
     {
         return mTypeIndexImpl & ~TypeIndexMask;
     }
+    // 追加文字列
+    //  付加情報有りの時、$に続けて
+    //      etipPointee:"e"     etipNormalPointer:"p"   etipOwnerPointer:"o"
+    //      etiaArray1:"1"      etiaArray2:"2"          etiaArray3:"3"
+    //  通常ポインタの1次元配列:$p1
+    std::string getAdditionalString() const
+    {
+        std::string ret;
+        if (mTypeIndexImpl & (etipMask|etiaMask))
+        {
+            ret="$";
+        }
+        switch(mTypeIndexImpl & etipMask)
+        {
+        case etipNone:                      break;
+        case etipPointee:       ret+='e';   break;
+        case etipNormalPointer: ret+='p';   break;
+        case etipOwnerPointer:  ret+='o';   break;
+        }
+        switch(mTypeIndexImpl & etiaMask)
+        {
+        case etiaNone:                      break;
+        case etiaArray1:        ret+='1';   break;
+        case etiaArray2:        ret+='2';   break;
+        case etiaArray3:        ret+='3';   break;
+        }
+        return ret;
+    }
+    // 追加文字列分離
+    //  戻り値は付加情報
+    static unsigned splitAdditional(std::string& ioTypeName)
+    {
+        std::size_t pos = ioTypeName.find('$');
+
+        // 付加文字列無し
+        if (pos == std::string::npos)
+    return 0;
+
+        char    first  = ioTypeName[pos+1];
+
+        unsigned    ret=0;
+        bool        skip=true;
+        switch(first)
+        {
+        case 'e':   ret += etipPointee;         break;
+        case 'p':   ret += etipNormalPointer;   break;
+        case 'o':   ret += etipOwnerPointer;    break;
+        default:    skip=false;                 break;
+        }
+        // ポインタ情報があったら、配列情報が続いているかも知れない
+        if (skip)
+        {
+            // 配列情報が無かったら解析終了
+            if (pos+2 >= ioTypeName.size())
+            {
+                ioTypeName.resize(pos);
+    return ret;
+            }
+            first=ioTypeName[pos+2];
+        }
+
+        switch(first)
+        {
+        case '1':   ret += etiaArray1;          break;
+        case '2':   ret += etiaArray2;          break;
+        case '3':   ret += etiaArray3;          break;
+        default:    THEOLIZER_INTERNAL_DATA_ERROR(u8"Unknown additional.(%1%)", ioTypeName);
+        }
+
+        ioTypeName.resize(pos);
+        return ret;
+    }
 
     // 配列種別
     enum TypeIndexArray : unsigned

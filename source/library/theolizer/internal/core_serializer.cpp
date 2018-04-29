@@ -343,19 +343,19 @@ return;
 }
 
 // ***************************************************************************
-//      トップ・レベル保存前後処理
+//      型名取り出し
 // ***************************************************************************
-
-//----------------------------------------------------------------------------
-//      前処理
-//----------------------------------------------------------------------------
 
 std::string BaseSerializer::getTypeName(TypeIndex iTypeIndex)
 {
     auto aTypeInfo = mTypeInfoList[iTypeIndex.getIndex()];
     unsigned aVersionNo = getLocalVersionNo(iTypeIndex);
-    return aTypeInfo->getTypeName(aVersionNo);
+    return aTypeInfo->getTypeName(aVersionNo)+iTypeIndex.getAdditionalString();
 }
+
+// ***************************************************************************
+//      トップ・レベル保存前後処理
+// ***************************************************************************
 
 void BaseSerializer::saveProcessStart(TypeIndex iTypeIndex)
 {
@@ -497,6 +497,12 @@ TypeIndexList* BaseSerializer::loadProcessStart(TypeIndex iTypeIndex)
 
                 std::string  aTypeName;
                 loadControl(aTypeName);
+                std::string  aTypeNameBk=aTypeName;
+                unsigned additional = TypeIndex::splitAdditional(aTypeName);
+                if (iTypeIndex.getAdditional() != additional)
+                {
+                    THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.(%1%)", aTypeNameBk);
+                }
 
                 // 型名から、現在のTypeIndexListを求める
                 TypeIndexList& aTypeIndexList=mTypeNameMap->mMap[aTypeName];
