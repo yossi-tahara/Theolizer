@@ -341,7 +341,6 @@ namespace theolizer
     class dName final : public internal::GlobalVersionNoTable<dLastGlobalVersionNo>\
     {                                                                       \
         static const unsigned kLastGlobalVersionNo=dLastGlobalVersionNo;    \
-        dName();                                                            \
     public:                                                                 \
         static GlobalVersionNoTable& getInstance()                          \
         {                                                                   \

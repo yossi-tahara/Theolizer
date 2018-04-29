@@ -103,14 +103,6 @@ public:
 #include <theolizer/internal/version_auto.inc>
 #undef  THEOLIZER_GENERATED_VERSION_NO
 
-namespace theolizer{namespace internal{
-namespace global_table{
-    MyGVNT::MyGVNT()
-    {
-    }
-}   // namespace global_table
-}}  // namespace theolizer
-
 namespace theolizer{namespace internal{namespace{
     RegisterLocalVersions::RegisterLocalVersions()
     {

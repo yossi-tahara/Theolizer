@@ -33,14 +33,6 @@
 #include <theolizer/list.h>
 #include <theolizer/memory.h>
 
-namespace theolizer{namespace internal{
-namespace global_table{
-    MyGVNT::MyGVNT()
-    {
-    }
-}   // namespace global_table
-}}  // namespace theolizer
-
 namespace theolizer{namespace internal{namespace{
     RegisterLocalVersions::RegisterLocalVersions()
     {
