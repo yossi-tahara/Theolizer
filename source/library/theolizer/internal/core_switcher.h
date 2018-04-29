@@ -1671,7 +1671,7 @@ struct BranchedProcess
 
             // 処理中の型
             auto aTypeIndex = getTypeIndex<tType>();
-            aTypeIndex.setTracking(std::is_pointer<tType>::value, tTrackingMode);
+            aTypeIndex.setTracking(tTrackingMode);
 
             // 保存／回復処理
             if (iSerializer.mIsSaver)
@@ -1747,7 +1747,7 @@ struct BranchedProcess
 
         // 処理中の型
         auto aTypeIndex = getTypeIndex<tType>();
-        aTypeIndex.setTracking(std::is_pointer<tType>::value, tTrackingMode);
+        aTypeIndex.setTracking(tTrackingMode);
 
         // 保存／回復処理
         if (iSerializer.mIsSaver)

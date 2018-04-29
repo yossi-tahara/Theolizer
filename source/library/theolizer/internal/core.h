@@ -788,7 +788,9 @@ public:
         []()                                                                \
         {                                                                   \
             using Type=THEOLIZER_INTERNAL_UNPAREN dType;                    \
-            return theolizer::internal::getTypeIndex<Type>();               \
+            auto aTypeIndex = theolizer::internal::getTypeIndex<Type>();    \
+            aTypeIndex.setTracking(theolizer::internal::dTrack);            \
+            return aTypeIndex;                                              \
         },                                                                  \
         /*保存関数*/                                                        \
         [](tBaseSerializer& iSerializer, TheolizerVersion& iInstance)       \

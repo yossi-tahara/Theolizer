@@ -316,9 +316,10 @@ return;
                 if (mCheckMode == CheckMode::TypeCheck)
                 {
                     // 処理中要素の型名取出し
-                    BaseTypeInfo* aElementInfo = mTypeInfoList[aElementIndex];
-                    unsigned aVersionNo2 = getLocalVersionNo(aElementInfo->getTypeIndex());
-                    std::string aElementTypeName=aElementInfo->getTypeName(aVersionNo2);
+                    std::string aElementTypeName=getTypeName(aElementTypeIndex);
+//std::cout << "    ElementName=" << aElement.getName()
+//          << " aElementTypeIndex=" << aElementTypeIndex
+//          << " aElementTypeName=" << aElementTypeName << "\n";
                     saveControl(aElementTypeName);
                 }
                 else
@@ -1677,7 +1678,8 @@ return;
             // 要素のバージョン番号
             unsigned aElementVersionNo = getLocalVersionNo(aElementTypeInfo->getTypeIndex());
             // 要素の型名
-            std::string aElementTypeName=aElementTypeInfo->getTypeName(aElementVersionNo);
+            std::string aElementTypeName=aElementTypeInfo->getTypeName(aElementVersionNo)
+                                        +aElementTypeIndex.getAdditionalString();
 //std::cout << "    " << aElementName
 //          << " : "  << aElementTypeName << "\n";
             // 登録

@@ -113,39 +113,6 @@ class TypeIndex
         etipNormalPointer       =0x08,
         etipOwnerPointer        =0x0c
     };
-    static TypeIndexTracking makeTypeIndexTracking(bool iIsPointer, TrackingMode iTrackingMode)
-    {
-        if (iIsPointer)
-        {
-            switch(iTrackingMode)
-            {
-            case etmDefault:
-    return etipNormalPointer;
-
-            case etmOwner:
-    return etipOwnerPointer;
-
-            default:
-                break;
-            }
-        }
-        else
-        {
-            switch(iTrackingMode)
-            {
-            case etmDefault:
-    return etipNone;
-
-            case etmPointee:
-    return etipPointee;
-
-            default:
-                break;
-            }
-        }
-        THEOLIZER_INTERNAL_ERROR("makeTypeIndexTracking() error(1)");
-        return etipNone;
-    }
 public:
     TypeIndex() : mTypeIndexImpl(kInvalidUnsigned) { }
     TypeIndex(short iIndex)    : mTypeIndexImpl(iIndex*TypeIndexRadix) { } // primitive用
@@ -196,7 +163,11 @@ public:
         return mTypeIndexImpl/TypeIndexRadix;
     }
 
-    // 追加情報獲得
+    // 追加情報
+    void setPointer()
+    {
+        mTypeIndexImpl |= etipNormalPointer;
+    }
     unsigned getAdditional() const
     {
         return mTypeIndexImpl & ~TypeIndexMask;
@@ -297,13 +268,39 @@ public:
     }
 
     // オブジェクト追跡種別
-    void setTracking(bool iIsPointer, TrackingMode iTrackingMode)
+    void setTracking(TrackingMode iTrackingMode)
     {
-        mTypeIndexImpl |= makeTypeIndexTracking(iIsPointer, iTrackingMode);
-    }
-    bool checkTracking(bool iIsPointer, TrackingMode iTrackingMode) const
-    {
-        return makeTypeIndexTracking(iIsPointer, iTrackingMode) == (mTypeIndexImpl & etipMask);
+        if (mTypeIndexImpl & etipNormalPointer)
+        {
+            switch(iTrackingMode)
+            {
+            case etmDefault:
+    return;
+
+            case etmOwner:
+                mTypeIndexImpl |= etipOwnerPointer;
+    return;
+
+            default:
+                break;
+            }
+        }
+        else
+        {
+            switch(iTrackingMode)
+            {
+            case etmDefault:
+    return;
+
+            case etmPointee:
+                mTypeIndexImpl |= etipPointee;
+    return;
+
+            default:
+                break;
+            }
+        }
+        THEOLIZER_INTERNAL_ERROR("setTracking() error");
     }
 
     // TypeIndexの基数
@@ -1600,6 +1597,7 @@ PointerTypeInfo<tPointerType>::PointerTypeInfo() : BaseTypeInfo(etcPointerType)
     typedef typename GetTypeInfo<PointeeType>::Type TypeInfo;
     auto& aTypeInfo=TypeInfo::getInstance();
     mTypeIndex = aTypeInfo.getTypeIndex();
+    mTypeIndex.setPointer();
 
 //std::cout << "PointerTypeInfo() : " << getCName() << "\n";
 //std::cout << "    " << THEOLIZER_INTERNAL_TYPE_NAME(PointeeType) << "\n";
