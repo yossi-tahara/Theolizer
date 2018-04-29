@@ -1146,7 +1146,7 @@ bool ClassTypeInfo<tClassType>::saveTypeInstance
     std::type_index iStdTypeIndex
 )
 {
-    unsigned aVersionNo=iSerializer.getLocalVersionNo(BaseTypeInfo::mTypeIndex2);
+    unsigned aVersionNo=iSerializer.getLocalVersionNo(BaseTypeInfo::mTypeIndex);
 
     if (getTargetStdTypeIndex() == iStdTypeIndex)
     {
@@ -1160,7 +1160,7 @@ bool ClassTypeInfo<tClassType>::saveTypeInstance
         else
         {
             // TypeIndex保存
-            iSerializer.saveControl(BaseTypeInfo::mTypeIndex2);
+            iSerializer.saveControl(BaseTypeInfo::mTypeIndex);
         }
         // インスタンス保存
         iSerializer.writePreElement();
@@ -1245,7 +1245,7 @@ bool ClassTypeInfo<tClassType>::loadTypeInstance
     bool aDoRelease=true;
     for (auto aTypeIndex : iTypeIndexList)
     {
-        if (aTypeIndex != BaseTypeInfo::mTypeIndex2)
+        if (aTypeIndex != BaseTypeInfo::mTypeIndex)
     continue;
 
         if (!aFound)
