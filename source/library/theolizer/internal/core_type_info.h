@@ -456,7 +456,7 @@ public:
     TypeInfoList& operator=(      TypeInfoList&&) = delete;
 
     // 型登録(TypeIndex返却)
-    TypeIndex registerType2(BaseTypeInfo* iTypeInfo);
+    TypeIndex registerType(BaseTypeInfo* iTypeInfo);
 
     // リスト返却
     TypeInfoListImpl& getList() {return mTypeInfoList;}
@@ -845,7 +845,7 @@ private:
     ClassTypeInfo() : BaseTypeInfo(etcClassType)
     {
 //std::cout << "ClassTypeInfo() : " << getCName() << "\n";
-        mTypeIndex = TypeInfoList::getInstance().registerType2(this);
+        mTypeIndex = TypeInfoList::getInstance().registerType(this);
     }
 public:
     static ClassTypeInfo& getInstance()
@@ -1111,7 +1111,7 @@ private:
     EnumTypeInfo() : BaseTypeInfo(etcEnumType)
     {
 //std::cout << "EnumTypeInfo() : " << getCName() << "\n";
-        mTypeIndex = TypeInfoList::getInstance().registerType2(this);
+        mTypeIndex = TypeInfoList::getInstance().registerType(this);
     }
 public:
     static EnumTypeInfo& getInstance()
@@ -1273,7 +1273,7 @@ private:
     PrimitiveTypeInfo() : BaseTypeInfo(etcPrimitiveType)
     {
 //std::cout << "PrimitiveTypeInfo() : " << getPrimitiveName<tPrimitiveType>() << "\n";
-        mTypeIndex = TypeInfoList::getInstance().registerType2(this);
+        mTypeIndex = TypeInfoList::getInstance().registerType(this);
     }
 public:
     static PrimitiveTypeInfo& getInstance();
@@ -1325,7 +1325,7 @@ private:
     AdditionalTypeInfo() : BaseTypeInfo(etcPrimitiveType)
     {
 //std::cout << "AdditionalTypeInfo() : " << getCName() << "\n";
-        mTypeIndex = TypeInfoList::getInstance().registerType2(this);
+        mTypeIndex = TypeInfoList::getInstance().registerType(this);
     }
 public:
     static AdditionalTypeInfo& getInstance()
