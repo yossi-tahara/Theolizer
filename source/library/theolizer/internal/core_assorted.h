@@ -611,7 +611,7 @@ public:
 
     // クラス登録
     template<typename... tLocalVersionNoList>
-    void add2(unsigned iIndex, tLocalVersionNoList... iLocalVersionNoList)
+    void add(unsigned iIndex, tLocalVersionNoList... iLocalVersionNoList)
     {
         static_assert(sizeof...(tLocalVersionNoList) == uLastGlobalVersionNo,
                       "GlobalVersionNoTable::add() illegal number of parameters.");

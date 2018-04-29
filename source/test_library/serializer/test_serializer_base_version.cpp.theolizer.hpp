@@ -44,30 +44,30 @@ namespace global_table{
 namespace theolizer{namespace internal{namespace{
     RegisterLocalVersions::RegisterLocalVersions()
     {
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,theolizer::internal::XmlSerializerVersion,   1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,theolizer::internal::JsonSerializerVersion,  1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,theolizer::internal::BinarySerializerVersion,1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,IntrusiveBase,                      1u,1u,2u,2u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,IntrusiveBase2,                     1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,IntrusiveDerived,                   1u,2u,3u,4u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,IntrusiveDerived2,                  1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,DerivedChange,                      1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,change_order::dummy::DerivedChange, 1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,DerivedDelete,                      1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,EnumTest,                           1u,2u,2u,2u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,another::EnumTest,                  1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,DestinationTest,                    1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,Included1,                          1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,Included2,                          1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,Tracking,                           1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,Dynamic,                            1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,ArrayClass,                         1u,1u,2u,2u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,NonIntrusiveBase,                   1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,NonIntrusiveDrived,                 1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,ArrayClassTemplatePrimary,          1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,Pointers,                           1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,vectorTheolizer,                    1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,listTheolizer,                      1u,1u,1u,1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,unique_ptrTheolizer,                1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,theolizer::internal::XmlSerializerVersion,   1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,theolizer::internal::JsonSerializerVersion,  1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,theolizer::internal::BinarySerializerVersion,1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,IntrusiveBase,                      1u,1u,2u,2u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,IntrusiveBase2,                     1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,IntrusiveDerived,                   1u,2u,3u,4u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,IntrusiveDerived2,                  1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,DerivedChange,                      1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,change_order::dummy::DerivedChange, 1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,DerivedDelete,                      1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,EnumTest,                           1u,2u,2u,2u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,another::EnumTest,                  1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,DestinationTest,                    1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,Included1,                          1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,Included2,                          1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,Tracking,                           1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,Dynamic,                            1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,ArrayClass,                         1u,1u,2u,2u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,NonIntrusiveBase,                   1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,NonIntrusiveDrived,                 1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,ArrayClassTemplatePrimary,          1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,Pointers,                           1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,vectorTheolizer,                    1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,listTheolizer,                      1u,1u,1u,1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,unique_ptrTheolizer,                1u,1u,1u,1u);
     }
 }}}  // namespace theolizer

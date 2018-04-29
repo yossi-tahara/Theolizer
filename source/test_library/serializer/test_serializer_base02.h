@@ -114,8 +114,8 @@ namespace global_table{
 namespace theolizer{namespace internal{namespace{
     RegisterLocalVersions::RegisterLocalVersions()
     {
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,theolizer::internal::JsonSerializerVersion, 1u, 1u, 1u, 1u);
-        THEOLIZER_INTERNAL_ADD2(MyGVNT,IntrusiveBase2,                             1u, 1u, 1u, 1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,theolizer::internal::JsonSerializerVersion, 1u, 1u, 1u, 1u);
+        THEOLIZER_INTERNAL_ADD(MyGVNT,IntrusiveBase2,                             1u, 1u, 1u, 1u);
     }
 }}}  // namespace theolizer
 

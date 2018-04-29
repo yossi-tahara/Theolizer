@@ -381,8 +381,8 @@ namespace theolizer
 //      ローカル・バージョン番号リスト登録マクロ
 //----------------------------------------------------------------------------
 
-#define THEOLIZER_INTERNAL_ADD2(dGvnt, dType, ...)                          \
-    global_table::dGvnt::getInstance().add2(registerTypeIndex<::dType>().getIndex(), __VA_ARGS__)
+#define THEOLIZER_INTERNAL_ADD(dGvnt, dType, ...)                           \
+    global_table::dGvnt::getInstance().add(registerTypeIndex<::dType>().getIndex(), __VA_ARGS__)
 
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
