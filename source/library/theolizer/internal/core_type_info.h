@@ -123,12 +123,6 @@ public:
         mTypeIndexImpl = iIndex*TypeIndexRadix;
         return *this;
     }
-    TypeIndex& operator=(std::size_t iIndex)
-    {
-        THEOLIZER_INTERNAL_ASSERT(iIndex <= kInvalidUnsigned, "TypeIndex : too large iIndex.");
-        *this = static_cast<unsigned>(iIndex);
-        return *this;
-    }
     TypeIndex& operator=(TypeIndex const& iTypeIndex)
     {
         mTypeIndexImpl = iTypeIndex.mTypeIndexImpl;
@@ -167,6 +161,10 @@ public:
     void setPointer()
     {
         mTypeIndexImpl |= etipNormalPointer;
+    }
+    bool isPointer() const
+    {
+        return !!(mTypeIndexImpl & etipNormalPointer);
     }
     unsigned getAdditional() const
     {
@@ -568,7 +566,8 @@ private:
 
     // トップ・レベルの保存先
     bool                    mIsTopLevel;
-    Destinations            mTopDestinations;
+    Destinations            mTopDestinations;       // 通常のインスタンス
+    Destinations            mPointerDestinations;   // ポインタ経由
 
     // 手動型からの保存
     bool                    mIsManual;
@@ -612,6 +611,29 @@ public:
         return iSerializerDestinations.isMatch(mTopDestinations, true);
     }
 
+//      ---<<< トップ・レベルのポインタの保存先関連 >>>---
+//      派生クラスについて追跡が必要であるため、別途記録すｒ
+
+    void addPointerDestination(Destinations const& iDestinations)
+    {
+        mIsTopLevel=true;
+        mPointerDestinations.add(iDestinations);
+    }
+
+    // トップ・レベルのポインタの保存先一致判定
+    bool isPointerMatch
+    (
+        Destinations const& iSerializerDestinations
+    )
+    {
+        // トップ・レベルでないならfalse
+        if (!mIsTopLevel)
+    return false;
+
+        // 保存先がAllも含めて一致するなら保存する
+        return iSerializerDestinations.isMatch(mPointerDestinations, true);
+    }
+
 //      ---<<< 手動型からの保存 >>>---
 
     bool isManual() {return mIsManual;}
@@ -642,10 +664,10 @@ public:
 //      ---<<< ポリモーフィズム対応 >>>---
 
 private:
-    // 当クラスから派生したクラスについてトップレベル扱いとする
-    //  (クラス以外はオーバーライドされない。従ってこれは何もしない)
-    virtual void setTopLevel(Destinations const& iDestinations)
-    { }
+    // 当クラスから派生したクラスについてヘッダへ型情報記録するよう指示する
+    //  自分より前にあるクラスについて保存要求したら、true返却
+    virtual bool setSaving(BaseSerializer& iSerializer, std::vector<SaveStat>& ioSaveStatList)
+    {return false;}
 
 //      ---<<< メタ・シリアライズ用 >>>---
 
@@ -976,7 +998,11 @@ private:
             tClassType*& ioPointer,
             TypeIndexList& iTypeIndexList
         )=0;
-        virtual void setTopLevel(Destinations const& iDestinations) = 0;
+        virtual bool setSaving
+        (
+            BaseSerializer& iSerializer,
+            std::vector<SaveStat>& ioSaveStatList
+        )=0;
         virtual void const* getDerivedPointer(TheolizerTarget* iBasePointer)=0;
         virtual TypeIndex getTypeIndex()=0;
         virtual ~HolderBase() { }
@@ -1028,9 +1054,10 @@ private:
             return ret;
         }
 
-        void setTopLevel(Destinations const& iDestinations)
+        bool setSaving(BaseSerializer& iSerializer, std::vector<SaveStat>& ioSaveStatList)
         {
-            ClassTypeInfo<tDrivedClassType>::getInstance().setTopLevel(iDestinations);
+            return ClassTypeInfo<tDrivedClassType>::getInstance().
+                setSaving(iSerializer, ioSaveStatList);
         }
 
         void const* getDerivedPointer(TheolizerTarget* iBasePointer)
@@ -1077,22 +1104,34 @@ public:
 
     // 当クラスから派生したクラスについてヘッダへ型情報記録するよう指示する
     //  自分より前にあるクラスについて保存要求したら、true返却
-    void setTopLevel(Destinations const& iDestinations)
+    bool setSaving(BaseSerializer& iSerializer, std::vector<SaveStat>& ioSaveStatList)
     {
         // 派生クラスが登録されていないなら、NOP
         if (!mDrivedClassList.size())
-    return;
+    return false;
 
-//std::cout << "setTopLevel(" << getCName()
+//std::cout << "setSaving(" << getCName()
 //          << " mDrivedClassList.size()=" << mDrivedClassList.size() << "\n";
+        bool ret=false;
         for (auto&& aDrivedClass : mDrivedClassList)
         {
             TypeIndex aTypeIndex = aDrivedClass->getTypeIndex();
-            TypeInfoList::getInstance().getList()[aTypeIndex.getIndex()]->
-                addDestination(iDestinations);
+            SaveStat& aSaveStat = ioSaveStatList.at(aTypeIndex.getIndex());
 //std::cout << "    " << aDrivedClass->getCName() << "\n";
-            aDrivedClass->setTopLevel(iDestinations);
+            if (aSaveStat == essIdle)
+            {
+                aSaveStat=essSaving;
+                if (aTypeIndex.getIndex() < mTypeIndex.getIndex())
+                {
+                    ret=true;
+                }
+            }
+            if (aDrivedClass->setSaving(iSerializer, ioSaveStatList))
+            {
+                ret=true;
+            }
         }
+        return ret;
     }
 
     // 現インスタンスの先頭アドレス返却
@@ -1552,37 +1591,41 @@ private:
         typedef typename GetTypeInfo<RemovedCVType>::Type   TypeInfo;
         auto& aBaseTypeInfo=TypeInfo::getInstance();
 
-#if 0
+#if 1
 std::cout << "RegisterType<" << THEOLIZER_INTERNAL_TYPE_NAME(tSerializer) << ",\n"
           << "             " << THEOLIZER_INTERNAL_TYPE_NAME(tType) << ",\n"
           << "             " << THEOLIZER_INTERNAL_TYPE_NAME(TypeInfo) << ",\n"
           << "             " << THEOLIZER_INTERNAL_TYPE_NAME(tTheolizerVersion) << ",\n"
           << "             uIsDerived=" << uIsDerived << ">\n";
-std::cout << "mTypeIndex=" << aBaseTypeInfo.getTypeIndex() << "\n";
+std::cout << "    mTypeIndex=" << aBaseTypeInfo.getTypeIndex() << "\n";
 #endif
 
         // 保存先があるTopLevelシリアライザなら、TypeInfoに保存先を登録する
         if (tSerializer::kHasDestination)
         {
-//std::cout << "    addDestination(" << tSerializer::getDestinations() << ")\n";
+std::cout << "    addDestination(" << tSerializer::getDestinations() << ")\n";
             TypeIndex aTypeIndex = aBaseTypeInfo.getTypeIndex();
+            unsigned  aIndex = aTypeIndex.getIndex();
             TypeInfoList& aTypeInfoList = TypeInfoList::getInstance();
 
             // ポインタならば、ポイント先とその派生クラスをトップ・レベル扱いとする
             if (aBaseTypeInfo.mTypeCategory == etcPointerType)
             {
-                aTypeInfoList[aTypeIndex]->addDestination(tSerializer::getDestinations());
-                aTypeInfoList[aTypeIndex]->setTopLevel(tSerializer::getDestinations());
+                aTypeInfoList[aIndex]->addDestination(tSerializer::getDestinations());
+                aTypeInfoList[aIndex]->addPointerDestination(tSerializer::getDestinations());
+std::cout << "    " << aTypeInfoList[aIndex]->getCName() << ".addDestination()/addPointerDestination()\n";
             }
 
             // 配列ならば、基本型をトップ・レベル扱いとする
             else if (aBaseTypeInfo.mTypeCategory == etcArrayType)
             {
-                aTypeInfoList[aTypeIndex]->addDestination(tSerializer::getDestinations());
+                aTypeInfoList[aIndex]->addDestination(tSerializer::getDestinations());
+std::cout << "    " << aTypeInfoList[aIndex]->getCName() << ".addDestination()\n";
             }
 
             else
             {
+std::cout << "    aBaseTypeInfo.addDestination()\n";
                 aBaseTypeInfo.addDestination(tSerializer::getDestinations());
             }
         }

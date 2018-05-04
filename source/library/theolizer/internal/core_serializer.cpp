@@ -189,35 +189,100 @@ void BaseSerializer::writeHeaderTypeInfo()
      && (mCheckMode != CheckMode::TypeCheckByIndex))
 return;
 
-#if 0
-    for (auto&& aLoop : getRBForIndexer(mTypeInfoList))
-    {
-        unsigned aVersionNo = getLocalVersionNo(aLoop.front()->getTypeIndex());
-        std::cout << "[" << aLoop.getIndex() << "] "
-                  << aLoop.front()->getTypeName(aVersionNo)
-                  << " isTopLevel()=" << aLoop.front()->isTopLevel()
-                  << " isManual()=" << aLoop.front()->isManual() << "\n";
-    }
-    std::cout.flush();
-#endif
-
 //----------------------------------------------------------------------------
 //      ヘッダ内の型情報保存
 //----------------------------------------------------------------------------
 
-    // 保存状況クリア
+    // 保存状況を設定する(保存するものを抽出する。）
     std::vector<SaveStat> aSaveStatList(mTypeIndexCount, essIdle);
+    bool aAgain=false;
+    do
     {
+        aAgain=false;
         auto aSaveStatIterator = aSaveStatList.begin();
-        for (auto&& aTypeInfo : mTypeInfoList)
+        for (unsigned aIndex=0; aIndex < mTypeInfoList.size(); ++aIndex, ++aSaveStatIterator)
         {
-            if (aTypeInfo->isTopMatch(mDestinations) || aTypeInfo->isManual())
+            auto aTypeInfo = mTypeInfoList[aIndex];
+#if 0
+{
+    TypeIndex aTypeIndex = aTypeInfo->getTypeIndex();
+    unsigned aVersionNo = getLocalVersionNo(aTypeIndex);
+    std::cout << "[" << aTypeIndex.getIndex()
+              << "] " << aTypeInfo->getTypeName(aVersionNo)
+              << " " << aTypeInfo->mTopDestinations
+              << " " << aTypeInfo->mPointerDestinations << "\n";
+}
+#endif
+            // トップ・レベルについてはバージョンを考慮しない
+            if (aTypeInfo->isTopMatch(mDestinations))
             {
                 *aSaveStatIterator=essSaving;
             }
-            ++aSaveStatIterator;
+            // トップ・レベルのポインタの処理
+            //  ポリモーフィズム処理に備えて派生クラスも出力する
+            if (aTypeInfo->isPointerMatch(mDestinations))
+            {
+                *aSaveStatIterator=essSaving;
+                // 派生クラス追跡と登録
+                if (aTypeInfo->setSaving(*this, aSaveStatList))
+                {
+                    aAgain=true;   // 自分より前のものがあったら、再ループ
+                }
+            }
+
+            if (aTypeInfo->mTypeCategory != etcClassType)
+        continue;
+
+            // クラスなら各基底クラス／要素について処理する
+            TypeIndex aTypeIndex = aTypeInfo->getTypeIndex();
+            unsigned aVersionNo = getLocalVersionNo(aTypeIndex);
+            for (auto& aElement : aTypeInfo->getElementRange(aVersionNo))
+            {
+                TypeIndex aElementTypeIndex = aElement.getTypeIndex();
+                unsigned aElementIndex = aElementTypeIndex.getIndex();
+//std::cout << "    [" << aElementIndex << "] " << aElementTypeIndex
+//        << " " << aSaveStatList[aElementIndex]
+//        << "    Destinations=" << aElement.getDestinations() << "\n";
+                // 保存先一致確認
+                if (!mDestinations.isMatch(aElement.getDestinations()))
+            continue;
+
+                // 未要求なら保存要求する
+                if (aSaveStatList[aElementIndex] == essIdle)
+                {
+                    aSaveStatList[aElementIndex]=essSaving;
+                    // 自分より前のものなら、再ループ
+                    if (aElementIndex <= aTypeIndex.getIndex())
+                    {
+                        aAgain=true;
+                    }
+                }
+
+                // ポインタなら派生クラスも保存要求する
+                if (!aElementTypeIndex.isPointer())
+            continue;
+
+                BaseTypeInfo* aElementTypeInfo = mTypeInfoList[aElementIndex];
+                // 派生クラス追跡と登録
+                if (aElementTypeInfo->setSaving(*this, aSaveStatList))
+                {
+                    aAgain=true;   // 自分より前のものがあったら、再ループ
+                }
+            }
         }
     }
+    while(aAgain);
+
+#if 0
+    for (auto& aLoop : getRBForIndexer(mTypeInfoList))
+    {
+        unsigned aVersionNo = getLocalVersionNo(aLoop.front()->getTypeIndex());
+        std::cout << "[" << aLoop.getIndex()
+                  << "] " << aLoop.front()->getTypeName(aVersionNo)
+                  << " saving=" << aSaveStatList[aLoop.getIndex()] << "\n";
+    }
+    std::cout.flush();
+#endif
 
     // TypeIndexによるチェックなら、TypeIndex最大値出力
     if (mCheckMode == CheckMode::TypeCheckByIndex)
@@ -226,121 +291,83 @@ return;
         saveControl(mTypeIndexCount);
     }
 
-    // 型情報出力(追加がなくなるまで繰り返す)
-    bool aAgain=false;
-    do
+    // 型情報出力
+    for (auto& aLoop : getRBForIndexer(mTypeInfoList))
     {
-        aAgain=false;
-        for (auto& aLoop : getRBForIndexer(mTypeInfoList))
+        auto aIndex =aLoop.getIndex();
+        auto aTypeInfo=aLoop.front();
+        auto aTypeIndex = aTypeInfo->getTypeIndex();
+        unsigned aVersionNo = getLocalVersionNo(aTypeIndex);
+
+        if (aSaveStatList[aIndex] != essSaving)
+    continue;
+        aSaveStatList[aIndex] = essSaved;
+
+        // TypeCheckの時はClassTypeのみ出力する
+        if ((mCheckMode == CheckMode::TypeCheck)
+         && (aTypeInfo->mTypeCategory != etcClassType))
+    continue;
+
+        // 開始マーク
+        writePreElement();
+        AutoRestoreSave aAutoRestoreSave2(*this, emOrder, true);
+
+        // TypeIndex
+        if (mCheckMode == CheckMode::TypeCheckByIndex)
         {
-            auto aIndex =aLoop.getIndex();
-            auto aTypeInfo=aLoop.front();
-            auto aTypeIndex = aTypeInfo->getTypeIndex();
-            unsigned aVersionNo = getLocalVersionNo(aTypeIndex);
-
-            if (aSaveStatList[aIndex] != essSaving)
-        continue;
-            aSaveStatList[aIndex] = essSaved;
-
-            // TypeCheckの時はClassTypeのみ出力する
-            if ((mCheckMode == CheckMode::TypeCheck)
-             && (aTypeInfo->mTypeCategory != etcClassType))
-        continue;
-
-            // 開始マーク
             writePreElement();
-            AutoRestoreSave aAutoRestoreSave2(*this, emOrder, true);
+            saveControl(aTypeIndex);
+        }
 
-            // TypeIndex
-            if (mCheckMode == CheckMode::TypeCheckByIndex)
-            {
-                writePreElement();
-                saveControl(aTypeIndex);
-            }
-
-            // TypeName
-            writePreElement();
-            std::string aTypeName=aTypeInfo->getTypeName(aVersionNo);
-            saveControl(aTypeName);
+        // TypeName
+        writePreElement();
+        std::string aTypeName=aTypeInfo->getTypeName(aVersionNo);
+        saveControl(aTypeName);
 //std::cout << "aTypeName=" << aTypeName << "\n";
 
-            if (aTypeInfo->mTypeCategory != etcClassType)
-        continue;
+        if (aTypeInfo->mTypeCategory != etcClassType)
+    continue;
 
-            // バージョン番号と対応方法獲得
-            ElementsMapping aElementsMapping = aTypeInfo->getElementsMapping(aVersionNo);
+        // 手動型は要素出力しない
+        if (aTypeInfo->getTypeKind() & etkManualFlag)
+    continue;
 
-            // 手動型なら出力せず、クラス要素のヘッダ出力を指示する
-            if (aTypeInfo->getTypeKind() & etkManualFlag)
-            {
-                for (auto&& aElement : aTypeInfo->getElementRange(aVersionNo))
-                {
-                    // 保存先一致確認
-                    if (!mDestinations.isMatch(aElement.getDestinations()))
-                continue;
+        // バージョン番号と対応方法獲得
+        ElementsMapping aElementsMapping = aTypeInfo->getElementsMapping(aVersionNo);
 
-                    // まだ保存されてないなら、保存する
-                    unsigned aElementIndex=aElement.getTypeIndex().getIndex();
-                    if (aSaveStatList[aElementIndex] == essIdle)
-                    {
-                        aSaveStatList[aElementIndex]=essSaving;
-                        // 自分より前のものなら、再ループ
-                        if (aElementIndex <= aIndex)
-                        {
-                            aAgain=true;
-                        }
-                    }
-                }
-        continue;
-            }
+        // ElementListを出力
+        writePreElement();
+        AutoRestoreSave aAutoRestoreSave3(*this, aElementsMapping);
 
-            // ElementListを出力
-            writePreElement();
-            AutoRestoreSave aAutoRestoreSave3(*this, aElementsMapping);
-
-            for (auto&& aElement : aTypeInfo->getElementRange(aVersionNo))
-            {
+        for (auto&& aElement : aTypeInfo->getElementRange(aVersionNo))
+        {
 //std::cout << "    ElementName=" << aElement.getName() << "\n";
-                // 保存先一致確認
-                if (!mDestinations.isMatch(aElement.getDestinations()))
-            continue;
+            // 保存先一致確認
+            if (!mDestinations.isMatch(aElement.getDestinations()))
+        continue;
 
-                writePreElement();
+            writePreElement();
 
-                // 名前対応時のみ要素名を記録する
-                saveElementName(aElementsMapping, aElement.getName());
+            // 名前対応時のみ要素名を記録する
+            saveElementName(aElementsMapping, aElement.getName());
 
-                // 要素の形名、もしくは、TypeIndex
-                TypeIndex aElementTypeIndex=aElement.getTypeIndex();
-                unsigned aElementIndex = aElementTypeIndex.getIndex();
-                if (mCheckMode == CheckMode::TypeCheck)
-                {
-                    // 処理中要素の型名取出し
-                    std::string aElementTypeName=getTypeName(aElementTypeIndex);
+            // 要素の形名、もしくは、TypeIndex
+            TypeIndex aElementTypeIndex=aElement.getTypeIndex();
+            if (mCheckMode == CheckMode::TypeCheck)
+            {
+                // 処理中要素の型名取出し
+                std::string aElementTypeName=getTypeName(aElementTypeIndex);
 //std::cout << "    ElementName=" << aElement.getName()
 //          << " aElementTypeIndex=" << aElementTypeIndex
 //          << " aElementTypeName=" << aElementTypeName << "\n";
-                    saveControl(aElementTypeName);
-                }
-                else
-                {
-                    saveControl(aElementTypeIndex);
-                }
-
-                // まだ保存されてないなら、保存する
-                if (aSaveStatList[aElementIndex] == essIdle)
-                {
-                    aSaveStatList[aElementIndex]=essSaving;
-                    // 自分より前のものなら、再ループ
-                    if (aElementIndex <= aIndex)
-                    {
-                        aAgain=true;
-                    }
-                }
+                saveControl(aElementTypeName);
+            }
+            else
+            {
+                saveControl(aElementTypeIndex);
             }
         }
     }
-    while(aAgain);
 }
 
 // ***************************************************************************
@@ -1523,7 +1550,7 @@ return;
         }
         else
         {
-            aDataTypeIndex=mSerializedTypeListN->size();
+            aDataTypeIndex=static_cast<unsigned>(mSerializedTypeListN->size());
         }
 
         if (!readPreElement())

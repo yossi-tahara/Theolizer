@@ -510,16 +510,13 @@ public:
             if (aFirst)
             {
                 aFirst=false;
-                // JustMatch出ない時は、どちらか一方のAlwayが1ならtrue
+                // JustMatchでない時は、どちらか一方のAlwayが1ならtrue
                 if ((!iIsJustMatch) && ((*aLhs & 1) || (aRhs & 1)))
-                {
     return true;
-                }
             }
 
-            if (*aLhs & aRhs) {
+            if (*aLhs & aRhs)
     return true;
-            }
         }
         return false;
     }
