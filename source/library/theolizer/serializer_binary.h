@@ -211,21 +211,7 @@ public:
 };
 
 // ***************************************************************************
-//      Binaryシリアライザのバージョン番号とシリアライザ名
-//          注意事項：
-//              このバージョンはサイズに「幅」がない。(厳密に一致することが必要)
-//              余裕を持たせる場合、下記工夫が必要
-//                  シリアライズ時は実型を表現できるシリアライズ型へ
-//                  デシリアライズ時はシリアライズ型を表現できる実型へ
-//              そこそこ手間が掛かりそうななので、必要が生じたら対応を検討する
-//          long doubleはdouble形式で保存する
-// ***************************************************************************
-
-constexpr static char kBinarySerializerName[]="BinaryTheolizer";
-constexpr static unsigned kBinarySerializerVersionNo=1;
-
-// ***************************************************************************
-//          バージョン管理
+//      バージョン管理
 // ***************************************************************************
 
 THEOLIZER_INTERNAL_REGISTER_SERIALIZER(BinarySerializerVersion, 1, "BinaryTheolizer");
@@ -292,12 +278,10 @@ private:
 
     std::ostream&           mOStream;
 
-    static const unsigned   kLastVersionNo=kBinarySerializerVersionNo;
-
-    typedef BinaryMidOSerializer  MidSerializer;
+    typedef BinarySerializerVersion SerializerVersion;
+    typedef BinaryMidOSerializer    MidSerializer;
 
 protected:
-    static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
     // 派生シリアライザのTypeIndex
@@ -425,12 +409,10 @@ private:
     bool                    mTerminated;
     BinaryTag               mBinaryTag;
 
-    static const unsigned   kLastVersionNo=kBinarySerializerVersionNo;
-
-    typedef BinaryMidISerializer  MidSerializer;
+    typedef BinarySerializerVersion SerializerVersion;
+    typedef BinaryMidISerializer    MidSerializer;
 
 protected:
-    static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
     // 派生シリアライザのTypeIndex
@@ -588,7 +570,6 @@ class BinaryOSerializer : protected internal::BinaryMidOSerializer
     typedef internal::BinaryMidOSerializer  MidSerializer;
 
     // Switcherアクセス用
-    using MidSerializer::kSerializerName;
     using BaseSerializer::mIsSaver;
 
 public:
@@ -676,7 +657,6 @@ class BinaryISerializer : protected internal::BinaryMidISerializer
     typedef internal::BinaryMidISerializer  MidSerializer;
 
     // Switcherアクセス用
-    using MidSerializer::kSerializerName;
     using BaseSerializer::mIsSaver;
 
 public:

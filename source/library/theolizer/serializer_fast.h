@@ -63,13 +63,7 @@ namespace internal
 //############################################################################
 
 // ***************************************************************************
-//      Fastシリアライザのバージョン番号
-// ***************************************************************************
-
-const static unsigned kFastSerializerVersionNo=1;
-
-// ***************************************************************************
-//          バージョン管理
+//      バージョン管理
 // ***************************************************************************
 
 THEOLIZER_INTERNAL_REGISTER_SERIALIZER(FastSerializerVersion, 1, "FastTheolizer");
@@ -130,12 +124,10 @@ private:
 
     std::ostream&           mOStream;
 
-    static const unsigned   kLastVersionNo=kFastSerializerVersionNo;
-
-    typedef FastMidOSerializer  MidSerializer;
+    typedef FastSerializerVersion   SerializerVersion;
+    typedef FastMidOSerializer      MidSerializer;
 
 protected:
-    static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
     // 派生シリアライザのTypeIndex
@@ -241,12 +233,10 @@ private:
 
     std::istream&           mIStream;
 
-    static const unsigned   kLastVersionNo=kFastSerializerVersionNo;
-
-    typedef FastMidISerializer  MidSerializer;
+    typedef FastSerializerVersion   SerializerVersion;
+    typedef FastMidISerializer      MidSerializer;
 
 protected:
-    static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
     // 派生シリアライザのTypeIndex
@@ -384,7 +374,6 @@ class FastOSerializer : protected internal::FastMidOSerializer
     typedef internal::FastMidOSerializer    MidSerializer;
 
     // Switcherアクセス用
-    using MidSerializer::kSerializerName;
     using BaseSerializer::mIsSaver;
 
 public:
@@ -443,7 +432,6 @@ class FastISerializer : protected internal::FastMidISerializer
     typedef internal::FastMidISerializer    MidSerializer;
 
     // Switcherアクセス用
-    using MidSerializer::kSerializerName;
     using BaseSerializer::mIsSaver;
 
 public:

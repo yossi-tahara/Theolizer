@@ -59,25 +59,18 @@ namespace theolizer
 //      共通定義
 //############################################################################
 
+namespace internal
+{
+#ifndef THEOLIZER_INTERNAL_DOXYGEN
+
 // ***************************************************************************
-//      Jsonシリアライザのバージョン番号とシリアライザ名
+//      バージョン管理
 //          注意事項：
 //              このバージョンはサイズに「幅」がない。(厳密に一致することが必要)
 //              余裕を持たせる場合、下記工夫が必要
 //                  シリアライズ時は実型を表現できるシリアライズ型へ
 //                  デシリアライズ時はシリアライズ型を表現できる実型へ
 //              そこそこ手間が掛かりそうななので、必要が生じたら対応を検討する
-// ***************************************************************************
-
-namespace internal
-{
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
-
-constexpr static char kJsonSerializerName[]="JsonTheolizer";
-constexpr static unsigned kJsonSerializerVersionNo=1;
-
-// ***************************************************************************
-//          バージョン管理
 // ***************************************************************************
 
 THEOLIZER_INTERNAL_REGISTER_SERIALIZER(JsonSerializerVersion, 1, "JsonTheolizer");
@@ -146,12 +139,10 @@ private:
     bool                    mNoPrettyPrint;
     bool                    mWriteComma;
 
-    static const unsigned   kLastVersionNo=kJsonSerializerVersionNo;
-
-    typedef JsonMidOSerializer  MidSerializer;
+    typedef JsonSerializerVersion   SerializerVersion;
+    typedef JsonMidOSerializer      MidSerializer;
 
 protected:
-    static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
     // 派生シリアライザのTypeIndex
@@ -266,12 +257,10 @@ private:
     bool                    mReadComma;
     bool                    mTerminated;
 
-    static const unsigned   kLastVersionNo=kJsonSerializerVersionNo;
-
-    typedef JsonMidISerializer  MidSerializer;
+    typedef JsonSerializerVersion   SerializerVersion;
+    typedef JsonMidISerializer      MidSerializer;
 
 protected:
-    static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
     // 派生シリアライザのTypeIndex
@@ -434,7 +423,6 @@ class JsonOSerializer : protected internal::JsonMidOSerializer
     typedef internal::JsonMidOSerializer    MidSerializer;
 
     // Switcherアクセス用
-    using MidSerializer::kSerializerName;
     using BaseSerializer::mIsSaver;
 
 public:
@@ -529,7 +517,6 @@ class JsonISerializer : protected internal::JsonMidISerializer
     typedef internal::JsonMidISerializer    MidSerializer;
 
     // Switcherアクセス用
-    using MidSerializer::kSerializerName;
     using BaseSerializer::mIsSaver;
 
 public:

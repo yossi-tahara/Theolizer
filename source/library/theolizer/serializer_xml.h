@@ -64,25 +64,13 @@ namespace internal
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
-//      XMLシリアライザのバージョン番号とシリアライザ名
-//          注意事項：
-//              このバージョンはサイズに「幅」がない。(厳密に一致することが必要)
-//              余裕を持たせる場合、下記工夫が必要
-//                  シリアライズ時は実型を表現できるシリアライズ型へ
-//                  デシリアライズ時はシリアライズ型を表現できる実型へ
-//              そこそこ手間が掛かりそうななので、必要が生じたら対応を検討する
+//      バージョン管理
 // ***************************************************************************
 
 #define THEOLIZER_INTERNAL_XML_THEOLIZER_NAME   "XmlTheolizer"
 
-constexpr static char kXmlSerializerName[]=THEOLIZER_INTERNAL_XML_THEOLIZER_NAME;
-constexpr static unsigned kXmlSerializerVersionNo=1;
-
-// ***************************************************************************
-//          バージョン管理
-// ***************************************************************************
-
-THEOLIZER_INTERNAL_REGISTER_SERIALIZER(XmlSerializerVersion, 1, "XmlTheolizer");
+THEOLIZER_INTERNAL_REGISTER_SERIALIZER(
+    XmlSerializerVersion, 1, THEOLIZER_INTERNAL_XML_THEOLIZER_NAME);
 
 // ***************************************************************************
 //      XMLヘッダ関係
@@ -188,12 +176,10 @@ private:
     std::ostream&           mOStream;
     bool                    mNoPrettyPrint;
 
-    static const unsigned   kLastVersionNo=kXmlSerializerVersionNo;
-
-    typedef XmlMidOSerializer  MidSerializer;
+    typedef XmlSerializerVersion    SerializerVersion;
+    typedef XmlMidOSerializer       MidSerializer;
 
 protected:
-    static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
     // 派生シリアライザのTypeIndex
@@ -329,12 +315,10 @@ private:
     std::istream&           mIStream;
     bool                    mTerminated;
 
-    static const unsigned   kLastVersionNo=kXmlSerializerVersionNo;
-
-    typedef XmlMidISerializer  MidSerializer;
+    typedef XmlSerializerVersion    SerializerVersion;
+    typedef XmlMidISerializer       MidSerializer;
 
 protected:
-    static char const* const        kSerializerName;
     static std::ios_base::openmode  kOpenMode;
 
     // 派生シリアライザのTypeIndex
@@ -517,7 +501,6 @@ class XmlOSerializer : protected internal::XmlMidOSerializer
     typedef internal::XmlMidOSerializer    MidSerializer;
 
     // Switcherアクセス用
-    using MidSerializer::kSerializerName;
     using BaseSerializer::mIsSaver;
 
 public:
@@ -608,7 +591,6 @@ class XmlISerializer : protected internal::XmlMidISerializer
     typedef internal::XmlMidISerializer    MidSerializer;
 
     // Switcherアクセス用
-    using MidSerializer::kSerializerName;
     using BaseSerializer::mIsSaver;
 
 public:
