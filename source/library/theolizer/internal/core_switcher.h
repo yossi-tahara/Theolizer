@@ -1595,13 +1595,13 @@ struct MidSerializer
 template<class tSerializer>
 int registerMidSerializer()
 {
-    theolizer::internal::MidSerializer<typename tSerializer::MidSerializer>::getInstance();
+    theolizer::internal::MidSerializer<typename tSerializer::MidSerializer::SerializerVersion>::getInstance();
     return 0;
 }
 
 #define THEOLIZER_INTERNAL_REGISTER_MID_SERIALIZER(dSerializer)             \
     static int k##dSerializer THEOLIZER_INTERNAL_UNUSED=                    \
-        theolizer::internal::registerMidSerializer<dSerializer<> >()
+        theolizer::internal::registerMidSerializer<dSerializer<>>()
 
 //----------------------------------------------------------------------------
 //      トップ・レベル／非トップ・レベル分岐と処理

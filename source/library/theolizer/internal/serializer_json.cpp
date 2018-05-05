@@ -63,13 +63,6 @@ namespace internal
 //############################################################################
 
 // ***************************************************************************
-//      シリアライザ名
-// ***************************************************************************
-
-char const* const   JsonMidOSerializer::kSerializerName=
-        "theolizer::internal::JsonMidOSerializer";
-
-// ***************************************************************************
 //      fstreamのオープン・モード
 // ***************************************************************************
 
@@ -153,7 +146,7 @@ void JsonMidOSerializer::writeHeader()
     // シリアライザ名出力
     writePreElement();
     saveElementName(emName, "SerialzierName");
-    saveControl(kJsonSerializerName);
+    saveControl(SerializerVersion::kName);
 
     // グローバル・バージョン番号出力
     writePreElement();
@@ -418,13 +411,6 @@ void JsonMidOSerializer::encodeJsonString(std::string const& iString)
 //############################################################################
 
 // ***************************************************************************
-//      シリアライザ名
-// ***************************************************************************
-
-char const* const   JsonMidISerializer::kSerializerName=
-        "theolizer::internal::JsonMidISerializer";
-
-// ***************************************************************************
 //      fstreamのオープン・モード
 // ***************************************************************************
 
@@ -512,7 +498,7 @@ void JsonMidISerializer::readHeader()
             aExistSerializerName=true;
             std::string aSerialzierName;
             loadControl(aSerialzierName);
-            if (aSerialzierName != kJsonSerializerName)
+            if (aSerialzierName != SerializerVersion::kName)
             {
                 THEOLIZER_INTERNAL_DATA_ERROR
                     ("JsonMidISerializer : Unmatch serializer name(%1%).", aSerialzierName);

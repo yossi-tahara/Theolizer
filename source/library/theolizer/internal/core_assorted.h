@@ -630,6 +630,15 @@ public:
 
     unsigned getLocalVersionNo(unsigned iGlobalVersionNo, unsigned iIndex) const
     {
+        if (iGlobalVersionNo == 0 )
+        {
+            THEOLIZER_INTERNAL_VERSION_ERROR("GlobalVersionNo(%1%) is illegal.", iGlobalVersionNo);
+        }
+        if (uLastGlobalVersionNo < iGlobalVersionNo)
+        {
+            THEOLIZER_INTERNAL_VERSION_ERROR("GlobalVersionNo(%1%) is too big.", iGlobalVersionNo);
+        }
+
         // 最新GlobalVersionNoが1の処理
         if (uLastGlobalVersionNo == 1)
         {
@@ -1112,8 +1121,9 @@ public:
     }
 
     std::type_index getStdTypeIndex() const {return std::type_index(typeid(tMidSerializer));}
-    unsigned getLastVersionNo()       const {return tMidSerializer::kLastVersionNo;}
-    char const* getSerializerName()   const {return tMidSerializer::kSerializerName;}
+    unsigned getLastVersionNo()       const
+    {return tMidSerializer::SerializerVersion::kLastVersionNo;}
+    char const* getSerializerName()   const {return tMidSerializer::SerializerVersion::kName;}
 };
 
 // ***************************************************************************

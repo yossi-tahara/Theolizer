@@ -63,13 +63,6 @@ namespace internal
 //############################################################################
 
 // ***************************************************************************
-//      シリアライザ名
-// ***************************************************************************
-
-char const* const   BinaryMidOSerializer::kSerializerName=
-        "theolizer::internal::BinaryMidOSerializer";
-
-// ***************************************************************************
 //      fstreamのオープン・モード
 // ***************************************************************************
 
@@ -146,7 +139,7 @@ void BinaryMidOSerializer::writeHeader()
     // シリアライザ名出力
     writePreElement();
     saveElementName(emName, "SerialzierName");
-    saveControl(kBinarySerializerName);
+    saveControl(SerializerVersion::kName);
 
     // グローバル・バージョン番号出力
     writePreElement();
@@ -477,13 +470,6 @@ void BinaryMidOSerializer::writeByte(uint8_t iByte)
 //############################################################################
 
 // ***************************************************************************
-//      シリアライザ名
-// ***************************************************************************
-
-char const* const   BinaryMidISerializer::kSerializerName=
-        "theolizer::internal::BinaryMidISerializer";
-
-// ***************************************************************************
 //      fstreamのオープン・モード
 // ***************************************************************************
 
@@ -571,7 +557,7 @@ void BinaryMidISerializer::readHeader()
             aExistSerializerName=true;
             std::string aSerialzierName;
             loadControl(aSerialzierName);
-            if (aSerialzierName != kBinarySerializerName)
+            if (aSerialzierName != SerializerVersion::kName)
             {
                 THEOLIZER_INTERNAL_DATA_ERROR
                     ("BinaryMidISerializer : Unmatch serializer name(%1%).", aSerialzierName);

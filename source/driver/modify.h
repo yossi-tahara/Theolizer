@@ -2113,6 +2113,7 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
 
     void addAddFunc
     (
+        std::string const& iTableName,
         GlobalTable const& iGlobalTable,
         unsigned iLastGlobalVersionNo,
         TagDecl const* iTagDecl,
@@ -2120,6 +2121,7 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
     )
     {
         mTheolizerHpp << "        THEOLIZER_INTERNAL_ADD("
+            << iTableName << ","
             << getQualifiedName(iTagDecl);
 
         auto found = iGlobalTable.find(iTagDecl);
@@ -2223,9 +2225,8 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
 //      ---<<< ソース生成 >>>---
 
         mTheolizerHpp <<
-            "namespace theolizer{namespace internal{\n"
-            "namespace global_table{\n"
-            "    " << aTableName << "::" << aTableName << "()\n"
+            "namespace theolizer{namespace internal{namespace{\n"
+            "    RegisterLocalVersions::RegisterLocalVersions()\n"
             "    {\n";
 
         // 派生Serializer(BaseTypeInfo<>の特殊化を枚挙する)
@@ -2266,6 +2267,7 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
 
             addAddFunc
             (
+                aTableName,
                 aGlobalTable,
                 aLastGlobalVersionNo,
                 aSerializer,
@@ -2282,6 +2284,7 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
 
             addAddFunc
             (
+                aTableName,
                 aGlobalTable,
                 aLastGlobalVersionNo,
                 aSerializeInfo.second.mTheolizerTarget,
@@ -2301,6 +2304,7 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
 
             addAddFunc
             (
+                aTableName,
                 aGlobalTable,
                 aLastGlobalVersionNo,
                 aClass,
@@ -2309,8 +2313,7 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
         }
         mTheolizerHpp <<
             "    }\n"
-            "}  // namespace global_table\n"
-            "}} // namespace theolizer\n";
+            "}}} // namespace theolizer\n";
 
         mTheolizerHpp <<
             "\n#endif//THEOLIZER_WRITE_CODE // ###### Global VersionNo. Table ######\n";
@@ -2407,7 +2410,7 @@ public:
         }
 
         // グローバル・バージョン番号テーブル有り－要定義
-        else if (mAstInterface.mDefineGVNT)
+        else //if (mAstInterface.mDefineGVNT)
         {
             addGlobalVersionNoTable(mAstInterface.mGlobalVersionNoTableDecl);
         }

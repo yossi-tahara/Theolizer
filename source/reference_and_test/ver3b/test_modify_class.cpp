@@ -69,6 +69,7 @@ template<class tSerializer>
 void saveModifyClass(tSerializer& iSerializer)
 {
     std::cout << "    saveModifyClass();\n";
+    (void)iSerializer;  // 警告回避
 
 //----------------------------------------------------------------------------
 //      変更テスト用クラス（名前対応）
@@ -122,6 +123,7 @@ void loadModifyClass(tSerializer& iSerializer)
 
     VersionEnum aVersionEnum=gVersionList[gDataIndex].mVersionEnum;
     std::cout << "    loadModifyClass(" << aVersionEnum << ");\n";
+    (void)iSerializer;  // 警告回避
 
 //----------------------------------------------------------------------------
 //      変更テスト用クラス（名前対応）

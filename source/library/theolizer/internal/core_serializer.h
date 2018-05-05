@@ -534,7 +534,8 @@ class BaseIntegrator;
     template<typename>                          friend struct EnumElement;                  \
                                                 friend class AdditionalInfo;                \
                                                 friend class AutoRestoreIsShared;           \
-    friend class BaseIntegrator
+    friend class BaseIntegrator;                                                            \
+    template<class>                             friend int registerMidSerializer()
 
 // theolizer名前空間のクラスにて使用する
 #define THEOLIZER_INTERNAL_FRIENDS                                                          \
