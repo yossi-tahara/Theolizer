@@ -548,6 +548,8 @@ enum EnumFlag
 //----------------------------------------------------------------------------
 
 class BaseSerializer;
+template<typename tType>
+TypeIndex registerTypeIndex();
 
 class BaseTypeInfo
 {
@@ -585,9 +587,10 @@ protected:
     // TypeInfoList<>::mTypeInfoListへの登録先インデックス
 protected:
     TypeIndex               mTypeIndex;
+    TypeIndex               mUniqueTypeIndex;   // UniqueClassが別定義されている時のみ有効
 
 public:
-    TypeIndex   getTypeIndex() { return mTypeIndex; }
+    TypeIndex   getTypeIndex()       const { return mTypeIndex; }
 
 //      ---<<< トップ・レベルの保存先関連 >>>---
 
@@ -636,7 +639,7 @@ public:
 
 //      ---<<< 手動型からの保存 >>>---
 
-    bool isManual() {return mIsManual;}
+    bool isManual() const {return mIsManual;}
 
 //      ---<<< 型チェック用 >>>---
 
@@ -652,6 +655,7 @@ public:
     {THEOLIZER_INTERNAL_ABORT("BaseTypeInfo::getUniqueName()");}
     virtual ElementsMapping getElementsMapping(unsigned iVersionNo)
     {THEOLIZER_INTERNAL_ABORT("BaseTypeInfo::getElementsMapping()");}
+    virtual bool isFullAuto() const {return false;}
 
     // 下記はClassTypeInfoとEnumTypeInfoのみ有効
     virtual ElementRange getElementRange(unsigned iVersionNo)
@@ -671,7 +675,7 @@ private:
 
 //      ---<<< メタ・シリアライズ用 >>>---
 
-    // enum型の時、iVersionNoは有効。その他はDon't care
+    // classとenum型の時、iVersionNoは有効。その他はDon't care
     virtual unsigned getTypeFlags(unsigned iVersionNo) {return 0;}
 
     virtual TypeKind getTypeKind()
@@ -919,6 +923,15 @@ private:
     {
 //std::cout << "ClassTypeInfo() : " << getCName() << "\n";
         mTypeIndex = TypeInfoList::getInstance().registerType(this);
+
+        typedef typename tClassType::Theolizer::DefineUniqueName::UniqueClass UniqueClass;
+        if (!std::is_same<TheolizerTarget, UniqueClass>::value)
+        {
+            mUniqueTypeIndex = registerTypeIndex<UniqueClass>();
+std::cout << "ClassTypeInfo()x: " << THEOLIZER_INTERNAL_TYPE_NAME(UniqueClass) << "\n";
+        }
+std::cout << "ClassTypeInfo() : " << getCName()
+          << " mTypeIndex=" << mTypeIndex << " mUniqueTypeIndex=" << mUniqueTypeIndex << "\n";
     }
 public:
     static ClassTypeInfo& getInstance()
@@ -967,6 +980,8 @@ public:
     {
         return tClassType::Theolizer::getElementsMapping(iVersionNo);
     }
+    // 完全自動型判定
+    bool isFullAuto() const {return tClassType::Theolizer::kIsFullAuto;}
 
     // C言語名返却(デバッグ用)
     char const* getCName() const

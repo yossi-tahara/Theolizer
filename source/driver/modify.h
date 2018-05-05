@@ -2067,6 +2067,11 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
         // add()関数を枚挙する
         for (auto stmt : compound_stmt->body())
         {
+            if (stmt->getStmtClass() == clang::Stmt::ExprWithCleanupsClass)
+            {
+                auto expr_with_cleanups = dyn_cast<clang::ExprWithCleanups>(stmt);
+                stmt = expr_with_cleanups->getSubExpr();
+            }
             ERROR(stmt->getStmtClass() != clang::Stmt::CXXMemberCallExprClass,
                 iConstructor, aGlobalTable);
 
@@ -2077,6 +2082,7 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
             // add()関数のパラメータを枚挙する
             clang::CXXMemberCallExpr* expr = cast<clang::CXXMemberCallExpr>(stmt);
             bool aIsFirst=true;
+            bool aIsSecond=false;
             for (auto arg : expr->arguments())
             {
                 // クラス/enum型取り出し
@@ -2089,6 +2095,14 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
                     QualType qt=cte->getTypeOperand(*gASTContext);
                     aType=qt->getAsTagDecl();
                     ERROR(!aType, iConstructor, aGlobalTable);
+                    // Indexパラメータをスキップする
+                    aIsSecond = true;
+            continue;
+                }
+
+                if (aIsSecond)
+                {
+                    aIsSecond=false;
             continue;
                 }
 
@@ -2164,9 +2178,24 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
         ASTANALYZE_OUTPUT(iGlobalVersionNoTableDecl->getQualifiedNameAsString());
         unsigned aLastGlobalVersionNo=0;
 
+        CXXRecordDecl const*    aRegisterLocalVersions=nullptr;
         std::string aTableName=iGlobalVersionNoTableDecl->getName();
         for (auto decl : iGlobalVersionNoTableDecl->decls())
         {
+            // RegisterLocalVersions取り出し
+            if ((aRegisterLocalVersions == nullptr) && (decl->getKind() == Decl::Typedef))
+            {
+                TypedefDecl* td = cast<TypedefDecl>(decl);
+                if (td->getName().equals("RegisterLocalVersions"))
+                {
+                    QualType qt=td->getUnderlyingType().getDesugaredType(*gASTContext);
+                    if (qt->getTypeClass() != Type::Record)
+        continue;
+                    aRegisterLocalVersions = qt->getAsCXXRecordDecl();
+                }
+        continue;
+            }
+
             if (decl->getKind() != Decl::Var)
         continue;
 
@@ -2183,11 +2212,12 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
             ASTANALYZE_OUTPUT("aLastGlobalVersionNo=", aLastGlobalVersionNo);
         break;
         }
+        ERROR(!aRegisterLocalVersions, iGlobalVersionNoTableDecl);
 
 //      ---<<< デフォルト・コンストラクタ取り出し >>>---
 
         clang::CXXConstructorDecl const* aConstructor=nullptr;
-        for (auto ctor : iGlobalVersionNoTableDecl->ctors())
+        for (auto ctor : aRegisterLocalVersions->ctors())
         {
             // デフォルト・コンストラクタのみ処理する
             if (ctor->isDefaultConstructor())

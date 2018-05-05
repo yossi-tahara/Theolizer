@@ -207,7 +207,7 @@ public:                                                                     \
     struct Theolizer                                                        \
     {                                                                       \
         friend struct dUniqueClass;                                         \
-        static const bool kIsFullAuto=false;                                \
+        static const bool kIsFullAuto=true;/*Versionを1固定にするため*/     \
         static const unsigned kLastVersionNo=1;                             \
         static const theolizer::internal::ElementsMapping kElementsMapping= \
             theolizer::internal::emOrder;                                   \

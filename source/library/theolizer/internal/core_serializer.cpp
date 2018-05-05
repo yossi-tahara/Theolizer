@@ -155,10 +155,19 @@ unsigned BaseSerializer::getLocalVersionNo(TypeIndex iTypeIndex)
 {
     unsigned aIndex = iTypeIndex.getIndex();
 
+    // 完全自動型なら常にVersion.1
+    if (mTypeInfoList[aIndex]->isFullAuto())
+return 1;
+
     // プリミティブなら派生シリアライザのバージョン番号
     if (mTypeInfoList[aIndex]->mTypeCategory == etcPrimitiveType)
     {
         aIndex=getSerializerTypeIndex().getIndex();
+    }
+    // mUniqueTypeIndexが有効なら、そのIndexを使用する
+    else if (mTypeInfoList[aIndex]->mUniqueTypeIndex.isValid())
+    {
+        aIndex=mTypeInfoList[aIndex]->mUniqueTypeIndex.getIndex();
     }
     return mGlobalVersionNoTable->getLocalVersionNo(mGlobalVersionNo, aIndex);
 }
