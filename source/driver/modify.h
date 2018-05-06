@@ -2051,10 +2051,16 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
         GlobalTable aGlobalTable;
 
         if (!iConstructor)
+        {
+            ASTANALYZE_OUTPUT("    No constructor.");
     return aGlobalTable;
+        }
 
         if (!iConstructor->hasBody())
+        {
+            ASTANALYZE_OUTPUT("    Constructor has no body.");
     return aGlobalTable;
+        }
 
         clang::Stmt* stmt0=iConstructor->getBody();
         ERROR(stmt0->getStmtClass() != clang::Stmt::CompoundStmtClass,
@@ -2062,7 +2068,10 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
         clang::CompoundStmt* compound_stmt = cast<clang::CompoundStmt>(stmt0);
 
         if (compound_stmt->body_empty())
+        {
+            ASTANALYZE_OUTPUT("    Constructor has no statment.");
     return aGlobalTable;
+        }
 
         // add()関数を枚挙する
         for (auto stmt : compound_stmt->body())
@@ -2229,6 +2238,7 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
 
 //      ---<<< 定義があるなら内容を取り出す >>>---
 
+        ASTANALYZE_OUTPUT("--- Old GVNT ---");
         GlobalTable aGlobalTable=getGlobalTableInfo(aConstructor);
         for (auto& data : aGlobalTable)
         {

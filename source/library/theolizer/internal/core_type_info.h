@@ -738,6 +738,9 @@ public:
 //          ポインタ型を型リストへ登録する
 // ***************************************************************************
 
+template<typename tType, class tEnable=void>
+struct GetTypeInfo;
+
 template<typename tPointerType>
 class PointerTypeInfo : public BaseTypeInfo
 {
@@ -1481,7 +1484,7 @@ TypeIndex getTypeIndex();
 
 //      ---<<< プライマリ >>>---
 
-template<typename tType, class tEnable=void>
+template<typename tType, class tEnable>
 struct GetTypeInfo
 {
     static_assert(Ignore<tType>::kFalse, "This is not supported type.");

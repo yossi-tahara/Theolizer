@@ -47,7 +47,7 @@
 
 #ifndef BUILD_ERROR_TEST
 
-  #if 1
+  #if 0
     #define ENABLE_BASIC_PROCESS_TEST
     #define ENABLE_CLASS_VARIATION_TEST
         #define ENABLE_SINGLE_TEST

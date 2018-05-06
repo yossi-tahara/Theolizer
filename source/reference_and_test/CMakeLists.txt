@@ -283,7 +283,7 @@ set(TARGET_NAME external_test_)
 #       基本的網羅テスト
 #-----------------------------------------------------------------------------
 
-if(TRUE)
+if(FALSE)
 
 set(FIRST_VERSION "")
 set(LAST_VERSION  "")
@@ -416,10 +416,10 @@ add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "" ${TEST_LAB
 
 if (MSVC)
     set(ERROR_MESSAGE " C2679")
-    set(ERROR_NUMBER 8)
+    set(ERROR_NUMBER 4)
 else()
     set(ERROR_MESSAGE " no match for ")
-    set(ERROR_NUMBER 4)
+    set(ERROR_NUMBER 2)
 endif()
 
 message(STATUS "start of add_build_and_test("
@@ -431,10 +431,10 @@ add_build_and_test(${TARGET_NAME} ${NOW_VERSION} "${PREV_VERSION}" "ERROR1" ${TE
 
 if (MSVC)
     set(ERROR_MESSAGE " C2679")
-    set(ERROR_NUMBER 8)
+    set(ERROR_NUMBER 4)
 else()
     set(ERROR_MESSAGE " no match for ")
-    set(ERROR_NUMBER 4)
+    set(ERROR_NUMBER 2)
 endif()
 
 message(STATUS "start of add_build_and_test("

@@ -942,7 +942,7 @@ struct KeepStepTest::TheolizerUserDefine<tTheolizerVersion, tNextVersion, 1>
 #ifdef ERROR2
         oNextVersion.mVersionUpDownTestPtr=nullptr;
         oNextVersion.mVersionManual=VersionManual();
-#endif // ERROR1
+#endif // ERROR2
 
         // Keep-step/Non-keep-stepのテスト
         // Keep-step(バージョン・ダウンにより値が変化する)

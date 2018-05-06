@@ -548,9 +548,9 @@ public:
 //----------------------------------------------------------------------------
 
 #define THEOLIZER_INTERNAL_ADDITIONAL_TYPE(dVersion, dName)                 \
-    constexpr static unsigned   kLastVersionNo=dVersion;                    \
-    constexpr static char       kName[]=dName;                              \
-    typedef void                AdditionalVersion
+    constexpr static unsigned    kLastVersionNo=dVersion;                   \
+    constexpr static char const* kName=dName;                               \
+    typedef void                 AdditionalVersion
 
 #define THEOLIZER_INTERNAL_REGISTER_SERIALIZER(dSerializer, dVersion, dName)\
     struct dSerializer                                                      \
@@ -648,6 +648,16 @@ public:
         return mVersionNoList[iGlobalVersionNo-1].at(iIndex);
     }
 };
+
+//----------------------------------------------------------------------------
+//      ユーザ定義のグローバル・バージョン番号テーブルへのポインタを取込む
+//          名前空間は、theolizer::internal::匿名::
+//----------------------------------------------------------------------------
+
+namespace
+{
+    extern GlobalVersionNoTableBase const*const sGlobalVersionNoTable;
+}   // namespace
 
 //----------------------------------------------------------------------------
 //      最新版のグローバル・バージョン番号
