@@ -566,7 +566,7 @@ void JsonMidISerializer::flush()
 {
     static const std::string    sSkipChars(" \t\n");
 
-    char ch;
+    char ch = 0;    // valgrindエラー回避
     while (mIStream.readsome(&ch, 1))
     {
         if (sSkipChars.find(ch) == std::string::npos)

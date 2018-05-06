@@ -342,11 +342,13 @@ namespace theolizer
     class RegisterLocalVersions                                             \
     {                                                                       \
         static RegisterLocalVersions& mInstance;                            \
+        static void use(RegisterLocalVersions&) {}                          \
         RegisterLocalVersions();                                            \
     public:                                                                 \
         static RegisterLocalVersions& getInstance()                         \
         {                                                                   \
             static RegisterLocalVersions instance;                          \
+            use(mInstance);                                                 \
             return instance;                                                \
         }                                                                   \
         template<typename... tLocalVersionNoList>                           \
@@ -358,7 +360,7 @@ namespace theolizer
     namespace global_table{                                                 \
     class dName final : public internal::GlobalVersionNoTable<dLastGlobalVersionNo>\
     {                                                                       \
-        typedef RegisterLocalVersions   RegisterLocalVersions;              \
+        typedef RegisterLocalVersions   RegisterLocalVersionsType;          \
         static const unsigned kLastGlobalVersionNo=dLastGlobalVersionNo;    \
     public:                                                                 \
         static GlobalVersionNoTable& getInstance()                          \

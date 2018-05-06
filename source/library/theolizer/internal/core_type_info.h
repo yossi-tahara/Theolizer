@@ -316,13 +316,13 @@ public:
     // 文字列型からの入力
     friend std::istream& operator>>(std::istream& iIStream, TypeIndex& iTypeIndex)
     {
-        unsigned aIndex;
+        unsigned aIndex = 0;        // valgrindエラー回避
         iIStream >> aIndex;
         if (iIStream.get() != 'e')
         {
             THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
         }
-        unsigned aAdditional;
+        unsigned aAdditional = 0;   // valgrindエラー回避
         iIStream >> aAdditional;
         if (TypeIndexRadix <= aAdditional)
         {
@@ -1609,7 +1609,7 @@ private:
         typedef typename GetTypeInfo<RemovedCVType>::Type   TypeInfo;
         auto& aBaseTypeInfo=TypeInfo::getInstance();
 
-#if 1
+#if 0
 std::cout << "RegisterType<" << THEOLIZER_INTERNAL_TYPE_NAME(tSerializer) << ",\n"
           << "             " << THEOLIZER_INTERNAL_TYPE_NAME(tType) << ",\n"
           << "             " << THEOLIZER_INTERNAL_TYPE_NAME(TypeInfo) << ",\n"
@@ -1621,7 +1621,7 @@ std::cout << "    mTypeIndex=" << aBaseTypeInfo.getTypeIndex() << "\n";
         // 保存先があるTopLevelシリアライザなら、TypeInfoに保存先を登録する
         if (tSerializer::kHasDestination)
         {
-std::cout << "    addDestination(" << tSerializer::getDestinations() << ")\n";
+//std::cout << "    addDestination(" << tSerializer::getDestinations() << ")\n";
             TypeIndex aTypeIndex = aBaseTypeInfo.getTypeIndex();
             unsigned  aIndex = aTypeIndex.getIndex();
             TypeInfoList& aTypeInfoList = TypeInfoList::getInstance();
@@ -1631,19 +1631,19 @@ std::cout << "    addDestination(" << tSerializer::getDestinations() << ")\n";
             {
                 aTypeInfoList[aIndex]->addDestination(tSerializer::getDestinations());
                 aTypeInfoList[aIndex]->addPointerDestination(tSerializer::getDestinations());
-std::cout << "    " << aTypeInfoList[aIndex]->getCName() << ".addDestination()/addPointerDestination()\n";
+//std::cout << "    " << aTypeInfoList[aIndex]->getCName() << ".addDestination()/addPointerDestination()\n";
             }
 
             // 配列ならば、基本型をトップ・レベル扱いとする
             else if (aBaseTypeInfo.mTypeCategory == etcArrayType)
             {
                 aTypeInfoList[aIndex]->addDestination(tSerializer::getDestinations());
-std::cout << "    " << aTypeInfoList[aIndex]->getCName() << ".addDestination()\n";
+//std::cout << "    " << aTypeInfoList[aIndex]->getCName() << ".addDestination()\n";
             }
 
             else
             {
-std::cout << "    aBaseTypeInfo.addDestination()\n";
+//std::cout << "    aBaseTypeInfo.addDestination()\n";
                 aBaseTypeInfo.addDestination(tSerializer::getDestinations());
             }
         }

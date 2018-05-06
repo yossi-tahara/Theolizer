@@ -43,7 +43,7 @@ if(UNIX)
     message(STATUS "RETUEN_CODE   =${RETUEN_CODE}")
     if(${RETUEN_CODE} EQUAL 0) 
         set(VALGRIND "valgrind")
-        set(VALGRIND_PARAM "-q" "--leak-check=full")
+        set(VALGRIND_PARAM "-q" "--leak-check=full" "--track-origins=yes")
     endif()
 endif()
 

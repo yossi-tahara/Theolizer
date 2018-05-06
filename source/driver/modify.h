@@ -2195,7 +2195,7 @@ ASTANALYZE_OUTPUT("    aIsTheolizerHpp=", aIsTheolizerHpp,
             if ((aRegisterLocalVersions == nullptr) && (decl->getKind() == Decl::Typedef))
             {
                 TypedefDecl* td = cast<TypedefDecl>(decl);
-                if (td->getName().equals("RegisterLocalVersions"))
+                if (td->getName().equals("RegisterLocalVersionsType"))
                 {
                     QualType qt=td->getUnderlyingType().getDesugaredType(*gASTContext);
                     if (qt->getTypeClass() != Type::Record)
