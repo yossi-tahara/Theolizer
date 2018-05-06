@@ -288,18 +288,7 @@ private:
         // 解析しない
         if (aMacroName.equals("THEOLIZER_NO_ANALYZE"))
         {
-            mAstInterface.mDefineGVNT=false;
             mAstInterface.mNotParse=true;
-        }
-
-        // グローバル・バージョン番号テーブルを定義する
-        else if ( !mAstInterface.mDefineGVNT
-               && !mAstInterface.mNotParse
-               && aMacroName.equals("THEOLIZER_GLOBAL_VERSION_TABLE"))
-        {
-            mAstInterface.mDefineGVNT = true;
-            TIME_OUTPUT("mDefineGVNT = true; Elapsed time=,",
-                        gProcessingTime.GetmSec(false), ", mSec");
         }
     }
 
@@ -853,7 +842,7 @@ return true;
                 mRegisterToBaseClass = iClassTemplateDecl;
             }
 
-            else if (iClassTemplateDecl->getName().equals("MidSerializer"))
+            else if (iClassTemplateDecl->getName().equals("SerializerVersion"))
             {
                 mAstInterface.mMidSerializerDecl = iClassTemplateDecl;
             }

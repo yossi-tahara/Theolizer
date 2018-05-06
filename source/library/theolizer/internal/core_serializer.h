@@ -535,7 +535,7 @@ class BaseIntegrator;
                                                 friend class AdditionalInfo;                \
                                                 friend class AutoRestoreIsShared;           \
     friend class BaseIntegrator;                                                            \
-    template<class>                             friend int registerMidSerializer()
+    template<class>                             friend int registerSerializerVersion()
 
 // theolizer名前空間のクラスにて使用する
 #define THEOLIZER_INTERNAL_FRIENDS                                                          \
@@ -547,7 +547,7 @@ class BaseIntegrator;
         friend void internal::process(tSerializer&,tType&,char const*,char const*,size_t);  \
     template<class>                             friend class internal::TypeFunctions;       \
     template<class, class, class, bool, bool>   friend class internal::RegisterType;        \
-    template<class>                             friend int internal::registerMidSerializer();\
+    template<class>                             friend int internal::registerSerializerVersion();\
     friend class internal::BaseIntegrator
 
 //############################################################################

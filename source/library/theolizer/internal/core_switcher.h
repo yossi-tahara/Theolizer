@@ -1582,26 +1582,30 @@ struct Switcher
 //      派生Serializer抽出(ドライバー用)
 //----------------------------------------------------------------------------
 
+// このクラス・テンプレート名はドライバにて使っているので要注意
 template<class tMidSerializer>
-struct MidSerializer
+struct SerializerVersion
 {
-    static MidSerializer& getInstance()
+    static SerializerVersion& getInstance()
     {
-        static MidSerializer    instance;
+        static SerializerVersion    instance;
         return instance;
     }
 };
 
 template<class tSerializer>
-int registerMidSerializer()
+int registerSerializerVersion()
 {
-    theolizer::internal::MidSerializer<typename tSerializer::MidSerializer::SerializerVersion>::getInstance();
+    SerializerVersion
+    <
+        typename tSerializer::MidSerializer::SerializerVersion
+    >::getInstance();
     return 0;
 }
 
-#define THEOLIZER_INTERNAL_REGISTER_MID_SERIALIZER(dSerializer)             \
+#define THEOLIZER_INTERNAL_REGISTER_SERIALIZER_VERSION(dSerializer)         \
     static int k##dSerializer THEOLIZER_INTERNAL_UNUSED=                    \
-        theolizer::internal::registerMidSerializer<dSerializer<>>()
+        theolizer::internal::registerSerializerVersion<dSerializer<>>()
 
 //----------------------------------------------------------------------------
 //      トップ・レベル／非トップ・レベル分岐と処理

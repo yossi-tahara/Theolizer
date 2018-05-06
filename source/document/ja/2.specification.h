@@ -496,7 +496,7 @@ downVersion後upVersionで元に戻らないような修正を行うことは多
 <b>型X を一切使っていない場合</b><br>
 
 この場合は原則として削除可能です。ただし、グローバル・バージョン番号テーブルに 型X が登録されています。その自動削除には対応していませんので、手で削除する必要があります。<br>
-THEOLIZER_GLOBAL_VERSION_TABLEマクロを定義（@ref HowToMakeGlobalVersionNoTable22 ）したコンパイル単位の *.theolizer.hpp の最後にありますので、その中の下記行を削除して下さい。
+全てのコンパイル単位の *.theolizer.hpp の最後にありますので、その中の下記行を削除して下さい。
 
 @code
 THEOLIZER_INTERNAL_ADD(型X, ...);

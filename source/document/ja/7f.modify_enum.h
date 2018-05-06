@@ -176,7 +176,10 @@ THEOLIZER_DEFINE_GLOBAL_VERSION_TABLE(テーブル名, グローバル・バー�
 @until THEOLIZER_DEFINE_GLOBAL_VERSION_TABLE
 
 <br>
-@subsection HowToMakeGlobalVersionNoTable22 2-2.グローバル・バージョン番号テーブル実体定義
+
+<div style="padding: 10px; margin-bottom: 10px; border: 1px solid #333333; border-radius: 10px; background-color: #d0d0d0;">
+<b>2018/05/06 仕様変更しました。以下の操作は不要となりました。</b>
+2-2.グローバル・バージョン番号テーブル実体定義
 
 グローバル・バージョン番号テーブル実体は通常のグローバル変数(配列)として定義されますので、どれか1つのコンパイル単位でのみ実体定義します。
 
@@ -193,6 +196,7 @@ THEOLIZER_DEFINE_GLOBAL_VERSION_TABLE(テーブル名, グローバル・バー�
 @dontinclude ver1c/main.cpp
 @skip theolizerライブラリ
 @until main.cpp.theolizer.hpp
+</div>
 
 <br>
 //############################################################################

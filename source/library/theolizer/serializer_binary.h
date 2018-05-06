@@ -633,7 +633,7 @@ public:
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 // MidSerializer登録(トライバ処理用)
-THEOLIZER_INTERNAL_REGISTER_MID_SERIALIZER(BinaryOSerializer);
+THEOLIZER_INTERNAL_REGISTER_SERIALIZER_VERSION(BinaryOSerializer);
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
@@ -726,7 +726,7 @@ public:
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 // MidSerializer登録(トライバ処理用)
-THEOLIZER_INTERNAL_REGISTER_MID_SERIALIZER(BinaryISerializer);
+THEOLIZER_INTERNAL_REGISTER_SERIALIZER_VERSION(BinaryISerializer);
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 //############################################################################

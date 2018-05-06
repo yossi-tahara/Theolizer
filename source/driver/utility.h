@@ -1644,7 +1644,6 @@ struct AstInterface
 //          #define～#undefの間にあるキーを見つけるようにするため。
 
     bool    mNotParse;      // 解析処理を行わない時true THEOLIZER_NO_ANALYZE
-    bool    mDefineGVNT;    // グローバル・バージョン番号テーブル定義する時true
 
     struct UpdateInfo
     {
@@ -1699,7 +1698,6 @@ struct AstInterface
 
     AstInterface() : 
         mNotParse(false),
-        mDefineGVNT(false),
         mDoSaveTheolizerHpp(false),
         mGlobalVersionNoTableDecl(nullptr),
         mMidSerializerDecl(nullptr)

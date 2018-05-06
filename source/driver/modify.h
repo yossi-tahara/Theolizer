@@ -2449,8 +2449,8 @@ public:
             }
         }
 
-        // グローバル・バージョン番号テーブル有り－要定義
-        else //if (mAstInterface.mDefineGVNT)
+        // グローバル・バージョン番号テーブル自動生成
+        else
         {
             addGlobalVersionNoTable(mAstInterface.mGlobalVersionNoTableDecl);
         }
