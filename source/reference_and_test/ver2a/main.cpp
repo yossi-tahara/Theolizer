@@ -57,12 +57,6 @@
 // プロジェクト・ヘッダ
 #include "common.h"
 
-// グローバル・バージョン番号テーブル生成
-#define THEOLIZER_GLOBAL_VERSION_TABLE
-#include "test_modify_enum.h"
-#include "test_modify_class.h"
-#include "test_modify_complex.h"
-
 // 自動生成ソース
 #include "main.cpp.theolizer.hpp"
 
