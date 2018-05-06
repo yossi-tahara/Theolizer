@@ -420,19 +420,17 @@ void BinaryMidOSerializer::saveCharString(std::string const& iString)
 //      文字列をエンコードして保存
 //----------------------------------------------------------------------------
 
-template
-<
-    typename tString
->
+template<typename tString>
 void BinaryMidOSerializer::encodeString(tString const& iString)
 {
+    // UTF-16へ変換
+    std::u16string  temp = Converter<char16_t, typename tString::value_type>::conv(iString);
+    std::size_t size=temp.size()*sizeof(char16_t);
+
     // Tag
-    unsigned aDataSize=sizeof(char16_t);
-    std::size_t size=iString.size()*aDataSize;
     saveUnsigned(size, BinaryTag::getStringTag<char16_t>());
 
     // 中身
-    std::u16string  temp = Converter<char16_t, typename tString::value_type>::conv(iString);
 #if IS_BIG_ENDIAN == 1
     for (auto data : temp)
     {

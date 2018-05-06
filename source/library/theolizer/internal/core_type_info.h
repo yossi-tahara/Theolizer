@@ -308,21 +308,28 @@ public:
     // 文字列型への出力
     friend std::ostream& operator<<(std::ostream& iOStream, TypeIndex iTypeIndex)
     {
-        iOStream << (iTypeIndex.mTypeIndexImpl/TypeIndexRadix) << "e"
-                 << (iTypeIndex.mTypeIndexImpl&(~TypeIndexMask));
+        if (iTypeIndex.isValid())
+        {
+            iOStream << (iTypeIndex.mTypeIndexImpl/TypeIndexRadix) << "e"
+                     << (iTypeIndex.mTypeIndexImpl&(~TypeIndexMask));
+        }
+        else
+        {
+            iOStream << "[Invalid TypeIndex]";
+        }
         return iOStream;
     }
 
     // 文字列型からの入力
     friend std::istream& operator>>(std::istream& iIStream, TypeIndex& iTypeIndex)
     {
-        unsigned aIndex = 0;        // valgrindエラー回避
+        unsigned aIndex = 0;        // valgrindエラー回避(この初期化により消えることを確認した)
         iIStream >> aIndex;
         if (iIStream.get() != 'e')
         {
             THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
         }
-        unsigned aAdditional = 0;   // valgrindエラー回避
+        unsigned aAdditional = 0;   // valgrindエラー回避(この初期化により消えることを確認した)
         iIStream >> aAdditional;
         if (TypeIndexRadix <= aAdditional)
         {
@@ -931,10 +938,7 @@ private:
         if (!std::is_same<TheolizerTarget, UniqueClass>::value)
         {
             mUniqueTypeIndex = registerTypeIndex<UniqueClass>();
-std::cout << "ClassTypeInfo()x: " << THEOLIZER_INTERNAL_TYPE_NAME(UniqueClass) << "\n";
         }
-std::cout << "ClassTypeInfo() : " << getCName()
-          << " mTypeIndex=" << mTypeIndex << " mUniqueTypeIndex=" << mUniqueTypeIndex << "\n";
     }
 public:
     static ClassTypeInfo& getInstance()
