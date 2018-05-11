@@ -597,7 +597,7 @@ protected:
     }
 
     // 派生シリアライザのTypeIndex
-    virtual TypeIndex getSerializerTypeIndex() const = 0;
+    TypeIndex                               mSerializerVersionTypeIndex;
 
 public:
     BaseSerializer
@@ -609,7 +609,8 @@ public:
         CheckMode iCheckMode,
         bool iIsSaver,
         std::ostream* iOStream,
-        bool mNoThrowException
+        bool mNoThrowException,
+        TypeIndex iSerializerVersionTypeIndex
     );
     virtual ~BaseSerializer() noexcept;
 

@@ -246,7 +246,6 @@ inline bool hasPropertyBinary(Property iProperty, bool iIsSaver)
     return ret;
 }
 
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
 //############################################################################
 //      Binary Serializer実装部
 //          プリミティブの注意事項
@@ -260,10 +259,8 @@ inline bool hasPropertyBinary(Property iProperty, bool iIsSaver)
 //############################################################################
 
 // ***************************************************************************
-/*!
-@brief      保存用中間BinarySerializer
-@details    主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
-*/
+//      保存用中間BinarySerializer
+//          主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 // ***************************************************************************
 
 class THEOLIZER_INTERNAL_DLL BinaryMidOSerializer : public BaseSerializer
@@ -284,12 +281,6 @@ private:
 protected:
     static std::ios_base::openmode  kOpenMode;
 
-    // 派生シリアライザのTypeIndex
-    TypeIndex getSerializerTypeIndex() const
-    {
-        return AdditionalTypeInfo<BinarySerializerVersion>::getInstance().getTypeIndex();
-    }
-
     // コンストラクタ
     BinaryMidOSerializer
     (
@@ -299,7 +290,8 @@ protected:
         unsigned iGlobalVersionNo,
         unsigned iLastGlobalVersionNo,
         CheckMode iCheckMode,
-        bool iNoThrowException
+        bool iNoThrowException,
+        TypeIndex iSerializerVersionTypeIndex
     );
 
 //----------------------------------------------------------------------------
@@ -389,10 +381,8 @@ private:
 };
 
 // ***************************************************************************
-/*!
-@brief      回復用中間BinarySerializer
-@details    主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
-*/
+//      回復用中間BinarySerializer
+//          主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 // ***************************************************************************
 
 class THEOLIZER_INTERNAL_DLL BinaryMidISerializer : public BaseSerializer
@@ -415,12 +405,6 @@ private:
 protected:
     static std::ios_base::openmode  kOpenMode;
 
-    // 派生シリアライザのTypeIndex
-    TypeIndex getSerializerTypeIndex() const
-    {
-        return AdditionalTypeInfo<BinarySerializerVersion>::getInstance().getTypeIndex();
-    }
-
     // コンストラクタ
     BinaryMidISerializer
     (
@@ -429,7 +413,8 @@ protected:
         GlobalVersionNoTableBase const*const iGlobalVersionNoTable,
         unsigned iLastGlobalVersionNo,
         std::ostream* iOStream,
-        bool iNoThrowException
+        bool iNoThrowException,
+        TypeIndex iSerializerVersionTypeIndex
     );
 
 //----------------------------------------------------------------------------
@@ -536,6 +521,14 @@ private:
     uint8_t readByte();
 };
 
+// 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
+//  cpp側で登録するとdllの時、多重登録されてしまう。
+inline TypeIndex registerBinarySerializerVersion()
+{
+    return GetTypeInfo<BinarySerializerVersion>::Type::getInstance().getTypeIndex();
+}
+
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
 }   // namespace internal
 
 //############################################################################
@@ -595,7 +588,8 @@ public:
             iGlobalVersionNo,
             kLastGlobalVersionNo,
             iCheckMode,
-            iNoThrowException
+            iNoThrowException,
+            internal::registerBinarySerializerVersion()
         )
     { }
 
@@ -613,9 +607,10 @@ public:
             kLastGlobalVersionNo,
             kLastGlobalVersionNo,
             iCheckMode,
-            iNoThrowException
+            iNoThrowException,
+            internal::registerBinarySerializerVersion()
         )
-    { }
+    {}
 
     //! BinaryOSerializerのプロパティ返却（@ref Property 参照）
     static bool hasProperty(Property iProperty)
@@ -679,7 +674,8 @@ public:
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
             nullptr,
-            iNoThrowException
+            iNoThrowException,
+            internal::registerBinarySerializerVersion()
         )
     { }
 
@@ -718,7 +714,8 @@ public:
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
             &iOStream,
-            iNoThrowException
+            iNoThrowException,
+            internal::registerBinarySerializerVersion()
         )
     { }
 #endif // THEOLIZER_INTERNAL_DOXYGEN

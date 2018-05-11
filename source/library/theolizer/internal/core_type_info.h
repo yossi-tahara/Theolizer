@@ -1430,7 +1430,7 @@ public:
 // ***************************************************************************
 
 template<typename tAdditionalClass>
-class THEOLIZER_INTERNAL_DLL AdditionalTypeInfo : public BaseTypeInfo
+class AdditionalTypeInfo : public BaseTypeInfo
 {
 private:
     // コンストラクタ／デストラクタ

@@ -283,7 +283,7 @@ set(TARGET_NAME external_test_)
 #       基本的網羅テスト
 #-----------------------------------------------------------------------------
 
-if(FALSE)
+if(TRUE)
 
 set(FIRST_VERSION "")
 set(LAST_VERSION  "")

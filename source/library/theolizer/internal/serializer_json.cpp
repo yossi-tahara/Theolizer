@@ -81,7 +81,8 @@ JsonMidOSerializer::JsonMidOSerializer
     unsigned iLastGlobalVersionNo,
     CheckMode iCheckMode,
     bool iNoPrettyPrint,
-    bool mNoThrowException
+    bool mNoThrowException,
+    TypeIndex iSerializerVersionTypeIndex
 ) : BaseSerializer
     (
         std::move(iDestinations),
@@ -91,15 +92,13 @@ JsonMidOSerializer::JsonMidOSerializer
         iCheckMode,
         true,
         nullptr,
-        mNoThrowException
+        mNoThrowException,
+        iSerializerVersionTypeIndex
     ),
     mOStream(iOStream),
     mNoPrettyPrint(iNoPrettyPrint),
     mWriteComma(false)
 {
-    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
-    registerTypeIndex<JsonSerializerVersion>();
-
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 
@@ -427,7 +426,8 @@ JsonMidISerializer::JsonMidISerializer
     GlobalVersionNoTableBase const*const iGlobalVersionNoTable,
     unsigned iLastGlobalVersionNo,
     std::ostream* iOStream,
-    bool mNoThrowException
+    bool mNoThrowException,
+    TypeIndex iSerializerVersionTypeIndex
 ) : BaseSerializer
     (
         std::move(iDestinations),
@@ -437,15 +437,13 @@ JsonMidISerializer::JsonMidISerializer
         CheckMode::NoTypeCheck,
         false,
         iOStream,
-        mNoThrowException
+        mNoThrowException,
+        iSerializerVersionTypeIndex
     ),
     mIStream(iIStream),
     mReadComma(false),
     mTerminated(false)
 {
-    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
-    registerTypeIndex<JsonSerializerVersion>();
-
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 

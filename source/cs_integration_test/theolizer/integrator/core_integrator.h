@@ -231,7 +231,7 @@ class BaseIntegrator
     };
 
     // 関数クラス・リスト
-    typedef std::map<std::size_t, std::unique_ptr<FuncClassHolderBase> > FuncClassList;
+    typedef std::map<unsigned, std::unique_ptr<FuncClassHolderBase> > FuncClassList;
     static FuncClassList& getFuncClassList()
     {
         static FuncClassList    sFuncClassList;
@@ -247,14 +247,14 @@ public:
     {
         // ここで渡すシリアライザが保存先指定を持っている必要がある!!
         RegisterType<BaseSerializer, tFuncClass, tTheolizerVersion>::getInstance();
-        std::size_t aTypeIndex = ClassTypeInfo<tFuncClass>::getInstance().mTypeIndex;
+        TypeIndex aTypeIndex = ClassTypeInfo<tFuncClass>::getInstance().mTypeIndex;
 
 DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
     THEOLIZER_INTERNAL_TYPE_NAME(tFuncClass), ">()");
 
         getFuncClassList().emplace
         (
-            aTypeIndex,
+            aTypeIndex.getIndex(),
             std::unique_ptr<FuncClassHolderBase>(new FuncClassHolder<tFuncClass>)
         );
     }
@@ -274,10 +274,10 @@ DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
         TypeIndexList*  aTypeIndexList = nullptr;
         BaseSerializer::AutoRestoreLoadProcess
             aAutoRestoreLoadProcess(iISerializer, aTypeIndexList);
-        std::size_t aTypeIndex = (*aTypeIndexList)[0];      // 先頭のみ使用する(１つしかないので)
+        TypeIndex aTypeIndex = (*aTypeIndexList)[0];        // 先頭のみ使用する(１つしかないので)
 
         // 受信→関数呼び出し→送信処理
-        getFuncClassList()[aTypeIndex]->processFunction
+        getFuncClassList()[aTypeIndex.getIndex()]->processFunction
         (
             iISerializer,
             iOSerializer,

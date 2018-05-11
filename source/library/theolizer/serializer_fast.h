@@ -98,7 +98,6 @@ inline bool hasPropertyFast(Property iProperty, bool iIsSaver)
     return ret;
 }
 
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
 //############################################################################
 //      Fast Serializer実装部
 //
@@ -106,10 +105,8 @@ inline bool hasPropertyFast(Property iProperty, bool iIsSaver)
 //############################################################################
 
 // ***************************************************************************
-/*!
-@brief      保存用中間FastSerializer
-@details    主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
-*/
+//      保存用中間FastSerializer
+//          主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 // ***************************************************************************
 
 class THEOLIZER_INTERNAL_DLL FastMidOSerializer : public BaseSerializer
@@ -130,12 +127,6 @@ private:
 protected:
     static std::ios_base::openmode  kOpenMode;
 
-    // 派生シリアライザのTypeIndex
-    TypeIndex getSerializerTypeIndex() const
-    {
-        return AdditionalTypeInfo<FastSerializerVersion>::getInstance().getTypeIndex();
-    }
-
     // コンストラクタ
     FastMidOSerializer
     (
@@ -143,7 +134,8 @@ protected:
         Destinations const& iDestinations,
         GlobalVersionNoTableBase const*const iGlobalVersionNoTable,
         unsigned iLastGlobalVersionNo,
-        bool iNoThrowException
+        bool iNoThrowException,
+        TypeIndex iSerializerVersionTypeIndex
     );
 
 //----------------------------------------------------------------------------
@@ -215,10 +207,8 @@ private:
 };
 
 // ***************************************************************************
-/*!
-@brief      回復用中間FastSerializer
-@details    主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
-*/
+//      回復用中間FastSerializer
+//          主な処理はここで行うが、インスタンスを作れないよう抽象クラスとする。
 // ***************************************************************************
 
 class THEOLIZER_INTERNAL_DLL FastMidISerializer : protected BaseSerializer
@@ -239,12 +229,6 @@ private:
 protected:
     static std::ios_base::openmode  kOpenMode;
 
-    // 派生シリアライザのTypeIndex
-    TypeIndex getSerializerTypeIndex() const
-    {
-        return AdditionalTypeInfo<FastSerializerVersion>::getInstance().getTypeIndex();
-    }
-
     // コンストラクタ
     FastMidISerializer
     (
@@ -252,7 +236,8 @@ protected:
         Destinations const& iDestinations,
         GlobalVersionNoTableBase const*const iGlobalVersionNoTable,
         unsigned iLastGlobalVersionNo,
-        bool iNoThrowException
+        bool iNoThrowException,
+        TypeIndex iSerializerVersionTypeIndex
     );
 
 //----------------------------------------------------------------------------
@@ -337,6 +322,16 @@ private:
     void loadString(std::string& iString);
 };
 
+// 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
+//  cpp側で登録するとdllの時、多重登録されてしまう。
+inline TypeIndex registerFastSerializerVersion()
+{
+    return GetTypeInfo<FastSerializerVersion>::Type::getInstance().getTypeIndex();
+}
+
+#endif  // THEOLIZER_INTERNAL_DOXYGEN
+}   // namespace internal
+
 //############################################################################
 //      Fast Serializer I/Fクラス
 //          保存先をテンプレートで指定する。
@@ -347,11 +342,6 @@ private:
 //          使用した保存先全てに対して、コードが複製される。
 //          それを防ぐことが目的である。
 //############################################################################
-
-#ifndef THEOLIZER_INTERNAL_DOXYGEN
-
-#endif  // THEOLIZER_INTERNAL_DOXYGEN
-}   // namespace internal
 
 // ***************************************************************************
 //!     保存用FastSerializer
@@ -392,7 +382,8 @@ public:
             getDestinations(),
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
-            iNoThrowException
+            iNoThrowException,
+            internal::registerFastSerializerVersion()
         )
     { }
 
@@ -450,7 +441,8 @@ public:
             getDestinations(),
             internal::sGlobalVersionNoTable,
             kLastGlobalVersionNo,
-            iNoThrowException
+            iNoThrowException,
+            internal::registerFastSerializerVersion()
         )
     { }
 

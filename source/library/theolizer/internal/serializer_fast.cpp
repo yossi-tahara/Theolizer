@@ -79,7 +79,8 @@ FastMidOSerializer::FastMidOSerializer
     Destinations const& iDestinations,
     GlobalVersionNoTableBase const*const iGlobalVersionNoTable,
     unsigned iLastGlobalVersionNo,
-    bool mNoThrowException
+    bool mNoThrowException,
+    TypeIndex iSerializerVersionTypeIndex
 ) : BaseSerializer
     (
         iDestinations,
@@ -89,13 +90,11 @@ FastMidOSerializer::FastMidOSerializer
         CheckMode::InMemory,
         true,
         nullptr,
-        mNoThrowException
+        mNoThrowException,
+        iSerializerVersionTypeIndex
     ),
     mOStream(iOStream)
 {
-    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
-    registerTypeIndex<FastSerializerVersion>();
-
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 
@@ -207,7 +206,8 @@ FastMidISerializer::FastMidISerializer
     Destinations const& iDestinations,
     GlobalVersionNoTableBase const*const iGlobalVersionNoTable,
     unsigned iLastGlobalVersionNo,
-    bool mNoThrowException
+    bool mNoThrowException,
+    TypeIndex iSerializerVersionTypeIndex
 ) : BaseSerializer
     (
         iDestinations,
@@ -217,13 +217,11 @@ FastMidISerializer::FastMidISerializer
         CheckMode::InMemory,
         false,
         nullptr,
-        mNoThrowException
+        mNoThrowException,
+        iSerializerVersionTypeIndex
     ),
     mIStream(iIStream)
 {
-    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
-    registerTypeIndex<FastSerializerVersion>();
-
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 

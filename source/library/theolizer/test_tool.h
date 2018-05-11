@@ -198,13 +198,23 @@ internal::ScopeExit<tReleaser> makeScopeExit(tReleaser &&iReleaser) noexcept
 
 //----------------------------------------------------------------------------
 //      本体
+//          AutoRestore<bool>を派生するとAutoRestore<bool>が
+//          THEOLIZER_INTERNAL_DLLになるので多重定義が発生する
 //----------------------------------------------------------------------------
 
-struct THEOLIZER_INTERNAL_DLL DisplayPass : public internal::AutoRestore<bool>
+class THEOLIZER_INTERNAL_DLL DisplayPass
 {
+    bool    mBackup;
+    bool&   mTarget;
+
+public:
     //! @ingroup Test
     //! デフォルト・コンストラクタ
     explicit DisplayPass();
+
+    //! @ingroup Test
+    //! デストラクタ
+    ~DisplayPass();
 
     //! @ingroup Test
     //! PASS結果表示の状態を返却する

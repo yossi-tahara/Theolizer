@@ -80,7 +80,8 @@ BinaryMidOSerializer::BinaryMidOSerializer
     unsigned iGlobalVersionNo,
     unsigned iLastGlobalVersionNo,
     CheckMode iCheckMode,
-    bool mNoThrowException
+    bool mNoThrowException,
+    TypeIndex iSerializerVersionTypeIndex
 ) : BaseSerializer
     (
         std::move(iDestinations),
@@ -90,13 +91,11 @@ BinaryMidOSerializer::BinaryMidOSerializer
         iCheckMode,
         true,
         nullptr,
-        mNoThrowException
+        mNoThrowException,
+        iSerializerVersionTypeIndex
     ),
     mOStream(iOStream)
 {
-    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
-    registerTypeIndex<BinarySerializerVersion>();
-
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 
@@ -484,7 +483,8 @@ BinaryMidISerializer::BinaryMidISerializer
     GlobalVersionNoTableBase const*const iGlobalVersionNoTable,
     unsigned iLastGlobalVersionNo,
     std::ostream* iOStream,
-    bool mNoThrowException
+    bool mNoThrowException,
+    TypeIndex iSerializerVersionTypeIndex
 ) : BaseSerializer
     (
         std::move(iDestinations),
@@ -494,14 +494,12 @@ BinaryMidISerializer::BinaryMidISerializer
         CheckMode::NoTypeCheck,
         false,
         iOStream,
-        mNoThrowException
+        mNoThrowException,
+        iSerializerVersionTypeIndex
     ),
     mIStream(iIStream),
     mTerminated(false)
 {
-    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
-    registerTypeIndex<BinarySerializerVersion>();
-
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 

@@ -179,7 +179,8 @@ XmlMidOSerializer::XmlMidOSerializer
     unsigned iGlobalVersionNo,
     unsigned iLastGlobalVersionNo,
     bool iNoPrettyPrint,
-    bool mNoThrowException
+    bool mNoThrowException,
+    TypeIndex iSerializerVersionTypeIndex
 ) : BaseSerializer
     (
         std::move(iDestinations),
@@ -189,15 +190,13 @@ XmlMidOSerializer::XmlMidOSerializer
         CheckMode::TypeCheckInData,
         true,
         nullptr,
-        mNoThrowException
+        mNoThrowException,
+        iSerializerVersionTypeIndex
     ),
     mOStream(iOStream),
     mNoPrettyPrint(iNoPrettyPrint),
     mElementName(nullptr)
 {
-    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
-    registerTypeIndex<XmlSerializerVersion>();
-
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 
@@ -581,7 +580,8 @@ XmlMidISerializer::XmlMidISerializer
     GlobalVersionNoTableBase const*const iGlobalVersionNoTable,
     unsigned iLastGlobalVersionNo,
     std::ostream* iOStream,
-    bool mNoThrowException
+    bool mNoThrowException,
+    TypeIndex iSerializerVersionTypeIndex
 ) : BaseSerializer
     (
         std::move(iDestinations),
@@ -591,14 +591,12 @@ XmlMidISerializer::XmlMidISerializer
         CheckMode::TypeCheckInData,
         false,
         iOStream,
-        mNoThrowException
+        mNoThrowException,
+        iSerializerVersionTypeIndex
     ),
     mIStream(iIStream),
     mTerminated(false)
 {
-    // 派生シリアライザをTypeInfoListへ登録する(GVNT無し時、必要である)
-    registerTypeIndex<XmlSerializerVersion>();
-
     // エラー情報登録準備
     theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo, true);
 

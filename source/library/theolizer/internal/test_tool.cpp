@@ -330,8 +330,14 @@ bool    gDoDisplayPass = false;
 //      PASS表示処理
 // ***************************************************************************
 
-DisplayPass::DisplayPass() : internal::AutoRestore<bool>(internal::gDoDisplayPass, true)
+DisplayPass::DisplayPass() : mBackup(internal::gDoDisplayPass), mTarget(internal::gDoDisplayPass)
 {
+    mTarget = true;
+}
+
+DisplayPass::~DisplayPass()
+{
+        mTarget=mBackup;
 }
 
 bool DisplayPass::on()

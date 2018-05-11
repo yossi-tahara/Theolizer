@@ -162,7 +162,7 @@ return 1;
     // プリミティブなら派生シリアライザのバージョン番号
     if (mTypeInfoList[aIndex]->mTypeCategory == etcPrimitiveType)
     {
-        aIndex=getSerializerTypeIndex().getIndex();
+        aIndex=mSerializerVersionTypeIndex.getIndex();
     }
     // mUniqueTypeIndexが有効なら、そのIndexを使用する
     else if (mTypeInfoList[aIndex]->mUniqueTypeIndex.isValid())
@@ -722,7 +722,8 @@ BaseSerializer::BaseSerializer
     CheckMode iCheckMode,
     bool iIsSaver,
     std::ostream* iOStream,
-    bool iNoThrowException
+    bool iNoThrowException,
+    TypeIndex iSerializerVersionTypeIndex
 ) : ErrorBase(),
     mDestinations(iDestinations),
     mIsSaver(iIsSaver),
@@ -734,6 +735,7 @@ BaseSerializer::BaseSerializer
     mTypeInfoList(TypeInfoList::getInstance().getList()),
     mTypeIndexCount(mTypeInfoList.size()),
     mRequireClearTracking(false),
+    mSerializerVersionTypeIndex(iSerializerVersionTypeIndex),
     mAdditionalInfo(*this),
     mBaseProcessing(false),
     mClassTracking(false),

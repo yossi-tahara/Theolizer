@@ -582,7 +582,7 @@ public:
 //          シングルトン
 //----------------------------------------------------------------------------
 
-unsigned getLastVersionNo(unsigned iIndex);
+THEOLIZER_INTERNAL_DLL unsigned getLastVersionNo(unsigned iIndex);
 
 template<unsigned uLastGlobalVersionNo>
 class GlobalVersionNoTable : public GlobalVersionNoTableBase
@@ -623,7 +623,8 @@ public:
 //std::cout << "add2(A) : mVersionNoList[" << i << "].resize(" << iIndex+1 << ")" << std::endl;
                 mVersionNoList[i].resize(iIndex+1, 1);  // デフォルトのローカル・バージョン番号は1
             }
-//std::cout << "add2(B) : mVersionNoList[" << i << "][" << iIndex << "]=" << aLocalVersionNoList[i] << ")" << std::endl;
+//std::cout << "add2(B) : mVersionNoList[" << i << "][" << iIndex << "]="
+//          << aLocalVersionNoList[i] << ")" << std::endl;
             mVersionNoList[i][iIndex] = aLocalVersionNoList[i];
         }
     }
