@@ -871,11 +871,13 @@ void BinaryMidISerializer::disposeElement()
 void BinaryMidISerializer::disposeString()
 {
     // 中身
-    std::size_t size=loadUnsigned(BinaryTag::getStringTag<char16_t>());
+    auto size=loadUnsigned(BinaryTag::getStringTag<char16_t>());
+    THEOLIZER_INTERNAL_ASSERT(size <= std::numeric_limits<std::size_t>::max(),
+        u8"BinaryMidISerializer::disposeString : too large value!!");
     if (size)
     {
         unsigned aDataSize=sizeof(char16_t);
-        for (std::size_t i=0; i < size/aDataSize; ++i)
+        for (std::size_t i=0; i < static_cast<std::size_t>(size)/aDataSize; ++i)
         {
             char16_t    dummy;
             mIStream.read(reinterpret_cast<char*>(&dummy), aDataSize);
@@ -1015,11 +1017,13 @@ void BinaryMidISerializer::loadCharString(std::string& iString)
         THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
     }
 
-    std::size_t size=static_cast<std::size_t>(loadUnsigned(BinaryTag::TagCode::String));
-    iString.resize(size);
+    auto size = loadUnsigned(BinaryTag::TagCode::String);
+    THEOLIZER_INTERNAL_ASSERT(size <= std::numeric_limits<std::size_t>::max(),
+        u8"BinaryMidISerializer::loadCharString()() : too large value!!");
+    iString.resize(static_cast<std::size_t>(size));
     if (size)
     {
-        mIStream.read(&(*iString.begin()), size);
+        mIStream.read(&(*iString.begin()), static_cast<std::size_t>(size));
     }
     if (!mIStream.good())
     {
@@ -1041,19 +1045,21 @@ void BinaryMidISerializer::decodeString(tString& oString)
     }
 
     // 中身
-    std::size_t size=loadUnsigned(BinaryTag::getStringTag<char16_t>());
+    auto size=loadUnsigned(BinaryTag::getStringTag<char16_t>());
+    THEOLIZER_INTERNAL_ASSERT(size <= std::numeric_limits<std::size_t>::max(),
+        u8"BinaryMidISerializer::decodeString : too large value!!");
     std::u16string  temp;
     if (size)
     {
         unsigned aDataSize=sizeof(char16_t);
-        temp.resize(size/aDataSize);
+        temp.resize(static_cast<std::size_t>(size)/aDataSize);
 #if IS_BIG_ENDIAN == 1
         for (auto& data : temp)
         {
             data = (static_cast<char16_t>(readByte()) << 8) | readByte();
         }
 #else
-        mIStream.read(reinterpret_cast<char*>(&(*temp.begin())), size);
+        mIStream.read(reinterpret_cast<char*>(&(*temp.begin())), static_cast<std::size_t>(size));
 #endif
     }
     oString=Converter<typename tString::value_type, char16_t>::conv(temp);

@@ -187,6 +187,8 @@ public:
     //! @ingroup RbFor
     //! 先頭要素を取り出す
     ValueType& front()             {return *mBegin;}
+    //! @ingroup RbFor
+    //! 先頭要素を取り出す
     ValueType const& front() const {return *mBegin;}
 
     //! @ingroup RbFor
