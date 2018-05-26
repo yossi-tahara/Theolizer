@@ -293,12 +293,9 @@ return;
     std::cout.flush();
 #endif
 
-    // TypeIndexによるチェックなら、TypeIndex最大値出力
-    if (mCheckMode == CheckMode::TypeCheckByIndex)
-    {
-        writePreElement();
-        saveControl(mTypeIndexCount);
-    }
+    // TypeIndex最大値出力
+    writePreElement();
+    saveControl(mTypeIndexCount);
 
     // 型情報出力
     for (auto& aLoop : getRBForIndexer(mTypeInfoList))
@@ -312,21 +309,13 @@ return;
     continue;
         aSaveStatList[aIndex] = essSaved;
 
-        // 元TypeCheckの時はClassTypeのみ出力する
-        if ((mCheckMode == CheckMode::MetaMode)
-         && (aTypeInfo->mTypeCategory != etcClassType))
-    continue;
-
         // 開始マーク
         writePreElement();
         AutoRestoreSave aAutoRestoreSave2(*this, emOrder, true);
 
         // TypeIndex
-        if (mCheckMode == CheckMode::TypeCheckByIndex)
-        {
-            writePreElement();
-            saveControl(aTypeIndex);
-        }
+        writePreElement();
+        saveControl(aTypeIndex);
 
         // TypeName
         writePreElement();
@@ -360,21 +349,9 @@ return;
             // 名前対応時のみ要素名を記録する
             saveElementName(aElementsMapping, aElement.getName());
 
-            // 要素の形名、もしくは、TypeIndex
+            // 要素のTypeIndex
             TypeIndex aElementTypeIndex=aElement.getTypeIndex();
-            if (mCheckMode == CheckMode::MetaMode)
-            {
-                // 処理中要素の型名取出し
-                std::string aElementTypeName=getTypeName(aElementTypeIndex);
-//std::cout << "    ElementName=" << aElement.getName()
-//          << " aElementTypeIndex=" << aElementTypeIndex
-//          << " aElementTypeName=" << aElementTypeName << "\n";
-                saveControl(aElementTypeName);
-            }
-            else
-            {
-                saveControl(aElementTypeIndex);
-            }
+            saveControl(aElementTypeIndex);
         }
     }
 }
@@ -408,12 +385,6 @@ void BaseSerializer::saveProcessStart(TypeIndex iTypeIndex)
             break;
 
         case CheckMode::MetaMode:
-            {
-                writePreElement();
-                saveControl(getTypeName(iTypeIndex));
-            }
-            break;
-
         case CheckMode::TypeCheckByIndex:
             writePreElement();
             saveControl(iTypeIndex);
@@ -526,46 +497,6 @@ TypeIndexList* BaseSerializer::loadProcessStart(TypeIndex iTypeIndex)
             break;
 
         case CheckMode::MetaMode:
-            {
-                if (!readPreElement())
-                {
-                    THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
-                }
-
-                std::string  aTypeName;
-                loadControl(aTypeName);
-                std::string  aTypeNameBk=aTypeName;
-                unsigned additional = TypeIndex::splitAdditional(aTypeName);
-                if (iTypeIndex.getAdditional() != additional)
-                {
-                    THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.(%1%)", aTypeNameBk);
-                }
-
-                // 型名から、現在のTypeIndexListを求める
-                TypeIndexList& aTypeIndexList=mTypeNameMap->mMap[aTypeName];
-                if (iTypeIndex.isValid())
-                {
-                    bool aIsMatch=false;
-                    for (auto aTypeIndex : aTypeIndexList)
-                    {
-                        if (aTypeIndex.getIndex() == iTypeIndex.getIndex())
-                        {
-                            aIsMatch=true;
-                    break;
-                        }
-                    }
-                    if (!aIsMatch)
-                    {
-                        THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.(%1%)", aTypeName);
-                    }
-                }
-                else
-                {
-                    ret = &aTypeIndexList;
-                }
-            }
-            break;
-
         case CheckMode::TypeCheckByIndex:
             if (!readPreElement())
             {
@@ -834,9 +765,6 @@ std::string BaseSerializer::getDataElementName(TypeIndex iDataTypeIndex, std::si
     switch(mCheckMode)
     {
     case CheckMode::MetaMode:
-        ret=mSerializedTypeListN->at(aIndex).mSerializedElementList[iDataIndex].mName;
-        break;
-
     case CheckMode::TypeCheckByIndex:
         ret=mSerializedTypeListI->at(aIndex).mSerializedElementList[iDataIndex].mName;
         break;
@@ -1481,7 +1409,8 @@ void BaseSerializer::disposeClass(ElementsMapping iElementsMapping)
 
 TypeIndexList& BaseSerializer::getProgramTypeIndex()
 {
-    if (mCheckMode != CheckMode::TypeCheckByIndex)
+    if ((mCheckMode != CheckMode::TypeCheckByIndex)
+     && (mCheckMode != CheckMode::MetaMode))
     {
         // 型名回復
         std::string  aTypeName;
@@ -1536,14 +1465,11 @@ return;
     // TypeIndex対応表確保
     mTypeIndexTable.resize(mTypeIndexCount);
 
-    // TypeIndexによるチェックなら、TypeIndex最大値入力し、mSerializedTypeListI領域確保
-    if (mCheckMode == CheckMode::TypeCheckByIndex)
-    {
-        readPreElement();
-        std::size_t aTypeIndexCount;
-        loadControl(aTypeIndexCount);
-        mSerializedTypeListI->resize(aTypeIndexCount);
-    }
+    // TypeIndex最大値入力し、mSerializedTypeListI領域確保
+    readPreElement();
+    std::size_t aTypeIndexCount;
+    loadControl(aTypeIndexCount);
+    mSerializedTypeListI->resize(aTypeIndexCount);
 
     // 型情報取出し
     while (readPreElement())
@@ -1553,16 +1479,9 @@ return;
 
         // TypeIndex取出し
         TypeIndex aDataTypeIndex;
-        if (mCheckMode == CheckMode::TypeCheckByIndex)
-        {
-            if (!readPreElement())
+        if (!readPreElement())
     break;
-            loadControl(aDataTypeIndex);
-        }
-        else
-        {
-            aDataTypeIndex=static_cast<unsigned>(mSerializedTypeListN->size());
-        }
+        loadControl(aDataTypeIndex);
 
         if (!readPreElement())
     break;
@@ -1609,24 +1528,12 @@ return;
                 // 名前対応時のみ要素名を取り出す
                 std::string aElementName=loadElementName(aElementsMapping);
 
-                if (mCheckMode == CheckMode::MetaMode)
-                {
-                    std::string aElementTypeName;
-                    loadControl(aElementTypeName);
-//std::cout << "        " << aElementName
-//          << ":"        << aElementTypeName << "\n";
-                    aSerializedElementListN.emplace_back(std::move(aElementName),
-                                                         std::move(aElementTypeName));
-                }
-                else
-                {
-                    TypeIndex aElementTypeIndex;
-                    loadControl(aElementTypeIndex);
+                TypeIndex aElementTypeIndex;
+                loadControl(aElementTypeIndex);
 //std::cout << "        " << aElementName
 //          << ":"        << aElementTypeIndex << "\n";
-                    aSerializedElementListI.emplace_back(std::move(aElementName),
-                                                         aElementTypeIndex);
-                }
+                aSerializedElementListI.emplace_back(std::move(aElementName),
+                                                     aElementTypeIndex);
             }
 //std::cout << "    }\n";
         }
@@ -1640,28 +1547,19 @@ return;
 //std::cout << "   ended...\n";
 
         // 結果を設定
-        if (mCheckMode == CheckMode::TypeCheckByIndex)
-        {
 #if 0
-            if (mSerializedTypeListI->size() <= aDataTypeIndex)
-            {
-                mSerializedTypeListI->resize(aDataTypeIndex+1);
-            }
-#endif
-            SerializedTypeIndex& aSerializedTypeIndex
-                                    =mSerializedTypeListI->at(aDataTypeIndex.getIndex());
-            aSerializedTypeIndex.mTypeName=std::move(aTypeName);
-            aSerializedTypeIndex.mProgramTypeIndex=&aTypeIndexList;
-//std::cout << "   &aTypeIndexList=" << &aTypeIndexList << "\n";
-            aSerializedTypeIndex.mSerializedElementList
-                                            =std::move(aSerializedElementListI);
-        }
-        else
+        if (mSerializedTypeListI->size() <= aDataTypeIndex)
         {
-            mSerializedTypeListN->emplace_back(std::move(aTypeName),
-                                               &aTypeIndexList,
-                                               std::move(aSerializedElementListN));
+            mSerializedTypeListI->resize(aDataTypeIndex+1);
         }
+#endif
+        SerializedTypeIndex& aSerializedTypeIndex
+                                =mSerializedTypeListI->at(aDataTypeIndex.getIndex());
+        aSerializedTypeIndex.mTypeName=std::move(aTypeName);
+        aSerializedTypeIndex.mProgramTypeIndex=&aTypeIndexList;
+//std::cout << "   &aTypeIndexList=" << &aTypeIndexList << "\n";
+        aSerializedTypeIndex.mSerializedElementList
+                                        =std::move(aSerializedElementListI);
     }
 
 //----------------------------------------------------------------------------

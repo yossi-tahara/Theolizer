@@ -215,10 +215,6 @@ std::ostream& operator<<(std::ostream& iOStream, CheckMode iCheckMode)
         iOStream << "NoTypeCheck";
         break;
 
-    case CheckMode::TypeCheck:
-        iOStream << "TypeCheck";
-        break;
-
     case CheckMode::TypeCheckByIndex:
         iOStream << "TypeCheckByIndex";
         break;

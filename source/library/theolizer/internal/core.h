@@ -1153,6 +1153,7 @@ bool ClassTypeInfo<tClassType>::saveTypeInstance
     if (getTargetStdTypeIndex() == iStdTypeIndex)
     {
         if ((iSerializer.mCheckMode != CheckMode::TypeCheckByIndex)
+         && (iSerializer.mCheckMode != CheckMode::MetaMode)
          && (iSerializer.mCheckMode != CheckMode::InMemory))
         {
             // 型名保存
