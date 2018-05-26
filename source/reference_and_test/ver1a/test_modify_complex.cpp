@@ -135,15 +135,15 @@ void tutoriseModifyComplex()
 
     testModifyComplex
     <
-        theolizer::JsonOSerializer<theolizerD::TypeCheckByIndex>,
-        theolizer::JsonISerializer<theolizerD::TypeCheckByIndex>
+        theolizer::JsonOSerializer<theolizerD::TypeCheck>,
+        theolizer::JsonISerializer<theolizerD::TypeCheck>
     >("json-change-NoTypeCheck.json", theolizer::CheckMode::NoTypeCheck);
 
     testModifyComplex
     <
-        theolizer::JsonOSerializer<theolizerD::TypeCheckByIndex>,
-        theolizer::JsonISerializer<theolizerD::TypeCheckByIndex>
-    >("json-change-TypeCheckByIndex.json", theolizer::CheckMode::TypeCheckByIndex);
+        theolizer::JsonOSerializer<theolizerD::TypeCheck>,
+        theolizer::JsonISerializer<theolizerD::TypeCheck>
+    >("json-change-TypeCheck.json", theolizer::CheckMode::TypeCheck);
 
     testModifyComplex
     <
@@ -155,20 +155,20 @@ void tutoriseModifyComplex()
 
     testModifyComplex
     <
-        theolizer::BinaryOSerializer<theolizerD::TypeCheckByIndex>,
-        theolizer::BinaryISerializer<theolizerD::TypeCheckByIndex>
+        theolizer::BinaryOSerializer<theolizerD::TypeCheck>,
+        theolizer::BinaryISerializer<theolizerD::TypeCheck>
     >("binary-change-NoTypeCheck.bin", theolizer::CheckMode::NoTypeCheck);
 
     testModifyComplex
     <
-        theolizer::BinaryOSerializer<theolizerD::TypeCheckByIndex>,
-        theolizer::BinaryISerializer<theolizerD::TypeCheckByIndex>
-    >("binary-change-TypeCheckByIndex.bin", theolizer::CheckMode::TypeCheckByIndex);
+        theolizer::BinaryOSerializer<theolizerD::TypeCheck>,
+        theolizer::BinaryISerializer<theolizerD::TypeCheck>
+    >("binary-change-TypeCheck.bin", theolizer::CheckMode::TypeCheck);
 
     testModifyComplex
     <
-        theolizer::BinaryOSerializer<theolizerD::TypeCheckByIndex>,
-        theolizer::BinaryISerializer<theolizerD::TypeCheckByIndex>
+        theolizer::BinaryOSerializer<theolizerD::TypeCheck>,
+        theolizer::BinaryISerializer<theolizerD::TypeCheck>
     >("binary-change-MetaMode.bin", theolizer::CheckMode::MetaMode);
 
 //      ---<<< GlobalVersionNoエラーのテスト >>>---

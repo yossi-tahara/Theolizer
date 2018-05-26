@@ -625,7 +625,7 @@ return;
 //      ---<<< Version.3 >>>---
 
     TestNormalImpl2<tOSerialzer, tISerializer>(string(iPreFix)+"_version3.log",
-        3, theolizer::CheckMode::TypeCheckByIndex);
+        3, theolizer::CheckMode::TypeCheck);
 
 //      ---<<< Version.2 >>>---
 
@@ -635,7 +635,7 @@ return;
 //      ---<<< Version.1 >>>---
 
     TestNormalImpl2<tOSerialzer, tISerializer>(string(iPreFix)+"_version1.log",
-        1, theolizer::CheckMode::TypeCheckByIndex);
+        1, theolizer::CheckMode::TypeCheck);
 
 //      ---<<< NoTypeCheck形式 >>>---
 

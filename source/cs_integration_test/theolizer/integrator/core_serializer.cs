@@ -42,8 +42,7 @@ namespace theolizer.internal_space
         InMemory=0,                 // メモリ内動作のみ、かつ、型チェック無し（非公開）
         TypeCheckInData,            // データ内に型名を記録する（非公開）
         NoTypeCheck,                // 型チェック無し
-        TypeCheck,                  // 型名による型チェック
-        TypeCheckByIndex,           // TypeIndexによる型チェック
+        TypeCheck,                  // TypeIndexによる型チェック
         MetaMode                    // メタ処理－型定義情報を保存／回復（非公開）
     }
 

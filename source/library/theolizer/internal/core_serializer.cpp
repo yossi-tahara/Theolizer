@@ -194,7 +194,7 @@ void BaseSerializer::writeHeaderTypeInfo()
     saveControl(static_cast<typename std::underlying_type<CheckMode>::type>(mCheckMode));
 
     // 型チェック無しなら終了
-    if ((mCheckMode != CheckMode::TypeCheckByIndex)
+    if ((mCheckMode != CheckMode::TypeCheck)
      && (mCheckMode != CheckMode::MetaMode))
 return;
 
@@ -384,8 +384,8 @@ void BaseSerializer::saveProcessStart(TypeIndex iTypeIndex)
         case CheckMode::NoTypeCheck:
             break;
 
+        case CheckMode::TypeCheck:
         case CheckMode::MetaMode:
-        case CheckMode::TypeCheckByIndex:
             writePreElement();
             saveControl(iTypeIndex);
             break;
@@ -455,8 +455,9 @@ struct BaseSerializer::TypeNameMap
 void BaseSerializer::createTypeNameMap()
 {
 //std::cout << "createTypeNameMap()\n";
-    // TypeIndexとInMemoryの時は生成不要
-    if ((mCheckMode == CheckMode::TypeCheckByIndex)
+    // TypeCheck、MetaModeとInMemoryの時は生成不要
+    if ((mCheckMode == CheckMode::TypeCheck)
+     || (mCheckMode == CheckMode::MetaMode)
      || (mCheckMode == CheckMode::InMemory))
 return;
 
@@ -496,8 +497,8 @@ TypeIndexList* BaseSerializer::loadProcessStart(TypeIndex iTypeIndex)
         case CheckMode::NoTypeCheck:
             break;
 
+        case CheckMode::TypeCheck:
         case CheckMode::MetaMode:
-        case CheckMode::TypeCheckByIndex:
             if (!readPreElement())
             {
                 THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
@@ -764,8 +765,8 @@ std::string BaseSerializer::getDataElementName(TypeIndex iDataTypeIndex, std::si
     unsigned aIndex = iDataTypeIndex.getIndex();
     switch(mCheckMode)
     {
+    case CheckMode::TypeCheck:
     case CheckMode::MetaMode:
-    case CheckMode::TypeCheckByIndex:
         ret=mSerializedTypeListI->at(aIndex).mSerializedElementList[iDataIndex].mName;
         break;
 
@@ -1409,7 +1410,7 @@ void BaseSerializer::disposeClass(ElementsMapping iElementsMapping)
 
 TypeIndexList& BaseSerializer::getProgramTypeIndex()
 {
-    if ((mCheckMode != CheckMode::TypeCheckByIndex)
+    if ((mCheckMode != CheckMode::TypeCheck)
      && (mCheckMode != CheckMode::MetaMode))
     {
         // 型名回復
@@ -1454,7 +1455,7 @@ void BaseSerializer::readHeaderTypeInfo()
     mCheckMode = static_cast<CheckMode>(aCheckModeValue);
 
     // 型チェック無しなら終了
-    if ((mCheckMode != CheckMode::TypeCheckByIndex)
+    if ((mCheckMode != CheckMode::TypeCheck)
      && (mCheckMode != CheckMode::MetaMode))
 return;
 

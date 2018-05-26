@@ -79,13 +79,13 @@ int main(int argc, char** argv)
         theolizer::removeFile("ErrorLogFile0.log");
 
 // ---------------------------------------------------------------------------
-//      型違い(TypeCheckByIndex)
+//      型違い(TypeCheck)
 // ---------------------------------------------------------------------------
 
 //      ---<<< ヘッダ(例外有り) >>>---
 
         {
-            std::ifstream   aStream("test_change_check_index1.log");
+            std::ifstream   aStream("test_change_type_check1.log");
             THEOLIZER_CHECK_EXCEPTION(
                 theolizer::JsonISerializer<>   js(aStream);
                 IntrusiveBase2  mIntrusiveBase2;
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
 
         unsigned line0;
         {
-            std::ifstream   aStream("test_change_check_index1.log");
+            std::ifstream   aStream("test_change_type_check1.log");
             theolizer::JsonISerializer<>   js(aStream, true);
             IntrusiveBase2  mIntrusiveBase2;
             THEOLIZER_PROCESS(js, mIntrusiveBase2); line0=__LINE__;

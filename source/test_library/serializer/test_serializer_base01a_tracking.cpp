@@ -881,14 +881,14 @@ return;
             aVerNo, theolizer::CheckMode::NoTypeCheck);
     }
 
-//      ---<<< TypeCheckByIndex形式 >>>---
+//      ---<<< TypeCheck形式 >>>---
 
     {
         unsigned aVerNo=theolizer::kLastGlobalVersionNo;
-        string aFileName=string(iPreFix)+"_check_index";
+        string aFileName=string(iPreFix)+"_type_check";
         aFileName += std::to_string(aVerNo);
         TestObjectTrackingImpl<tOSerialzer, tISerializer>(aFileName,
-            aVerNo, theolizer::CheckMode::TypeCheckByIndex);
+            aVerNo, theolizer::CheckMode::TypeCheck);
     }
 
 //      ---<<< MetaMode形式 >>>---

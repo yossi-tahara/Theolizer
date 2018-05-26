@@ -133,12 +133,12 @@ int main(int argc, char** argv)
 //----------------------------------------------------------------------------
 
         {
-            std::ofstream   aStream("test_poly_check_index.log");
-            theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheckByIndex);
+            std::ofstream   aStream("test_poly_type_check.log");
+            theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheck);
             TestPoly(js);
         }
         {
-            std::ifstream   aStream("test_poly_check_index.log");
+            std::ifstream   aStream("test_poly_type_check.log");
             theolizer::JsonISerializer<>   js(aStream);
             TestPoly(js);
         }
@@ -165,7 +165,7 @@ int main(int argc, char** argv)
 #if defined(NAMESPACE_TEST)
         {
             std::ofstream   aStream("test_namespace.log");
-            theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheckByIndex);
+            theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheck);
 
             user::NamespaceClass aBaseClass;
             aBaseClass.mUInt=123;
@@ -187,7 +187,7 @@ int main(int argc, char** argv)
 #ifdef REFERENCE_TEST
         {
             std::ofstream   aStream("test_reference.log");
-            theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheckByIndex);
+            theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheck);
 
             unsigned    aUInt=1;
             BaseClass   aBaseClass(2);

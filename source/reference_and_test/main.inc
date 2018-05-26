@@ -714,7 +714,7 @@ return 2;
                 }
 
                 callTests(aDoSave, CheckMode::NoTypeCheck);
-                callTests(aDoSave, CheckMode::TypeCheckByIndex);
+                callTests(aDoSave, CheckMode::TypeCheck);
                 callTests(aDoSave, CheckMode::MetaMode);
             }
         }
@@ -772,7 +772,7 @@ std::cout << "    gProgramIndex=" << gProgramIndex << "\n";
                     }
 
                     callTests(aDoSave, CheckMode::NoTypeCheck);
-                    callTests(aDoSave, CheckMode::TypeCheckByIndex);
+                    callTests(aDoSave, CheckMode::TypeCheck);
                     callTests(aDoSave, CheckMode::MetaMode);
                 }
             }

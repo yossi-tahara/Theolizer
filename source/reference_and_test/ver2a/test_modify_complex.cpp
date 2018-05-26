@@ -197,7 +197,7 @@ void tutoriseModifyComplex()
     <
         theolizer::JsonOSerializer<theolizerD::Master>,
         theolizer::JsonISerializer<theolizerD::Master>
-    >(1, theolizer::CheckMode::TypeCheckByIndex);
+    >(1, theolizer::CheckMode::TypeCheck);
 
     testModifyComplex
     <
@@ -217,7 +217,7 @@ void tutoriseModifyComplex()
     <
         theolizer::JsonOSerializer<theolizerD::Master>,
         theolizer::JsonISerializer<theolizerD::Master>
-    >(2, theolizer::CheckMode::TypeCheckByIndex);
+    >(2, theolizer::CheckMode::TypeCheck);
 
     testModifyComplex
     <
@@ -237,7 +237,7 @@ void tutoriseModifyComplex()
     <
         theolizer::BinaryOSerializer<theolizerD::Master>,
         theolizer::BinaryISerializer<theolizerD::Master>
-    >(1, theolizer::CheckMode::TypeCheckByIndex);
+    >(1, theolizer::CheckMode::TypeCheck);
 
     testModifyComplex
     <
@@ -257,7 +257,7 @@ void tutoriseModifyComplex()
     <
         theolizer::BinaryOSerializer<theolizerD::Master>,
         theolizer::BinaryISerializer<theolizerD::Master>
-    >(2, theolizer::CheckMode::TypeCheckByIndex);
+    >(2, theolizer::CheckMode::TypeCheck);
 
     testModifyComplex
     <

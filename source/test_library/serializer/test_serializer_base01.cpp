@@ -304,15 +304,15 @@ int main(int argc, char** argv)
         u8string aMessage(u8"Unmatch type.");
 
 // ---------------------------------------------------------------------------
-//      TypeCheckByIndex
+//      TypeCheck
 // ---------------------------------------------------------------------------
 
 //      ---<<< シリアライズ >>>---
 
         {
-            std::ofstream   aStream("test_change_check_index0.log");
+            std::ofstream   aStream("test_change_type_check0.log");
             theolizer::JsonOSerializer<theolizerD::SpecialDocument>
-                aSerializer(aStream, theolizer::CheckMode::TypeCheckByIndex);
+                aSerializer(aStream, theolizer::CheckMode::TypeCheck);
 
             int                  aInt=301;
             THEOLIZER_PROCESS(aSerializer, aInt);
@@ -321,7 +321,7 @@ int main(int argc, char** argv)
 //      ---<<< デシリアライズ(例外有り) >>>---
 
         {
-            std::ifstream   aStream("test_change_check_index0.log");
+            std::ifstream   aStream("test_change_type_check0.log");
             theolizer::JsonISerializer<>   aSerializer(aStream);
 
             unsigned int             aUInt;
@@ -333,7 +333,7 @@ int main(int argc, char** argv)
 //      ---<<< デシリアライズ(例外無し) >>>---
 
         {
-            std::ifstream   aStream("test_change_check_index0.log");
+            std::ifstream   aStream("test_change_type_check0.log");
             theolizer::JsonISerializer<>   aSerializer(aStream, true);
 
             unsigned int         aUInt;
@@ -399,15 +399,15 @@ int main(int argc, char** argv)
 // ***************************************************************************
 
 // ---------------------------------------------------------------------------
-//      TypeCheckByIndex
+//      TypeCheck
 // ---------------------------------------------------------------------------
 
 //      ---<<< ヘッダ >>>---
 
         {
-            std::ofstream   aStream("test_change_check_index1.log");
+            std::ofstream   aStream("test_change_type_check1.log");
             theolizer::JsonOSerializer<theolizerD::Document>
-                aSerializer(aStream, theolizer::CheckMode::TypeCheckByIndex);
+                aSerializer(aStream, theolizer::CheckMode::TypeCheck);
 
             IntrusiveBase2  mIntrusiveBase2;
             mIntrusiveBase2.mLong     =301;
@@ -440,7 +440,7 @@ int main(int argc, char** argv)
 
 #if 1
         TestEof(theolizer::CheckMode::NoTypeCheck);
-        TestEof(theolizer::CheckMode::TypeCheckByIndex);
+        TestEof(theolizer::CheckMode::TypeCheck);
         TestEof(theolizer::CheckMode::MetaMode);
 #endif
 
