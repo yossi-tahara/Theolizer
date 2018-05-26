@@ -304,51 +304,6 @@ int main(int argc, char** argv)
         u8string aMessage(u8"Unmatch type.");
 
 // ---------------------------------------------------------------------------
-//      TypeCheck
-// ---------------------------------------------------------------------------
-
-//      ---<<< シリアライズ >>>---
-
-        {
-            std::ofstream   aStream("test_change_check0.log");
-            theolizer::JsonOSerializer<theolizerD::SpecialDocument>
-                aSerializer(aStream, theolizer::CheckMode::TypeCheck);
-
-            int             aInt=101;
-            THEOLIZER_PROCESS(aSerializer, aInt);
-        }
-
-//      ---<<< デシリアライズ(例外有り) >>>---
-
-        {
-            std::ifstream   aStream("test_change_check0.log");
-            theolizer::JsonISerializer<>   aSerializer(aStream);
-
-            unsigned int    aUInt;
-            THEOLIZER_CHECK_EXCEPTION(
-                THEOLIZER_PROCESS(aSerializer, aUInt); ,
-                theolizer::ErrorInfo);
-        }
-
-//      ---<<< デシリアライズ(例外無し) >>>---
-
-        {
-            std::ifstream   aStream("test_change_check0.log");
-            theolizer::JsonISerializer<>   aSerializer(aStream, true);
-
-            unsigned int    aUInt;
-            THEOLIZER_PROCESS(aSerializer, aUInt); unsigned line=__LINE__;
-            u8string aAdditionalInfo=string("aUInt{test_serializer_base01.cpp(")
-                                    +std::to_string(line)+")}";
-            auto aError=aSerializer.getErrorInfo();
-            THEOLIZER_CHECK(aError, aError.getErrorType());
-            THEOLIZER_EQUAL(aError.getMessage().str().substr(0, aMessage.str().size()), aMessage);
-            THEOLIZER_EQUAL(aError.getAdditionalInfo(), aAdditionalInfo);
-            THEOLIZER_EQUAL(string(aError.getFileName()), "core_serializer.cpp");
-            aSerializer.resetError();
-        }
-
-// ---------------------------------------------------------------------------
 //      TypeCheckByIndex
 // ---------------------------------------------------------------------------
 
@@ -393,27 +348,55 @@ int main(int argc, char** argv)
             aSerializer.resetError();
         }
 
+// ---------------------------------------------------------------------------
+//      MetaMode
+// ---------------------------------------------------------------------------
+
+//      ---<<< シリアライズ >>>---
+
+        {
+            std::ofstream   aStream("test_change_meta0.log");
+            theolizer::JsonOSerializer<theolizerD::SpecialDocument>
+                aSerializer(aStream, theolizer::CheckMode::MetaMode);
+
+            int             aInt=101;
+            THEOLIZER_PROCESS(aSerializer, aInt);
+        }
+
+//      ---<<< デシリアライズ(例外有り) >>>---
+
+        {
+            std::ifstream   aStream("test_change_meta0.log");
+            theolizer::JsonISerializer<>   aSerializer(aStream);
+
+            unsigned int    aUInt;
+            THEOLIZER_CHECK_EXCEPTION(
+                THEOLIZER_PROCESS(aSerializer, aUInt); ,
+                theolizer::ErrorInfo);
+        }
+
+//      ---<<< デシリアライズ(例外無し) >>>---
+
+        {
+            std::ifstream   aStream("test_change_meta0.log");
+            theolizer::JsonISerializer<>   aSerializer(aStream, true);
+
+            unsigned int    aUInt;
+            THEOLIZER_PROCESS(aSerializer, aUInt); unsigned line=__LINE__;
+            u8string aAdditionalInfo=string("aUInt{test_serializer_base01.cpp(")
+                                    +std::to_string(line)+")}";
+            auto aError=aSerializer.getErrorInfo();
+            THEOLIZER_CHECK(aError, aError.getErrorType());
+            THEOLIZER_EQUAL(aError.getMessage().str().substr(0, aMessage.str().size()), aMessage);
+            THEOLIZER_EQUAL(aError.getAdditionalInfo(), aAdditionalInfo);
+            THEOLIZER_EQUAL(string(aError.getFileName()), "core_serializer.cpp");
+            aSerializer.resetError();
+        }
+
 // ***************************************************************************
 //      ヘッダの型チェック・エラー・テスト用シリアライズ
 //          デシリアライズとテストはtest_serializer_base03.*にて実装
 // ***************************************************************************
-
-// ---------------------------------------------------------------------------
-//      TypeCheck
-// ---------------------------------------------------------------------------
-
-        {
-            std::ofstream   aStream("test_change_check1.log");
-            theolizer::JsonOSerializer<theolizerD::Document>
-                aSerializer(aStream, theolizer::CheckMode::TypeCheck);
-
-            IntrusiveBase2  mIntrusiveBase2;
-            mIntrusiveBase2.mLong     =201;
-            mIntrusiveBase2.mLongLong =202;
-            mIntrusiveBase2.mULong    =203;
-            mIntrusiveBase2.mULongLong=204;
-            THEOLIZER_PROCESS(aSerializer, mIntrusiveBase2);
-        }
 
 // ---------------------------------------------------------------------------
 //      TypeCheckByIndex
@@ -434,6 +417,22 @@ int main(int argc, char** argv)
             THEOLIZER_PROCESS(aSerializer, mIntrusiveBase2);
         }
 
+// ---------------------------------------------------------------------------
+//      MetaMode
+// ---------------------------------------------------------------------------
+
+        {
+            std::ofstream   aStream("test_change_meta1.log");
+            theolizer::JsonOSerializer<theolizerD::Document>
+                aSerializer(aStream, theolizer::CheckMode::MetaMode);
+
+            IntrusiveBase2  mIntrusiveBase2;
+            mIntrusiveBase2.mLong     =201;
+            mIntrusiveBase2.mLongLong =202;
+            mIntrusiveBase2.mULong    =203;
+            mIntrusiveBase2.mULongLong=204;
+            THEOLIZER_PROCESS(aSerializer, mIntrusiveBase2);
+        }
 
 // ***************************************************************************
 //      フォーマット異常(データ途切れ)テスト
@@ -441,8 +440,8 @@ int main(int argc, char** argv)
 
 #if 1
         TestEof(theolizer::CheckMode::NoTypeCheck);
-        TestEof(theolizer::CheckMode::TypeCheck);
         TestEof(theolizer::CheckMode::TypeCheckByIndex);
+        TestEof(theolizer::CheckMode::MetaMode);
 #endif
 
     }

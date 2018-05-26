@@ -291,7 +291,7 @@ void JsonMidOSerializer::writePreElement(bool iDoProcess)
 void JsonMidOSerializer::saveGroupStart(bool iIsTop)
 {
     mWriteComma=false;
-    if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
+    if (!iIsTop || (CheckMode::TypeCheckByIndex <= mCheckMode))
     {
         if (!mCancelPrettyPrint) mIndent++;
         switch (mElementsMapping)
@@ -313,7 +313,7 @@ void JsonMidOSerializer::saveGroupEnd(bool iIsTop)
 {
     mWriteComma=false;
     writeCommaIndent();
-    if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
+    if (!iIsTop || (CheckMode::TypeCheckByIndex <= mCheckMode))
     {
         switch (mElementsMapping)
         {
@@ -746,7 +746,7 @@ void JsonMidISerializer::disposeElement()
 void JsonMidISerializer::loadGroupStart(bool iIsTop)
 {
     mReadComma=false;
-    if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
+    if (!iIsTop || (CheckMode::TypeCheckByIndex <= mCheckMode))
     {
         char in = find_not_of(" \t\n");
         switch (mElementsMapping)
@@ -773,7 +773,7 @@ void JsonMidISerializer::loadGroupStart(bool iIsTop)
 
 void JsonMidISerializer::loadGroupEnd(bool iIsTop)
 {
-    if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
+    if (!iIsTop || (CheckMode::TypeCheckByIndex <= mCheckMode))
     {
         // まだ終了処理されてないなら、終了処理する
         if (!mTerminated)

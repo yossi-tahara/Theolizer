@@ -79,38 +79,6 @@ int main(int argc, char** argv)
         theolizer::removeFile("ErrorLogFile0.log");
 
 // ---------------------------------------------------------------------------
-//      型違い(TypeCheck)
-// ---------------------------------------------------------------------------
-
-//      ---<<< ヘッダ(例外有り) >>>---
-
-        {
-            std::ifstream   aStream("test_change_check1.log");
-            THEOLIZER_CHECK_EXCEPTION(
-                theolizer::JsonISerializer<>   js(aStream);
-                IntrusiveBase2  mIntrusiveBase2;
-                THEOLIZER_PROCESS(js, mIntrusiveBase2); ,
-                theolizer::ErrorInfo);
-        }
-
-//      ---<<< ヘッダ(例外無し) >>>---
-
-        unsigned line0;
-        {
-            std::ifstream   aStream("test_change_check1.log");
-            theolizer::JsonISerializer<>   js(aStream, true);
-            IntrusiveBase2  mIntrusiveBase2;
-            THEOLIZER_PROCESS(js, mIntrusiveBase2); line0=__LINE__;
-            u8string aAdditionalInfo=string("mIntrusiveBase2{test_serializer_base02.cpp(")
-                                    +std::to_string(line0)+")}";
-            auto aError=js.getErrorInfo();
-            THEOLIZER_CHECK(aError, aError.getErrorType());
-            THEOLIZER_EQUAL(aError.getMessage(), theolizer::print(u8"Unmatch type."));
-            THEOLIZER_EQUAL(aError.getAdditionalInfo(), aAdditionalInfo);
-            js.resetError();
-        }
-
-// ---------------------------------------------------------------------------
 //      型違い(TypeCheckByIndex)
 // ---------------------------------------------------------------------------
 
@@ -127,16 +95,46 @@ int main(int argc, char** argv)
 
 //      ---<<< ヘッダ(例外無し) >>>---
 
-        unsigned line1;
+        unsigned line0;
         {
             std::ifstream   aStream("test_change_check_index1.log");
             theolizer::JsonISerializer<>   js(aStream, true);
             IntrusiveBase2  mIntrusiveBase2;
-            THEOLIZER_PROCESS(js, mIntrusiveBase2); line1=__LINE__;
+            THEOLIZER_PROCESS(js, mIntrusiveBase2); line0=__LINE__;
             js.resetError();
         }
 
-//      ---<<< 確認 >>>---
+// ---------------------------------------------------------------------------
+//      型違い(MetaMode)
+// ---------------------------------------------------------------------------
+
+//      ---<<< ヘッダ(例外有り) >>>---
+
+        {
+            std::ifstream   aStream("test_change_meta1.log");
+            THEOLIZER_CHECK_EXCEPTION(
+                theolizer::JsonISerializer<>   js(aStream);
+                IntrusiveBase2  mIntrusiveBase2;
+                THEOLIZER_PROCESS(js, mIntrusiveBase2); ,
+                theolizer::ErrorInfo);
+        }
+
+//      ---<<< ヘッダ(例外無し) >>>---
+
+        unsigned line1;
+        {
+            std::ifstream   aStream("test_change_meta1.log");
+            theolizer::JsonISerializer<>   js(aStream, true);
+            IntrusiveBase2  mIntrusiveBase2;
+            THEOLIZER_PROCESS(js, mIntrusiveBase2); line1=__LINE__;
+            u8string aAdditionalInfo=string("mIntrusiveBase2{test_serializer_base02.cpp(")
+                                    +std::to_string(line1)+")}";
+            auto aError=js.getErrorInfo();
+            THEOLIZER_CHECK(aError, aError.getErrorType());
+            THEOLIZER_EQUAL(aError.getMessage(), theolizer::print(u8"Unmatch type."));
+            THEOLIZER_EQUAL(aError.getAdditionalInfo(), aAdditionalInfo);
+            js.resetError();
+        }
 
 // ---------------------------------------------------------------------------
 //      エラー・ログ内容チェック

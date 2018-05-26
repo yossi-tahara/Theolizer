@@ -987,7 +987,7 @@ private:
     {
         ElementsMapping aElementsMapping = tVersionType::Theolizer::kElementsMapping;
         // ヘッダが有るなら、フォーマット上は順序対応でOK
-        if (CheckMode::TypeCheck <= mCheckMode)
+        if (CheckMode::TypeCheckByIndex <= mCheckMode)
         {
             aElementsMapping=emOrder;
         }
@@ -1235,7 +1235,7 @@ std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
 
         ElementsMapping aElementsMapping = tVersionType::Theolizer::kElementsMapping;
         // ヘッダが有るなら、フォーマット上は順序対応でOK
-        if (CheckMode::TypeCheck <= mCheckMode)
+        if (CheckMode::TypeCheckByIndex <= mCheckMode)
         {
             aElementsMapping=emOrder;
         }
@@ -1256,7 +1256,7 @@ std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
 
         TypeIndex aDataTypeIndex;
         if ((tVersionType::Theolizer::kElementsMapping == emName)
-         && (CheckMode::TypeCheck <= mCheckMode))
+         && (CheckMode::TypeCheckByIndex <= mCheckMode))
         {
             if (!aTypeIndex.isValid())
             {
@@ -1278,7 +1278,7 @@ std::cout << "loadClassImpl(" << aClassTypeInfo.getCName() << ") --- start\n";
 
             std::string  aElementName;
             if ((tVersionType::Theolizer::kElementsMapping == emName)
-             && (CheckMode::TypeCheck <= mCheckMode))
+             && (CheckMode::TypeCheckByIndex <= mCheckMode))
             {
                 aElementName=getDataElementName(aDataTypeIndex, aDataIndex++);
             }

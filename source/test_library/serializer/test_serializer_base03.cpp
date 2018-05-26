@@ -129,21 +129,6 @@ int main(int argc, char** argv)
         }
 
 //----------------------------------------------------------------------------
-//      型名で型チェック
-//----------------------------------------------------------------------------
-
-        {
-            std::ofstream   aStream("test_poly_check.log");
-            theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheck);
-            TestPoly(js);
-        }
-        {
-            std::ifstream   aStream("test_poly_check.log");
-            theolizer::JsonISerializer<>   js(aStream);
-            TestPoly(js);
-        }
-
-//----------------------------------------------------------------------------
 //      TypeIndexで型チェック
 //----------------------------------------------------------------------------
 
@@ -154,6 +139,21 @@ int main(int argc, char** argv)
         }
         {
             std::ifstream   aStream("test_poly_check_index.log");
+            theolizer::JsonISerializer<>   js(aStream);
+            TestPoly(js);
+        }
+
+//----------------------------------------------------------------------------
+//      MetaModeで型チェック
+//----------------------------------------------------------------------------
+
+        {
+            std::ofstream   aStream("test_poly_meta.log");
+            theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::MetaMode);
+            TestPoly(js);
+        }
+        {
+            std::ifstream   aStream("test_poly_meta.log");
             theolizer::JsonISerializer<>   js(aStream);
             TestPoly(js);
         }
@@ -187,7 +187,7 @@ int main(int argc, char** argv)
 #ifdef REFERENCE_TEST
         {
             std::ofstream   aStream("test_reference.log");
-            theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheck);
+            theolizer::JsonOSerializer<>   js(aStream, theolizer::CheckMode::TypeCheckByIndex);
 
             unsigned    aUInt=1;
             BaseClass   aBaseClass(2);

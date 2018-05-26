@@ -197,13 +197,13 @@ void tutoriseModifyComplex()
     <
         theolizer::JsonOSerializer<theolizerD::Master>,
         theolizer::JsonISerializer<theolizerD::Master>
-    >(1, theolizer::CheckMode::TypeCheck);
+    >(1, theolizer::CheckMode::TypeCheckByIndex);
 
     testModifyComplex
     <
         theolizer::JsonOSerializer<theolizerD::Master>,
         theolizer::JsonISerializer<theolizerD::Master>
-    >(1, theolizer::CheckMode::TypeCheckByIndex);
+    >(1, theolizer::CheckMode::MetaMode);
 
 //      ---<<< Json-ver2a >>>---
 
@@ -217,13 +217,13 @@ void tutoriseModifyComplex()
     <
         theolizer::JsonOSerializer<theolizerD::Master>,
         theolizer::JsonISerializer<theolizerD::Master>
-    >(2, theolizer::CheckMode::TypeCheck);
+    >(2, theolizer::CheckMode::TypeCheckByIndex);
 
     testModifyComplex
     <
         theolizer::JsonOSerializer<theolizerD::Master>,
         theolizer::JsonISerializer<theolizerD::Master>
-    >(2, theolizer::CheckMode::TypeCheckByIndex);
+    >(2, theolizer::CheckMode::MetaMode);
 
 //      ---<<< Binary-ver1c >>>---
 
@@ -237,13 +237,13 @@ void tutoriseModifyComplex()
     <
         theolizer::BinaryOSerializer<theolizerD::Master>,
         theolizer::BinaryISerializer<theolizerD::Master>
-    >(1, theolizer::CheckMode::TypeCheck);
+    >(1, theolizer::CheckMode::TypeCheckByIndex);
 
     testModifyComplex
     <
         theolizer::BinaryOSerializer<theolizerD::Master>,
         theolizer::BinaryISerializer<theolizerD::Master>
-    >(1, theolizer::CheckMode::TypeCheckByIndex);
+    >(1, theolizer::CheckMode::MetaMode);
 
 //      ---<<< Binary-ver2a >>>---
 
@@ -257,13 +257,13 @@ void tutoriseModifyComplex()
     <
         theolizer::BinaryOSerializer<theolizerD::Master>,
         theolizer::BinaryISerializer<theolizerD::Master>
-    >(2, theolizer::CheckMode::TypeCheck);
+    >(2, theolizer::CheckMode::TypeCheckByIndex);
 
     testModifyComplex
     <
         theolizer::BinaryOSerializer<theolizerD::Master>,
         theolizer::BinaryISerializer<theolizerD::Master>
-    >(2, theolizer::CheckMode::TypeCheckByIndex);
+    >(2, theolizer::CheckMode::MetaMode);
 
     std::cout << "tutoriseModifyComplex() end" << std::endl;
 }

@@ -68,7 +68,7 @@ THEOLIZER_DESTINATIONS
 THEOLIZER_DESTINATIONS
 (
     Trade,
-    TypeCheck,
+    TypeCheckByIndex,
     DestA,
     DestB,
     DestC

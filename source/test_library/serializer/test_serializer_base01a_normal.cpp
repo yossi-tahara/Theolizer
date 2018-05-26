@@ -526,7 +526,7 @@ return;
 //      ---<<< 最新版(Version.4) >>>---
 
     TestNormalImpl<tOSerialzer, tISerializer>(string(iPreFix)+"_version4.log",
-        4, theolizer::CheckMode::TypeCheck);
+        4, theolizer::CheckMode::MetaMode);
 
 //      ---<<< Version.3 >>>---
 
@@ -536,7 +536,7 @@ return;
 //      ---<<< Version.2 >>>---
 
     TestNormalImpl<tOSerialzer, tISerializer>(string(iPreFix)+"_version2.log",
-        2, theolizer::CheckMode::TypeCheck);
+        2, theolizer::CheckMode::MetaMode);
 
 //      ---<<< Version.1 >>>---
 

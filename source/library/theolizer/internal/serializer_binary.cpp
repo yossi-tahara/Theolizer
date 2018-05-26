@@ -347,7 +347,7 @@ template void BinaryMidOSerializer::saveFloat<long double>(long double iFloat);
 
 void BinaryMidOSerializer::saveGroupStart(bool iIsTop)
 {
-    if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
+    if (!iIsTop || (CheckMode::TypeCheckByIndex <= mCheckMode))
     {
         switch (mElementsMapping)
         {
@@ -366,7 +366,7 @@ void BinaryMidOSerializer::saveGroupStart(bool iIsTop)
 
 void BinaryMidOSerializer::saveGroupEnd(bool iIsTop)
 {
-    if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
+    if (!iIsTop || (CheckMode::TypeCheckByIndex <= mCheckMode))
     {
         writeByte(BinaryTag::ClassEnd);
     }
@@ -899,7 +899,7 @@ void BinaryMidISerializer::loadGroupStart(bool iIsTop)
 {
     if (iIsTop)
     {
-        if (CheckMode::TypeCheck <= mCheckMode)
+        if (CheckMode::TypeCheckByIndex <= mCheckMode)
         {
             mBinaryTag = readByte();
         }
@@ -937,7 +937,7 @@ void BinaryMidISerializer::loadGroupEnd(bool iIsTop)
     {
         while (1)
         {
-            if (!iIsTop || (CheckMode::TypeCheck <= mCheckMode))
+            if (!iIsTop || (CheckMode::TypeCheckByIndex <= mCheckMode))
             {
                 mBinaryTag = readByte();
                 if (mBinaryTag.isClassEnd())

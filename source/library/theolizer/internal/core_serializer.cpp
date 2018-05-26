@@ -194,8 +194,8 @@ void BaseSerializer::writeHeaderTypeInfo()
     saveControl(static_cast<typename std::underlying_type<CheckMode>::type>(mCheckMode));
 
     // 型チェック無しなら終了
-    if ((mCheckMode != CheckMode::TypeCheck)
-     && (mCheckMode != CheckMode::TypeCheckByIndex))
+    if ((mCheckMode != CheckMode::TypeCheckByIndex)
+     && (mCheckMode != CheckMode::MetaMode))
 return;
 
 //----------------------------------------------------------------------------
@@ -312,8 +312,8 @@ return;
     continue;
         aSaveStatList[aIndex] = essSaved;
 
-        // TypeCheckの時はClassTypeのみ出力する
-        if ((mCheckMode == CheckMode::TypeCheck)
+        // 元TypeCheckの時はClassTypeのみ出力する
+        if ((mCheckMode == CheckMode::MetaMode)
          && (aTypeInfo->mTypeCategory != etcClassType))
     continue;
 
@@ -362,7 +362,7 @@ return;
 
             // 要素の形名、もしくは、TypeIndex
             TypeIndex aElementTypeIndex=aElement.getTypeIndex();
-            if (mCheckMode == CheckMode::TypeCheck)
+            if (mCheckMode == CheckMode::MetaMode)
             {
                 // 処理中要素の型名取出し
                 std::string aElementTypeName=getTypeName(aElementTypeIndex);
@@ -407,7 +407,7 @@ void BaseSerializer::saveProcessStart(TypeIndex iTypeIndex)
         case CheckMode::NoTypeCheck:
             break;
 
-        case CheckMode::TypeCheck:
+        case CheckMode::MetaMode:
             {
                 writePreElement();
                 saveControl(getTypeName(iTypeIndex));
@@ -525,7 +525,7 @@ TypeIndexList* BaseSerializer::loadProcessStart(TypeIndex iTypeIndex)
         case CheckMode::NoTypeCheck:
             break;
 
-        case CheckMode::TypeCheck:
+        case CheckMode::MetaMode:
             {
                 if (!readPreElement())
                 {
@@ -833,7 +833,7 @@ std::string BaseSerializer::getDataElementName(TypeIndex iDataTypeIndex, std::si
     unsigned aIndex = iDataTypeIndex.getIndex();
     switch(mCheckMode)
     {
-    case CheckMode::TypeCheck:
+    case CheckMode::MetaMode:
         ret=mSerializedTypeListN->at(aIndex).mSerializedElementList[iDataIndex].mName;
         break;
 
@@ -1013,7 +1013,7 @@ BaseSerializer::AutoRestoreSaveStructure::~AutoRestoreSaveStructure() noexcept(f
 //      トップ・レベル処理補助クラス
 //----------------------------------------------------------------------------
 
-// TypeCheckする
+// 型チェックする
 BaseSerializer::AutoRestoreLoadProcess::AutoRestoreLoadProcess
 (
     BaseSerializer& iSerializer,
@@ -1525,8 +1525,8 @@ void BaseSerializer::readHeaderTypeInfo()
     mCheckMode = static_cast<CheckMode>(aCheckModeValue);
 
     // 型チェック無しなら終了
-    if ((mCheckMode != CheckMode::TypeCheck)
-     && (mCheckMode != CheckMode::TypeCheckByIndex))
+    if ((mCheckMode != CheckMode::TypeCheckByIndex)
+     && (mCheckMode != CheckMode::MetaMode))
 return;
 
 //----------------------------------------------------------------------------
@@ -1609,7 +1609,7 @@ return;
                 // 名前対応時のみ要素名を取り出す
                 std::string aElementName=loadElementName(aElementsMapping);
 
-                if (mCheckMode == CheckMode::TypeCheck)
+                if (mCheckMode == CheckMode::MetaMode)
                 {
                     std::string aElementTypeName;
                     loadControl(aElementTypeName);
