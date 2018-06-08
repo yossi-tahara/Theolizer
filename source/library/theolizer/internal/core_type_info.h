@@ -617,7 +617,6 @@ public:
         if (!mIsTopLevel)
     return false;
 
-        // 保存先がAllも含めて一致するなら保存する
         return iSerializerDestinations.isMatch(mTopDestinations, true);
     }
 
@@ -640,7 +639,6 @@ public:
         if (!mIsTopLevel)
     return false;
 
-        // 保存先がAllも含めて一致するなら保存する
         return iSerializerDestinations.isMatch(mPointerDestinations, true);
     }
 

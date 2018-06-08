@@ -242,6 +242,10 @@ return;
             if (aTypeInfo->mTypeCategory != etcClassType)
         continue;
 
+            // 保存しないなら各基底クラス／要素について処理しない
+            if (*aSaveStatIterator != essSaving)
+        continue;
+
             // クラスなら各基底クラス／要素について処理する
             TypeIndex aTypeIndex = aTypeInfo->getTypeIndex();
             unsigned aVersionNo = getLocalVersionNo(aTypeIndex);

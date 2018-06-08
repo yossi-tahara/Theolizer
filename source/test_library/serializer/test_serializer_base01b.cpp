@@ -198,7 +198,8 @@ void TestDestinationDirectSave(char const* iFileName)
 
     {
         std::ofstream   aStream(iFileName);
-        theolizer::JsonOSerializer<theolizerD::Machine> js(aStream);
+        theolizer::JsonOSerializer<theolizerD::Machine>
+            js(aStream, theolizer::CheckMode::TypeCheck);
 
         THEOLIZER_PROCESS(js, aIntrusiveBase);
         THEOLIZER_PROCESS(js, aIntrusiveBase2);

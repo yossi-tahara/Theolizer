@@ -499,9 +499,15 @@ public:
 
 //----------------------------------------------------------------------------
 //      一致判定
+//          iIsTopMatchの時はヘッダ処理中である。
+//          この時*iLhsがシリアライザの保存先である。
+//              シリアライザがAlwaysならture(ヘッダ保存する)
+//              そうでない時は、Alwaysを除く保存先に交わりがあればtrue
+//              そうでないならfalse
+//              (同じ保存先が有る時のみ出力する。)
 //----------------------------------------------------------------------------
 
-    bool isMatch(Destinations const& iRhs, bool iIsJustMatch=false) const
+    bool isMatch(Destinations const& iRhs, bool iIsTopMatch=false) const
     {
         auto aLhs=mDestinations.begin();
         bool aFirst=true;
@@ -510,9 +516,20 @@ public:
             if (aFirst)
             {
                 aFirst=false;
-                // JustMatchでない時は、どちらか一方のAlwayが1ならtrue
-                if ((!iIsJustMatch) && ((*aLhs & 1) || (aRhs & 1)))
+
+                // TopMatchでないなら、どちらかがAlwaysならtrue
+                if (!iIsTopMatch)
+                {
+                     if ((*aLhs & 1) || (aRhs & 1))
     return true;
+                }
+                // TopMachなら、aRhsがAlwaysならtrue
+                else
+                {
+                    if (*aLhs & 1)
+    return true;
+                    // シリアライザがAlwaysでないなら、変数がAlwaysでもtrueにはしない
+                }
             }
 
             if (*aLhs & aRhs)
