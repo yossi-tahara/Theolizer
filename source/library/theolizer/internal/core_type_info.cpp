@@ -64,7 +64,7 @@ namespace internal
 //      文字列返却
 //----------------------------------------------------------------------------
 
-std::string TypeKindXXXX::to_string() const
+std::string TypeKind::to_string() const
 {
     std::string ret;
 

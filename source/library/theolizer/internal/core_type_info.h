@@ -513,44 +513,7 @@ using ElementRange = PolyRange<ElementBase const>;
 //      型種別(メタ・シリアライズ用)
 //----------------------------------------------------------------------------
 
-enum TypeKind
-{
-    // フラグ
-    etkPrimitiveFlag        =1,                 // Primitive型
-    etkEnumFlag             =2,                 // enum型
-    etkClassFlag            =4,                 // クラス型
-    etkNonIntrusiveFlag     =8,                 //   非侵入型
-    etkManualFlag           =16,                //   手動型
-    etkTemplateFlag         =32,                //   テンプレート
-
-    // 値
-    etkGlobalTable          =0,                 // グローバルバージョン番号テーブル名
-    etkPrimitive            =etkPrimitiveFlag,  // プリミティブ(派生Serialzier)
-    etkEnum                 =etkEnumFlag | etkNonIntrusiveFlag,
-    etkIntrusiveAuto        =etkClassFlag,
-    etkNonIntrusiveAuto     =etkClassFlag | etkNonIntrusiveFlag,
-    etkIntrusiveManual      =etkClassFlag                       | etkManualFlag, 
-    etkNonIntrusiveManual   =etkClassFlag | etkNonIntrusiveFlag | etkManualFlag
-};
-
-//      ---<<< クラス種別 >>>---
-
-enum ClassFlag
-{
-    ecfFullAuto             =1,     // 0:Normal     1:完全自動
-    ecfOrder                =2      // 0:Name       1:Order     (要素対応方式)
-};
-
-//      ---<<< enum種別 >>>---
-
-enum EnumFlag
-{
-    eefUnsigned             =1,     // 0:符号付き   1:符号無し
-    eefScoped               =2,     // 0:Unscoped   1:Scoped
-    eefValue                =4      // 0:名前保存   1:値保存
-};
-
-class TypeKindXXXX
+class TypeKind
 {
 public:
     enum Value : unsigned
@@ -568,10 +531,10 @@ public:
         // 値
         Primitive           =PrimitiveFlag,
         Enum                =EnumFlag  | NonIntrusiveFlag,
-        IntrusiveAuto       =ClassFlag,
-        NonIntrusiveAuto    =ClassFlag | NonIntrusiveFlag,
-        IntrusiveManual     =ClassFlag                    | ManualFlag, 
-        NonIntrusiveManual  =ClassFlag | NonIntrusiveFlag | ManualFlag,
+        IntrusiveAuto       =ClassFlag,                                     // 半自動
+        NonIntrusiveAuto    =ClassFlag | NonIntrusiveFlag,                  // 完全自動
+        IntrusiveManual     =ClassFlag                    | ManualFlag,     // 未サポート
+        NonIntrusiveManual  =ClassFlag | NonIntrusiveFlag | ManualFlag,     // 手動
 
         // 追加情報の基数とマスク
         AdditionalRadix     =64,
@@ -597,17 +560,18 @@ public:
     };
 
     // コンストラクタ
-    TypeKindXXXX() : mValue(Invalid) { }
-    explicit TypeKindXXXX(Value iValue) : mValue(iValue) { }
-    TypeKindXXXX(TypeKindXXXX const& iTypeKindXXXX) : mValue(iTypeKindXXXX.mValue) { }
+    TypeKind() : mValue(Invalid) { }
+    explicit TypeKind(unsigned iValue) : mValue(static_cast<Value>(iValue)) { }
+    TypeKind(Value iValue) : mValue(iValue) { }
+    TypeKind(TypeKind const& iTypeKindXXXX) : mValue(iTypeKindXXXX.mValue) { }
 
     // 代入演算子
-    TypeKindXXXX& operator=(TypeKindXXXX iRhs)
+    TypeKind& operator=(TypeKind iRhs)
     {
         mValue = iRhs.mValue;
         return *this;
     }
-    TypeKindXXXX& operator=(Value iRhs)
+    TypeKind& operator=(Value iRhs)
     {
         mValue = iRhs;
         return *this;
@@ -616,24 +580,27 @@ public:
     // 有効
     bool isValid() const { return mValue != Invalid; }
 
+    // データ返却
+    TypeKind::Value get() const { return mValue; }
+
     // 比較演算子
-    bool operator==(TypeKindXXXX iRhs)        const { return mValue == iRhs.mValue; }
-    bool operator!=(TypeKindXXXX iRhs)        const { return mValue != iRhs.mValue; }
-    bool operator==(TypeKindXXXX::Value iRhs) const { return mValue == iRhs; }
-    bool operator!=(TypeKindXXXX::Value iRhs) const { return mValue != iRhs; }
+    bool operator==(TypeKind iRhs)        const { return mValue == iRhs.mValue; }
+    bool operator!=(TypeKind iRhs)        const { return mValue != iRhs.mValue; }
+    bool operator==(TypeKind::Value iRhs) const { return mValue == iRhs; }
+    bool operator!=(TypeKind::Value iRhs) const { return mValue != iRhs; }
 
     // 文字列返却
     std::string to_string() const;
 
     // 出力
-    friend std::ostream& operator<<(std::ostream& iOStream, TypeKindXXXX iTypeKindXXXX)
+    friend std::ostream& operator<<(std::ostream& iOStream, TypeKind iTypeKindXXXX)
     {
         iOStream << iTypeKindXXXX.mValue;
         return iOStream;
     }
 
     // 入力
-    friend std::istream& operator>>(std::istream& iIStream, TypeKindXXXX& oTypeKindXXXX)
+    friend std::istream& operator>>(std::istream& iIStream, TypeKind& oTypeKindXXXX)
     {
         unsigned    temp;
         iIStream >> temp;
@@ -894,7 +861,7 @@ public:
 
 //      ---<<< メタ・シリアライズ用 >>>---
 
-    TypeKind    getTypeKind()
+    TypeKind getTypeKind()
     {
         BaseTypeInfo* aTypeInfo =
             TypeInfoList::getInstance().getList().at(mTypeIndex.getIndex());
@@ -984,7 +951,7 @@ public:
 
 //      ---<<< メタ・シリアライズ用 >>>---
 
-    TypeKind    getTypeKind()
+    TypeKind getTypeKind()
     {
         BaseTypeInfo* aTypeInfo =
             TypeInfoList::getInstance().getList().at(mTypeIndex.getIndex());
@@ -1269,22 +1236,22 @@ private:
 
         // 手動型はここで求める(バージョン毎に異なる部分がない)
         unsigned ret=0;
-        ret |= theolizer::internal::ecfOrder;
+        ret |= theolizer::internal::TypeKind::Order;
         return ret;
     }
 
     TypeKind getTypeKind()
     {
-        std::underlying_type<TypeKind>::type ret = etkClassFlag;
+        unsigned ret = TypeKind::ClassFlag;
 
         if (tClassType::Theolizer::kIsNonIntrusive)
         {
-            ret |= etkNonIntrusiveFlag;
+            ret |= TypeKind::NonIntrusiveFlag;
         }
 
         if (!tClassType::Theolizer::kIsAuto)
         {
-            ret |= etkManualFlag;
+            ret |= TypeKind::ManualFlag;
         }
 
         if (!std::is_same
@@ -1293,10 +1260,10 @@ private:
                 typename tClassType::TheolizerTarget
             >::value)
         {
-            ret |= etkTemplateFlag;
+            ret |= TypeKind::TemplateFlag;
         }
 
-        return static_cast<TypeKind>(ret);
+        return TypeKind(ret);
     }
 };
 
@@ -1368,7 +1335,7 @@ public:
 
 //      ---<<< メタ・シリアライズ用 >>>---
 
-    TypeKind getTypeKind() {return etkEnum;}
+    TypeKind getTypeKind() {return TypeKind::Enum;}
 };
 
 // ***************************************************************************
@@ -1397,7 +1364,8 @@ struct PrimitiveId { };
         >                                                                   \
     >                                                                       \
     {                                                                       \
-        static char const* getPrimitiveName()    {return dName;}            \
+        static char const* getPrimitiveName()   {return dName;}             \
+        static unsigned getEnumUnderlyng()      {return dDigits+dSigned*128;}\
     }
 
 #define THEOLIZER_INTERNAL_FLOAT(dDigits, dMaxExponent, dName)              \
@@ -1414,7 +1382,8 @@ struct PrimitiveId { };
         >                                                                   \
     >                                                                       \
     {                                                                       \
-        static char const* getPrimitiveName()    {return dName;}            \
+        static char const* getPrimitiveName()   {return dName;}             \
+        static unsigned getEnumUnderlyng()      {THEOLIZER_INTERNAL_ABORT("");return 0;}\
     }
 
 #define THEOLIZER_INTERNAL_STRING(dName)                                    \
@@ -1428,7 +1397,8 @@ struct PrimitiveId { };
         >                                                                   \
     >                                                                       \
     {                                                                       \
-        static char const* getPrimitiveName()    {return dName;}            \
+        static char const* getPrimitiveName()   {return dName;}             \
+        static unsigned getEnumUnderlyng()      {THEOLIZER_INTERNAL_ABORT("");return 0;}\
     }
 
 THEOLIZER_INTERNAL_INTEGRAL(0,  1,  "bool"    );
@@ -1458,11 +1428,23 @@ char const* getPrimitiveName()
     return "";
 }
 
+template<typename tType>
+unsigned getEnumUnderlyng()
+{
+    static_assert(Ignore<tType>::kFalse, "Unknown enum underlyng.");
+    return 0;
+}
+
 #define THEOLIZER_INTERNAL_DEF_PRIMITIVE(dType)                             \
     template<>                                                              \
     inline char const* getPrimitiveName<dType>()                            \
     {                                                                       \
         return PrimitiveId<dType>::getPrimitiveName();                      \
+    }                                                                       \
+    template<>                                                              \
+    inline unsigned getEnumUnderlyng<dType>()                               \
+    {                                                                       \
+        return PrimitiveId<dType>::getEnumUnderlyng();                      \
     }
 #include "primitive.inc"
 
@@ -1515,7 +1497,7 @@ public:
 
 //      ---<<< メタ・シリアライズ用 >>>---
 
-    TypeKind    getTypeKind() {return etkPrimitive;}
+    TypeKind getTypeKind() {return TypeKind::Primitive;}
 };
 
 // ***************************************************************************
@@ -1565,7 +1547,7 @@ public:
 
 //      ---<<< メタ・シリアライズ用 >>>---
 
-//    TypeKind    getTypeKind() {return etkPrimitive;}
+//    TypeKind getTypeKind() {return TypeKind::Primitive;}
 };
 
 // ***************************************************************************

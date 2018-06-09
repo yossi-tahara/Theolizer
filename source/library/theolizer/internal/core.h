@@ -509,12 +509,6 @@ namespace internal
 
 struct ElementBase
 {
-    // クラス/enum共通
-    virtual void writeMetaData
-    (
-        BaseSerializer& iSerializer
-    ) const = 0;
-
     // クラスのみ
     virtual char const* getName() const                 {return "";}
     virtual TypeIndex getTypeIndex() const              {return TypeIndex();}
@@ -660,49 +654,6 @@ public:
     void loadElement(Serializer& iSerializer, tVersionType& iInstance) const
     {
         mHolder->loadElement(iSerializer, iInstance);
-    }
-
-//      ---<<< メタ・シリアライズ >>>---
-
-    void writeMetaData
-    (
-        BaseSerializer& iSerializer
-    ) const
-    {
-        // 要素毎の塊
-        iSerializer.writePreElement();
-        BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer, emOrder, true);
-
-        // TypeInfo獲得
-        auto aTypeIndex=getTypeIndex();
-        auto aTypeInfo=TypeInfoList::getInstance().getList()[aTypeIndex.getIndex()];
-
-        // バージョン番号獲得
-        unsigned aVersionNo = iSerializer.getLocalVersionNo(aTypeInfo->getTypeIndex());
-
-        // 要素名
-        iSerializer.writePreElement();
-        iSerializer.saveControl(mName);
-
-        // 次バージョン要素名
-        iSerializer.writePreElement();
-        iSerializer.saveControl(mNextName);
-
-        // TypeKind
-        iSerializer.writePreElement();
-        iSerializer.saveControl(aTypeInfo->getTypeKind());
-
-        // 形名(*/[]修飾付き)
-        iSerializer.writePreElement();
-        iSerializer.saveControl(aTypeInfo->getTypeName(aVersionNo));
-
-        // バージョン番号
-        iSerializer.writePreElement();
-        iSerializer.saveControl(mVersionNo);
-
-        // オブジェクト追跡指定
-        iSerializer.writePreElement();
-        iSerializer.saveControl(mTrackingMode);
     }
 };
 
@@ -859,40 +810,6 @@ struct EnumElement : public ElementBase
     { }
 
     const bool isSentinel() const {return *mSymbols[0] == 0;}
-
-    // メタ・データ保存
-    void writeMetaData
-    (
-        BaseSerializer& iSerializer
-    ) const
-    {
-        // シンボル名リスト
-        {
-            iSerializer.writePreElement();
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer,emOrder,true);
-            for (auto symbol : mSymbols)
-            {
-                iSerializer.writePreElement();
-                std::string aSymbol(symbol);
-                iSerializer.saveControl(aSymbol);
-            }
-        }
-        // シンボル値リスト
-        {
-            iSerializer.writePreElement();
-            BaseSerializer::AutoRestoreSave aAutoRestoreSave(iSerializer,emOrder,true);
-            for (auto value : mValues)
-            {
-                iSerializer.writePreElement();
-                iSerializer.saveControl(value);
-            }
-        }
-        // 次バージョン値
-        {
-            iSerializer.writePreElement();
-            iSerializer.saveControl(mPrevValue);
-        }
-    }
 
     // dummy
     Destinations    mDestinations;

@@ -683,22 +683,30 @@ THEOLIZER_INTERNAL_VER_DEBUG((std::cout << "    (4)mValue=" << mValue << "\n";))
     {
         unsigned    ret=0;
 
-        // signed/unsigned
-        if (!std::is_signed<BaseType>::value)
+        // 基底型
+        switch(theolizer::internal::getEnumUnderlyng<BaseType>())
         {
-            ret |= theolizer::internal::eefUnsigned;
+        case      1:    ret |= theolizer::internal::TypeKind::Bool;     break;
+        case 128+ 8:    ret |= theolizer::internal::TypeKind::Int8;     break;
+        case      8:    ret |= theolizer::internal::TypeKind::UInt8;    break;
+        case 128+16:    ret |= theolizer::internal::TypeKind::Int16;    break;
+        case     16:    ret |= theolizer::internal::TypeKind::UInt16;   break;
+        case 128+32:    ret |= theolizer::internal::TypeKind::Int32;    break;
+        case     32:    ret |= theolizer::internal::TypeKind::UInt32;   break;
+        case 128+64:    ret |= theolizer::internal::TypeKind::Int64;    break;
+        case     64:    ret |= theolizer::internal::TypeKind::UInt64;   break;
         }
 
         // scoped/unscoped
         if (!std::is_convertible<THEOLIZER_GENERATED_ENUM_TYPE, BaseType>::value)
         {
-            ret |= theolizer::internal::eefScoped;
+            ret |= theolizer::internal::TypeKind::Scoped;
         }
 
         // Value/Name
         if (Theolizer::kEnumSaveType == theolizer::internal::estValue)
         {
-            ret |= theolizer::internal::eefValue;
+            ret |= theolizer::internal::TypeKind::SaveValue;
         }
 
         return ret;

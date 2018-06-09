@@ -729,15 +729,10 @@ THEOLIZER_INTERNAL_VER_DEBUG((
     {
         unsigned ret=0;
 
-        if (THEOLIZER_GENERATED_CLASS_TYPE::Theolizer::kIsFullAuto)
-        {
-            ret |= theolizer::internal::ecfFullAuto;
-        }
-
         if (theolizer::internal::THEOLIZER_GENERATED_ELEMENT_MAP
          == theolizer::internal::emOrder)
         {
-            ret |= theolizer::internal::ecfOrder;
+            ret |= theolizer::internal::TypeKind::Order;
         }
         return ret;
     }

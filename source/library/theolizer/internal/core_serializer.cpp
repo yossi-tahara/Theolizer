@@ -327,11 +327,22 @@ return;
         saveControl(aTypeName);
 //std::cout << "aTypeName=" << aTypeName << "\n";
 
+        // TypeKind取得
+        TypeKind::Value aTypeKind = aTypeInfo->getTypeKind().get();
+
+#if 0
+        // メタ・モードなら、型の種別を出力する
+        if (mCheckMode != CheckMode::MetaMode)
+        {
+            saveControl(aTypeKind);
+        }
+#endif
+
         if (aTypeInfo->mTypeCategory != etcClassType)
     continue;
 
         // 手動型は要素出力しない
-        if (aTypeInfo->getTypeKind() & etkManualFlag)
+        if (aTypeKind & TypeKind::ManualFlag)
     continue;
 
         // バージョン番号と対応方法獲得
@@ -1521,7 +1532,7 @@ return;
             ElementsMapping aElementsMapping = aTypeInfo->getElementsMapping(aVersionNo);
 
             // 手動型なら要素情報なし
-              if (aTypeInfo->getTypeKind() & etkManualFlag)
+              if (aTypeInfo->getTypeKind().get() & TypeKind::ManualFlag)
       continue;
 
             // 開始マーク
