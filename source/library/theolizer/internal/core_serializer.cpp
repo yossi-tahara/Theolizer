@@ -335,6 +335,15 @@ return;
         {
             writePreElement();
             saveControl(aTypeKind);
+
+            // enum型ならシンボル・リストを出力する
+            if (aTypeKind & TypeKind::EnumFlag)
+            {
+                for (auto&& aElement : aTypeInfo->getElementRange(aVersionNo))
+                {
+                    aElement.writeMetaData(*this);
+                }
+            }
         }
 
         if (aTypeInfo->mTypeCategory != etcClassType)
@@ -1513,8 +1522,8 @@ return;
             unsigned  temp;
             loadControl(temp);
             aTypeKind=TypeKind(temp);
-        }
 std::cout << "TypeKind=" << aTypeKind.to_string() << "\n";
+        }
 
         // プログラム側のTypeIndexList獲得
         //  プログラム側に存在しない時はTypeIndexListのsize()==0

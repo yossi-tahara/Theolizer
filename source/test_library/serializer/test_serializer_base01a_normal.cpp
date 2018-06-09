@@ -526,22 +526,22 @@ return;
 //      ---<<< 最新版(Version.4) >>>---
 
     TestNormalImpl<tOSerialzer, tISerializer>(string(iPreFix)+"_version4.log",
-        4, theolizer::CheckMode::MetaMode);
+        4, theolizer::CheckMode::TypeCheck);
 
 //      ---<<< Version.3 >>>---
 
     TestNormalImpl<tOSerialzer, tISerializer>(string(iPreFix)+"_version3.log",
-        3, theolizer::CheckMode::TypeCheck);
+        3, theolizer::CheckMode::MetaMode);
 
 //      ---<<< Version.2 >>>---
 
     TestNormalImpl<tOSerialzer, tISerializer>(string(iPreFix)+"_version2.log",
-        2, theolizer::CheckMode::MetaMode);
+        2, theolizer::CheckMode::TypeCheck);
 
 //      ---<<< Version.1 >>>---
 
     TestNormalImpl<tOSerialzer, tISerializer>(string(iPreFix)+"_version1.log",
-        1, theolizer::CheckMode::TypeCheck);
+        1, theolizer::CheckMode::MetaMode);
 
 //      ---<<< NoTypeCheck形式 >>>---
 

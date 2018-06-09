@@ -509,6 +509,10 @@ namespace internal
 
 struct ElementBase
 {
+    // enumのみ
+    virtual void writeMetaData(BaseSerializer& iSerializer) const { }
+    virtual void  readMetaData(BaseSerializer& iSerializer)       { }
+
     // クラスのみ
     virtual char const* getName() const                 {return "";}
     virtual TypeIndex getTypeIndex() const              {return TypeIndex();}
@@ -810,6 +814,15 @@ struct EnumElement : public ElementBase
     { }
 
     const bool isSentinel() const {return *mSymbols[0] == 0;}
+
+    void writeMetaData(BaseSerializer& iSerializer) const
+    {
+std::cout << mSymbols[0] << ":" << mValues[0] << "\n";
+    }
+
+    void  readMetaData(BaseSerializer& iSerializer)
+    {
+    }
 
     // dummy
     Destinations    mDestinations;
