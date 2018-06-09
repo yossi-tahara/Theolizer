@@ -330,13 +330,12 @@ return;
         // TypeKind取得
         TypeKind::Value aTypeKind = aTypeInfo->getTypeKind().get();
 
-#if 0
         // メタ・モードなら、型の種別を出力する
-        if (mCheckMode != CheckMode::MetaMode)
+        if (mCheckMode == CheckMode::MetaMode)
         {
+            writePreElement();
             saveControl(aTypeKind);
         }
-#endif
 
         if (aTypeInfo->mTypeCategory != etcClassType)
     continue;
@@ -1503,6 +1502,19 @@ return;
     break;
         std::string  aTypeName;
         loadControl(aTypeName);
+
+
+        // メタ・モードなら、型の種別を入力する
+        TypeKind    aTypeKind;
+        if (mCheckMode == CheckMode::MetaMode)
+        {
+            if (!readPreElement())
+    break;
+            unsigned  temp;
+            loadControl(temp);
+            aTypeKind=TypeKind(temp);
+        }
+std::cout << "TypeKind=" << aTypeKind.to_string() << "\n";
 
         // プログラム側のTypeIndexList獲得
         //  プログラム側に存在しない時はTypeIndexListのsize()==0
