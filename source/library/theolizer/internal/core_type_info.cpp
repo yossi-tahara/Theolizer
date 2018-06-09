@@ -57,6 +57,63 @@ namespace internal
 //############################################################################
 
 // ***************************************************************************
+//      型種別(メタ・シリアライズ用)
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      文字列返却
+//----------------------------------------------------------------------------
+
+std::string TypeKindXXXX::to_string() const
+{
+    std::string ret;
+
+    auto add=[&](char const* iRhs){ if (!ret.empty()) ret+="|"; ret += iRhs; };
+
+    unsigned    aValue = mValue;
+    switch(aValue & ~(AdditionalMask|TemplateFlag))
+    {
+    case Primitive:             ret="Primitive";            break;
+    case Enum:                  ret="Enum";                 break;
+    case IntrusiveAuto:         ret="IntrusiveAuto";        break;
+    case NonIntrusiveAuto:      ret="NonIntrusiveAuto";     break;
+    case IntrusiveManual:       ret="IntrusiveManual";      break;
+    case NonIntrusiveManual:    ret="NonIntrusiveManual";   break;
+    default:
+        if (aValue & PrimitiveFlag)     add("PrimitiveFlag");
+        if (aValue & EnumFlag)          add("EnumFlag");
+        if (aValue & ClassFlag)         add("ClassFlag");
+        if (aValue & NonIntrusiveFlag)  add("NonIntrusiveFlag");
+        if (aValue & ManualFlag)        add("ManualFlag");
+        break;
+    }
+    if (aValue & TemplateFlag)      add("TemplateFlag");
+    if (aValue & ClassFlag)
+    {
+        if (aValue & Order)         add("Order");
+    }
+    else if (aValue & EnumFlag)
+    {
+        if (aValue & SaveValue)         add("SaveValue");
+        if (aValue & Scoped)            add("Scoped");
+        switch(aValue & UnderlyingMask)
+        {
+        case Bool:      add("Bool");    break;
+        case Int8:      add("Int8");    break;
+        case UInt8:     add("UInt8");   break;
+        case Int16:     add("Int16");   break;
+        case UInt16:    add("UInt16");  break;
+        case Int32:     add("Int32");   break;
+        case UInt32:    add("UInt32");  break;
+        case Int64:     add("Int64");   break;
+        case UInt64:    add("UInt64");  break;
+        }
+    }
+
+    return ret;
+}
+
+// ***************************************************************************
 //      型リスト(シングルトン)
 // ***************************************************************************
 

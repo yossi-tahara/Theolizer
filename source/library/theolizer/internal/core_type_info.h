@@ -321,7 +321,7 @@ public:
     }
 
     // 文字列型からの入力
-    friend std::istream& operator>>(std::istream& iIStream, TypeIndex& iTypeIndex)
+    friend std::istream& operator>>(std::istream& iIStream, TypeIndex& oTypeIndex)
     {
         unsigned aIndex = 0;        // valgrindエラー回避(この初期化により消えることを確認した)
         iIStream >> aIndex;
@@ -335,8 +335,8 @@ public:
         {
             THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
         }
-        iTypeIndex.set(aIndex, aAdditional);
-//std::cout << "{" << iTypeIndex << "}\n";
+        oTypeIndex.set(aIndex, aAdditional);
+//std::cout << "{" << oTypeIndex << "}\n";
 
         // I/Oエラーチェック
         auto aStat = iIStream.rdstate();
@@ -548,6 +548,101 @@ enum EnumFlag
     eefUnsigned             =1,     // 0:符号付き   1:符号無し
     eefScoped               =2,     // 0:Unscoped   1:Scoped
     eefValue                =4      // 0:名前保存   1:値保存
+};
+
+class TypeKindXXXX
+{
+public:
+    enum Value : unsigned
+    {
+        Invalid             =0,
+
+        // フラグ
+        PrimitiveFlag       =1,                 // Primitive型
+        EnumFlag            =2,                 // enum型
+        ClassFlag           =4,                 // クラス型
+        NonIntrusiveFlag    =8,                 //   非侵入型
+        ManualFlag          =16,                //   手動型
+        TemplateFlag        =32,                //   テンプレート
+
+        // 値
+        Primitive           =PrimitiveFlag,
+        Enum                =EnumFlag  | NonIntrusiveFlag,
+        IntrusiveAuto       =ClassFlag,
+        NonIntrusiveAuto    =ClassFlag | NonIntrusiveFlag,
+        IntrusiveManual     =ClassFlag                    | ManualFlag, 
+        NonIntrusiveManual  =ClassFlag | NonIntrusiveFlag | ManualFlag,
+
+        // 追加情報の基数とマスク
+        AdditionalRadix     =64,
+        AdditionalMask      =(~0x3fu),
+
+        // クラス用追加情報
+        Order               =1*AdditionalRadix,     // 要素の対応方式       0:Name      1:Order
+
+        // enum型用追加情報
+        SaveValue           =1*AdditionalRadix,     // 保存方式             0:名前保存  1:値保存
+        Scoped              =2*AdditionalRadix,     //                      0:Unscoped  1:Scoped
+        UnderlyingRadix     =4*AdditionalRadix,     // 基底型部分の基数
+        UnderlyingMask      =0x3c*AdditionalRadix,  // 基底型部分のマスク
+        Bool                =0*UnderlyingRadix*AdditionalRadix,
+        Int8                =1*UnderlyingRadix*AdditionalRadix,
+        UInt8               =2*UnderlyingRadix*AdditionalRadix,
+        Int16               =3*UnderlyingRadix*AdditionalRadix,
+        UInt16              =4*UnderlyingRadix*AdditionalRadix,
+        Int32               =5*UnderlyingRadix*AdditionalRadix,
+        UInt32              =6*UnderlyingRadix*AdditionalRadix,
+        Int64               =7*UnderlyingRadix*AdditionalRadix,
+        UInt64              =8*UnderlyingRadix*AdditionalRadix
+    };
+
+    // コンストラクタ
+    TypeKindXXXX() : mValue(Invalid) { }
+    explicit TypeKindXXXX(Value iValue) : mValue(iValue) { }
+    TypeKindXXXX(TypeKindXXXX const& iTypeKindXXXX) : mValue(iTypeKindXXXX.mValue) { }
+
+    // 代入演算子
+    TypeKindXXXX& operator=(TypeKindXXXX iRhs)
+    {
+        mValue = iRhs.mValue;
+        return *this;
+    }
+    TypeKindXXXX& operator=(Value iRhs)
+    {
+        mValue = iRhs;
+        return *this;
+    }
+
+    // 有効
+    bool isValid() const { return mValue != Invalid; }
+
+    // 比較演算子
+    bool operator==(TypeKindXXXX iRhs)        const { return mValue == iRhs.mValue; }
+    bool operator!=(TypeKindXXXX iRhs)        const { return mValue != iRhs.mValue; }
+    bool operator==(TypeKindXXXX::Value iRhs) const { return mValue == iRhs; }
+    bool operator!=(TypeKindXXXX::Value iRhs) const { return mValue != iRhs; }
+
+    // 文字列返却
+    std::string to_string() const;
+
+    // 出力
+    friend std::ostream& operator<<(std::ostream& iOStream, TypeKindXXXX iTypeKindXXXX)
+    {
+        iOStream << iTypeKindXXXX.mValue;
+        return iOStream;
+    }
+
+    // 入力
+    friend std::istream& operator>>(std::istream& iIStream, TypeKindXXXX& oTypeKindXXXX)
+    {
+        unsigned    temp;
+        iIStream >> temp;
+        oTypeKindXXXX.mValue = static_cast<Value>(temp);
+        return iIStream;
+    }
+
+private:
+    Value   mValue;
 };
 
 //----------------------------------------------------------------------------
