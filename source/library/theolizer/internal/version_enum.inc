@@ -1049,8 +1049,9 @@ inline theolizer::internal::EnumSymbolValue THEOLIZER_INTERNAL_DERIVED::Theolize
 )
 {
     std::string aSymbol=iSerializer.loadElementName(theolizer::internal::emName);
+
     THEOLIZER_GENERATED_BASE_TYPE   mValue;
-    iSerializer.loadControl(mValue);
+    iSerializer.loadPrimitive(mValue);
 
     return {aSymbol, mValue};
 }

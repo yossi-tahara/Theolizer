@@ -96,18 +96,19 @@ typedef std::vector<EnumSymbolValue> SerializedSymbolList;
 //      ---<<< クラスの型情報 >>>---
 
 // 型情報
-struct SerializedTypeIndex
+struct SerializedTypeData
 {
     std::string                 mTypeName;              // 型名
+    TypeKind                    mTypeKind;              // 型種別
     TypeIndexList*              mProgramTypeIndex;      // 対応するプログラム側TypeIndex
     SerializedElementList       mSerializedElementList; // 要素リスト(クラス用)
     SerializedSymbolList        mSerializedSymbolList;  // シンボル・リスト(enum型用)
 
-    SerializedTypeIndex() : mProgramTypeIndex(nullptr) { }
+    SerializedTypeData() : mProgramTypeIndex(nullptr) { }
 };
 
 // 型情報のリスト
-struct BaseSerializer::SerializedTypeList : public std::vector<SerializedTypeIndex>
+struct BaseSerializer::SerializedTypeList : public std::vector<SerializedTypeData>
 { };
 
 // ***************************************************************************
@@ -1478,7 +1479,6 @@ return;
         std::string  aTypeName;
         loadControl(aTypeName);
 
-
         // メタ・モードなら、型の種別を回復する
         TypeKind                aTypeKind;
         if (mCheckMode == CheckMode::MetaMode)
@@ -1521,7 +1521,7 @@ std::cout << "TypeKind=" << aTypeKind.to_string() << "\n";
             if (aTypeInfo->getTypeKind(aVersionNo) & TypeKind::ManualFlag)
       continue;
 
-            // enum型ならシンボル・リストを回復する
+            // TypeKind有効時、enum型ならシンボル・リストを回復する
             if (aTypeKind & TypeKind::EnumFlag)
             {
                 // 開始マーク
@@ -1578,14 +1578,15 @@ std::cout << "TypeKind=" << aTypeKind.to_string() << "\n";
             mSerializedTypeList->resize(aDataTypeIndex+1);
         }
 #endif
-        SerializedTypeIndex& aSerializedTypeIndex
+        SerializedTypeData& aSerializedTypeData
                                 =mSerializedTypeList->at(aDataTypeIndex.getIndex());
-        aSerializedTypeIndex.mTypeName=std::move(aTypeName);
-        aSerializedTypeIndex.mProgramTypeIndex=&aTypeIndexList;
+        aSerializedTypeData.mTypeName=std::move(aTypeName);
+        aSerializedTypeData.mTypeKind=aTypeKind;
+        aSerializedTypeData.mProgramTypeIndex=&aTypeIndexList;
 //std::cout << "   &aTypeIndexList=" << &aTypeIndexList << "\n";
-        aSerializedTypeIndex.mSerializedElementList
+        aSerializedTypeData.mSerializedElementList
                                         =std::move(aSerializedElementList);
-        aSerializedTypeIndex.mSerializedSymbolList
+        aSerializedTypeData.mSerializedSymbolList
                                         =std::move(aSerializedSymbolList);
     }
 
@@ -1594,30 +1595,67 @@ std::cout << "TypeKind=" << aTypeKind.to_string() << "\n";
 //----------------------------------------------------------------------------
 
 //std::cout << "mSerializedTypeList : size=" << mSerializedTypeList->size() << "\n";
-    for (auto&& aSerializedTypeIndex : *mSerializedTypeList.get())
+    for (auto&& aSerializedTypeData : *mSerializedTypeList.get())
     {
 
 //      ---<<< 対応する型が存在しない時、無視 >>>---
 
-        if ((!aSerializedTypeIndex.mProgramTypeIndex)
-         || (aSerializedTypeIndex.mProgramTypeIndex->size() == 0))
+        if ((!aSerializedTypeData.mProgramTypeIndex)
+         || (aSerializedTypeData.mProgramTypeIndex->size() == 0))
     continue;
 
 //      ---<<< 型名をログの位置情報として登録 >>>---
 
         AutoRestoreSerializeInfo aAutoRestoreSerializeInfo
-            (*this, aSerializedTypeIndex.mTypeName.c_str());
+            (*this, aSerializedTypeData.mTypeName.c_str());
 
-//      ---<<< プログラム側情報獲得 >>>---
+//      ---<<< enum型の互換性チェック >>>---
 
         // 先頭のBaseTypeInfoを用いる
-        TypeIndex aProgramTypeIndex = *(aSerializedTypeIndex.mProgramTypeIndex->begin());
+        TypeIndex aProgramTypeIndex = *(aSerializedTypeData.mProgramTypeIndex->begin());
         unsigned aVersionNo = getLocalVersionNo(aProgramTypeIndex);
         BaseTypeInfo* aTypeInfo = mTypeInfoList[aProgramTypeIndex.getIndex()];
-
 //std::cout << "    [" << aProgramTypeIndex << "]"
 //          << " getElementRange(" << aVersionNo << ").size()="
 //          << aTypeInfo->getElementRange(aVersionNo).size() << "\n";
+
+        // TypeKind有効、かつ、enum型なら、チェックする
+        if (aSerializedTypeData.mTypeKind & TypeKind::EnumFlag)
+        {
+            for (auto& symbol : aSerializedTypeData.mSerializedSymbolList)
+            {
+                bool aIsOk=false;
+                for (auto& element : aTypeInfo->getElementRange(aVersionNo))
+                {
+                    // 値保存なら、値が含まれていることをチェックする
+                    if (aSerializedTypeData.mTypeKind & TypeKind::SaveValue)
+                    {
+                        if (element.isIncluded(symbol))
+                        {
+                            aIsOk=true;
+                break;
+                        }
+                    }
+                    // 名前保存なら、名前が含まれていることをチェックする
+                    else
+                    {
+                        if (element.isIncluded(symbol.str()))
+                        {
+                            aIsOk=true;
+                break;
+                        }
+                    }
+                }
+                if (!aIsOk)
+                {
+                    THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch enum type.");
+            break;
+                }
+            }
+        }
+
+//      ---<<< プログラム側情報獲得 >>>---
+
         std::vector<std::pair<char const*, TypeIndex> > aProgramElements;
         for (auto&& aElement : aTypeInfo->getElementRange(aVersionNo))
         {
@@ -1635,7 +1673,7 @@ std::cout << "TypeKind=" << aTypeKind.to_string() << "\n";
 
 //std::cout << "  --- checking ---\n";
         auto aProgramElementItr = aProgramElements.begin();
-        for (auto&& aSerializedElement : aSerializedTypeIndex.mSerializedElementList)
+        for (auto&& aSerializedElement : aSerializedTypeData.mSerializedElementList)
         {
             // 名前対応
             if (aTypeInfo->getElementsMapping(aVersionNo) == emName)
@@ -1679,18 +1717,18 @@ std::cout << "TypeKind=" << aTypeKind.to_string() << "\n";
 //      TypeIndex一致判定
 //----------------------------------------------------------------------------
 
-bool BaseSerializer::isMatchTypeIndex(TypeIndex iSerializedTypeIndex, TypeIndex iProgramTypeIndex)
+bool BaseSerializer::isMatchTypeIndex(TypeIndex iSerializedTypeData, TypeIndex iProgramTypeIndex)
 {
     // 付加情報(オブジェクト追跡と配列)が異なれば不一致
-    if (iSerializedTypeIndex.getAdditional() != iProgramTypeIndex.getAdditional())
+    if (iSerializedTypeData.getAdditional() != iProgramTypeIndex.getAdditional())
 return false;
 
     bool aIsMatch=false;
     // リストにある時だけチェックする(ないなら不一致)
-    if (iSerializedTypeIndex.getIndex() < mSerializedTypeList->size())
+    if (iSerializedTypeData.getIndex() < mSerializedTypeList->size())
     {
-        auto& aElementType = mSerializedTypeList->at(iSerializedTypeIndex.getIndex());
-//std::cout << "   Index=" << iSerializedTypeIndex.getIndex() 
+        auto& aElementType = mSerializedTypeList->at(iSerializedTypeData.getIndex());
+//std::cout << "   Index=" << iSerializedTypeData.getIndex() 
 //          << " size()=" << aElementType.mProgramTypeIndex->size()
 //          << " mProgramTypeIndex=" << aElementType.mProgramTypeIndex << "\n";
         for (auto aProgramTypeIndex : *(aElementType.mProgramTypeIndex))
