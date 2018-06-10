@@ -687,13 +687,13 @@ THEOLIZER_INTERNAL_VER_DEBUG((std::cout << "    (4)mValue=" << mValue << "\n";))
         switch(theolizer::internal::getEnumUnderlyng<BaseType>())
         {
         case      1:    ret |= theolizer::internal::TypeKind::Bool;     break;
-        case 128+ 8:    ret |= theolizer::internal::TypeKind::Int8;     break;
+        case 128+ 7:    ret |= theolizer::internal::TypeKind::Int8;     break;
         case      8:    ret |= theolizer::internal::TypeKind::UInt8;    break;
-        case 128+16:    ret |= theolizer::internal::TypeKind::Int16;    break;
+        case 128+15:    ret |= theolizer::internal::TypeKind::Int16;    break;
         case     16:    ret |= theolizer::internal::TypeKind::UInt16;   break;
-        case 128+32:    ret |= theolizer::internal::TypeKind::Int32;    break;
+        case 128+31:    ret |= theolizer::internal::TypeKind::Int32;    break;
         case     32:    ret |= theolizer::internal::TypeKind::UInt32;   break;
-        case 128+64:    ret |= theolizer::internal::TypeKind::Int64;    break;
+        case 128+63:    ret |= theolizer::internal::TypeKind::Int64;    break;
         case     64:    ret |= theolizer::internal::TypeKind::UInt64;   break;
         }
 
@@ -1039,6 +1039,20 @@ inline void THEOLIZER_INTERNAL_DERIVED::Theolizer::loadEnum
     {
         aVersion.loadEnum(iSerializer, iVersionNo);
     }
+}
+
+//      ---<<< Enum型のヘッダ回復 >>>---
+
+inline theolizer::internal::EnumSymbolValue THEOLIZER_INTERNAL_DERIVED::Theolizer::readEnumSymbol
+(
+    theolizer::internal::BaseSerializer& iSerializer
+)
+{
+    std::string aSymbol=iSerializer.loadElementName(theolizer::internal::emName);
+    THEOLIZER_GENERATED_BASE_TYPE   mValue;
+    iSerializer.loadControl(mValue);
+
+    return {aSymbol, mValue};
 }
 
 //      ---<<< クラス名返却 >>>---

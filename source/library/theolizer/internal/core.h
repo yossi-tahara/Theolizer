@@ -510,8 +510,14 @@ namespace internal
 struct ElementBase
 {
     // enumのみ
-    virtual void writeMetaData(BaseSerializer& iSerializer) const { }
-    virtual void  readMetaData(BaseSerializer& iSerializer)       { }
+    [[noreturn]] virtual void writeEnumSymbol(BaseSerializer&) const
+    {THEOLIZER_INTERNAL_ABORT("");}
+
+    [[noreturn]] virtual bool isIncluded(char const*)          const
+    {THEOLIZER_INTERNAL_ABORT("");}
+
+    [[noreturn]] virtual bool isIncluded(EnumSymbolValue)      const
+    {THEOLIZER_INTERNAL_ABORT("");}
 
     // クラスのみ
     virtual char const* getName() const                 {return "";}
@@ -815,13 +821,24 @@ struct EnumElement : public ElementBase
 
     const bool isSentinel() const {return *mSymbols[0] == 0;}
 
-    void writeMetaData(BaseSerializer& iSerializer) const
+    // ヘッダ出力用
+    void writeEnumSymbol(BaseSerializer& iSerializer) const
     {
-std::cout << mSymbols[0] << ":" << mValues[0] << "\n";
+        iSerializer.saveElementName(emName, mSymbols[0]);
+        iSerializer.saveControl(mValues[0]);
     }
 
-    void  readMetaData(BaseSerializer& iSerializer)
+    // 型チェック用
+    bool isIncluded(char const* iSymbol) const
     {
+        (void)iSymbol;
+        return true;
+    }
+
+    bool isIncluded(EnumSymbolValue iValue) const
+    {
+        (void)iValue;
+        return true;
     }
 
     // dummy

@@ -526,7 +526,6 @@ public:
         ClassFlag           =4,                 // クラス型
         NonIntrusiveFlag    =8,                 //   非侵入型
         ManualFlag          =16,                //   手動型
-        TemplateFlag        =32,                //   テンプレート
 
         // 値
         Primitive           =PrimitiveFlag,
@@ -535,6 +534,9 @@ public:
         NonIntrusiveAuto    =ClassFlag | NonIntrusiveFlag,                  // 完全自動
         IntrusiveManual     =ClassFlag                    | ManualFlag,     // 未サポート
         NonIntrusiveManual  =ClassFlag | NonIntrusiveFlag | ManualFlag,     // 手動
+
+        //   テンプレート
+        Template            =32,
 
         // 追加情報の基数とマスク
         AdditionalRadix     =64,
@@ -548,15 +550,16 @@ public:
         Scoped              =2*AdditionalRadix,     //                      0:Unscoped  1:Scoped
         UnderlyingRadix     =4*AdditionalRadix,     // 基底型部分の基数
         UnderlyingMask      =0x3c*AdditionalRadix,  // 基底型部分のマスク
-        Bool                =0*UnderlyingRadix*AdditionalRadix,
-        Int8                =1*UnderlyingRadix*AdditionalRadix,
-        UInt8               =2*UnderlyingRadix*AdditionalRadix,
-        Int16               =3*UnderlyingRadix*AdditionalRadix,
-        UInt16              =4*UnderlyingRadix*AdditionalRadix,
-        Int32               =5*UnderlyingRadix*AdditionalRadix,
-        UInt32              =6*UnderlyingRadix*AdditionalRadix,
-        Int64               =7*UnderlyingRadix*AdditionalRadix,
-        UInt64              =8*UnderlyingRadix*AdditionalRadix
+        Signed              =1*UnderlyingRadix,     // 符号の有無
+        Bool                =0*UnderlyingRadix,
+        Int8                =1*UnderlyingRadix,
+        UInt8               =2*UnderlyingRadix,
+        Int16               =3*UnderlyingRadix,
+        UInt16              =4*UnderlyingRadix,
+        Int32               =5*UnderlyingRadix,
+        UInt32              =6*UnderlyingRadix,
+        Int64               =7*UnderlyingRadix,
+        UInt64              =8*UnderlyingRadix
     };
 
     // コンストラクタ
@@ -576,6 +579,9 @@ public:
         mValue = iRhs;
         return *this;
     }
+
+    // 変換
+    operator TypeKind::Value() const { return mValue; }
 
     // 有効
     bool isValid() const { return mValue != Invalid; }
@@ -610,6 +616,45 @@ public:
 
 private:
     Value   mValue;
+};
+
+
+//----------------------------------------------------------------------------
+//      enum型のシンボル値保持クラス
+//----------------------------------------------------------------------------
+
+class EnumSymbolValue
+{
+    std::string mSymbol;
+    union
+    {
+        unsigned long long  mUnsigned;
+                 long long  mSigned;
+    };
+public:
+    EnumSymbolValue() : mUnsigned(0) { }
+
+    template<typename tType, THEOLIZER_INTERNAL_OVERLOAD((std::is_signed<tType>::value))>
+    EnumSymbolValue(std::string const& iSymbol, tType iValue) :
+        mSymbol(iSymbol), mSigned(iValue)
+    { }
+
+    template<typename tType, THEOLIZER_INTERNAL_OVERLOAD((!std::is_signed<tType>::value))>
+    EnumSymbolValue(std::string const& iSymbol,tType iValue) :
+        mSymbol(iSymbol), mUnsigned(iValue)
+    { }
+
+    bool operator==(std::string const& iSymbol) const { return mSymbol == iSymbol; }
+
+    template<typename tType, THEOLIZER_INTERNAL_OVERLOAD((std::is_signed<tType>::value))>
+    bool operator==(tType iRhs) const { return mSigned == iRhs; }
+
+    template<typename tType, THEOLIZER_INTERNAL_OVERLOAD((!std::is_signed<tType>::value))>
+    bool operator==(tType iRhs) const { return mUnsigned == iRhs; }
+
+    std::string const& str() const { return mSymbol; }
+    unsigned long long getUnsigned() const { return mUnsigned; }
+             long long getSigned()   const { return mSigned; }
 };
 
 //----------------------------------------------------------------------------
@@ -728,6 +773,10 @@ public:
     virtual ElementRange getElementRange(unsigned iVersionNo)
     {return ElementRange();}
 
+    // Enum型のヘッダ回復用
+    [[noreturn]] virtual EnumSymbolValue readEnumSymbol(BaseSerializer& iSerializer)
+    {THEOLIZER_INTERNAL_ABORT("");}
+
     // デバッグ用
     virtual char const*     getCName() const = 0;
     bool isTopLevel() {return mIsTopLevel;}
@@ -745,7 +794,7 @@ private:
     // classとenum型の時、iVersionNoは有効。その他はDon't care
     virtual unsigned getTypeFlags(unsigned iVersionNo) {return 0;}
 
-    virtual TypeKind getTypeKind()
+    virtual TypeKind getTypeKind(unsigned iVersionNo)
     {THEOLIZER_INTERNAL_ABORT("BaseTypeInfo::getTypeKind()");}
 };
 
@@ -861,11 +910,11 @@ public:
 
 //      ---<<< メタ・シリアライズ用 >>>---
 
-    TypeKind getTypeKind()
+    TypeKind getTypeKind(unsigned iVersionNo)
     {
         BaseTypeInfo* aTypeInfo =
             TypeInfoList::getInstance().getList().at(mTypeIndex.getIndex());
-        return aTypeInfo->getTypeKind();
+        return aTypeInfo->getTypeKind(iVersionNo);
     }
 };
 
@@ -951,11 +1000,11 @@ public:
 
 //      ---<<< メタ・シリアライズ用 >>>---
 
-    TypeKind getTypeKind()
+    TypeKind getTypeKind(unsigned iVersionNo)
     {
         BaseTypeInfo* aTypeInfo =
             TypeInfoList::getInstance().getList().at(mTypeIndex.getIndex());
-        return aTypeInfo->getTypeKind();
+        return aTypeInfo->getTypeKind(iVersionNo);
     }
 };
 
@@ -1240,7 +1289,7 @@ private:
         return ret;
     }
 
-    TypeKind getTypeKind()
+    TypeKind getTypeKind(unsigned iVersionNo)
     {
         unsigned ret = TypeKind::ClassFlag;
 
@@ -1260,7 +1309,18 @@ private:
                 typename tClassType::TheolizerTarget
             >::value)
         {
-            ret |= TypeKind::TemplateFlag;
+            ret |= TypeKind::Template;
+        }
+
+        // 自動型
+        if (tClassType::Theolizer::kIsAuto)
+        {
+            ret |= tClassType::Theolizer::getTypeFlags(iVersionNo);
+        }
+        // 手動型はここで求める(バージョン毎に異なる部分がない)
+        else
+        {
+            ret |= theolizer::internal::TypeKind::Order;
         }
 
         return TypeKind(ret);
@@ -1326,6 +1386,12 @@ public:
         return EnumNonIntrusive::Theolizer::getElementRange(iVersionNo);
     }
 
+    // Enum型のヘッダ回復用
+    EnumSymbolValue readEnumSymbol(BaseSerializer& iSerializer)
+    {
+        return EnumNonIntrusive::Theolizer::readEnumSymbol(iSerializer);
+    }
+
 //      ---<<< メタ・シリアライズ用 >>>---
 
     unsigned getTypeFlags(unsigned iVersionNo)
@@ -1333,9 +1399,11 @@ public:
         return EnumNonIntrusive::Theolizer::getTypeFlags(iVersionNo);
     }
 
-//      ---<<< メタ・シリアライズ用 >>>---
-
-    TypeKind getTypeKind() {return TypeKind::Enum;}
+    TypeKind getTypeKind(unsigned iVersionNo)
+    {
+        unsigned aTypeKind=TypeKind::Enum | EnumNonIntrusive::Theolizer::getTypeFlags(iVersionNo);
+        return TypeKind(aTypeKind);
+    }
 };
 
 // ***************************************************************************
@@ -1383,7 +1451,7 @@ struct PrimitiveId { };
     >                                                                       \
     {                                                                       \
         static char const* getPrimitiveName()   {return dName;}             \
-        static unsigned getEnumUnderlyng()      {THEOLIZER_INTERNAL_ABORT("");return 0;}\
+        [[noreturn]] static unsigned getEnumUnderlyng() {THEOLIZER_INTERNAL_ABORT("");}\
     }
 
 #define THEOLIZER_INTERNAL_STRING(dName)                                    \
@@ -1398,7 +1466,7 @@ struct PrimitiveId { };
     >                                                                       \
     {                                                                       \
         static char const* getPrimitiveName()   {return dName;}             \
-        static unsigned getEnumUnderlyng()      {THEOLIZER_INTERNAL_ABORT("");return 0;}\
+        [[noreturn]] static unsigned getEnumUnderlyng() {THEOLIZER_INTERNAL_ABORT("");}\
     }
 
 THEOLIZER_INTERNAL_INTEGRAL(0,  1,  "bool"    );
@@ -1497,7 +1565,7 @@ public:
 
 //      ---<<< メタ・シリアライズ用 >>>---
 
-    TypeKind getTypeKind() {return TypeKind::Primitive;}
+    TypeKind getTypeKind(unsigned) {return TypeKind::Primitive;}
 };
 
 // ***************************************************************************
@@ -1547,7 +1615,7 @@ public:
 
 //      ---<<< メタ・シリアライズ用 >>>---
 
-//    TypeKind getTypeKind() {return TypeKind::Primitive;}
+//    TypeKind getTypeKind(unsigned) {return TypeKind::Primitive;}
 };
 
 // ***************************************************************************

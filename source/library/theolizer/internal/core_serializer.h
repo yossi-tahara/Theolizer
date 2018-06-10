@@ -276,6 +276,8 @@ public:                                                                     \
                                  dEnum& iInstance, unsigned iVersionNo);    \
             static void loadEnum(theolizer::internal::BaseSerializer& iSerializer,\
                                  dEnum& iInstance, unsigned iVersionNo);    \
+            static theolizer::internal::EnumSymbolValue readEnumSymbol(     \
+                theolizer::internal::BaseSerializer& iSerializer);          \
         };                                                                  \
         typedef TheolizerNonIntrusive<dEnum> TheolizerClass;                \
         template<class tBaseSerializer, unsigned tVersionNo>                \
@@ -1104,19 +1106,15 @@ public:
 
 protected:
     // 型リスト(TypeIndex基準用)
-    struct SerializedTypeListI;
-    std::unique_ptr<SerializedTypeListI>    mSerializedTypeListI;
-
-    // 型リスト(TypeName(型名)基準用)
-    struct SerializedTypeListN;
-    std::unique_ptr<SerializedTypeListN>    mSerializedTypeListN;
+    struct SerializedTypeList;
+    std::unique_ptr<SerializedTypeList>     mSerializedTypeList;
 
     // 型名と型／バージョン番号対応表
     struct TypeNameMap;
     std::unique_ptr<TypeNameMap>            mTypeNameMap;
 
     // プログラム側TypeIndexから
-    // 型リスト(mSerializedTypeListI, mSerializedTypeListN)へのインデック対応表
+    // 型リスト(mSerializedTypeList, mSerializedTypeListN)へのインデック対応表
     std::vector<TypeIndex>                  mTypeIndexTable;
 
 //      ---<<< 型名と型／バージョン番号対応表生成 >>>---

@@ -71,7 +71,7 @@ std::string TypeKind::to_string() const
     auto add=[&](char const* iRhs){ if (!ret.empty()) ret+="|"; ret += iRhs; };
 
     unsigned    aValue = mValue;
-    switch(aValue & ~(AdditionalMask|TemplateFlag))
+    switch(aValue & ~(AdditionalMask|Template))
     {
     case Primitive:             ret="Primitive";            break;
     case Enum:                  ret="Enum";                 break;
@@ -87,7 +87,7 @@ std::string TypeKind::to_string() const
         if (aValue & ManualFlag)        add("ManualFlag");
         break;
     }
-    if (aValue & TemplateFlag)      add("TemplateFlag");
+    if (aValue & Template)          add("Template");
     if (aValue & ClassFlag)
     {
         if (aValue & Order)         add("Order");
