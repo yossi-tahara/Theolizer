@@ -1609,7 +1609,7 @@ std::cout << "TypeKind=" << aTypeKind.to_string() << "\n";
         AutoRestoreSerializeInfo aAutoRestoreSerializeInfo
             (*this, aSerializedTypeData.mTypeName.c_str());
 
-//      ---<<< enum型の互換性チェック >>>---
+//      ---<<< プログラム側情報獲得 >>>---
 
         // 先頭のBaseTypeInfoを用いる
         TypeIndex aProgramTypeIndex = *(aSerializedTypeData.mProgramTypeIndex->begin());
@@ -1618,43 +1618,6 @@ std::cout << "TypeKind=" << aTypeKind.to_string() << "\n";
 //std::cout << "    [" << aProgramTypeIndex << "]"
 //          << " getElementRange(" << aVersionNo << ").size()="
 //          << aTypeInfo->getElementRange(aVersionNo).size() << "\n";
-
-        // TypeKind有効、かつ、enum型なら、チェックする
-        if (aSerializedTypeData.mTypeKind & TypeKind::EnumFlag)
-        {
-            for (auto& symbol : aSerializedTypeData.mSerializedSymbolList)
-            {
-                bool aIsOk=false;
-                for (auto& element : aTypeInfo->getElementRange(aVersionNo))
-                {
-                    // 値保存なら、値が含まれていることをチェックする
-                    if (aSerializedTypeData.mTypeKind & TypeKind::SaveValue)
-                    {
-                        if (element.isIncluded(symbol))
-                        {
-                            aIsOk=true;
-                break;
-                        }
-                    }
-                    // 名前保存なら、名前が含まれていることをチェックする
-                    else
-                    {
-                        if (element.isIncluded(symbol.str()))
-                        {
-                            aIsOk=true;
-                break;
-                        }
-                    }
-                }
-                if (!aIsOk)
-                {
-                    THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch enum type.");
-            break;
-                }
-            }
-        }
-
-//      ---<<< プログラム側情報獲得 >>>---
 
         std::vector<std::pair<char const*, TypeIndex> > aProgramElements;
         for (auto&& aElement : aTypeInfo->getElementRange(aVersionNo))

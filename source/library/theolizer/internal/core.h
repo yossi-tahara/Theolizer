@@ -513,12 +513,6 @@ struct ElementBase
     [[noreturn]] virtual void writeEnumSymbol(BaseSerializer&) const
     {THEOLIZER_INTERNAL_ABORT("");}
 
-    [[noreturn]] virtual bool isIncluded(std::string const& )  const
-    {THEOLIZER_INTERNAL_ABORT("");}
-
-    [[noreturn]] virtual bool isIncluded(EnumSymbolValue)      const
-    {THEOLIZER_INTERNAL_ABORT("");}
-
     // クラスのみ
     virtual char const* getName() const                 {return "";}
     virtual TypeIndex getTypeIndex() const              {return TypeIndex();}
@@ -826,28 +820,6 @@ struct EnumElement : public ElementBase
     {
         iSerializer.saveElementName(emName, mSymbols[0]);
         iSerializer.savePrimitive(mValues[0]);
-    }
-
-    // 型チェック用
-    bool isIncluded(std::string const& iSymbol) const
-    {
-        std::string aSymbol(iSymbol);
-        for (auto const* symbol : mSymbols)
-        {
-            if (aSymbol == symbol)
-    return true;
-        }
-        return false;
-    }
-
-    bool isIncluded(EnumSymbolValue iValue) const
-    {
-        for (auto value : mValues)
-        {
-            if (iValue == value)
-    return true;
-        }
-        return false;
     }
 
     // dummy
