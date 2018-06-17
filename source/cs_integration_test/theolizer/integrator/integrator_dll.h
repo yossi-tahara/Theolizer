@@ -68,7 +68,6 @@ extern "C"
         theolizer::SerializerType iSerializerType,
         bool iNotify
     );
-
     THEOLIZER_INTERNAL_EXPORT void CppFinalize();
     THEOLIZER_INTERNAL_EXPORT bool CppDisposeShared(int iIndex);
 }

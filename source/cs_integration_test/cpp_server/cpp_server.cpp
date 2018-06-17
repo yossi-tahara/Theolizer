@@ -46,6 +46,7 @@
 #include <sstream>
 
 // 固有ヘッダ
+#define THEOLIZER_META_SERIALIZER   // メタ・シリアライザ呼び出しコード実体化
 #include "cpp_server.h"
 #include "cpp_server.cpp.theolizer.hpp"
 

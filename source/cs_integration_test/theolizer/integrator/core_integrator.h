@@ -31,6 +31,7 @@
 #if !defined(THEOLIZER_INTERNAL_CORE_INTEGRATOR_H)
 #define THEOLIZER_INTERNAL_CORE_INTEGRATOR_H
 
+#if !defined(THEOLIZER_INTERNAL_META_SERIALIZER)
 #include <map>
 #include <mutex>
 #include <theolizer/serializer_binary.h>
@@ -39,6 +40,7 @@
 #include "memory_stream.h"
 
 THEOLIZER_PROVIDED_BY("Theoride Technology");
+#endif
 
 //############################################################################
 //      各種ヘルパー
@@ -46,15 +48,28 @@ THEOLIZER_PROVIDED_BY("Theoride Technology");
 
 namespace theolizer
 {
+// ***************************************************************************
+//      シリアライザの指定
+//          C++/C#共通
+// ***************************************************************************
+
+enum class SerializerType
+{
+    Binary=1,           // Binary
+    Json  =2            // Json
+};
+
+// ***************************************************************************
+//      スレッドで使用するインテグレータを管理
+// ***************************************************************************
+
+#if !defined(THEOLIZER_INTERNAL_META_SERIALIZER)
+
 namespace internal
 {
     class BaseIntegrator;
     using DelegateNotifySharedObject = void(*)(int, bool);
 }
-
-// ***************************************************************************
-//      スレッドで使用するインテグレータを管理
-// ***************************************************************************
 
 class ThreadIntegrator
 {
@@ -68,17 +83,6 @@ public:
     {
         return mIntegrator;
     }
-};
-
-// ***************************************************************************
-//      シリアライザの指定
-//          C++/C#共通
-// ***************************************************************************
-
-enum class SerializerType
-{
-    Binary=1,           // Binary
-    Json  =2            // Json
 };
 
 // ***************************************************************************
@@ -265,8 +269,8 @@ DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
     {
         // CheckMode変更はヘッダ処理を実装するまでの仮実装
         //  (仮でかなりいい加減だがデバッグには使える)
-        iISerializer.mCheckMode = CheckMode::TypeCheckByIndex;
-        iOSerializer.mCheckMode = CheckMode::TypeCheckByIndex;
+        iISerializer.mCheckMode = CheckMode::TypeCheck;
+        iOSerializer.mCheckMode = CheckMode::TypeCheck;
 
         // エラー情報登録
         ApiBoundarySerializer aApiBoundary(&iISerializer, iISerializer.getAdditionalInfo());
@@ -467,8 +471,9 @@ public:
 //----------------------------------------------------------------------------
 
 protected:
+public:
     template<Destination uDefault>
-    BaseSerializer* makeISerializer(SerializerType iSerializerType, std::istream& iIStream)
+    static BaseSerializer* makeISerializer(SerializerType iSerializerType, std::istream& iIStream)
     {
         switch(iSerializerType)
         {
@@ -482,7 +487,7 @@ protected:
     }
 
     template<Destination uDefault>
-    BaseSerializer*  makeOSerializer
+    static BaseSerializer*  makeOSerializer
     (
         SerializerType  iSerializerType,
         std::ostream&   iOStream,
@@ -492,10 +497,10 @@ protected:
         switch(iSerializerType)
         {
         case SerializerType::Binary:
-            return new BinaryOSerializer<uDefault>(iOStream, iGlobalVersionNo);
+            return new BinaryOSerializer<uDefault>(iOStream,iGlobalVersionNo,CheckMode::MetaMode);
 
         case SerializerType::Json:
-            return new JsonOSerializer<uDefault>(iOStream, iGlobalVersionNo);
+            return new JsonOSerializer<uDefault>(iOStream,iGlobalVersionNo,CheckMode::MetaMode);
         }
         return nullptr;
     }
@@ -529,7 +534,7 @@ public:
 
         // CheckMode変更はヘッダ処理を実装するまでの仮実装
         //  (仮でかなりいい加減だがデバッグには使える)
-        aSerializer.mCheckMode = CheckMode::TypeCheckByIndex;
+        aSerializer.mCheckMode = CheckMode::TypeCheck;
         {
 
             theolizer::internal::BaseSerializer::AutoRestoreSaveProcess aAutoRestoreSaveProcess
@@ -617,11 +622,14 @@ SharedPointer<tType>::~SharedPointer()
     }
 }
 
+#endif  // THEOLIZER_INTERNAL_META_SERIALIZER
 }   // namespace theolizer
 
 //############################################################################
 //      共有インスタンス交換用クラス
 //############################################################################
+
+#if !defined(THEOLIZER_INTERNAL_META_SERIALIZER)
 
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
@@ -704,10 +712,35 @@ struct TheolizerNonIntrusive<SharedHelperTheolizer<T>>::
 
 #endif//THEOLIZER_WRITE_CODE // ###### SharedHelperTheolizer<T> ######
 
+//############################################################################
+//      メタ・シリアライザ実態（ユーザ・プログラム内で実体定義される）
+//############################################################################
+
+#if defined(THEOLIZER_META_SERIALIZER)
+extern "C" THEOLIZER_INTERNAL_EXPORT void CppMetaSerialize
+(
+    std::ostream&               iOStream,
+    theolizer::SerializerType   iSerializerType
+)
+{
+    std::unique_ptr<theolizer::internal::BaseSerializer> aSerializer
+    (
+        theolizer::internal::BaseIntegrator::makeOSerializer<theolizerD::All>
+        (
+            iSerializerType,
+            iOStream,
+			theolizer::kLastGlobalVersionNo
+        )
+    );
+}
+#endif  // THEOLIZER_META_SERIALIZER
+
 #endif  // THEOLIZER_INTERNAL_DOXYGEN
 
 //############################################################################
 //      End
 //############################################################################
+
+#endif  // THEOLIZER_INTERNAL_META_SERIALIZER
 
 #endif  // THEOLIZER_INTERNAL_CORE_INTEGRATOR_H

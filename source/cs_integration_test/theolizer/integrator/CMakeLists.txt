@@ -28,29 +28,39 @@
 
 ]]############################################################################
 
-if("${PROJECT_NAME}" STREQUAL "")
-    cmake_minimum_required(VERSION 3.8)
-    project(cs_integration_test VERSION 0.1.0)
-    set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
-    set(CMAKE_SUPPRESS_REGENERATION TRUE)
-    message(STATUS "PROJECT_NAME=${PROJECT_NAME}")
-endif()
-
-add_subdirectory(theolizer/integrator)
+# 暫定開発用(Theolizerプロジェクトへ完全に組込んだら削除する)
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../")
 
 #-----------------------------------------------------------------------------
-#       Test-Projects
+#       target definition
 #-----------------------------------------------------------------------------
 
-set(OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${OUTPUT_DIRECTORY}")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${OUTPUT_DIRECTORY}")
+set(TARGET_NAME meta_serializer)
+set(SOURCES meta_serializer.cpp)
 
-add_subdirectory(cpp_server)
+#-----------------------------------------------------------------------------
+#       make target
+#-----------------------------------------------------------------------------
 
-if(MSVC)
-    cmake_minimum_required(VERSION 3.10)
-    message(STATUS "add_subdirectory(cs_client)")
-    add_subdirectory(cs_client)
-    add_dependencies(cs_client cpp_server)
+# MSVCの通常使わないビルド・モードとZERO_CHECKプロジェクトの削除
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
+set(CMAKE_SUPPRESS_REGENERATION TRUE)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}/bin/Debug")
+
+# Options
+if (MSVC)
+    add_definitions(-D_UNICODE -DUNICODE)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /W4 /bigobj")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -std=c++11")
+
+    # MinGWの不具合(https://sourceforge.net/p/mingw-w64/discussion/723797/thread/c6b70624/#7f0a)暫定対処
+    if((CMAKE_COMPILER_IS_MINGW) AND (CMAKE_SIZEOF_VOID_P EQUAL 8))
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wa,-mbig-obj")
+    endif()
 endif()
+
+# build
+add_executable(${TARGET_NAME} ${SOURCES})
