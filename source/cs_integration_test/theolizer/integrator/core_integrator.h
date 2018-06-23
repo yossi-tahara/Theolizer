@@ -169,6 +169,24 @@ namespace internal
 #ifndef THEOLIZER_INTERNAL_DOXYGEN
 
 // ***************************************************************************
+//      トップ・レベルの保存先伝達用の仮想シリアライザ
+// ***************************************************************************
+
+template<Destination uDefault=theolizerD::All, Destination... uDestinations>
+class VirtualSerializer
+{
+    THEOLIZER_INTERNAL_FRIENDS;
+
+    static internal::Destinations const&    getDestinations()
+    {
+        static const internal::Destinations destinations{uDefault, uDestinations...};
+        return destinations;
+    }
+public:
+    static const bool                       kHasDestination=true;
+};
+
+// ***************************************************************************
 //      基底インテグレータ
 // ***************************************************************************
 
@@ -221,7 +239,7 @@ class BaseIntegrator
             auto ret = aFuncClass.callFunc();
 
             typedef decltype(ret)   ReturnClass;
-            RegisterType<BaseSerializer, ReturnClass, tTheolizerVersion>::getInstance();
+            RegisterType<VirtualSerializer<>, ReturnClass, tTheolizerVersion>::getInstance();
 
             {
                 // エラー情報登録
@@ -250,7 +268,7 @@ public:
     static void registerFuncClass()
     {
         // ここで渡すシリアライザが保存先指定を持っている必要がある!!
-        RegisterType<BaseSerializer, tFuncClass, tTheolizerVersion>::getInstance();
+        RegisterType<VirtualSerializer<>, tFuncClass, tTheolizerVersion>::getInstance();
         TypeIndex aTypeIndex = ClassTypeInfo<tFuncClass>::getInstance().mTypeIndex;
 
 DEBUG_PRINT("registerDrivedClass<", aTypeIndex, ", ",
@@ -729,7 +747,7 @@ extern "C" THEOLIZER_INTERNAL_EXPORT void CppMetaSerialize
         (
             iSerializerType,
             iOStream,
-			theolizer::kLastGlobalVersionNo
+            theolizer::kLastGlobalVersionNo
         )
     );
 }

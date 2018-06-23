@@ -35,7 +35,7 @@ include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../")
 #       target definition
 #-----------------------------------------------------------------------------
 
-set(TARGET_NAME meta_serializer)
+set(TARGET_NAME MetaSerializer)
 set(SOURCES meta_serializer.cpp)
 
 #-----------------------------------------------------------------------------

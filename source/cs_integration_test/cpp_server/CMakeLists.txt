@@ -78,6 +78,6 @@ setup_theolizer(${TARGET_NAME} StaticWithBoost)
 
 add_custom_command(TARGET ${TARGET_NAME}  POST_BUILD
     COMMAND echo $<TARGET_FILE:${TARGET_NAME}>
-    COMMAND echo ${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>meta_serializer.exe
-    COMMAND ${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>meta_serializer.exe $<TARGET_FILE:${TARGET_NAME}>
+    COMMAND echo ${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaSerializer.exe
+    COMMAND ${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaSerializer.exe $<TARGET_FILE:${TARGET_NAME}>
 )
