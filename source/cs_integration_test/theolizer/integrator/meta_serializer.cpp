@@ -36,6 +36,7 @@
 #endif
 
 #include <iostream>
+#include <fstream>
 
 #define THEOLIZER_INTERNAL_META_SERIALIZER
 #include "core_integrator.h"
@@ -94,14 +95,16 @@ public:
 
 int main(int argc, char* argv[])
 {
-    if (argc < 2)
+    if (argc < 3)
     {
-        std::cerr << "Need a parameter : dll path\n";
+        std::cerr << "Need a parameter : <dll path> <meta serialize file path>\n";
 return 1;
     }
 
     DynamicLoad aDynamicLoad(argv[1]);
-    aDynamicLoad.CppMetaSerialize(std::cout, theolizer::SerializerType::Json);
+
+    std::ofstream ofs(argv[2]);
+    aDynamicLoad.CppMetaSerialize(ofs, theolizer::SerializerType::Json);
 
     return 0;
 }

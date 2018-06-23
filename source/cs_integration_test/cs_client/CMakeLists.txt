@@ -37,6 +37,7 @@ if ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
     set(CMAKE_CSharp_FLAGS "${CMAKE_CSharp_FLAGS} /platform:x64")
 endif()
 
+set(TARGET_NAME cs_client)
 set(CS_SERIALIZER
     ../theolizer/integrator/core_integrator.cs
     ../theolizer/integrator/integrator_dll.cs
@@ -66,18 +67,31 @@ set(CS_REFERENCES
 #       make target
 #-----------------------------------------------------------------------------
 
+# Theolizer
+message(STATUS "${TARGET_NAME} : THEOLIZER_DIR=${THEOLIZER_DIR}")
+find_package(THEOLIZER)
+
 enable_language(CSharp)
 include(CSharpUtilities)
 
-add_executable(cs_client ${CS_MAIN} ${CS_FORMS} ${CS_RESOUCES} ${CS_SERIALIZER})
+add_executable(${TARGET_NAME} ${CS_MAIN} ${CS_FORMS} ${CS_RESOUCES} ${CS_SERIALIZER})
 csharp_set_windows_forms_properties(${CS_FORMS})
 csharp_set_designer_cs_properties(${CS_RESOUCES})
-set_property(TARGET cs_client PROPERTY VS_DOTNET_REFERENCES ${CS_REFERENCES})
+set_property(TARGET ${TARGET_NAME} PROPERTY VS_DOTNET_REFERENCES ${CS_REFERENCES})
 
-set_target_properties(cs_client PROPERTIES
+set_target_properties(${TARGET_NAME} PROPERTIES
     WIN32_EXECUTABLE                    true
     VS_DOTNET_TARGET_FRAMEWORK_VERSION  "v4.6.2"
-    VS_GLOBAL_ROOTNAMESPACE             "cs_client"
+    VS_GLOBAL_ROOTNAMESPACE             "${TARGET_NAME}"
+)
+
+add_custom_command(TARGET ${TARGET_NAME}  PRE_BUILD
+    COMMAND echo
+        ${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaDeserializer.exe
+        ${CMAKE_BINARY_DIR}/MetaData.Json
+    COMMAND
+        ${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaDeserializer.exe
+        ${CMAKE_BINARY_DIR}/MetaData.Json
 )
 
 message(STATUS "CMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}")

@@ -1,5 +1,5 @@
 #[[###########################################################################
-        Theolizer Test Project for C# Integration
+        Theolizer C# Integration Projects
 
     © 2016 Theoride Technology (http://theolizer.com/) All Rights Reserved.
     "Theolizer" is a registered trademark of Theoride Technology.
@@ -31,23 +31,16 @@
 # 暫定開発用(Theolizerプロジェクトへ完全に組込んだら削除する)
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/../")
 
-#-----------------------------------------------------------------------------
-#       target definition
-#-----------------------------------------------------------------------------
-
-set(TARGET_NAME MetaSerializer)
-set(SOURCES meta_serializer.cpp)
-
-#-----------------------------------------------------------------------------
-#       make target
-#-----------------------------------------------------------------------------
-
 # MSVCの通常使わないビルド・モードとZERO_CHECKプロジェクトの削除
 set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
 set(CMAKE_SUPPRESS_REGENERATION TRUE)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${CMAKE_BINARY_DIR}/bin")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${CMAKE_BINARY_DIR}/bin/Debug")
+
+#-----------------------------------------------------------------------------
+#       Meta Serializer
+#-----------------------------------------------------------------------------
 
 # Options
 if (MSVC)
@@ -63,4 +56,23 @@ else()
 endif()
 
 # build
-add_executable(${TARGET_NAME} ${SOURCES})
+add_executable(MetaSerializer meta_serializer.cpp)
+
+#-----------------------------------------------------------------------------
+#       Meta Deserializer
+#-----------------------------------------------------------------------------
+
+# MSVCのみ対応
+if (MSVC)
+
+    set(CMAKE_CSharp_FLAGS "/langversion:6")
+    if ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+        set(CMAKE_CSharp_FLAGS "${CMAKE_CSharp_FLAGS} /platform:x64")
+    endif()
+
+    enable_language(CSharp)
+    include(CSharpUtilities)
+
+    add_executable(MetaDeserializer meta_deserializer.cs)
+
+endif()

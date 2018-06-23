@@ -56,7 +56,7 @@ set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configs" FORCE)
 set(CMAKE_SUPPRESS_REGENERATION TRUE)
 
 # Theolizer
-message(STATUS "cpp_server : THEOLIZER_DIR=${THEOLIZER_DIR}")
+message(STATUS "${TARGET_NAME} : THEOLIZER_DIR=${THEOLIZER_DIR}")
 find_package(THEOLIZER)
 
 # Options
@@ -77,7 +77,12 @@ add_library(${TARGET_NAME} SHARED ${CPP_SOURCES} ${CPP_LIBRALY})
 setup_theolizer(${TARGET_NAME} StaticWithBoost)
 
 add_custom_command(TARGET ${TARGET_NAME}  POST_BUILD
-    COMMAND echo $<TARGET_FILE:${TARGET_NAME}>
-    COMMAND echo ${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaSerializer.exe
-    COMMAND ${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaSerializer.exe $<TARGET_FILE:${TARGET_NAME}>
+    COMMAND echo
+        ${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaSerializer.exe
+        $<TARGET_FILE:${TARGET_NAME}>
+        ${CMAKE_BINARY_DIR}/MetaData.Json
+    COMMAND
+        ${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaSerializer.exe
+        $<TARGET_FILE:${TARGET_NAME}>
+        ${CMAKE_BINARY_DIR}/MetaData.Json
 )

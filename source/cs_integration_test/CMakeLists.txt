@@ -53,4 +53,7 @@ if(MSVC)
     message(STATUS "add_subdirectory(cs_client)")
     add_subdirectory(cs_client)
     add_dependencies(cs_client cpp_server)
+
+    add_dependencies(cpp_server MetaSerializer)
+    add_dependencies(cs_client  MetaDeserializer)
 endif()
