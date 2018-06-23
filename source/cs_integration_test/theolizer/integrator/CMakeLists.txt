@@ -58,6 +58,10 @@ endif()
 # build
 add_executable(MetaSerializer meta_serializer.cpp)
 
+if (NOT MSVC)
+    target_link_libraries(MetaSerializer ${CMAKE_DL_LIBS})
+endif()
+
 #-----------------------------------------------------------------------------
 #       Meta Deserializer
 #-----------------------------------------------------------------------------
