@@ -87,11 +87,11 @@ set_target_properties(${TARGET_NAME} PROPERTIES
 
 add_custom_command(TARGET ${TARGET_NAME}  PRE_BUILD
     COMMAND echo
-        ${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaDeserializer.exe
-        ${CMAKE_BINARY_DIR}/MetaData.Json
+        "${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaDeserializer.exe"
+        "${CMAKE_BINARY_DIR}/MetaData.Json"
     COMMAND
-        ${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaDeserializer.exe
-        ${CMAKE_BINARY_DIR}/MetaData.Json
+        "${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaDeserializer.exe"
+        "${CMAKE_BINARY_DIR}/MetaData.Json" abcdef abcdef
 )
 
 message(STATUS "CMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}")

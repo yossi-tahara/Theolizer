@@ -101,6 +101,7 @@ int main(int argc, char* argv[])
 return 1;
     }
 
+    std::cout << "MetaSerializer\n";
     DynamicLoad aDynamicLoad(argv[1]);
 
     std::ofstream ofs(argv[2]);

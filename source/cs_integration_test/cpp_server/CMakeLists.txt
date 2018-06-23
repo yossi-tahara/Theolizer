@@ -78,11 +78,11 @@ setup_theolizer(${TARGET_NAME} StaticWithBoost)
 
 add_custom_command(TARGET ${TARGET_NAME}  POST_BUILD
     COMMAND echo
-        ${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaSerializer.exe
-        $<TARGET_FILE:${TARGET_NAME}>
-        ${CMAKE_BINARY_DIR}/MetaData.Json
+        "${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaSerializer.exe"
+        "$<TARGET_FILE:${TARGET_NAME}>"
+        "${CMAKE_BINARY_DIR}/MetaData.Json"
     COMMAND
-        ${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaSerializer.exe
-        $<TARGET_FILE:${TARGET_NAME}>
-        ${CMAKE_BINARY_DIR}/MetaData.Json
+        "${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaSerializer.exe"
+        "$<TARGET_FILE:${TARGET_NAME}>"
+        "${CMAKE_BINARY_DIR}/MetaData.Json"
 )

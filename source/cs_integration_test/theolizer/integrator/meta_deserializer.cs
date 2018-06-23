@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace meta_deserializer
+namespace theolizer
 {
     static class Program
     {
@@ -12,10 +12,16 @@ namespace meta_deserializer
         /// アプリケーションのメイン エントリ ポイントです。
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            DateTime now = DateTime.Now;
-            Console.WriteLine("現在の時刻は、 {0} です", now);
+            if (args.Length == 0)
+            {
+                Console.WriteLine("Need a parameter : <meta serialize file path>");
+        return;
+            }
+
+            Console.WriteLine("MetaDeserializer");
+            Console.WriteLine("Path={0}", args[0]);
         }
     }
 }
