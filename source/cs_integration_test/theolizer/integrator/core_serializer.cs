@@ -29,6 +29,7 @@
 //############################################################################
 
 using System;
+using System.IO;
 
 namespace theolizer.internal_space
 {
@@ -407,8 +408,22 @@ namespace theolizer.internal_space
                 readPreElement();
                 int aCheckMode;
                 loadControl(out aCheckMode);
-                if (aCheckMode != (int)CheckMode.NoTypeCheck)
+                switch((CheckMode)aCheckMode)
+                {
+                case CheckMode.NoTypeCheck:
+                    break;
+
+                case CheckMode.TypeCheck:
+                    break;
+
+                case CheckMode.MetaMode:
+                    if (MetaDeserializer.get() == null)
+            throw new InvalidOperationException("Meta-serialized data.");
+                    break;
+
+                default:
             throw new InvalidOperationException("CheckMode Error : " + aCheckMode);
+                }
             }
         }
 
@@ -451,6 +466,44 @@ namespace theolizer.internal_space
         void loadProcessEnd()
         {
             loadGroupEnd(true);
+        }
+    }
+
+    // ***************************************************************************
+    //      メタ・シリアライズ出力用のストリーム
+    // ***************************************************************************
+
+    class MetaDeserializer : IDisposable
+    {
+        static StreamWriter sStreamWriter = null;
+        public static StreamWriter get() { return sStreamWriter; }
+
+        public MetaDeserializer(string path)
+        {
+            if (sStreamWriter != null)
+        throw new InvalidOperationException("Multiple constuct MetaDeserializer.");
+
+            sStreamWriter = new StreamWriter(path);
+        }
+
+        ~MetaDeserializer()
+        {
+            Dispose(false);
+        }
+
+        void Dispose(bool disposing)
+        {
+            // 破棄済なら何もしない
+            if (sStreamWriter == null)
+        return;
+
+            sStreamWriter.Dispose();
+            sStreamWriter=null;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
         }
     }
 }

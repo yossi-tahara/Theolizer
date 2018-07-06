@@ -32,7 +32,7 @@
 #       target definition
 #-----------------------------------------------------------------------------
 
-set(CMAKE_CSharp_FLAGS "/langversion:6")
+set(CMAKE_CSharp_FLAGS "/langversion:6 /wd1006")
 if ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
     set(CMAKE_CSharp_FLAGS "${CMAKE_CSharp_FLAGS} /platform:x64")
 endif()
@@ -46,7 +46,7 @@ set(CS_SERIALIZER
     ../theolizer/integrator/memory_stream.cs
 )
 
-set(CS_MAIN     App.config Program.cs exchange.cs exchange.theolizer.cs)
+set(CS_MAIN     App.config Program.cs exchange.cs exchange.theolizer.cs cpp_classes.theolizer.cs)
 set(CS_FORMS    Form1.cs Form1.Designer.cs Form1.resx)
 set(CS_RESOUCES
     Properties/AssemblyInfo.cs
@@ -85,14 +85,14 @@ set_target_properties(${TARGET_NAME} PROPERTIES
     VS_GLOBAL_ROOTNAMESPACE             "${TARGET_NAME}"
 )
 
+set(META_DESERIALIZER "${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaDeserializer.exe")
+set(META_JSON "${CMAKE_BINARY_DIR}/MetaData.Json")
+set(META_CS   "${CMAKE_CURRENT_SOURCE_DIR}/cpp_classes.theolizer.cs")
 add_custom_command(TARGET ${TARGET_NAME}  PRE_BUILD
-    COMMAND echo
-        "${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaDeserializer.exe"
-        "${CMAKE_BINARY_DIR}/MetaData.Json"
-    COMMAND
-        "${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaDeserializer.exe"
-        "${CMAKE_BINARY_DIR}/MetaData.Json" abcdef abcdef
-)
+    COMMAND echo "${META_DESERIALIZER}" "${META_JSON}" "${META_CS}"
+    COMMAND      "${META_DESERIALIZER}" "${META_JSON}" "${META_CS}")
+
+message(STATUS "META_PARAMETER=${META_JSON} ${META_CS}")
 
 message(STATUS "CMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}")
 message(STATUS "CMAKE_VS_PLATFORM_NAME=${CMAKE_VS_PLATFORM_NAME}")

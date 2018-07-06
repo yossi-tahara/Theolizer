@@ -77,6 +77,10 @@ if (MSVC)
     enable_language(CSharp)
     include(CSharpUtilities)
 
-    add_executable(MetaDeserializer meta_deserializer.cs)
+    add_executable(MetaDeserializer
+        meta_deserializer.cs
+        serializer_json.cs
+        core_serializer.cs
+    )
 
 endif()

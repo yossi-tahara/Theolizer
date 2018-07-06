@@ -309,8 +309,8 @@ namespace theolizer.internal_space
         }
 
         // デリミタまでの文字列を読み出す
-        const String sDelimiter = " ,\n]}\t";
-        const String sSpaceChar = " \t\n";
+        const String sDelimiter = " ,\n\r]}\t";
+        const String sSpaceChar = " \t\n\r";
         String ReadDelim()
         {
             var sb = new StringBuilder();
@@ -529,7 +529,7 @@ namespace theolizer.internal_space
         }
 
         // 有効な文字入力(スペース等を読み飛ばす)
-        const String sSpaceChar = " \t\n";
+        const String sSpaceChar = " \t\n\r";
         char getValidChar()
         {
             int     ch;
