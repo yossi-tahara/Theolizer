@@ -60,10 +60,96 @@ namespace theolizer
 {
 namespace internal
 {
+//############################################################################
+//      処理中のSerializerポインタ（thread_local)
+//############################################################################
+
+// ***************************************************************************
+//      現在処理中のSerializerの状態獲得
+// ***************************************************************************
+
+thread_local BaseSerializer* xNowSerializer=nullptr;
+
+bool isLastVersion()
+{
+    return xNowSerializer->isLastVersion();
+}
+
+bool isSaver()
+{
+    return xNowSerializer->isSaver();
+}
+
+unsigned& getUpVersionCount()
+{
+    return xNowSerializer->mUpVersionCount;
+}
+
+// ***************************************************************************
+//      API境界にてxNowSerializer設定／回復
+// ***************************************************************************
+
+ApiBoundarySerializer::ApiBoundarySerializer
+(
+    BaseSerializer* iBaseSerializer,
+    BaseAdditionalInfo* iAdditionalInfo,
+    bool iConstructor
+) noexcept : ApiBoundary(iAdditionalInfo, iConstructor)
+{
+    mSerializerBack=xNowSerializer;
+    xNowSerializer=iBaseSerializer;
+}
+
+ApiBoundarySerializer::ApiBoundarySerializer
+(
+    ApiBoundarySerializer&& iApiBoundarySerializer
+) noexcept : ApiBoundary(std::move(iApiBoundarySerializer))
+{ }
+
+ApiBoundarySerializer::~ApiBoundarySerializer()
+{
+    xNowSerializer=mSerializerBack;
+}
 
 //############################################################################
-//      基底Serializer(型チェック処理)
+//      基底Serializer(共通部)
 //############################################################################
+
+// ***************************************************************************
+//      バージョン番号取得
+// ***************************************************************************
+
+unsigned BaseSerializer::getLocalVersionNo(TypeIndex iTypeIndex)
+{
+    unsigned aIndex = iTypeIndex.getIndex();
+
+    // 完全自動型なら常にVersion.1
+    if (mTypeInfoList[aIndex]->isFullAuto())
+return 1;
+
+    // プリミティブなら派生シリアライザのバージョン番号
+    if (mTypeInfoList[aIndex]->mTypeCategory == etcPrimitiveType)
+    {
+        aIndex=mSerializerVersionTypeIndex.getIndex();
+    }
+    // mUniqueTypeIndexが有効なら、そのIndexを使用する
+    else if (mTypeInfoList[aIndex]->mUniqueTypeIndex.isValid())
+    {
+        aIndex=mTypeInfoList[aIndex]->mUniqueTypeIndex.getIndex();
+    }
+    return mGlobalVersionNoTable->getLocalVersionNo(mGlobalVersionNo, aIndex);
+}
+
+// ***************************************************************************
+//      型名取り出し
+// ***************************************************************************
+
+std::string BaseSerializer::getTypeName(TypeIndex iTypeIndex)
+{
+    auto aTypeInfo = mTypeInfoList[iTypeIndex.getIndex()];
+    unsigned aVersionNo = getLocalVersionNo(iTypeIndex);
+    return aTypeInfo->getTypeName(aVersionNo)+iTypeIndex.getAdditionalString();
+}
 
 // ***************************************************************************
 //      型チェック用の各種クラス定義
@@ -112,29 +198,152 @@ struct BaseSerializer::SerializedTypeList : public std::vector<SerializedTypeDat
 { };
 
 // ***************************************************************************
-//      バージョン番号取得
+//      オブジェクト追跡用オブジェクト管理テーブル
 // ***************************************************************************
 
-unsigned BaseSerializer::getLocalVersionNo(TypeIndex iTypeIndex)
+struct SerializeKey
 {
-    unsigned aIndex = iTypeIndex.getIndex();
+    void*           mAddress;
+    std::type_index mStdTypeIndex;
 
-    // 完全自動型なら常にVersion.1
-    if (mTypeInfoList[aIndex]->isFullAuto())
-return 1;
+    SerializeKey() :
+        mAddress(nullptr),
+        mStdTypeIndex(typeid(nullptr))
+    { }
 
-    // プリミティブなら派生シリアライザのバージョン番号
-    if (mTypeInfoList[aIndex]->mTypeCategory == etcPrimitiveType)
+    SerializeKey
+    (
+        void* iAddress,
+        std::type_info const& iTypeInfo
+    ) : mAddress(iAddress),
+        mStdTypeIndex(iTypeInfo)
+    { }
+
+    bool operator<(SerializeKey const& iRhs) const
     {
-        aIndex=mSerializerVersionTypeIndex.getIndex();
+        return std::tie(mAddress, mStdTypeIndex) < std::tie(iRhs.mAddress, iRhs.mStdTypeIndex);
     }
-    // mUniqueTypeIndexが有効なら、そのIndexを使用する
-    else if (mTypeInfoList[aIndex]->mUniqueTypeIndex.isValid())
+};
+
+struct BaseSerializer::SerializeList : public std::map<SerializeKey, SerializeInfo> { };
+struct BaseSerializer::DeserializeList : public std::vector<DeserializeInfo> { };
+
+// ***************************************************************************
+//      コンストラクタ
+// ***************************************************************************
+
+BaseSerializer::BaseSerializer
+(
+    Destinations const& iDestinations,
+    GlobalVersionNoTableBase const* iGlobalVersionNoTable,
+    unsigned iGlobalVersionNo,
+    unsigned iLastGlobalVersionNo,
+    CheckMode iCheckMode,
+    bool iIsSaver,
+    std::ostream* iOStream,
+    bool iNoThrowException,
+    TypeIndex iSerializerVersionTypeIndex
+) : ErrorBase(),
+    mDestinations(iDestinations),
+    mIsSaver(iIsSaver),
+    mNoThrowException(iNoThrowException),
+    mGlobalVersionNoTable(iGlobalVersionNoTable),
+    mGlobalVersionNo(iGlobalVersionNo),
+    mLastGlobalVersionNo(iLastGlobalVersionNo),
+    mCharIsMultiByte(false),
+    mTypeInfoList(TypeInfoList::getInstance().getList()),
+    mTypeIndexCount(mTypeInfoList.size()),
+    mRequireClearTracking(false),
+    mSerializerVersionTypeIndex(iSerializerVersionTypeIndex),
+    mAdditionalInfo(*this),
+    mBaseProcessing(false),
+    mClassTracking(false),
+    mRefProcessing(false),
+    mUpVersionCount(0),
+    mCheckMode(iCheckMode),
+    mElementsMapping(emOrder),
+    mIsShared(false),
+    mIndent(0),
+    mCancelPrettyPrint(false),
+    mDoCheck(true),
+    mSerializedTypeList(new SerializedTypeList),
+    mTypeNameMap(nullptr),
+    mTypeIndexTable(),
+    mObjectId(0),
+    mSerializeList(nullptr),
+    mDeserializeList(nullptr)
+{
+    // エラー情報登録準備
+    theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo);
+
+    THEOLIZER_INTERNAL_ASSERT(mGlobalVersionNoTable != nullptr,
+        "GlobalVersionNoTable is illegal.");
+
+    if (mIsSaver)
     {
-        aIndex=mTypeInfoList[aIndex]->mUniqueTypeIndex.getIndex();
+        mSerializeList=std::unique_ptr<SerializeList>(new SerializeList);
+        initSerializeList();
     }
-    return mGlobalVersionNoTable->getLocalVersionNo(mGlobalVersionNo, aIndex);
+    else
+    {
+        mDeserializeList=std::unique_ptr<DeserializeList>(new DeserializeList);
+        mDeserializeList->emplace_back();
+        (*mDeserializeList)[0].mStatus=etsNullPtr;
+    }
 }
+
+//----------------------------------------------------------------------------
+//      補助関数
+//----------------------------------------------------------------------------
+
+void BaseSerializer::initSerializeList()
+{
+    mObjectId=0;
+    mSerializeList->emplace
+    (
+        std::piecewise_construct,
+        std::forward_as_tuple(nullptr, typeid(nullptr)),
+        std::forward_as_tuple(mObjectId, etsNullPtr)
+    );
+    mObjectId++;
+}
+
+// ***************************************************************************
+//      デストラクタ
+//          mSerializeListとmDeserializeListのデストラクトのため、
+//          ヘッダで定義するとエラーとなる。
+// ***************************************************************************
+
+BaseSerializer::~BaseSerializer() noexcept
+{
+    // エラー情報登録準備
+    theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo);
+
+    // エラー／警告が残っていたら、プロセス停止する。
+    //  ただし、コンストラクト中と例外有りの時を除く
+    auto&& aErrorInfo=getErrorInfo();
+    if (!mConstructorError && mNoThrowException && aErrorInfo)
+    {
+        std::cout << aErrorInfo.getMessage() << "\n";
+        THEOLIZER_INTERNAL_ABORT
+            (u8"Error occured, please call resetError() before destructing serializer.");
+    }
+
+    // clearTracking()が必要なのに呼ばれて無く、
+    // かつ、例外処理中でなければ、プロセス停止する。
+    //  なお、FastSerializer(ImMemory)についてはチェックしない。
+    if (!std::uncaught_exception()
+     && mRequireClearTracking
+     && (mCheckMode != CheckMode::InMemory))
+    {
+        THEOLIZER_INTERNAL_ABORT
+            (u8"For object tracking, please call clearTracking() before destructing serializer.");
+    }
+}
+
+//############################################################################
+//      基底Serializer(保存処理部)
+//############################################################################
 
 // ***************************************************************************
 //      ヘッダ内型情報保存（通常シリアライズ）
@@ -348,452 +557,7 @@ return;
 }
 
 // ***************************************************************************
-//      型名取り出し
-// ***************************************************************************
-
-std::string BaseSerializer::getTypeName(TypeIndex iTypeIndex)
-{
-    auto aTypeInfo = mTypeInfoList[iTypeIndex.getIndex()];
-    unsigned aVersionNo = getLocalVersionNo(iTypeIndex);
-    return aTypeInfo->getTypeName(aVersionNo)+iTypeIndex.getAdditionalString();
-}
-
-// ***************************************************************************
-//      トップ・レベル保存前後処理
-// ***************************************************************************
-
-void BaseSerializer::saveProcessStart(TypeIndex iTypeIndex)
-{
-    if (mDoCheck)
-    {
-        saveGroupStart(true);
-
-        switch(mCheckMode)
-        {
-        case CheckMode::InMemory:
-        case CheckMode::TypeCheckInData:
-        case CheckMode::NoTypeCheck:
-            break;
-
-        case CheckMode::TypeCheck:
-        case CheckMode::MetaMode:
-            writePreElement();
-            saveControl(iTypeIndex);
-            break;
-
-        default:
-            THEOLIZER_INTERNAL_ABORT("mCheckMode=%d", static_cast<int>(mCheckMode));
-            break;
-        }
-
-        writePreElement();
-    }
-}
-
-//----------------------------------------------------------------------------
-//      後処理
-//----------------------------------------------------------------------------
-
-void BaseSerializer::saveProcessEnd()
-{
-    if (mDoCheck)
-    {
-        saveGroupEnd(true);
-    }
-}
-
-// ***************************************************************************
-//      型名と型／バージョン番号対応表生成
-// ***************************************************************************
-
-//----------------------------------------------------------------------------
-//      型名と型Index対応表（デシリアライズ処理用）
-//          シリアライズ・データ上のグローバル・バージョン番号に該当する型名と
-//          その型名を持つ型のTypeIndexの対応表である。
-//          下記要因により１つの型名に複数のTypeIndexが対応することがある。
-//              シリアライズ・データ上で互換性のある型(std::string, std::wstring等)
-//              について同じ型名を割り当てる場合
-//              intとlongがint32のように同じ形名となる場合
-//----------------------------------------------------------------------------
-
-struct BaseSerializer::TypeNameMap
-{
-    std::map<std::string const, TypeIndexList>   mMap;
-
-    void add(std::string const& iTypeName, TypeIndex iTypeIndex)
-    {
-//std::cout << "TypeNameMap::add(" << iTypeName << ", " << iTypeIndex << ");";
-        auto pos = mMap.lower_bound(iTypeName);
-        if ((pos != mMap.end()) && (pos->first == iTypeName))
-        {
-//std::cout << " -> appended\n";
-            pos->second.emplace_back(iTypeIndex);
-        }
-        else
-        {
-//std::cout << " -> add\n";
-            TypeIndexList aTypeIndexList;
-            aTypeIndexList.emplace_back(iTypeIndex);
-            mMap.emplace_hint(pos, iTypeName, aTypeIndexList);
-        }
-    }
-};
-
-//----------------------------------------------------------------------------
-//      対応表生成処理
-//----------------------------------------------------------------------------
-
-void BaseSerializer::createTypeNameMap()
-{
-//std::cout << "createTypeNameMap()\n";
-    // TypeCheck、MetaModeとInMemoryの時は生成不要
-    if ((mCheckMode == CheckMode::TypeCheck)
-     || (mCheckMode == CheckMode::MetaMode)
-     || (mCheckMode == CheckMode::InMemory))
-return;
-
-    mTypeNameMap=std::unique_ptr<TypeNameMap>(new TypeNameMap);
-
-    for (auto const& aIndexer : getRBForIndexer(mTypeInfoList))
-    {
-        TypeIndex aTypeIndex = aIndexer.front()->getTypeIndex();
-        unsigned aVersionNo = getLocalVersionNo(aTypeIndex);
-        mTypeNameMap->add(aIndexer.front()->getTypeName(aVersionNo), aTypeIndex);
-//std::cout << "    [" << aIndexer.getIndex() << "] "
-//          << aIndexer.front()->getTypeName(aVersionNo) << "\n";
-    }
-}
-
-// ***************************************************************************
-//      トップ・レベル回復前後処理
-// ***************************************************************************
-
-//----------------------------------------------------------------------------
-//      前処理
-//----------------------------------------------------------------------------
-
-TypeIndexList* BaseSerializer::loadProcessStart(TypeIndex iTypeIndex)
-{
-    TypeIndexList* ret = nullptr;
-
-    if (mDoCheck)
-    {
-
-        loadGroupStart(true);
-
-        switch(mCheckMode)
-        {
-        case CheckMode::InMemory:
-        case CheckMode::TypeCheckInData:
-        case CheckMode::NoTypeCheck:
-            break;
-
-        case CheckMode::TypeCheck:
-        case CheckMode::MetaMode:
-            if (!readPreElement())
-            {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
-            }
-
-            {
-                TypeIndex aTypeIndex;
-                loadControl(aTypeIndex);
-                if (iTypeIndex.isValid())
-                {
-                    if (!isMatchTypeIndex(aTypeIndex, iTypeIndex))
-                    {
-                        THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.");
-                    }
-                }
-                else
-                {
-#if 1   // ヘッダ処理を実装するまでの仮実装(仮なのでかなりいい加減だがデバッグには使える)
-                    static TypeIndexList    aTemp;  // 本来staticではダメだが、仮実装なので手抜き
-                    aTemp.clear();
-                    aTemp.push_back(aTypeIndex);
-                    ret = &aTemp;
-#else
-                    auto& aElementType = mSerializedTypeList->at(aTypeIndex);
-                    ret = aElementType.mProgramTypeIndex;
-#endif
-                }
-            }
-            break;
-
-        default:
-            THEOLIZER_INTERNAL_ABORT("mCheckMode=%d", static_cast<int>(mCheckMode));
-            break;
-        }
-
-        if (!readPreElement())
-        {
-            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
-        }
-    }
-
-    return ret;
-}
-
-//----------------------------------------------------------------------------
-//      後処理
-//----------------------------------------------------------------------------
-
-void BaseSerializer::loadProcessEnd()
-{
-    if (mDoCheck)
-    {
-        loadGroupEnd(true);
-    }
-}
-
-//############################################################################
-//      現在処理中のSerializer
-//############################################################################
-
-// ***************************************************************************
-//      現在処理中のSerializerの状態獲得
-// ***************************************************************************
-
-thread_local BaseSerializer* xNowSerializer=nullptr;
-
-bool isLastVersion()
-{
-    return xNowSerializer->isLastVersion();
-}
-
-bool isSaver()
-{
-    return xNowSerializer->isSaver();
-}
-
-unsigned& getUpVersionCount()
-{
-    return xNowSerializer->mUpVersionCount;
-}
-
-// ***************************************************************************
-//      API境界にてxNowSerializer設定／回復
-// ***************************************************************************
-
-ApiBoundarySerializer::ApiBoundarySerializer
-(
-    BaseSerializer* iBaseSerializer,
-    BaseAdditionalInfo* iAdditionalInfo,
-    bool iConstructor
-) noexcept : ApiBoundary(iAdditionalInfo, iConstructor)
-{
-    mSerializerBack=xNowSerializer;
-    xNowSerializer=iBaseSerializer;
-}
-
-ApiBoundarySerializer::ApiBoundarySerializer
-(
-    ApiBoundarySerializer&& iApiBoundarySerializer
-) noexcept : ApiBoundary(std::move(iApiBoundarySerializer))
-{ }
-
-ApiBoundarySerializer::~ApiBoundarySerializer()
-{
-    xNowSerializer=mSerializerBack;
-}
-
-//############################################################################
-//      基底Serializer(シリアライズ／デシリアライズ実処理)
-//############################################################################
-
-// ***************************************************************************
-//      オブジェクト追跡用オブジェクト管理テーブル
-// ***************************************************************************
-
-struct SerializeKey
-{
-    void*           mAddress;
-    std::type_index mStdTypeIndex;
-
-    SerializeKey() :
-        mAddress(nullptr),
-        mStdTypeIndex(typeid(nullptr))
-    { }
-
-    SerializeKey
-    (
-        void* iAddress,
-        std::type_info const& iTypeInfo
-    ) : mAddress(iAddress),
-        mStdTypeIndex(iTypeInfo)
-    { }
-
-    bool operator<(SerializeKey const& iRhs) const
-    {
-        return std::tie(mAddress, mStdTypeIndex) < std::tie(iRhs.mAddress, iRhs.mStdTypeIndex);
-    }
-};
-
-struct BaseSerializer::SerializeList : public std::map<SerializeKey, SerializeInfo> { };
-struct BaseSerializer::DeserializeList : public std::vector<DeserializeInfo> { };
-
-// ***************************************************************************
-//      コンストラクタ
-// ***************************************************************************
-
-BaseSerializer::BaseSerializer
-(
-    Destinations const& iDestinations,
-    GlobalVersionNoTableBase const* iGlobalVersionNoTable,
-    unsigned iGlobalVersionNo,
-    unsigned iLastGlobalVersionNo,
-    CheckMode iCheckMode,
-    bool iIsSaver,
-    std::ostream* iOStream,
-    bool iNoThrowException,
-    TypeIndex iSerializerVersionTypeIndex
-) : ErrorBase(),
-    mDestinations(iDestinations),
-    mIsSaver(iIsSaver),
-    mNoThrowException(iNoThrowException),
-    mGlobalVersionNoTable(iGlobalVersionNoTable),
-    mGlobalVersionNo(iGlobalVersionNo),
-    mLastGlobalVersionNo(iLastGlobalVersionNo),
-    mCharIsMultiByte(false),
-    mTypeInfoList(TypeInfoList::getInstance().getList()),
-    mTypeIndexCount(mTypeInfoList.size()),
-    mRequireClearTracking(false),
-    mSerializerVersionTypeIndex(iSerializerVersionTypeIndex),
-    mAdditionalInfo(*this),
-    mBaseProcessing(false),
-    mClassTracking(false),
-    mRefProcessing(false),
-    mUpVersionCount(0),
-    mCheckMode(iCheckMode),
-    mElementsMapping(emOrder),
-    mIsShared(false),
-    mIndent(0),
-    mCancelPrettyPrint(false),
-    mDoCheck(true),
-    mSerializedTypeList(new SerializedTypeList),
-    mTypeNameMap(nullptr),
-    mTypeIndexTable(),
-    mObjectId(0),
-    mSerializeList(nullptr),
-    mDeserializeList(nullptr)
-{
-    // エラー情報登録準備
-    theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo);
-
-    THEOLIZER_INTERNAL_ASSERT(mGlobalVersionNoTable != nullptr,
-        "GlobalVersionNoTable is illegal.");
-
-    if (mIsSaver)
-    {
-        mSerializeList=std::unique_ptr<SerializeList>(new SerializeList);
-        initSerializeList();
-    }
-    else
-    {
-        mDeserializeList=std::unique_ptr<DeserializeList>(new DeserializeList);
-        mDeserializeList->emplace_back();
-        (*mDeserializeList)[0].mStatus=etsNullPtr;
-    }
-}
-
-//----------------------------------------------------------------------------
-//      補助関数
-//----------------------------------------------------------------------------
-
-void BaseSerializer::initSerializeList()
-{
-    mObjectId=0;
-    mSerializeList->emplace
-    (
-        std::piecewise_construct,
-        std::forward_as_tuple(nullptr, typeid(nullptr)),
-        std::forward_as_tuple(mObjectId, etsNullPtr)
-    );
-    mObjectId++;
-}
-
-// ***************************************************************************
-//      デストラクタ
-//          mSerializeListとmDeserializeListのデストラクトのため、
-//          ヘッダで定義するとエラーとなる。
-// ***************************************************************************
-
-BaseSerializer::~BaseSerializer() noexcept
-{
-    // エラー情報登録準備
-    theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo);
-
-    // エラー／警告が残っていたら、プロセス停止する。
-    //  ただし、コンストラクト中と例外有りの時を除く
-    auto&& aErrorInfo=getErrorInfo();
-    if (!mConstructorError && mNoThrowException && aErrorInfo)
-    {
-        std::cout << aErrorInfo.getMessage() << "\n";
-        THEOLIZER_INTERNAL_ABORT
-            (u8"Error occured, please call resetError() before destructing serializer.");
-    }
-
-    // clearTracking()が必要なのに呼ばれて無く、
-    // かつ、例外処理中でなければ、プロセス停止する。
-    //  なお、FastSerializer(ImMemory)についてはチェックしない。
-    if (!std::uncaught_exception()
-     && mRequireClearTracking
-     && (mCheckMode != CheckMode::InMemory))
-    {
-        THEOLIZER_INTERNAL_ABORT
-            (u8"For object tracking, please call clearTracking() before destructing serializer.");
-    }
-}
-
-// ***************************************************************************
-//      シリアライズ・データの指定TypeIndexのクラスの指定番目の要素の名前獲得
-// ***************************************************************************
-
-std::string BaseSerializer::getDataElementName(TypeIndex iDataTypeIndex, std::size_t iDataIndex)
-{
-    std::string ret;
-    unsigned aIndex = iDataTypeIndex.getIndex();
-    switch(mCheckMode)
-    {
-    case CheckMode::TypeCheck:
-    case CheckMode::MetaMode:
-        ret=mSerializedTypeList->at(aIndex).mSerializedElementList[iDataIndex].mName;
-        break;
-
-    default:
-        THEOLIZER_INTERNAL_ABORT("mCheckMode=%d", static_cast<int>(mCheckMode));
-        break;
-    }
-
-    return ret;
-}
-
-// ***************************************************************************
-//      エラー処理
-// ***************************************************************************
-
-//----------------------------------------------------------------------------
-//      プリミティブ処理後のエラー・チェック
-//----------------------------------------------------------------------------
-
-void BaseSerializer::checkStreamError(std::ios::iostate iIoState)
-{
-    if (iIoState & std::istream::eofbit)
-    {
-        THEOLIZER_INTERNAL_DATA_ERROR(u8"EOF occured.");
-    }
-    else if (iIoState & std::istream::failbit)
-    {
-        THEOLIZER_INTERNAL_DATA_ERROR(u8"Logical Error on stream.");
-    }
-    else if (iIoState & std::istream::badbit)
-    {
-        THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");
-    }
-}
-
-// ***************************************************************************
-//      シリアライズ機能群
+//      シリアライズ補助機能群
 // ***************************************************************************
 
 //----------------------------------------------------------------------------
@@ -928,135 +692,52 @@ BaseSerializer::AutoRestoreSaveStructure::~AutoRestoreSaveStructure() noexcept(f
     }
 }
 
-//----------------------------------------------------------------------------
-//      トップ・レベル処理補助クラス
-//----------------------------------------------------------------------------
-
-// 型チェックする
-BaseSerializer::AutoRestoreLoadProcess::AutoRestoreLoadProcess
-(
-    BaseSerializer& iSerializer,
-    TypeIndex iTypeIndex
-) : mSerializer(&iSerializer)
-{
-    mSerializer->loadProcessStart(iTypeIndex);
-}
-
-// TypeIndex返却
-BaseSerializer::AutoRestoreLoadProcess::AutoRestoreLoadProcess
-(
-    BaseSerializer& iSerializer,
-    TypeIndexList*& oTypeIndexList
-) : mSerializer(&iSerializer)
-{
-    oTypeIndexList=mSerializer->loadProcessStart(TypeIndex());
-}
-
-BaseSerializer::AutoRestoreLoadProcess::~AutoRestoreLoadProcess() noexcept(false)
-{
-    // ムーブ対応
-    if (!mSerializer)
-return;
-
-    theolizer::internal::Releasing aReleasing{};
-    try
-    {
-        mSerializer->loadProcessEnd();
-    }
-    catch (std::exception& e)
-    {
-        THEOLIZER_INTERNAL_ERROR(e.what());
-    }
-    catch (...)
-    {
-        THEOLIZER_INTERNAL_ERROR(u8"Unknown exception");
-    }
-}
+// ***************************************************************************
+//      トップ・レベル保存前後処理
+// ***************************************************************************
 
 //----------------------------------------------------------------------------
-//      グループ化処理補助クラス
+//      前処理
 //----------------------------------------------------------------------------
 
-BaseSerializer::AutoRestoreLoad::AutoRestoreLoad
-(
-    BaseSerializer& iSerializer,
-    ElementsMapping iElementsMapping
-) : mSerializer(iSerializer),
-    mElementsMapping(iSerializer.mElementsMapping)
+void BaseSerializer::saveProcessStart(TypeIndex iTypeIndex)
 {
-//std::cout << "AutoRestoreLoad(" << iElementsMapping << ")\n";
-    mSerializer.mElementsMapping=iElementsMapping;
-    mSerializer.loadGroupStart();
-}
+    if (mDoCheck)
+    {
+        saveGroupStart(true);
 
-BaseSerializer::AutoRestoreLoad::~AutoRestoreLoad() noexcept(false)
-{
-    theolizer::internal::Releasing aReleasing{};
-    try
-    {
-        mSerializer.loadGroupEnd();
-        mSerializer.mElementsMapping=mElementsMapping;
-    }
-    catch (std::exception& e)
-    {
-        THEOLIZER_INTERNAL_ERROR(e.what());
-    }
-    catch (...)
-    {
-        THEOLIZER_INTERNAL_ERROR(u8"Unknown exception");
-    }
-//std::cout << "~AutoRestoreLoad(" << mSerializer.mElementsMapping << ")\n";
-}
-
-//----------------------------------------------------------------------------
-//      各種構造処理補助クラス
-//----------------------------------------------------------------------------
-
-BaseSerializer::AutoRestoreLoadStructure::AutoRestoreLoadStructure
-(
-    BaseSerializer&     iSerializer,
-    ElementsMapping     iElementsMapping,
-    Structure           iStructure,
-    TypeIndex           iTypeIndex,
-    std::size_t*        oObjectId
-) : mSerializer(iSerializer),
-    mElementsMapping(iSerializer.mElementsMapping),
-    mStructure(iStructure)
-{
-//std::cout << "AutoRestoreLoadStructure(" << iElementsMapping << ")\n";
-    mSerializer.mElementsMapping=iElementsMapping;
-    // データ内に型名を記録
-    if (mSerializer.mCheckMode == CheckMode::TypeCheckInData)
-    {
-        if (iTypeIndex.isValid())
+        switch(mCheckMode)
         {
-            mTypeName.reset(new std::string(mSerializer.getTypeName(iTypeIndex)));
+        case CheckMode::InMemory:
+        case CheckMode::TypeCheckInData:
+        case CheckMode::NoTypeCheck:
+            break;
+
+        case CheckMode::TypeCheck:
+        case CheckMode::MetaMode:
+            writePreElement();
+            saveControl(iTypeIndex);
+            break;
+
+        default:
+            THEOLIZER_INTERNAL_ABORT("mCheckMode=%d", static_cast<int>(mCheckMode));
+            break;
         }
-        else
-        {
-            mTypeName.reset(new std::string);
-        }
+
+        writePreElement();
     }
-    mSerializer.loadStructureStart(mStructure, *mTypeName.get(), oObjectId);
 }
 
-BaseSerializer::AutoRestoreLoadStructure::~AutoRestoreLoadStructure() noexcept(false)
+//----------------------------------------------------------------------------
+//      後処理
+//----------------------------------------------------------------------------
+
+void BaseSerializer::saveProcessEnd()
 {
-    theolizer::internal::Releasing aReleasing{};
-    try
+    if (mDoCheck)
     {
-        mSerializer.loadStructureEnd(mStructure, *mTypeName.get());
-        mSerializer.mElementsMapping=mElementsMapping;
+        saveGroupEnd(true);
     }
-    catch (std::exception& e)
-    {
-        THEOLIZER_INTERNAL_ERROR(e.what());
-    }
-    catch (...)
-    {
-        THEOLIZER_INTERNAL_ERROR(u8"Unknown exception");
-    }
-//std::cout << "~AutoRestoreLoadStructure(" << mSerializer.mElementsMapping << ")\n";
 }
 
 // ***************************************************************************
@@ -1120,274 +801,104 @@ return found->second;
     return inserted.first->second;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+//############################################################################
+//      基底Serializer(回復処理部)
+//############################################################################
+
+// ***************************************************************************
+//      型名と型／バージョン番号対応表生成
+// ***************************************************************************
+
 //----------------------------------------------------------------------------
-//      デシリアライズ用回復済チェック
+//      型名と型Index対応表（デシリアライズ処理用）
+//          シリアライズ・データ上のグローバル・バージョン番号に該当する型名と
+//          その型名を持つ型のTypeIndexの対応表である。
+//          下記要因により１つの型名に複数のTypeIndexが対応することがある。
+//              シリアライズ・データ上で互換性のある型(std::string, std::wstring等)
+//              について同じ型名を割り当てる場合
+//              intとlongがint32のように同じ形名となる場合
 //----------------------------------------------------------------------------
 
-bool BaseSerializer::isLoadedObject(size_t iObjectId, void*& oPointer)
+struct BaseSerializer::TypeNameMap
 {
-    if (mDeserializeList->size() <= iObjectId)
-return false;
+    std::map<std::string const, TypeIndexList>   mMap;
 
-    if (((*mDeserializeList)[iObjectId].mStatus == etsInit)
-     || ((*mDeserializeList)[iObjectId].mStatus == etsPointed))
-return false;
-
-    oPointer=(*mDeserializeList)[iObjectId].mAddress;
-    return true;
-}
-
-//----------------------------------------------------------------------------
-//      デシリアライズ用アドレス登録／回復
-//----------------------------------------------------------------------------
-
-void BaseSerializer::recoverObject
-(
-    size_t iObjectId,
-    void*& oPointer,
-    std::type_info const& iTypeInfo,
-    TrackingMode iTrackingMode,
-    bool* oIsLoaded
-)
-{
-//std::cout << "recoverObject(" << iTypeInfo.name() << ") iObjectId = " << iObjectId << std::endl;
-//std::cout << "    oPointer=" << oPointer << std::endl;
-    if (oIsLoaded) *oIsLoaded=false;
-
-    if (mDeserializeList->capacity() <= iObjectId)
+    void add(std::string const& iTypeName, TypeIndex iTypeIndex)
     {
-        mDeserializeList->reserve(iObjectId+16);
-    }
-    if (mDeserializeList->size() <= iObjectId)
-    {
-        mDeserializeList->resize(iObjectId+1);
-//std::cout << "    resize() iObjectId = " << iObjectId << std::endl;
-    }
-
-    switch((*mDeserializeList)[iObjectId].mStatus)
-    {
-    case etsInit:               // 未登録
-//std::cout << "    etsInit : " << std::endl;
-        if (iTrackingMode == etmDefault)
+//std::cout << "TypeNameMap::add(" << iTypeName << ", " << iTypeIndex << ");";
+        auto pos = mMap.lower_bound(iTypeName);
+        if ((pos != mMap.end()) && (pos->first == iTypeName))
         {
-            // 追跡指定でないなら、
-            (*mDeserializeList)[iObjectId].mStatus=etsPointed;
-
-            // ポインタ自身のアドレスを登録し、ポインタに番兵としてnullptr設定
-            (*mDeserializeList)[iObjectId].mAddress=&oPointer;
-            oPointer=nullptr;
+//std::cout << " -> appended\n";
+            pos->second.emplace_back(iTypeIndex);
         }
         else
         {
-            // 追跡指定されていたら、回復済設定し、
-            (*mDeserializeList)[iObjectId].mStatus = etsProcessed;
-
-            // アドレスを登録する
-            (*mDeserializeList)[iObjectId].mAddress=oPointer;
+//std::cout << " -> add\n";
+            TypeIndexList aTypeIndexList;
+            aTypeIndexList.emplace_back(iTypeIndex);
+            mMap.emplace_hint(pos, iTypeName, aTypeIndexList);
         }
-        break;
-
-    case etsNullPtr:        // アドレス登録済／nullptr
-//std::cout << "    etsNullPtr : " << std::endl;
-        if (oIsLoaded) *oIsLoaded=true;
-        oPointer=nullptr;
-        break;
-
-    case etsPointed:         // アドレス登録済／オブジェクト未回復
-//std::cout << "    etsPointed : " << std::endl;
-        if (iTrackingMode == etmDefault)
-        {
-            // 追跡指定でないなら、自分自身のアドレスをリンク・リストへ登録する
-            oPointer=(*mDeserializeList)[iObjectId].mAddress;
-            (*mDeserializeList)[iObjectId].mAddress=&oPointer;
-//std::cout << "    oPointer = " << oPointer << std::endl;
-        }
-        else
-        {
-            // 追跡指定されていたら、回復済設定し、
-            (*mDeserializeList)[iObjectId].mStatus = etsProcessed;
-//std::cout << "    -> etsProcessed" << std::endl;
-
-            // リンク・リストを解決する
-            void** p=reinterpret_cast<void**>((*mDeserializeList)[iObjectId].mAddress);
-            (*mDeserializeList)[iObjectId].mAddress=oPointer;
-            while(p != nullptr)
-            {
-                void **q=reinterpret_cast<void**>(*p);  // 次のポインタを一旦退避
-                *p=oPointer;            // ポインタへオブジェクトのアドレスを設定
-                p=q;                    // 次のポインタ処理へ
-            }
-        }
-        break;
-
-    case etsProcessed:      // アドレス登録済／オブジェクト回復済
-//std::cout << "    etsProcessed : " << std::endl;
-        if (oIsLoaded) *oIsLoaded=true;
-
-        // 通常ポインタ以外（領域管理する）なら、アドレスを更新する
-        //  複数回同じ領域のシリアライズを許可するが、回復時も同じアドレスとは限らないため。
-        //  ただし、ポインタ保存する時（オブジェクト追跡する時）に、
-        //  同じオブジェクトのアドレスが変化するような処理をしては行けない。
-        //  この事態はオブジェクト追跡単位中にシリアライズした領域を開放すると発生する。
-        if (iTrackingMode == etmPointee)
-        {
-//std::cout << "    etmPointee : mAddress=" << oPointer << std::endl;
-            if ((*mDeserializeList)[iObjectId].mAddress != oPointer)
-            {
-                THEOLIZER_INTERNAL_WRONG_USING(
-                    "This instance(%1%) is different from saved.",
-                    getNameByTypeInfo(iTypeInfo));
-            }
-        }
-        else
-        {
-            oPointer=(*mDeserializeList)[iObjectId].mAddress;
-//std::cout << "    !etmPointee : oPointer=" << oPointer << std::endl;
-        }
-        break;
     }
-}
+};
 
 //----------------------------------------------------------------------------
-//      オブジェクト追跡テーブルをクリアする
-//          プロセス内で保存／回復する時(CheckMode::InMemory)は、
-//          追跡が必要なオブジェクトが保存されなかった場合、
-//          対象アドレスをそのまま保存し、回復する。
-//          プロセス内なので矛盾は生じない。
-//          これは、ポインタをそのままコピーするのと同じ操作である。
+//      対応表生成処理
 //----------------------------------------------------------------------------
 
-void BaseSerializer::clearTrackingImpl()
+void BaseSerializer::createTypeNameMap()
 {
-    if (mSerializeList)
+//std::cout << "createTypeNameMap()\n";
+    // TypeCheck、MetaModeとInMemoryの時は生成不要
+    if ((mCheckMode == CheckMode::TypeCheck)
+     || (mCheckMode == CheckMode::MetaMode)
+     || (mCheckMode == CheckMode::InMemory))
+return;
+
+    mTypeNameMap=std::unique_ptr<TypeNameMap>(new TypeNameMap);
+
+    for (auto const& aIndexer : getRBForIndexer(mTypeInfoList))
     {
-        // ObjectId順で処理する
-        for (std::size_t i=0; i < mSerializeList->size(); ++i)
-        {
-            for (auto&& element : *mSerializeList)
-            {
-                if (element.second.mObjectId != i)
-            continue;
-
-                if ((element.second.mStatus == etsInit)
-                 || (element.second.mStatus == etsPointed))
-                {
-                    if (mCheckMode != CheckMode::InMemory)
-                    {
-                        THEOLIZER_INTERNAL_WRONG_USING
-                        (
-                            u8"Some pointed data does not save.(%1%)",
-                            getNameByTypeInfo(element.first.mStdTypeIndex)
-                        );
-                    }
-                    else
-                    {
-                        std::uintptr_t  aPointer=
-                            reinterpret_cast<std::uintptr_t>(element.first.mAddress);
-                        saveControl(aPointer);
-                    }
-                }
-            }
-        }
-        // 初期状態へ戻す(先頭はnullptr用)
-        mSerializeList->clear();
-        initSerializeList();
+        TypeIndex aTypeIndex = aIndexer.front()->getTypeIndex();
+        unsigned aVersionNo = getLocalVersionNo(aTypeIndex);
+        mTypeNameMap->add(aIndexer.front()->getTypeName(aVersionNo), aTypeIndex);
+//std::cout << "    [" << aIndexer.getIndex() << "] "
+//          << aIndexer.front()->getTypeName(aVersionNo) << "\n";
     }
-
-    if (mDeserializeList)
-    {
-        for (auto&& aIndexer : theolizer::getRBForIndexer(*mDeserializeList))
-        {
-            DeserializeInfo& aDeserializeInfo = aIndexer.front();
-            auto aObjectId = aIndexer.getIndex();
-            if ((aDeserializeInfo.mStatus == etsInit)
-             || (aDeserializeInfo.mStatus == etsPointed))
-            {
-                if (mCheckMode != CheckMode::InMemory)
-                {
-                    THEOLIZER_INTERNAL_WRONG_USING(u8"Can not resolve the address of pointer.");
-                }
-                else
-                {
-                    std::uintptr_t aPointer;
-                    loadControl(aPointer);
-                    void* aPointer2=reinterpret_cast<void*>(aPointer);
-                    recoverObject(aObjectId, aPointer2, typeid(aPointer2), etmOwner);
-                }
-            }
-        }
-        // 初期状態へ戻す(先頭はnullptr用)
-        mDeserializeList->resize(1);
-        (*mDeserializeList)[0].mStatus=etsNullPtr;
-    }
-    // save時はバッファ内データのフラッシュ
-    // load時はバッファ内の無効データの破棄
-    flush();
-}
-
-void BaseSerializer::clearTracking()
-{
-    // エラー情報登録準備
-    theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo);
-
-    mRequireClearTracking=false;
-    if (mNoThrowException)
-    {
-        try
-        {
-            clearTrackingImpl();
-        }
-        catch (ErrorInfo&)
-        {
-        }
-    }
-    else
-    {
-        clearTrackingImpl();
-    }
-}
-
-//----------------------------------------------------------------------------
-//      SharedPtrTable登録テーブル
-//----------------------------------------------------------------------------
-
-struct BaseSerializer::SharedPtrTables : public std::map<std::type_index, SharedPtrTable>
-{ };
-
-SharedPtrTable& BaseSerializer::registerSharedPtrTable(std::type_index iStdTypeIndex)
-{
-    // テーブル未生成なら生成する
-    if (!mSharedPtrTables)
-    {
-        mSharedPtrTables.reset(new SharedPtrTables);
-    }
-
-    // 対象が未登録なら登録する
-    auto aFound=mSharedPtrTables->find(iStdTypeIndex);
-    if (aFound == mSharedPtrTables->end())
-    {
-        aFound=mSharedPtrTables->insert(aFound, std::make_pair(iStdTypeIndex, SharedPtrTable()));
-    }
-
-    return aFound->second;
 }
 
 // ***************************************************************************
-//      ClassTypeの破棄処理
+//      シリアライズ・データの指定TypeIndexのクラスの指定番目の要素の名前獲得
 // ***************************************************************************
 
-void BaseSerializer::disposeClass(ElementsMapping iElementsMapping)
+std::string BaseSerializer::getDataElementName(TypeIndex iDataTypeIndex, std::size_t iDataIndex)
 {
-    AutoRestoreLoadStructure aAutoRestoreLoadStructure(*this, iElementsMapping, Structure::Class);
-
-    while(true)
+    std::string ret;
+    unsigned aIndex = iDataTypeIndex.getIndex();
+    switch(mCheckMode)
     {
-        if (!readPreElement())
-    break;
+    case CheckMode::TypeCheck:
+    case CheckMode::MetaMode:
+        ret=mSerializedTypeList->at(aIndex).mSerializedElementList[iDataIndex].mName;
+        break;
 
-        loadElementName(iElementsMapping);
-        disposeElement();
+    default:
+        THEOLIZER_INTERNAL_ABORT("mCheckMode=%d", static_cast<int>(mCheckMode));
+        break;
     }
+
+    return ret;
 }
 
 // ***************************************************************************
@@ -1417,6 +928,30 @@ return mTypeNameMap->mMap[aTypeName];
         loadControl(aTypeIndex);
         auto& aElementType = mSerializedTypeList->at(aTypeIndex.getIndex());
 return *(aElementType.mProgramTypeIndex);
+    }
+}
+
+// ***************************************************************************
+//      エラー処理
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      プリミティブ処理後のエラー・チェック
+//----------------------------------------------------------------------------
+
+void BaseSerializer::checkStreamError(std::ios::iostate iIoState)
+{
+    if (iIoState & std::istream::eofbit)
+    {
+        THEOLIZER_INTERNAL_DATA_ERROR(u8"EOF occured.");
+    }
+    else if (iIoState & std::istream::failbit)
+    {
+        THEOLIZER_INTERNAL_DATA_ERROR(u8"Logical Error on stream.");
+    }
+    else if (iIoState & std::istream::badbit)
+    {
+        THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");
     }
 }
 
@@ -1707,6 +1242,497 @@ return false;
 //std::cout << "    aIsMatch = " << aIsMatch << "\n";
     }
     return aIsMatch;
+}
+
+// ***************************************************************************
+//      シリアライズ補助機能群
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      トップ・レベル処理補助クラス
+//----------------------------------------------------------------------------
+
+// 型チェックする
+BaseSerializer::AutoRestoreLoadProcess::AutoRestoreLoadProcess
+(
+    BaseSerializer& iSerializer,
+    TypeIndex iTypeIndex
+) : mSerializer(&iSerializer)
+{
+    mSerializer->loadProcessStart(iTypeIndex);
+}
+
+// TypeIndex返却
+BaseSerializer::AutoRestoreLoadProcess::AutoRestoreLoadProcess
+(
+    BaseSerializer& iSerializer,
+    TypeIndexList*& oTypeIndexList
+) : mSerializer(&iSerializer)
+{
+    oTypeIndexList=mSerializer->loadProcessStart(TypeIndex());
+}
+
+BaseSerializer::AutoRestoreLoadProcess::~AutoRestoreLoadProcess() noexcept(false)
+{
+    // ムーブ対応
+    if (!mSerializer)
+return;
+
+    theolizer::internal::Releasing aReleasing{};
+    try
+    {
+        mSerializer->loadProcessEnd();
+    }
+    catch (std::exception& e)
+    {
+        THEOLIZER_INTERNAL_ERROR(e.what());
+    }
+    catch (...)
+    {
+        THEOLIZER_INTERNAL_ERROR(u8"Unknown exception");
+    }
+}
+
+//----------------------------------------------------------------------------
+//      グループ化処理補助クラス
+//----------------------------------------------------------------------------
+
+BaseSerializer::AutoRestoreLoad::AutoRestoreLoad
+(
+    BaseSerializer& iSerializer,
+    ElementsMapping iElementsMapping
+) : mSerializer(iSerializer),
+    mElementsMapping(iSerializer.mElementsMapping)
+{
+//std::cout << "AutoRestoreLoad(" << iElementsMapping << ")\n";
+    mSerializer.mElementsMapping=iElementsMapping;
+    mSerializer.loadGroupStart();
+}
+
+BaseSerializer::AutoRestoreLoad::~AutoRestoreLoad() noexcept(false)
+{
+    theolizer::internal::Releasing aReleasing{};
+    try
+    {
+        mSerializer.loadGroupEnd();
+        mSerializer.mElementsMapping=mElementsMapping;
+    }
+    catch (std::exception& e)
+    {
+        THEOLIZER_INTERNAL_ERROR(e.what());
+    }
+    catch (...)
+    {
+        THEOLIZER_INTERNAL_ERROR(u8"Unknown exception");
+    }
+//std::cout << "~AutoRestoreLoad(" << mSerializer.mElementsMapping << ")\n";
+}
+
+//----------------------------------------------------------------------------
+//      各種構造処理補助クラス
+//----------------------------------------------------------------------------
+
+BaseSerializer::AutoRestoreLoadStructure::AutoRestoreLoadStructure
+(
+    BaseSerializer&     iSerializer,
+    ElementsMapping     iElementsMapping,
+    Structure           iStructure,
+    TypeIndex           iTypeIndex,
+    std::size_t*        oObjectId
+) : mSerializer(iSerializer),
+    mElementsMapping(iSerializer.mElementsMapping),
+    mStructure(iStructure)
+{
+//std::cout << "AutoRestoreLoadStructure(" << iElementsMapping << ")\n";
+    mSerializer.mElementsMapping=iElementsMapping;
+    // データ内に型名を記録
+    if (mSerializer.mCheckMode == CheckMode::TypeCheckInData)
+    {
+        if (iTypeIndex.isValid())
+        {
+            mTypeName.reset(new std::string(mSerializer.getTypeName(iTypeIndex)));
+        }
+        else
+        {
+            mTypeName.reset(new std::string);
+        }
+    }
+    mSerializer.loadStructureStart(mStructure, *mTypeName.get(), oObjectId);
+}
+
+BaseSerializer::AutoRestoreLoadStructure::~AutoRestoreLoadStructure() noexcept(false)
+{
+    theolizer::internal::Releasing aReleasing{};
+    try
+    {
+        mSerializer.loadStructureEnd(mStructure, *mTypeName.get());
+        mSerializer.mElementsMapping=mElementsMapping;
+    }
+    catch (std::exception& e)
+    {
+        THEOLIZER_INTERNAL_ERROR(e.what());
+    }
+    catch (...)
+    {
+        THEOLIZER_INTERNAL_ERROR(u8"Unknown exception");
+    }
+//std::cout << "~AutoRestoreLoadStructure(" << mSerializer.mElementsMapping << ")\n";
+}
+
+// ***************************************************************************
+//      トップ・レベル回復前後処理
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      前処理
+//----------------------------------------------------------------------------
+
+TypeIndexList* BaseSerializer::loadProcessStart(TypeIndex iTypeIndex)
+{
+    TypeIndexList* ret = nullptr;
+
+    if (mDoCheck)
+    {
+
+        loadGroupStart(true);
+
+        switch(mCheckMode)
+        {
+        case CheckMode::InMemory:
+        case CheckMode::TypeCheckInData:
+        case CheckMode::NoTypeCheck:
+            break;
+
+        case CheckMode::TypeCheck:
+        case CheckMode::MetaMode:
+            if (!readPreElement())
+            {
+                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+            }
+
+            {
+                TypeIndex aTypeIndex;
+                loadControl(aTypeIndex);
+                if (iTypeIndex.isValid())
+                {
+                    if (!isMatchTypeIndex(aTypeIndex, iTypeIndex))
+                    {
+                        THEOLIZER_INTERNAL_DATA_ERROR(u8"Unmatch type.");
+                    }
+                }
+                else
+                {
+#if 1   // ヘッダ処理を実装するまでの仮実装(仮なのでかなりいい加減だがデバッグには使える)
+                    static TypeIndexList    aTemp;  // 本来staticではダメだが、仮実装なので手抜き
+                    aTemp.clear();
+                    aTemp.push_back(aTypeIndex);
+                    ret = &aTemp;
+#else
+                    auto& aElementType = mSerializedTypeList->at(aTypeIndex);
+                    ret = aElementType.mProgramTypeIndex;
+#endif
+                }
+            }
+            break;
+
+        default:
+            THEOLIZER_INTERNAL_ABORT("mCheckMode=%d", static_cast<int>(mCheckMode));
+            break;
+        }
+
+        if (!readPreElement())
+        {
+            THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+        }
+    }
+
+    return ret;
+}
+
+//----------------------------------------------------------------------------
+//      後処理
+//----------------------------------------------------------------------------
+
+void BaseSerializer::loadProcessEnd()
+{
+    if (mDoCheck)
+    {
+        loadGroupEnd(true);
+    }
+}
+
+// ***************************************************************************
+//      オブジェクト追跡機能群
+// ***************************************************************************
+
+//----------------------------------------------------------------------------
+//      デシリアライズ用回復済チェック
+//----------------------------------------------------------------------------
+
+bool BaseSerializer::isLoadedObject(size_t iObjectId, void*& oPointer)
+{
+    if (mDeserializeList->size() <= iObjectId)
+return false;
+
+    if (((*mDeserializeList)[iObjectId].mStatus == etsInit)
+     || ((*mDeserializeList)[iObjectId].mStatus == etsPointed))
+return false;
+
+    oPointer=(*mDeserializeList)[iObjectId].mAddress;
+    return true;
+}
+
+//----------------------------------------------------------------------------
+//      デシリアライズ用アドレス登録／回復
+//----------------------------------------------------------------------------
+
+void BaseSerializer::recoverObject
+(
+    size_t iObjectId,
+    void*& oPointer,
+    std::type_info const& iTypeInfo,
+    TrackingMode iTrackingMode,
+    bool* oIsLoaded
+)
+{
+//std::cout << "recoverObject(" << iTypeInfo.name() << ") iObjectId = " << iObjectId << std::endl;
+//std::cout << "    oPointer=" << oPointer << std::endl;
+    if (oIsLoaded) *oIsLoaded=false;
+
+    if (mDeserializeList->capacity() <= iObjectId)
+    {
+        mDeserializeList->reserve(iObjectId+16);
+    }
+    if (mDeserializeList->size() <= iObjectId)
+    {
+        mDeserializeList->resize(iObjectId+1);
+//std::cout << "    resize() iObjectId = " << iObjectId << std::endl;
+    }
+
+    switch((*mDeserializeList)[iObjectId].mStatus)
+    {
+    case etsInit:               // 未登録
+//std::cout << "    etsInit : " << std::endl;
+        if (iTrackingMode == etmDefault)
+        {
+            // 追跡指定でないなら、
+            (*mDeserializeList)[iObjectId].mStatus=etsPointed;
+
+            // ポインタ自身のアドレスを登録し、ポインタに番兵としてnullptr設定
+            (*mDeserializeList)[iObjectId].mAddress=&oPointer;
+            oPointer=nullptr;
+        }
+        else
+        {
+            // 追跡指定されていたら、回復済設定し、
+            (*mDeserializeList)[iObjectId].mStatus = etsProcessed;
+
+            // アドレスを登録する
+            (*mDeserializeList)[iObjectId].mAddress=oPointer;
+        }
+        break;
+
+    case etsNullPtr:        // アドレス登録済／nullptr
+//std::cout << "    etsNullPtr : " << std::endl;
+        if (oIsLoaded) *oIsLoaded=true;
+        oPointer=nullptr;
+        break;
+
+    case etsPointed:         // アドレス登録済／オブジェクト未回復
+//std::cout << "    etsPointed : " << std::endl;
+        if (iTrackingMode == etmDefault)
+        {
+            // 追跡指定でないなら、自分自身のアドレスをリンク・リストへ登録する
+            oPointer=(*mDeserializeList)[iObjectId].mAddress;
+            (*mDeserializeList)[iObjectId].mAddress=&oPointer;
+//std::cout << "    oPointer = " << oPointer << std::endl;
+        }
+        else
+        {
+            // 追跡指定されていたら、回復済設定し、
+            (*mDeserializeList)[iObjectId].mStatus = etsProcessed;
+//std::cout << "    -> etsProcessed" << std::endl;
+
+            // リンク・リストを解決する
+            void** p=reinterpret_cast<void**>((*mDeserializeList)[iObjectId].mAddress);
+            (*mDeserializeList)[iObjectId].mAddress=oPointer;
+            while(p != nullptr)
+            {
+                void **q=reinterpret_cast<void**>(*p);  // 次のポインタを一旦退避
+                *p=oPointer;            // ポインタへオブジェクトのアドレスを設定
+                p=q;                    // 次のポインタ処理へ
+            }
+        }
+        break;
+
+    case etsProcessed:      // アドレス登録済／オブジェクト回復済
+//std::cout << "    etsProcessed : " << std::endl;
+        if (oIsLoaded) *oIsLoaded=true;
+
+        // 通常ポインタ以外（領域管理する）なら、アドレスを更新する
+        //  複数回同じ領域のシリアライズを許可するが、回復時も同じアドレスとは限らないため。
+        //  ただし、ポインタ保存する時（オブジェクト追跡する時）に、
+        //  同じオブジェクトのアドレスが変化するような処理をしては行けない。
+        //  この事態はオブジェクト追跡単位中にシリアライズした領域を開放すると発生する。
+        if (iTrackingMode == etmPointee)
+        {
+//std::cout << "    etmPointee : mAddress=" << oPointer << std::endl;
+            if ((*mDeserializeList)[iObjectId].mAddress != oPointer)
+            {
+                THEOLIZER_INTERNAL_WRONG_USING(
+                    "This instance(%1%) is different from saved.",
+                    getNameByTypeInfo(iTypeInfo));
+            }
+        }
+        else
+        {
+            oPointer=(*mDeserializeList)[iObjectId].mAddress;
+//std::cout << "    !etmPointee : oPointer=" << oPointer << std::endl;
+        }
+        break;
+    }
+}
+
+//----------------------------------------------------------------------------
+//      オブジェクト追跡テーブルをクリアする
+//          プロセス内で保存／回復する時(CheckMode::InMemory)は、
+//          追跡が必要なオブジェクトが保存されなかった場合、
+//          対象アドレスをそのまま保存し、回復する。
+//          プロセス内なので矛盾は生じない。
+//          これは、ポインタをそのままコピーするのと同じ操作である。
+//----------------------------------------------------------------------------
+
+void BaseSerializer::clearTrackingImpl()
+{
+    if (mSerializeList)
+    {
+        // ObjectId順で処理する
+        for (std::size_t i=0; i < mSerializeList->size(); ++i)
+        {
+            for (auto&& element : *mSerializeList)
+            {
+                if (element.second.mObjectId != i)
+            continue;
+
+                if ((element.second.mStatus == etsInit)
+                 || (element.second.mStatus == etsPointed))
+                {
+                    if (mCheckMode != CheckMode::InMemory)
+                    {
+                        THEOLIZER_INTERNAL_WRONG_USING
+                        (
+                            u8"Some pointed data does not save.(%1%)",
+                            getNameByTypeInfo(element.first.mStdTypeIndex)
+                        );
+                    }
+                    else
+                    {
+                        std::uintptr_t  aPointer=
+                            reinterpret_cast<std::uintptr_t>(element.first.mAddress);
+                        saveControl(aPointer);
+                    }
+                }
+            }
+        }
+        // 初期状態へ戻す(先頭はnullptr用)
+        mSerializeList->clear();
+        initSerializeList();
+    }
+
+    if (mDeserializeList)
+    {
+        for (auto&& aIndexer : theolizer::getRBForIndexer(*mDeserializeList))
+        {
+            DeserializeInfo& aDeserializeInfo = aIndexer.front();
+            auto aObjectId = aIndexer.getIndex();
+            if ((aDeserializeInfo.mStatus == etsInit)
+             || (aDeserializeInfo.mStatus == etsPointed))
+            {
+                if (mCheckMode != CheckMode::InMemory)
+                {
+                    THEOLIZER_INTERNAL_WRONG_USING(u8"Can not resolve the address of pointer.");
+                }
+                else
+                {
+                    std::uintptr_t aPointer;
+                    loadControl(aPointer);
+                    void* aPointer2=reinterpret_cast<void*>(aPointer);
+                    recoverObject(aObjectId, aPointer2, typeid(aPointer2), etmOwner);
+                }
+            }
+        }
+        // 初期状態へ戻す(先頭はnullptr用)
+        mDeserializeList->resize(1);
+        (*mDeserializeList)[0].mStatus=etsNullPtr;
+    }
+    // save時はバッファ内データのフラッシュ
+    // load時はバッファ内の無効データの破棄
+    flush();
+}
+
+void BaseSerializer::clearTracking()
+{
+    // エラー情報登録準備
+    theolizer::internal::ApiBoundarySerializer aApiBoundary(this, &mAdditionalInfo);
+
+    mRequireClearTracking=false;
+    if (mNoThrowException)
+    {
+        try
+        {
+            clearTrackingImpl();
+        }
+        catch (ErrorInfo&)
+        {
+        }
+    }
+    else
+    {
+        clearTrackingImpl();
+    }
+}
+
+//----------------------------------------------------------------------------
+//      SharedPtrTable登録テーブル
+//----------------------------------------------------------------------------
+
+struct BaseSerializer::SharedPtrTables : public std::map<std::type_index, SharedPtrTable>
+{ };
+
+SharedPtrTable& BaseSerializer::registerSharedPtrTable(std::type_index iStdTypeIndex)
+{
+    // テーブル未生成なら生成する
+    if (!mSharedPtrTables)
+    {
+        mSharedPtrTables.reset(new SharedPtrTables);
+    }
+
+    // 対象が未登録なら登録する
+    auto aFound=mSharedPtrTables->find(iStdTypeIndex);
+    if (aFound == mSharedPtrTables->end())
+    {
+        aFound=mSharedPtrTables->insert(aFound, std::make_pair(iStdTypeIndex, SharedPtrTable()));
+    }
+
+    return aFound->second;
+}
+
+// ***************************************************************************
+//      ClassTypeの破棄処理
+// ***************************************************************************
+
+void BaseSerializer::disposeClass(ElementsMapping iElementsMapping)
+{
+    AutoRestoreLoadStructure aAutoRestoreLoadStructure(*this, iElementsMapping, Structure::Class);
+
+    while(true)
+    {
+        if (!readPreElement())
+    break;
+
+        loadElementName(iElementsMapping);
+        disposeElement();
+    }
 }
 
 //############################################################################
