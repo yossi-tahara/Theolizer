@@ -68,7 +68,14 @@ std::string TypeKind::to_string() const
 {
     std::string ret;
 
-    auto add=[&](char const* iRhs){ if (!ret.empty()) ret+="|"; ret += iRhs; };
+    auto add=[&](char const* iRhs)
+    {
+        if (!ret.empty())
+        {
+            ret+="|";
+        }
+        ret += iRhs;
+    };
 
     unsigned    aValue = mValue;
     switch(aValue & ~(AdditionalMask|Template))

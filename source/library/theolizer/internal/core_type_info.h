@@ -599,25 +599,24 @@ public:
     std::string to_string() const;
 
     // 出力
-    friend std::ostream& operator<<(std::ostream& iOStream, TypeKind iTypeKindXXXX)
+    friend std::ostream& operator<<(std::ostream& iOStream, TypeKind iTypeKind)
     {
-        iOStream << iTypeKindXXXX.mValue;
+        iOStream << iTypeKind.mValue;
         return iOStream;
     }
 
     // 入力
-    friend std::istream& operator>>(std::istream& iIStream, TypeKind& oTypeKindXXXX)
+    friend std::istream& operator>>(std::istream& iIStream, TypeKind& oTypeKind)
     {
         unsigned    temp;
         iIStream >> temp;
-        oTypeKindXXXX.mValue = static_cast<Value>(temp);
+        oTypeKind.mValue = static_cast<Value>(temp);
         return iIStream;
     }
 
 private:
     Value   mValue;
 };
-
 
 //----------------------------------------------------------------------------
 //      enum型のシンボル値保持クラス
