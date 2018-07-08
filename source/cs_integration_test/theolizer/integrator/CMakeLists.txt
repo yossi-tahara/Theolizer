@@ -69,7 +69,7 @@ endif()
 # MSVCのみ対応
 if (MSVC)
 
-    set(CMAKE_CSharp_FLAGS "/langversion:6")
+    set(CMAKE_CSharp_FLAGS "/langversion:6 -nowarn:1006")
     if ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
         set(CMAKE_CSharp_FLAGS "${CMAKE_CSharp_FLAGS} /platform:x64")
     endif()

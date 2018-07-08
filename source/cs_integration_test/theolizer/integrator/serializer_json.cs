@@ -315,6 +315,7 @@ namespace theolizer.internal_space
         {
             var sb = new StringBuilder();
             int ch;
+            // スペース文字読み飛ばし
             while((ch = getChar()) > -1)
             {
                 if (sSpaceChar.IndexOf((char)ch) < 0)
@@ -325,6 +326,8 @@ namespace theolizer.internal_space
             }
             if (ch < 0)
         return "";
+
+            // デリミタまで読む
             while((ch = getChar()) > -1)
             {
                 if (sDelimiter.IndexOf((char)ch) > -1)
@@ -337,18 +340,52 @@ namespace theolizer.internal_space
             return sb.ToString();
         }
 
-        public void Read(out Boolean iPrimitive) {iPrimitive=(int.Parse(ReadDelim())!=0)?true:false;}
-        public void Read(out Byte    iPrimitive) {iPrimitive=Byte.Parse(ReadDelim());}
-        public void Read(out SByte   iPrimitive) {iPrimitive=SByte.Parse(ReadDelim());}
-        public void Read(out Char    iPrimitive) {iPrimitive=(char)(int.Parse(ReadDelim()));}
-        public void Read(out Int16   iPrimitive) {iPrimitive=Int16.Parse(ReadDelim());}
-        public void Read(out UInt16  iPrimitive) {iPrimitive=UInt16.Parse(ReadDelim());}
-        public void Read(out Int32   iPrimitive) {iPrimitive=Int32.Parse(ReadDelim());}
-        public void Read(out UInt32  iPrimitive) {iPrimitive=UInt32.Parse(ReadDelim());}
-        public void Read(out Int64   iPrimitive) {iPrimitive=Int64.Parse(ReadDelim());}
-        public void Read(out UInt64  iPrimitive) {iPrimitive=UInt64.Parse(ReadDelim());}
-        public void Read(out Single  iPrimitive) {iPrimitive=Single.Parse(ReadDelim());}
-        public void Read(out Double  iPrimitive) {iPrimitive=Double.Parse(ReadDelim());}
+        // TypeIndexを読み出す
+        const String sDelimiter2 = " ,\n\r]}\te";
+        void ReadTypeIndex(TypeIndex oTypeIndex)
+        {
+            var sb = new StringBuilder();
+            int ch;
+            // スペース文字読み飛ばし
+            while((ch = getChar()) > -1)
+            {
+                if (sSpaceChar.IndexOf((char)ch) < 0)
+                {
+                    unget();
+            break;
+                }
+            }
+            if (ch < 0)
+        throw new InvalidOperationException(String.Format("Format Error."));
+
+            // eまで読む
+            while((ch = getChar()) > -1)
+            {
+                if (sDelimiter2.IndexOf((char)ch) > -1)
+            break;
+                sb.Append((char)ch);
+            }
+            if ((ch < 0) || (ch != 'e'))
+        throw new InvalidOperationException(String.Format("Format Error."));
+
+            UInt32  aIndex      =UInt32.Parse(sb.ToString());
+            UInt32  aAdditional =UInt32.Parse(ReadDelim());
+            oTypeIndex.set(aIndex, aAdditional);
+        }
+
+        public void Read(out Boolean oPrimitive) {oPrimitive=(int.Parse(ReadDelim())!=0)?true:false;}
+        public void Read(out Byte    oPrimitive) {oPrimitive=Byte.Parse(ReadDelim());}
+        public void Read(out SByte   oPrimitive) {oPrimitive=SByte.Parse(ReadDelim());}
+        public void Read(out Char    oPrimitive) {oPrimitive=(char)(int.Parse(ReadDelim()));}
+        public void Read(out Int16   oPrimitive) {oPrimitive=Int16.Parse(ReadDelim());}
+        public void Read(out UInt16  oPrimitive) {oPrimitive=UInt16.Parse(ReadDelim());}
+        public void Read(out Int32   oPrimitive) {oPrimitive=Int32.Parse(ReadDelim());}
+        public void Read(out UInt32  oPrimitive) {oPrimitive=UInt32.Parse(ReadDelim());}
+        public void Read(out Int64   oPrimitive) {oPrimitive=Int64.Parse(ReadDelim());}
+        public void Read(out UInt64  oPrimitive) {oPrimitive=UInt64.Parse(ReadDelim());}
+        public void Read(out Single  oPrimitive) {oPrimitive=Single.Parse(ReadDelim());}
+        public void Read(out Double  oPrimitive) {oPrimitive=Double.Parse(ReadDelim());}
+        public void Read(TypeIndex oTypeIndex)   {ReadTypeIndex(oTypeIndex);}
     }
 
     // ***************************************************************************
@@ -511,19 +548,23 @@ namespace theolizer.internal_space
         }
 
         // 各種制御コード入力
-        protected override void loadControl(out Int32  iControl)    {loadPrimitive(out iControl);}
-        protected override void loadControl(out Int64  iControl)    {loadPrimitive(out iControl);}
-        protected override void loadControl(out UInt32 iControl)    {loadPrimitive(out iControl);}
-        protected override void loadControl(out UInt64 iControl)    {loadPrimitive(out iControl);}
-        protected override void loadControl(out String iControl)    {decodeJsonString(out iControl);}
+        protected override void loadControl(out Int32  oControl)    {loadPrimitive(out oControl);}
+        protected override void loadControl(out Int64  oControl)    {loadPrimitive(out oControl);}
+        protected override void loadControl(out UInt32 oControl)    {loadPrimitive(out oControl);}
+        protected override void loadControl(out UInt64 oControl)    {loadPrimitive(out oControl);}
+        protected override void loadControl(out String oControl)    {decodeJsonString(out oControl);}
+        protected override void loadControl(TypeIndex oTypeIndex)   {mIStream.Read(oTypeIndex);}
         protected override String loadElementName(ElementsMapping iElementsMapping)
         {
-            String aElementName;
-            decodeJsonString(out aElementName);
-            char ch = getValidChar();
-            if (ch != ':')
+            String aElementName = null;
+            if (iElementsMapping == ElementsMapping.emName)
             {
-        throw new InvalidOperationException("Format Error.");
+                decodeJsonString(out aElementName);
+                char ch = getValidChar();
+                if (ch != ':')
+                {
+            throw new InvalidOperationException("Format Error.");
+                }
             }
             return aElementName;
         }
@@ -546,21 +587,21 @@ namespace theolizer.internal_space
         //      プリミティブ保存関数群
         //----------------------------------------------------------------------------
 
-        public    override void loadPrimitive(out Boolean iPrimitive) {mIStream.Read(out iPrimitive);}
-        public    override void loadPrimitive(out Byte    iPrimitive) {mIStream.Read(out iPrimitive);}
-        public    override void loadPrimitive(out SByte   iPrimitive) {mIStream.Read(out iPrimitive);}
-        public    override void loadPrimitive(out Char    iPrimitive) {mIStream.Read(out iPrimitive);}
-        public    override void loadPrimitive(out Int16   iPrimitive) {mIStream.Read(out iPrimitive);}
-        public    override void loadPrimitive(out UInt16  iPrimitive) {mIStream.Read(out iPrimitive);}
-        public    override void loadPrimitive(out Int32   iPrimitive) {mIStream.Read(out iPrimitive);}
-        public    override void loadPrimitive(out UInt32  iPrimitive) {mIStream.Read(out iPrimitive);}
-        public    override void loadPrimitive(out Int64   iPrimitive) {mIStream.Read(out iPrimitive);}
-        public    override void loadPrimitive(out UInt64  iPrimitive) {mIStream.Read(out iPrimitive);}
-        public    override void loadPrimitive(out Single  iPrimitive) {mIStream.Read(out iPrimitive);}
-        public    override void loadPrimitive(out Double iPrimitive)  {mIStream.Read(out iPrimitive);}
-        public    override void loadPrimitive(out String  iPrimitive)
+        public    override void loadPrimitive(out Boolean oPrimitive) {mIStream.Read(out oPrimitive);}
+        public    override void loadPrimitive(out Byte    oPrimitive) {mIStream.Read(out oPrimitive);}
+        public    override void loadPrimitive(out SByte   oPrimitive) {mIStream.Read(out oPrimitive);}
+        public    override void loadPrimitive(out Char    oPrimitive) {mIStream.Read(out oPrimitive);}
+        public    override void loadPrimitive(out Int16   oPrimitive) {mIStream.Read(out oPrimitive);}
+        public    override void loadPrimitive(out UInt16  oPrimitive) {mIStream.Read(out oPrimitive);}
+        public    override void loadPrimitive(out Int32   oPrimitive) {mIStream.Read(out oPrimitive);}
+        public    override void loadPrimitive(out UInt32  oPrimitive) {mIStream.Read(out oPrimitive);}
+        public    override void loadPrimitive(out Int64   oPrimitive) {mIStream.Read(out oPrimitive);}
+        public    override void loadPrimitive(out UInt64  oPrimitive) {mIStream.Read(out oPrimitive);}
+        public    override void loadPrimitive(out Single  oPrimitive) {mIStream.Read(out oPrimitive);}
+        public    override void loadPrimitive(out Double  oPrimitive) {mIStream.Read(out oPrimitive);}
+        public    override void loadPrimitive(out String  oPrimitive)
         {
-            decodeJsonString(out iPrimitive);
+            decodeJsonString(out oPrimitive);
         }
 
         // Json文字列へデコード

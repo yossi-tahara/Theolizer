@@ -99,44 +99,45 @@ namespace theolizer.internal_space
         {
             mValue = iValue;
         }
+#if false
         public TypeKind(TypeKind iTypeKind)
         {
             mValue = iTypeKind.mValue;
         }
-
+#endif
 #if false
         // 代入演算子
-        TypeKind& operator=(TypeKind iRhs)
+        public TypeKind& operator=(TypeKind iRhs)
         {
             mValue = iRhs.mValue;
             return *this;
         }
-        TypeKind& operator=(Value iRhs)
+        public TypeKind& operator=(Value iRhs)
         {
             mValue = iRhs;
             return *this;
         }
 
         // 変換
-        operator TypeKind::Value() const { return mValue; }
+        public operator TypeKind::Value() const { return mValue; }
 #endif
 
         // 有効
-        bool isValid() { return mValue != Value.Invalid; }
+        public bool isValid() { return mValue != Value.Invalid; }
 
         // データ返却
-        Value get() { return mValue; }
+        public Value get() { return mValue; }
 
 #if false
         // 比較演算子
-        bool operator==(TypeKind iRhs)        const { return mValue == iRhs.mValue; }
-        bool operator!=(TypeKind iRhs)        const { return mValue != iRhs.mValue; }
-        bool operator==(TypeKind::Value iRhs) const { return mValue == iRhs; }
-        bool operator!=(TypeKind::Value iRhs) const { return mValue != iRhs; }
+        public bool operator==(TypeKind iRhs)        const { return mValue == iRhs.mValue; }
+        public bool operator!=(TypeKind iRhs)        const { return mValue != iRhs.mValue; }
+        public bool operator==(TypeKind::Value iRhs) const { return mValue == iRhs; }
+        public bool operator!=(TypeKind::Value iRhs) const { return mValue != iRhs; }
 #endif
 
         // 文字列返却
-        String to_string()
+        public String to_string()
         {
             StringBuilder ret = new StringBuilder();
 
@@ -234,11 +235,11 @@ namespace theolizer.internal_space
         {
             mTypeIndexImpl = iIndex*TypeIndexRadix;
         }
+#if false
         public TypeIndex(TypeIndex iTypeIndex)
         {
             mTypeIndexImpl = iTypeIndex.mTypeIndexImpl;
         }
-#if false
         TypeIndex& operator=(UInt32 iIndex)
         {
             mTypeIndexImpl = iIndex*TypeIndexRadix;
@@ -250,39 +251,39 @@ namespace theolizer.internal_space
             return *this;
         }
 #endif
-        void set(UInt32 iIndex, UInt32 iAdditional)
+        public void set(UInt32 iIndex, UInt32 iAdditional)
         {
             mTypeIndexImpl = iIndex*TypeIndexRadix + iAdditional;
         }
-        void setRaw(UInt32 iTypeIndexImpl)
+        public void setRaw(UInt32 iTypeIndexImpl)
         {
             mTypeIndexImpl = iTypeIndexImpl;
         }
-        UInt32 getRaw()
+        public UInt32 getRaw()
         {
             return mTypeIndexImpl;
         }
-        bool isValid()
+        public bool isValid()
         {
             return mTypeIndexImpl != kInvalidUnsigned;
         }
 #if false
-        bool operator==(TypeIndex iTypeIndex)
+        public bool operator==(TypeIndex iTypeIndex)
         {
             return mTypeIndexImpl == iTypeIndex.mTypeIndexImpl;
         }
-        bool operator!=(TypeIndex iTypeIndex)
+        public bool operator!=(TypeIndex iTypeIndex)
         {
             return mTypeIndexImpl != iTypeIndex.mTypeIndexImpl;
         }
 #endif
-        UInt32 getIndex()
+        public UInt32 getIndex()
         {
             return mTypeIndexImpl/TypeIndexRadix;
         }
 
         // 追加情報
-        UInt32 getAdditional()
+        public UInt32 getAdditional()
         {
             return mTypeIndexImpl & ~TypeIndexMask;
         }
@@ -291,7 +292,7 @@ namespace theolizer.internal_space
         //      etipPointee:"e"     etipNormalPointer:"p"   etipOwnerPointer:"o"
         //      etiaArray1:"1"      etiaArray2:"2"          etiaArray3:"3"
         //  通常ポインタの1次元配列:$p1
-        String getAdditionalString()
+        public String getAdditionalString()
         {
             StringBuilder ret = new StringBuilder();
             if ((mTypeIndexImpl & (UInt32)TypeIndexArray.etiaMask) != 0)
@@ -309,7 +310,7 @@ namespace theolizer.internal_space
         }
         // 追加文字列分離
         //  戻り値は付加情報
-        static UInt32 splitAdditional(ref String ioTypeName)
+        public static UInt32 splitAdditional(ref String ioTypeName)
         {
             int pos = ioTypeName.IndexOf('$');
 
@@ -356,7 +357,6 @@ namespace theolizer.internal_space
         }
 
         // 配列種別
-#if true
         enum TypeIndexArray : UInt32
         {
             etiaMask                =0x03,
@@ -365,18 +365,12 @@ namespace theolizer.internal_space
             etiaArray2              =0x02,      // 2次元配列
             etiaArray3              =0x03,      // 3次元配列
         }
-#else
-        const UInt32    etiaMask    =0x03;
-        const UInt32    etiaNone    =0x00;      // 非配列
-        const UInt32    etiaArray1  =0x01;      // 1次元配列
-        const UInt32    etiaArray2  =0x02;      // 2次元配列
-        const UInt32    etiaArray3  =0x03;      // 3次元配列
-#endif
-        UInt32 getRank()
+
+        public UInt32 getRank()
         {
             return mTypeIndexImpl & (UInt32)TypeIndexArray.etiaMask;
         }
-        void setRank(UInt32 iRank)
+        public void setRank(UInt32 iRank)
         {
             if (3 < iRank)
             {
@@ -391,7 +385,7 @@ namespace theolizer.internal_space
 
 #if false
         // 文字列型への出力
-        friend std::ostream& operator<<(std::ostream& iOStream, TypeIndex iTypeIndex)
+        public static void Write(StreamReaderEx StreadWriter iOStream, TypeIndex iTypeIndex)
         {
             if (iTypeIndex.isValid())
             {
@@ -406,37 +400,21 @@ namespace theolizer.internal_space
         }
 
         // 文字列型からの入力
-        friend std::istream& operator>>(std::istream& iIStream, TypeIndex& oTypeIndex)
+        public static void Read(StreamReaderEx iIStream, TypeIndex oTypeIndex)
         {
-            UInt32 aIndex = 0;        // valgrindエラー回避(この初期化により消えることを確認した)
-            iIStream >> aIndex;
-            if (iIStream.get() != 'e')
+            UInt32 aIndex;
+            iIStream.Read(out aIndex);
+            if (iIStream.Read() != 'e')
             {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+        throw new InvalidOperationException(String.Format("Format Error."));
             }
-            UInt32 aAdditional = 0;   // valgrindエラー回避(この初期化により消えることを確認した)
-            iIStream >> aAdditional;
+            UInt32 aAdditional;
+            iIStream.Read(out aAdditional);
             if (TypeIndexRadix <= aAdditional)
             {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Format Error.");
+        throw new InvalidOperationException(String.Format("Format Error."));
             }
             oTypeIndex.set(aIndex, aAdditional);
-
-            // I/Oエラーチェック
-            auto aStat = iIStream.rdstate();
-            if (aStat & std::istream::eofbit)
-            {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"EOF occured.");
-            }
-            else if (aStat & std::istream::failbit)
-            {
-                THEOLIZER_INTERNAL_DATA_ERROR(u8"Logical Error on stream.");
-            }
-            else if (aStat & std::istream::badbit)
-            {
-                THEOLIZER_INTERNAL_IO_ERROR(u8"I/O Error.");
-            }
-            return iIStream;
         }
 #endif
     }
@@ -721,56 +699,111 @@ namespace theolizer.internal_space
                 case CheckMode.MetaMode:
                     if (MetaDeserializer.get() == null)
             throw new InvalidOperationException("Meta-serialized data.");
+
+                    deserializeMeta();
                     break;
 
                 default:
             throw new InvalidOperationException("CheckMode Error : " + aCheckMode);
                 }
 
-                //      ---<<< ヘッダ内の型情報回復 >>>---
-                //      C#側は自バージョン・データのみなのでTypeIndex対応表は不要。
+            }
+        }
 
-                readPreElement();
-                UInt64 aTypeIndexCount;
-                loadControl(out aTypeIndexCount);
+        //----------------------------------------------------------------------------
+        //      ヘッダ内型情報回復
+        //----------------------------------------------------------------------------
 
-                // 型情報取出し
-                while(readPreElement() != ReadStat.Terminated)
+        protected void deserializeMeta()
+        {
+            //      ---<<< ヘッダ内の型情報回復 >>>---
+            //      C#側は自バージョン・データのみなのでTypeIndex対応表は不要。
+
+            readPreElement();
+            UInt64 aTypeIndexCount;
+            loadControl(out aTypeIndexCount);
+
+            // 型情報取出し
+            while(readPreElement() != ReadStat.Terminated)
+            {
+                // 開始マーク
+                using (var aAutoRestoreLoad = new BaseSerializer.AutoRestoreLoadStructure(this))
                 {
-                    // 開始マーク
-                    using (var aAutoRestoreLoad2 =
-                        new BaseSerializer.AutoRestoreLoadStructure(this))
+                    if (readPreElement() == ReadStat.Terminated)
+            break;
+                    // TypeIndex取出し
+                    TypeIndex aDataTypeIndex = new TypeIndex();
+                    loadControl(aDataTypeIndex);
+
+                    if (readPreElement() == ReadStat.Terminated)
+            break;
+                    String  aTypeName;
+                    loadControl(out aTypeName);
+
+                    // 型の種別を回復する
+                    if (readPreElement() == ReadStat.Terminated)
+            break;
+                    UInt32      temp;
+                    loadControl(out temp);
+                    TypeKind    aTypeKind=new TypeKind(temp);
+
+                    // 次処理準備
+                    if (readPreElement() == ReadStat.Terminated)
+            continue;
+
+                    // TypeKindによる分岐
+                    var aBaseType = aTypeKind.get() & ~TypeKind.Value.AdditionalMask;
+                    Console.WriteLine(aBaseType);
+
+                    // プリミティブ
+                    if (aBaseType == TypeKind.Value.PrimitiveFlag)
                     {
-
-                        // TypeIndex取出し
-                        TypeIndex aDataTypeIndex = new TypeIndex();
-                        if (readPreElement() == ReadStat.Terminated)
-            break;
-                        loadControl(aDataTypeIndex);
-
-                        if (readPreElement() == ReadStat.Terminated)
-            break;
-                        String  aTypeName;
-                        loadControl(out aTypeName);
-
-                        // メタ・モードなら、型の種別を回復する
-                        TypeKind    aTypeKind;
-                        if (mCheckMode == CheckMode.MetaMode)
-                        {
-                            if (readPreElement() == ReadStat.Terminated)
-            break;
-                            UInt32  temp;
-                            loadControl(out temp);
-                            aTypeKind=new TypeKind(temp);
-                        }
-
-
-
+                        Console.WriteLine("Primitive " + aTypeName);
                     }
 
+                    // enum型
+                    else if ((UInt32)(aBaseType & TypeKind.Value.EnumFlag) != 0)
+                    {
+                        Console.WriteLine("Enum " + aTypeName);
+                    }
 
+                    // クラス
+                    else if (((UInt32)(aBaseType & TypeKind.Value.ClassFlag) != 0)
+                          && ((UInt32)(aBaseType & TypeKind.Value.ManualFlag) == 0))
+                    {
+                        Console.WriteLine("Class " + aTypeName);
+                        deserializeMetaClass(aTypeKind);
+                    }
+                    else
+                    {
+                        Console.WriteLine("another " + aTypeName);
+                    }
+                }
+            }
+        }
 
+        //----------------------------------------------------------------------------
+        //      メタ・デシリアライズ（クラス）
+        //----------------------------------------------------------------------------
 
+        protected void deserializeMetaClass(TypeKind iTypeKind)
+        {
+            ElementsMapping aElementsMapping =
+                ((UInt32)(iTypeKind.get() & TypeKind.Value.Order)!=0)?ElementsMapping.emOrder:ElementsMapping.emName;
+
+            // 開始マーク
+            using (var aAutoRestoreLoad = new BaseSerializer.AutoRestoreLoadStructure(this))
+            {
+                // 名前対応時のみ要素名を取り出す
+                String aElementName=loadElementName(aElementsMapping);
+
+                while(readPreElement() != ReadStat.Terminated)
+                {
+                    TypeIndex aElementTypeIndex = new TypeIndex();
+                    loadControl(aElementTypeIndex);
+
+Console.WriteLine(((aElementName==null)?"<null>":aElementName) + " : " +
+    aElementTypeIndex.getIndex() + "e" + aElementTypeIndex.getAdditional());
                 }
             }
         }
