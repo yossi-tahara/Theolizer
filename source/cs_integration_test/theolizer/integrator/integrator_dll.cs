@@ -225,14 +225,14 @@ namespace theolizer
 
             // 要求送信
             using (var temp = new BaseSerializer.AutoRestoreSaveProcess
-                (mRequestSerializer, iFuncObject.getTypeIndex2()))
+                (mRequestSerializer, iFuncObject.getTypeIndex()))
             {
                 iFuncObject.save(mRequestSerializer);
             }
             mRequestSerializer.flush();
 
             // 応答受信
-            TypeIndex aTypeIndex = oReturnObject.getTypeIndex2();
+            TypeIndex aTypeIndex = oReturnObject.getTypeIndex();
             using (var temp = new BaseSerializer.AutoRestoreLoadProcess
                 (mResponseSerializer, ref aTypeIndex))
             {
