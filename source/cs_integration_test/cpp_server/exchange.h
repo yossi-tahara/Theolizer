@@ -185,9 +185,9 @@ public:
     SharedHelperTheolizer<exchange::UserClassNotify>    mThis;
     THEOLIZER_INTRUSIVE_ORDER(CS, (initializeUserClassNotify), 1);
 
-    initializeUserClassNotify callFunc()
+    initializeUserClassNotifyReturn callFunc()
     {
-        initializeUserClassNotify   ret;
+        initializeUserClassNotifyReturn ret;
 
         mThis->initialize();
         ret.mThis = mThis;

@@ -232,7 +232,7 @@ namespace theolizer
             mRequestSerializer.flush();
 
             // 応答受信
-            UInt64 aTypeIndex = oReturnObject.getTypeIndex();
+            TypeIndex aTypeIndex = oReturnObject.getTypeIndex2();
             using (var temp = new BaseSerializer.AutoRestoreLoadProcess
                 (mResponseSerializer, ref aTypeIndex))
             {
@@ -268,11 +268,11 @@ namespace theolizer
             {
                 while(!mTerminated)
                 {
-                    UInt64 aTypeIndex = theolizer.internal_space.Constants.kInvalidSize;
+                    TypeIndex aTypeIndex = new TypeIndex();
                     using (var temp = new BaseSerializer.AutoRestoreLoadProcess
                         (mNotifySerializer, ref aTypeIndex))
                     {
-                        var aNotifyObject = theolizer_integrator.FuncClassList.get(aTypeIndex);
+                        var aNotifyObject = theolizer_integrator.FuncClassList.get(aTypeIndex.getIndex());
                         aNotifyObject.load(mNotifySerializer);
                         mUserContext.Post(_=>{ ((ICallFunc)aNotifyObject).callFunc(); }, null);
                     }

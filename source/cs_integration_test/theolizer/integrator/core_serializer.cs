@@ -277,6 +277,12 @@ namespace theolizer.internal_space
             return mTypeIndexImpl != iTypeIndex.mTypeIndexImpl;
         }
 #endif
+        // 比較処理
+        public bool equalTo(TypeIndex iTypeIndex)
+        {
+            return mTypeIndexImpl == iTypeIndex.mTypeIndexImpl;
+        }
+
         public UInt32 getIndex()
         {
             return mTypeIndexImpl/TypeIndexRadix;
@@ -398,25 +404,9 @@ namespace theolizer.internal_space
             }
         }
 
-#if false
-        // 文字列型からの入力
-        public static void load(StreamReaderEx iIStream, TypeIndex oTypeIndex)
-        {
-            UInt32 aIndex;
-            iIStream.Read(out aIndex);
-            if (iIStream.Read() != 'e')
-            {
-        throw new InvalidOperationException(String.Format("Format Error."));
-            }
-            UInt32 aAdditional;
-            iIStream.Read(out aAdditional);
-            if (TypeIndexRadix <= aAdditional)
-            {
-        throw new InvalidOperationException(String.Format("Format Error."));
-            }
-            oTypeIndex.set(aIndex, aAdditional);
-        }
-#endif
+        // 文字列型からの入力は、StreamReaderEx側に設ける
+        //  特殊処理が必要なのでここでは効率が悪い
+        // public void load(StreamReaderEx iOStream)
     }
 
     // ***************************************************************************
@@ -823,7 +813,7 @@ Console.WriteLine(((aElementName==null)?"<null>":aElementName) + " : " +
             public AutoRestoreLoadProcess
             (
                 BaseSerializer  iSerializer,
-                ref UInt64      iTypeIndex
+                ref TypeIndex   iTypeIndex
             )
             {
                 mSerializer = iSerializer;
@@ -889,7 +879,7 @@ Console.WriteLine(((aElementName==null)?"<null>":aElementName) + " : " +
         //      トップ・レベル回復前後処理
         //----------------------------------------------------------------------------
 
-        void loadProcessStart(ref UInt64 iTypeIndex)
+        void loadProcessStart(ref TypeIndex ioTypeIndex)
         {
             loadGroupStart(true);
 
@@ -898,21 +888,19 @@ Console.WriteLine(((aElementName==null)?"<null>":aElementName) + " : " +
         throw new InvalidOperationException("Format Error.");
             }
 
-            UInt64 aTypeIndex;
-            loadControl(out aTypeIndex);
-            if (iTypeIndex != Constants.kInvalidSize)
+            TypeIndex aTypeIndex = new TypeIndex();
+            loadControl(aTypeIndex);
+            if (ioTypeIndex.isValid())
             {
-#if false   // ヘッダ処理を実装するまでの仮実装(仮なのでかなりいい加減だがデバッグには使える)
-                if (!isMatchTypeIndex(aTypeIndex, iTypeIndex))
+                if (!aTypeIndex.equalTo(ioTypeIndex))
                 {
         throw new InvalidOperationException("Unmatch type.");
                 }
-#endif
             }
             else
             {
 #if true    // ヘッダ処理を実装するまでの仮実装(仮なのでかなりいい加減だがデバッグには使える)
-                iTypeIndex = aTypeIndex;
+                ioTypeIndex = aTypeIndex;
 #else
                 auto& aElementType = mSerializedTypeListI->at(aTypeIndex);
                 ret = aElementType.mProgramTypeIndex;
