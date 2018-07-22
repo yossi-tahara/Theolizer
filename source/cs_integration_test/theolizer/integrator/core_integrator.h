@@ -509,16 +509,17 @@ public:
     (
         SerializerType  iSerializerType,
         std::ostream&   iOStream,
-        unsigned        iGlobalVersionNo
+        unsigned        iGlobalVersionNo,
+        CheckMode       iCheckMode = CheckMode::NoTypeCheck // 暫定
     )
     {
         switch(iSerializerType)
         {
         case SerializerType::Binary:
-            return new BinaryOSerializer<uDefault>(iOStream,iGlobalVersionNo,CheckMode::MetaMode);
+            return new BinaryOSerializer<uDefault>(iOStream, iGlobalVersionNo, iCheckMode);
 
         case SerializerType::Json:
-            return new JsonOSerializer<uDefault>(iOStream,iGlobalVersionNo,CheckMode::NoTypeCheck/*MetaMode*/);
+            return new JsonOSerializer<uDefault>(iOStream, iGlobalVersionNo, iCheckMode);
         }
         return nullptr;
     }
@@ -747,7 +748,8 @@ extern "C" THEOLIZER_INTERNAL_EXPORT void CppMetaSerialize
         (
             iSerializerType,
             iOStream,
-            theolizer::kLastGlobalVersionNo
+            theolizer::kLastGlobalVersionNo,
+            theolizer::CheckMode::MetaMode
         )
     );
 }
