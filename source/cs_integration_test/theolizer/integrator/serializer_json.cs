@@ -188,6 +188,7 @@ namespace theolizer.internal_space
         protected override void saveControl(UInt32 iControl)    {savePrimitive(iControl);}
         protected override void saveControl(UInt64 iControl)    {savePrimitive(iControl);}
         protected override void saveControl(String iControl)    {encodeJsonString(iControl);}
+        protected override void saveControl(TypeIndex iTypeIndex) {iTypeIndex.save(mOStream);}
         protected override void saveElementName(ElementsMapping iElementsMapping, String iElementName)
         {
             if (iElementsMapping == ElementsMapping.emName)

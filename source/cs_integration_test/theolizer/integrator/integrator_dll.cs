@@ -225,7 +225,7 @@ namespace theolizer
 
             // 要求送信
             using (var temp = new BaseSerializer.AutoRestoreSaveProcess
-                (mRequestSerializer, iFuncObject.getTypeIndex()))
+                (mRequestSerializer, iFuncObject.getTypeIndex2()))
             {
                 iFuncObject.save(mRequestSerializer);
             }

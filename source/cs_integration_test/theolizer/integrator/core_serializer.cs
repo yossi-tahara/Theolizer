@@ -383,24 +383,24 @@ namespace theolizer.internal_space
         const UInt32    TypeIndexRadix = 0x10;
         const UInt32    TypeIndexMask  = (~0xfu);
 
-#if false
         // 文字列型への出力
-        public static void Write(StreamReaderEx StreadWriter iOStream, TypeIndex iTypeIndex)
+        public void save(StreamWriter iOStream)
         {
-            if (iTypeIndex.isValid())
+            if (isValid())
             {
-                iOStream << (iTypeIndex.mTypeIndexImpl/TypeIndexRadix) << "e"
-                         << (iTypeIndex.mTypeIndexImpl&(~TypeIndexMask));
+                iOStream.Write(mTypeIndexImpl/TypeIndexRadix);
+                iOStream.Write("e");
+                iOStream.Write(mTypeIndexImpl&(~TypeIndexMask));
             }
             else
             {
-                iOStream << "[Invalid TypeIndex]";
+                iOStream.Write("[Invalid TypeIndex]");
             }
-            return iOStream;
         }
 
+#if false
         // 文字列型からの入力
-        public static void Read(StreamReaderEx iIStream, TypeIndex oTypeIndex)
+        public static void load(StreamReaderEx iIStream, TypeIndex oTypeIndex)
         {
             UInt32 aIndex;
             iIStream.Read(out aIndex);
@@ -533,7 +533,7 @@ namespace theolizer.internal_space
             public AutoRestoreSaveProcess
             (
                 BaseSerializer  iSerializer,
-                UInt64          iTypeIndex
+                TypeIndex       iTypeIndex
             )
             {
                 mSerializer = iSerializer;
@@ -614,7 +614,7 @@ namespace theolizer.internal_space
         //      トップ・レベル保存前後処理
         //----------------------------------------------------------------------------
 
-        void saveProcessStart(UInt64 iTypeIndex)
+        void saveProcessStart(TypeIndex iTypeIndex)
         {
             saveGroupStart();
 

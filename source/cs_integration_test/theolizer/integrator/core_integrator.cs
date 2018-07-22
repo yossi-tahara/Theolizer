@@ -128,6 +128,7 @@ namespace theolizer.internal_space
     interface ITheolizerInternal
     {
         UInt64 getTypeIndex();
+        TypeIndex getTypeIndex2();
         void save(BaseSerializer iBaseSerializer);
         void load(BaseSerializer iBaseSerializer);
         //void callFunc();

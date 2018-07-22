@@ -100,6 +100,7 @@ namespace exchange
                 mTheolizer=iTheolizer;
             }
             public UInt64 getTypeIndex() { return UserClassSub.kTypeIndex; }
+            public theolizer.internal_space.TypeIndex getTypeIndex2() { return UserClassSub.kTypeIndex2; }
             public void save(BaseSerializer iBaseSerializer)
             {
                 using (var temp = new BaseSerializer.AutoRestoreSaveStructure(iBaseSerializer))
@@ -159,6 +160,7 @@ namespace exchange
                 mTheolizer=iTheolizer;
             }
             public UInt64 getTypeIndex() { return UserClassMain.kTypeIndex; }
+            public theolizer.internal_space.TypeIndex getTypeIndex2() { return UserClassMain.kTypeIndex2; }
             public void save(BaseSerializer iBaseSerializer)
             {
                 using (var temp = new BaseSerializer.AutoRestoreSaveStructure(iBaseSerializer))
@@ -229,6 +231,7 @@ namespace exchange
                 mTheolizer=iTheolizer;
             }
             public UInt64 getTypeIndex() { return UserClassNotify.kTypeIndex; }
+            public theolizer.internal_space.TypeIndex getTypeIndex2() { return UserClassNotify.kTypeIndex2; }
             public void save(BaseSerializer iBaseSerializer)
             {
                 using (var temp = new BaseSerializer.AutoRestoreSaveStructure(iBaseSerializer))
@@ -311,6 +314,7 @@ namespace theolizer_integrator
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(6u);
         public UInt64 getTypeIndex() { return kTypeIndex; }
+        public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
 
         // シリアライズ
         public void save(BaseSerializer iBaseSerializer)
@@ -383,6 +387,7 @@ namespace theolizer_integrator
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(8u);
         public UInt64 getTypeIndex() { return kTypeIndex; }
+        public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
 
         // シリアライズ
         public void save(BaseSerializer iBaseSerializer)
@@ -455,6 +460,7 @@ namespace theolizer_integrator
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(4u);
         public UInt64 getTypeIndex() { return kTypeIndex; }
+        public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
 
         // シリアライズ
         public void save(BaseSerializer iBaseSerializer)
@@ -509,6 +515,8 @@ namespace theolizer_integrator
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(3u);
         public UInt64 getTypeIndex() { return kTypeIndex; }
+        public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
+
         public void save(BaseSerializer iBaseSerializer)
         {
             // 省略
@@ -562,6 +570,7 @@ namespace theolizer_integrator
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(0u);
         public UInt64 getTypeIndex() { return kTypeIndex; }
+        public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
 
         // シリアライズ
         public void save(BaseSerializer iBaseSerializer)
@@ -600,6 +609,8 @@ namespace theolizer_integrator
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(5u);
         public UInt64 getTypeIndex() { return kTypeIndex; }
+        public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
+
         public void save(BaseSerializer iBaseSerializer)
         {
             // 省略
@@ -638,6 +649,7 @@ namespace theolizer_integrator
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(1u);
         public UInt64 getTypeIndex() { return kTypeIndex; }
+        public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
 
         // シリアライズ
         public void save(BaseSerializer iBaseSerializer)
@@ -670,6 +682,8 @@ namespace theolizer_integrator
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(2u);
         public UInt64 getTypeIndex() { return kTypeIndex; }
+        public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
+
         public void save(BaseSerializer iBaseSerializer)
         {
             // 省略
