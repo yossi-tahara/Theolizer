@@ -76,6 +76,8 @@ endif()
 add_library(${TARGET_NAME} SHARED ${CPP_SOURCES} ${CPP_LIBRALY})
 setup_theolizer(${TARGET_NAME} StaticWithBoost)
 
+set_property(TARGET ${TARGET_NAME} PROPERTY VS_DEBUGGER_COMMAND "$(OutDir)cs_client.exe")
+
 add_custom_command(TARGET ${TARGET_NAME}  POST_BUILD
     COMMAND echo
         "${THEOLIZER_ROOT}/bin/$<$<CONFIG:Debug>:Debug/>MetaSerializer.exe"

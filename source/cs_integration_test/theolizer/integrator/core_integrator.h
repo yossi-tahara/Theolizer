@@ -518,7 +518,7 @@ public:
             return new BinaryOSerializer<uDefault>(iOStream,iGlobalVersionNo,CheckMode::MetaMode);
 
         case SerializerType::Json:
-            return new JsonOSerializer<uDefault>(iOStream,iGlobalVersionNo,CheckMode::MetaMode);
+            return new JsonOSerializer<uDefault>(iOStream,iGlobalVersionNo,CheckMode::NoTypeCheck/*MetaMode*/);
         }
         return nullptr;
     }

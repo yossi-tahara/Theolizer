@@ -44,7 +44,7 @@
 //      Export関数
 //############################################################################
 
-#if 0
+#if 1
     #define LOW_DEBUG_PRINT(...)    DEBUG_PRINT(__VA_ARGS__)
 #else
     #define LOW_DEBUG_PRINT(...)
