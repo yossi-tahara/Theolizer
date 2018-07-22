@@ -79,7 +79,6 @@ namespace exchange
 
         //      ---<<< シリアライズ処理 >>>---
 
-        public const UInt64 kTypeIndex = 8;
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(8u);
 
@@ -99,7 +98,6 @@ namespace exchange
             {
                 mTheolizer=iTheolizer;
             }
-            public UInt64 getTypeIndex() { return UserClassSub.kTypeIndex; }
             public theolizer.internal_space.TypeIndex getTypeIndex2() { return UserClassSub.kTypeIndex2; }
             public void save(BaseSerializer iBaseSerializer)
             {
@@ -139,7 +137,6 @@ namespace exchange
 
         //      ---<<< シリアライズ処理 >>>---
 
-        public const UInt64 kTypeIndex = 14;
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(14u);
 
@@ -159,7 +156,6 @@ namespace exchange
             {
                 mTheolizer=iTheolizer;
             }
-            public UInt64 getTypeIndex() { return UserClassMain.kTypeIndex; }
             public theolizer.internal_space.TypeIndex getTypeIndex2() { return UserClassMain.kTypeIndex2; }
             public void save(BaseSerializer iBaseSerializer)
             {
@@ -210,7 +206,6 @@ namespace exchange
 
         //      ---<<< シリアライズ処理 >>>---
 
-        public const UInt64 kTypeIndex = 15;
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(15u);
 
@@ -230,7 +225,6 @@ namespace exchange
             {
                 mTheolizer=iTheolizer;
             }
-            public UInt64 getTypeIndex() { return UserClassNotify.kTypeIndex; }
             public theolizer.internal_space.TypeIndex getTypeIndex2() { return UserClassNotify.kTypeIndex2; }
             public void save(BaseSerializer iBaseSerializer)
             {
@@ -310,10 +304,8 @@ namespace theolizer_integrator
             }
         }
 
-        public const UInt64 kTypeIndex = 7;
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(7u);
-        public UInt64 getTypeIndex() { return kTypeIndex; }
         public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
 
         // シリアライズ
@@ -383,10 +375,8 @@ namespace theolizer_integrator
             }
         }
 
-        public const UInt64 kTypeIndex = 9;
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(9u);
-        public UInt64 getTypeIndex() { return kTypeIndex; }
         public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
 
         // シリアライズ
@@ -456,10 +446,8 @@ namespace theolizer_integrator
             }
         }
 
-        public const UInt64 kTypeIndex = 5;
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(5u);
-        public UInt64 getTypeIndex() { return kTypeIndex; }
         public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
 
         // シリアライズ
@@ -511,10 +499,8 @@ namespace theolizer_integrator
         SharedHelperTheolizer_exchange_UserClassSub mioUserClassSub2 =
             new SharedHelperTheolizer_exchange_UserClassSub();
 
-        public const UInt64 kTypeIndex = 3;
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(3u);
-        public UInt64 getTypeIndex() { return kTypeIndex; }
         public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
 
         public void save(BaseSerializer iBaseSerializer)
@@ -566,10 +552,8 @@ namespace theolizer_integrator
         }
 
         // TypeIndex
-        public const UInt64 kTypeIndex = 0;
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(0u);
-        public UInt64 getTypeIndex() { return kTypeIndex; }
         public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
 
         // シリアライズ
@@ -605,10 +589,8 @@ namespace theolizer_integrator
         SharedHelperTheolizer_exchange_UserClassNotify mThis =
             new SharedHelperTheolizer_exchange_UserClassNotify();
 
-        public const UInt64 kTypeIndex = 4;
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(4u);
-        public UInt64 getTypeIndex() { return kTypeIndex; }
         public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
 
         public void save(BaseSerializer iBaseSerializer)
@@ -645,10 +627,8 @@ namespace theolizer_integrator
         }
 
         // TypeIndex
-        public const UInt64 kTypeIndex = 1;
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(1u);
-        public UInt64 getTypeIndex() { return kTypeIndex; }
         public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
 
         // シリアライズ
@@ -678,10 +658,8 @@ namespace theolizer_integrator
         SharedHelperTheolizer_exchange_UserClassNotify mThis =
             new SharedHelperTheolizer_exchange_UserClassNotify();
 
-        public const UInt64 kTypeIndex = 2;
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex2 =
             new theolizer.internal_space.TypeIndex(2u);
-        public UInt64 getTypeIndex() { return kTypeIndex; }
         public theolizer.internal_space.TypeIndex getTypeIndex2() { return kTypeIndex2; }
 
         public void save(BaseSerializer iBaseSerializer)
@@ -710,17 +688,17 @@ namespace theolizer_integrator
 
     static class FuncClassList
     {
-        static Dictionary<UInt64,ITheolizerInternal> mFuncClassList;
+        static Dictionary<UInt32,ITheolizerInternal> mFuncClassList;
         static FuncClassList()
         {
-            mFuncClassList = new Dictionary<UInt64,ITheolizerInternal>
+            mFuncClassList = new Dictionary<UInt32, ITheolizerInternal>
             {
-                {notifyUserClassNotify.kTypeIndex, new notifyUserClassNotify()}
+                {notifyUserClassNotify.kTypeIndex2.getIndex(), new notifyUserClassNotify()}
             };
         }
-        public static ITheolizerInternal get(UInt64 iTypeIndex)
+        public static ITheolizerInternal get(UInt32 iIndex)
         {
-            return mFuncClassList[iTypeIndex];
+            return mFuncClassList[iIndex];
         }
     }
 }
