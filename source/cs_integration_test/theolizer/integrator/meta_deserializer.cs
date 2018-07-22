@@ -15,6 +15,12 @@ namespace theolizer.internal_space
         [STAThread]
         static void Main(string[] args)
         {
+var data = new MyData[2];
+data[0] = new MyData{ Name="abc", Value="def"};
+data[1] = new MyData{ Name="ABC", Value="dEF"};
+var template = new CreateSource(data);
+Console.WriteLine(template.TransformText());
+
             if (args.Length < 2)
             {
                 Console.WriteLine("Need a parameter : <meta serialize file path> <output cs file>");
@@ -41,4 +47,14 @@ namespace theolizer.internal_space
             }
         }
     }
+    public class MyData
+    {
+        public string Name;
+        public string Value;
+    }
+}
+partial class CreateSource
+{
+    private theolizer.internal_space.MyData[] m_data;
+    public CreateSource(theolizer.internal_space.MyData[] data) { this.m_data = data; }
 }

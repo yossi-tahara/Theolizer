@@ -7,15 +7,18 @@
 //     コードが再生成されると失われます。
 // </auto-generated>
 // ------------------------------------------------------------------------------
+using System.Linq;
+using System.Text;
+using System.Collections.Generic;
 using System;
 
 /// <summary>
 /// Class to produce the template output
 /// </summary>
 
-#line 1 "L:\Data\DataOrig\3.Projects\3.Serializer\5.OpenBeta\Theolizer\source\cs_integration_test\theolizer\integrator\createSource.tt"
+#line 1 "L:\Data\DataOrig\3.Projects\3.Serializer\5.OpenBeta\Theolizer\source\cs_integration_test\theolizer\integrator\CreateSource.tt"
 [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "15.0.0.0")]
-public partial class createSource : createSourceBase
+public partial class CreateSource : CreateSourceBase
 {
 #line hidden
     /// <summary>
@@ -23,7 +26,38 @@ public partial class createSource : createSourceBase
     /// </summary>
     public virtual string TransformText()
     {
-        this.Write("Hello world\r\n");
+        this.Write("<html><body>  \r\n<h2>Sales figures</h2>  \r\n<table>  \r\n");
+        
+        #line 9 "L:\Data\DataOrig\3.Projects\3.Serializer\5.OpenBeta\Theolizer\source\cs_integration_test\theolizer\integrator\CreateSource.tt"
+ foreach (var item in m_data)   
+   // m_data is declared in MyWebPageCode.cs  
+   { 
+        
+        #line default
+        #line hidden
+        this.Write("  \r\n      <tr><td> ");
+        
+        #line 12 "L:\Data\DataOrig\3.Projects\3.Serializer\5.OpenBeta\Theolizer\source\cs_integration_test\theolizer\integrator\CreateSource.tt"
+        this.Write(this.ToStringHelper.ToStringWithCulture(item.Name));
+        
+        #line default
+        #line hidden
+        this.Write(" </td>  \r\n          <td> ");
+        
+        #line 13 "L:\Data\DataOrig\3.Projects\3.Serializer\5.OpenBeta\Theolizer\source\cs_integration_test\theolizer\integrator\CreateSource.tt"
+        this.Write(this.ToStringHelper.ToStringWithCulture(item.Value));
+        
+        #line default
+        #line hidden
+        this.Write(" </td></tr>  \r\n");
+        
+        #line 14 "L:\Data\DataOrig\3.Projects\3.Serializer\5.OpenBeta\Theolizer\source\cs_integration_test\theolizer\integrator\CreateSource.tt"
+ } // end of foreach  
+
+        
+        #line default
+        #line hidden
+        this.Write("  \r\n</table>\r\n</body></html>\r\n");
         return this.GenerationEnvironment.ToString();
     }
 }
@@ -35,7 +69,7 @@ public partial class createSource : createSourceBase
 /// Base class for this transformation
 /// </summary>
 [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.TextTemplating", "15.0.0.0")]
-public class createSourceBase
+public class CreateSourceBase
 {
     #region Fields
     private global::System.Text.StringBuilder generationEnvironmentField;

@@ -49,11 +49,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <ItemGroup>
-    <Compile Include="${CMAKE_CURRENT_SOURCE_DIR}/createSource.cs">
-      <Link>createSource.cs</Link>
+    <Compile Include="${CMAKE_CURRENT_SOURCE_DIR}/CreateSource.cs">
+      <Link>CreateSource.cs</Link>
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>createSource.tt</DependentUpon>
+      <DependentUpon>CreateSource.tt</DependentUpon>
     </Compile>
     <Compile Include="${CMAKE_CURRENT_SOURCE_DIR}/meta_deserializer.cs">
       <Link>meta_deserializer.cs</Link>
@@ -72,10 +72,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="${CMAKE_CURRENT_SOURCE_DIR}/createSource.tt">
-      <Link>createSource.tt</Link>
+    <Content Include="${CMAKE_CURRENT_SOURCE_DIR}/CreateSource.tt">
+      <Link>CreateSource.tt</Link>
       <Generator>TextTemplatingFilePreprocessor</Generator>
-      <LastGenOutput>createSource.cs</LastGenOutput>
+      <LastGenOutput>CreateSource.cs</LastGenOutput>
     </Content>
   </ItemGroup>
   <ItemGroup>
