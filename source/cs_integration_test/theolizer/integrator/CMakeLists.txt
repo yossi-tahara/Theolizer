@@ -68,19 +68,26 @@ endif()
 
 # MSVCのみ対応
 if (MSVC)
+    if (TRUE)
+        configure_file(
+            "${CMAKE_CURRENT_SOURCE_DIR}/MetaDeserializer.csproj.in"
+            "${CMAKE_CURRENT_BINARY_DIR}/MetaDeserializer.csproj"
+        )
+        include_external_msproject(MetaDeserializer "${CMAKE_CURRENT_BINARY_DIR}/MetaDeserializer.csproj")
+    else()
+        set(CMAKE_CSharp_FLAGS "/langversion:6 -nowarn:1006")
+        if ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+            set(CMAKE_CSharp_FLAGS "${CMAKE_CSharp_FLAGS} /platform:x64")
+        endif()
 
-    set(CMAKE_CSharp_FLAGS "/langversion:6 -nowarn:1006")
-    if ("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-        set(CMAKE_CSharp_FLAGS "${CMAKE_CSharp_FLAGS} /platform:x64")
+        enable_language(CSharp)
+        include(CSharpUtilities)
+
+        add_executable(MetaDeserializer
+            meta_deserializer.cs
+            serializer_json.cs
+            core_serializer.cs
+        )
+        set_target_properties(MetaDeserializer PROPERTIES VS_DOTNET_REFERENCES "System")
     endif()
-
-    enable_language(CSharp)
-    include(CSharpUtilities)
-
-    add_executable(MetaDeserializer
-        meta_deserializer.cs
-        serializer_json.cs
-        core_serializer.cs
-    )
-
 endif()

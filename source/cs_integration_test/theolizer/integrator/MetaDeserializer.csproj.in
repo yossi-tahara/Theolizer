@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{15FF58D6-55CA-3EDE-8EC4-D69B62987CE3}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>${CMAKE_VS_PLATFORM_NAME}</Platform>
+    <ProjectName>MetaDeserializer</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|${CMAKE_VS_PLATFORM_NAME}'" Label="Configuration">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <OutputPath>${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}/</OutputPath>
+    <PlatformTarget>${CMAKE_VS_PLATFORM_NAME}</PlatformTarget>
+    <PlatformToolset>v141</PlatformToolset>
+    <AssemblyName>MetaDeserializer</AssemblyName>
+    <StartAction>Program</StartAction>
+    <StartProgram>${CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG}/MetaDeserializer.exe</StartProgram>
+    <AdditionalOptions>-nowarn:1006</AdditionalOptions>
+    <DebugType>full</DebugType>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <LangVersion>6</LangVersion>
+    <Optimize>false</Optimize>
+    <WarningLevel>3</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|${CMAKE_VS_PLATFORM_NAME}'" Label="Configuration">
+    <OutputPath>${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/</OutputPath>
+    <PlatformTarget>${CMAKE_VS_PLATFORM_NAME}</PlatformTarget>
+    <PlatformToolset>v141</PlatformToolset>
+    <AssemblyName>MetaDeserializer</AssemblyName>
+    <StartAction>Program</StartAction>
+    <StartProgram>${CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE}/MetaDeserializer.exe</StartProgram>
+    <AdditionalOptions>-nowarn:1006</AdditionalOptions>
+    <DebugType>none</DebugType>
+    <ErrorReport>queue</ErrorReport>
+    <LangVersion>6</LangVersion>
+    <Optimize>true</Optimize>
+    <WarningLevel>1</WarningLevel>
+  </PropertyGroup>
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.CSharp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.CSharp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemGroup>
+    <Compile Include="${CMAKE_CURRENT_SOURCE_DIR}/createSource.cs">
+      <Link>createSource.cs</Link>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>createSource.tt</DependentUpon>
+    </Compile>
+    <Compile Include="${CMAKE_CURRENT_SOURCE_DIR}/meta_deserializer.cs">
+      <Link>meta_deserializer.cs</Link>
+    </Compile>
+    <Compile Include="${CMAKE_CURRENT_SOURCE_DIR}/serializer_json.cs">
+      <Link>serializer_json.cs</Link>
+    </Compile>
+    <Compile Include="${CMAKE_CURRENT_SOURCE_DIR}/core_serializer.cs">
+      <Link>core_serializer.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="${CMAKE_CURRENT_SOURCE_DIR}/createSource.tt">
+      <Link>createSource.tt</Link>
+      <Generator>TextTemplatingFilePreprocessor</Generator>
+      <LastGenOutput>createSource.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+  </PropertyGroup>
+  <PropertyGroup>
+    <BuildDependsOn>
+      $(BuildDependsOn)
+    </BuildDependsOn>
+  </PropertyGroup>
+</Project>
