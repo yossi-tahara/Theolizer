@@ -76,7 +76,7 @@ namespace cs_client
                 + mUserClassSub2.mStringSub + Environment.NewLine);
         }
 
-         private void buttonDispose_Click(object sender, EventArgs e)
+        private void buttonDispose_Click(object sender, EventArgs e)
         {
             DllIntegrator.disposeInstance();
             ThreadIntegrator.Integrator = null;

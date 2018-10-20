@@ -141,6 +141,10 @@ public:
         return *this;
     }
 
+    // ポインタ演算子
+    tType*       operator->()       { return mInstance.get(); }
+    tType const* operator->() const { return mInstance.get(); }
+
     // 有効性
     operator bool() const
     {
@@ -331,9 +335,13 @@ private:
         std::shared_ptr<tType>      mInstance;      // インスタンス管理
     public:
         SharedHolder() : mInstance(std::make_shared<tType>())
-        { };
+        {
+std::cout << "SharedHolder(1) : " << getUseCount() << std::endl;
+        };
         SharedHolder(tType* iPointer) : mInstance(std::shared_ptr<tType>(iPointer))
-        { };
+        {
+std::cout << "SharedHolder(2) : " << getUseCount() << std::endl;
+        };
         tType* get() { return mInstance.get(); }
         std::shared_ptr<tType>& getSharedPointer() { return mInstance; }
 
@@ -413,10 +421,11 @@ std::cout << "(3)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType)
         }
 
         // 新たに領域を増やす(奇数になるように増やす)
-        if ((mSharedTable.size() % 2) == 1)
+        if ((mSharedTable.size() % 2) == 0)
         {
             mSharedTable.emplace_back(nullptr);
         }
+        ret = mSharedTable.size();
         mSharedTable.emplace_back(new SharedHolder<tType>(iInstance));
 std::cout << "(4)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType) << "> index=" << ret << "\n";
         return ret;
@@ -428,6 +437,7 @@ std::cout << "(4)registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType)
     SharedPointer<tType> getSharedPointer(tType* iInstance)
     {
         std::size_t aIndex = registerSharedInstance(iInstance);
+std::cout << "(1)post registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(tType) << "> index=" << aIndex << "\n";
         auto& aSharedHolder=static_cast<SharedHolder<tType>& >(*mSharedTable[aIndex].get());
         return std::move(SharedPointer<tType>(*this, aIndex, aSharedHolder.getSharedPointer()));
     }
@@ -441,7 +451,6 @@ public:
     }
 
     //      ---<<< 共有オブジェクト破棄 >>>---
-protected:
     // 破棄出来ない時、false返却(破棄した時と既に破棄されている時はtrue返却)
     bool disposeShared(std::size_t iIndex)
     {
@@ -451,6 +460,7 @@ std::cout << "BaseIntegrator::disposeShared(" << iIndex << ")\n";
         if ((iIndex < mSharedTable.size())
          && (mSharedTable[iIndex]))
         {
+std::cout << "    UseCount=" << mSharedTable[iIndex]->getUseCount() << "\n";
             if (mSharedTable[iIndex]->getUseCount() <= 1)
             {
                 mSharedTable[iIndex].reset();
@@ -638,6 +648,7 @@ SharedPointer<tType>::~SharedPointer()
     if (mInstance)
     {
         mIntegrator->notifySharedObject(mIndex, false);
+        mIntegrator->disposeShared(mIndex);
     }
 }
 
@@ -688,6 +699,7 @@ struct TheolizerNonIntrusive<SharedHelperTheolizer<T>>::
         auto& aInstance = const_cast<typename tTheolizerVersion::TheolizerTarget*&>(iInstance);
         aInstance->mIndex = theolizer::ThreadIntegrator::getIntegrator()->
             registerSharedInstance<T>(aInstance->mInstance);
+std::cout << "(2)post registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(T) << "> index=" << aInstance->mIndex << "\n";
         THEOLIZER_PROCESS(iSerializer, aInstance->mIndex);
         THEOLIZER_PROCESS(iSerializer, *(aInstance->mInstance));
     }
@@ -706,6 +718,7 @@ struct TheolizerNonIntrusive<SharedHelperTheolizer<T>>::
         THEOLIZER_PROCESS(iSerializer, oInstance->mIndex);
         oInstance->mInstance = theolizer::ThreadIntegrator::getIntegrator()->
             registerSharedInstance<T>(oInstance->mIndex);
+std::cout << "(3)post registerSharedInstance<" << THEOLIZER_INTERNAL_TYPE_NAME(T) << "> index=" << oInstance->mIndex << "\n";
         THEOLIZER_PROCESS(iSerializer, *(oInstance->mInstance));
     }
 };

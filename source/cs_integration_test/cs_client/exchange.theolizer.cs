@@ -304,6 +304,12 @@ namespace theolizer_integrator
             }
         }
 
+        // インスタンス開放
+        public void release()
+        {
+            mInstance = null;
+        }
+
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex =
             new theolizer.internal_space.TypeIndex(7u);
         public theolizer.internal_space.TypeIndex getTypeIndex() { return kTypeIndex; }
@@ -336,6 +342,9 @@ namespace theolizer_integrator
                 // インテグレータ獲得し、共有テーブルからインスタンス取り出し
                 var aIntegrator = ThreadIntegrator.Integrator;
                 mInstance = aIntegrator.registerSharedInstanceR<exchange.UserClassMain>(mIndex);
+
+                // SharedDisposeへ登録
+                mInstance.setIntegrator(aIntegrator, mIndex);
 
                 // mInstance回復
                 if (iBaseSerializer.readPreElement() == ReadStat.Terminated)
@@ -375,6 +384,12 @@ namespace theolizer_integrator
             }
         }
 
+        // インスタンス開放
+        public void release()
+        {
+            mInstance = null;
+        }
+
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex =
             new theolizer.internal_space.TypeIndex(9u);
         public theolizer.internal_space.TypeIndex getTypeIndex() { return kTypeIndex; }
@@ -407,6 +422,9 @@ namespace theolizer_integrator
                 // インテグレータ獲得し、共有テーブルからインスタンス取り出し
                 var aIntegrator = ThreadIntegrator.Integrator;
                 mInstance = aIntegrator.registerSharedInstanceR<exchange.UserClassSub>(mIndex);
+
+                // SharedDisposeへ登録
+                mInstance.setIntegrator(aIntegrator, mIndex);
 
                 // mInstance回復
                 if (iBaseSerializer.readPreElement() == ReadStat.Terminated)
@@ -446,6 +464,12 @@ namespace theolizer_integrator
             }
         }
 
+        // インスタンス開放
+        public void release()
+        {
+            mInstance = null;
+        }
+
         public static readonly theolizer.internal_space.TypeIndex kTypeIndex =
             new theolizer.internal_space.TypeIndex(5u);
         public theolizer.internal_space.TypeIndex getTypeIndex() { return kTypeIndex; }
@@ -478,6 +502,9 @@ namespace theolizer_integrator
                 // インテグレータ獲得し、共有テーブルからインスタンス取り出し
                 var aIntegrator = ThreadIntegrator.Integrator;
                 mInstance = aIntegrator.registerSharedInstanceR<exchange.UserClassNotify>(mIndex);
+
+                // SharedDisposeへ登録
+                mInstance.setIntegrator(aIntegrator, mIndex);
 
                 // mInstance回復
                 if (iBaseSerializer.readPreElement() == ReadStat.Terminated)
@@ -679,6 +706,8 @@ namespace theolizer_integrator
         public void callFunc()
         {
             mThis.Instance.notify();
+            mThis.release();
+System.Diagnostics.Debug.WriteLine("end of notifyUserClassNotify.callFunc()");
         }
     }
 

@@ -144,8 +144,10 @@ namespace theolizer.internal_space
 
         public void setIntegrator(CoreIntegrator iIntegrator, int iIndex)
         {
+System.Diagnostics.Debug.WriteLine(this.GetType().Name + ".setIntegrator() "+iIndex);
             mIntegrator = iIntegrator;
             mIndex      = iIndex;
+System.Diagnostics.Debug.WriteLine("    post setIntegrator()");
         }
 
         ~SharedDestructor()
@@ -192,8 +194,9 @@ System.Diagnostics.Debug.WriteLine(this.GetType().Name + ".~SharedDestructor()")
         }
 
         // C++側で共有オブジェクトを獲得後に送信してきた時に設定する際に使用する
-        public void setWeak<tType>() where tType : new()
+        public void setObject<tType>() where tType : new()
         {
+System.Diagnostics.Debug.WriteLine("setObject<"+typeof(tType).Name+">() mUserPresaved="+mUserPresaved);
             if (mWeakRef == null)
             {
                 mWeakRef = new WeakReference(new tType());
@@ -208,6 +211,10 @@ System.Diagnostics.Debug.WriteLine(this.GetType().Name + ".~SharedDestructor()")
         //  戻り値：テーブルから破棄して良い時true(iUserPresaved==false、かつ、インスタンス未登録)
         public bool setStrong(bool iUserPresaved)
         {
+System.Diagnostics.Debug.WriteLine("setStrong() mUserPresaved="+iUserPresaved);
+if (mWeakRef != null)
+System.Diagnostics.Debug.WriteLine("    mWeakRef="+mWeakRef.Target.GetType().Name);
+
             mUserPresaved = iUserPresaved;
             if (mUserPresaved)
             {
@@ -263,6 +270,7 @@ System.Diagnostics.Debug.WriteLine(this.GetType().Name + ".~SharedDestructor()")
         //      未登録ならデフォルト・コンストラクタで生成して返却
         public tType registerSharedInstanceR<tType>(int iIndex) where tType : SharedDestructor, new()
         {
+System.Diagnostics.Debug.WriteLine("registerSharedInstanceR<" + typeof(tType).Name + "> index=" + iIndex);
             using (var aLock = new Lock(mMutex))
             {
                 if (mSharedTable.Count <= iIndex)
@@ -275,13 +283,11 @@ System.Diagnostics.Debug.WriteLine(this.GetType().Name + ".~SharedDestructor()")
 
                 if (mSharedTable[iIndex] == null)
                 {
-                    mSharedTable[iIndex] = new SharedHolder(new tType());
+                    mSharedTable[iIndex] = new SharedHolder();
+System.Diagnostics.Debug.WriteLine("    new SharedHolder()");
                 }
-                else
-                {
-                    mSharedTable[iIndex].setWeak<tType>();
-                }
-System.Diagnostics.Debug.WriteLine("registerSharedInstanceR<" + mSharedTable[iIndex].get().GetType().Name + "> index=" + iIndex);
+System.Diagnostics.Debug.WriteLine("    setObject()");
+                mSharedTable[iIndex].setObject<tType>();
                 return (tType)mSharedTable[iIndex].get();
             }
         }
@@ -342,14 +348,17 @@ System.Diagnostics.Debug.WriteLine("notifySharedObject(" + iIndex + ", " + iUser
                         for (int i=mSharedTable.Count; i < iIndex+1; ++i)
                         {
                             mSharedTable.Add(null);
+System.Diagnostics.Debug.WriteLine("    mSharedTable.Add(null);");
                         }
                     }
 
                     if (mSharedTable[iIndex] == null)
                     {
                         mSharedTable[iIndex] = new SharedHolder();
+System.Diagnostics.Debug.WriteLine("    mSharedTable["+iIndex+"] = new SharedHolder();");
                     }
                 }
+System.Diagnostics.Debug.WriteLine("    mSharedTable["+iIndex+"].setStrong("+iUserPresaved+");");
                 if (mSharedTable[iIndex].setStrong(iUserPresaved))
                 {
                     disposeShared(iIndex);
@@ -374,6 +383,7 @@ System.Diagnostics.Debug.WriteLine("notifySharedObject(" + iIndex + ", " + iUser
         // Dispose処理
         public void disposeShared(int iIndex)
         {
+System.Diagnostics.Debug.WriteLine("disposeShared();");
             // ここには、下記処理を記述する。
             //  C++側へ伝達してC++側のオブジェクトをデストラクトして共有テーブルから削除する
             disposeSharedDerived(iIndex);

@@ -84,11 +84,17 @@ int Notify::startAsync()
 {
     // UserClassNotifyが未登録ならエラー
     if (!mUserClassNotifyPointer)
+    {
+        std::cout << "startAsync() : return -2;\n";
 return -2;
+    }
 
     // スレッド動作中ならエラー
     if (mThread.joinable())
+    {
+        std::cout << "startAsync() : return -1;\n";
 return -1;
+    }
 
     // メイン・スレッドに登録されているインテグレータ取り出し
     //  ポインタの場合、ラムダ式内でアクセスする時、既にポインタは破棄されている
@@ -110,14 +116,24 @@ return -1;
                     ++aUserClassNotify.mCount;
                     aUserClassNotify.notify();
 //gNotifyData.reset();
+                    std::cout << "end of notify()-1" << std::endl;
 
+#if 0               // 共有オブジェクトはローカル変数として確保できない
                     exchange::UserClassNotify   aUserClassNotify2;
                     aUserClassNotify2.mCount = -12345;
                     auto aSharedPointer = aIntegrator.getSharedPointer(&aUserClassNotify2);
                     aUserClassNotify2.notify();
+#else
+                    auto aUserClassNotifyPtr =
+                        aIntegrator.getSharedPointer(new exchange::UserClassNotify());
+                    aUserClassNotifyPtr->mCount = -12345;
+                    aUserClassNotifyPtr->notify();
+#endif
+                    std::cout << "end of notify()-2" << std::endl;
                     std::this_thread::sleep_for(std::chrono::seconds(3));
                     mThread.detach();
                 }
+                std::cout << "end of subthread" << std::endl;
             }
         )
     );
